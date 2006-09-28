@@ -1,0 +1,42 @@
+======
+class:
+======
+disp_listtable.php
+	列表类，以包含表头、分页、数据表格的方式显示各种列表。
+sql_generator.php
+	SQL语句生成类
+ubb.php
+	Ubb类，完成对UBB代码的转换
+
+=====
+func:
+=====
+client.php
+	检查客户端的浏览器是NS还是IE(old)
+dbwrite.php
+	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
+escape_color.php
+	Covert escape color to html code
+formatbytesize.php
+	Convert variant byte size to human readable format string.
+nixos.php
+	判断当前主机是否nix操作系统
+string.php
+	常用字符串函数集
+url.php
+	处理url字符串，增加或设置/更改URL参数。
+utf8_fix.php
+	Convert string like '_D0_D0_D0' to normal string
+validate_ip.php
+	判断 ip 格式的 php 程序代码(old)
+
+===
+js:
+===
+common.js
+	通用JS函数集
+cookie.js
+	Cookie操作JS函数集
+validate.js
+	数据效验JS函数集
+
