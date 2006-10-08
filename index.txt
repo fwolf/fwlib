@@ -17,6 +17,16 @@ dbwrite.php
 	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
 escape_color.php
 	Covert escape color to html code
+filesystem.php
+	文件系统常用函数
+	Delfile($file_or_dir)
+		Delete a dir or file completedly
+	DirSize($path)
+		Count size of a directory, recursive
+	FileSize1($file)
+		Count size of a file
+	ListDir($dir)
+		List files and file-information of a directory order by mtime asc.
 formatbytesize.php
 	Convert variant byte size to human readable format string.
 nixos.php
