@@ -19,10 +19,18 @@ escape_color.php
 	Covert escape color to html code
 filesystem.php
 	文件系统常用函数
+	Basename1($filename)
+		Manual get basename instead of using pathinfo()
 	Delfile($file_or_dir)
 		Delete a dir or file completedly
+	Dirname1($filename)
+		Manual get dirname instead of using pathinfo()
 	DirSize($path)
 		Count size of a directory, recursive
+	Fileext1($filename)
+		Manual get extension instead of using pathinfo()
+	Filename1($filename)
+		Manual get filename instead of using pathinfo()
 	FileSize1($file)
 		Count size of a file
 	ListDir($dir)

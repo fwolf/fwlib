@@ -9,6 +9,21 @@
 
 
 /**
+ * Manual get basename instead of using pathinfo()
+ * @param	string	$filename
+ * @return	string
+ */
+function Basename1($filename)
+{
+	$i = strrpos($filename, '/');
+	if (false === $i)
+		return $filename;
+	else
+		return substr($filename, $i + 1);
+} // end of func Basename1
+
+
+/**
  * Delete a dir or file completedly
  * 	When del a dir, del all dir and files under it also.
  * @param	string	$name
@@ -42,6 +57,21 @@ function DelFile($name)
 
 
 /**
+ * Manual get dirname instead of using pathinfo()
+ * @param	string	$filename
+ * @return	string
+ */
+function Dirname1($filename)
+{
+	$i = strrpos($filename, '/');
+	if (false === $i)
+		return '';
+	else
+		return substr($filename, 0, $i);
+} // end of func Dirname1
+
+
+/**
  * Count size of a directory, recursive
  * 	 This function also recursive executed automatic
  * @param	string	$path
@@ -66,6 +96,38 @@ function DirSize($path)
 	}
 	return $i;
 }// end of function DirSize
+
+
+/**
+ * Manual get extension instead of using pathinfo()
+ * @param	string	$filename
+ * @return	string
+ */
+function Fileext1($filename)
+{
+	$i1 = strrpos($filename, '.');
+	$i2 = strrpos($filename, '/');
+	if ($i1 < $i2)
+		return '';
+	else
+		return substr($filename, $i1 +1);
+} // end of func Fileext1
+
+
+/**
+ * Manual get filename instead of using pathinfo()
+ * @param	string	$filename
+ * @return	string
+ */
+function Filename1($filename)
+{
+	$basename = Basename1($filename);
+	$i = strrpos($basename, '.');
+	if (false === $i)
+		return $basename;
+	else
+		return substr($basename, 0, $i);
+} // end of func Filename1
 
 
 /**
@@ -101,7 +163,15 @@ function FileSize1($file)
 function ListDir($dir)
 {
 	//List files
+	$dir = realpath($dir);
+	if (empty($dir))
+		return(false);
+	if (!is_dir($dir))
+		return(false);
 	$dirfiles = scandir($dir);
+	if (empty($dirfiles))
+		return(false);
+	
 	$filename=array();
 	$filemtime=array();
 	// Parallel arrays (ignore the ".", "..")
