@@ -15,6 +15,8 @@ client.php
 	检查客户端的浏览器是NS还是IE(old)
 dbwrite.php
 	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
+ecl.php
+	Smarty echo line, end with \n or <br /> according running mod
 escape_color.php
 	Covert escape color to html code
 filesystem.php
@@ -37,6 +39,8 @@ filesystem.php
 		List files and file-information of a directory order by mtime asc.
 formatbytesize.php
 	Convert variant byte size to human readable format string.
+is_cli.php
+	Check if this program is running under cli mod, or is viewing in browser
 nixos.php
 	判断当前主机是否nix操作系统
 string.php
