@@ -13,14 +13,14 @@
  * @param	string	$filename
  * @return	string
  */
-function Basename1($filename)
+function BaseName1($filename)
 {
 	$i = strrpos($filename, '/');
 	if (false === $i)
 		return $filename;
 	else
 		return substr($filename, $i + 1);
-} // end of func Basename1
+} // end of func BaseName1
 
 
 /**
@@ -61,14 +61,14 @@ function DelFile($name)
  * @param	string	$filename
  * @return	string
  */
-function Dirname1($filename)
+function DirName1($filename)
 {
 	$i = strrpos($filename, '/');
 	if (false === $i)
 		return '';
 	else
 		return substr($filename, 0, $i);
-} // end of func Dirname1
+} // end of func DirName1
 
 
 /**
@@ -103,7 +103,7 @@ function DirSize($path)
  * @param	string	$filename
  * @return	string
  */
-function Fileext1($filename)
+function FileExt1($filename)
 {
 	$i1 = strrpos($filename, '.');
 	$i2 = strrpos($filename, '/');
@@ -111,7 +111,7 @@ function Fileext1($filename)
 		return '';
 	else
 		return substr($filename, $i1 +1);
-} // end of func Fileext1
+} // end of func FileExt1
 
 
 /**
@@ -119,7 +119,7 @@ function Fileext1($filename)
  * @param	string	$filename
  * @return	string
  */
-function Filename1($filename)
+function FileName1($filename)
 {
 	$basename = Basename1($filename);
 	$i = strrpos($basename, '.');
@@ -127,7 +127,7 @@ function Filename1($filename)
 		return $basename;
 	else
 		return substr($basename, 0, $i);
-} // end of func Filename1
+} // end of func FileName1
 
 
 /**
@@ -155,7 +155,7 @@ function FileSize1($file)
 
 /**
  * List files and file-information of a directory
- * 	In default, sort files by mtime
+ * 	By default, sort files by mtime asc
  *  Returned array is started from 1
  * param	string	$dir
  * return	array
