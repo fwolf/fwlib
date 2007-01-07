@@ -91,6 +91,14 @@ class DbBak2Sql
 	var $mTableExclude = array();
 
 	/**
+	 * Table need to be group by some cols when backup
+	 * Usually used when table contains too much rows
+	 * @var	array
+	 * @access	private
+	 */
+	var $mTableGroupby = array();
+
+	/**
 	 * Tables to be include in backup task
 	 * If not empty, will only backup tables in this list.
 	 * @var array
@@ -143,17 +151,7 @@ class DbBak2Sql
 		//file_put_contents($this->mTargetPath . "/$tbl.sql", '');
 		$this->Log("Begin to backup $tbl, ");
 		
-		// Get table fields
-		$rs_cols = $this->mDb->MetaColumns($tbl, false);
-		//print_r($rs_cols);
-		$cols = array();
-		if (!empty($rs_cols))
-			foreach ($rs_cols as $c)
-			{
-				// Ignore some columns ?(timestamp)
-				if (false == in_array($c->name, $this->mIgnoreColumn))
-					array_push($cols, $c->name);
-			}
+		$cols = $this->GetTblFields($tbl);
 		
 		// Split sql to 10000 rows per step
 		$sql_step = 10000;
@@ -168,7 +166,7 @@ class DbBak2Sql
 		$rowcount = $rs->fields['c'];
 		$this->Log("Got $rowcount rows: ");
 		
-		// Convert rs to sql
+		// Write rs to sql
 		// GetInsertSQL failed for unknown reason, manual generate sql
 		//$sql = $this->mDb->GetInsertSQL($rs, $cols, false, false);
 		$bakfile = $this->mTargetPath . "/$tbl.sql";
@@ -176,37 +174,39 @@ class DbBak2Sql
 		if (true == $this->NeedIdentityInsert())
 			$sql .= "set identity_insert $tbl on;\n";
 		
+		// Backup by groupby will cause two situation:
+		// 1. one sql file will contain rows diffs with sql_step.
+		// 2. sql file saved's number sometimes is not continued.
+		
+		// Groupby rules is converted to where clauses
+		$ar_where = $this->GroupbyRule2WhereSql($tbl);
 		while ($sql_offset < $rowcount)
 		{
 			$this->Log(".");
 			// Execute sql
-			$sql = "select * from $tbl";
-			// This select sql does not need iconv
-			//if ($this->mCharsetDb != $this->mCharsetOs)
-			//	$sql = mb_convert_encoding($sql, $this->mCharsetDb, $this->mCharsetOs);
-			$rs = $this->mDb->SelectLimit($sql, $sql_step, $sql_offset);
+			// When ar_where is empty, the loop should be end.
+			// Or groupby is not used.
+			if (!empty($ar_where))
+			{
+				$s_where = array_shift($ar_where);
+				$sql_select = "select * from $tbl $s_where";
+				$rs = $this->mDb->Execute($sql_select);
+			}
+			else
+			{
+				$sql_select = "select * from $tbl";
+				// This select sql does not need iconv
+				//if ($this->mCharsetDb != $this->mCharsetOs)
+				//	$sql = mb_convert_encoding($sql, $this->mCharsetDb, $this->mCharsetOs);
+				$rs = $this->mDb->SelectLimit($sql_select, $sql_step, $sql_offset);
+			}
+			$rs_rows = $rs->RecordCount();
 			if (0 != $this->mDb->ErrorNo())
 				$this->Log("\n" . $db->ErrorMsg() . "\n");
-		
-			while (!$rs->EOF)
+			else
 			{
-				// Insert sql begin
-				$sql_i = "insert into $tbl (" . implode(',', $cols) . " ) values ( \n";
-				// Fields data
-				$ar = array();
-				foreach ($cols as $c)
-				{
-					$val = $rs->fields[$c];
-					$type = $rs_cols[strtoupper($c)]->type;
-					array_push($ar, $this->ParseSqlData($val, $type));
-				}
-				$sql_i .= implode(',', $ar) . "\n";
-				// Insert sql end
-				$sql_i .= ");\n";
-				$sql .= $sql_i;
-				// Move cursor
-				$rs->MoveNext();
-				$done_rows++;
+				$sql .= $this->Rs2Sql($rs, $tbl, $cols);
+				$done_rows += $rs_rows;
 			}
 
 			// Save this step to file
@@ -221,12 +221,13 @@ class DbBak2Sql
 			else
 				$s = '';
 			$bakfile = $this->mTargetPath . "/$tbl.${s}sql";
-			file_put_contents($bakfile, $sql);
+			file_put_contents($bakfile, $sql, FILE_APPEND);
 			// Prepare for loop
 			$done_bytes += strlen($sql);
 			unset($sql);
 			$sql = '';
-			$sql_offset += $sql_step;
+			//$sql_offset += $sql_step;
+			$sql_offset += $rs_rows;
 			unset($rs);
 		}
 
@@ -302,7 +303,65 @@ class DbBak2Sql
 	} // end of func GetTableList
 
 
-	/*
+	/**
+	 * Get fields of a table, ignore prefered fields
+	 * @access	private
+	 * @param	string	$tbl
+	 * @return	array
+	 */
+	private function GetTblFields($tbl)
+	{
+		$rs_cols = $this->mDb->MetaColumns($tbl, false);
+		//print_r($rs_cols);
+		$cols = array();
+		if (!empty($rs_cols))
+			foreach ($rs_cols as $c)
+			{
+				// Ignore some columns ?(timestamp)
+				if (false == in_array($c->name, $this->mIgnoreColumn))
+					array_push($cols, $c->name);
+			}
+		return $cols;
+	} // end of func GetTblFields
+
+
+	/**
+	 * Convert groupby rules to where sql clauses
+	 * Retrieve data from db by groupby rules, and convert to where sql.
+	 * Used when backup, where clauses can used directly in select sql
+	 * @access	private
+	 * @param	string	$tbl
+	 * @return	array
+	 */
+	private function GroupbyRule2WhereSql($tbl)
+	{
+		$ar_where = array();
+		if (!empty($this->mTableGroupby[$tbl]))
+		{
+			$groupby = $this->mTableGroupby[$tbl];
+			$sql = "select distinct $groupby from $tbl";
+			$rs = $this->mDb->Execute($sql);
+			
+			// Convert every rows to where sql
+			$cols = explode(',', $groupby);
+			$rs_cols = $this->mDb->MetaColumns($tbl, false);
+			while (!empty($rs) && !$rs->EOF && !empty($cols))
+			{
+				$sql = ' WHERE 1=1 ';
+				foreach ($cols as $c)
+				{
+					$val = $this->ParseSqlData($rs->fields[$c], $rs_cols[strtoupper($c)]->type);
+					$sql .= " and $c=$val ";
+				}
+				array_push($ar_where, $sql);
+				$rs->MoveNext();
+			}
+		}
+		return $ar_where;
+	} // end of function GroupbyRule2WhereSql
+
+
+	/**
 	 * Save log
 	 * Both log file and summary text is saved to.
 	 * @access	private
@@ -364,6 +423,49 @@ class DbBak2Sql
 		return $val;
 	} // end of func ParseSqlData
 
+
+	/**
+	 * Convert ADOdb recordset to sql text
+	 * @access	private
+	 * @param	object	$rs
+	 * @param	string	$tbl
+	 * @param	array	$cols
+	 * @return	string
+	 */
+	private function Rs2Sql(&$rs, $tbl, $cols=array())
+	{
+		if (empty($rs) || $rs->EOF)
+			return '';
+		else
+			{
+				$sql = '';
+				if (empty($cols))
+					$cols = $this->GetTblFields($tbl);
+				$rs_cols = $this->mDb->MetaColumns($tbl, false);
+			
+				while (!$rs->EOF)
+				{
+					// Insert sql begin
+					$sql_i = "INSERT INTO $tbl (" . implode(',', $cols) . " ) VALUES ( \n";
+					// Fields data
+					$ar = array();
+					foreach ($cols as $c)
+					{
+						$val = $rs->fields[$c];
+						$type = $rs_cols[strtoupper($c)]->type;
+						array_push($ar, $this->ParseSqlData($val, $type));
+					}
+					$sql_i .= implode(',', $ar) . "\n";
+					// Insert sql end
+					$sql_i .= ");\n";
+					$sql .= $sql_i;
+					// Move cursor
+					$rs->MoveNext();
+				}
+			}
+		return $sql;
+	} // end of func Rs2Sql
+
 	
 	/**
 	 * Accept database information from outside class
@@ -394,6 +496,23 @@ class DbBak2Sql
 			$this->mTableExclude = $ar;
 		}
 	} // end of func SetTableExclude
+
+
+	/**
+	 * Set table group by rules when backup-select
+	 * If given cols is empty, it will remove tbl from list need-to-be groupby.
+	 * Multi cols can be assigned split by ','.
+	 * @access	public
+	 * @var	string	$tbl
+	 * @var	string	$cols
+	 */
+	public function SetTableGroupby($tbl, $cols)
+	{
+		if (empty($cols))
+			unset($this->mTableGroupby[$tbl]);
+		else
+			$this->mTableGroupby[$tbl] = $cols;
+	} // end of func SetTableGroupby
 
 
 	/**

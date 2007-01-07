@@ -122,7 +122,7 @@ class DbUpdater
 		{
 			$sql = "select 1 from $this->mTblLog";
 			$rs = $this->mDb->Execute($sql);
-			if (0 < $this->mDb->ErrorMsg())
+			if (0 == $this->mDb->ErrorNo())
 				$logtbl_not_exists = true;
 		}
 		
@@ -232,19 +232,23 @@ CREATE TABLE $this->mTblLog (
 				$id = $ar[$i]['id'];
 				$sqltext = $ar[$i]['sqltext'];
 				// Do on update
-				$this->mDb->StartTrans();
+				// Cancel transaction because some ddl sql can't use in trans.
+				//$this->mDb->StartTrans();
 				$this->mDb->Execute($sqltext);
-				if (0 == $this->mDb->ErrorNo())
+				
+				// Bad sybase support, select db will got errormsg
+				// Avoid sybase errormsg like: Changed database context to 'jygl'
+				if ((0 == strlen($this->mDb->ErrorMsg()) && 0 == $this->mDb->ErrorNo()) || ('Changed database context t' == substr($this->mDb->ErrorMsg(), 0, 26)))
 				{
 					$this->Log("Update id $id done successful.\n");
 					$this->SetUpdateDone($id, 1);
-					$this->mDb->CompleteTrans();
+					//$this->mDb->CompleteTrans();
 				}
 				else
 				{
 					$this->Log("Update id $id done failed.\n");
 					$this->Log($this->mDb->ErrorNo() . '-' . $this->mDb->ErrorMsg() . "\n");
-					$this->mDb->CompleteTrans();
+					//$this->mDb->CompleteTrans();
 					$this->SetUpdateDone($id, -1);
 					$this->Summary();
 					die("Doing update aborted because of failed.\n");
@@ -362,10 +366,14 @@ CREATE TABLE $this->mTblLog (
 			$comment = addslashes($comment);
 			$sqltext = addslashes($sqltext);
 			$sql = "INSERT INTO $this->mTblLog (id, comment, sqltext) VALUES ($id, '$comment', '$sqltext')";
+			// Check if iconv for sqltext is needed
+			if ($this->mCharsetDb != $this->mCharsetOs)
+				$sql = mb_convert_encoding($sql, $this->mCharsetDb, $this->mCharsetOs);
+			//
 			$this->mDb->Execute($sql);
 			if (0 != $this->mDb->ErrorNo())
 			{
-				echo $this->mDb->ErrorNo . '-' . $this->mDb->ErrorMsg . "\n";
+				echo $this->mDb->ErrorNo() . '-' . $this->mDb->ErrorMsg() . "\n";
 				die("Set update failed.\n");
 			}
 			else
@@ -386,12 +394,15 @@ CREATE TABLE $this->mTblLog (
 	 */
 	private function SetUpdateDone($id, $status)
 	{
+		if (-1 == $status)
+			echo("Error when do update $id, {$this->mDb->ErrorNo()}:{$this->mDb->ErrorMsg()}\n");
 		$sql = "UPDATE $this->mTblLog set done=$status where id=$id";
 		$this->mDb->Execute($sql);
-		if (0 == $this->mDb->ErrorNo())
+		//if (0 == $this->mDb->ErrorNo() && 0 == strlen($this->mDb->ErrorMsg()))
+		if ((0 == strlen($this->mDb->ErrorMsg()) && 0 == $this->mDb->ErrorNo()) || ('Changed database context t' == substr($this->mDb->ErrorMsg(), 0, 26)))
 			$this->Log("Update id $id's done is set to $status.\n");
 		else
-			die("Failed when set update id $id's done status.\n");
+			die("Failed when set update id $id's done status.({$this->mDb->ErrorNo()}:{$this->mDb->ErrorMsg()})\n");
 	} // end of func SetUpdateDone
 
 
