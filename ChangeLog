@@ -1,3 +1,5 @@
+	NEW: Add func/request.php, include func GetGet & GetPost.
+
 2007-01-07(r13)
 	ENH: Optimized dbbak2sql.php to do with table which have so mush rows.
 	BUG: Fix bug in dbupdater.php.

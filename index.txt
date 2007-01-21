@@ -47,6 +47,12 @@ is_cli.php
 	Check if this program is running under cli mod, or is viewing in browser
 nixos.php
 	判断当前主机是否nix操作系统
+request.php
+	和get与post参数有关的函数集。
+	GetGet($var, $default)
+		Get varient from $_GET
+	GetPost($var, $default)
+		Get varient from $_POST
 string.php
 	常用字符串函数集
 url.php
