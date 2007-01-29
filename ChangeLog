@@ -1,4 +1,6 @@
+2007-01-29(r15)
 	NEW: Add func/request.php, include func GetGet & GetPost.
+	BUG: Add stripslashes for sqltext in DbUpdater class.
 
 2007-01-07(r13)
 	ENH: Optimized dbbak2sql.php to do with table which have so mush rows.

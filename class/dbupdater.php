@@ -230,7 +230,7 @@ CREATE TABLE $this->mTblLog (
 			for ($i=0; $i<$i_total; $i++)
 			{
 				$id = $ar[$i]['id'];
-				$sqltext = $ar[$i]['sqltext'];
+				$sqltext = stripslashes($ar[$i]['sqltext']);
 				// Do on update
 				// Cancel transaction because some ddl sql can't use in trans.
 				//$this->mDb->StartTrans();
