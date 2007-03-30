@@ -1,18 +1,20 @@
-======
 class:
 ======
+curl.php
+	Curl relate functions.
 dbbak2sql.php
 	Backup db to standard sql files.
 dbupdater.php
 	Database mantance & update tools.
 disp_listtable.php
 	列表类，以包含表头、分页、数据表格的方式显示各种列表。
+mailsender.php
+	Easy send mail using PHPMailer.
 sql_generator.php
 	SQL语句生成类
 ubb.php
 	Ubb类，完成对UBB代码的转换
 
-=====
 func:
 =====
 client.php

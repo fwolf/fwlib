@@ -1,3 +1,10 @@
+ChangeLog of fwolflib:
+
+
+2007-03-30(r16)
+	NEW: Add class Curl in curl.php.
+	NEW: Add class Mailsender in mailsender.php.
+
 2007-01-29(r15)
 	NEW: Add func/request.php, include func GetGet & GetPost.
 	BUG: Add stripslashes for sqltext in DbUpdater class.
