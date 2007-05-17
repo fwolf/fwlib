@@ -227,7 +227,7 @@ class Mailsender extends PHPMailer
 			$this->SetAttach($attach);
 
 		$sok = parent::Send();
-		if (true == $sok)
+		if (false == $sok)
 		{
 			$this->mErrorCount ++;
 			$this->mErrorMsg = $this->ErrorInfo;
@@ -260,7 +260,7 @@ class Mailsender extends PHPMailer
 		elseif (!empty($attach))
 		{
 			$this->mAttach = array($attach);
-			$mail->AddAttachment($attach);
+			$this->AddAttachment($attach);
 		}
 	} // end of func SetAttach
 
@@ -310,7 +310,7 @@ class Mailsender extends PHPMailer
 	 * @param	int		$port
 	 * @param	boolean	$issmtp
 	 */
-	public function SetHost($addr, $port = '25', $issmtp = true)
+	public function SetHost($addr, $port = 25, $issmtp = true)
 	{
 		$this->mHost = $addr;
 		$this->mPort = $port;

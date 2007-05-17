@@ -21,6 +21,8 @@ client.php
 	检查客户端的浏览器是NS还是IE(old)
 dbwrite.php
 	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
+download.php
+	Download contents as a file.
 ecl.php
 	Smarty echo line, end with \n or <br /> according running mod
 escape_color.php

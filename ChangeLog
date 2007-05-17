@@ -1,5 +1,8 @@
 ChangeLog of fwolflib:
 
+2007-05-17(r17)
+	NEW: Add func/download.php, download contents as a file.
+	BUG: Fix class Curl & Mailsender.
 
 2007-03-30(r16)
 	NEW: Add class Curl in curl.php.

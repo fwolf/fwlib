@@ -23,7 +23,7 @@ class Curl
 	 * @var	string
 	 * @access	protected
 	 */
-	protected $mCookiefile = '/home/fwolf/log/curl_cookie.txt';
+	protected $mCookiefile = '/dev/null';
 
 	/**
 	 * File to save log
@@ -93,12 +93,17 @@ class Curl
 			$s_linker = '&';
 
 		// Parse param, join array and fix linker char with url
-		if (is_array($param))
-			$param = $s_linker . implode('&', $param);
-		else
-			if ('&' == substr($param, 0, 1))
-				$param{0} = $s_linker;
+		if (is_array($param) && 0 < count($param))
+		{
+			$s = '';
+			foreach ($param as $k => $v)
+				$s .= "&" . urlencode($k) . '=' . urlencode($v);
+			$param = $s;
+		}
+		if (!empty($param))
+			$param{0} = $s_linker;
 
+		//$this->Log($url . $param);
 		curl_setopt($this->mSh, CURLOPT_URL, $url . $param);
 		$this->mRs = curl_exec($this->mSh);
 
@@ -107,6 +112,30 @@ class Curl
 
 		return $this->mRs;
 	} // end of func Get
+
+
+	/**
+	 * Get server return code of last curl_exec
+	 * 200-ok, 404-missing file, etc...
+	 * @return	int
+	 */
+	public function GetLastCode()
+	{
+		$i = curl_getinfo($this->mSh, CURLINFO_HTTP_CODE);
+		return intval($i);
+	} // end of func GetLastCode
+
+
+	/**
+	 * Get server return content type of last curl_exec
+	 * text/html, image/png, etc...
+	 * @return	string
+	 */
+	public function GetLastContentType()
+	{
+		$s = curl_getinfo($this->mSh, CURLINFO_CONTENT_TYPE);
+		return $s;
+	} // end of func GetLastContentType
 
 
 	/**
@@ -135,13 +164,17 @@ class Curl
 	 * Return value maybe string or array, use careful and
 	 *   remind which value you use it for.
 	 * @param	string	$preg
+	 * @param	string	$str	If obmitted, use $this->mRs
 	 * @return	mixed
+	 * @see		$mRs
 	 * @access	public
 	 */
-	public function Match($preg)
+	public function Match($preg, $str = '')
 	{
 		if (empty($preg)) return '';
-		$i = preg_match_all($preg, $this->mRs, $ar, PREG_SET_ORDER);
+		if (empty($str))
+			$str = &$this->mRs;
+		$i = preg_match_all($preg, $str, $ar, PREG_SET_ORDER);
 		if (0 == $i || false === $i)
 			// Got none match or Got error
 			$ar = '';
@@ -170,7 +203,7 @@ class Curl
 	/**
 	 * Http post content from host
 	 * @param	string	$url	Host address
-	 * @param	mixed	$param	Get parameter, can be string or array.
+	 * @param	mixed	$param	Post parameter, can be string or array.
 	 * @access	public
 	 * @return	string
 	 */
@@ -261,6 +294,32 @@ class Curl
 				curl_setopt($this->mSh, CURLOPT_PROXYUSERPWD, $pauth);
 		}
 	} // end of func SetoptProxy
+
+
+	/**
+	 * Set http referer url
+	 * @param	string	$url
+	 */
+	public function SetoptReferer($url)
+	{
+		if (!empty($url))
+			curl_setopt($this->mSh, CURLOPT_REFERER, $url);
+	} // end of func SetoptReferer
+
+
+	/**
+	 * Enable or disable ssl verify functin
+	 * Ssl verify is enabled by curl in default
+	 * @param	boolean	$en		True to enable, false to disable
+	 */
+	public function SetoptSslverify($en = true)
+	{
+		if (false === $en)
+		{
+		    curl_setopt($this->mSh, CURLOPT_SSL_VERIFYPEER, false);
+		    curl_setopt($this->mSh, CURLOPT_SSL_VERIFYHOST, false);
+		}
+	} // end of func SetoptSslverify
 
 
 	/**
