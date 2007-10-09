@@ -117,6 +117,11 @@ class DbUpdater
 			$rs = $this->mDb->Execute($sql);
 			if (0 == $rs->fields['c'])
 				$logtbl_not_exists = true;
+		} elseif ('mysql' == $this->mServer['type']) {
+			$sql = "SHOW TABLES LIKE '$this->mTblLog'";
+			$rs = $this->mDb->Execute($sql);
+			if (0 == $rs->RowCount())
+				$logtbl_not_exists = true;
 		}
 		else
 		{

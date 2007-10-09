@@ -21,3 +21,4 @@ function NixOs()
 		return false;
 }
 
+?>
