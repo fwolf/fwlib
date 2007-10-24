@@ -57,6 +57,12 @@ request.php
 		Get varient from $_GET
 	GetPost($var, $default)
 		Get varient from $_POST
+
+regex_match.php
+---------------
+###	RegexMatch($preg, $str = '', $csrts = true)
+	Match content using preg, return result array or '' if non-match
+
 string.php
 	常用字符串函数集
 url.php

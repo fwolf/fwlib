@@ -1,5 +1,7 @@
 ChangeLog of fwolflib:
 
+	BUG: func/is_cli.php: $_ENV['_'] is undefined when run under apache.
+
 2007-05-17(r17)
 	NEW: Add func/download.php, download contents as a file.
 	BUG: Fix class Curl & Mailsender.

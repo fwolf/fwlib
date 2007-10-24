@@ -123,7 +123,7 @@ class DbBak2Sql
 	{
 		if (!empty($server))
 			$this->SetDatabase($server);
-	} // end of func construct
+	} // end of func __construct
 	  
 
 	/**
