@@ -8,6 +8,12 @@ dbupdater.php
 	Database mantance & update tools.
 disp_listtable.php
 	列表类，以包含表头、分页、数据表格的方式显示各种列表。
+
+mail_parser.php
+---------------
+### MailParser
+	Parse a maildir format mail file, got every information, especially attachments.
+
 mailsender.php
 	Easy send mail using PHPMailer.
 sql_generator.php
@@ -19,6 +25,20 @@ func:
 =====
 client.php
 	检查客户端的浏览器是NS还是IE(old)
+
+config.php
+----------
+	GetCfg and SetCfg function.
+
+### GetCfg($cfg)
+	Return value of config string $cfg.
+
+### LimitServerId($id)
+	Limit program can only run on prefered server.
+
+### SetCfg($cfg, $value)
+		Set global config by config string $cfg using value $value.
+
 dbwrite.php
 	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
 download.php
