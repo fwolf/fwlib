@@ -481,7 +481,7 @@ class MailParser {
 				// Some bad mail client didn't set the attach mime right
 				// Content-Type: application/octet-stream;
 				//	name="Dave_Nitsche_036.jpg"
-				if ('.jpg' == substr($rs['filename'], strlen($rs['filename']) - 4))
+				if ('.jpg' == strtolower(substr($rs['filename'], strlen($rs['filename']) - 4)))
 				{
 					$rs['type'] = 'image/jpeg';
 				}
@@ -517,7 +517,7 @@ class MailParser {
 			$this->mMsgHeaderMessageId = md5($this->mMsgHeader);
 		}
 		// Subject: 
-		$this->mMsgHeaderSubject = RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader);
+		$this->mMsgHeaderSubject = imap_utf8(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
 		// To: <Undisclosed-Recipient:;@gmail-pop.l.google.com>
 		$this->mMsgHeaderTo = RegexMatch('/^To: (.*)/m', $this->mMsgHeader);
 		// X-Sender: sammynatural@gmail.com
