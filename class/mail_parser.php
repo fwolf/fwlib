@@ -499,6 +499,9 @@ class MailParser {
 					$rs['type'] = 'image/jpeg';
 				if ('.gif' == strtolower(substr($rs['filename'], strlen($rs['filename']) - 4)))
 					$rs['type'] = 'image/gif';
+				if ('.png' == strtolower(substr($rs['filename'], strlen($rs['filename']) - 4))) {
+					$rs['type'] = 'image/png';
+				}
 
 			} else {
 				// Not an attachment
