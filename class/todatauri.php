@@ -148,8 +148,8 @@ class ToDataUri extends Curl
 			$a = $dom->createElement('a', "Fwolf's 'Save html all in one file' tools");
 			$a->setAttribute('href', GetSelfUrl(false));
 			$li = $dom->createElement('li', "Generate using: ");
+			$li->appendChild($a);
 		}
-		$li->appendChild($a);
 		$dom_info_ul->appendChild($li);
 		// Resources
 		$li = $dom->createElement('li', "Resources(" . (count($this->mGetOk) + count($this->mGetFailed)) . "): ");
