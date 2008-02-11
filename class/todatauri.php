@@ -6,8 +6,9 @@
 */
 
 require_once('fwolflib/class/curl.php');
-require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/download.php');
+require_once('fwolflib/func/is_cli.php');
+require_once('fwolflib/func/request.php');
 
 /**
  * Convert css, js, image in a html file, to save it in ONE file like mht.
@@ -33,6 +34,13 @@ class ToDataUri extends Curl
 	 * @var	string
 	 */
 	protected $mCharset = '';
+	
+	/**
+	 * Running in cli mode
+	 * Will echo some message directly
+	 * @var	boolean
+	 */
+	protected $mCliMode = false;
 
 	/**
 	 * URI which got error when get
@@ -101,6 +109,10 @@ class ToDataUri extends Curl
 		parent::__construct();
 		$this->SetUrl($url);
 		$this->SetoptSslverify(false);
+		
+		// Detect cli mode
+		if (IsCli())
+			$this->mCliMode = true;
 	} // end of func __construct
 
 
@@ -130,9 +142,13 @@ class ToDataUri extends Curl
 		//$li->appendChild($a);
 		//$dom_info_ul->appendChild($li);
 		// Url of this script
-		$a = $dom->createElement('a', "Fwolf's 'Save html all in one file' tools");
-		$a->setAttribute('href', GetSelfUrl(false));
-		$li = $dom->createElement('li', "Generate using: ");
+		if ($this->mCliMode) {
+			$li = $dom->createElement('li', "Generate using Fwolf's 'Save html all in one file' tools(cli mode php script).");
+		} else {
+			$a = $dom->createElement('a', "Fwolf's 'Save html all in one file' tools");
+			$a->setAttribute('href', GetSelfUrl(false));
+			$li = $dom->createElement('li', "Generate using: ");
+		}
 		$li->appendChild($a);
 		$dom_info_ul->appendChild($li);
 		// Resources
@@ -173,6 +189,8 @@ class ToDataUri extends Curl
 			$dom_resources_ol->appendChild($li);
 		}
 		$dom_info_ul->appendChild($dom_resources_ol);
+		if ($this->mCliMode)
+			echo "[Done] Resources: √: " . count($this->mGetOk) . ", ×: " . count($this->mGetFailed) . ".\n";
 		
 		// If html contents like this, it have not <body>, so we must create it
 		// <html>
@@ -264,6 +282,8 @@ class ToDataUri extends Curl
 			$baseurl .= '/';
 		$this->mUrlBase = $baseurl;
 		$this->mInfo .= "Baseurl: $baseurl<br />\n";
+		if ($this->mCliMode)
+			echo "[Curl] Baseurl: $baseurl\n";
 	} // end of func GetBaseUrl
 
 
@@ -301,8 +321,15 @@ class ToDataUri extends Curl
 	{
 		// Find charset webpage use current
 		//<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		$ar = $this->Match('/(<met[^;]+;[\s]*charset=(\S+)\"[^>]*>)/i');
-		$charset = (1 < count($ar)) ? $ar[1] : '';
+		$ar = $this->Match('/(<meta[^;]+;[\s]*charset=(\S+)\"[^>]*>)/i');
+		$charset = '';
+		// For multi charset declaration
+		if (is_array($ar[0]))
+			$ar = $ar[0];
+		if (1 < count($ar)) {
+			$charset = $ar[1];
+		}
+		//$charset = (1 < count($ar)) ? $ar[1] : '';
 		$charset = strtolower($charset);
 		// Meta Content-type
 		$meta = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
@@ -327,6 +354,8 @@ class ToDataUri extends Curl
 		}
 		
 		$this->mCharset = $charset;
+		if ($this->mCliMode)
+			echo "[Curl] Original charset: $charset.\n";
 	} // end of func MbConvert
 
 
@@ -350,21 +379,28 @@ class ToDataUri extends Curl
 	{
 		if (!empty($this->mUrl))
 		{
+			if ($this->mCliMode)
+				echo "[Curl] Get html content from $this->mUrl ";
 			if (true == $this->mRetrieveHtml)
 				$this->mHtml = $this->Get($this->mUrl);
 			else {
-				// Do an empty action, mRs is used in Match() (and/or etc...)
+				// Do an dummy Get action, mRs is used in Match() (and/or etc...)
 				$this->Get($this->mUrl);
 				$this->mRs = $this->mHtml;
 			}
-			$this->GetBaseUrl();
+			//$this->GetBaseUrl();
 			if (0 == strlen($this->mHtml))
 			{
 				// Some error happen
 				$this->mMsg .= curl_error($this->mSh);
+				if ($this->mCliMode)
+					echo "... Failed.\n";
 			}
 			else
 			{
+				if ($this->mCliMode)
+					echo "... Ok.\n";
+				$this->GetBaseUrl();
 				// Go ahead
 				$this->MbConvert();
 				
@@ -448,12 +484,16 @@ class ToDataUri extends Curl
 				$data = 'data:' . $rs_type . ';base64,' . base64_encode($rs);
 				$this->mCache[$url] = $data;
 				$this->mGetOk[] = $url;
+				if ($this->mCliMode)
+					echo "[" . substr('000' . strval(count($this->mGetOk) + count($this->mGetFailed)), -3) . "] √: $url\n";
 			}
 			else
 			{
 				// Fail
 				$data = '';
 				$this->mGetFailed[] = $url;
+				if ($this->mCliMode)
+					echo "[" . substr('000' . strval(count($this->mGetOk) + count($this->mGetFailed)), -3) . "] ×: $url\n";
 			}
 		}
 		return $data;
