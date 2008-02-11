@@ -298,7 +298,9 @@ class MailParser {
 	protected function ParseBody() {
 		// Find first boundary
 		// Content-Type: multipart/mixed; boundary="----=_NextPart_000_0018_01C74EFC.64789E20"
-		$b = RegexMatch('/boundary="?([^"]+)["\s]+/', $this->mMsgHeader);
+		$b = RegexMatch('/boundary=("?)([^"]+?)\1[;\s]+/', $this->mMsgHeader);
+		if (is_array($b))
+			$b = $b[1];
 		$this->ParseBodyContent($this->mMsgBody, $b);
 		
 	} // end of func ParseBody
@@ -337,18 +339,30 @@ class MailParser {
 			$b = "--$b";
 				
 			// Using new boundary, find every part
+			//echo memory_get_usage() . "$b<br />\n";
 			$ar = explode($b, $c);
+			//echo memory_get_usage() . "$b<br />\n";
 			if (!empty($ar)) {
 				foreach ($ar as $part) {
 					// Parse every part
-					$b_part = RegexMatch('/boundary="?([^"]+)["\s]+/', $part);
+					// Un-standard boundary declare: 
+					//	boundary=Apple-Mail-10-288581275
+					//	I used a regex recall '\1'
+					// Also +? to refuse '贪婪' of regex
+					$b_part = RegexMatch('/boundary=("?)([^"]+?)\1[;\s]+/', $part);
+					//print_r($b_part);
 					// If multi boundary found, choose the firse one.
-					if (is_array($b_part))
-						$b_part = $b_part[0];
+					// Then choose value \2
+					if (isset($b_part[1]) && is_array($b_part[1]))
+						$b_part = $b_part[0][1];
+					elseif (is_array($b_part))
+						$b_part = $b_part[1];
 
 					// Remove 'boundary=...' from part, or it will find 'new' boundary recurrently.
-					if (!empty($b_part))
+					if (!empty($b_part)) {
 						$part = str_replace("boundary=\"$b_part\"", '', $part);
+						$part = str_replace("boundary=$b_part", '', $part);
+					}
 					$this->ParseBodyContent(trim($part), $b_part);
 				}
 			}
@@ -482,9 +496,9 @@ class MailParser {
 				// Content-Type: application/octet-stream;
 				//	name="Dave_Nitsche_036.jpg"
 				if ('.jpg' == strtolower(substr($rs['filename'], strlen($rs['filename']) - 4)))
-				{
 					$rs['type'] = 'image/jpeg';
-				}
+				if ('.gif' == strtolower(substr($rs['filename'], strlen($rs['filename']) - 4)))
+					$rs['type'] = 'image/gif';
 
 			} else {
 				// Not an attachment

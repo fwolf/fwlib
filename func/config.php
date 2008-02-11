@@ -36,17 +36,28 @@ function GetCfg($cfg) {
  * Limit program can only run on prefered server, identify by serverid
  * If check failed, die and exit.
  * SetCfg('serverid', 0);
- * @param	mixed	$id	string/int -> on this server, array -> in any of these server
+ * @param	mixed	$id		string/int -> on this server, array -> in any of these server
+ * @param	boolean	$die	If check false, true -> die(), false -> return false and continue, default is true.
  * @see	SetCfg()
  * @see GetCfg()
+ * @return	boolean
  */
-function LimitServerId($id) {
+function LimitServerId($id, $die = true) {
 	$serverid = GetCfg('serverid');
+	$msg = '';
 	if (is_array($id)) {
 		if (!in_array($serverid, $id))
-			die('This program can only run on these servers: ' . implode(',', $id) . '.');
+			$msg = 'This program can only run on these servers: ' . implode(',', $id) . '.';
 	} elseif ($serverid != $id)
-		die('This program can only run on server ' . $id . '.');
+		$msg = 'This program can only run on server ' . $id . '.';
+	
+	if (!empty($msg))
+		if (true == $die)
+			die($msg);
+		else
+			return false;
+	else
+		return true;
 } // end of func LimitServerId
 
 

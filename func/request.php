@@ -36,4 +36,21 @@ function GetPost($var, $default='') {
 	return $val;
 } // end of func GetPost
 
+
+/**
+ * Get self url which user visit
+ * @param	boolean	$with_get_param	// Include get param in url, default yes.
+ * @return	string
+ */
+function GetSelfUrl($with_get_param = true) {
+	if (isset($_SERVER["HTTPS"]) && 'on' == $_SERVER["HTTPS"])
+		$url = 'https://';
+	else 
+		$url = 'http://';
+	
+	$s_t = ($with_get_param) ? $_SERVER['REQUEST_URI'] : $_SERVER["SCRIPT_NAME"];
+	
+	$url .= $_SERVER["HTTP_HOST"] . $s_t;
+	return $url;
+} // end of func GetSelfUrl
 ?>
