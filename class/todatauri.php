@@ -257,6 +257,121 @@ class ToDataUri extends Curl
 
 
 	/**
+	 * Change embemmed style url in dom
+	 * Linked style alread parse by:
+	 *   $this->DomChange($dom, 'link', 'href', array('rel'=>'stylesheet'));
+	 * @param	DOMDocument	$dom	DOMDocument object
+	 */
+	protected function DomChangeStyle(&$dom)
+	{
+		$items = $dom->getElementsByTagName('style');
+		for ($i=0; $i<$items->length; $i++)
+		{
+			$item = $items->item($i);
+
+			$src = $item->nodeValue;
+			if (empty($src)) continue;
+			
+			// Example1, with @import, no url(
+			// @import "mystyle.css";
+			// @import "../hide2.css";
+			$ar_regex[0] = "/(@import\s*\(?['\"]([^'\"]+)['\"]\s*\)?)/i";
+			// Example2, with url(, recardness @import
+			// url("../hide1a.css");
+			// url(../hide1b.css);
+			$ar_regex[1] = "/(url\s*\(['\"]?\s*([^'\"]+)['\"]?\s*\))/i";
+			
+			foreach ($ar_regex as $regex) {
+				//$ar = $this->Match('/(<style[^<]+url\(\s*(\S+)\s*\)[^<]+<\/style>)/i', $src);
+				$ar = $this->Match($regex, $src);
+				if (!empty($ar)) {
+					// Do as multi match
+					if (!is_array($ar[0])) {
+						$ar1 = array(0=>$ar);
+						$ar = $ar1;
+						unset($ar1);
+					}
+					// Begin loop
+					foreach ($ar as $val) {
+						$s = $this->ParseUrl($val[1]);
+						if (!empty($s)) {
+							// Use whole match to do str_replace, because url can be used multi times.
+							$s = str_replace($val[1], $s, $val[0]);
+							$src = str_replace($val[0], $s, $src);
+						}
+					}
+					// Write result to dom
+					$item->nodeValue = $src;
+				}
+			}
+		}
+		
+		// Embemmed style
+		// :QUESTION: Is these tags slow down treatment?
+		$ar_tags = array('a', 'blockquote', 'body', 'button', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'form', 'hr', 'img', 'input', 'li', 'ol', 'option', 'p', 'pre', 'q', 'select', 'small', 'span', 'strong', 'table', 'td', 'textarea', 'th', 'tr', 'ul');
+		foreach ($ar_tags as $tag) {
+			$items = $dom->getElementsByTagName($tag);
+			$i_items = $items->length;
+			for ($i=0; $i<$i_items; $i++)
+			{
+				$item = $items->item($i);
+	
+				$src = $item->getAttribute('style');
+				if (empty($src)) continue;
+				
+				// Example2 only, with url(, recardness @import
+				// url("../hide1a.css");
+				// url(../hide1b.css);
+				$regex = "/(url\s*\(['\"]?\s*([^'\"]+)['\"]?\s*\))/i";
+				
+				$ar = $this->Match($regex, $src);
+				if (!empty($ar)) {
+					// Do as multi match
+					if (!is_array($ar[0])) {
+						$ar1 = array(0=>$ar);
+						$ar = $ar1;
+						unset($ar1);
+					}
+					// Begin loop
+					foreach ($ar as $val) {
+						$s = $this->ParseUrl($val[1]);
+						if (!empty($s)) {
+							// Use whole match to do str_replace, because url can be used multi times.
+							$s = str_replace($val[1], $s, $val[0]);
+							$src = str_replace($val[0], $s, $src);
+						}
+					}
+					// Write result to dom
+					$item->setAttribute('style', $src);
+				}
+			}
+		}
+		/*
+		// Example 1
+		// <style type="text/css" media="screen">@import url( http://theme.cache.yo2.cn/wp-content/user_themes/37/3729/style.css );</style>
+		$ar = $this->Match('/(<style[^<]+url\(\s*(\S+)\s*\)[^<]+<\/style>)/i', $this->mHtml);
+		if (!empty($ar)) {
+			// Do as multi match
+			if (!is_array($ar[0])) {
+				$ar1 = array(0=>$ar);
+				$ar = $ar1;
+				unset($ar1);
+			}
+			// Begin loop
+			foreach ($ar as $val) {
+				$s = $this->ParseUrl($val[1]);
+				if (!empty($s)) {
+					// Use whole match to do str_replace, because url can be used multi times.
+					$s = str_replace($val[1], $s, $val[0]);
+					$this->mHtml = str_replace($val[0], $s, $this->mHtml);
+				}
+			}
+		}
+		*/
+	} // end of func DomChangeStyle
+
+
+	/**
 	 * Get baseurl from init get
 	 * Baseurl used in get css, js, images
 	 * Must execute close to the init curl_exec
@@ -321,7 +436,8 @@ class ToDataUri extends Curl
 	{
 		// Find charset webpage use current
 		//<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		$ar = $this->Match('/(<meta[^;]+;[\s]*charset=(\S+)\"[^>]*>)/i');
+		//$ar = $this->Match('/(<meta[^;]+;[\s]*charset=(\S+)\"[^>]*>)/i');
+		$ar = $this->Match('/(<meta[^>]+content=[^>]+charset=(\S+)[\"\'][^>]*>)/i');
 		$charset = '';
 		// For multi charset declaration
 		if (is_array($ar[0]))
@@ -337,7 +453,7 @@ class ToDataUri extends Curl
 			// Remove old markup <!-- charset declare deleted -->
 			$this->mHtml = str_replace($ar[0], '', $this->mHtml);
 			// Put meta close to head, so no non-ascii will occur before it
-			$this->mHtml = preg_replace('/<head>/i', $meta, $this->mHtml);
+			$this->mHtml = preg_replace('/<head[^>]*>/i', $meta, $this->mHtml);
 			if ('utf-8' != $charset) {
 				$this->mHtml = mb_convert_encoding($this->mHtml, 'utf-8', $charset);
 			}
@@ -350,7 +466,8 @@ class ToDataUri extends Curl
 				$this->mHtml = mb_convert_encoding($this->mHtml, 'utf-8', $charset);
 				$this->mInfo .= "Original charset: $charset<br />\n";
 			}
-			$this->mHtml = $meta . $this->mHtml;
+			//$this->mHtml = $meta . $this->mHtml;
+			$this->mHtml = preg_replace('/<head[^>]*>/i', $meta, $this->mHtml);
 		}
 		
 		$this->mCharset = $charset;
@@ -413,10 +530,15 @@ class ToDataUri extends Curl
 				//$dom->strictErrorChecking = false;
 				
 				// :TODO: parse un-wellform html error ?
+				// This way can erase some un-wellformed html error, like un-supported/un-readable chars etc.
+				$this->mHtml = mb_convert_encoding($this->mHtml, 'HTML-ENTITIES', "UTF-8");
 				// Seems these warning message can't be erased.
 				@$dom->loadHTML($this->mHtml);
 				// :TODO: If parse all relative link href, can I make a proxy ?
 
+				// Embemmed style, modify html directly, do this 'slow' step first, or maybe with longer html string will take more time.
+				$this->DomChangeStyle($dom);
+				
 				$this->DomChange($dom, 'img', 'src');
 				//$this->DomChange($dom, 'link', 'href', array('rel'=>'stylesheet', 'type'=>'text/css'));
 				$this->DomChange($dom, 'link', 'href', array('rel'=>'stylesheet'));
@@ -438,6 +560,8 @@ class ToDataUri extends Curl
 	 */
 	protected function ParseUrl($url)
 	{
+		if (empty($url))
+			return '';
 		// Uri start from http
 		$src = strtolower($url);
 		if (('http://' == substr($src, 0, 7)) || ('https://' == substr($src, 0, 8)))
