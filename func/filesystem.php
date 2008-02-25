@@ -58,6 +58,7 @@ function DelFile($name)
 
 /**
  * Manual get dirname instead of using pathinfo()
+ * Result didn't include ending '/'
  * @param	string	$filename
  * @return	string
  */

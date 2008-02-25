@@ -151,8 +151,13 @@ class ToDataUri extends Curl
 			$li->appendChild($a);
 		}
 		$dom_info_ul->appendChild($li);
+		// Generate time
+		$li = $dom->createElement('li', htmlspecialchars("Generate time: " . date('Y-m-d G:i:s')));
+		$dom_info_ul->appendChild($li);
 		// Resources
-		$li = $dom->createElement('li', "Resources(" . (count($this->mGetOk) + count($this->mGetFailed)) . "): ");
+		$i_getok = count($this->mGetOk);
+		$i_getfailed = count($this->mGetFailed);
+		$li = $dom->createElement('li', "Resources(" . ($i_getok + $i_getfailed) . " : √ $i_getok, × $i_getfailed): ");
 		$dom_info_ul->appendChild($li);
 		
 		// Baseurl & charset has been set when processed, add resources here
@@ -447,6 +452,17 @@ class ToDataUri extends Curl
 		}
 		//$charset = (1 < count($ar)) ? $ar[1] : '';
 		$charset = strtolower($charset);
+		// Check charset got is valid, if no, detect it
+		// Discuz! error, I have no other ways to detect current encoding
+		// v4.0.0, printed page:
+		//<meta http-equiv="Content-Type" content="text/html; charset=CHARSET">
+		if ('charset' == $charset)
+		{
+			$charset = mb_detect_encoding($this->mHtml, "gb2312, gbk, big5, utf-8");
+			$charset = strtolower($charset);
+		}
+		// Use mb_check_encoding check again? :TODO:
+		
 		// Meta Content-type
 		$meta = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
 		if (!empty($charset)) {
