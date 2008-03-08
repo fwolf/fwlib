@@ -514,6 +514,7 @@ class ToDataUri extends Curl
 		{
 			if ($this->mCliMode)
 				echo "[Curl] Get html content from $this->mUrl ";
+			$this->SetoptReferer($this->mUrl);
 			if (true == $this->mRetrieveHtml)
 				$this->mHtml = $this->Get($this->mUrl);
 			else {
