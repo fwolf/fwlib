@@ -105,6 +105,7 @@ class Curl
 
 		//$this->Log($url . $param);
 		curl_setopt($this->mSh, CURLOPT_URL, $url . $param);
+		curl_setopt($this->mSh, CURLOPT_REFERER, $url);
 		$this->mRs = curl_exec($this->mSh);
 
 		if (0 != curl_error($this->mSh))
