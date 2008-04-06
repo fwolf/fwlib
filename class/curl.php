@@ -140,16 +140,31 @@ class Curl
 
 	/**
 	 * Output log
-	 * @param	string	$log	Content of log
-	 * @access	public
+	 * @param	string	$log		Content of log
+	 * @param	int		$pre_format Format of string pretend before log message, -1=none/0=full date and time/1=only time.
 	 */
-	public function Log($log = '')
+	public function Log($log = '', $pre_format=0)
 	{
 		if (empty($log))
 			return;
 
-		$s_date = date('Y-m-d H:i:s');
-		$log = "[$s_date] $log\n";
+		switch ($pre_format)
+		{
+			case -1:
+				$s_pre = '';
+				break;
+			case 0:
+				$s_pre = date('Y-m-d H:i:s');
+				break;
+			case 1:
+				$s_pre = date('H:i:s');
+				break;
+			default:
+				$s_pre = '';
+		}
+		if (!empty($s_pre))
+			$s_pre = "[$s_pre] ";
+		$log = $s_pre. "$log\n";
 
 		if (empty($this->mLogfile))
 			echo $log;
