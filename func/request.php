@@ -13,12 +13,16 @@
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
  */
-function GetGet($var, $default='') {
+function GetGet($var, $default='')
+{
+	return GetRequest($_GET, $var, $default);
+	/*
 	if (isset($_GET[$var]))
 		$val = $_GET[$var];
 	else
 		$val = $default;
 	return $val;
+	*/
 } // end of func GetGet
 
 
@@ -28,13 +32,38 @@ function GetGet($var, $default='') {
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
  */
-function GetPost($var, $default='') {
+function GetPost($var, $default='')
+{
+	return GetRequest($_POST, $var, $default);
+	/*
 	if (isset($_POST[$var]))
 		$val = $_POST[$var];
 	else
 		$val = $default;
 	return $val;
+	*/
 } // end of func GetPost
+
+
+/**
+ * Get variant from $_REQUEST
+ * @param	array	$r		Request, $_GET/$_POST etc...
+ * @param	string	$var	Name of variant
+ * @param	mixed	$default	If variant is not given, return this
+ * @return	mixed
+ */
+function GetRequest(&$r, $var, $default = null)
+{
+	if (isset($r[$var]))
+	{
+		$val = $_POST[$var];
+		if (!get_magic_quotes_gpc())
+			$val = addslashes($val);
+	}
+	else
+		$val = $default;
+	return $val;
+} // end of func GetRequest
 
 
 /**
