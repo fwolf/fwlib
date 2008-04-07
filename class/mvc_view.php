@@ -29,6 +29,12 @@
 abstract class View {
 	
 	/**
+	 * Template object
+	 * @var	object
+	 */
+	protected $oTpl = null;
+	
+	/**
 	 * Output content generated
 	 * @var	string
 	 */
@@ -63,6 +69,7 @@ abstract class View {
 	protected $sOutputMenu = '';
 	
 	
+	abstract protected function CheckObjTpl();	// 检查、确定$oTpl已初始化
 	abstract protected function GenHeader();
 	abstract protected function GenMenu();
 	abstract protected function GenContent();
@@ -74,18 +81,31 @@ abstract class View {
 	 */
 	public function __construct()
 	{
+		$this->CheckObjTpl();
+		
+		/* Template dir must be set before using
 		$this->GenHeader();
 		$this->GenMenu();
 		$this->GenContent();
 		$this->GenFooter();
+		*/
 	} // end of func __construct
 	
 	
 	/**
 	 * Get content to output
+	 * @see $sOutput
 	 */
 	public function GetOutput()
 	{
+		if (empty($this->sOutputHeader))
+			$this->GenHeader();
+		if (empty($this->sOutputMenu))
+			$this->GenMenu();
+		if (empty($this->sOutputContent))
+			$this->GenContent();
+		if (empty($this->sOutputFooter))
+			$this->GenFooter();
 		$this->sOutput = $this->sOutputHeader . 
 						 $this->sOutputMenu . 
 						 $this->sOutputContent . 
