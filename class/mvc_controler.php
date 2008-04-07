@@ -7,6 +7,7 @@
 */
 
 require_once('fwolflib/func/request.php');
+require_once('fwolflib/func/string.php');
 
 /**
  * Controler class in MVC
@@ -51,6 +52,7 @@ abstract class Controler {
 	public $sAction = '';
 	
 	
+	abstract public function DispError($msg);	// Display page show error msg
 	abstract public function Go();	// User call starter function
 	
 	
@@ -67,6 +69,38 @@ abstract class Controler {
 		$this->aGet = $this->ParseRequest($_GET);
 		$this->aPost = $this->ParseRequest($_POST);
 	} // end of func __construct
+	
+	
+	/**
+	 * Call a page class, display it's output
+	 * 
+	 * Result echo out directly
+	 * @param	string	$page	Page/View define class file
+	 * @param	string	$class	Page/View class name, if obmit, $class = 'Page' + ucfirst($page)
+	 */
+	protected function DispPage($page, $class = '')
+	{
+		// From ..../page_a.php, get 'page_a'.
+		$s_page = substr($page, strrpos($page, '/') + 1);
+		$s_page = substr($s_page, 0, strrpos($s_page, '.'));
+		
+		// Then, 'page_a' to 'PageA'
+		if (empty($class))
+			$class = 'Page' . StrUnderline2Ucfirst($s_page);
+		
+		require_once($page);
+		if (class_exists($class))
+		{
+			$p = &new $class($this);
+			//$p->oCtl = $this;	// Set caller object	// Moved to __contruct
+			echo $p->GetOutput();
+		}
+		else 
+		{
+			// Display error
+			$this->DispError("Class $class not found!");
+		}
+	} // end of func DispPage
 	
 	
 	/**

@@ -1,17 +1,17 @@
 <?php
 /**
  * 字符串函数集
- * @package     MaGod
- * @copyright   Copyright 2004, Fwolf
- * @author      Fwolf <fwolf001@tom.com>
- * @version    $Id$
+ * @package     fwolflib
+ * @subpackage	func
+ * @copyright   Copyright 2004-2008, Fwolf
+ * @author      Fwolf <fwolf.aide+fwolflib-func@gmail.com>
+ * @version		$Id$
  */
 
 
 /**
  * 把一个字符串转换为可以用HTML输出的格式
  * @param	string	$str
- * @access	public
  * @return	string
 */
 function HtmlEncode($str)
@@ -38,7 +38,6 @@ function HtmlEncode($str)
  * 如果从一个中文的第二个字节开始检查，将返回FALSE
  * @param	string	$str
  * @param	int		$pos
- * @access	public
  * @return	boolean
  */
 function IsGbChar($str = '', $pos = 0)
@@ -69,7 +68,6 @@ function IsGbChar($str = '', $pos = 0)
  * a表示包含小写字符，A表示包含大写字符，0表示包含数字
  * @param	int		$len	字符串长度
  * @param	string	$mode	模式
- * @access	public
  * @return	string
  */
 function RandomString($len, $mode)
@@ -103,7 +101,6 @@ function RandomString($len, $mode)
 /**
  * 返回字符串的长度，一个中文字按一个单位算
  * @param	string	$str
- * @access	public
  * @return	int
  */
 function StrlenGb($str = '')
@@ -129,7 +126,6 @@ function StrlenGb($str = '')
  * @param	string	$s2		源字符串本身是用什么连接的，如果为空，则使用$s1的值
  * @param	boolean	$embody	首尾是否加上字符串2
  * @param	boolean	$istrim	是否去除字符串中的特殊字符
- * @access	public
  * @return	string
  */
 function StrReForm( $str, $s1, $s2 = '', $embody = false, $istrim = true )
@@ -193,4 +189,52 @@ function SubstrGb($str = '', $start = 0, $len = 0)
 	}
 	return $tmp;
 } // end of function SubstrGb
+
+
+/**
+ * Convert ucfirst format to underline_connect format
+ * 
+ * If convert fail, return original string.
+ * @param	string	$str
+ * @return	string
+ */
+function StrUcfirst2Underline($str)
+{
+	$s = preg_replace('/([A-Z])/', '_\1', $str);
+	$ar = explode('_', $s);
+	$s = '';
+	if (empty($ar))
+		$s = $str;
+	else 
+	{
+		foreach ($ar as $s1)
+			if (!empty($s1))
+				$s .= '_' . strtolower($s1);
+		$s = substr($s, 1);
+	}
+	return $s;
+} // end of func StrUcfirst2Underline
+
+
+/**
+ * Convert underline_connect format to ucfirst format
+ * 
+ * If convert fail, return ucfirst($str)
+ * @param	string	$str
+ * @return	string
+ */
+function StrUnderline2Ucfirst($str)
+{
+	$ar = explode('_', $str);
+	$s = '';
+	if (empty($ar))
+		$s = ucfirst($str);
+	else 
+		foreach ($ar as $s1)
+			if (!empty($s1))
+				$s .= ucfirst($s1);
+	return $s;
+} // end of func StrUnderline2Ucfirst
+
+
 ?>

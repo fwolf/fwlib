@@ -29,6 +29,12 @@
 abstract class View {
 	
 	/**
+	 * View's caller -- Controler object
+	 * @var	object
+	 */
+	public $oCtl = null;
+	
+	/**
 	 * Template object
 	 * @var	object
 	 */
@@ -78,9 +84,11 @@ abstract class View {
 	
 	/**
 	 * construct
+	 * @param object	&$ctl	Caller controler object
 	 */
-	public function __construct()
+	public function __construct(&$ctl)
 	{
+		$this->oCtl = $ctl;
 		$this->CheckObjTpl();
 		
 		/* Template dir must be set before using

@@ -26,6 +26,32 @@
  */
 abstract class Module {
 	
+	/**
+	 * Database object
+	 * @var object
+	 */
+	protected $oDb = null;
+	
+	/**
+	 * Call view object
+	 * @var object
+	 */
+	public $oView = null;
+	
+	
+	abstract protected function CheckObjDb();	// Check & init db object
+	abstract protected function DbConn($s);		// Get db connection, because unknown db & dblib, implete it in application module class. Also can extend db connect class easily.
+	
+	
+	/**
+	 * construct
+	 * @param object	&$view	Caller view object
+	 */
+	public function __construct(&$view)
+	{
+		$this->oView = $view;
+	} // end of func __construct
+	
 	
 } // end of class Module
 ?>
