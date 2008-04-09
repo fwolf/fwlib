@@ -121,5 +121,27 @@ abstract class View {
 		return $this->sOutput;
 	} // end of func GetOutput
 	
+	
+	/**
+	 * Use tidy to format html string
+	 * @param string	&$html
+	 * @return string
+	 */
+	public function Tidy(&$html)
+	{
+		// Specify configuration
+		$config = array(
+		           'indent'         => true,
+		           'indent-spaces'	=> 4,
+		           'output-xhtml'   => true,
+		           'wrap'           => 200);
+		// Do tidy
+		$tidy = new tidy;
+		$tidy->parseString($html, $config, 'utf8');
+		$tidy->cleanRepair();
+		
+		return $tidy;
+	} // end of func Tidy
+	
 } // end of class View
 ?>
