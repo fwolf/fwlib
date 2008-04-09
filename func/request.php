@@ -56,7 +56,8 @@ function GetRequest(&$r, $var, $default = null)
 {
 	if (isset($r[$var]))
 	{
-		$val = $_POST[$var];
+		$val = $r[$var];
+		// Deal with special chars in parameters
 		if (!get_magic_quotes_gpc())
 			$val = addslashes($val);
 	}

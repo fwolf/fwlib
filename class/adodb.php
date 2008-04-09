@@ -23,7 +23,7 @@
  * 
  * 执行sql查询的系列更改中，限定系统/HTML/PHP使用$sSysCharset指定的编码，涉及函数列在__call()中，但一些通过数组等其它方式传递参数的ADODB方法仍然无法通过这种方式实现sql编码自动转换。
  * 
- * 执行返回的数据还是需要转码的，不过返回数据的种类太多，放在应用中实现更简单一些，这里不作。
+ * 执行返回的数据还是需要转码的，不过返回数据的种类太多，放在应用中实现更简单一些，这里不自动执行，只提供一个EncodingConvert方法供用户调用。
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2008, Fwolf
@@ -189,6 +189,146 @@ class Adodb
 		
 		return $rs;
 	} // end of func Connect
+	
+	
+	/**
+	 * Convert recordset(simple array) or other string
+	 * from db encoding to system encoding
+	 * 
+	 * Use recursive mechanism, beware of loop hole.
+	 * @param mixed	&$s	Source to convert
+	 * @return mixed
+	 */
+	public function EncodingConvert(&$s)
+	{
+		if (is_array($s) && !empty($s))
+			foreach ($s as &$val)
+				$this->EncodingConvert($val);
+		
+		if (is_string($s))
+		{
+			if ($this->sSysCharset != $this->aDbProfile['lang'])
+				$s = mb_convert_encoding($s, $this->sSysCharset, $this->aDbProfile['lang']);
+		}
+		return $s;
+	} // end of func EncodingConvert
+	
+	
+	/**
+	 * Generate SQL statement
+	 * 
+	 * User should avoid use SELECT/UPDATE/INSERT/DELETE simultaneously.
+	 * 
+	 * Generate order by SQL statement format order.
+	 * 
+	 * :TODO: UPDATE/INSERT/DELETE
+	 * @param array	$ar_sql	Array(select=>..., from=>...)
+	 * @return string
+	 */
+	public function GenSql($ar_sql)
+	{
+		$sql = '';
+		
+		if (is_array($ar_sql) && !empty($ar_sql))
+			foreach ($ar_sql as $action => $param)
+			{
+				$action = strtoupper($action);
+				switch ($action)
+				{
+					case 'SELECT':
+						$sql .= ' SELECT ' . $this->GenSqlArrayAs($param, true, true);
+						break;
+					case 'FROM':
+						// :NOTICE: 'FROM tbl as a', No space allowed in 'a'.
+						$sql .= ' FROM ' . $this->GenSqlArrayAs($param, false, false);
+						break;
+					case 'WHERE':
+						$sql .= ' WHERE ' . $this->GenSqlArray($param, ' AND ');
+						break;
+					case 'GROUPBY':
+						$sql .= ' GROUP BY' . $this->GenSqlArray($param);
+						break;
+					case 'HAVING':
+						$sql .= ' HAVING ' . $this->GenSqlArray($param, ' AND ');
+						break;
+					case 'ORDERBY':
+						$sql .= ' ORDER BY ' . $this->GenSqlArray($param);
+						break;
+					case 'LIMIT':
+						if ('sybase' != substr($this->aDbProfile['type'], 0, 6))
+							$sql .= ' LIMIT ' . $this->GenSqlArray($param);
+						break;
+				}
+			}
+		
+		return $sql;
+	} // end of func GenSql
+	
+	
+	/**
+	 * Generate SQL part, which param is array and need to list out in plain format.
+	 * 
+	 * @param mixed	$param
+	 * @param string	$s_split	String used between parts.
+	 * @return string
+	 */
+	protected function GenSqlArray($param, $s_split = ', ')
+	{
+		$sql = '';
+		if (is_array($param) && !empty($param))
+			// Because of plain format, so $k is useless
+			foreach ($param as $k=>$v)
+			{
+				/*
+				if (is_int($k))
+					$sql .= ", $v";
+				else 
+					$sql .= ", $k $v";
+				*/
+				$sql .= "$s_split $v";
+			}
+		else 
+			$sql .= "$s_split $param";
+		$sql = substr($sql, strlen($s_split));
+		
+		return $sql;
+	} // end of func GenSqlArray
+	
+	
+	/**
+	 * Generate SQL part, which param is array and need use AS in it.
+	 * @link http://dev.mysql.com/doc/refman/5.0/en/select.html
+	 * @param mixed	$param	Items in SQL SELECT part, Array or string.
+	 * 						Array($k=>$v) means '$k AS $v' in sql,
+	 * 						but when $k is int, means '$v AS $v' in sql.
+	 * @param boolean	$use_as	Sybase table alias can't use AS
+	 * @param boolean	$quote	AS column alias, need to be quoted(true),
+	 * 							AS table alias, need not to be quoted(false).
+	 * @return string
+	 */
+	protected function GenSqlArrayAs($param, $use_as = true, $quote = false)
+	{
+		$sql = '';
+		if (is_array($param) && !empty($param))
+			foreach ($param as $k=>$v)
+			{
+				// If there are space in $v, it need to be quoted
+				// so always quote it.
+				if (is_int($k))
+					$sql .= ", $v";
+				else 
+				{
+					$s_split = ($quote) ? "'" : '';
+					$s_as = ($use_as) ? 'AS' : '';
+					$sql .= ", $k $s_as $s_split{$v}$s_split";
+				}
+			}
+		else 
+			$sql .= ", $param";
+		$sql = substr($sql, 2);
+		
+		return $sql;
+	} // end of func GenSqlArrayAs
 	
 	
 } // end of class Adodb

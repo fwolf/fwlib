@@ -27,6 +27,16 @@
 abstract class Module {
 	
 	/**
+	 * Number of items in list
+	 * 
+	 * In simple idea, this should set in view, 
+	 * but pagesize is impleted as limit in select,
+	 * so when generate sql you need to use it.
+	 * @var int
+	 */
+	public $iPageSize = 10;
+	
+	/**
 	 * Database object
 	 * @var object
 	 */
@@ -39,8 +49,7 @@ abstract class Module {
 	public $oView = null;
 	
 	
-	abstract protected function CheckObjDb();	// Check & init db object
-	abstract protected function DbConn($s);		// Get db connection, because unknown db & dblib, implete it in application module class. Also can extend db connect class easily.
+	abstract protected function DbConn($dbprofile);		// Get db connection, because unknown db & dblib, implete it in application module class. Also can extend db connect class easily.
 	
 	
 	/**
@@ -51,6 +60,22 @@ abstract class Module {
 	{
 		$this->oView = $view;
 	} // end of func __construct
+	
+	
+	/**
+	 * Check & init db object
+	 * @param object	&$db			Db object
+	 * @param array		$dbprofile	array(type,host,user,pass,name,lang)
+	 * @return object
+	 */
+	protected function CheckObjDb(&$db, $dbprofile)
+	{
+		if (empty($db))
+		{
+			$db = $this->DbConn($dbprofile);
+		}
+		return $db;
+	} // end of func CheckObjDb
 	
 	
 } // end of class Module
