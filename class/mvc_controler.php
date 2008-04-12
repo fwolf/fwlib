@@ -9,6 +9,13 @@
 require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/string.php');
 
+/*
+// In subclass or subclass for an app, 
+// the bottom layer class should define P2R first at here, and in this way:
+if (!defined('P2R')) define('P2R', './');
+// Then you can use P2R to require some app libs.
+*/
+
 /**
  * Controler class in MVC
  *

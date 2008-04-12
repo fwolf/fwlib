@@ -17,6 +17,8 @@
  * 
  * View从Module得到结果数据后，使用Smarty模板进行加工，生成html，再交给Controler输出。
  * 
+ * Action的处理主要在View中，Action的默认值也在View中赋予和实现。
+ * 
  * @package		fwolflib
  * @subpackage	mvc
  * @copyright	Copyright 2008, Fwolf
@@ -39,6 +41,12 @@ abstract class View {
 	 * @var	object
 	 */
 	protected $oTpl = null;
+	
+	/**
+	 * Action parameter, the view command to determin what to display
+	 * @var string
+	 */
+	protected $sAction = null;
 	
 	/**
 	 * Output content generated
@@ -78,7 +86,9 @@ abstract class View {
 	abstract protected function CheckObjTpl();	// 检查、确定$oTpl已初始化
 	abstract protected function GenHeader();
 	abstract protected function GenMenu();
-	abstract protected function GenContent();
+	// An template is given, point to action-relate method,
+	// and will check method exists at first.
+	//abstract protected function GenContent();
 	abstract protected function GenFooter();
 	
 	
@@ -89,6 +99,8 @@ abstract class View {
 	public function __construct(&$ctl)
 	{
 		$this->oCtl = $ctl;
+		$this->sAction = &$ctl->sAction;
+		
 		$this->CheckObjTpl();
 		
 		/* Template dir must be set before using
@@ -98,6 +110,27 @@ abstract class View {
 		$this->GenFooter();
 		*/
 	} // end of func __construct
+	
+	
+	/**
+	 * Generate main content of page
+	 * 
+	 * Doing this by call sub-method according to $sAction,
+	 * Also, this can be override by extended class.
+	 */
+	protected function GenContent()
+	{
+		if (empty($this->sAction))
+			$this->oCtl->DispError("No action given.");
+		
+		// Check if action relate method existence, call it or report error.
+		$s_func = 'GenContent' . StrUnderline2Ucfirst($this->sAction);
+		if (method_exists($this, $s_func))
+			$this->sOutputContent = $this->$s_func();
+		else 
+			// An invalid action is given
+			$this->oCtl->DispError("The given action {$this->sAction} invalid or method $s_func doesn't exists.");
+	} // end of function GenContent
 	
 	
 	/**
