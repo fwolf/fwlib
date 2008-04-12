@@ -5,6 +5,7 @@
  * @subpackage	func
  * @copyright   Copyright 2004-2008, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib-func@gmail.com>
+ * @since		Before 2008-04-07
  * @version		$Id$
  */
 

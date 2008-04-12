@@ -8,7 +8,7 @@
  * @version		$Id$
  */
 
-require_once('fwolflib/func/is_cli.php');
+require_once('fwolflib/func/env.php');
 
 /*
  * Smarty echo line, end with \n or <br /> according running mod

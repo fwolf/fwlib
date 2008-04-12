@@ -27,8 +27,6 @@ if (!defined('P2R')) define('P2R', './');
  * 
  * 主系统和子系统下的index.php要做到都可以被单独调用。
  * 
- * Controler还接收其它的`\$_GET`和`\$_POST`参数，并传递给View。
- * 
  * 如果子系统的功能比较多，还可以再设计一层Controler，用于实现功能的选择；也可以采用统一放入子系统的Controler中集中控制的方式。特殊情况下，也可以从主系统根直接调用功能Page。
  * 
  * 一般项目中，Controler只起到了用户命令的分流作用，处理较少，大量的页面生成、参数转换和传递都放到了View中。也正因为如此，如果启用了缓存机制，打算将缓存放在Controler中实现。
@@ -47,16 +45,16 @@ if (!defined('P2R')) define('P2R', './');
 abstract class Controler {
 	
 	/**
+	 * Action parameter, the view command to determin what to display
+	 * @var string	// $_GET['a'], means which action user prefered of the module
+	 */
+	protected $sAction = null;
+	
+	/**
 	 * Current module param
 	 * @var	string	// $_GET['m'], means which module user prefered
 	 */
-	public $sModule = '';
-	
-	/**
-	 * Current action param
-	 * @var	string	// $_GET['a'], means which action user prefered of the module
-	 */
-	public $sAction = '';
+	protected $sModule = '';
 	
 	
 	abstract public function DispError($msg);	// Display page show error msg
@@ -71,10 +69,7 @@ abstract class Controler {
 		// Get major parameters
 		$this->sModule = GetGet('m');
 		$this->sAction = GetGet('a');
-		
-		// Get other parameters
-		$this->aGet = $this->ParseRequest($_GET);
-		$this->aPost = $this->ParseRequest($_POST);
+
 	} // end of func __construct
 	
 	
@@ -109,26 +104,6 @@ abstract class Controler {
 		}
 	} // end of func DispPage
 	
-	
-	/**
-	 * Read $_REQUEST, write to class property
-	 * @param	array	$request	// $_GET, $_POST, etc...
-	 * @return	array
-	 */
-	protected function ParseRequest(&$request)
-	{
-		if (empty($request) or !is_array($request))
-			return array();
-		else 
-		{
-			$r = array();
-			foreach ($request as $k => $v)
-			{
-				$r[$k] = GetRequest($request, $k);
-			}
-			return $r;
-		}
-	} // end of func ParseRequest
 	
 } // end of class Controler
 

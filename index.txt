@@ -27,6 +27,7 @@ toadtauri.php
 ubb.php
 	Ubb类，完成对UBB代码的转换
 
+
 func:
 =====
 
@@ -52,6 +53,17 @@ download.php
 	Download contents as a file.
 ecl.php
 	Smarty echo line, end with \n or <br /> according running mod
+
+env.php
+-------
+	Runtime environment and server env variant.
+
+### is_cli.php
+	Check if this program is running under cli mod, or is viewing in browser
+
+### nixos.php
+	判断当前主机是否nix操作系统
+
 escape_color.php
 	Covert escape color to html code
 filesystem.php
@@ -74,10 +86,6 @@ filesystem.php
 		List files and file-information of a directory order by mtime asc.
 formatbytesize.php
 	Convert variant byte size to human readable format string.
-is_cli.php
-	Check if this program is running under cli mod, or is viewing in browser
-nixos.php
-	判断当前主机是否nix操作系统
 
 request.php
 -----------

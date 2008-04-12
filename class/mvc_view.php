@@ -6,7 +6,8 @@
 * @author       Fwolf <fwolf.aide+fwolflib-mvc@gmail.com>
 */
 
-
+require_once('fwolflib/func/string.php');
+require_once('fwolflib/func/request.php');
 
 /**
  * View in MVC
@@ -44,7 +45,7 @@ abstract class View {
 	
 	/**
 	 * Action parameter, the view command to determin what to display
-	 * @var string
+	 * @var string	// $_GET['a'], means which action user prefered of the module
 	 */
 	protected $sAction = null;
 	
@@ -99,7 +100,7 @@ abstract class View {
 	public function __construct(&$ctl)
 	{
 		$this->oCtl = $ctl;
-		$this->sAction = &$ctl->sAction;
+		$this->sAction = GetGet('a');
 		
 		$this->CheckObjTpl();
 		

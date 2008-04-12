@@ -7,7 +7,7 @@
 
 require_once('fwolflib/class/curl.php');
 require_once('fwolflib/func/download.php');
-require_once('fwolflib/func/is_cli.php');
+require_once('fwolflib/func/env.php');
 require_once('fwolflib/func/request.php');
 
 /**
