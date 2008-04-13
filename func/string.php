@@ -162,6 +162,9 @@ function StrReForm( $str, $s1, $s2 = '', $embody = false, $istrim = true )
  * 截取子字符串，中文按长度1计算
  * 在计算截取起始位置和截取长度时，中文也是按长度1计算的
  * 比如$str='大中小'，SubstrGb($str, 1, 1) = '中';
+ * 
+ * Obsolete, see: http://www.fwolf.com/blog/post/133
+ * @link http://www.fwolf.com/blog/post/133
  * @param   string  $str
  * @param   int     $start
  * @param   int     $len

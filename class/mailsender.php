@@ -1,23 +1,37 @@
 <?php
 /**
-* @package      fwolflib
-* @copyright    Copyright 2007, Fwolf
-* @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
-*/
+ * @package		fwolflib
+ * @subpackage	class
+ * @copyright	Copyright 2007-2008, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ */
 
 require_once("phpmailer/class.phpmailer.php");
 
 /**
-* Mail Sender
-*
-* Subclass of PHPMailer, make it easier to use.
-*
-* @package    fwolflib
-* @copyright  Copyright 2007, Fwolf
-* @author     Fwolf <fwolf.aide+fwolflib@gmail.com>
-* @since      2007-03-29
-* @version    $Id$
-*/
+ * Mail Sender
+ *
+ * Subclass of PHPMailer, make it easier to use.
+ *
+ * Usage:
+ * <code>
+ * $m = new MailSender();
+ * $m->SetHost('ssl://smtp.gmail.com', 465, true);
+ * $m->SetTo($mail_to);
+ * $m->SetFrom('Who send it ?');
+ * $m->SetAuth($mail_user, $mail_pass);
+ * $m->SetSubject($mail_subject);
+ * $m->SetBody($mail_body);
+ * $m->SetAttach($mail_attach);
+ * $m->Send();
+ * </code>
+ * @package		fwolflib
+ * @subpackage	class
+ * @copyright	Copyright 2007-2008, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @since		2007-03-29
+ * @version		$Id$
+ */
 class Mailsender extends PHPMailer
 {
 	/**

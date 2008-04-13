@@ -32,6 +32,12 @@ require_once('fwolflib/func/request.php');
 abstract class View {
 	
 	/**
+	 * If use tidy to format output html code, default false.
+	 * @var boolean
+	 */
+	public $bOutputTidy = false;
+	
+	/**
 	 * View's caller -- Controler object
 	 * @var	object
 	 */
@@ -152,6 +158,11 @@ abstract class View {
 						 $this->sOutputMenu . 
 						 $this->sOutputContent . 
 						 $this->sOutputFooter;
+		
+		// Use tidy ?
+		if (true == $this->bOutputTidy)
+			$this->sOutput = $this->Tidy($this->sOutput);
+		
 		return $this->sOutput;
 	} // end of func GetOutput
 	
