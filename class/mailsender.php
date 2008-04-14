@@ -161,7 +161,7 @@ class Mailsender extends PHPMailer
 	 * Parse string including email name and address to address=>name array.
 	 *
 	 * @var	mixed	$to
-	 * return	array
+	 * @return	array
 	 */
 	public function ParseTo($to)
 	{

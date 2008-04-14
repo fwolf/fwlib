@@ -1,22 +1,26 @@
 <?php
 /**
- * @package      fwolflib
- * @copyright    Copyright 2004-2007, Fwolf
- * @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
+ * @package		fwolflib
+ * @subpackage	class
+ * @copyright	Copyright 2004-2008, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  */
 
 require_once('fwolflib/func/regex_match.php');
 
 /**
  * Parse a mail format message
+ * 
  * Need imap extension of php.
  *
- * @package    fwolflib
- * @copyright  Copyright 2004-2007, Fwolf
- * @author     Fwolf <fwolf.aide+fwolflib-class-mail_parser@gmail.com>
- * @since      2007-08-05
- * @access     public
- * @version    $Id$
+ * :TODO: Avold using imap_utf8() ?
+ * In phpmailer there is some function doing alike things.
+ * @package		fwolflib
+ * @subpackage	class
+ * @copyright	Copyright 2004-2008, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @since		2007-08-05
+ * @version		$Id$
  */
 class MailParser {
 	

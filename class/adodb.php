@@ -161,18 +161,28 @@ class Adodb
 	 * param $argPassword		Associated password
 	 * param $argDatabaseName	database
 	 * </code>
-	 * @param $forceNew			force new connection
+	 * @param $forcenew			Force new connection
 	 * @return boolean
 	 */
-	public function Connect($forceNew = false)
+	public function Connect($forcenew = false)
 	{
 		try
 		{
-			$rs = $this->__conn->Connect($this->aDbProfile['host'], 
+			// Sybase will echo 'change to master' warning msg
+			// :TODO: Will this proble solved if we drop default
+			// database master from sa user ?
+			if ('sybase' == substr($this->aDbProfile['type'], 0, 6))
+				$rs = @$this->__conn->Connect($this->aDbProfile['host'], 
 										 $this->aDbProfile['user'], 
 										 $this->aDbProfile['pass'], 
 										 $this->aDbProfile['name'], 
-										 $forceNew);
+										 $forcenew);
+			else 
+				$rs = $this->__conn->Connect($this->aDbProfile['host'], 
+										 $this->aDbProfile['user'], 
+										 $this->aDbProfile['pass'], 
+										 $this->aDbProfile['name'], 
+										 $forcenew);
 			
 			// 针对mysql 4.1以上，UTF8编码的数据库，需要在连接后指定编码
 			// Can also use $this->aDbProfile['type']
