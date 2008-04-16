@@ -100,6 +100,25 @@ function RandomString($len, $mode)
 
 
 /**
+ * Encode a string using MIME encoding method
+ * 
+ * Usually used in mail header, attachment name etc.
+ * 
+ * No break in string(B encoding mode instead of Q, see 
+ * phpmailer::EncodeHeader, line 1156), because that possible
+ * break chinese chars.
+ * @link http://www.faqs.org/rfcs/rfc2047
+ * @param	string	$str
+ * @param	string	$encoding	Encoding of $str
+ * @return	string
+ */
+function Rfc2047Encode($str, $encoding = 'utf-8')
+{
+	return "=?" . $encoding . "?B?" . base64_encode($str) . "?=";
+} // end of func Rfc2047Encode
+
+
+/**
  * 返回字符串的长度，一个中文字按一个单位算
  * @param	string	$str
  * @return	int

@@ -7,14 +7,11 @@
  */
 
 require_once('fwolflib/func/regex_match.php');
+require_once('fwolflib/func/string.php');
 
 /**
  * Parse a mail format message
  * 
- * Need imap extension of php.
- *
- * :TODO: Avold using imap_utf8() ?
- * In phpmailer there is some function doing alike things.
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2004-2008, Fwolf
@@ -493,7 +490,8 @@ class MailParser {
 					$rs['filename'] = $this->NameAttachment($rs['type']);
 				} else {
 					// Set the filename
-					$rs['filename'] = imap_utf8($s_t);
+					//$rs['filename'] = imap_utf8($s_t);
+					$rs['filename'] = Rfc2047Encode($s_t);
 				}
 
 				// Some bad mail client didn't set the attach mime right
@@ -538,7 +536,8 @@ class MailParser {
 			$this->mMsgHeaderMessageId = md5($this->mMsgHeader);
 		}
 		// Subject: 
-		$this->mMsgHeaderSubject = imap_utf8(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
+		//$this->mMsgHeaderSubject = imap_utf8(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
+		$this->mMsgHeaderSubject = Rfc2047Encode(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
 		// To: <Undisclosed-Recipient:;@gmail-pop.l.google.com>
 		$this->mMsgHeaderTo = RegexMatch('/^To: (.*)/m', $this->mMsgHeader);
 		// X-Sender: sammynatural@gmail.com
