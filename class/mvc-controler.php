@@ -57,7 +57,7 @@ abstract class Controler {
 	protected $sModule = '';
 	
 	
-	abstract public function DispError($msg);	// Display page show error msg
+	abstract public function ViewErrorDisp($msg);	// Display view show error msg
 	abstract public function Go();	// User call starter function
 	
 	
@@ -74,35 +74,49 @@ abstract class Controler {
 	
 	
 	/**
-	 * Call a page class, display it's output
+	 * Call a view class, display it's output
 	 * 
 	 * Result echo out directly
-	 * @param	string	$page	Page/View define class file
-	 * @param	string	$class	Page/View class name, if obmit, $class = 'Page' + ucfirst($page)
+	 * @param	string	$view	View define class file
+	 * @param	string	$class	View class name, if obmit, will remove '_'
+	 * 								in filename and use ucfirst($view) as class
+	 * 								name. 
+	 * 							Auto remove beginning `v-` from $view is
+	 * 							optional, if you use 'v-view.php' naming style,
+	 * 							it will auto happen.
 	 */
-	protected function DispPage($page, $class = '')
+	protected function ViewDisp($view, $class = '')
 	{
+		// Check file existence
+		if (file_exists($view))
+			require_once($view);
+		else 
+			$this->ViewErrorDisp("View define file $view not found!");
+		
 		// From ..../page_a.php, get 'page_a'.
-		$s_page = substr($page, strrpos($page, '/') + 1);
-		$s_page = substr($s_page, 0, strrpos($s_page, '.'));
+		$s_view = substr($view, strrpos($view, '/') + 1);
+		$s_view = substr($s_view, 0, strrpos($s_view, '.'));
+		
+		// Remove 'v-' from 'v-view.php', optional
+		if ('v-' == substr($s_view, 0, 2))
+			$s_view = substr($s_view, 2);
 		
 		// Then, 'page_a' to 'PageA'
 		if (empty($class))
-			$class = 'Page' . StrUnderline2Ucfirst($s_page);
+			$class = 'View' . StrUnderline2Ucfirst($s_view);
 		
-		require_once($page);
 		if (class_exists($class))
 		{
 			$p = &new $class($this);
-			//$p->oCtl = $this;	// Set caller object	// Moved to __contruct
+			//$p->oCtl = $this;	// Set caller object	// Moved to __contruct of View class, transfer $this when do new().
 			echo $p->GetOutput();
 		}
 		else 
 		{
 			// Display error
-			$this->DispError("Class $class not found!");
+			$this->ViewErrorDisp("View class $class not found!");
 		}
-	} // end of func DispPage
+	} // end of func ViewDisp
 	
 	
 } // end of class Controler
