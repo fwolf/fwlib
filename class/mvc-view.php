@@ -136,7 +136,7 @@ abstract class View {
 			$this->sOutputContent = $this->$s_func();
 		else 
 			// An invalid action is given
-			$this->oCtl->DispError("The given action {$this->sAction} invalid or method $s_func doesn't exists.");
+			$this->oCtl->ViewErrorDisp("The given action {$this->sAction} invalid or method $s_func doesn't exists.");
 	} // end of function GenContent
 	
 	
