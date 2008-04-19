@@ -111,8 +111,15 @@ url.php
 	处理url字符串，增加或设置/更改URL参数。
 utf8_fix.php
 	Convert string like '_D0_D0_D0' to normal string
-validate_ip.php
-	判断 ip 格式的 php 程序代码(old)
+
+validate.php
+------------
+
+### ValidateIp($ip)
+	If an ip string given is valid address.
+
+### ValidateEmail($email)
+	Validate an email address.
 
 ===
 js:
