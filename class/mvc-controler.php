@@ -78,7 +78,7 @@ abstract class Controler {
 	 * 
 	 * Result echo out directly
 	 * @param	string	$view	View define class file
-	 * @param	string	$class	View class name, if obmit, will remove '_'
+	 * @param	string	$class	View class name, if obmit, will remove '_'&'-'
 	 * 								in filename and use ucfirst($view) as class
 	 * 								name. 
 	 * 							Auto remove beginning `v-` from $view is
@@ -100,6 +100,8 @@ abstract class Controler {
 		// Remove 'v-' from 'v-view.php', optional
 		if ('v-' == substr($s_view, 0, 2))
 			$s_view = substr($s_view, 2);
+		// Replace '-' in view name to '_'
+		$s_view = str_replace('-', '_', $s_view);
 		
 		// Then, 'page_a' to 'PageA'
 		if (empty($class))
