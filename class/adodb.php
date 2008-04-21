@@ -186,7 +186,8 @@ class Adodb
 			
 			// 针对mysql 4.1以上，UTF8编码的数据库，需要在连接后指定编码
 			// Can also use $this->aDbProfile['type']
-			if ('mysql' == $this->__conn->databaseType)
+			// mysql, mysqli
+			if ('mysql' == substr($this->__conn->databaseType, 0, 5))
 				$this->__conn->Execute('set names "' . $this->aDbProfile['lang'] . '"');
 		}
 		catch (Exception $e)
