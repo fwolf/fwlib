@@ -1,13 +1,16 @@
 <?php
 /**
-* @package      fwolflib
-* @subpackage	class
-* @copyright    Copyright 2008, Fwolf
-* @author       Fwolf <fwolf.aide+fwolflib-class@gmail.com>
-*/
+ * @package		fwolflib
+ * @subpackage	class
+ * @copyright	Copyright 2008, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @since		2008-04-22
+ * @version		$Id$
+ */
 
 // Set include path in __construct
 //require_once('adodb/adodb.inc.php');
+require_once('fwolflib/class/sql_generator.php');
 
 /**
  * Extended ADODB class
@@ -45,6 +48,17 @@ class Adodb
 	 */
 	public $aDbProfile = null;
 	
+	/**
+	 * Table schema
+	 * @var array
+	 */
+	public $aMetaColumns = array();
+	
+	/**
+	 * Sql generator object
+	 * @var object
+	 */
+	protected $oSg;
 	
 	/**
 	 * System charset
@@ -76,6 +90,9 @@ class Adodb
 		
 		$this->aDbProfile = $dbprofile;
 		$this->__conn = & ADONewConnection($dbprofile['type']);
+		
+		// Sql generator object
+		$this->oSg = new SqlGenerator($this);
 	} // end of class __construct
 	
 	
@@ -232,115 +249,47 @@ class Adodb
 	 * 
 	 * Generate order by SQL statement format order.
 	 * 
-	 * :TODO: UPDATE/INSERT/DELETE
+	 * UPDATE/INSERT/DELETE is followed by [TBL_NAME], 
+	 * so need not use FROM.
 	 * @param array	$ar_sql	Array(select=>..., from=>...)
 	 * @return string
+	 * @see	SqlGenerator
 	 */
 	public function GenSql($ar_sql)
 	{
-		$sql = '';
-		
-		if (is_array($ar_sql) && !empty($ar_sql))
-			foreach ($ar_sql as $action => $param)
-			{
-				$action = strtoupper($action);
-				switch ($action)
-				{
-					case 'SELECT':
-						$sql .= ' SELECT ' . $this->GenSqlArrayAs($param, true, true);
-						break;
-					case 'FROM':
-						// :NOTICE: 'FROM tbl as a', No space allowed in 'a'.
-						$sql .= ' FROM ' . $this->GenSqlArrayAs($param, false, false);
-						break;
-					case 'WHERE':
-						$sql .= ' WHERE ' . $this->GenSqlArray($param, ' AND ');
-						break;
-					case 'GROUPBY':
-						$sql .= ' GROUP BY' . $this->GenSqlArray($param);
-						break;
-					case 'HAVING':
-						$sql .= ' HAVING ' . $this->GenSqlArray($param, ' AND ');
-						break;
-					case 'ORDERBY':
-						$sql .= ' ORDER BY ' . $this->GenSqlArray($param);
-						break;
-					case 'LIMIT':
-						if ('sybase' != substr($this->aDbProfile['type'], 0, 6))
-							$sql .= ' LIMIT ' . $this->GenSqlArray($param);
-						break;
-				}
-			}
-		
-		return $sql;
+		// Changed to use SqlGenerator
+		if (!empty($ar_sql))
+		{
+			return $this->oSg->GetSql($ar_sql);
+		}
 	} // end of func GenSql
 	
 	
 	/**
-	 * Generate SQL part, which param is array and need to list out in plain format.
-	 * 
-	 * @param mixed	$param
-	 * @param string	$s_split	String used between parts.
-	 * @return string
+	 * Get table schema
+	 * @param	string	$table
+	 * @param	boolean	$forcenew	Force to retrieve instead of read from cache
+	 * @return	array
+	 * @see $aMetaColumns
 	 */
-	protected function GenSqlArray($param, $s_split = ', ')
+	public function GetMetaColumns($table, $forcenew = false)
 	{
-		$sql = '';
-		if (is_array($param) && !empty($param))
-			// Because of plain format, so $k is useless
-			foreach ($param as $k=>$v)
+		if (!isset($this->aMetaColumns[$table]) || (true == $forcenew))
+		{
+			$this->aMetaColumns[$table] = $this->MetaColumns($table);
+			
+			// Convert columns to native case
+			$col_name = $this->MetaColumnNames($table);
+			// $col_name = array(COLUMN => column), $c is UPPER CASED
+			foreach ($this->aMetaColumns[$table] as $c => $ar)
 			{
-				/*
-				if (is_int($k))
-					$sql .= ", $v";
-				else 
-					$sql .= ", $k $v";
-				*/
-				$sql .= "$s_split $v";
+				$this->aMetaColumns[$table][$col_name[$c]] = $ar;
+				unset($this->aMetaColumns[$table][$c]);
 			}
-		else 
-			$sql .= "$s_split $param";
-		$sql = substr($sql, strlen($s_split));
-		
-		return $sql;
-	} // end of func GenSqlArray
-	
-	
-	/**
-	 * Generate SQL part, which param is array and need use AS in it.
-	 * @link http://dev.mysql.com/doc/refman/5.0/en/select.html
-	 * @param mixed	$param	Items in SQL SELECT part, Array or string.
-	 * 						Array($k=>$v) means '$k AS $v' in sql,
-	 * 						but when $k is int, means '$v AS $v' in sql.
-	 * @param boolean	$use_as	Sybase table alias can't use AS
-	 * @param boolean	$quote	AS column alias, need to be quoted(true),
-	 * 							AS table alias, need not to be quoted(false).
-	 * @return string
-	 */
-	protected function GenSqlArrayAs($param, $use_as = true, $quote = false)
-	{
-		$sql = '';
-		if (is_array($param) && !empty($param))
-			foreach ($param as $k=>$v)
-			{
-				// If there are space in $v, it need to be quoted
-				// so always quote it.
-				if (is_int($k))
-					$sql .= ", $v";
-				else 
-				{
-					$s_split = ($quote) ? "'" : '';
-					$s_as = ($use_as) ? 'AS' : '';
-					$sql .= ", $k $s_as $s_split{$v}$s_split";
-				}
-			}
-		else 
-			$sql .= ", $param";
-		$sql = substr($sql, 2);
-		
-		return $sql;
-	} // end of func GenSqlArrayAs
-	
+			//print_r($this->aMetaColumns);
+		}
+		return $this->aMetaColumns[$table];
+	} // end of func GetMetaColumns
 	
 } // end of class Adodb
 ?>
