@@ -16,8 +16,11 @@ mail_parser.php
 
 mailsender.php
 	Easy send mail using PHPMailer.
+
 sql_generator.php
-	SQL语句生成类
+-----------------
+### SqlGenerator
+	Tools class to generator compative sql parse, Adodb object needed.
 
 toadtauri.php
 -------------
@@ -87,6 +90,12 @@ filesystem.php
 formatbytesize.php
 	Convert variant byte size to human readable format string.
 
+ini.php
+-------
+
+### IniGet($filepath, $section = '', $item = '')
+	Read ini file, return array of part of the value, notice to retrieve global value, set $section to ' ' instead of ''.
+
 request.php
 -----------
 	和get与post参数有关的函数集。
@@ -120,6 +129,7 @@ validate.php
 
 ### ValidateEmail($email)
 	Validate an email address.
+
 
 ===
 js:

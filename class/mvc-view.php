@@ -1,10 +1,12 @@
 <?php
 /**
-* @package      fwolflib
-* @subpackage	mvc
-* @copyright    Copyright 2008, Fwolf
-* @author       Fwolf <fwolf.aide+fwolflib-mvc@gmail.com>
-*/
+ * @package		fwolflib
+ * @subpackage	mvc
+ * @copyright	Copyright 2008, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib-mvc@gmail.com>
+ * @since		2008-04-06
+ * @version		$Id$
+ */
 
 require_once('fwolflib/func/string.php');
 require_once('fwolflib/func/request.php');
@@ -89,6 +91,12 @@ abstract class View {
 	 */
 	protected $sOutputMenu = '';
 	
+	/**
+	 * Html <title> of this view
+	 * @var	string
+	 */
+	protected $sViewTitle = '';
+	
 	
 	abstract protected function CheckObjTpl();	// 检查、确定$oTpl已初始化
 	abstract protected function GenHeader();
@@ -165,6 +173,20 @@ abstract class View {
 		
 		return $this->sOutput;
 	} // end of func GetOutput
+	
+	
+	/**
+	 * Set <title> of view page
+	 * @param	string	$title
+	 */
+	public function SetViewTitle($title)
+	{
+		// Init tpl variables set
+		$this->oTpl->assign_by_ref('view_title', $this->sViewTitle);
+		
+		$this->sViewTitle = $title;
+		$this->GenHeader();
+	} // end of func SetViewTitle
 	
 	
 	/**
