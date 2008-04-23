@@ -100,12 +100,11 @@ abstract class Controler {
 		// Remove 'v-' from 'v-view.php', optional
 		if ('v-' == substr($s_view, 0, 2))
 			$s_view = substr($s_view, 2);
-		// Replace '-' in view name to '_'
-		$s_view = str_replace('-', '_', $s_view);
 		
 		// Then, 'page_a' to 'PageA'
+		// Replace '-' in view name to '_'
 		if (empty($class))
-			$class = 'View' . StrUnderline2Ucfirst($s_view);
+			$class = 'View' . StrUnderline2Ucfirst($s_view, true);
 		
 		if (class_exists($class))
 		{

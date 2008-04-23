@@ -131,7 +131,7 @@ abstract class View {
 			$this->oCtl->DispError("No action given.");
 		
 		// Check if action relate method existence, call it or report error.
-		$s_func = 'GenContent' . StrUnderline2Ucfirst($this->sAction);
+		$s_func = 'GenContent' . StrUnderline2Ucfirst($this->sAction, true);
 		if (method_exists($this, $s_func))
 			$this->sOutputContent = $this->$s_func();
 		else 

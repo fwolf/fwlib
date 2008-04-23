@@ -244,10 +244,13 @@ function StrUcfirst2Underline($str)
  * 
  * If convert fail, return ucfirst($str)
  * @param	string	$str
+ * @param	boolean	$minus	Treat minus sign as splitter also.
  * @return	string
  */
-function StrUnderline2Ucfirst($str)
+function StrUnderline2Ucfirst($str, $minus = false)
 {
+	if ($minus)
+		$str = str_replace('-', '_', $str);
 	$ar = explode('_', $str);
 	$s = '';
 	if (empty($ar))
