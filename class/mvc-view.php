@@ -136,12 +136,15 @@ abstract class View {
 	protected function GenContent()
 	{
 		if (empty($this->sAction))
-			$this->oCtl->DispError("No action given.");
+			$this->oCtl->ViewErrorDisp("No action given.");
 		
 		// Check if action relate method existence, call it or report error.
 		$s_func = 'GenContent' . StrUnderline2Ucfirst($this->sAction, true);
 		if (method_exists($this, $s_func))
+		{
 			$this->sOutputContent = $this->$s_func();
+			return $this->sOutputContent;
+		}
 		else 
 			// An invalid action is given
 			$this->oCtl->ViewErrorDisp("The given action {$this->sAction} invalid or method $s_func doesn't exists.");
@@ -155,13 +158,13 @@ abstract class View {
 	public function GetOutput()
 	{
 		if (empty($this->sOutputHeader))
-			$this->GenHeader();
+			$this->sOutputHeader = $this->GenHeader();
 		if (empty($this->sOutputMenu))
-			$this->GenMenu();
+			$this->sOutputMenu = $this->GenMenu();
 		if (empty($this->sOutputContent))
-			$this->GenContent();
+			$this->sOutputContent = $this->GenContent();
 		if (empty($this->sOutputFooter))
-			$this->GenFooter();
+			$this->sOutputFooter = $this->GenFooter();
 		$this->sOutput = $this->sOutputHeader . 
 						 $this->sOutputMenu . 
 						 $this->sOutputContent . 
