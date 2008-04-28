@@ -9,6 +9,11 @@ dbupdater.php
 disp_listtable.php
 	列表类，以包含表头、分页、数据表格的方式显示各种列表。
 
+list_table.php
+--------------
+### ListTable
+	General table style display html to list data.
+
 mail_parser.php
 ---------------
 ### MailParser

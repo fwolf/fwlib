@@ -8,6 +8,7 @@
  * @version		$Id$
  */
 
+require_once('fwolflib/class/list_table.php');
 require_once('fwolflib/func/string.php');
 require_once('fwolflib/func/request.php');
 
@@ -44,6 +45,12 @@ abstract class View {
 	 * @var	object
 	 */
 	public $oCtl = null;
+	
+	/**
+	 * ListTable object
+	 * @var	object
+	 */
+	public $oLt = null;
 	
 	/**
 	 * Template object
@@ -117,6 +124,7 @@ abstract class View {
 		$this->sAction = GetGet('a');
 		
 		$this->CheckObjTpl();
+		$this->CheckObjLt();
 		
 		/* Template dir must be set before using
 		$this->GenHeader();
@@ -125,6 +133,21 @@ abstract class View {
 		$this->GenFooter();
 		*/
 	} // end of func __construct
+	
+	
+	/**
+	 * Check & init ListTable object
+	 * @param	boolean	$forcenew
+	 * @see	$oLt
+	 */
+	protected function CheckObjLt($forcenew = false)
+	{
+		if (empty($this->oLt) || $forcenew)
+		{
+			$this->oLt = &new ListTable($this->oTpl);
+		}
+		return $this->oLt;
+	} // end of func CheckObjLt
 	
 	
 	/**

@@ -291,5 +291,17 @@ class Adodb
 		return $this->aMetaColumns[$table];
 	} // end of func GetMetaColumns
 	
+	
+	/**
+	 * Prepare and execute sql
+	 * @param	string	$sql
+	 * @param	array	$inputarr	Optional parameters in sql
+	 * @return	object
+	 */
+	public function PExecute($sql, $inputarr = false)
+	{
+		$stmt = $this->Prepare($sql);
+		return $this->Execute($stmt, $inputarr);
+	} // end of PExecute
 } // end of class Adodb
 ?>
