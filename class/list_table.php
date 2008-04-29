@@ -495,12 +495,15 @@ class ListTable
 				else
 				{
 					// Add as insert
-					//$ar_title = array();	// Duplicate assign
-					foreach ($keys_data as $k => $v)
+					// need to merge keys first to keep order
+					$keys_merge = array_merge($keys_title, $keys_data);
+					foreach ($keys_merge as $k => $v)
 						if (in_array($v, $keys_title))
 							$ar_title[$v] = $this->aTitle[$v];
 						else
 							// Title items is fewer, need to fill
+							// These infact is keys from data,
+							// because of merge, so we can use $v directly
 							$ar_title[$v] = $v;
 				}
 				$this->aTitle = &$ar_title;
