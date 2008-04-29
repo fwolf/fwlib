@@ -42,13 +42,36 @@ if (!defined('P2R')) define('P2R', './');
  * @see			Module
  * @see			View
  */
-abstract class Controler {
+abstract class Controler
+{
+	/**
+	 * Run end time, used to caculate run time length
+	 * @var	float
+	 * @see $fTimeStart
+	 */
+	protected $fTimeEnd = 0;
+	
+	/**
+	 * Run start time, used to caculate run time length
+	 * 
+	 * Can only count to time when echo output.
+	 * @var	float
+	 * @see $fTimeEnd
+	 */
+	protected $fTimeStart = 0;
+	
+	/**
+	 * View object
+	 * @var	object
+	 * @see ViewDisp()
+	 */
+	protected $oView = null;
 	
 	/**
 	 * Action parameter, the view command to determin what to display
 	 * @var string	// $_GET['a'], means which action user prefered of the module
 	 */
-	protected $sAction = null;
+	protected $sAction = '';
 	
 	/**
 	 * Current module param
@@ -66,11 +89,51 @@ abstract class Controler {
 	 */
 	public function __construct()
 	{
+		// Record run start time first
+		$this->fTimeStart = microtime(true);
+		
 		// Get major parameters
 		$this->sModule = GetGet('m');
 		$this->sAction = GetGet('a');
 
 	} // end of func __construct
+	
+	
+	/**
+	 * Set run time length and db query times to View to display out.
+	 * 
+	 * Need fwolflib::View, 
+	 * and use global var $i_db_query_times set in fwolflib::Adodb
+	 * 
+	 * Assign action is done in View::GenFooter.
+	 * 
+	 * Cost about 0.05 more second when have db query.
+	 * 
+	 * Eg: Processed in 0.054994 seconds, 6 db queries.
+	 * @param	object	&$view	View object
+	 * @global	int		$i_db_query_times
+	 * @see	View::GenFooter
+	 */
+	public function SetInfoRuntime(&$view)
+	{
+		global $i_db_query_times;
+		
+		// Record run end time
+		$this->fTimeEnd = microtime(true);
+		// Generate info str, time used
+		$s = '';
+		$time_used = $this->fTimeEnd - $this->fTimeStart;
+		$time_used = round($time_used, 4);
+		$s .= "Processed in $time_used seconds";
+		// Db query times
+		if (isset($i_db_query_times))
+			$s .= ", $i_db_query_times db queries";
+		$s .= '.';
+		
+		// Assign msg to View's template object
+		if (!is_null($view->oTpl))
+			$view->oTpl->assign('debug_info_runtime', $s);
+	} // end of func SetInfoRuntime
 	
 	
 	/**
@@ -84,6 +147,7 @@ abstract class Controler {
 	 * 							Auto remove beginning `v-` from $view is
 	 * 							optional, if you use 'v-view.php' naming style,
 	 * 							it will auto happen.
+	 * @see	$oView
 	 */
 	protected function ViewDisp($view, $class = '')
 	{
@@ -108,9 +172,10 @@ abstract class Controler {
 		
 		if (class_exists($class))
 		{
-			$p = &new $class($this);
+			$this->oView = &new $class($this);
 			//$p->oCtl = $this;	// Set caller object	// Moved to __contruct of View class, transfer $this when do new().
-			echo $p->GetOutput();
+			
+			echo $this->oView->GetOutput();
 		}
 		else 
 		{

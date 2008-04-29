@@ -936,7 +936,8 @@ class SqlGenerator
 	public function SetWhere($param)
 	{
 		$this->mSetWhere = $param;
-		$this->sSqlWhere = ' WHERE ' . $this->GenSqlArray($param, ' AND ');
+		// Add '(' to defend sql injection
+		$this->sSqlWhere = ' WHERE ( ' . $this->GenSqlArray($param, ') AND (') . ' )';
 		return $this->sSqlWhere;
 	} // end of func SetWhere
 

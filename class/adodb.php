@@ -55,6 +55,12 @@ class Adodb
 	public $aMetaColumns = array();
 	
 	/**
+	 * Db query times
+	 * @var	int
+	 */
+	public $iDbQueryTimes = 0;
+	
+	/**
 	 * Sql generator object
 	 * @var object
 	 */
@@ -100,6 +106,7 @@ class Adodb
 	 * Overload __call, redirect method call to adodb
 	 * @var string	$name	Method name
 	 * @var array	$arg	Method argument
+	 * @global	int	$i_db_query_times
 	 * @return mixed
 	 */
 	public function __call($name, $arg)
@@ -140,6 +147,14 @@ class Adodb
 									)))
 				$arg[1] = mb_convert_encoding($arg[1], $this->aDbProfile['lang'], $this->sSysCharset);
 		}
+		
+		// Record db query times
+		global $i_db_query_times;
+		if (in_array($name, array(
+			'Execute', 'SelectLimit', 'GetOne', 'GetRow', 'GetAll',
+			'GetCol', 'GetAssoc', 'ExecuteCursor'
+			)))
+			$i_db_query_times++;
 		
 		return call_user_func_array(array($this->__conn, $name), $arg);
 	} // end of func __call

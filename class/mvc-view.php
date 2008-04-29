@@ -23,6 +23,7 @@ require_once('fwolflib/func/request.php');
  * 
  * Action的处理主要在View中，Action的默认值也在View中赋予和实现。
  * 
+ * If need to re-generate some part, you can directly call GenFooter() etc.
  * @package		fwolflib
  * @subpackage	mvc
  * @copyright	Copyright 2008, Fwolf
@@ -56,13 +57,23 @@ abstract class View {
 	 * Template object
 	 * @var	object
 	 */
-	protected $oTpl = null;
+	public $oTpl = null;
 	
 	/**
 	 * Action parameter, the view command to determin what to display
 	 * @var string	// $_GET['a'], means which action user prefered of the module
 	 */
 	protected $sAction = null;
+	
+	/**
+	 * Template file path
+	 * @var	array
+	 */
+	protected $aTplFile = array(
+		'footer' => 'footer.html',
+		'header' => 'header.html',
+		'menu' => 'menu.html',
+		);
 	
 	/**
 	 * Output content generated
@@ -106,12 +117,18 @@ abstract class View {
 	
 	
 	abstract protected function CheckObjTpl();	// 检查、确定$oTpl已初始化
-	abstract protected function GenHeader();
-	abstract protected function GenMenu();
+	
+	/*
+	// Changed to define here, sub class only need to set tpl file name or 
+	//	some other action.
+	abstract public function GenFooter();
+	abstract public function GenHeader();
+	abstract public function GenMenu();
+	*/
+	
 	// An template is given, point to action-relate method,
 	// and will check method exists at first.
 	//abstract protected function GenContent();
-	abstract protected function GenFooter();
 	
 	
 	/**
@@ -156,7 +173,7 @@ abstract class View {
 	 * Doing this by call sub-method according to $sAction,
 	 * Also, this can be override by extended class.
 	 */
-	protected function GenContent()
+	public function GenContent()
 	{
 		if (empty($this->sAction))
 			$this->oCtl->ViewErrorDisp("No action given.");
@@ -172,6 +189,39 @@ abstract class View {
 			// An invalid action is given
 			$this->oCtl->ViewErrorDisp("The given action {$this->sAction} invalid or method $s_func doesn't exists.");
 	} // end of function GenContent
+	
+	
+	/**
+	 * Generate footer part
+	 */
+	public function GenFooter()
+	{
+		// Set time used and db query executed time
+		$this->oCtl->SetInfoRuntime($this);
+		
+		$this->sOutputFooter = $this->oTpl->fetch($this->aTplFile['footer']);
+		return $this->sOutputFooter;
+	} // end of function GenFooter
+	
+	
+	/**
+	 * Generate header part
+	 */
+	public function GenHeader()
+	{
+		$this->sOutputHeader = $this->oTpl->fetch($this->aTplFile['header']);
+		return $this->sOutputHeader;
+	} // end of function GenHeader
+	
+	
+	/**
+	 * Generate menu part
+	 */
+	public function GenMenu()
+	{
+		$this->sOutputMenu = $this->oTpl->fetch($this->aTplFile['menu']);
+		return $this->sOutputMenu;
+	} // end of function GenMenu
 	
 	
 	/**
