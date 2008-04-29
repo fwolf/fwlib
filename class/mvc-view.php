@@ -119,8 +119,8 @@ abstract class View {
 	abstract protected function CheckObjTpl();	// 检查、确定$oTpl已初始化
 	
 	/*
-	// Changed to define here, sub class only need to set tpl file name or 
-	//	some other action.
+	// Changed to define directly in this class (below),
+	//	sub class only need to set tpl file name or do some other action.
 	abstract public function GenFooter();
 	abstract public function GenHeader();
 	abstract public function GenMenu();

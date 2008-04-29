@@ -55,12 +55,6 @@ class Adodb
 	public $aMetaColumns = array();
 	
 	/**
-	 * Db query times
-	 * @var	int
-	 */
-	public $iDbQueryTimes = 0;
-	
-	/**
 	 * Sql generator object
 	 * @var object
 	 */
@@ -148,7 +142,8 @@ class Adodb
 				$arg[1] = mb_convert_encoding($arg[1], $this->aDbProfile['lang'], $this->sSysCharset);
 		}
 		
-		// Record db query times
+		// Count db query times
+		// Use global var so multi Adodb object can be included in count.
 		global $i_db_query_times;
 		if (in_array($name, array(
 			'Execute', 'SelectLimit', 'GetOne', 'GetRow', 'GetAll',
