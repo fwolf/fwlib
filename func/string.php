@@ -102,17 +102,17 @@ function RandomString($len, $mode)
 /**
  * Decode a string which is MIME encoding
  *
- * Return utf-8 encoded string.
  * @link	http://www.faqs.org/rfcs/rfc2047
  * @link	http://www.php.net/imap_utf8
  * @param	string	$str
+ * @param	string	$encoding	Encoding of output string.
  * @return	string
  */
-function Rfc2047Decode($str)
+function Rfc2047Decode($str, $encoding = 'utf-8')
 {
 	// Find string encoding
 	$ar = array();
-	preg_match_all('/=\?(.{4,13})\?[B|Q]\?([\w\=]*)\?\=/i', $str, $ar);
+	preg_match_all('/=\?(.{3,13})\?[B|Q]\?([\/\d\w\=]*)\?\=/i', $str, $ar);
 	// 0 is all-string pattern, 1 is encoding, 2 is string to base64_decode
 	$i = count($ar[0]);
 	//var_dump($ar);
@@ -121,11 +121,12 @@ function Rfc2047Decode($str)
 		// Got match, process
 		for ($j = 0; $j < count($i); $j++)
 		{
+			// Decode base64 first 
 			$s = base64_decode($ar[2][$j]);
 			
-			// Convert string to utf-8
-			if ('utf-8' != strtolower($ar[1][$j]))
-				$s = mb_convert_encoding($s, 'utf-8', $ar[1][$j]);
+			// Then convert string to charset ordered
+			if ($encoding != strtolower($ar[1][$j]))
+				$s = mb_convert_encoding($s, $encoding, $ar[1][$j]);
 			
 			// Then replace into original string
 			$str = str_replace($ar[0][$j], $s, $str);
@@ -220,43 +221,6 @@ function StrReForm( $str, $s1, $s2 = '', $embody = false, $istrim = true )
 
 
 /**
- * 截取子字符串，中文按长度1计算
- * 在计算截取起始位置和截取长度时，中文也是按长度1计算的
- * 比如$str='大中小'，SubstrGb($str, 1, 1) = '中';
- * 
- * Obsolete, see: http://www.fwolf.com/blog/post/133
- * @link http://www.fwolf.com/blog/post/133
- * @param   string  $str
- * @param   int     $start
- * @param   int     $len
- */
-function SubstrGb($str = '', $start = 0, $len = 0)
-{
-    $tmp = '';
-	if (empty($str) || $len == 0)
-	{
-		return false;
-	}
-    $l = strlen($str);
-    $j = 0;
-	for ($i = 0; $i < $l; $i++)
-	{
-		$tmpstr = (ord($str[$i]) >= 161 && ord($str[$i]) <= 247&& ord($str[$i+1]) >= 161 && ord($str[$i+1]) <= 254)?$str[$i].$str[++$i]:$tmpstr = $str[$i];
-		if ($j >= $start && $j <= ($start + $len))
-		{
-			$tmp .= $tmpstr;
-		}
-        $j++;
-        if ($j == ($start + $len))
-        {
-            break;
-        }
-	}
-	return $tmp;
-} // end of function SubstrGb
-
-
-/**
  * Convert ucfirst format to underline_connect format
  * 
  * If convert fail, return original string.
@@ -303,6 +267,43 @@ function StrUnderline2Ucfirst($str, $minus = false)
 				$s .= ucfirst($s1);
 	return $s;
 } // end of func StrUnderline2Ucfirst
+
+
+/**
+ * 截取子字符串，中文按长度1计算
+ * 在计算截取起始位置和截取长度时，中文也是按长度1计算的
+ * 比如$str='大中小'，SubstrGb($str, 1, 1) = '中';
+ * 
+ * Obsolete, see: http://www.fwolf.com/blog/post/133
+ * @link http://www.fwolf.com/blog/post/133
+ * @param   string  $str
+ * @param   int     $start
+ * @param   int     $len
+ */
+function SubstrGb($str = '', $start = 0, $len = 0)
+{
+    $tmp = '';
+	if (empty($str) || $len == 0)
+	{
+		return false;
+	}
+    $l = strlen($str);
+    $j = 0;
+	for ($i = 0; $i < $l; $i++)
+	{
+		$tmpstr = (ord($str[$i]) >= 161 && ord($str[$i]) <= 247&& ord($str[$i+1]) >= 161 && ord($str[$i+1]) <= 254)?$str[$i].$str[++$i]:$tmpstr = $str[$i];
+		if ($j >= $start && $j <= ($start + $len))
+		{
+			$tmp .= $tmpstr;
+		}
+        $j++;
+        if ($j == ($start + $len))
+        {
+            break;
+        }
+	}
+	return $tmp;
+} // end of function SubstrGb
 
 
 ?>

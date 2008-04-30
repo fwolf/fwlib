@@ -22,7 +22,7 @@ class Pages
 	 * @access	protected
 	 * @var	boolean
 	 */
-	protected var $mDebug = false;
+	protected $mDebug = false;
 
 	/**
 	 * Parts of html heads, this is NOT html code
@@ -30,7 +30,7 @@ class Pages
 	 * @access	protected
 	 * @var	array
 	 */
-	protected var $mHead = array();
+	protected $mHead = array();
 
 	/**
 	 * Parts of html code before <head>, this is NOT html code
@@ -38,7 +38,7 @@ class Pages
 	 * @access	protected
 	 * @var	array
 	 */
-	protected var $mHeadahead = array();
+	protected $mHeadahead = array();
 
 	/**
 	 * Result html content
@@ -47,7 +47,7 @@ class Pages
 	 * @access	protected
 	 * @var	string
 	 */
-	protected var $mHtml = '';
+	protected $mHtml = '';
 
 	/**
 	 * Html content part of body
@@ -55,7 +55,7 @@ class Pages
 	 * @access	protected
 	 * @var	string
 	 */
-	protected var $mHtmlBody = '';
+	protected $mHtmlBody = '';
 
 	/**
 	 * Html content part of head
@@ -63,7 +63,7 @@ class Pages
 	 * @access	protected
 	 * @var	string
 	 */
-	protected var $mHtmlHead = '';
+	protected $mHtmlHead = '';
 
 	/**
 	 * Html content part of html_head
@@ -71,7 +71,7 @@ class Pages
 	 * @access	protected
 	 * @var	string
 	 */
-	protected var $mHtmlHeadahead = '';
+	protected $mHtmlHeadahead = '';
 
 	
     /**
