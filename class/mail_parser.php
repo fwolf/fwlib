@@ -491,7 +491,7 @@ class MailParser {
 				} else {
 					// Set the filename
 					//$rs['filename'] = imap_utf8($s_t);
-					$rs['filename'] = Rfc2047Encode($s_t);
+					$rs['filename'] = Rfc2047Decode($s_t);
 				}
 
 				// Some bad mail client didn't set the attach mime right
@@ -537,7 +537,7 @@ class MailParser {
 		}
 		// Subject: 
 		//$this->mMsgHeaderSubject = imap_utf8(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
-		$this->mMsgHeaderSubject = Rfc2047Encode(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
+		$this->mMsgHeaderSubject = Rfc2047Decode(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
 		// To: <Undisclosed-Recipient:;@gmail-pop.l.google.com>
 		$this->mMsgHeaderTo = RegexMatch('/^To: (.*)/m', $this->mMsgHeader);
 		// X-Sender: sammynatural@gmail.com

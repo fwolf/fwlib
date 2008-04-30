@@ -100,6 +100,48 @@ function RandomString($len, $mode)
 
 
 /**
+ * Decode a string which is MIME encoding
+ *
+ * Return utf-8 encoded string.
+ * @link	http://www.faqs.org/rfcs/rfc2047
+ * @link	http://www.php.net/imap_utf8
+ * @param	string	$str
+ * @return	string
+ */
+function Rfc2047Decode($str)
+{
+	// Find string encoding
+	$ar = array();
+	preg_match_all('/=\?(.{4,13})\?[B|Q]\?([\w\=]*)\?\=/i', $str, $ar);
+	// 0 is all-string pattern, 1 is encoding, 2 is string to base64_decode
+	$i = count($ar[0]);
+	//var_dump($ar);
+	if (0 < $i)
+	{
+		// Got match, process
+		for ($j = 0; $j < count($i); $j++)
+		{
+			$s = base64_decode($ar[2][$j]);
+			
+			// Convert string to utf-8
+			if ('utf-8' != strtolower($ar[1][$j]))
+				$s = mb_convert_encoding($s, 'utf-8', $ar[1][$j]);
+			
+			// Then replace into original string
+			$str = str_replace($ar[0][$j], $s, $str);
+		}
+		//echo "$str \n";
+		return $str;
+	}
+	else 
+	{
+		// No match, return original string
+		return $str;
+	}
+} 
+
+
+/**
  * Encode a string using MIME encoding method
  * 
  * Usually used in mail header, attachment name etc.
@@ -107,7 +149,7 @@ function RandomString($len, $mode)
  * No break in string(B encoding mode instead of Q, see 
  * phpmailer::EncodeHeader, line 1156), because that possible
  * break chinese chars.
- * @link http://www.faqs.org/rfcs/rfc2047
+ * @link	http://www.faqs.org/rfcs/rfc2047
  * @param	string	$str
  * @param	string	$encoding	Encoding of $str
  * @return	string
