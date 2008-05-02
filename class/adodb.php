@@ -143,13 +143,13 @@ class Adodb
 		}
 		
 		// Count db query times
-		// Use global var so multi Adodb object can be included in count.
-		global $i_db_query_times;
+		// Use global var so multi Adodb object can be included in count.(Done in func now)
+		// Use standalone func to can be easy extend by sub class.
 		if (in_array($name, array(
 			'Execute', 'SelectLimit', 'GetOne', 'GetRow', 'GetAll',
 			'GetCol', 'GetAssoc', 'ExecuteCursor'
 			)))
-			$i_db_query_times++;
+			$this->CountDbQueryTimes();
 		
 		return call_user_func_array(array($this->__conn, $name), $arg);
 	} // end of func __call
@@ -196,9 +196,9 @@ class Adodb
 		try
 		{
 			// Sybase will echo 'change to master' warning msg
-			// :TODO: Will this proble solved if we drop default
+			// :THINK: Will this problem solved if we drop default
 			// database master from sa user ?
-			if ('sybase' == substr($this->aDbProfile['type'], 0, 6))
+			if ($this->IsDbSybase())
 				$rs = @$this->__conn->Connect($this->aDbProfile['host'], 
 										 $this->aDbProfile['user'], 
 										 $this->aDbProfile['pass'], 
@@ -214,7 +214,7 @@ class Adodb
 			// 针对mysql 4.1以上，UTF8编码的数据库，需要在连接后指定编码
 			// Can also use $this->aDbProfile['type']
 			// mysql, mysqli
-			if ('mysql' == substr($this->__conn->databaseType, 0, 5))
+			if ($this->IsDbMysql())
 				$this->__conn->Execute('set names "' . $this->aDbProfile['lang'] . '"');
 		}
 		catch (Exception $e)
@@ -228,6 +228,17 @@ class Adodb
 		return $rs;
 	} // end of func Connect
 	
+	
+	/**
+	 * Count how many db query have executed
+	 * 
+	 * This function can be extend by subclass if you want to count on multi db objects.
+	 * @global	int	$i_db_query_times
+	 */
+	protected function CountDbQueryTimes() {
+		global $i_db_query_times;
+		$i_db_query_times ++;
+	} // end of func CountDbQueryTimes
 	
 	/**
 	 * Convert recordset(simple array) or other string
@@ -300,6 +311,24 @@ class Adodb
 		}
 		return $this->aMetaColumns[$table];
 	} // end of func GetMetaColumns
+	
+	
+	/**
+	 * If current db is a mysql db.
+	 * @return	boolean
+	 */
+	public function IsDbMysql() {
+		return ('mysql' == substr($this->__conn->databaseType, 0, 5));
+	} // end of func IsDbMysql
+	
+	
+	/**
+	 * If current db is a sybase db.
+	 * @return	boolean
+	 */
+	public function IsDbSybase() {
+		return ('sybase' == substr($this->aDbProfile['type'], 0, 6));
+	} // end of func IsDbSybase
 	
 	
 	/**

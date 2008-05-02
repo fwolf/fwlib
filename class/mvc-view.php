@@ -70,9 +70,9 @@ abstract class View {
 	 * @var	array
 	 */
 	protected $aTplFile = array(
-		'footer' => 'footer.html',
-		'header' => 'header.html',
-		'menu' => 'menu.html',
+		'footer' => 'footer.tpl',
+		'header' => 'header.tpl',
+		'menu' => 'menu.tpl',
 		);
 	
 	/**
@@ -161,7 +161,7 @@ abstract class View {
 	{
 		if (empty($this->oLt) || $forcenew)
 		{
-			$this->oLt = &new ListTable($this->oTpl);
+			$this->oLt = new ListTable($this->oTpl);
 		}
 		return $this->oLt;
 	} // end of func CheckObjLt

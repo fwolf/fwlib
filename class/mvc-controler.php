@@ -103,7 +103,7 @@ abstract class Controler
 	 * Set run time length and db query times to View to display out.
 	 * 
 	 * Need fwolflib::View, 
-	 * and use global var $i_db_query_times set in fwolflib::Adodb
+	 * and use global var $i_db_query_times set in fwolflib::Adodb::CountDbQueryTimes
 	 * 
 	 * Assign action is done in View::GenFooter.
 	 * 
@@ -172,7 +172,7 @@ abstract class Controler
 		
 		if (class_exists($class))
 		{
-			$this->oView = &new $class($this);
+			$this->oView = new $class($this);
 			//$p->oCtl = $this;	// Set caller object	// Moved to __contruct of View class, transfer $this when do new().
 			
 			echo $this->oView->GetOutput();

@@ -13,7 +13,7 @@
  * 根据指定的主键或联合主键自动判断是insert还是update
  * 当然主键必须有值包含在数据中
  *
- * @param	AdoDb	$db		数据库连接对象
+ * @param	object	$db		ADOdb数据库连接对象
  * @param	string	$tbl	写入数据表名
  * @param	array	$data	要写入的数据，数组array(column=>value,...)形式
  * @param	mixed	$pkey	主键，可以是字符串或数组（也可以是定位数据的其他条件，但要求键和值必须包含在data数组中

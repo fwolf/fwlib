@@ -109,7 +109,7 @@ class ListTable
 		'page_size'			=> 10,
 		'page_cur'			=> 1,
 		'rows_total'		=> 10,
-		'tpl'				=> 'list_table.html',
+		'tpl'				=> 'list_table.tpl',
 		);
 	
 	/**
