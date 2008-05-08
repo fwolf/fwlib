@@ -45,9 +45,12 @@ function ClientIpToHex($ip = "") {
 		return '';
 	else {
 		$part = explode('.', $ip);
-		for ($i=0; $i<=count($part)-1; $i++) {
-			$hex .= substr("0" . dechex($part[$i]), -2);
-		}
+		if (4 != count($part))
+			return '';
+		else
+			for ($i=0; $i<=count($part)-1; $i++) {
+				$hex .= substr('0' . dechex($part[$i]), -2);
+			}
 	}
 	return $hex;
 } // end of func ClientIpToHex

@@ -46,7 +46,7 @@ function Uuid($s_cus = '0000', $s_cus2 = '') {
     if (empty($s_cus2) || (8 != strlen($s_cus2)))
     	$s_cus2 = ClientIpToHex();
     if (empty($s_cus2) || (8 != strlen($s_cus2)))
-    	$s_cus2 = sprintf('%08x', mt_rand(0, 0xffffffff));
+    	$s_cus2 = sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
     
     return sprintf('%08s-%04s-%04s-%04x-%08s%04x',
     	// Unixtime, 8 chars from right-side end
