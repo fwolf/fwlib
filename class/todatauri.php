@@ -461,7 +461,7 @@ class ToDataUri extends Curl
 			$charset = mb_detect_encoding($this->mHtml, "gb2312, gbk, big5, utf-8");
 			$charset = strtolower($charset);
 		}
-		// :THINK:Use mb_check_encoding check again? 
+		// :THINK: Use mb_check_encoding check again? 
 		
 		// Meta Content-type
 		$meta = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';

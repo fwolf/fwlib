@@ -40,6 +40,15 @@ func:
 =====
 
 client.php
+----------
+
+### ClientIpFromHex($hex)
+	Get user ip from hex string.
+
+### ClientIpToHex($ip)
+	Convert user ip to hex string format.
+
+### GetBrowserType()
 	检查客户端的浏览器是NS还是IE(old)
 
 config.php
@@ -120,11 +129,26 @@ regex_match.php
 	Match content using preg, return result array or '' if non-match
 
 string.php
+----------
 	常用字符串函数集
+
 url.php
 	处理url字符串，增加或设置/更改URL参数。
+
 utf8_fix.php
 	Convert string like '_D0_D0_D0' to normal string
+
+uuid.php
+--------
+
+### Uuid($s_cus, $s_cus2)
+	Generate an UUID.
+
+### UuidParse($uuid)
+	Get information from an UUID.
+
+### UuidSpeedTest($num, $file)
+	Test how many uuid can this program generate per second.
 
 validate.php
 ------------

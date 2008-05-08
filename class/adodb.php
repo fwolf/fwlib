@@ -143,7 +143,8 @@ class Adodb
 		}
 		
 		// Count db query times
-		// Use global var so multi Adodb object can be included in count.(Done in func now)
+		// Use global var so multi Adodb object can be included in count.
+		//	(Done in func now)
 		// Use standalone func to can be easy extend by sub class.
 		if (in_array($name, array(
 			'Execute', 'SelectLimit', 'GetOne', 'GetRow', 'GetAll',
@@ -233,12 +234,17 @@ class Adodb
 	 * Count how many db query have executed
 	 * 
 	 * This function can be extend by subclass if you want to count on multi db objects.
+	 * 
+	 * Can't count in Adodb::property, because need display is done by Controler,
+	 * which will call View, but Adodb is property of Module,
+	 * so we can only use global vars to save this value. 
 	 * @global	int	$i_db_query_times
 	 */
 	protected function CountDbQueryTimes() {
 		global $i_db_query_times;
 		$i_db_query_times ++;
 	} // end of func CountDbQueryTimes
+	
 	
 	/**
 	 * Convert recordset(simple array) or other string
