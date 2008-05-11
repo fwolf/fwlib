@@ -17,7 +17,7 @@
  * you can give head or body contain more data, then limit disp by fit it
  * to another part.
  * 
- * Notice: No db query feather in this, data are transferd from outer.
+ * Notice: No db query feather in this, data are transferd from outerside.
  * 
  * <code>
  * $s = '';
@@ -38,9 +38,9 @@
  * 
  * // New object
  * //$this->oLt = new ListTable($this->oTpl, $ard, $art, '', $ar_conf);
- * // Or cal SetXxx func
- * $this->oLt->SetData($ar, $art);
+ * // Or cal SetXxx func, note that SetConfig MUST before SetData
  * $this->oLt->SetConfig($ar_conf);
+ * $this->oLt->SetData($ar, $art);
  * 
  * // Got output html
  * $s = $this->oLt->GetHtml();
@@ -86,6 +86,8 @@ class ListTable
 	 * Configuration
 	 * 
 	 * <code>
+	 * color_bg_[th/tr_even/tr_odd]:
+	 * 					Colors of rows.
 	 * fit_data_title:	0=data fit title, cut data items who's index not
 	 * 					in title
 	 * 					1=title fit data.
@@ -103,9 +105,13 @@ class ListTable
 	 * @var	array
 	 */
 	protected $aConfig = array(
+		// 浅蓝色配色方案
+		'color_bg_th'		=> '#d0dcff',	// 表头（第0行）
+		'color_bg_tr_even'	=> '#eef2ff',	// 偶数行
+		'color_bg_tr_odd'	=> 'none',		// 奇数行
 		'fit_data_title'	=> 0,
 		'fit_empty'			=> '&nbsp;',
-		'id_prefix'			=> 'lt_',
+		'id_prefix'			=> 'fwolflib-list_table-',
 		'page_size'			=> 10,
 		'page_cur'			=> 1,
 		'rows_total'		=> 10,
@@ -131,11 +137,22 @@ class ListTable
 	protected $oTpl = null;
 	
 	/**
+	 * Class of this list in html, used with {@see $sId}
+	 * 
+	 * Diff between $sClass and $sId:
+	 * $sClass has no prefix, while $sId has.
+	 * $sClass can be applyed css in project css file,
+	 * 	while $sId can be applyed css inline in tpl file.
+	 * @var	string
+	 */
+	protected $sClass = 'fwolflib-list_table';
+	
+	/**
 	 * Identify of this list, 
 	 * Also used in html, as div id property.
 	 * @var	string
 	 */
-	protected $sId = 'lt_div';
+	protected $sId = 'fwolflib-list_table-div';
 	
 	
 	// Old properties
@@ -357,14 +374,18 @@ class ListTable
 	 * @param	array	$art	Title of list.
 	 * @param	string	$id		Identify of this list, while multi list
 	 * 							in page, this is needed.
+	 * 							Note: will be applyed prefix automatic
+	 * 							when write to $sId.
 	 * @param	array	&$conf	Configuration.
 	 */
-	public function __construct(&$tpl, $ard = array(), $art = array(), $id = 'div', &$conf = array())
+	public function __construct(&$tpl, $ard = array(), $art = array(),
+		$id = 'div', &$conf = array())
 	{
 		$this->oTpl = $tpl;
 		
 		// Config will effect SetData, so set it first.
 		$this->SetConfig($conf);
+		$this->oTpl->assign_by_ref('lt_config', $this->aConfig);
 		
 		$this->SetData($ard, $art);
 		if (!empty($id))
@@ -592,14 +613,19 @@ class ListTable
 
 
 	/**
-	 * Set identify of this list <div>
+	 * Set identify and class of this list <div> in html
 	 * @param	string	$id
+	 * @param	string	$class
 	 * @return	string
 	 */
-	public function SetId($id)
+	public function SetId($id, $class = '')
 	{
-		$this->sId = $this->aConfig['id_prefix'] . $id;
+		if (!empty($id))
+			$this->sId = $this->aConfig['id_prefix'] . $id;
+		if (!empty($class))
+			$this->sClass = $class;
 		$this->oTpl->assign_by_ref('lt_id', $this->sId);
+		$this->oTpl->assign_by_ref('lt_class', $this->sClass);
 		return $this->sId;
 	} // end of func SetId
 
