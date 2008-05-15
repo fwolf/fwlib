@@ -156,7 +156,7 @@ abstract class Controler
 			require_once($view);
 		else 
 			$this->ViewErrorDisp("View define file $view not found!");
-		
+			
 		// From ..../page_a.php, get 'page_a'.
 		$s_view = substr($view, strrpos($view, '/') + 1);
 		$s_view = substr($s_view, 0, strrpos($s_view, '.'));

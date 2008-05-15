@@ -73,6 +73,7 @@
  * $lt->Disp();
  * // End of Example
  * </code>
+ * 
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2003-2008, Fwolf
