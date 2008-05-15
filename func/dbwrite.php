@@ -119,4 +119,3 @@ function DbWrite($db, $tbl, $data, $pkey)
 } // end of function DbWrite
 
 ?>
-
