@@ -9,6 +9,7 @@
  * @version		$Id$
  */
 
+require_once('fwolflib/func/env.php');
 
 /**
  * Validate an email address.
@@ -79,12 +80,9 @@ function ValidateEmail($email)
 		// :NOTICE: Some network provider will return fake A record if 
 		// a dns query return fail, usually disp some ads.
 		// So we only check MX record.
-		if ($is_valid && !(checkdnsrr($domain, "MX")))
-		//	|| checkdnsrr($domain, "A")))
-		{
-			// domain not found in DNS
-			$is_valid = false;
-		}
+		if ($is_valid && NixOs())
+			if (false == checkdnsrr($domain, "MX"))
+				$is_valid = false;
 	}
 	return $is_valid;
 }
