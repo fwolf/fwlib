@@ -1,20 +1,78 @@
 <?php
 /**
  * @package		fwolflib
+ * @subpackage	func
  * @copyright	Copyright 2007, Fwolf
- * @author		Fwolf <fwolf.aide@gmail.com>
+ * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
  * @since		2007-04-29
  * @version		$Id$
  */
 
+require_once('fwolflib/func/env.php');
+require_once('fwolflib/func/filesystem.php');
+
 /**
  * Download content as a file
  * @param	string	$content	Content to download
- * @param	string	$filename	Download file name
+ * @param	string	$filename	Download file name, send to client, not path on server.
  * @param	string	$mime		Mime type of file
+ * @return	boolean
  */
-function Download($content, $filename, $mime = 'application/force-download')
+function Download($content, $filename = '', $mime = 'application/force-download')
 {
+	list($usec, $sec) = explode(" ", microtime());
+	$usec = substr(strval($usec), 2, 3);
+	$tmpfilename = $sec . $usec;
+	
+	if (empty($filename)) {
+		// Use timestamp as filename if not provide
+		$filename = $tmpfilename;
+	}
+
+	if (NixOs()) {
+		$filepath = '/tmp/';
+	} else {
+		$s_tmp = '';
+		if (!empty($_ENV["TEMP"]))
+			$s_tmp = $_ENV["TEMP"];
+		if (empty($s_tmp) && !empty($_ENV["TMP"]))
+			$s_tmp = $_ENV["TMP"];
+		// Default, this should never accur
+		if (empty($s_tmp))
+			$s_tmp = 'c:/windows/temp/';
+		// And check again
+		if (!is_dir($s_tmp) || !is_writable($s_tmp))
+			die('No temp dir to store file content which need to downloaded.');
+		
+		$filepath = $s_tmp;
+	}
+	// Add the ending '/' to tmp path
+	if ('/' != substr($filepath, -1))
+		$filepath .= '/';
+	// Then got full path of tmp file
+	$tmpfilename = $filepath . $tmpfilename;
+
+	file_put_contents($tmpfilename, $content);
+	return DownloadFile($tmpfilename, $filename, $mime);
+}
+
+
+/**
+ * Download a file
+ * @param	string	$filepath	Full path to download file.
+ * @param	string	$filename	Download file name, send to client, not path on server.
+ * @param	string	$mime		Mime type of file
+ * @return	boolean
+ */
+function DownloadFile($filepath, $filename = '', $mime = 'application/force-download')
+{
+	// Check and fix parameters
+	if (!is_file($filepath) || !is_readable($filepath))
+		return false;
+	// If no client filename given, use original name
+	if (empty($filename))
+		$filename = BaseName1($filepath);
+	
 	// Begin writing headers
 	header("Cache-Control:");
 	header("Cache-Control: public");
@@ -35,22 +93,20 @@ function Download($content, $filename, $mime = 'application/force-download')
 
 	header("Accept-Ranges: bytes");
 
-	// Write content to file & read in pieces to download
-	list($usec, $sec) = explode(" ", microtime());
-	$usec = substr(strval($usec), 2);
-	$ft_name = '/tmp/' . $sec . '.' . $usec;
-	file_put_contents($ft_name, $content);
-
 	// Read temp file & output
-	$size = filesize($ft_name);
-	$fp = fopen($ft_name, "rb");
+	$size = filesize($filepath);
+	$size_downloaded = 0;	// Avoid infinite loop
+	$size_step = 1024 * 8;	// Control download speed
+	
+	$fp = fopen($filepath, "rb");
 	//fseek($fp,$range);
 	// Start buffered download
 	//reset time limit for big files
 	set_time_limit(0);
-	while(!feof($fp))
+	while(!feof($fp) && ($size > $size_downloaded))
 	{
-		print(fread($fp, 1024 * 8));
+		print(fread($fp, $size_step));
+		$size_downloaded += $size_step;
 		//flush();   这个是多余的函数,加上会使压缩包下载不完整
 		//ob_flush();  这个也是多余的函数,加上会使压缩包下载不完整
 	}
@@ -58,5 +114,5 @@ function Download($content, $filename, $mime = 'application/force-download')
 	fclose($fp);
 	//unlink($ft_name);
 	exit;
-}
+} // end of function DownloadFile
 ?>
