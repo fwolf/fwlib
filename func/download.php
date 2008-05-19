@@ -53,7 +53,10 @@ function Download($content, $filename = '', $mime = 'application/force-download'
 	$tmpfilename = $filepath . $tmpfilename;
 
 	file_put_contents($tmpfilename, $content);
-	return DownloadFile($tmpfilename, $filename, $mime);
+	$result = DownloadFile($tmpfilename, $filename, $mime);
+	
+	unlink($tmpfilename);
+	return $result;
 }
 
 

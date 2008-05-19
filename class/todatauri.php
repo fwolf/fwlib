@@ -280,11 +280,11 @@ class ToDataUri extends Curl
 			// Example1, with @import, no url(
 			// @import "mystyle.css";
 			// @import "../hide2.css";
-			$ar_regex[0] = "/(@import\s*\(?['\"]([^'\"]+)['\"]\s*\)?)/i";
+			$ar_regex[0] = "/(@import\s*\(?['\"]([^'\"\(\)\{\}]+)['\"]\s*\)?)/i";
 			// Example2, with url(, recardness @import
 			// url("../hide1a.css");
 			// url(../hide1b.css);
-			$ar_regex[1] = "/(url\s*\(['\"]?\s*([^'\"]+)['\"]?\s*\))/i";
+			$ar_regex[1] = "/(url\s*\(['\"]?\s*([^'\"\(\)\{\}]+)['\"]?\s*\))/i";
 			
 			foreach ($ar_regex as $regex) {
 				//$ar = $this->Match('/(<style[^<]+url\(\s*(\S+)\s*\)[^<]+<\/style>)/i', $src);
