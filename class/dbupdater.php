@@ -164,11 +164,11 @@ CREATE TABLE $this->sTblLog (
 			if (0 < $this->oDb->ErrorNo())
 			{
 				echo $this->oDb->ErrorNo() . ' - '  . $this->oDb->ErrorMsg() . "\n";
-				die("Log table $this->sTblLog doesn't exist and create failed.\n");
+				die("Log table $this->sTblLog doesn't exists and create fail.\n");
 			}
 
 			// Log table create information
-			$this->Log("Log table $this->sTblLog doesn't exist, create it, done.\n");
+			$this->Log("Log table $this->sTblLog doesn't exists, create it, done.\n");
 		}
 		else
 		{

@@ -22,13 +22,19 @@ function Ecl($str, $mode = 0, $noecho = 1)
 {
 	if (0 == $mode)
 		$mode = IsCli() ?  2 : 1;
-	$s_br = (2 == $mode) ? "\n" : "\n<br />";
-	$str .= $s_br;
+	if (1 == $mode)
+		// Add <br />
+		$str = str_replace("\n", "\n<br />", $str) . "\n<br />";
+	if (2 == $mode)
+		// Only need to add a tail \n
+		$str .= "\n";
+	//$s_br = (2 == $mode) ? "\n" : "\n<br />";
+	//$str .= $s_br;
 	if (0 == $noecho)
 		return($str);
 	else
 		echo($str);
-	return('');
-} // end of func Ecl
+	return($str);
+} // end of function Ecl
  
 ?>

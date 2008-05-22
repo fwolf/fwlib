@@ -745,18 +745,47 @@ class SqlGenerator
 	
 	/**
 	 * Set value in array to property
-	 * @param	array	$ar_config
+	 * @param	array	&$ar_config
 	 * @return	string
 	 */
-	public function Set($ar_config)
+	public function Set(&$ar_config)
 	{
-		if (is_array($ar_config) && !empty($ar_config))
+		if (is_array($ar_config) && !empty($ar_config)) {
+			// Re-order sql part
+			$ar = array();
+			if (isset($ar_config['SELECT']))
+				$ar['SELECT'] = $ar_config['SELECT'];
+			if (isset($ar_config['DELETE']))
+				$ar['DELETE'] = $ar_config['DELETE'];
+			if (isset($ar_config['INSERT']))
+				$ar['INSERT'] = $ar_config['INSERT'];
+			if (isset($ar_config['UPDATE']))
+				$ar['UPDATE'] = $ar_config['UPDATE'];
+			if (isset($ar_config['VALUES']))
+				$ar['VALUES'] = $ar_config['VALUES'];
+			if (isset($ar_config['FROM']))
+				$ar['FROM'] = $ar_config['FROM'];
+			if (isset($ar_config['SET']))
+				$ar['SET'] = $ar_config['SET'];
+			if (isset($ar_config['WHERE']))
+				$ar['WHERE'] = $ar_config['WHERE'];
+			if (isset($ar_config['GROUPBY']))
+				$ar['GROUPBY'] = $ar_config['GROUPBY'];
+			if (isset($ar_config['HAVING']))
+				$ar['HAVING'] = $ar_config['HAVING'];
+			if (isset($ar_config['ORDERBY']))
+				$ar['ORDERBY'] = $ar_config['ORDERBY'];
+			if (isset($ar_config['LIMIT']))
+				$ar['LIMIT'] = $ar_config['LIMIT'];
+			$ar_config = $ar;
+			
 			foreach ($ar_config as $part => $param)
 			{
 				// Write config to property
 				$part = ucfirst(strtolower($part));
 				$this->{"Set$part"}($param);
 			}
+		}
 	} // end of function
 	
 	

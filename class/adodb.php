@@ -50,6 +50,22 @@ class Adodb
 	
 	/**
 	 * Table schema
+	 * array(
+	 * 	col ->	// ADOFieldObject Object, not Array !
+	 * 		[name] => ts
+	 * 		[max_length] => -1
+	 * 		[type] => timestamp
+	 * 		[scale] =>
+	 * 		[not_null] => 1
+	 * 		[primary_key] =>
+	 * 		[auto_increment] =>
+	 * 		[binary] =>
+	 * 		[unsigned] =>
+	 * 		[zerofill] =>
+	 * 		[has_default] => 1
+	 * 		[default_value] => CURRENT_TIMESTAMP
+	 * 	)
+	 * )
 	 * @var array
 	 */
 	public $aMetaColumns = array();
@@ -270,6 +286,35 @@ class Adodb
 	
 	
 	/**
+	 * Find name of timestamp column of a table
+	 * @param	$tbl	Table name
+	 * @return	string
+	 */
+	public function FindColTs($tbl) {
+		$ar_col = $this->GetMetaColumns($tbl);
+		if (empty($ar_col))
+			return '';
+		
+		if ($this->IsDbSybase()) {
+			// Sybase's timestamp column must name as 'timestamp' and lower cased
+			if (isset($ar_col['timestamp']))
+				return 'timestamp';
+			else
+				return '';
+		}
+		elseif ($this->IsDbMysql()) {
+			// Check 'type'
+			foreach ($ar_col as $k => $v)
+				if (isset($v->type) && 'timestamp' == $v->type)
+					return $k;
+		}
+		else {
+			die("FindColTs not implemented!\n");
+		}
+	} // end of function FindColTs
+	
+	
+	/**
 	 * Generate SQL statement
 	 * 
 	 * User should avoid use SELECT/UPDATE/INSERT/DELETE simultaneously.
@@ -335,6 +380,31 @@ class Adodb
 	public function IsDbSybase() {
 		return ('sybase' == substr($this->aDbProfile['type'], 0, 6));
 	} // end of func IsDbSybase
+	
+	
+	/**
+	 * If a table exists in db ?
+	 * @param	string	$tbl
+	 * @return	boolean
+	 */
+	public function TblExists($tbl) {
+		if ($this->IsDbSybase()) {
+			$sql = "select count(1) as c from sysobjects where name = '$tbl' and type = 'U'";
+			$rs = $this->Execute($sql);
+			return (0 != $rs->fields['c']);
+		}
+		elseif ($this->IsDbMysql()) {
+			$sql = "SHOW TABLES LIKE '$tbl'";
+			$rs = $this->Execute($sql);
+			return (0 != $rs->RowCount());
+		}
+		else {
+			// :NOTICE: Un-tested method
+			$sql = "select 1 from $tbl";
+			$rs = $this->Execute($sql);
+			return (0 == $this->ErrorNo());
+		}
+	} // end of function TblExists
 	
 	
 	/**
