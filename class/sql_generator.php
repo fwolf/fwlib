@@ -497,12 +497,15 @@ class SqlGenerator
 	 * @param boolean	$use_as	Sybase table alias can't use AS
 	 * @param boolean	$quote	AS column alias, need to be quoted(true),
 	 * 							AS table alias, need not to be quoted(false).
-	 * @param boolean	$tas	In table alias, array($k=>$v) means
-	 * 							'FROM $v AS $k', notice it's reverse order:
-	 * 							$v => $k, because 1 table can have mutl alias
+	 * @param boolean	$tas	True = reverse order, in table alias and select list,
+	 * 							array($k=>$v) means 'FROM $v AS $k', 
+	 * 							set by $v => $k is because 1 table can have multi alias, 
+	 * 							and alias are unique, and this way is more goodlook when
+	 * 							combile indexed and non-indexed item in list
+	 * 							(non-indexed will use it's original name).
 	 * @return string
 	 */
-	protected function GenSqlArrayAs($param, $use_as = true, $quote = false, $tas = false)
+	protected function GenSqlArrayAs($param, $use_as = true, $quote = false, $tas = true)
 	{
 		$sql = '';
 		if (is_array($param) && !empty($param))
@@ -607,8 +610,10 @@ class SqlGenerator
 	 */
 	protected function GenSqlQuote($table, $column, $val)
 	{
-		$this->oDb->GetMetaColumns($table);
-		$type = $this->oDb->aMetaColumns[$table][$column]->type;
+		return $this->oDb->QuoteValue($table, $column, $val);
+		/*
+		$this->oDb->GetMetaColumn($table);
+		$type = $this->oDb->aMetaColumn[$table][$column]->type;
 		//var_dump($type);
 		if (in_array($type, array(
 			'bigint',
@@ -631,6 +636,7 @@ class SqlGenerator
 			$val = stripslashes($val);
 			return $this->oDb->qstr($val, false);
 		}
+		*/
 	} // end of func GenSqlQuote
 
 	
@@ -789,7 +795,7 @@ class SqlGenerator
 		$this->sSqlDelete = ' DELETE FROM ' . $param;
 
 		// Retrieve table schema, so VALUES/SET can detimine how to quote
-		$this->oDb->GetMetaColumns($param);
+		$this->oDb->GetMetaColumn($param);
 		
 		return $this->sSqlDelete;
 	} // end of func SetDelete
@@ -846,7 +852,7 @@ class SqlGenerator
 		$this->sSqlInsert = ' INSERT INTO ' . $param;
 		
 		// Retrieve table schema, so VALUES/SET can detimine how to quote
-		$this->oDb->GetMetaColumns($param);
+		$this->oDb->GetMetaColumn($param);
 		
 		return $this->sSqlInsert;
 	} // end of func SetInsert
@@ -859,7 +865,7 @@ class SqlGenerator
 	 */
 	public function SetLimit($param)
 	{
-		if ('sybase' != substr($this->oDb->aDbProfile['type'], 0, 6))
+		if (!$this->oDb->IsDbSybase())
 		{
 			$this->mLimit = $param;
 			$this->sSqlLimit = ' LIMIT ' . $this->GenSqlArray($param);
@@ -894,7 +900,7 @@ class SqlGenerator
 	public function SetSelect($param)
 	{
 		$this->mSelect = $param;
-		$this->sSqlSelect = ' SELECT ' . $this->GenSqlArrayAs($param, true, true, false);
+		$this->sSqlSelect = ' SELECT ' . $this->GenSqlArrayAs($param, true, true, true);
 		return $this->sSqlSelect;
 	} // end of func SetSelect
 	
@@ -925,7 +931,7 @@ class SqlGenerator
 		$this->sSqlUpdate = ' UPDATE ' . $param;
 
 		// Retrieve table schema, so VALUES/SET can detimine how to quote
-		$this->oDb->GetMetaColumns($param);
+		$this->oDb->GetMetaColumn($param);
 
 		return $this->sSqlUpdate;
 	} // end of func SetUpdate

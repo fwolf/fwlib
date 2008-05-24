@@ -97,9 +97,9 @@ function UuidParse($uuid) {
 			'time_low'	=> hexdec($u[0]),
 			'time_mid'	=> hexdec($u[1]),
 			'custom_1'	=> $u[2],
-			'random_1'	=> $u[3],
-			'custom_2'	=> substr($u[4], 0, 8),
-			'ip'		=> ClientIpFromHex(substr($u[4], 0, 8)),
+			'custom_2'	=> $u[3] . substr($u[4], 0, 4),
+			'ip'		=> ClientIpFromHex($u[3] . substr($u[4], 0, 4)),
+			'random_1'	=> substr($u[4], 4, 4),
 			'random_2'	=> substr($u[4], 8)
 			);
 	}

@@ -50,6 +50,7 @@ class Adodb
 	
 	/**
 	 * Table schema
+	 * 
 	 * array(
 	 * 	col ->	// ADOFieldObject Object, not Array !
 	 * 		[name] => ts
@@ -68,7 +69,28 @@ class Adodb
 	 * )
 	 * @var array
 	 */
-	public $aMetaColumns = array();
+	public $aMetaColumn = array();
+	
+	/**
+	 * Table column name array, index is upper case of column name
+	 * 
+	 * eg: array(
+	 * 	'COLUMN' => 'column',
+	 * )
+	 * @var	array
+	 */
+	public $aMetaColumnName = array();
+	
+	/**
+	 * Primary key columns of table
+	 * 
+	 * array(
+	 * 	tbl_name -> 'col_pk',
+	 * 	tbl_name -> array(pk_col1, pk_col2),
+	 * )
+	 * @var	array
+	 */
+	public $aMetaPrimaryKey = array();
 	
 	/**
 	 * Sql generator object
@@ -291,7 +313,7 @@ class Adodb
 	 * @return	string
 	 */
 	public function FindColTs($tbl) {
-		$ar_col = $this->GetMetaColumns($tbl);
+		$ar_col = $this->GetMetaColumn($tbl);
 		if (empty($ar_col))
 			return '';
 		
@@ -312,6 +334,25 @@ class Adodb
 			die("FindColTs not implemented!\n");
 		}
 	} // end of function FindColTs
+	
+	
+	/**
+	 * Get rows count by condition user given
+	 * @param	string	$tbl
+	 * @param	string	$con	Condition, can be where, having etc, raw sql string.
+	 * @return	int		-1 error/0 not found/N > 0 number of rows
+	 */
+	public function GetRowCount($tbl, $con) {
+		$rs = $this->PExecute($this->GenSql(array(
+			'SELECT' => array('c' => 'count(1)'),
+			'FROM'	=> $tbl,
+			)) . $con);
+		if (false == $rs || 0 == $rs->RowCount())
+			// Execute error
+			return -1;
+		else
+			return $rs->fields['c'];
+	} // end of function GetRowCount
 	
 	
 	/**
@@ -339,29 +380,135 @@ class Adodb
 	
 	/**
 	 * Get table schema
+	 * 
 	 * @param	string	$table
 	 * @param	boolean	$forcenew	Force to retrieve instead of read from cache
 	 * @return	array
-	 * @see $aMetaColumns
+	 * @see $aMetaColumn
 	 */
-	public function GetMetaColumns($table, $forcenew = false)
+	public function GetMetaColumn($table, $forcenew = false)
 	{
-		if (!isset($this->aMetaColumns[$table]) || (true == $forcenew))
+		if (!isset($this->aMetaColumn[$table]) || (true == $forcenew))
 		{
-			$this->aMetaColumns[$table] = $this->MetaColumns($table);
+			$this->aMetaColumn[$table] = $this->MetaColumns($table);
 			
 			// Convert columns to native case
-			$col_name = $this->MetaColumnNames($table);
+			$col_name = $this->GetMetaColumnName($table);
 			// $col_name = array(COLUMN => column), $c is UPPER CASED
-			foreach ($this->aMetaColumns[$table] as $c => $ar)
+			foreach ($this->aMetaColumn[$table] as $c => $ar)
 			{
-				$this->aMetaColumns[$table][$col_name[$c]] = $ar;
-				unset($this->aMetaColumns[$table][$c]);
+				$this->aMetaColumn[$table][$col_name[$c]] = $ar;
+				unset($this->aMetaColumn[$table][$c]);
 			}
-			//print_r($this->aMetaColumns);
+			//print_r($this->aMetaColumn);
 		}
-		return $this->aMetaColumns[$table];
-	} // end of func GetMetaColumns
+		return $this->aMetaColumn[$table];
+	} // end of func GetMetaColumn
+	
+	
+	/**
+	 * Get table column name
+	 * @param	string	$table
+	 * @param	boolean	$forcenew	Force to retrieve instead of read from cache
+	 * @return	array
+	 * @see $aMetaColumnName
+	 */
+	public function GetMetaColumnName($table, $forcenew = false)
+	{
+		if (!isset($this->aMetaColumnName[$table]) || (true == $forcenew))
+		{
+			$this->aMetaColumnName[$table] = $this->MetaColumnNames($table);
+		}
+		return $this->aMetaColumnName[$table];
+	} // end of func GetMetaColumnName
+	
+	
+	/**
+	 * Get primary key column of a table
+	 * @param	string	$table
+	 * @param	boolean	$forcenew	Force to retrieve instead of read from cache
+	 * @return	mixed	Single string value or array when primary key contain multi columns.
+	 * @see $aMetaPrimaryKey
+	 */
+	public function GetMetaPrimaryKey($table, $forcenew = false) {
+		if (!isset($this->aMetaPrimaryKey[$table]) || (true == $forcenew)) {
+			// Find using Adodb first
+			$ar = $this->MetaPrimaryKeys($table);
+			if (false == $ar || empty($ar)) {
+				// Adodb not support, find by hand
+				// Sybase
+				// 	keys1、keys2、keys3的描述不清，应该是：
+				//	select name ,keycnt
+				//		,index_col(YourTableName,indid,1)   --主键中的第一列
+				//		,index_col(YourTableName,indid,2)   --主键中的第二列，如果有的话
+				//	from   sysindexes
+				//	where   status   &   2048=2048
+				//		and   id=object_id(YourTableName)
+				// 主键涉及的列的数量在keycnt中。如果主键索引不是簇集索引（由status中的0x10位决定）的话，则为keycnt-1。
+				// http://topic.csdn.net/t/20030117/17/1369396.html
+				// 根据这种方法，目前好像只能用于主键包含三个以下字段的情况？
+				// 已测试过主键包含两个字段的情况下能取出来
+				/*
+				 select name, keycnt, index_col('sgqyjbqk', indid, 1)
+				, index_col('sgqyjbqk', indid, 2)
+				, index_col('sgqyjbqk', indid, 3)
+				from sysindexes
+				where status & 2048 = 2048
+					and id = object_id('sgqyjbqk')
+				 */
+				if ($this->IsDbSybase()) {
+					$rs = $this->PExecute($this->GenSql(array(
+						'select' => array('name', 'keycnt',
+							'k1' => "index_col('$table', indid, 1)",
+							'k2' => "index_col('$table', indid, 2)",
+							'k3' => "index_col('$table', indid, 3)",
+							),
+						'from'	=> 'sysindexes',
+						'where' => array(
+							'status & 2048 = 2048 ',
+							"id = object_id('$table')",
+							)
+						)));
+					if (true == $rs && 0 < $rs->RowCount()) {
+						// Got
+						$ar = array($rs->fields['k1']);
+						if (!empty($rs->fields['k2']))
+							$ar[] = $rs->fields['k2']; 
+						if (!empty($rs->fields['k3']))
+							$ar[] = $rs->fields['k3']; 
+					}
+					else {
+						// Table have no primary key
+						$ar = '';
+					}
+				}
+			}
+			
+			// Convert columns to native case
+			if (!empty($ar)) {
+				$col_name = $this->GetMetaColumnName($table);
+				// $col_name = array(COLUMN => column), $c is UPPER CASED
+				foreach ($ar as $idx => &$col) {
+					if ($col != $col_name[strtoupper($col)]) {
+						unset($ar[$idx]);
+						$ar[] = $col_name[strtoupper($col)];
+					}
+				}
+			}
+				
+			if (is_array($ar) && 1 == count($ar))
+				// Only 1 primary key column
+				$ar = $ar[0];
+			
+			// Set to cache
+			if (!empty($ar))
+				$this->aMetaPrimaryKey[$table] = $ar;
+		}
+		if (isset($this->aMetaPrimaryKey[$table]))
+			return $this->aMetaPrimaryKey[$table];
+		else
+			return '';
+	} // end of func GetMetaPrimaryKey
 	
 	
 	/**
@@ -381,6 +528,60 @@ class Adodb
 		return ('sybase' == substr($this->aDbProfile['type'], 0, 6));
 	} // end of func IsDbSybase
 	
+	
+	/**
+	 * Prepare and execute sql
+	 * @param	string	$sql
+	 * @param	array	$inputarr	Optional parameters in sql
+	 * @return	object
+	 */
+	public function PExecute($sql, $inputarr = false)
+	{
+		$stmt = $this->Prepare($sql);
+		return $this->Execute($stmt, $inputarr);
+	} // end of PExecute
+	
+	
+	/**
+	 * Smarty quote string in sql, by check columns type
+	 * @param	string	$table
+	 * @param	string	$column
+	 * @param	mixed	$val
+	 * @return	string
+	 */
+	public function QuoteValue($table, $column, $val) {
+		$this->GetMetaColumn($table);
+		if (!isset($this->aMetaColumn[$table][$column]->type))
+			die("Column to quote not exists($table.$column).\n");
+		//print_r($this->aMetaColumn[$table][$column]);
+		$type = $this->aMetaColumn[$table][$column]->type;
+		//var_dump($type);
+		if (in_array($type, array(
+			'bigint',
+			'bit',
+			'decimal',
+			'double',
+			'float',
+			'int',
+			'mediumint',
+			'numeric',
+			'real',
+			'smallint',
+			'tinyint',
+			)))
+			// Need not quote, output directly
+			return $val;
+		// Sybase timestamp
+		elseif ($this->IsDbSybase() && 'varbinary' == $type && 'timestamp' == $column)
+			return '0x' . $val;
+		else 
+		{
+			// Need quote, use db's quote method
+			$val = stripslashes($val);
+			return $this->qstr($val, false);
+		}
+	} // end of func GenSqlQuote
+
 	
 	/**
 	 * If a table exists in db ?
@@ -408,15 +609,133 @@ class Adodb
 	
 	
 	/**
-	 * Prepare and execute sql
-	 * @param	string	$sql
-	 * @param	array	$inputarr	Optional parameters in sql
-	 * @return	object
+	 * Smart write data row(s) to table
+	 * 
+	 * Will auto check row existence, and decide to use INSERT or UPDATE,
+	 * so PRIMARY KEY column must include in $data array.
+	 * Also, table must have primary key defined.
+	 * @param	string	$tbl	Table which rows to write to
+	 * @param	array	$data	Row(s) data, only one row(1-dim array, index is column name)
+	 * 							or some rows(2-dim array, index layer 1 MUST be number and
+	 * 							will not write to db).
+	 * @param	string	$mode	A auto detect/U update/I insert, ignore case.
+	 * 							If you assign some rows, it's better not to set this to 0,
+	 * 							because it will only detect by the FIRST row data.
+	 * @return	int		Number of inserted or updated rows, -1 means some error,
+	 * 					0 and upper are normal result.
 	 */
-	public function PExecute($sql, $inputarr = false)
-	{
-		$stmt = $this->Prepare($sql);
-		return $this->Execute($stmt, $inputarr);
-	} // end of PExecute
+	public function Write($tbl, $data, $mode = 'A') {
+		// Find primary key column first
+		$pk = $this->GetMetaPrimaryKey($tbl);
+		
+		// Convert single row data to multi row mode
+		if (!isset($data[0]))
+			$data = array(0 => $data);
+		// Convert primary key to array if it's single string now
+		if (!is_array($pk))
+			$pk = array(0 => $pk);
+		
+		// Columns in $data
+		$ar_cols = array_keys($data[0]);
+		// Check if primary key is assigned in $data
+		$b_data_ok = true;
+		foreach ($pk as $key)
+			if (!in_array($key, $ar_cols))
+				$b_data_ok = false;
+		// If no primary key column in $data, return -1
+		if (false == $b_data_ok)
+			return -1;
+		
+		$mode = strtoupper($mode);
+		// Consider mode if user not assigned
+		if ('A' == $mode) {
+			$s_where = ' WHERE ';
+			foreach ($pk as $key)
+				$s_where .= " $key = " . $this->QuoteValue($tbl, $key, $data[0][$key])
+					. ' and ';
+			$s_where = substr($s_where, 0, strlen($s_where) - 5);
+			if (0 < $this->GetRowCount($tbl, $s_where))
+				$mode = 'U';
+			else
+				$mode = 'I';
+		}
+		
+		// Do batch update or insert, prepare stmt first
+		$sql = '';
+		if ('U' == $mode) {
+			$ar_conf = array(
+				'UPDATE' => $tbl,
+				'LIMIT' => 1,
+				);
+			foreach ($pk as $key) {
+				// Primary key need remove from 'SET' clause
+				// Actual value will assign later, do quote then.
+				// :NOTICE: Remember to put pk data to end of row data when assign,
+				//	because where clause is after set clause.
+				$ar_conf['WHERE'][] = "$key = "
+					. $this->Param($key);
+				unset($ar_cols[array_search($key, $ar_cols)]);
+			}
+			// Convert array $ar_cols with to prepare param
+			$ar_set = array();
+			foreach ($ar_cols as $key)
+				$ar_set[$key] = $this->Param($key);
+			// Fin, assign 'SET' clause
+			$ar_conf['SET'] = $ar_set;
+		}
+		elseif ('I' == $mode) {
+			$ar_set = array();
+			foreach ($ar_cols as $key) {
+				$ar_set[$key] = $this->Param($key);
+			}
+			$ar_conf = array(
+				'INSERT' => $tbl,
+				'VALUES' => $ar_set,
+				);
+		}
+		$sql = $this->GenSql($ar_conf);
+		// Remove duplicate ' in sql add by SqlGenerator,
+		// Execute after Prepare will auto recoginize variant type and quote,
+		// but notice, it's VAR TYPE and NOT DB COLUMN TYPE.
+		$sql = preg_replace("/ {$this->replaceQuote}([\?\:\w-_]+){$this->replaceQuote}([, ])/i",
+			" $1$2", $sql);
+		
+		if (!empty($sql)) {
+			// Do prepare
+			$stmt = $this->Prepare($sql);
+			// Execute
+			if ('U' == $mode) {
+				foreach ($data as &$row) {
+					// Change pk's value position when update mode
+					foreach ($pk as $key) {
+						$v = $row[$key];
+						unset($row[$key]);
+						$row[$key] = $v;
+					}
+				}
+			}
+			// Now, finanly, actual write data
+			$this->BeginTrans();
+			try {
+				$this->Execute($stmt, $data);
+			}
+			catch (Exception $e) {
+				// Show error message ?
+				$this->RollbackTrans();
+				return -1;
+			}
+			// Any error ?
+			if (0 != $this->ErrorNo()) {
+				$this->RollbackTrans();
+				return -1;
+			}
+			else {
+				$this->CommitTrans();
+				return count($data);
+			}
+		}
+		else
+			return -1;
+	} // end of function Write
 } // end of class Adodb
 ?>
