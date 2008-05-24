@@ -29,13 +29,16 @@ require_once('fwolflib/func/client.php');
 
 /**
  * Get a uuid
+ * 
+ * User can combine cus and cus2 to sort uuid.
  * @param	string	$s_cus	Custom part in uuid, 4 chars long, 
  * 							positioned in 3rd section,
  *							default fill by '0'.
  * @param	string	$s_cus2	Custom part2 in uuid, 8 chars long,
- *							Positioned in start of 5 section,
- *							default fill by client user ip(hex),
+ *							Positioned in 4 section and start of 5 section,
+ * 							If empty given, user client user ip(hex) to fill,
  *							and random string if can't get ip.
+ * 							If given and length <> 8, will fill to 8 with random chars after it.
  * @return	string
  * @link	http://us.php.net/uniqid
  */
@@ -43,23 +46,29 @@ function Uuid($s_cus = '0000', $s_cus2 = '') {
     $ar = explode(" ", microtime());
     
     // Prepare custom string 2
-    if (empty($s_cus2) || (8 != strlen($s_cus2)))
+    if (empty($s_cus2))
     	$s_cus2 = ClientIpToHex();
-    if (empty($s_cus2) || (8 != strlen($s_cus2)))
-    	$s_cus2 = sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+    if (8 != strlen($s_cus2))
+    	$s_cus2 = substr($s_cus2 . 
+			sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff)), 0, 8);
+    //if (empty($s_cus2) || (8 != strlen($s_cus2)))
+    //	$s_cus2 = sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
     
-    return sprintf('%08s-%04s-%04s-%04x-%08s%04x',
+    return sprintf('%08s-%04s-%04s-%04s-%04s%04x%04x',
     	// Unixtime, 8 chars from right-side end
     	// 2030-12-31 = 1924876800(dec) = 72bb4a00(hex)
     	substr(str_repeat('0', 8) . base_convert($ar[1], 10, 16), -8),
-    	// Microtime, 4chars from right-side end
-    	substr(str_repeat('0', 4) . base_convert($ar[0] * 10000, 10, 16), -4),
+    	// Microtime, 4chars from left-side start
+    	// to exceed 65534(length 4) limit, * 100000 and div by 2(max 50000)
+    	substr(base_convert(round($ar[0] * 100000 / 2), 10, 16), 0, 4),
     	// Custom part 1, default 4 chars
     	$s_cus,
+    	// Custom part2-part1, length: 4
+		substr($s_cus2, 0, 4),
+    	// Custom part2-part2, length: 4, used in 5th section
+    	substr($s_cus2, -4),
     	// Random string, length: 4
     	mt_rand(0, 0xffff),
-    	// Custon part2, default user ip address
-		(empty($s_cus2) || 8 != strlen($s_cus2)) ? ClientIpToHex() : $s_cus2,
     	// Random string, length: 4
     	mt_rand(0, 0xffff)
     	);
@@ -97,7 +106,7 @@ function UuidParse($uuid) {
 	return $ar;
 	/*
   $rez=Array();
-    $u=explode("-",$uuid);
+    $u=explode("-",$uuid);cd50
     if(is_array($u)&&count($u)==5) {
         $rez=Array(
             'serverID'=>$u[0],
