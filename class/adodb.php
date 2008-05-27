@@ -318,11 +318,41 @@ class Adodb
 			return '';
 		
 		if ($this->IsDbSybase()) {
-			// Sybase's timestamp column must name as 'timestamp' and lower cased
+			// Sybase's timestamp column must be lower cased
+			// Can name as others, but name as 'timestamp' will auto got )timestamp) type.
+			/*
 			if (isset($ar_col['timestamp']))
 				return 'timestamp';
 			else
 				return '';
+			*/
+			// New way:
+			// http://bbs.chinaunix.net/archiver/tid-930729.html
+			$rs = $this->Execute($this->GenSql(array(
+				'SELECT' => array(
+					'name'		=> 'a.name',
+					'length' 	=> 'a.length',
+					'usertype'	=> 'a.usertype',
+					'type'		=> 'b.name',
+					),
+				'FROM'	=> array(
+					'a' => 'syscolumns',
+					'b' => 'systypes'
+					),
+				'WHERE' => array(
+					"a.id = object_id('$tbl')",
+					'a.type = b.type',
+					'a.usertype = b.usertype',
+					'b.name = "timestamp"',		// Without this line, can retrieve sybase's col info
+					),
+				)));
+			if (!empty($rs) && 0 < $rs->RowCount())
+				return $rs->fields['name'];
+			else
+				return '';
+			//select a.name,a.length,a.usertype,b.name AS type from syscolumns a ,systypes b 
+			//where id = object_id('ztb_yh') and a.type=b.type and a.usertype = b.usertype
+			
 		}
 		elseif ($this->IsDbMysql()) {
 			// Check 'type'
@@ -399,6 +429,12 @@ class Adodb
 			{
 				$this->aMetaColumn[$table][$col_name[$c]] = $ar;
 				unset($this->aMetaColumn[$table][$c]);
+			}
+			// Fix: sybase db display timestamp column as varbinary
+			if ($this->IsDbSybase()) {
+				$s = $this->FindColTs($table);
+				if (!empty($s))
+					$this->aMetaColumn[$table][$s]->type = 'timestamp';
 			}
 			//print_r($this->aMetaColumn);
 		}
@@ -530,6 +566,19 @@ class Adodb
 	
 	
 	/**
+	 * Is timestamp column's value is unique
+	 * @return	boolean
+	 */
+	public function IsTsUnique() {
+		if ('sybase' == $this->IsDbSybase())
+			return true;
+		else
+			// Mysql
+			return false;
+	} // end of function IsTsUnique
+	
+	
+	/**
 	 * Prepare and execute sql
 	 * @param	string	$sql
 	 * @param	array	$inputarr	Optional parameters in sql
@@ -572,7 +621,8 @@ class Adodb
 			// Need not quote, output directly
 			return $val;
 		// Sybase timestamp
-		elseif ($this->IsDbSybase() && 'varbinary' == $type && 'timestamp' == $column)
+		//elseif ($this->IsDbSybase() && 'varbinary' == $type && 'timestamp' == $column)
+		elseif ($this->IsDbSybase() && 'timestamp' == $type)
 			return '0x' . $val;
 		else 
 		{
@@ -726,6 +776,10 @@ class Adodb
 			}
 			// Any error ?
 			if (0 != $this->ErrorNo()) {
+				// Log to error log file
+				error_log('ErrorNo: ' . $this->ErrorNo()
+					. "\nErrorMsg: " . $this->ErrorMsg()
+					);
 				$this->RollbackTrans();
 				return -1;
 			}

@@ -22,6 +22,9 @@ require_once('fwolflib/func/env.php');
  * All updates MUST be done by step order, so when a last-update-id
  * is set, it's consided all updates before last-update-id is done.
  *
+ * Additional tools do similar task:
+ * http://xml2ddl.berlios.de/
+ * 
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2006-2008, Fwolf

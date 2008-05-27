@@ -104,6 +104,7 @@ class SyncDbData {
 	 */
 	public function __construct()
 	{
+		$this->Log('========  ' . date('Y-m-d H:i:s') . '  ========');
 		// Do check after we know target db
 		//$this->CheckTblRecord();
 	} // end of func __construct
@@ -312,10 +313,12 @@ class SyncDbData {
 			$this->sDbProfSrce = $config['srce']['type']
 				. '-' . $config['srce']['host']
 				. '-' . $config['srce']['name'];
+			$this->oDbSrce = &$db_srce;
 		}
 			
 		if (!empty($config['dest'])) {
 			$db_dest = $this->DbConn($config['dest']);
+			$this->oDbDest = &$db_dest;
 			// Record tbl was create in destination db
 			$this->CheckTblRecord($db_dest);
 		}
@@ -324,13 +327,14 @@ class SyncDbData {
 		if (!empty($config['queue']) && is_array($config['queue'])) {
 			foreach ($config['queue'] as $tbl_srce => $tbl_dest)
 				if ($this->iBatchDone < $this->iBatchSize)
+					// Notice, $tbl_dest maybe an array
 					$this->iBatchDone += $this->SyncOnewayTbl(
 						$db_srce, $db_dest, $tbl_srce, $tbl_dest);
 		}
 		// Output message
 		global $i_db_query_times;
-		$this->Log("SyncOneway done, total {$this->iBatchDone} rows synced,"
-			. " db query(s) $i_db_query_times times.");
+		$this->Log("SyncOneway done, total {$this->iBatchDone} rows wrote,"
+			. " db query(s) $i_db_query_times times.\n");
 	} // end of function SyncOneway
 	
 	
@@ -343,9 +347,6 @@ class SyncDbData {
 	 * @return	integer		Number of rows write to destination db.
 	 */
 	public function SyncOnewayTbl($db_srce, $db_dest, $tbl_srce, $tbl_dest) {
-		// Number of rows wrote in this func.
-		$i_batch_done = 0;
-		
 		// Prepare
 		$last_ts = $this->GetLastTs($db_dest, $tbl_srce);
 		$col_ts = $db_srce->FindColTs($tbl_srce);
@@ -363,41 +364,103 @@ class SyncDbData {
 			);
 		if (!empty($last_ts)) {
 			$last_ts = $db_srce->QuoteValue($tbl_srce, $col_ts, $last_ts);
-			$ar_conf['WHERE'] = "$col_ts > $last_ts";
+			// Some db's timestamp have duplicate value, use '>=' to avoid some rows been skipped.
+			// :NOTICE: If N rows have same ts, and N > $this->iBatchSize, it will endless loop.
+			// So use '>' when possible.
+			if ($db_srce->IsTsUnique())
+				$ar_conf['WHERE'] = "$col_ts > $last_ts";
+			else
+				$ar_conf['WHERE'] = "$col_ts >= $last_ts";
 		}
 		$sql = $db_srce->GenSql($ar_conf);
-		$rs = $db_srce->SelectLimit($sql, $this->iBatchSize);
+		$rs = $db_srce->SelectLimit($sql, $this->iBatchSize - $this->iBatchDone);
 		
-		if (0 < $rs->RowCount()) {
+		if (!empty($rs) && 0 < $rs->RowCount()) {
 			// Got data, prepare write to destination db
 			// Multi-rows write mode
 			$ar_rows = array();
 			$last_ts = '';	// Last ts to be remembered
-			while (!$rs->EOF 
-				&& ($this->iBatchDone + $i_batch_done) < $this->iBatchSize) {
+			while (!$rs->EOF) {
 				// Get one data row, and convert it to dest format
 				$ar = $rs->FetchRow();
 				$ar = $db_srce->EncodingConvert($ar);
 				// Remember timestamp, the last one will write to record table below
 				$last_ts = $ar[$col_ts];
-				// Important: call data convert function 
-				$s_func = 'DataConvert' . StrUnderline2Ucfirst($tbl_srce);
-				if (method_exists($this, $s_func))
-					$ar = $this->$s_func($ar);
-				// Add data to queue
-				$ar_rows[] = $ar;
-				$i_batch_done ++;
+				
+				// Add data from source db to queue, will convert later
+				if (!empty($ar))
+					$ar_rows[] = $ar;
 			}
+			// Maybe any reason cause no data in $ar_rows
+			if (empty($ar_rows))
+				return 0;
+			
 			// Write data rows to db
 			//print_r($ar_rows);
-			// $i should equal $i_batch_done
-			$i = $db_dest->Write($tbl_dest, $ar_rows);
-			//$db_dest->Write($tbl_dest, $ar_rows);
-			if (0 <= $i)
+			// If $tbl_dest is string, convert to array
+			if (!is_array($tbl_dest))
+				$tbl_dest = array($tbl_dest);
+			$i_batch_done = 0;
+			// Loop as if $tbl_dest is multi table
+			foreach ($tbl_dest as &$tbl_dest_single) {
+				$i_batch_done_single = 0;
+				// Important: call data convert function 
+				$s_func = 'DataConvert' . StrUnderline2Ucfirst($tbl_srce)
+					. 'To' . StrUnderline2Ucfirst($tbl_dest_single);
+				$ar_dest = array();
+				if (method_exists($this, $s_func)) {
+					// Convert data from source db to data for destination db
+					foreach ($ar_rows as &$ar_row) {
+						$ar = $this->$s_func($ar_row);
+						if (!empty($ar))
+							$ar_dest[] = $ar;
+					}
+				}
+				else
+					// No data convert needed
+					$ar_dest = &$ar_rows;
+				
+				// If got final data, write to db
+				if (!empty($ar_dest)) {
+					// Must loop manually, because each row's update/insert is difference
+					foreach ($ar_dest as &$ar_dest_row) {
+						$j = $db_dest->Write($tbl_dest_single, $ar_dest_row);
+						if (0 < $j) {
+							$i_batch_done += $j;
+							$i_batch_done_single += $j;
+						}
+					}
+					//$db_dest->Write($tbl_dest, $ar_rows);
+				}
+				
+				// Log single table sync message
+				if (0 < $i_batch_done_single)
+					$this->Log("SyncOnewayTbl $tbl_srce -> $tbl_dest_single, "
+						. "$i_batch_done_single rows wrote.");
+			}
+			
+			// Notice, if a table need to write to 2 table in dest,
+			// and 1 table write successful and another fail, it will still set last ts.
+			if (0 <= $i_batch_done)
 				$this->SetLastTs($db_dest, $tbl_srce, $last_ts);
-			return $i;
+			return $i_batch_done;
 		}
+		else
+			return 0;
 	} // end of function SyncOnewayTbl
+	
+	
+	/**
+	 * Trim a string, used in array_walk, so param need to be reference
+	 * @param	string	&$str
+	 * @return	string
+	 */
+	public function Trim(&$str)
+	{
+		$str = trim($str);
+		return $str;
+	} // end of function Trim
+	
 	
 	/**
 	 * Generate an UUID, can be re-write by sub class
