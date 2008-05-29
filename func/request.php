@@ -1,11 +1,24 @@
 <?php
 /**
  * @package		fwolflib
- * @copyright	Copyright 2007, Fwolf
- * @author		Fwolf <fwolf.aide@gmail.com>
+ * @subpackage	func
+ * @copyright	Copyright 2007-2008, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
  * @since		2007-01-21
  * @version		$Id$
  */
+
+/**
+ * Get variant from $_COOKIE
+ * @param	string	$var		Name of variant
+ * @param	mixed	$default	If variant is not given, return this.
+ * @return	mixed
+ */
+function GetCookie($var, $default='')
+{
+	return GetRequest($_COOKIE, $var, $default);
+} // end of func GetCookie
+
 
 /**
  * Get variant from $_GET
