@@ -89,6 +89,8 @@ class ListTable
 	 * <code>
 	 * color_bg_[th/tr_even/tr_odd]:
 	 * 					Colors of rows.
+	 * color_bg_tr_hover:
+	 * 					Change to this color when mouseover of row.(Not implement)
 	 * fit_data_title:	0=data fit title, cut data items who's index not
 	 * 					in title
 	 * 					1=title fit data.
@@ -109,7 +111,8 @@ class ListTable
 		// 浅蓝色配色方案
 		'color_bg_th'		=> '#d0dcff',	// 表头（第0行）
 		'color_bg_tr_even'	=> '#eef2ff',	// 偶数行
-		'color_bg_tr_odd'	=> 'none',		// 奇数行
+		'color_bg_tr_hover'	=> '#e3e3de',	// 鼠标指向时变色
+		'color_bg_tr_odd'	=> '#fff',		// 奇数行
 		'fit_data_title'	=> 0,
 		'fit_empty'			=> '&nbsp;',
 		'id_prefix'			=> 'fwolflib-list_table-',

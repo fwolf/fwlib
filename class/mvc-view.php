@@ -261,7 +261,7 @@ abstract class View {
 		$this->oTpl->assign_by_ref('view_title', $this->sViewTitle);
 		
 		$this->sViewTitle = $title;
-		$this->GenHeader();
+		$this->sOutputHeader = $this->GenHeader();
 	} // end of func SetViewTitle
 	
 	
