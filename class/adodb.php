@@ -747,7 +747,14 @@ class Adodb
 		// Remove duplicate ' in sql add by SqlGenerator,
 		// Execute after Prepare will auto recoginize variant type and quote,
 		// but notice, it's VAR TYPE and NOT DB COLUMN TYPE.
-		$sql = preg_replace("/ {$this->replaceQuote}([\?\:\w-_]+){$this->replaceQuote}([, ])/i",
+		// replaceQuote: The string used to escape quotes. Eg. double single-quotes for
+		// Microsoft SQL, and backslash-quote for MySQL. Used by qstr.
+		if ("''" == $this->replaceQuote)
+			$s_quote = "'";
+		else
+			$s_quote = $this->replaceQuote;
+		$sql = preg_replace(
+			"/ {$s_quote}([\?\:\w\-_]+){$s_quote}([, ])/i",
 			" $1$2", $sql);
 		
 		if (!empty($sql)) {
@@ -765,7 +772,9 @@ class Adodb
 				}
 			}
 			// Now, finanly, actual write data
-			$this->BeginTrans();
+			// Auto convert encoding ?
+			// Use of prepare we must convert $data manually, because $data is not sql.
+			$this->EncodingConvert($data);
 			try {
 				$this->Execute($stmt, $data);
 			}
