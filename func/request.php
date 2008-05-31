@@ -96,4 +96,18 @@ function GetSelfUrl($with_get_param = true) {
 	$url .= $_SERVER["HTTP_HOST"] . $s_t;
 	return $url;
 } // end of func GetSelfUrl
+
+
+/**
+ * Get variant from $_SESSION，will also rewrite SESSION to keep it
+ * @param	string	$var		Name of variant
+ * @param	mixed	$default	If variant is not given, return this.
+ * @return	mixed
+ */
+function GetSession($var, $default='')
+{
+	$_SESSION[$var] = GetRequest($_SESSION, $var, $default);
+	return $_SESSION[$var];
+} // end of func GetSession
+
 ?>
