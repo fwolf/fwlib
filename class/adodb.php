@@ -21,12 +21,17 @@ require_once('fwolflib/class/sql_generator.php');
  * is not exists, use original ADODB's, this can be done by php's mechematic
  * of overload __call __get __set.
  * 
- * 这似乎是extend ADODB的一种比较好的方式，比官方网站文档上给的按不同数据库来继承子类的方式，我认为要更方便一些。缺点是没有对RecordSet对象进行处理。
+ * 这似乎是extend ADODB的一种比较好的方式，比官方网站文档上给的按不同数据库来继承子类的方式，
+ * 我认为要更方便一些。缺点是没有对RecordSet对象进行处理。
  * 
+ * Adocb for Sybase bug:
+ * Affected_Rows() in windows 2003 不可用，httpd进程会出错中止
+ *  
+ * 执行sql查询的系列更改中，限定系统/HTML/PHP使用$sSysCharset指定的编码，涉及函数列在__call()中，
+ * 但一些通过数组等其它方式传递参数的ADODB方法仍然无法通过这种方式实现sql编码自动转换。
  * 
- * 执行sql查询的系列更改中，限定系统/HTML/PHP使用$sSysCharset指定的编码，涉及函数列在__call()中，但一些通过数组等其它方式传递参数的ADODB方法仍然无法通过这种方式实现sql编码自动转换。
- * 
- * 执行返回的数据还是需要转码的，不过返回数据的种类太多，放在应用中实现更简单一些，这里不自动执行，只提供一个EncodingConvert方法供用户调用。
+ * 执行返回的数据还是需要转码的，不过返回数据的种类太多，放在应用中实现更简单一些，这里不自动执行，
+ * 只提供一个EncodingConvert方法供用户调用。
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2008, Fwolf
@@ -285,6 +290,27 @@ class Adodb
 	
 	
 	/**
+	 * Delete rows by condition user given
+	 * @param	string	$tbl
+	 * @param	string	$cond	Condition, can be where, having etc, raw sql string, not null.
+	 * @return	int		-1 error/0 not found/N > 0 number of rows
+	 */
+	public function DelRow($tbl, $cond) {
+		$cond = trim($cond);
+		if (empty($cond))
+			return -1;
+		$this->PExecute($this->GenSql(array(
+			'DELETE' => $tbl,
+			)) . ' ' . $cond);
+		if (0 != $this->ErrorNo())
+			// Execute error
+			return -1;
+		else
+			return $this->Affected_Rows();
+	} // end of function DelRow
+	
+	
+	/**
 	 * Convert recordset(simple array) or other string
 	 * from db encoding to system encoding
 	 * 
@@ -369,14 +395,14 @@ class Adodb
 	/**
 	 * Get rows count by condition user given
 	 * @param	string	$tbl
-	 * @param	string	$con	Condition, can be where, having etc, raw sql string.
+	 * @param	string	$cond	Condition, can be where, having etc, raw sql string.
 	 * @return	int		-1 error/0 not found/N > 0 number of rows
 	 */
-	public function GetRowCount($tbl, $con) {
+	public function GetRowCount($tbl, $cond) {
 		$rs = $this->PExecute($this->GenSql(array(
 			'SELECT' => array('c' => 'count(1)'),
 			'FROM'	=> $tbl,
-			)) . $con);
+			)) . ' ' . $cond);
 		if (false == $rs || 0 == $rs->RowCount())
 			// Execute error
 			return -1;
@@ -612,6 +638,7 @@ class Adodb
 			'double',
 			'float',
 			'int',
+			'intn', // Sybase - tinyint
 			'mediumint',
 			'numeric',
 			'real',
