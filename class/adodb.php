@@ -431,7 +431,26 @@ class Adodb
 		{
 			return $this->oSg->GetSql($ar_sql);
 		}
+		else
+			return '';
 	} // end of func GenSql
+	
+	
+	/**
+	 * Generate SQL statement for Prepare
+	 * 
+	 * value -> ? or :name, and quote chars removed
+	 * @param	array	$ar_sql	Same as GenSql()
+	 * @return	string
+	 * @see	GenSql()
+	 * @see	SqlGenerator
+	 */
+	public function GenSqlPrepare($ar_sql) {
+		if (!empty($ar_sql))
+			return $this->oSg->GetSqlPrepare($ar_sql);
+		else
+			return '';
+	} // end of function GenSqlPrepare
 	
 	
 	/**

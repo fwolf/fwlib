@@ -739,6 +739,26 @@ class SqlGenerator
 	
 	
 	/**
+	 * Get SQL statement for Prepare usage
+	 * 
+	 * value -> ? or :name, and quote chars removed
+	 * 
+	 * Only simple treatment now.
+	 * @param	array	$ar_config	Same as GenSql()
+	 * @return	string
+	 * @see	GetSql()
+	 */
+	public function GetSqlPrepare($ar_config = array()) {
+		$sql = $this->GetSql($ar_config);
+		// Notice: The simple treatment here may cause wrong when ? and : are original sql needed
+		$sql = str_replace("'?'", '?', $sql);
+		// Notice: For oracle, not tested yet.
+		$sql = preg_replace('/\'(:[^\']+)\'/', '$1', $sql);
+		return $sql;
+	} // end of function GetSqlPrepare
+	
+	
+	/**
 	 * Get UPDATE sql only
 	 * @param	array	$ar_config
 	 * @return	string
