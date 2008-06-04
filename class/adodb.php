@@ -789,7 +789,10 @@ class Adodb
 				'VALUES' => $ar_set,
 				);
 		}
-		$sql = $this->GenSql($ar_conf);
+		$sql = $this->GenSqlPrepare($ar_conf);
+		
+		/* Treat moved to  SqlGenerator
+		//$sql = $this->GenSql($ar_conf);
 		// Remove duplicate ' in sql add by SqlGenerator,
 		// Execute after Prepare will auto recoginize variant type and quote,
 		// but notice, it's VAR TYPE and NOT DB COLUMN TYPE.
@@ -802,6 +805,7 @@ class Adodb
 		$sql = preg_replace(
 			"/ {$s_quote}([\?\:\w\-_]+){$s_quote}([, ])/i",
 			" $1$2", $sql);
+		*/
 		
 		if (!empty($sql)) {
 			// Do prepare

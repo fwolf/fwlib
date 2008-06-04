@@ -750,10 +750,27 @@ class SqlGenerator
 	 */
 	public function GetSqlPrepare($ar_config = array()) {
 		$sql = $this->GetSql($ar_config);
+		/* Old treatment
 		// Notice: The simple treatment here may cause wrong when ? and : are original sql needed
 		$sql = str_replace("'?'", '?', $sql);
 		// Notice: For oracle, not tested yet.
 		$sql = preg_replace('/\'(:[^\']+)\'/', '$1', $sql);
+		*/
+		
+		// Better treatment
+		// Remove duplicate ' in sql add by SqlGenerator,
+		// Execute after Prepare will auto recoginize variant type and quote,
+		// but notice, it's VAR TYPE and NOT DB COLUMN TYPE.
+		// replaceQuote: The string used to escape quotes. Eg. double single-quotes for
+		// Microsoft SQL, and backslash-quote for MySQL. Used by qstr.
+		if ("''" == $this->oDb->replaceQuote)
+			$s_quote = "'";
+		else
+			$s_quote = $this->oDb->replaceQuote;
+		$sql = preg_replace(
+			"/ {$s_quote}([\?\:\w\-_]+){$s_quote}([, ])/i",
+			" $1$2", $sql);
+		
 		return $sql;
 	} // end of function GetSqlPrepare
 	
