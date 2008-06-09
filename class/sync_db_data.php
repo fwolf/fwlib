@@ -60,6 +60,12 @@ class SyncDbData {
 	//public $aConfigOneway = array();
 	
 	/**
+	 * Log message
+	 * @var	array
+	 */
+	protected $aLog = array();
+	
+	/**
 	 * Number of rows have processed
 	 * @var	integer
 	 */
@@ -108,6 +114,16 @@ class SyncDbData {
 		// Do check after we know target db
 		//$this->CheckTblRecord();
 	} // end of func __construct
+	
+	
+	/**
+	 * destruct, output log message, only when there is some sync happen.
+	 */
+	public function __destruct() {
+		if (0 < $this->iBatchDone)
+			foreach ($this->aLog as &$log)
+				Ecl($log);
+	} // end of function destruct
 	
 	
 	/**
@@ -247,13 +263,14 @@ class SyncDbData {
 	
 	
 	/*
-	 * Save or output log message
+	 * Save or output log message, change to save now, output when destruct.
 	 * @param	string	$log
 	 */
 	protected function Log($log)
 	{
 		//$this->sSummary .= $log;
-		Ecl($log);
+		//Ecl($log);
+		$this->aLog[] = $log;
 	} // end of function Log
 	
 	
