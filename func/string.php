@@ -112,7 +112,8 @@ function Rfc2047Decode($str, $encoding = 'utf-8')
 {
 	// Find string encoding
 	$ar = array();
-	preg_match_all('/=\?(.{3,13})\?[B|Q]\?([\/\d\w\=]*)\?\=/i', $str, $ar);
+	//preg_match_all('/=\?(.{3,13})\?[B|Q]\?([\/\d\w\=]*)\?\=/i', $str, $ar);
+	preg_match_all('/=\?(.{3,13})\?([B|Q])\?([^\?]*)\?\=/i', $str, $ar);
 	// 0 is all-string pattern, 1 is encoding, 2 is string to base64_decode
 	$i = count($ar[0]);
 	//var_dump($ar);
@@ -121,15 +122,23 @@ function Rfc2047Decode($str, $encoding = 'utf-8')
 		// Got match, process
 		for ($j = 0; $j < count($i); $j++)
 		{
-			// Decode base64 first 
-			$s = base64_decode($ar[2][$j]);
+			$s = '';
+			if ('B' == strtoupper($ar[2][$j])) {
+				// Decode base64 first 
+				$s = base64_decode($ar[3][$j]);
+			}
+			elseif ('Q' == strtoupper($ar[2][$j])) {
+				// quoted-printable encoding ? its format like '=0D=0A'
+				$s = quoted_printable_decode($ar[3][$j]);
+			}
 			
 			// Then convert string to charset ordered
 			if ($encoding != strtolower($ar[1][$j]))
 				$s = mb_convert_encoding($s, $encoding, $ar[1][$j]);
 			
 			// Then replace into original string
-			$str = str_replace($ar[0][$j], $s, $str);
+			if (!empty($s))
+				$str = str_replace($ar[0][$j], $s, $str);
 		}
 		//echo "$str \n";
 		return $str;

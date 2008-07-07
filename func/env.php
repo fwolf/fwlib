@@ -12,6 +12,17 @@
 
 
 /**
+ * Force page visit through https only
+ */
+function ForceHttps() {
+	if (!isset($_SERVER['HTTPS']) || 'on' != $_SERVER['HTTPS']) {
+		$s = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		header("Location: $s");
+	}
+} // end of function ForceHttps
+
+
+/**
  * Check if this program is running under cli mod, or is viewing in browser
  * 
  * Tested in nix os only  

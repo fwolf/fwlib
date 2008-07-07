@@ -75,10 +75,13 @@ env.php
 -------
 	Runtime environment and server env variant.
 
-### is_cli.php
+### ForceHttps()
+	Force page to be visit through https://.
+
+### IsCli()
 	Check if this program is running under cli mod, or is viewing in browser
 
-### nixos.php
+### NixOs()
 	判断当前主机是否nix操作系统
 
 escape_color.php
