@@ -126,6 +126,7 @@ class ToDataUri extends Curl
 		// Using dom now, $this->mInfo is string, so...it's obsolete?
 		
 		$dom_info_ul = $dom->createElement('ul');
+		$dom_info_ul->setAttribute('style', 'text-align: left');
 		// Original url
 		$a = $dom->createElement('a', htmlspecialchars($this->mUrl));
 		$a->setAttribute('href', $this->mUrl);
