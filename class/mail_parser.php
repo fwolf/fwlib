@@ -299,7 +299,7 @@ class MailParser {
 	protected function ParseBody() {
 		// Find first boundary
 		// Content-Type: multipart/mixed; boundary="----=_NextPart_000_0018_01C74EFC.64789E20"
-		$b = RegexMatch('/boundary=("?)([^"]+?)\1[;\s]+/', $this->mMsgHeader);
+		$b = RegexMatch('/boundary=("?)([^"]+?)\1[;\s]?/', $this->mMsgHeader);
 		if (is_array($b))
 			$b = $b[1];
 		$this->ParseBodyContent($this->mMsgBody, $b);

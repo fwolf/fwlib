@@ -400,9 +400,15 @@ class SyncDbData {
 			while (!$rs->EOF) {
 				// Get one data row, and convert it to dest format
 				$ar = $rs->FetchRow();
+				
+                // Php-sybase in ubuntu intrepid use mssql wrongly, so read timestamp
+                // error way, need to correct, and before encoding convert.
+                if (16 != strlen($ar[$col_ts]))
+                        $ar[$col_ts] = bin2hex($ar[$col_ts]);
+                // Remember timestamp, the last one will write to record table below
+                $last_ts = strval($ar[$col_ts]);
+				
 				$ar = $db_srce->EncodingConvert($ar);
-				// Remember timestamp, the last one will write to record table below
-				$last_ts = $ar[$col_ts];
 				
 				// Add data from source db to queue, will convert later
 				if (!empty($ar))
