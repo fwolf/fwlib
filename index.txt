@@ -64,6 +64,13 @@ config.php
 ### SetCfg($cfg, $value)
 		Set global config by config string $cfg using value $value.
 
+datetime.php
+------------
+	Date and time func.
+
+### Strtotime1()
+	Remove ':000' before original strtotime().
+
 dbwrite.php
 	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
 	
