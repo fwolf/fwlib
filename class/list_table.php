@@ -92,7 +92,7 @@ class ListTable
 		'page_size'			=> 10,
 		'pager'				=> true,		// Is or not use pager
 		'pager_bottom'		=> true,		// Is or not use pager bottom, used when pager=true
-		'pager_text_cur'	=> '当前为第{page_cur}页',
+		'pager_text_cur'	=> '共{rows_total}条记录，每页显示{page_size}条，当前为第{page_cur}/{page_max}页',
 		'pager_text_first'	=> '首页',
 		'pager_text_goto1'	=> '转到第',
 		'pager_text_goto2'	=> '页',
@@ -100,16 +100,24 @@ class ListTable
 		'pager_text_last'	=> '尾页',
 		'pager_text_next'	=> '下一页',
 		'pager_text_prev'	=> '上一页',
+		'pager_text_spacer'	=> ' | ',		// To be between below texts.
 		'pager_top'			=> true,		// Is or not use pager top, used when pager=true
+		'param'				=> 'p',			// Used in url to set page no.
 		'rows_total'		=> 0,
 		'tpl'				=> 'list_table.tpl',
 		);
 	
 	/**
-	* 数组变量，指向要显示数据存放的数组，其格式见类说明
-	* @var	array
-	*/
+	 * 数组变量，指向要显示数据存放的数组，其格式见类说明
+	 * @var	array
+	 */
 	protected $aData = array();
+	
+	/**
+	 * Page url param array.
+	 * @var array
+	 */
+	protected $aParam = array();
 	
 	/**
 	 * Title of data, used as table title.
@@ -178,8 +186,8 @@ class ListTable
 	 * @param	array	&$conf	Configuration.
 	 */
 	public function __construct(&$tpl, $ard = array(), $art = array(),
-		$id = '', &$conf = array())
-	{
+		$id = '', &$conf = array())	{
+		$this->GetParam();
 		$this->oTpl = $tpl;
 		
 		// Config will effect SetData, so set it first.
@@ -355,6 +363,41 @@ class ListTable
 	
 	
 	/**
+	 * Get http GET param.
+	 * @return	array
+	 */
+	public function GetParam() {
+		$this->aParam = &$_GET;
+		if (!empty($this->aParam) && !get_magic_quotes_gpc()) {
+			foreach ($this->aParam as $k=>$v) {
+				$this->aParam[$k] = addslashes($v);
+			}
+		}
+		$this->aUrl['base'] = GetSelfUrl(false);
+		if (isset($this->aParam[$this->aConfig['param']])) {
+			$this->aConfig['page_cur'] = intval($this->aParam[$this->aConfig['param']]);
+			if (0 == $this->aConfig['page_cur'])
+				$this->aConfig['page_cur'] = 1;
+		}
+		return $this->aParam;
+	} // end of func GetParam
+	
+	
+	/**
+	 * Get info about some part of query sql, eg: limit, order by
+	 * @return	array
+	 */
+	public function GetSqlInfo() {
+		$ar = array();
+		$ar['limit'] = array(
+			'offset'	=> $this->aConfig['page_size'] * ($this->aConfig['page_cur'] - 1),
+			'count'		=> $this->aConfig['page_size'],
+			);
+		return $ar;
+	} // end of func GetSqlInfo
+	
+	
+	/**
 	 * Set configuration
 	 * @param	array|string	$c	Config array or name/value pair.
 	 * @param	string			$v	Config value
@@ -416,10 +459,11 @@ class ListTable
 	 * @param	string	$class
 	 * @return	string
 	 */
-	public function SetId($id, $class = '')
-	{
-		if (!empty($id))
-			$this->sId = $this->aConfig['code_prefix'] . $id;
+	public function SetId($id, $class = '')	{
+		if (empty($id))
+			$this->sId = $this->aConfig['code_prefix'];
+		else 
+			$this->sId = $this->aConfig['code_prefix'] . '-' . $id;
 		if (!empty($class))
 			$this->sClass = $class;
 		else
@@ -443,31 +487,90 @@ class ListTable
 	 * @see		$aConfig
 	 */
 	public function SetPager($rows_total, $page_cur = 0) {
-		// Check page_cur
-		if (0 == $page_cur) {
-			// Retrieve from GET
-			$page_cur = GetGet($this->sId . '-page_no', 0);
-		}
-		// Check for page 0 and page N(invalid page no.)
-		if (1 > $page_cur)
-			$page_cur = 1;
+		if (0 == $page_cur)
+			$page_cur = &$this->aConfig['page_cur'];
+		else 
+			$this->aConfig['page_cur'] = &$page_cur;
+
 		$i = ceil($rows_total / $this->aConfig['page_size']); 
-		if ($i > $page_cur)
+		if ($i < $page_cur)
 			$page_cur = $i;
+		$page_max = ceil($rows_total / $this->aConfig['page_size']);
 		
 		$this->aConfig['rows_total'] = $rows_total;
-		$this->aConfig['page_cur'] = $page_cur;
-		$this->aConfig['pager_text_cur'] = str_replace('{page_cur}', $page_cur
-			, $this->aConfig['pager_text_cur']);
+		$this->aConfig['pager_text_cur'] = str_replace(
+			array('{page_cur}', '{page_max}', '{rows_total}', '{page_size}'),
+			array($page_cur, $page_max, $rows_total, $this->aConfig['page_size']),
+			$this->aConfig['pager_text_cur']);
 		
 		// Generate url for pager
-		$this->aUrl['base'] = GetSelfUrl(true);
-		$this->aUrl['first'] = $this->aUrl['base'] . '&' . $this->sId
-			. '-page_no=' . $page_cur;
+		//$this->aUrl['base'] = GetSelfUrl(true);	// Move to GetParam()
+		if (1 != $page_cur) {
+			// Not first page
+//			$this->aUrl['first'] = $this->aUrl['base'] . '&' . $this->sId
+//				. '-page_no=' . $page_cur;
+//			$this->aUrl['prev'] = $this->aUrl['base'] . '&' . $this->sId
+//				. '-page_no=' . ($page_cur - 1);
+			$this->aUrl['first'] = $this->SetParam($this->aConfig['param'], 1);
+			$this->aUrl['prev'] = $this->SetParam($this->aConfig['param'], $page_cur - 1);
+		}
+		if ($page_cur != $page_max) {
+			// Not last page
+//			$this->aUrl['next'] = $this->aUrl['base'] . '&' . $this->sId
+//				. '-page_no=' . ($page_cur + 1);
+//			$this->aUrl['last'] = $this->aUrl['base'] . '&' . $this->sId
+//				. '-page_no=' . $page_max;
+			$this->aUrl['next'] = $this->SetParam($this->aConfig['param'], $page_cur + 1);
+			$this->aUrl['last'] = $this->SetParam($this->aConfig['param'], $page_max);
+		}
 		
 		// Assign url to tpl
 		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
+		$this->oTpl->assign_by_ref('lt_url_form', $this->SetParam(array(), $this->aConfig['param']));
+		// Assign hidden input
+		if (!empty($this->aParam)) {
+			$s = '';
+			foreach ($this->aParam as $k => $v)
+				$s .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";
+			$this->oTpl->assign_by_ref('lt_url_form_hidden', $s);
+		}
 	} // end of function SetPager
+	
+	
+	/**
+	 * Set url param, get the url
+	 * 
+	 * If $k is string, then $v is string to and means $k=$v.
+	 * if $k is array, then means key=>val in $k is added, and val in $v is removed.
+	 * Always 'remember' setting and return result url.
+	 * @param	mixed	$k
+	 * @param	mixed	$v
+	 * @return	string
+	 */
+	public function SetParam($k, $v = '') {
+		if (!is_array($k) && !is_array($v)) {
+			$this->aParam[addslashes($k)] = addslashes($v);
+		}
+		if (is_array($k)) {
+			foreach ($k as $key => $val)
+				$this->aParam[addslashes($key)] = addslashes($val);
+			if (!is_array($v))
+				$v = array($v);
+			if (is_array($v))
+				foreach ($v as $val)
+					if (isset($this->aParam[$val]))
+						unset($this->aParam[$val]);
+						
+		}
+		// Generate url and return
+		$s = '';
+		foreach ($this->aParam as $k => $v)
+			$s .= "&$k=$v";
+		if (!empty($s))
+			$s{0} = '?';
+		$s = $this->aUrl['base'] . $s;
+		return $s;
+	} // end of func SetParam
 
 	
 	// Old method

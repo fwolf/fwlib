@@ -632,7 +632,18 @@ class Adodb
 	public function PExecute($sql, $inputarr = false)
 	{
 		$stmt = $this->Prepare($sql);
-		return $this->Execute($stmt, $inputarr);
+		$this->BeginTrans();
+		$rs = $this->Execute($stmt, $inputarr);
+		if (0 != $this->ErrorNo()) {
+			// Log to error log file
+			error_log('ErrorNo: ' . $this->ErrorNo()
+				. "\nErrorMsg: " . $this->ErrorMsg()
+				);
+			$this->RollbackTrans();
+			return -1;
+		}
+		$this->CommitTrans();
+		return $rs;
 	} // end of PExecute
 	
 	
