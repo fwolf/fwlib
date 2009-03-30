@@ -271,9 +271,10 @@ function StrUnderline2Ucfirst($str, $minus = false)
 	if (empty($ar))
 		$s = ucfirst($str);
 	else 
-		foreach ($ar as $s1)
-			if (!empty($s1))
+		foreach ($ar as $s1) {
+			if ('' != $s1)
 				$s .= ucfirst($s1);
+		}
 	return $s;
 } // end of func StrUnderline2Ucfirst
 
