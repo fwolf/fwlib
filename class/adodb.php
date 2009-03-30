@@ -2,7 +2,7 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2008, Fwolf
+ * @copyright	Copyright 2008-2009, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2008-04-22
  * @version		$Id$
@@ -239,36 +239,78 @@ class Adodb
 	{
 		try
 		{
+			// Disable error display tempratory
+			$s = ini_get("display_errors");
+			ini_set("display_errors", "0");
+			
 			// Sybase will echo 'change to master' warning msg
 			// :THINK: Will this problem solved if we drop default
 			// database master from sa user ?
-			if ($this->IsDbSybase())
-				$rs = @$this->__conn->Connect($this->aDbProfile['host'], 
-										 $this->aDbProfile['user'], 
-										 $this->aDbProfile['pass'], 
-										 $this->aDbProfile['name'], 
-										 $forcenew);
-			else 
+			if ($this->IsDbSybase()) {
 				$rs = $this->__conn->Connect($this->aDbProfile['host'], 
 										 $this->aDbProfile['user'], 
 										 $this->aDbProfile['pass'], 
 										 $this->aDbProfile['name'], 
 										 $forcenew);
+			}
+			else {
+				$rs = $this->__conn->Connect($this->aDbProfile['host'], 
+										 $this->aDbProfile['user'], 
+										 $this->aDbProfile['pass'], 
+										 $this->aDbProfile['name'], 
+										 $forcenew);
+			}
 			
-			// 针对mysql 4.1以上，UTF8编码的数据库，需要在连接后指定编码
-			// Can also use $this->aDbProfile['type']
-			// mysql, mysqli
-			if ($this->IsDbMysql())
-				$this->__conn->Execute('set names "' . $this->aDbProfile['lang'] . '"');
+			// Recover original error display setting
+			ini_set("display_errors", $s);
+			
+			if (empty($rs)) {
+				throw new Exception('Db connect fail, please check php errorlog.', -1); 
+			}
 		}
 		catch (Exception $e)
 		{
-			//var_dump($e);
+			// Get error trace message
+			$i_ob = ob_get_level();
+			if (0 != $i_ob)
+				$s_t = ob_get_clean();
+				
+			ob_start();
 			adodb_backtrace($e->getTrace());
+			$s_trace = ob_get_clean();
+			
+			if (0 != $i_ob) {
+				// Maybe cause error if output handle of ob_start used before
+				ob_start();
+				echo $s_t;
+			}
+			
+			// Print error
+			Ecl($e->getCode());
+			Ecl($e->getMessage());
+			
+			// Log error
+			$s_trace = str_replace('&nbsp;', '>', strip_tags($s_trace));
+			error_log('');
+			error_log('======== Adodb db connect error');
+			error_log("\n" . $s_trace);
+			//error_log('');
+			
+			//var_dump($e);
 			//echo $e;
+			if (0 != $i_ob) {
+				ob_end_flush();
+			}
 			exit();
 		}
 		
+		// 针对mysql 4.1以上，UTF8编码的数据库，需要在连接后指定编码
+		// Can also use $this->aDbProfile['type']
+		// mysql, mysqli
+		if ($this->IsDbMysql()) {
+			$this->__conn->Execute('set names "' . $this->aDbProfile['lang'] . '"');
+		}
+
 		return $rs;
 	} // end of func Connect
 	
