@@ -9,6 +9,11 @@ dbupdater.php
 disp_listtable.php
 	列表类，以包含表头、分页、数据表格的方式显示各种列表。
 
+doc-markdown.php
+----------------
+### DocMarkdown
+	Easy write/display doc using Markdown markup language. 
+
 list_table.php
 --------------
 ### ListTable
