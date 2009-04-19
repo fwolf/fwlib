@@ -16,7 +16,7 @@ $ar_info['title']		= 'Changelog的写法';
 $ar_info['author']		= 'Fwolf';
 $ar_info['authormail']	= 'fwolf.aide+fwolflib.doc@gmail.com';
 $ar_info['keywords']	= 'log, doc, change, changelog, rule';
-$ar_info['description']	= '请在COMMIT的时候依照此规则。';
+$ar_info['description']	= '请在COMMIT的时候依照此规则书写修改描述。';
 
 // Content
 $ar_body = array();

@@ -247,7 +247,7 @@ class DocMarkdown
 		// Output body
 		asort($this->aBody);
 		foreach ($this->aBody as $k => $v) {
-			$s .= $v . "\n";
+			$s .= htmlspecialchars($v) . "\n";
 		}
 		
 		// Add </pre>
