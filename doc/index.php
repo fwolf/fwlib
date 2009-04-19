@@ -84,7 +84,7 @@ $dm = new DocMarkdown();
 $dm->aInfo['title']			= 'Doc in fwolflib';
 $dm->aInfo['author']		= 'Fwolf';
 $dm->aInfo['authormail']	= 'fwolf.aide+fwolflib.doc@gmail.com';
-$dm->aInfo['keywords']		= 'doc, rule, fwolflib, index';
+$dm->aInfo['keywords']		= 'doc, index, rule, fwolflib';
 $dm->aInfo['description']	= 'Can use or extend in project。';
 
 $s_body = "<div class='single_line' markdown='1'>\n";
