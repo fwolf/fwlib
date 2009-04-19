@@ -28,6 +28,7 @@ foreach ($ar as $file) {
 		$ar_finfo[$file['name']]['size'] = filesize($s_path . $file['name']);
 	}
 }
+asort($ar_file);
 //$ar_file = array(
 //	'changelog.php',
 //);
