@@ -62,11 +62,19 @@ if (isset($_GET['f'])) {
 foreach ($ar_file as $file) {
 	$s = substr(__FILE__, 0, strrpos(__FILE__, '/') + 1) . $file;
 	if (is_readable($s)) {
-		require($s);
-		if (isset($ar_info['title']))
-			$ar_finfo[$file]['title'] = $ar_info['title'];
-		unset($ar_info);
-		unset($ar_body);
+//		require($s);
+//		if (isset($ar_info['title']))
+//			$ar_finfo[$file]['title'] = $ar_info['title'];
+//		unset($ar_info);
+//		unset($ar_body);
+		// Read file and find 'title' set
+		$str = file_get_contents($s);
+		$ar = array();
+		$i = preg_match('/\$[\w_>-]+\[\'title\'\][\s]*=[\s]*(.*);/'
+			, $str, $ar);
+		if (0 < $i)
+			$ar_finfo[$file]['title'] = trim($ar[1], '\'"');
+		unset($str);
 	}
 }
 

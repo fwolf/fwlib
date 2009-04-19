@@ -35,13 +35,13 @@ Compate with style started with 3 chars.
 
 ###### Old style, obsolete from 2009-03-31
 
-- ADD
-- BUG
-- CHG
-- DEL
-- DEV
-- ENH
-- NEW
+- ADD: 
+- BUG: 
+- CHG: 
+- DEL: 
+- DEV: 
+- ENH: 
+- NEW: 
 ';
 
 ?>
