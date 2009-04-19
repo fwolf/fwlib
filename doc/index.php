@@ -70,7 +70,7 @@ foreach ($ar_file as $file) {
 		// Read file and find 'title' set
 		$str = file_get_contents($s);
 		$ar = array();
-		$i = preg_match('/\$[\w_>-]+\[\'title\'\][\s]*=[\s]*(.*);/'
+		$i = preg_match('/[^\/]\$[\w_>-]+\[\'title\'\][\s]*=[\s]*(.*);/'
 			, $str, $ar);
 		if (0 < $i)
 			$ar_finfo[$file]['title'] = trim($ar[1], '\'"');
@@ -94,6 +94,8 @@ foreach ($ar_file as $file) {
 	$s_body .= "<a href='?f=" . urlencode($file) . "'>$file</a> | ";
 	if (isset($ar_finfo[$file]['title']))
 		$s_body .= $ar_finfo[$file]['title'] . ' | ';
+	else
+		$s_body .= ' | ';
 	$s_body .= $ar_finfo[$file]['mtime'] . ' | ';
 	$s_body .= $ar_finfo[$file]['size'] . ' | ';
 	$s_body .= "\n";
