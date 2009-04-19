@@ -122,6 +122,8 @@ class DocMarkdown
 		$this->SetCssPrint();
 		$this->SetHeader();
 		$this->SetFooter();
+		
+		$this->SetInfoFwolflib();
 	} // end of class __construct
 	
 	
@@ -401,13 +403,14 @@ a {
 	text-decoration: none;
 }
 a:hover {
-	color: #fff; 
 	background-color: #b50394;
+	color: #fff; 
 }
 
 #footer li{
-	text-align: center;
+	line-height: 1.5em;
 	margin-right: 1em;
+	text-align: center;
 }
 
 /* Version info */
@@ -698,5 +701,21 @@ hr {
 	 */</pre></div>
 		';
 	} // end of func SetHeader
+	
+	
+	/**
+	 * Set info array
+	 */
+	public function SetInfoFwolflib() {
+		$this->aInfo['package']		= "fwolflib";
+		$this->aInfo['subpackage']	= "doc";
+		$this->aInfo['copyright1']	= "Copyright &copy; 2009, Fwolf";
+		$this->aInfo['since']		= "2009-04-19";
+		$this->aInfo['version']		= "\$Id\$";
+		$this->aInfo['copyright2']	= array(
+			'Copyright &copy; 2009, Fwolf',
+			'All Rights Reserved.',
+		);
+	} // end of func SetInfoFwolflib
 } // end of class DocMarkdown
 ?>
