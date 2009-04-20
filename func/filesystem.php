@@ -172,7 +172,7 @@ function ListDir($dir)
 	$dirfiles = scandir($dir);
 	if (empty($dirfiles))
 		return(false);
-	
+
 	$filename=array();
 	$filemtime=array();
 	// Parallel arrays (ignore the ".", "..")
@@ -184,19 +184,24 @@ function ListDir($dir)
 			$filemtime[] = filemtime($dir . '/' . $s);
 		}
 	}
-	// Merge to an array and sort by mtime
-	$ar_t = array_combine($filemtime, $filename);
-	ksort($ar_t, SORT_NUMERIC);
+	// Gen array
+	// Mtime maybe same, so index by name temporary
+	$ar_t = array();
+	foreach ($filename as $k => $v) {
+		$ar_t[$v] = $filemtime[$k];
+	}
+	// Sort by mtime
+	asort($ar_t, SORT_NUMERIC);
 	// Build result array, count file or dir size
 	$i = 0;
 	foreach ($ar_t as $key=>$value)
 	{
 		$i++;
-		$files[$i]['name'] = $value;
-		$files[$i]['mtime'] = $key;
+		$files[$i]['name'] = $key;
+		$files[$i]['mtime'] = $value;
 		//file or dir's size
 		//If not use pathfull, same-named file and '..' will be so bad
-		$pathfull = $dir . '/' . $value;
+		$pathfull = $dir . '/' . $key;
 		if (is_link($pathfull))
 		{
 			$files[$i]['size'] = FileSize1($pathfull);
