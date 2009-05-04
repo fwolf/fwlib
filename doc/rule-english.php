@@ -21,7 +21,41 @@ $ar_body = array();
 $ar_body[] = '
 <div class="single_line" markdown="1">
 
-## 词汇表
+## 命名词库
+
+### 常用词，前、后缀
+
+* 与词汇表不同的是，这里使用的多半是常用词汇。
+* 单个字母的一般只用在http Get参数中。
+* 不在本表当中的，优先使用词汇表当中的内容。
+* 首字母大写的表示主要用在类方法中。
+
+单词、缩写		|	代表含义
+----------------|-------------
+action, a		|Action参数
+anc-detail		|公告详细情况
+apply			|报名
+approve, aprv	|审核
+del				|删除
+detail, dtl		|详细信息
+Disp			|显示
+edit			|编辑
+flow			|流程处理(主要用于Module)
+Gen				|生成(html)。。。
+id				|主键Id值
+list			|列表
+module, m		|Module参数
+new				|新建
+page, p			|分页中的第几页
+publish, pub	|发布
+pub-detail		|公示详细情况
+reject, rej		|退回
+save			|保存
+select, sel		|选择
+submit, subm	|提交
+
+
+### 词汇表
 
 单词、缩写					|	含义
 ----------------------------|-------------
@@ -238,31 +272,31 @@ trend(s)					|（行业）趋势，动态
 upper limit, ul				|上限
 works category				|工程类别
 
-## 近义词
+### 近义词
 
-### bid/tender现在应该以用bid为主，例外：招标人/tenderee
+#### bid/tender现在应该以用bid为主，例外：招标人/tenderee
 
 - [招投标：Tender 与 Bid 之异同](http://bbs.chinabidding.com/simple/index.php?t12172.html)
 - [投标（文件）＆招标（文件）这个两个词怎么译](http://www.fane.cn/forum_view.asp?forum_id=34&view_id=15492)
 - [国际招标与投标英语词汇](http://bbs.chinabidding.com/simple/index.php?t14033.html)
 
-### subject/较概括、笼统的话题 topic/限定的主题 title/静态的标题或题目
+#### subject/较概括、笼统的话题 topic/限定的主题 title/静态的标题或题目
 
 * [Subject Topic Title ](http://ks.cn.yahoo.com/question/1307013006553.html)
 
-### 建设单位/施工单位/监理单位/物业管理
+#### 建设单位/施工单位/监理单位/物业管理
 
 - 施工单位 Construction unit
 - 监理单位 Supervision unit
 - 建设单位 Construction unit, 英语的"施工单位"和"建设单位"的表达是相同的, 通常翻译为owner
 - 物业管理 Estate Management
 
-## 参考：
+### 参考：
 
 * [企业网站常用中英文对照表](http://www.cnbruce.com/blog/showlog.asp?log_id=974)
 
 
-## 不宜使用的单词
+### 不宜使用的单词
 
 一些在数据库设计中<br />不宜使用的单词	|替代词
 ------------------------------------|------
