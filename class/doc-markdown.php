@@ -10,7 +10,7 @@
 
 /**
  * Display text document writing by MarkDown markup language.
- * 
+ *
  * Need jQuery locate at /js/jquery.js
  * @package		fwolflib
  * @subpackage	class
@@ -22,32 +22,43 @@
 class DocMarkdown
 {
 	/**
+	 * Some config vars
+	 * @var	array
+	 */
+	public $aConfig = array(
+		// Using 'Google AJAX Libraries API' now
+		// http://code.google.com/apis/ajaxlibs/
+		'path_jquery'	=> 'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
+//		'path_jquery'	=> '/js/jquery.js',
+	);
+
+	/**
 	 * Stored css styles
 	 * @var array
 	 */
 	protected $aCss = array();
-	
+
 	/**
 	 * Stored css styles for print
 	 * @var array
 	 */
 	protected $aCssPrint = array();
-	
+
 	/**
 	 * Footer text
 	 * @var array
 	 */
 	protected $aFooter = array();
-	
+
 	/**
 	 * Header text
 	 * @var array
 	 */
 	protected $aHeader = array();
-	
+
 	/**
 	 * Document infomation
-	 * 
+	 *
 	 * Will display out by sequence of their index,
 	 * Do NOT change there sequence.
 	 * @var array
@@ -61,7 +72,7 @@ class DocMarkdown
 
 		// Above part can be set (aBody[]) in doc script.
 		// Below 2 parts can be rewritten in __construct of subclass
-		 
+
 		// Verinfo part
 		'package'		=> "Phpdoc style package(aInfo['package'])",
 		'subpackage'	=> "Phpdoc style subpackage(aInfo['subpackage'])",
@@ -74,10 +85,10 @@ class DocMarkdown
 			"Will display in footer by list style.",
 		),
 	);
-	
+
 	/**
 	 * Body text
-	 * 
+	 *
 	 * Will display out by sequence of their index if is array,
 	 * or easy output if is string.
 	 * @var mixed
@@ -86,7 +97,7 @@ class DocMarkdown
 
 	/**
 	 * Document styles profiles
-	 * 
+	 *
 	 * Combined css, header, footer profile together
 	 * @var array
 	 */
@@ -98,17 +109,17 @@ class DocMarkdown
 			'footer'	=> 'default',
 		),
 	);
-	
+
 	/**
 	 * Which style profile to use
 	 * @var string
 	 */
 	public $sStyle = 'default';
-	
-	
+
+
 	/**
 	 * construct
-	 * 
+	 *
 	 * @var param	string	$path_markdown	Include path of MarkDown(Extra) lib
 	 */
 	public function __construct($path_markdown = 'markdown.php') {
@@ -116,25 +127,25 @@ class DocMarkdown
 		if (empty($path_markdown))
 			$path_markdown = 'adodb/adodb.inc.php';
 		require_once($path_markdown);
-		
+
 		// Do data initialize
 		$this->SetCss();
 		$this->SetCssPrint();
 		$this->SetHeader();
 		$this->SetFooter();
-		
+
 		$this->SetInfoFwolflib();
 	} // end of class __construct
-	
-	
+
+
 	/**
 	 * Echo $this->GetOutput()
 	 */
 	public function Display() {
 		echo $this->GetOutput();
 	} // end of func Display
-	
-	
+
+
 	/**
 	 * Generate output html
 	 * @return string
@@ -146,8 +157,8 @@ class DocMarkdown
 		$s .= $this->GenOutputHtmlFooter();
 		return $s;
 	} // end of func GenOutputHtml
-	
-	
+
+
 	/**
 	 * Generate output html body part
 	 * @return string
@@ -158,7 +169,7 @@ class DocMarkdown
 		}
 		elseif (is_string($this->aBody)) {
 			return Markdown($this->aBody);
-		} 
+		}
 		else {
 			// Disp array by sequence of their index
 			ksort($this->aBody);
@@ -169,8 +180,8 @@ class DocMarkdown
 			return $s;
 		}
 	} // end of func GenOutputHtmlBody
-	
-	
+
+
 	/**
 	 * Generate output html header part
 	 * @return string
@@ -191,10 +202,10 @@ class DocMarkdown
 		$s = str_replace('{copyright2}', $s_copyright2, $s);
 		return $s;
 		// Apply aInfo in
-		
+
 	} // end of func GenOutputHtmlFooter
-	
-	
+
+
 	/**
 	 * Generate output html header part
 	 * @return string
@@ -220,8 +231,8 @@ class DocMarkdown
 		$s = str_replace('{cssprint}', $this->aCssPrint[$this->aStyle[$this->sStyle]['cssprint']], $s);
 		return $s;
 	} // end of func GenOutputHtmlHeader
-	
-	
+
+
 	/**
 	 * Gen soucecode output
 	 * @return string
@@ -231,7 +242,7 @@ class DocMarkdown
 		$s = "<pre>\n";
 		// Add title
 		$s .= "{$this->aInfo['title']}\n====================\n\n";
-		
+
 		// Verinfo, grab from $this->aHeader
 		// identify by <div id="verinfo"><pre>
 		$s_header = $this->GenOutputHtmlHeader();
@@ -243,19 +254,19 @@ class DocMarkdown
 			$s_verinfo = str_replace('	', ' ', $s_verinfo);
 			$s .= $s_verinfo . "\n\n";
 		}
-		
+
 		// Output body
 		ksort($this->aBody);
 		foreach ($this->aBody as $k => $v) {
 			$s .= htmlspecialchars($v) . "\n";
 		}
-		
+
 		// Add </pre>
 		$s .= "</pre>\n";
 		return $s;
 	} // end of func GenOutputSourcecode
-	
-	
+
+
 	/**
 	 * Get output content
 	 * @return string
@@ -264,11 +275,11 @@ class DocMarkdown
 		// Sourcecode output
 		if (isset($_GET['view']) && 'sourcecode' == $_GET['view'])
 			return $this->GenOutputSourcecode();
-		else 
+		else
 			return $this->GenOutputHtml();
 	} // end of func GetOutput
-	
-	
+
+
 	/**
 	 * Store css data to array
 	 */
@@ -372,7 +383,7 @@ html, body, div, span, applet,
 	-------- Styles come from other framework
 	End
 */
-	
+
 
 body {
 	background-color: rgb(204, 232, 207);
@@ -404,7 +415,7 @@ a {
 }
 a:hover {
 	background-color: #b50394;
-	color: #fff; 
+	color: #fff;
 }
 
 #footer li{
@@ -469,22 +480,22 @@ hr {
 .article h4 {counter-reset: c-level4}
 .article h2:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1, decimal) "、"; 
+	content: "§ " counter(c-level1, decimal) "、";
 	counter-increment: c-level1 1
 }
 .article h3:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "、"; 
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "、";
 	counter-increment: c-level2 1
 }
 .article h4:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "、"; 
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "、";
 	counter-increment: c-level3 1
 }
 .article h5:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "." counter(c-level4, decimal) "、"; 
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "." counter(c-level4, decimal) "、";
 	counter-increment: c-level4 1
 }
 .article li {
@@ -517,8 +528,8 @@ hr {
 }
 		';
 	} // end of func SetCss
-	
-	
+
+
 	/**
 	 * Store css for print data to array
 	 */
@@ -528,8 +539,8 @@ hr {
 {display:none;}
 			';
 	} // end of func SetCssPrint
-	
-	
+
+
 	/**
 	 * Store footer data to array
 	 */
@@ -565,8 +576,8 @@ hr {
 			return false;
 		});
 	} // end of func SetSvninfo
-	
-	
+
+
 	/**
 	 * 显示/隐藏指定的对象(style.display方式)
 	 * @param	string	id		对象selector, jQuery format
@@ -578,7 +589,7 @@ hr {
 		var obj = $(id);
 		//如果对象定位方式是static，就是已经采用非浮动方式显示，则跳过处理
 		if ('static' == obj.css('position')) return null;
-		
+
 		// Reference: http://www.quirksmode.org/js/events_properties.html
 		if (!e) var e = window.event;
 		// 定位，可选
@@ -596,7 +607,7 @@ hr {
 		//obj.css('left', e.clientY);
 		obj.css('left', posx);
 		obj.css('top', posy);
-		
+
 		//显示/隐藏
 		if (('' == obj.css('display'))
 			|| ('block' == value)
@@ -607,8 +618,8 @@ hr {
 		else if (('block' == obj.css('display')) || ('none' == value))
 			obj.css({display: 'none'});
 	} // end of function SwitchDisplay
-	
-	
+
+
 	/**
 	 * 切换对象的定位方式
 	 * @param	string	id		对象selector, jQuery format
@@ -625,8 +636,8 @@ hr {
 			|| ('absolute' == value))
 			obj.css('position', 'absolute');
 	} // end of function SwitchPosition
-	
-	
+
+
 	// Auto set property
 	SetSvninfo();
 
@@ -643,14 +654,14 @@ hr {
 </html>
 		";
 	} // end of func SetFooter
-	
-	
+
+
 	/**
 	 * Store header data to array
 	 */
 	protected function SetHeader() {
 		$this->aHeader['default'] = '<?' . 'xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html 
+<!DOCTYPE html
      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -661,7 +672,7 @@ hr {
 	<meta name="Author" content="{info.author}" />
 	<meta name="Keywords" content="{info.keywords}" />
 	<meta name="Description" content="{info.description}" />
-	
+
 	<style type="text/css" media="screen, print">
 	<!--
 		{css}
@@ -672,9 +683,11 @@ hr {
 		{cssprint}
 	-->
 	</style>
-	
-	<script type="text/javascript" src="/js/jquery.js"></script>
-	
+
+	<script type="text/javascript"
+		src="' . $this->aConfig['path_jquery'] . '">
+	</script>
+
 	<title>{info.title}</title>
 
 </head>
@@ -682,12 +695,12 @@ hr {
 <div class="article">
 
 	<h1>{info.title}</h1>
-	
+
 	<div id="showhide_verinfo">
-		<a href="">[v]</a>&nbsp; &nbsp; &nbsp; &nbsp; 
+		<a href="">[v]</a>&nbsp; &nbsp; &nbsp; &nbsp;
 		<a href="?view=sourcecode" title="View Sourcecode">[s]</a>
 	</div>
-	
+
 	<div id="verinfo"><pre>
 	/**
 	 * {info.title}
@@ -701,8 +714,8 @@ hr {
 	 */</pre></div>
 		';
 	} // end of func SetHeader
-	
-	
+
+
 	/**
 	 * Set info array
 	 */
