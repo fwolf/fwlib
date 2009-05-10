@@ -24,7 +24,7 @@ require_once('fwolflib/func/env.php');
  *
  * Additional tools do similar task:
  * http://xml2ddl.berlios.de/
- * 
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2006-2008, Fwolf
@@ -36,7 +36,7 @@ class DbUpdater
 {
 	/**
 	 * Db server information array
-	 * 	Array item: host, user, pass, name, type.
+	 * 	Array item: type, host, user, pass, name.
 	 * @var	array
 	 */
 	private $aServer = array();
@@ -66,7 +66,7 @@ class DbUpdater
 	 * @see	$sCharsetDb
 	 */
 	public $sCharsetOs = '';
-	
+
 	/**
 	 * Summary text
 	 * @var string
@@ -75,7 +75,7 @@ class DbUpdater
 
 	/**
 	 * Table to save modifications and logs
-	 * 
+	 *
 	 * If u want to change log table name in use(had log some sql already)
 	 * remember to rename table in database also.
 	 * @var	string
@@ -98,7 +98,7 @@ class DbUpdater
 	{
 		if (!empty($dbserver))
 			$this->SetDatabase($dbserver);
-		
+
 		// Check and install log table
 		$this->CheckLogTbl();
 	} // end of func construct
@@ -111,7 +111,7 @@ class DbUpdater
 	public function CheckLogTbl()
 	{
 		$logtbl_not_exists = false;
-		if ('sybase' == $this->aServer['type'] || 
+		if ('sybase' == $this->aServer['type'] ||
 			'sybase_ase' == $this->aServer['type'])
 		{
 			$sql = "select count(1) as c from sysobjects where name = '$this->sTblLog' and type = 'U'";
@@ -119,7 +119,7 @@ class DbUpdater
 			if (0 == $rs->fields['c'])
 				$logtbl_not_exists = true;
 		}
-		elseif ('mysql' == $this->aServer['type'] || 
+		elseif ('mysql' == $this->aServer['type'] ||
 				'mysqli' == $this->aServer['type'])
 		{
 			$sql = "SHOW TABLES LIKE '$this->sTblLog'";
@@ -134,7 +134,7 @@ class DbUpdater
 			if (0 == $this->oDb->ErrorNo())
 				$logtbl_not_exists = true;
 		}
-		
+
 		if (true == $logtbl_not_exists)
 		{
 			// Table doesn't exist, create it
@@ -182,7 +182,7 @@ CREATE TABLE $this->sTblLog (
 		// Get last-done-id for later usage
 		$this->GetLastDoneId();
 	} // end of func CheckLogTbl
-	  
+
 
 	/**
 	 * 获得数据库连接
@@ -221,7 +221,7 @@ CREATE TABLE $this->sTblLog (
 				// Cancel transaction because some ddl sql can't use in trans.
 				//$this->oDb->StartTrans();
 				$this->oDb->Execute($sqltext);
-				
+
 				// Bad sybase support, select db will got errormsg
 				// Avoid sybase errormsg like: Changed database context to 'jygl'
 				if ((0 == strlen($this->oDb->ErrorMsg()) && 0 == $this->oDb->ErrorNo()) || ('Changed database context t' == substr($this->oDb->ErrorMsg(), 0, 26)))
@@ -313,14 +313,14 @@ CREATE TABLE $this->sTblLog (
 	{
 		$this->sSummary .= $log;
 	} // end of func Log
-	
-	
+
+
 	/**
 	 * Accept database information from outside class
 	 *	Didnot validate data send in.
 	 *	And connect to db after store infomation.
 	 * @access	public
-	 * @var	array	$server	array items: host, user, pass, name, type
+	 * @var	array	$server	array items: type, host, user, pass, name
 	 */
 	public function SetDatabase($server)
 	{
@@ -400,11 +400,11 @@ CREATE TABLE $this->sTblLog (
 		$s = '';
 		if (true == IsCli())
 			$s = $this->sSummary . "\n";
-		else 
+		else
 			$s = nl2br($this->sSummary);
 		return $s;
 	} // end of func Summary
 
-	
+
 } // end of class DbUpdater
 ?>

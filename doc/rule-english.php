@@ -66,6 +66,8 @@ aggregate, agg				|汇总，侧重于不是简单数学累加的情况
 allocate, alloc, alo		|分配，侧重于把一个整体划分到各个单体，比如把总分分配到每个子项上
 amount, amt					|总数，数量，有时即可指数量，也可指总合计，所以慎用，替代词：quantity
 announcement, announce, anc	|公告
+annual inspection, ai		|年检
+annual inspection time, ait	|年检时间/日期(date->time)
 application					|用途
 application, appl			|申请（名词）
 apply						|申请，报名
@@ -105,6 +107,7 @@ business license, bl		|营业执照
 calculate, calc				|计算，和compute相比，特指用数学方法进行比较复杂、难度较大的精确计算
 category, cat, ctgy			|类别，分类
 certificate, cert			|证书，证明
+certificated by, cert_by	|认证的发证机关/部门
 checker						|审核人，检查人
 class						|等级，级别
 commercial bid, cb			|商务标
@@ -130,6 +133,7 @@ delivery					|发送
 department, dept			|部门
 	department of construction, doc	|建设厅
 description, desc			|（产品）描述
+design enterprise, dent		|设计企业
 detail, dtl					|详细信息
 determine the winning bidder, dtwb	|确定中标人
 diploma						|学历
@@ -149,14 +153,21 @@ evaluated lowest bid price method, elbpm	|经评审的最低投标价法，也�
 evaluation meeting, em		|评审会
 exceed limit, el			|超过比例
 expert evaluation, ee		|专家评审
+expiration date, expt		|过期时间(简写中date->time)
 fee							|费用，规费
 fraud						|欺诈
+goods						|货物
 great_than, gt				|大于或等于（bash中的用法）
 history, his, hist, hx		|历史
+investigation				|勘察
+investigation enterprise, ient	|勘察企业
 investment, invst			|投资
 investment nature, invst_nature	|投资性质
+issued by					|非认证、资质的发证机关/部门
 item No.					|产品标号
 job title, jtitle			|工作职务
+landscaping					|景观美化，园林绿化
+landscaping enterprise, lent	|园林绿化企业
 lecture						|讲课稿
 legal representative, lgr	|法定代表人
 less than, lt				|小于或等于（bash中的用法）
@@ -205,7 +216,7 @@ purview						|范围
 qualification, qual			|资质，资格
 	postqualification		|资格后审
 	prequalification		|资格预审
-	qual_by					|发证机关/部门
+	qual_by					|资质发证机关/部门
 	qual_level				|资质等级
 	qual_rno				|资质证书编号
 	qual_time				|取得资格时间
@@ -247,9 +258,11 @@ start time, st				|开始时间
 submit, subm				|提交
 submission, subm			|申请书
 substantial response		|实质性响应
-supervision					|监督，管理
+supervision					|监督，管理，监理(行为)
 supervision suggestion order, sso	|监督意见(书)
-supervisor					|监理
+[construction/project] supervision enterprise, sent	|监理企业
+supervisor, sup				|监理(人)
+supplier					|供货商
 symposium					|座谈会
 technical bid, tb			|技术标
 technique data				|技术指标
