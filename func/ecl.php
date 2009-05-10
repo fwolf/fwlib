@@ -24,7 +24,7 @@ function Ecl($str, $mode = 0, $noecho = 1)
 		$mode = IsCli() ?  2 : 1;
 	if (1 == $mode)
 		// Add <br />
-		$str = str_replace("\n", "\n<br />", $str) . "\n<br />";
+		$str = str_replace("\n", "<br />\n", $str) . "<br />\n";
 	if (2 == $mode)
 		// Only need to add a tail \n
 		$str .= "\n";
@@ -36,5 +36,5 @@ function Ecl($str, $mode = 0, $noecho = 1)
 		echo($str);
 	return($str);
 } // end of function Ecl
- 
+
 ?>

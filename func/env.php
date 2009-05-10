@@ -1,7 +1,7 @@
 <?php
 /**
  * Functions about runtime environment and server env variant
- * 
+ *
  * Original is_cli.php and nixos.php merged in this.
  * @package		fwolflib
  * @copyright	Copyright 2006-2008, Fwolf
@@ -24,13 +24,13 @@ function ForceHttps() {
 
 /**
  * Check if this program is running under cli mod, or is viewing in browser
- * 
- * Tested in nix os only  
+ *
+ * Tested in nix os only
  * @return	boolean
  */
 function IsCli()
 {
-	if (isset($_ENV['_']) && (('/usr/bin/php' == $_ENV['_'])
+	if (isset($_ENV['_']) && (('/usr/bin/php' == substr($_ENV['_'], 0, 12))
 		|| ($_SERVER["SCRIPT_FILENAME"] == $_ENV['_'])))    //chmod +x xxx.php and run itself
 		$is_cli = true;
 	else
@@ -55,9 +55,9 @@ function NixOs()
 
 /**
  * Generate path from script to project root - P2R
- * 
+ *
  * Can use in both cli mod and www mod.
- * 
+ *
  * <code>
  * define('P2R', P2r('relate_path_to_proj_root'))
  * </code>
@@ -72,7 +72,7 @@ function P2r($path)
 		$s = dirname($_SERVER['SCRIPT_NAME']) . '/./' . $path;
 	else
 		$s = './' . $path;
-	
+
 	return $s;
 } // end of func P2r
 ?>

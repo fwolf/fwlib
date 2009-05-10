@@ -11,25 +11,26 @@
 // Set include path in __construct
 //require_once('adodb/adodb.inc.php');
 require_once('fwolflib/class/sql_generator.php');
+require_once('fwolflib/func/ecl.php');
 
 /**
  * Extended ADODB class
- * 
+ *
  * Include all ADODB had, and add a little others.
- * 
+ *
  * Piror use this class' method and property, it the get/set/call target
  * is not exists, use original ADODB's, this can be done by php's mechematic
  * of overload __call __get __set.
- * 
+ *
  * 这似乎是extend ADODB的一种比较好的方式，比官方网站文档上给的按不同数据库来继承子类的方式，
  * 我认为要更方便一些。缺点是没有对RecordSet对象进行处理。
- * 
+ *
  * Adocb for Sybase bug:
  * Affected_Rows() in windows 2003 不可用，httpd进程会出错中止
- *  
+ *
  * 执行sql查询的系列更改中，限定系统/HTML/PHP使用$sSysCharset指定的编码，涉及函数列在__call()中，
  * 但一些通过数组等其它方式传递参数的ADODB方法仍然无法通过这种方式实现sql编码自动转换。
- * 
+ *
  * 执行返回的数据还是需要转码的，不过返回数据的种类太多，放在应用中实现更简单一些，这里不自动执行，
  * 只提供一个EncodingConvert方法供用户调用。
  * @package		fwolflib
@@ -46,16 +47,16 @@ class Adodb
 	 * @var object
 	 */
 	protected $__conn = null;
-	
+
 	/**
 	 * Db profile
 	 * @var array
 	 */
 	public $aDbProfile = null;
-	
+
 	/**
 	 * Table schema
-	 * 
+	 *
 	 * array(
 	 * 	col ->	// ADOFieldObject Object, not Array !
 	 * 		[name] => ts
@@ -75,20 +76,20 @@ class Adodb
 	 * @var array
 	 */
 	public $aMetaColumn = array();
-	
+
 	/**
 	 * Table column name array, index is upper case of column name
-	 * 
+	 *
 	 * eg: array(
 	 * 	'COLUMN' => 'column',
 	 * )
 	 * @var	array
 	 */
 	public $aMetaColumnName = array();
-	
+
 	/**
 	 * Primary key columns of table
-	 * 
+	 *
 	 * array(
 	 * 	tbl_name -> 'col_pk',
 	 * 	tbl_name -> array(pk_col1, pk_col2),
@@ -96,25 +97,25 @@ class Adodb
 	 * @var	array
 	 */
 	public $aMetaPrimaryKey = array();
-	
+
 	/**
 	 * Sql generator object
 	 * @var object
 	 */
 	protected $oSg;
-	
+
 	/**
 	 * System charset
-	 * 
+	 *
 	 * In common, this is your php script/operation system charset
 	 * @var string
 	 */
 	public $sSysCharset = 'utf8';
-	
-	
+
+
 	/**
 	 * construct
-	 * 
+	 *
 	 * <code>
 	 * $dbprofile = array(type, host, user, pass, name, lang);
 	 * type is mysql/sybase_ase etc,
@@ -130,15 +131,15 @@ class Adodb
 		if (empty($path_adodb))
 			$path_adodb = 'adodb/adodb.inc.php';
 		require_once($path_adodb);
-		
+
 		$this->aDbProfile = $dbprofile;
 		$this->__conn = & ADONewConnection($dbprofile['type']);
-		
+
 		// Sql generator object
 		$this->oSg = new SqlGenerator($this);
 	} // end of class __construct
-	
-	
+
+
 	/**
 	 * Overload __call, redirect method call to adodb
 	 * @var string	$name	Method name
@@ -172,7 +173,7 @@ class Adodb
 									  'ExecuteCursor',
 									)))
 				$arg[0] = mb_convert_encoding($arg[0], $this->aDbProfile['lang'], $this->sSysCharset);
-			
+
 			// $sql is the 2nd param
 			if (in_array($name, array('CacheExecute',
 									  'CacheSelectLimit',
@@ -184,7 +185,7 @@ class Adodb
 									)))
 				$arg[1] = mb_convert_encoding($arg[1], $this->aDbProfile['lang'], $this->sSysCharset);
 		}
-		
+
 		// Count db query times
 		// Use global var so multi Adodb object can be included in count.
 		//	(Done in func now)
@@ -194,11 +195,11 @@ class Adodb
 			'GetCol', 'GetAssoc', 'ExecuteCursor'
 			)))
 			$this->CountDbQueryTimes();
-		
+
 		return call_user_func_array(array($this->__conn, $name), $arg);
 	} // end of func __call
-	
-	
+
+
 	/**
 	 * Overload __get, redirect method call to adodb
 	 * @param string	$name
@@ -208,8 +209,8 @@ class Adodb
 	{
 		return $this->__conn->$name;
 	} // end of func __get
-	
-	
+
+
 	/**
 	 * Overload __set, redirect method call to adodb
 	 * @param string	$name
@@ -219,12 +220,12 @@ class Adodb
 	{
 		$this->__conn->$name = $val;
 	} // end of func __set
-	
-	
+
+
 	/**
 }
 	 * Connect, Add mysql 'set names utf8'
-	 * 
+	 *
 	 * <code>
 	 * Obmit params(dbprofile was set in __construct):
 	 * param $argHostname		Host to connect to
@@ -242,30 +243,30 @@ class Adodb
 			// Disable error display tempratory
 			$s = ini_get("display_errors");
 			ini_set("display_errors", "0");
-			
+
 			// Sybase will echo 'change to master' warning msg
 			// :THINK: Will this problem solved if we drop default
 			// database master from sa user ?
 			if ($this->IsDbSybase()) {
-				$rs = $this->__conn->Connect($this->aDbProfile['host'], 
-										 $this->aDbProfile['user'], 
-										 $this->aDbProfile['pass'], 
-										 $this->aDbProfile['name'], 
+				$rs = $this->__conn->Connect($this->aDbProfile['host'],
+										 $this->aDbProfile['user'],
+										 $this->aDbProfile['pass'],
+										 $this->aDbProfile['name'],
 										 $forcenew);
 			}
 			else {
-				$rs = $this->__conn->Connect($this->aDbProfile['host'], 
-										 $this->aDbProfile['user'], 
-										 $this->aDbProfile['pass'], 
-										 $this->aDbProfile['name'], 
+				$rs = $this->__conn->Connect($this->aDbProfile['host'],
+										 $this->aDbProfile['user'],
+										 $this->aDbProfile['pass'],
+										 $this->aDbProfile['name'],
 										 $forcenew);
 			}
-			
+
 			// Recover original error display setting
 			ini_set("display_errors", $s);
-			
+
 			if (empty($rs)) {
-				throw new Exception('Db connect fail, please check php errorlog.', -1); 
+				throw new Exception('Db connect fail, please check php errorlog.', -1);
 			}
 		}
 		catch (Exception $e)
@@ -274,28 +275,28 @@ class Adodb
 			$i_ob = ob_get_level();
 			if (0 != $i_ob)
 				$s_t = ob_get_clean();
-				
+
 			ob_start();
 			adodb_backtrace($e->getTrace());
 			$s_trace = ob_get_clean();
-			
+
 			if (0 != $i_ob) {
 				// Maybe cause error if output handle of ob_start used before
 				ob_start();
 				echo $s_t;
 			}
-			
+
 			// Print error
 			Ecl($e->getCode());
 			Ecl($e->getMessage());
-			
+
 			// Log error
 			$s_trace = str_replace('&nbsp;', '>', strip_tags($s_trace));
 			error_log('');
 			error_log('======== Adodb db connect error');
 			error_log("\n" . $s_trace);
 			//error_log('');
-			
+
 			//var_dump($e);
 			//echo $e;
 			if (0 != $i_ob) {
@@ -303,7 +304,7 @@ class Adodb
 			}
 			exit();
 		}
-		
+
 		// 针对mysql 4.1以上，UTF8编码的数据库，需要在连接后指定编码
 		// Can also use $this->aDbProfile['type']
 		// mysql, mysqli
@@ -313,24 +314,24 @@ class Adodb
 
 		return $rs;
 	} // end of func Connect
-	
-	
+
+
 	/**
 	 * Count how many db query have executed
-	 * 
+	 *
 	 * This function can be extend by subclass if you want to count on multi db objects.
-	 * 
+	 *
 	 * Can't count in Adodb::property, because need display is done by Controler,
 	 * which will call View, but Adodb is property of Module,
-	 * so we can only use global vars to save this value. 
+	 * so we can only use global vars to save this value.
 	 * @global	int	$i_db_query_times
 	 */
 	protected function CountDbQueryTimes() {
 		global $i_db_query_times;
 		$i_db_query_times ++;
 	} // end of func CountDbQueryTimes
-	
-	
+
+
 	/**
 	 * Delete rows by condition user given
 	 * @param	string	$tbl
@@ -350,12 +351,12 @@ class Adodb
 		else
 			return $this->Affected_Rows();
 	} // end of function DelRow
-	
-	
+
+
 	/**
 	 * Convert recordset(simple array) or other string
 	 * from db encoding to system encoding
-	 * 
+	 *
 	 * Use recursive mechanism, beware of loop hole.
 	 * @param mixed	&$s	Source to convert
 	 * @return mixed
@@ -365,7 +366,7 @@ class Adodb
 		if (is_array($s) && !empty($s))
 			foreach ($s as &$val)
 				$this->EncodingConvert($val);
-		
+
 		if (is_string($s))
 		{
 			if ($this->sSysCharset != $this->aDbProfile['lang'])
@@ -373,8 +374,8 @@ class Adodb
 		}
 		return $s;
 	} // end of func EncodingConvert
-	
-	
+
+
 	/**
 	 * Find name of timestamp column of a table
 	 * @param	$tbl	Table name
@@ -384,7 +385,7 @@ class Adodb
 		$ar_col = $this->GetMetaColumn($tbl);
 		if (empty($ar_col))
 			return '';
-		
+
 		if ($this->IsDbSybase()) {
 			// Sybase's timestamp column must be lower cased
 			// Can name as others, but name as 'timestamp' will auto got )timestamp) type.
@@ -418,9 +419,9 @@ class Adodb
 				return $rs->fields['name'];
 			else
 				return '';
-			//select a.name,a.length,a.usertype,b.name AS type from syscolumns a ,systypes b 
+			//select a.name,a.length,a.usertype,b.name AS type from syscolumns a ,systypes b
 			//where id = object_id('ztb_yh') and a.type=b.type and a.usertype = b.usertype
-			
+
 		}
 		elseif ($this->IsDbMysql()) {
 			// Check 'type'
@@ -432,8 +433,8 @@ class Adodb
 			die("FindColTs not implemented!\n");
 		}
 	} // end of function FindColTs
-	
-	
+
+
 	/**
 	 * Get rows count by condition user given
 	 * @param	string	$tbl
@@ -451,16 +452,16 @@ class Adodb
 		else
 			return $rs->fields['c'];
 	} // end of function GetRowCount
-	
-	
+
+
 	/**
 	 * Generate SQL statement
-	 * 
+	 *
 	 * User should avoid use SELECT/UPDATE/INSERT/DELETE simultaneously.
-	 * 
+	 *
 	 * Generate order by SQL statement format order.
-	 * 
-	 * UPDATE/INSERT/DELETE is followed by [TBL_NAME], 
+	 *
+	 * UPDATE/INSERT/DELETE is followed by [TBL_NAME],
 	 * so need not use FROM.
 	 * @param array	$ar_sql	Array(select=>..., from=>...)
 	 * @return string
@@ -476,11 +477,11 @@ class Adodb
 		else
 			return '';
 	} // end of func GenSql
-	
-	
+
+
 	/**
 	 * Generate SQL statement for Prepare
-	 * 
+	 *
 	 * value -> ? or :name, and quote chars removed
 	 * @param	array	$ar_sql	Same as GenSql()
 	 * @return	string
@@ -493,11 +494,11 @@ class Adodb
 		else
 			return '';
 	} // end of function GenSqlPrepare
-	
-	
+
+
 	/**
 	 * Get table schema
-	 * 
+	 *
 	 * @param	string	$table
 	 * @param	boolean	$forcenew	Force to retrieve instead of read from cache
 	 * @return	array
@@ -508,7 +509,7 @@ class Adodb
 		if (!isset($this->aMetaColumn[$table]) || (true == $forcenew))
 		{
 			$this->aMetaColumn[$table] = $this->MetaColumns($table);
-			
+
 			// Convert columns to native case
 			$col_name = $this->GetMetaColumnName($table);
 			// $col_name = array(COLUMN => column), $c is UPPER CASED
@@ -527,8 +528,8 @@ class Adodb
 		}
 		return $this->aMetaColumn[$table];
 	} // end of func GetMetaColumn
-	
-	
+
+
 	/**
 	 * Get table column name
 	 * @param	string	$table
@@ -544,8 +545,8 @@ class Adodb
 		}
 		return $this->aMetaColumnName[$table];
 	} // end of func GetMetaColumnName
-	
-	
+
+
 	/**
 	 * Get primary key column of a table
 	 * @param	string	$table
@@ -596,9 +597,9 @@ class Adodb
 						// Got
 						$ar = array($rs->fields['k1']);
 						if (!empty($rs->fields['k2']))
-							$ar[] = $rs->fields['k2']; 
+							$ar[] = $rs->fields['k2'];
 						if (!empty($rs->fields['k3']))
-							$ar[] = $rs->fields['k3']; 
+							$ar[] = $rs->fields['k3'];
 					}
 					else {
 						// Table have no primary key
@@ -606,7 +607,7 @@ class Adodb
 					}
 				}
 			}
-			
+
 			// Convert columns to native case
 			if (!empty($ar)) {
 				$col_name = $this->GetMetaColumnName($table);
@@ -618,11 +619,11 @@ class Adodb
 					}
 				}
 			}
-				
+
 			if (is_array($ar) && 1 == count($ar))
 				// Only 1 primary key column
 				$ar = $ar[0];
-			
+
 			// Set to cache
 			if (!empty($ar))
 				$this->aMetaPrimaryKey[$table] = $ar;
@@ -632,8 +633,8 @@ class Adodb
 		else
 			return '';
 	} // end of func GetMetaPrimaryKey
-	
-	
+
+
 	/**
 	 * If current db is a mysql db.
 	 * @return	boolean
@@ -641,8 +642,8 @@ class Adodb
 	public function IsDbMysql() {
 		return ('mysql' == substr($this->__conn->databaseType, 0, 5));
 	} // end of func IsDbMysql
-	
-	
+
+
 	/**
 	 * If current db is a sybase db.
 	 * @return	boolean
@@ -650,8 +651,8 @@ class Adodb
 	public function IsDbSybase() {
 		return ('sybase' == substr($this->aDbProfile['type'], 0, 6));
 	} // end of func IsDbSybase
-	
-	
+
+
 	/**
 	 * Is timestamp column's value is unique
 	 * @return	boolean
@@ -663,8 +664,8 @@ class Adodb
 			// Mysql
 			return false;
 	} // end of function IsTsUnique
-	
-	
+
+
 	/**
 	 * Prepare and execute sql
 	 * @param	string	$sql
@@ -687,8 +688,8 @@ class Adodb
 		$this->CommitTrans();
 		return $rs;
 	} // end of PExecute
-	
-	
+
+
 	/**
 	 * Smarty quote string in sql, by check columns type
 	 * @param	string	$table
@@ -723,7 +724,7 @@ class Adodb
 		//elseif ($this->IsDbSybase() && 'varbinary' == $type && 'timestamp' == $column)
 		elseif ($this->IsDbSybase() && 'timestamp' == $type)
 			return '0x' . $val;
-		else 
+		else
 		{
 			// Need quote, use db's quote method
 			$val = stripslashes($val);
@@ -731,7 +732,7 @@ class Adodb
 		}
 	} // end of func GenSqlQuote
 
-	
+
 	/**
 	 * If a table exists in db ?
 	 * @param	string	$tbl
@@ -755,11 +756,11 @@ class Adodb
 			return (0 == $this->ErrorNo());
 		}
 	} // end of function TblExists
-	
-	
+
+
 	/**
 	 * Smart write data row(s) to table
-	 * 
+	 *
 	 * Will auto check row existence, and decide to use INSERT or UPDATE,
 	 * so PRIMARY KEY column must include in $data array.
 	 * Also, table must have primary key defined.
@@ -776,14 +777,14 @@ class Adodb
 	public function Write($tbl, $data, $mode = 'A') {
 		// Find primary key column first
 		$pk = $this->GetMetaPrimaryKey($tbl);
-		
+
 		// Convert single row data to multi row mode
 		if (!isset($data[0]))
 			$data = array(0 => $data);
 		// Convert primary key to array if it's single string now
 		if (!is_array($pk))
 			$pk = array(0 => $pk);
-		
+
 		// Columns in $data
 		$ar_cols = array_keys($data[0]);
 		// Check if primary key is assigned in $data
@@ -794,7 +795,7 @@ class Adodb
 		// If no primary key column in $data, return -1
 		if (false == $b_data_ok)
 			return -1;
-		
+
 		$mode = strtoupper($mode);
 		// Consider mode if user not assigned
 		if ('A' == $mode) {
@@ -808,7 +809,7 @@ class Adodb
 			else
 				$mode = 'I';
 		}
-		
+
 		// Do batch update or insert, prepare stmt first
 		$sql = '';
 		if ('U' == $mode) {
@@ -843,7 +844,7 @@ class Adodb
 				);
 		}
 		$sql = $this->GenSqlPrepare($ar_conf);
-		
+
 		/* Treat moved to  SqlGenerator
 		//$sql = $this->GenSql($ar_conf);
 		// Remove duplicate ' in sql add by SqlGenerator,
@@ -859,7 +860,7 @@ class Adodb
 			"/ {$s_quote}([\?\:\w\-_]+){$s_quote}([, ])/i",
 			" $1$2", $sql);
 		*/
-		
+
 		if (!empty($sql)) {
 			// Do prepare
 			$stmt = $this->Prepare($sql);
