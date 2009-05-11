@@ -2,7 +2,7 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2006-2008, Fwolf
+ * @copyright	Copyright 2006-2009, Fwolf
  * @author		Fwolf <fwolf.aide-fwolflib-class@gmail.com>
  */
 
@@ -27,7 +27,7 @@ require_once('fwolflib/func/env.php');
  *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2006-2008, Fwolf
+ * @copyright	Copyright 2006-2009, Fwolf
  * @author		Fwolf <fwolf.aide-fwolflib-class@gmail.com>
  * @since		2006-12-10
  * @version		$Id$
@@ -166,7 +166,8 @@ CREATE TABLE $this->sTblLog (
 			$this->oDb->Execute($sql);
 			if (0 < $this->oDb->ErrorNo())
 			{
-				echo $this->oDb->ErrorNo() . ' - '  . $this->oDb->ErrorMsg() . "\n";
+				$this->Log($this->oDb->ErrorNo() . ' - '  . $this->oDb->ErrorMsg() . "\n");
+				$this->Summary();
 				die("Log table $this->sTblLog doesn't exists and create fail.\n");
 			}
 
@@ -195,6 +196,22 @@ CREATE TABLE $this->sTblLog (
 		$conn->Connect();
 		return $conn;
 	} // end of func DbConn
+
+
+	/**
+	 * Del error record when last done.
+	 *
+	 * So it can rewrite/update these record in db.
+	 */
+	public function DelErrorSql() {
+		$sql = "DELETE FROM {$this->sTblLog} where done=-1";
+		$rs = $this->oDb->Execute($sql);
+		$i = $this->oDb->Affected_Rows();
+		if (0 < $i) {
+			$this->Log("Clear $i failed sql.\n");
+		}
+		return($i);
+	} // end of func DelErrorSql
 
 
 	/**
@@ -236,7 +253,7 @@ CREATE TABLE $this->sTblLog (
 					$this->Log($this->oDb->ErrorNo() . '-' . $this->oDb->ErrorMsg() . "\n");
 					//$this->oDb->CompleteTrans();
 					$this->SetUpdateDone($id, -1);
-					$this->Summary();
+					$this->Summary(true);
 					die("Doing update aborted because of failed.\n");
 				}
 			}
@@ -359,7 +376,8 @@ CREATE TABLE $this->sTblLog (
 			$this->oDb->Execute($sql);
 			if (0 != $this->oDb->ErrorNo())
 			{
-				echo $this->oDb->ErrorNo() . '-' . $this->oDb->ErrorMsg() . "\n";
+				$this->Log($this->oDb->ErrorNo() . '-' . $this->oDb->ErrorMsg() . "\n");
+				$this->Summary(true);
 				die("Set update failed.\n");
 			}
 			else
@@ -380,7 +398,7 @@ CREATE TABLE $this->sTblLog (
 	private function SetUpdateDone($id, $status)
 	{
 		if (-1 == $status)
-			echo("Error when do update $id, {$this->oDb->ErrorNo()}:{$this->oDb->ErrorMsg()}\n");
+			$this->Log("Error when do update $id, {$this->oDb->ErrorNo()}:{$this->oDb->ErrorMsg()}\n");
 		$sql = "UPDATE $this->sTblLog set done=$status where id=$id";
 		$this->oDb->Execute($sql);
 		//if (0 == $this->oDb->ErrorNo() && 0 == strlen($this->oDb->ErrorMsg()))
@@ -393,15 +411,19 @@ CREATE TABLE $this->sTblLog (
 
 	/**
 	 * Return summary text of the whole backup process
+	 * @param	boolean	print
 	 * @return string
 	 */
-	public function Summary()
+	public function Summary($print = false)
 	{
 		$s = '';
 		if (true == IsCli())
 			$s = $this->sSummary . "\n";
 		else
 			$s = nl2br($this->sSummary);
+
+		if (true == $print)
+			echo $s;
 		return $s;
 	} // end of func Summary
 
