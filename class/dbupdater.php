@@ -202,15 +202,21 @@ CREATE TABLE $this->sTblLog (
 	 * Del error record when last done.
 	 *
 	 * So it can rewrite/update these record in db.
+	 * Only del failed sql is not enough,
+	 * you need del all sql start from the failed ONE.
 	 */
 	public function DelErrorSql() {
-		$sql = "DELETE FROM {$this->sTblLog} where done=-1";
+		$sql = "SELECT id FROM {$this->sTblLog} WHERE done=-1 ORDER BY id ASC LIMIT 1";
 		$rs = $this->oDb->Execute($sql);
-		$i = $this->oDb->Affected_Rows();
-		if (0 < $i) {
-			$this->Log("Clear $i failed sql.\n");
+		if (!empty($rs) && (0 < $rs->RecordCount())) {
+			// Del sql after it
+			$id = $rs->fields['id'];
+			$sql = "DELETE FROM {$this->sTblLog} WHERE id >= $id";
+			$rs = $this->oDb->Execute($sql);
+			$i = $this->oDb->Affected_Rows();
+			// $i should > 0
+			$this->Log("Clear $i sql start from failed sql $id.\n");
 		}
-		return($i);
 	} // end of func DelErrorSql
 
 
