@@ -80,7 +80,7 @@ class DbUpdater
 	 * remember to rename table in database also.
 	 * @var	string
 	 */
-	public $sTblLog = 'dbupdater_log';
+	public $sTblLog = 'log_dbupdater';
 
 
 	/**

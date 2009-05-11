@@ -171,6 +171,7 @@ landscaping enterprise, lent	|园林绿化企业
 lecture						|讲课稿
 legal representative, lgr	|法定代表人
 less than, lt				|小于或等于（bash中的用法）
+level, lvl					|级别
 lower limit, ll				|下限
 lowest price, lp			|最低价
 	next (to the) lowest price, nlp	|次低价
