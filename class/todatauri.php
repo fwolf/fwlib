@@ -196,7 +196,7 @@ class ToDataUri extends Curl
 		}
 		$dom_info_ul->appendChild($dom_resources_ol);
 		if ($this->mCliMode)
-			echo "[Done] Resources: √: " . count($this->mGetOk) . ", ×: " . count($this->mGetFailed) . ".\n";
+			echo "[Done ] Resources: √: " . count($this->mGetOk) . ", ×: " . count($this->mGetFailed) . ".\n";
 		
 		// If html contents like this, it have not <body>, so we must create it
 		// <html>
@@ -404,7 +404,7 @@ class ToDataUri extends Curl
 		$this->mUrlBase = $baseurl;
 		$this->mInfo .= "Baseurl: $baseurl<br />\n";
 		if ($this->mCliMode)
-			echo "[Curl] Baseurl: $baseurl\n";
+			echo "[Curl ] Baseurl: $baseurl\n";
 	} // end of func GetBaseUrl
 
 
@@ -443,7 +443,7 @@ class ToDataUri extends Curl
 		// Find charset webpage use current
 		//<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		//$ar = $this->Match('/(<meta[^;]+;[\s]*charset=(\S+)\"[^>]*>)/i');
-		$ar = $this->Match('/(<meta[^>]+content=[^>]+charset=(\S+)[\"\'][^>]*>)/i');
+		$ar = $this->Match('/(<meta[^>]+content=[^>]+charset=([\w\d-_]+)[\"\'][^>]*>)/i');
 		$charset = '';
 		// For multi charset declaration
 		if (is_array($ar[0]))
@@ -489,7 +489,7 @@ class ToDataUri extends Curl
 		
 		$this->mCharset = $charset;
 		if ($this->mCliMode)
-			echo "[Curl] Original charset: $charset.\n";
+			echo "[Curl ] Original charset: $charset.\n";
 	} // end of func MbConvert
 
 
@@ -514,7 +514,7 @@ class ToDataUri extends Curl
 		if (!empty($this->mUrl))
 		{
 			if ($this->mCliMode)
-				echo "[Curl] Get html content from $this->mUrl ";
+				echo "[Curl ] Get html content from $this->mUrl ";
 			$this->SetoptReferer($this->mUrl);
 			if (true == $this->mRetrieveHtml)
 				$this->mHtml = $this->Get($this->mUrl);
@@ -627,7 +627,7 @@ class ToDataUri extends Curl
 				$this->mCache[$url] = $data;
 				$this->mGetOk[] = $url;
 				if ($this->mCliMode)
-					echo "[" . substr('000' . strval(count($this->mGetOk) + count($this->mGetFailed)), -3) . "] √: $url\n";
+					echo "[" . substr('000' . strval(count($this->mGetOk) + count($this->mGetFailed)), -3) . "  ] √: $url\n";
 			}
 			else
 			{
@@ -635,7 +635,7 @@ class ToDataUri extends Curl
 				$data = '';
 				$this->mGetFailed[] = $url;
 				if ($this->mCliMode)
-					echo "[" . substr('000' . strval(count($this->mGetOk) + count($this->mGetFailed)), -3) . "] ×: $url\n";
+					echo "[" . substr('000' . strval(count($this->mGetOk) + count($this->mGetFailed)), -3) . "  ] ×: $url\n";
 			}
 		}
 		return $data;

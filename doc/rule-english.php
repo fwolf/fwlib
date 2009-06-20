@@ -101,7 +101,7 @@ building area				|建筑面积
 business license, bl		|营业执照
 	bl_en					|经济性质
 	bl_main					|主营
-	bl_rc					|注册资金，单位：万元
+	bl_rc, capital registered	|注册资金，单位：万元
 	bl_rno					|营业执照注册号
 	bl_sideline				|兼营
 calculate, calc				|计算，和compute相比，特指用数学方法进行比较复杂、难度较大的精确计算
@@ -138,6 +138,7 @@ detail, dtl					|详细信息
 determine the winning bidder, dtwb	|确定中标人
 diploma						|学历
 direct contract， contracted out directly	|直接发包
+director, dir				|负责人
 economic nature, en			|经济性质
 eligible bidders			|合格的投标人
 electronic bidding document, ebd	|电子招标文件
@@ -158,6 +159,7 @@ fee							|费用，规费
 fraud						|欺诈
 goods						|货物
 great_than, gt				|大于或等于（bash中的用法）
+handbook, hb				|手册
 history, his, hist, hx		|历史
 investigation				|勘察
 investigation enterprise, ient	|勘察企业
@@ -180,6 +182,7 @@ management, mgmt			|管理
 manager, mgr				|管理人员，管理者，经理
 manufacturer				|生产厂家
 measurement item, mi		|措施项目
+measurement unit, mu		|(计量)单位
 ministry of construction, moc	|建设部
 mode						|方式
 mode of operation, moo		|经营方式
