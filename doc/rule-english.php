@@ -38,7 +38,7 @@ apply			|报名
 approve, aprv	|审核
 del				|删除
 detail, dtl		|详细信息
-Disp			|显示
+Disp			|显示，查询
 edit			|编辑
 flow			|流程处理(主要用于Module)
 Gen				|生成(html)。。。
