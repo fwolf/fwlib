@@ -139,6 +139,7 @@ determine the winning bidder, dtwb	|确定中标人
 diploma						|学历
 direct contract， contracted out directly	|直接发包
 director, dir				|负责人
+	technical director, td	|技术负责人
 economic nature, en			|经济性质
 eligible bidders			|合格的投标人
 electronic bidding document, ebd	|电子招标文件
@@ -241,6 +242,7 @@ registered number of approval, approval number, ano	|批准文号
 reject, rej					|退回
 rejected bid, rb			|废标
 required, req, r			|需要的，必需的
+responsible person, rp		|企业负责人
 scale						|（公司）规模
 scientific outlook on development, sood	|科学发展观
 scope						|范围，是数据库中的关键字，需要和其他单词组合使用
