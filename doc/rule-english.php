@@ -60,7 +60,7 @@ submit, subm	|提交
 单词、缩写					|	含义
 ----------------------------|-------------
 abnormal, abn				|不正常的
-achievements				|业绩
+achievement, achv			|业绩
 address, addr				|地址
 aggregate, agg				|汇总，侧重于不是简单数学累加的情况
 allocate, alloc, alo		|分配，侧重于把一个整体划分到各个单体，比如把总分分配到每个子项上
@@ -127,6 +127,7 @@ constructor					|（一级）建造师
 	associate constructor	|二级建造师
 contact, ctc				|联系人
 contract, cnt				|合同
+credit						|信用，荣誉
 creator						|创建者，录入人
 degree						|学位
 delivery					|发送
@@ -200,6 +201,7 @@ person, per					|人员
 personal identification number, pin	|身份证号，个人识别码
 phone, fon, phn				|[联系]电话
 place, pl					|地点
+planning approval			|规划许可
 post review					|事后审查
 postcode					|邮编
 potential bidder			|潜在投标人
