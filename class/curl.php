@@ -294,10 +294,10 @@ class Curl
 	 */
 	public function SetoptProxy($ptype, $phost, $pport, $pauth = '')
 	{
-		if (0 == $ptype)
+		if (0 == $ptype) {
+			// Some server refuse http proxy tunnel, it's useless settings.
 			//curl_setopt($this->mSh, CURLOPT_HTTPPROXYTUNNEL, false);
-		else
-		{
+		} else {
 			//curl_setopt($this->mSh, CURLOPT_HTTPPROXYTUNNEL, true);
 			curl_setopt($this->mSh, CURLOPT_PROXY, $phost);
 			if (1 == $ptype)
