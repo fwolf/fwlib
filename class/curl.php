@@ -295,10 +295,10 @@ class Curl
 	public function SetoptProxy($ptype, $phost, $pport, $pauth = '')
 	{
 		if (0 == $ptype)
-			curl_setopt($this->mSh, CURLOPT_HTTPPROXYTUNNEL, false);
+			//curl_setopt($this->mSh, CURLOPT_HTTPPROXYTUNNEL, false);
 		else
 		{
-			curl_setopt($this->mSh, CURLOPT_HTTPPROXYTUNNEL, true);
+			//curl_setopt($this->mSh, CURLOPT_HTTPPROXYTUNNEL, true);
 			curl_setopt($this->mSh, CURLOPT_PROXY, $phost);
 			if (1 == $ptype)
 				curl_setopt($this->mSh, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
