@@ -158,6 +158,7 @@ exceed limit, el			|超过比例
 expert evaluation, ee		|专家评审
 expiration date, expt		|过期时间(简写中date->time)
 fee							|费用，规费
+floor area					|占地面积
 fraud						|欺诈
 goods						|货物
 great_than, gt				|大于或等于（bash中的用法）
@@ -247,7 +248,7 @@ required, req, r			|需要的，必需的
 responsible person, rp		|企业负责人
 scale						|（公司）规模
 scientific outlook on development, sood	|科学发展观
-scope						|范围，是数据库中的关键字，需要和其他单词组合使用
+scope						|范围，是数据库中的关键字，需要和其他单词组合使用，单独用可以用 purview
 scope of business, sob		|经营范围
 self service, ss			|自助服务
 sequence, seq				|顺序
@@ -263,6 +264,8 @@ sporadic					|零星的，不定时发生的
 standard price, sp			|标准价，基准价
 start date, sd				|开始日期
 start time, st				|开始时间
+storey						|楼层，层
+structure， stru				|结构
 submit, subm				|提交
 submission, subm			|申请书
 substantial response		|实质性响应
