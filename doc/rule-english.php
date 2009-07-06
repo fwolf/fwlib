@@ -271,6 +271,7 @@ submit, subm				|提交
 submission, subm			|申请书
 substantial response		|实质性响应
 supervision					|监督，管理，监理(行为)
+supervision/supervising engineer, se	|监理工程师，证书上和国际上是consultant engineer咨询工程师，但我们还是沿用 se 这个更号理解的翻译好了
 supervision suggestion order, sso	|监督意见(书)
 [construction/project] supervision enterprise, sent	|监理企业
 supervisor, sup				|监理(人)
