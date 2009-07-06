@@ -125,6 +125,7 @@ construction, cons			|施工，建设
 	construction tendering and trading management system, cttms	|建设工程招投标交易管理系统(按照tender->bid的转换，应当使用cbtms更适宜，下次改过)
 constructor					|（一级）建造师
 	associate constructor	|二级建造师
+	registered constructor, rc	|注册建造师，一般缩写可用这个
 contact, ctc				|联系人
 contract, cnt				|合同
 credit						|信用，荣誉
