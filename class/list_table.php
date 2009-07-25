@@ -12,13 +12,13 @@ require_once('fwolflib/func/request.php');
 
 /**
  * Generate table list
- * 
+ *
  * Table head and body are given seperately, but have some relationship,
  * you can give head or body contain more data, then limit disp by fit it
  * to another part.
- * 
+ *
  * Notice: No db query feather in this, data are transferd from outerside.
- * 
+ *
  * <code>
  * $s = '';
  * // Set <thead>
@@ -27,25 +27,25 @@ require_once('fwolflib/func/request.php');
  * 		);
  * // Set <thead> without col name, only description given.
  * //$art = array('description_col1', 'description_col2');
- * 
+ *
  * // Set <tbody> data, 1st dim of ar is row, 2nd dim of ar is col-val pair.
  * $ard = array(...);
- * 
+ *
  * // Set Config, check manual to see their effect.
  * $ar_conf = array(
  * 		'fit_data_title' => 3,
  * 		);
- * 
+ *
  * // New object
  * //$this->oLt = new ListTable($this->oTpl, $ard, $art, '', $ar_conf);
  * // Or cal SetXxx func, note that SetConfig MUST before SetData
  * $this->oLt->SetConfig($ar_conf);
  * $this->oLt->SetData($ar, $art);
- * 
+ *
  * // Got output html
  * $s = $this->oLt->GetHtml();
  * </code>
- * 
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2003-2008, Fwolf
@@ -53,11 +53,11 @@ require_once('fwolflib/func/request.php');
  * @since		2003-05-17 12:17:14
  * @version		$Id$
  */
-class ListTable 
+class ListTable
 {
 	/**
 	 * Configuration
-	 * 
+	 *
 	 * <code>
 	 * color_bg_[th/tr_even/tr_odd]:
 	 * 					Colors of rows.
@@ -106,25 +106,25 @@ class ListTable
 		'rows_total'		=> 0,
 		'tpl'				=> 'list_table.tpl',
 		);
-	
+
 	/**
 	 * 数组变量，指向要显示数据存放的数组，其格式见类说明
 	 * @var	array
 	 */
 	protected $aData = array();
-	
+
 	/**
 	 * Page url param array.
 	 * @var array
 	 */
 	protected $aParam = array();
-	
+
 	/**
 	 * Title of data, used as table title.
 	 * @var	array
 	 */
 	protected $aTitle = array();
-	
+
 	/**
 	 * Array of url, for links to display in tpl
 	 * <code>
@@ -151,10 +151,10 @@ class ListTable
 	 * @var	object
 	 */
 	protected $oTpl = null;
-	
+
 	/**
 	 * Class of this list in html, used with {@see $sId}
-	 * 
+	 *
 	 * Diff between $sClass and $sId:
 	 * $sClass has no prefix, while $sId has.
 	 * $sClass can be applyed css in project css file,
@@ -162,9 +162,9 @@ class ListTable
 	 * @var	string
 	 */
 	protected $sClass = 'fwolflib-list_table';
-	
+
 	/**
-	 * Identify of this list, 
+	 * Identify of this list,
 	 * Also used in html, as div id property.
 	 * @var	string
 	 */
@@ -189,19 +189,19 @@ class ListTable
 		$id = '', &$conf = array())	{
 		$this->GetParam();
 		$this->oTpl = $tpl;
-		
+
 		// Config will effect SetData, so set it first.
 		$this->SetConfig($conf);
 		$this->oTpl->assign_by_ref('lt_config', $this->aConfig);
-		
+
 		$this->SetData($ard, $art);
 		$this->SetId($id);
 	} // end of func ListTable
-	
-	
+
+
 	/**
 	 * Fit data and title when their items count diff
-	 * 
+	 *
 	 * <code>
 	 * fit_data_title:	0=data fit title, cut data items who's index not
 	 * 					in title
@@ -216,20 +216,20 @@ class ListTable
 	{
 		if (empty($this->aData) || empty($this->aTitle))
 			return ;
-		
+
 		// Store result
 		$ar_title = array();
 		$ar_data = array();
-		
+
 		// Will compare by array keys, data use it's first row
 		$keys_data = array_keys($this->aData[0]);
 		$keys_title = array_keys($this->aTitle);
-		
+
 		switch ($this->aConfig['fit_data_title'])
 		{
 			case 0:
 				// data fit to title
-				
+
 				// Int index and string are difference
 				// In common, we check only title's index type
 				// Int index, can only fit by index position
@@ -240,23 +240,23 @@ class ListTable
 						foreach ($this->aData as $idx => $row)
 							if (isset($row[$keys_data[$k]]))
 								$ar_data[$idx][$keys_data[$k]] = &$row[$keys_data[$k]];
-							else 
+							else
 								$ar_data[$idx][$keys_data[$k]] = $this->aConfig['fit_empty'];
 				}
-				else 
+				else
 				{
 					$ar_title = &$this->aTitle;
 					foreach ($keys_title as $k => $v)
 						foreach ($this->aData as $idx => $row)
 							if (isset($row[$v]))
 								$ar_data[$idx][$v] = &$row[$v];
-							else 
+							else
 								$ar_data[$idx][$v] = $this->aConfig['fit_empty'];
 				}
 				break;
 			case 1:
 				// title fit to data, inser empty title if havn't
-				
+
 				// Int index, can only fit by index position
 				if (0 === $keys_title[0])
 				{
@@ -264,17 +264,17 @@ class ListTable
 					foreach ($keys_data as $k => $v)
 						if (isset($keys_title[$k]))
 							$ar_title[$k] = &$this->aTitle[$k];
-						else 
+						else
 							// Use data's index name
 							$ar_title[$k] = $v;
 				}
-				else 
+				else
 				{
 					$ar_data = &$this->aData;
 					foreach ($keys_data as $k => $v)
 						if (isset($this->aTitle[$v]))
 							$ar_title[$v] = &$this->aTitle[$v];
-						else 
+						else
 							$ar_title[$v] = $v;
 				}
 				break;
@@ -343,15 +343,15 @@ class ListTable
 				break;
 			default:
 		}
-		
-		
+
+
 		// Data write back
 		//var_dump($ar_data);
 		$this->aData = &$ar_data;
 		$this->aTitle = &$ar_title;
 	} // end of func FitDataTitle
-	
-	
+
+
 	/**
 	 * Get full output html
 	 * @return	string
@@ -360,8 +360,8 @@ class ListTable
 	{
 		return $this->oTpl->fetch($this->aConfig['tpl']);
 	} // end of func GetHtml
-	
-	
+
+
 	/**
 	 * Get http GET param.
 	 * @return	array
@@ -381,8 +381,8 @@ class ListTable
 		}
 		return $this->aParam;
 	} // end of func GetParam
-	
-	
+
+
 	/**
 	 * Get info about some part of query sql, eg: limit, order by
 	 * @return	array
@@ -395,8 +395,8 @@ class ListTable
 			);
 		return $ar;
 	} // end of func GetSqlInfo
-	
-	
+
+
 	/**
 	 * Set configuration
 	 * @param	array|string	$c	Config array or name/value pair.
@@ -411,7 +411,7 @@ class ListTable
 				foreach ($c as $idx => $val)
 					$this->SetConfig($idx, $val);
 		}
-		else 
+		else
 			$this->aConfig[$c] = $v;
 	} // end of func SetConfig
 
@@ -427,13 +427,13 @@ class ListTable
 			$this->aData = $ard;
 		if (!empty($art))
 			$this->aTitle = $art;
-		
+
 		// Same number of items maybe index diff, so always do fit.
 		$this->FitDataTitle();
-		
+
 		$this->oTpl->assign_by_ref('lt_data', $this->aData);
 		$this->oTpl->assign_by_ref('lt_title', $this->aTitle);
-		
+
 		return ;
 		/* obsolete
 		//$this->aData = &$ar;
@@ -462,7 +462,7 @@ class ListTable
 	public function SetId($id, $class = '')	{
 		if (empty($id))
 			$this->sId = $this->aConfig['code_prefix'];
-		else 
+		else
 			$this->sId = $this->aConfig['code_prefix'] . '-' . $id;
 		if (!empty($class))
 			$this->sClass = $class;
@@ -473,11 +473,11 @@ class ListTable
 		$this->oTpl->assign_by_ref('lt_class', $this->sClass);
 		return $this->sId;
 	} // end of func SetId
-	
-	
+
+
 	/**
 	 * Set pager info
-	 * 
+	 *
 	 * Config data will also write to $aConfig, the difference with direct set config
 	 * is this will add more treatment about pager.
 	 * And use after SetConfig()
@@ -489,23 +489,23 @@ class ListTable
 	public function SetPager($rows_total, $page_cur = 0) {
 		if (0 == $page_cur)
 			$page_cur = &$this->aConfig['page_cur'];
-		else 
+		else
 			$this->aConfig['page_cur'] = &$page_cur;
 
-		$i = ceil($rows_total / $this->aConfig['page_size']); 
+		$i = ceil($rows_total / $this->aConfig['page_size']);
 		if ($i < $page_cur)
 			$page_cur = $i;
 		$page_max = ceil($rows_total / $this->aConfig['page_size']);
-		
+
 		$this->aConfig['rows_total'] = $rows_total;
 		$this->aConfig['pager_text_cur'] = str_replace(
 			array('{page_cur}', '{page_max}', '{rows_total}', '{page_size}'),
 			array($page_cur, $page_max, $rows_total, $this->aConfig['page_size']),
 			$this->aConfig['pager_text_cur']);
-		
+
 		// Generate url for pager
 		//$this->aUrl['base'] = GetSelfUrl(true);	// Move to GetParam()
-		if (1 != $page_cur) {
+		if (1 < $page_cur) {
 			// Not first page
 //			$this->aUrl['first'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . $page_cur;
@@ -514,7 +514,7 @@ class ListTable
 			$this->aUrl['first'] = $this->SetParam($this->aConfig['param'], 1);
 			$this->aUrl['prev'] = $this->SetParam($this->aConfig['param'], $page_cur - 1);
 		}
-		if ($page_cur != $page_max) {
+		if ($page_cur < $page_max) {
 			// Not last page
 //			$this->aUrl['next'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . ($page_cur + 1);
@@ -523,7 +523,7 @@ class ListTable
 			$this->aUrl['next'] = $this->SetParam($this->aConfig['param'], $page_cur + 1);
 			$this->aUrl['last'] = $this->SetParam($this->aConfig['param'], $page_max);
 		}
-		
+
 		// Assign url to tpl
 		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
 		$this->oTpl->assign_by_ref('lt_url_form', $this->SetParam(array(), $this->aConfig['param']));
@@ -535,11 +535,11 @@ class ListTable
 			$this->oTpl->assign_by_ref('lt_url_form_hidden', $s);
 		}
 	} // end of function SetPager
-	
-	
+
+
 	/**
 	 * Set url param, get the url
-	 * 
+	 *
 	 * If $k is string, then $v is string to and means $k=$v.
 	 * if $k is array, then means key=>val in $k is added, and val in $v is removed.
 	 * Always 'remember' setting and return result url.
@@ -560,7 +560,7 @@ class ListTable
 				foreach ($v as $val)
 					if (isset($this->aParam[$val]))
 						unset($this->aParam[$val]);
-						
+
 		}
 		// Generate url and return
 		$s = '';
@@ -572,9 +572,9 @@ class ListTable
 		return $s;
 	} // end of func SetParam
 
-	
+
 	// Old method
-	
+
 	/**
 	* 生成分页索引代码
 	*
