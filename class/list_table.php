@@ -403,10 +403,8 @@ class ListTable
 	 * @param	string			$v	Config value
 	 * @see	$aConfig
 	 */
-	public function SetConfig($c, $v = '')
-	{
-		if (is_array($c))
-		{
+	public function SetConfig($c, $v = '') {
+		if (is_array($c)) {
 			if (!empty($c))
 				foreach ($c as $idx => $val)
 					$this->SetConfig($idx, $val);
