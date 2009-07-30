@@ -12,7 +12,7 @@ require_once('fwolflib/func/request.php');
 
 /**
  * Convert css, js, image in a html file, to save it in ONE file like mht.
- * 
+ *
  * @package		fwolflib
  * @copyright	Copyright 2007-2008, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib@gmail.com>
@@ -27,14 +27,14 @@ class ToDataUri extends Curl
 	 * @var	array
 	 */
 	protected $mCache = array();
-	
+
 	/**
 	 * Charset of original web page
 	 * Show in info block.
 	 * @var	string
 	 */
 	protected $mCharset = '';
-	
+
 	/**
 	 * Running in cli mode
 	 * Will echo some message directly
@@ -76,7 +76,7 @@ class ToDataUri extends Curl
 	 * @see	$mInfo
 	 */
 	public	$mMsg = '';
-	
+
 	/**
 	 * Retrieve html data
 	 * Auto retrieve html data by url on default, if set to false, $this->mHtml must be set manually.
@@ -109,7 +109,7 @@ class ToDataUri extends Curl
 		parent::__construct();
 		$this->SetUrl($url);
 		$this->SetoptSslverify(false);
-		
+
 		// Detect cli mode
 		if (IsCli())
 			$this->mCliMode = true;
@@ -124,7 +124,7 @@ class ToDataUri extends Curl
 	{
 		// :TODO: original url & this script url
 		// Using dom now, $this->mInfo is string, so...it's obsolete?
-		
+
 		$dom_info_ul = $dom->createElement('ul');
 		$dom_info_ul->setAttribute('style', 'text-align: left');
 		// Original url
@@ -160,7 +160,7 @@ class ToDataUri extends Curl
 		$i_getfailed = count($this->mGetFailed);
 		$li = $dom->createElement('li', "Resources(" . ($i_getok + $i_getfailed) . " : √ $i_getok, × $i_getfailed): ");
 		$dom_info_ul->appendChild($li);
-		
+
 		// Baseurl & charset has been set when processed, add resources here
 		//$this->mInfo .= "Resources: <span style='cursor: hand;'>+</span>";
 		//$this->mInfo .= "\n<br />√: " . implode($this->mGetOk, "\n<br />√: ");
@@ -169,7 +169,7 @@ class ToDataUri extends Curl
 		$span->setAttribute('style', 'cursor: pointer;');
 		$span->setAttribute('onclick', "javascript:obj=getElementById('fwolf_todatauri_info_resources_list');if ('none'==obj.style.display || ''==obj.style.display) {obj.style.display='block'; this.textContent='---';} else {obj.style.display='none';this.textContent='+++';}");
 		$dom_info_ul->lastChild->appendChild($span);
-		
+
 		// Append resources detail list as sub-ol
 		$dom_resources_ol = $dom->createElement('ol');
 		$dom_resources_ol->setAttribute('id', 'fwolf_todatauri_info_resources_list');
@@ -197,7 +197,7 @@ class ToDataUri extends Curl
 		$dom_info_ul->appendChild($dom_resources_ol);
 		if ($this->mCliMode)
 			echo "[Done ] Resources: √: " . count($this->mGetOk) . ", ×: " . count($this->mGetFailed) . ".\n";
-		
+
 		// If html contents like this, it have not <body>, so we must create it
 		// <html>
 		// <meta http-equiv="refresh" content="0;url=http://www.baidu.com/">
@@ -210,7 +210,7 @@ class ToDataUri extends Curl
 		} else {
 			$body = $dom->getElementsByTagName('body')->item(0);
 		}
-		
+
 		$div = $dom->createElement('div');
 		$div->setAttribute('id', 'fwolf_save_file_all_in_one_info');
 		$div->setAttribute('style', 'clear: both;');
@@ -277,7 +277,7 @@ class ToDataUri extends Curl
 
 			$src = $item->nodeValue;
 			if (empty($src)) continue;
-			
+
 			// Example1, with @import, no url(
 			// @import "mystyle.css";
 			// @import "../hide2.css";
@@ -286,7 +286,7 @@ class ToDataUri extends Curl
 			// url("../hide1a.css");
 			// url(../hide1b.css);
 			$ar_regex[1] = "/(url\s*\(['\"]?\s*([^'\"\(\)\{\}]+)['\"]?\s*\))/i";
-			
+
 			foreach ($ar_regex as $regex) {
 				//$ar = $this->Match('/(<style[^<]+url\(\s*(\S+)\s*\)[^<]+<\/style>)/i', $src);
 				$ar = $this->Match($regex, $src);
@@ -311,7 +311,7 @@ class ToDataUri extends Curl
 				}
 			}
 		}
-		
+
 		// Embemmed style
 		// :QUESTION: Is these tags slow down treatment?
 		$ar_tags = array('a', 'blockquote', 'body', 'button', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'form', 'hr', 'img', 'input', 'li', 'ol', 'option', 'p', 'pre', 'q', 'select', 'small', 'span', 'strong', 'table', 'td', 'textarea', 'th', 'tr', 'ul');
@@ -321,15 +321,15 @@ class ToDataUri extends Curl
 			for ($i=0; $i<$i_items; $i++)
 			{
 				$item = $items->item($i);
-	
+
 				$src = $item->getAttribute('style');
 				if (empty($src)) continue;
-				
+
 				// Example2 only, with url(, recardness @import
 				// url("../hide1a.css");
 				// url(../hide1b.css);
 				$regex = "/(url\s*\(['\"]?\s*([^'\"]+)['\"]?\s*\))/i";
-				
+
 				$ar = $this->Match($regex, $src);
 				if (!empty($ar)) {
 					// Do as multi match
@@ -446,7 +446,7 @@ class ToDataUri extends Curl
 		$ar = $this->Match('/(<meta[^>]+content=[^>]+charset=([\w\d-_]+)[\"\'][^>]*>)/i');
 		$charset = '';
 		// For multi charset declaration
-		if (is_array($ar[0]))
+		if ((isset($ar[0])) && (is_array($ar[0])))
 			$ar = $ar[0];
 		if (1 < count($ar)) {
 			$charset = $ar[1];
@@ -462,8 +462,8 @@ class ToDataUri extends Curl
 			$charset = mb_detect_encoding($this->mHtml, "gb2312, gbk, big5, utf-8");
 			$charset = strtolower($charset);
 		}
-		// :THINK: Use mb_check_encoding check again? 
-		
+		// :THINK: Use mb_check_encoding check again?
+
 		// Meta Content-type
 		$meta = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
 		if (!empty($charset)) {
@@ -486,7 +486,7 @@ class ToDataUri extends Curl
 			//$this->mHtml = $meta . $this->mHtml;
 			$this->mHtml = preg_replace('/<head[^>]*>/i', $meta, $this->mHtml);
 		}
-		
+
 		$this->mCharset = $charset;
 		if ($this->mCliMode)
 			echo "[Curl ] Original charset: $charset.\n";
@@ -538,15 +538,15 @@ class ToDataUri extends Curl
 				$this->GetBaseUrl();
 				// Go ahead
 				$this->MbConvert();
-				
+
 				// Do some cleanup with html code
 				$this->PreParse();
-				
+
 				$dom = new DOMDocument();
 				// Keep original format when output
 				$dom->preserveWhiteSpace = true;
 				//$dom->strictErrorChecking = false;
-				
+
 				// :TODO: parse un-wellform html error ?
 				// This way can erase some un-wellformed html error, like un-supported/un-readable chars etc.
 				$this->mHtml = mb_convert_encoding($this->mHtml, 'HTML-ENTITIES', "UTF-8");
@@ -556,12 +556,12 @@ class ToDataUri extends Curl
 
 				// Embemmed style, modify html directly, do this 'slow' step first, or maybe with longer html string will take more time.
 				$this->DomChangeStyle($dom);
-				
+
 				$this->DomChange($dom, 'img', 'src');
 				//$this->DomChange($dom, 'link', 'href', array('rel'=>'stylesheet', 'type'=>'text/css'));
 				$this->DomChange($dom, 'link', 'href', array('rel'=>'stylesheet'));
 				$this->DomChange($dom, 'script', 'src', array('type'=>'text/javascript'));
-			
+
 				$this->AddInfo($dom);
 				$this->mHtml = $dom->saveHTML();
 
@@ -640,14 +640,14 @@ class ToDataUri extends Curl
 		}
 		return $data;
 	} // end of func ParseUrl2Data
-	
-	
+
+
 	/**
 	 * Cleanup html code before parse
 	 */
 	protected function PreParse() {
 		// These extra xml markup can't be treat well by DOM, remove them.
-		
+
 		// Remove <?xml version="1.0" encoding="utf-8"..
 		$this->mHtml = preg_replace('/<\?xml version=[^>]+>/i', '', $this->mHtml);
 		// Remove xmlns from:
@@ -665,7 +665,7 @@ class ToDataUri extends Curl
 		if (!empty($url) && $this->IsSafe($url))
 			$this->mUrl = $url;
 	} // end of func SetUrl
-	
+
 } // end of class ToDataUri
 
 ?>
