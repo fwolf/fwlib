@@ -39,22 +39,41 @@ class Form
 		// Default id=name, so only define one
 		//'id'		=> 'fwolflib_form',
 		'method'	=> 'POST',
-		'name'		=> 'fwolflib_form',
+		'name'		=> 'fl_form',
 	);
 
 	/**
 	 * Form element define, raw order
 	 *
+	 * First value of attrib is DEFAULT value.
 	 * array(
 	 * 	name => array(
-	 * 		type
-	 * 		label
-	 * 		attrib = array()
+	 * 		name,
+	 * 		type,
+	 * 		label,
+	 * 		attrib = array(
+	 * 		),
 	 * 	)
 	 * )
 	 * @var	array
+	 * @see	$aElementAttribDefault
 	 */
 	protected $aElement = array();
+
+	/**
+	 * Default value of element attrib, use if not defined
+	 * @var	array
+	 */
+	public $aElementAttribDefault = array(
+		// Additional html define ?
+		'html_add'	=> '',
+		// Will following element stay in same row ?
+		'keep_div'	=> false,
+		// Label is before input or after it ?
+		'label_pos'	=> 'before',
+		// Value normally has no default value
+		'value'		=> null,
+	);
 
 	/**
 	 * Flag control <div> generate when doing element
@@ -89,56 +108,89 @@ class Form
 			'label'		=> $label,
 			'attrib'	=> $attrib,
 		);
+		if ('file' == $type)
+			$this->SetConfigEnctype(1);
 	} // end of func AddElement
 
 
 	/**
-	 * Add config to element define
+	 * Add element attribe define
 	 * @param	string	$name
 	 * @param	string	$key
 	 * @param	mixed	$val
 	 * @see		$aElement
 	 */
-	public function AddElementConfig($name, $key, $val = null) {
+	public function AddElementAttrib($name, $key, $val = null) {
 		if (isset($this->aElement[$name]))
-			$this->aElement[$name][$key] = $val;
-	} // end of func AddElementConfig
+			$this->aElement[$name]['attrib'][$key] = $val;
+	} // end of func AddElementAttrib
+
+
+	/**
+	 * Add element value attrib
+	 *
+	 * If $name is an array, it's a name/value array,
+	 * or only assign $v to single element $name.
+	 * @param	mixed	$name
+	 * @param	mixed	$v
+	 */
+	public function AddElementValue($name, $v = null) {
+		if (is_array($name)) {
+			foreach ($name as $key => $val)
+				$this->AddElementValue($key, $val);
+		}
+		else {
+			if (!empty($v) && isset($this->aElement[$name]))
+				$this->aElement[$name]['attrib']['value'] = $v;
+		}
+	} // end of func AddElementValue
 
 
 	/**
 	 * Get html of an element
-	 * @param	array
+	 * @param	array	$v
 	 * @return	string
 	 * @see AddElement()
 	 */
-	public function GetElement($v) {
+	public function GetElement($elt) {
 		$s_html = '';
 
+		if (isset($elt['attrib']['label_align'])
+			&& ('after' == $elt['attrib']['label_align']))
+			$s_div = 'fl_elt_div_lr';
+		else
+			$s_div = 'fl_elt_div_ll';
+
 		if (false == $this->iFlagKeepDiv)
-			$s_html .= '<div class="fwolflib_form_input_div">' . "\n";
+			$s_html .= '<div class="' . $s_div . '" id="fl_elt_div_'
+				. $elt['name'] . '">' . "\n";
 
-		$ar_input = array(
-			'checkbox',
-			'file',
-			'hidden',
-			'image',
-			'password',
-			'radio',
-			'reset',
-			'submit',
-			'text',
-		);
-		if (in_array($v['type'], $ar_input))
-			$s_html .= $this->GetElementInput($v);
+		switch ($elt['type']) {
+			case 'checkbox':
+			case 'file':
+			case 'image':
+			case 'password':
+			case 'radio':
+			case 'text':
+				$s_html .= $this->GetElementInput($elt);
+				break;
+			case 'button':
+			case 'reset':
+			case 'submit':
+				$s_html .= $this->GetElementButton($elt);
+				break;
+			case 'hidden':
+				// Do not need outer div, so use return directly.
+				return $this->GetElementHidden($elt);
+				break;
+/*
+				$s_html .= $this->GetElementFile($elt);
+				break;
+*/
+		}
 
-		$ar_button = array(
-			'button',
-			'submit',
-		);
-		if (in_array($v['type'], $ar_button))
-			$s_html .= $this->GetElementButton($v);
-
-		if (array_key_exists('keep_div', $v))
+		if (isset($elt['attrib']['keep_div'])
+			&& (true == $elt['attrib']['keep_div']))
 			$this->iFlagKeepDiv = true;
 		else
 			$this->iFlagKeepDiv = false;
@@ -151,47 +203,52 @@ class Form
 
 	/**
 	 * Get html of element input/submit button
-	 * @param	array
+	 * @param	array	$elt
 	 * @return	string
 	 * @see	AddElement()
 	 */
-	protected function GetElementButton($v) {
-		$s_html = '';
-		$s_html .= '<input ';
-		$s_html .= 'type="' . $v['type'] . '" ';
-		$s_html .= 'name="' . $v['name'] . '" ';
-		$s_html .= 'id="' . $v['name'] . '" ';
-		$s_html .= 'value="' . $v['label'] . '" ';
-		if (!empty($v['attrib'])) {
-			foreach ($v['attrib'] as $k => $v)
-				$s_html .= $k . '="' . $v . '" ';
-		}
-		$s_html .= '/>' . "\n";
+	protected function GetElementButton($elt) {
+		$s_html = $this->GetHtmlInput($elt);
+		// Label set as value
+		$s_html = str_replace('/>', 'value="' . $elt['label'] . '" />'
+			, $s_html);
 		return $s_html;
 	} // end of func GetElementButton
 
 
 	/**
-	 * Get html of element input
-	 * @param	array
+	 * Get html of element hidden
+	 * @param	array	$elt
 	 * @return	string
 	 * @see AddElement()
 	 */
-	protected function GetElementInput($v) {
-		$s_html = '';
-		if (!empty($v['label'])) {
-			$s_html .= '<label for="' . $v['name'] . '">';
-			$s_html .= $v['label'] . '</label>' . "\n";
-		}
-		$s_html .= '<input ';
-		$s_html .= 'type="' . $v['type'] . '" ';
-		$s_html .= 'name="' . $v['name'] . '" ';
-		$s_html .= 'id="' . $v['name'] . '" ';
-		if (!empty($v['attrib'])) {
-			foreach ($v['attrib'] as $k => $v)
-				$s_html .= $k . '="' . $v . '" ';
-		}
-		$s_html .= '/>' . "\n";
+	protected function GetElementHidden($elt) {
+		$s_html = $this->GetHtmlInput($elt);
+		if (isset($elt['attrib']['value']))
+			$s_html = str_replace('/>'
+				, 'value="' . $elt['attrib']['value'] . '" />'
+				, $s_html);
+		return $s_html;
+	} // end of func GetElementHidden
+
+
+	/**
+	 * Get html of element common input
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementInput($elt) {
+		$s_label = $this->GetHtmlLabel($elt);
+		// Plus str without label
+		$s_input = $this->GetElementHidden($elt);
+
+		if (isset($elt['attrib']['label_align'])
+			&& ('after' == $elt['attrib']['label_align']))
+			$s_html = $s_input . $s_label;
+		else
+			$s_html = $s_label . $s_input;
+
 		return $s_html;
 	} // end of func GetElementInput
 
@@ -203,18 +260,29 @@ class Form
 	public function GetHtml() {
 		$s_html = '';
 		// Form style, for typeset only
+		// ll = label left, lr = label right
 		$s_html .= '
 		<style type="text/css" media="screen, print">
 		<!--
-		#' . $this->aConfig['name'] . ' label {
+		#' . $this->aConfig['name'] . ' .fl_elt_div_ll {
+			clear: left;
+			margin-top: 0.2em;
+		}
+		#' . $this->aConfig['name'] . ' .fl_elt_div_ll label {
 			float: left;
 			text-align: right;
 			margin-right: 0.3em;
 			padding-top: 0.2em;
 		}
-		#' . $this->aConfig['name'] . ' .fwolflib_form_input_div {
-			clear: left;
+		#' . $this->aConfig['name'] . ' .fl_elt_div_lr {
+			/*clear: right;*/
 			margin-top: 0.2em;
+		}
+		#' . $this->aConfig['name'] . ' .fl_elt_div_lr label {
+			/*float: right;*/
+			text-align: left;
+			margin-left: 0.3em;
+			padding-top: 0.2em;
 		}
 		-->
 		</style>
@@ -239,6 +307,43 @@ class Form
 		$s_html .= "</form>\n";
 		return $s_html;
 	} // end of func GetHtml
+
+
+	/**
+	 * Get html of element's label part
+	 * @param	array	$elt
+	 * @return	string
+	 * @see GetElement()
+	 */
+	protected function GetHtmlLabel($elt) {
+		$s_label = '';
+		if (!empty($elt['label'])) {
+			$s_label .= '<label for="' . $elt['name'] . '">';
+			$s_label .= $elt['label'] . '</label>' . "\n";
+		}
+		return $s_label;
+	} // end of func GetHtmlLabel
+
+
+	/**
+	 * Get html of element's input part
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetHtmlInput($elt) {
+		$s_input = '';
+		$s_input .= '<input ';
+		$s_input .= 'type="' . $elt['type'] . '" ';
+		$s_input .= 'name="' . $elt['name'] . '" ';
+		$s_input .= 'id="' . $elt['name'] . '" ';
+		if (isset($elt['attrib']['html_add'])
+			&& (true == $elt['attrib']['html_add']))
+			$s_input .= $elt['attrib']['html_add'];
+		$s_input .= '/>' . "\n";
+
+		return $s_input;
+	} // end of func GetHtmlInput
 
 
 	/**
