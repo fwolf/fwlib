@@ -71,6 +71,8 @@ class Form
 		'keep_div'	=> false,
 		// Label is before input or after it ?
 		'label_pos'	=> 'before',
+		// Selection or value list, usually be array
+		'option'	=> null,
 		// Spacer between mutli item, eg: radio
 		'spacer'	=> '',
 		// Only image has src attrib
@@ -182,7 +184,6 @@ class Form
 				. $elt['name'] . '">' . "\n";
 
 		switch ($elt['type']) {
-			case 'checkbox':
 			case 'file':
 			case 'password':
 			case 'text':
@@ -192,6 +193,9 @@ class Form
 			case 'reset':
 			case 'submit':
 				$s_html .= $this->GetElementButton($elt);
+				break;
+			case 'checkbox':
+				$s_html .= $this->GetElementCheckbox($elt);
 				break;
 			case 'hidden':
 				// Do not need outer div, so use return directly.
@@ -230,6 +234,38 @@ class Form
 			, $s_html);
 		return $s_html;
 	} // end of func GetElementButton
+
+
+	/**
+	 * Get html of element checkbox
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementCheckbox($elt) {
+		$s_label = $this->GetHtmlLabel($elt);
+		$s_input = $this->GetHtmlInput($elt);
+
+		// Attrib option as value
+		if (isset($elt['attrib']['option']))
+			$s_input = str_replace('/>'
+				, 'value="' . $elt['attrib']['option'] . '" />'
+				, $s_input);
+
+		// Checked ?
+		if (!empty($elt['attrib']['checked']))
+			$s_input = str_replace('/>'
+				, 'checked="checked" />'
+				, $s_input);
+
+		if (isset($elt['attrib']['label_align'])
+			&& ('after' == $elt['attrib']['label_align']))
+			$s_html = $s_input . $s_label;
+		else
+			$s_html = $s_label . $s_input;
+
+		return $s_html;
+	} // end of func GetElementCheckbox
 
 
 	/**
@@ -281,10 +317,10 @@ class Form
 		$s_spacer = (isset($elt['attrib']['spacer']))
 			? $elt['attrib']['spacer'] : '';
 		$i_id = 1;
-		// Value is an array like array('label' => , 'value' =>)
-		foreach ($elt['attrib']['value'] as $v) {
+		// Option is an array like array('label' => , 'option' =>)
+		foreach ($elt['attrib']['option'] as $v) {
 			$t['label'] = $v['label'];
-			$t['attrib']['value'] = $v['value'];
+			$t['attrib']['value'] = $v['option'];
 			$s_t = $this->GetElementInput($t) . $s_spacer;
 
 			// Id can't be same, so rename them
