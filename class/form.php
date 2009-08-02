@@ -6,6 +6,7 @@
 * @author       Fwolf <fwolf.aide+fwolflib.class@gmail.com>
 */
 
+require_once('fwolflib/func/string.php');
 require_once('fwolflib/func/validate.php');
 
 /**
@@ -66,6 +67,8 @@ class Form
 	 * @var	array
 	 */
 	public $aElementAttribDefault = array(
+		// For textarea only
+		'cols'		=> null,
 		// Additional html define ?
 		'html_add'	=> '',
 		// Will following element stay in same row ?
@@ -76,6 +79,8 @@ class Form
 		'multiple'	=> null,
 		// Selection or value list, usually be array
 		'option'	=> null,
+		// For textarea only
+		'rows'		=> null,
 		// Spacer between mutli item, eg: radio
 		'spacer'	=> '',
 		// Only image has src attrib
@@ -185,11 +190,6 @@ class Form
 				. $elt['name'] . '">' . "\n";
 
 		switch ($elt['type']) {
-			case 'file':
-			case 'password':
-			case 'text':
-				$s_html .= $this->GetElementInput($elt);
-				break;
 			case 'button':
 			case 'reset':
 			case 'submit':
@@ -210,6 +210,14 @@ class Form
 				break;
 			case 'select':
 				$s_html .= $this->GetElementSelect($elt);
+				break;
+			case 'file':
+			case 'password':
+			case 'text':
+				$s_html .= $this->GetElementText($elt);
+				break;
+			case 'textarea':
+				$s_html .= $this->GetElementTextarea($elt);
 				break;
 		}
 
@@ -289,24 +297,28 @@ class Form
 
 
 	/**
-	 * Get html of element common input
+	 * Get html of element image
 	 * @param	array	$elt
 	 * @return	string
 	 * @see AddElement()
 	 */
-	protected function GetElementInput($elt) {
-		$s_label = $this->GetHtmlLabel($elt);
-		// Plus str without label
-		$s_input = $this->GetElementHidden($elt);
+	protected function GetElementImage($elt) {
+		// No label
+		$s_html = $this->GetElementHidden($elt);
 
-		if (isset($elt['attrib']['label_align'])
-			&& ('after' == $elt['attrib']['label_align']))
-			$s_html = $s_input . $s_label;
-		else
-			$s_html = $s_label . $s_input;
+		if (isset($elt['attrib']['src']))
+			$s_html = str_replace('/>'
+				, 'src="' . $elt['attrib']['src'] . '" />'
+				, $s_html);
+
+		// Label is alt text
+		if (isset($elt['label']))
+			$s_html = str_replace('/>'
+				, 'alt="' . $elt['label'] . '" />'
+				, $s_html);
 
 		return $s_html;
-	} // end of func GetElementInput
+	} // end of func GetElementImage
 
 
 	/**
@@ -326,7 +338,7 @@ class Form
 			// Use input go get label and input html.
 			$t['label'] = $v['label'];
 			$t['value'] = $v['option'];
-			$s_t = $this->GetElementInput($t) . $s_spacer;
+			$s_t = $this->GetElementText($t) . $s_spacer;
 
 			// Id can't be same, so rename them
 			$s_t = str_replace('for="' . $elt['name'] . '"'
@@ -350,7 +362,7 @@ class Form
 	 */
 	protected function GetElementSelect($elt) {
 		// Div, label, and input html
-		$s_html = $this->GetElementInput($elt);
+		$s_html = $this->GetElementText($elt);
 		// Input -> select
 		$s_html = str_replace('<input', '<select', $s_html);
 		if (empty($elt['attrib']['multiple']))
@@ -382,28 +394,52 @@ class Form
 
 
 	/**
-	 * Get html of element image
+	 * Get html of element common input/text
 	 * @param	array	$elt
 	 * @return	string
 	 * @see AddElement()
 	 */
-	protected function GetElementImage($elt) {
-		// No label
-		$s_html = $this->GetElementHidden($elt);
+	protected function GetElementText($elt) {
+		$s_label = $this->GetHtmlLabel($elt);
+		// Plus str without label
+		$s_input = $this->GetElementHidden($elt);
 
-		if (isset($elt['attrib']['src']))
-			$s_html = str_replace('/>'
-				, 'src="' . $elt['attrib']['src'] . '" />'
-				, $s_html);
-
-		// Label is alt text
-		if (isset($elt['label']))
-			$s_html = str_replace('/>'
-				, 'alt="' . $elt['label'] . '" />'
-				, $s_html);
+		if (isset($elt['attrib']['label_align'])
+			&& ('after' == $elt['attrib']['label_align']))
+			$s_html = $s_input . $s_label;
+		else
+			$s_html = $s_label . $s_input;
 
 		return $s_html;
-	} // end of func GetElementImage
+	} // end of func GetElementText
+
+
+	/**
+	 * Get html of element textarea
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementTextarea($elt) {
+		$s_row_col = '';
+		if (isset($elt['attrib']['rows']))
+			$s_row_col .= 'rows="' . $elt['attrib']['rows'] . '" ';
+		if (isset($elt['attrib']['cols']))
+			$s_row_col .= 'cols="' . $elt['attrib']['cols'] . '" ';
+
+		// Div, label, and input html
+		$s_html = $this->GetElementText($elt);
+		// Input -> select
+		$s_html = str_replace('<input', '<textarea ' . $s_row_col, $s_html);
+		$s_html = str_replace('/>', '>', $s_html);
+
+		// Textarea value
+		if (isset($elt['value']))
+			$s_html .= HtmlEncode($elt['value']);
+
+		$s_html .= "</textarea>\n";
+		return $s_html;
+	} // end of func GetElementTextarea
 
 
 	/**

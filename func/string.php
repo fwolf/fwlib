@@ -3,8 +3,8 @@
  * 字符串函数集
  * @package     fwolflib
  * @subpackage	func
- * @copyright   Copyright 2004-2008, Fwolf
- * @author      Fwolf <fwolf.aide+fwolflib-func@gmail.com>
+ * @copyright   Copyright 2004-2009, Fwolf
+ * @author      Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		Before 2008-04-07
  * @version		$Id$
  */
@@ -17,15 +17,14 @@
 */
 function HtmlEncode($str)
 {
-	if ( empty( $str) )
-	{
-	    return( '' );
-	}
+	if (empty($str))
+	    return('');
+
 	$outstr=$str;
 	$outstr=str_replace('&', '&amp;'  , $outstr);
 	$outstr=str_replace('<', '&lt;'  , $outstr);
 	$outstr=str_replace('>', '&gt;'  , $outstr);
-	$outstr=str_replace(chr(13), '<br>'  , $outstr);
+	$outstr=str_replace(chr(13), '<br />'  , $outstr);
 	$outstr=str_replace(chr(34), '&quot;'  , $outstr);
 	$outstr=str_replace('  ', '&nbsp; '  , $outstr);
 	$outstr=str_replace(' ' , '&nbsp;'  , $outstr);
@@ -124,18 +123,18 @@ function Rfc2047Decode($str, $encoding = 'utf-8')
 		{
 			$s = '';
 			if ('B' == strtoupper($ar[2][$j])) {
-				// Decode base64 first 
+				// Decode base64 first
 				$s = base64_decode($ar[3][$j]);
 			}
 			elseif ('Q' == strtoupper($ar[2][$j])) {
 				// quoted-printable encoding ? its format like '=0D=0A'
 				$s = quoted_printable_decode($ar[3][$j]);
 			}
-			
+
 			// Then convert string to charset ordered
 			if ($encoding != strtolower($ar[1][$j]))
 				$s = mb_convert_encoding($s, $encoding, $ar[1][$j]);
-			
+
 			// Then replace into original string
 			if (!empty($s))
 				$str = str_replace($ar[0][$j], $s, $str);
@@ -143,20 +142,20 @@ function Rfc2047Decode($str, $encoding = 'utf-8')
 		//echo "$str \n";
 		return $str;
 	}
-	else 
+	else
 	{
 		// No match, return original string
 		return $str;
 	}
-} 
+}
 
 
 /**
  * Encode a string using MIME encoding method
- * 
+ *
  * Usually used in mail header, attachment name etc.
- * 
- * No break in string(B encoding mode instead of Q, see 
+ *
+ * No break in string(B encoding mode instead of Q, see
  * phpmailer::EncodeHeader, line 1156), because that possible
  * break chinese chars.
  * @link	http://www.faqs.org/rfcs/rfc2047
@@ -231,7 +230,7 @@ function StrReForm( $str, $s1, $s2 = '', $embody = false, $istrim = true )
 
 /**
  * Convert ucfirst format to underline_connect format
- * 
+ *
  * If convert fail, return original string.
  * @param	string	$str
  * @return	string
@@ -243,7 +242,7 @@ function StrUcfirst2Underline($str)
 	$s = '';
 	if (empty($ar))
 		$s = $str;
-	else 
+	else
 	{
 		foreach ($ar as $s1)
 			if (!empty($s1))
@@ -256,7 +255,7 @@ function StrUcfirst2Underline($str)
 
 /**
  * Convert underline_connect format to ucfirst format
- * 
+ *
  * If convert fail, return ucfirst($str)
  * @param	string	$str
  * @param	boolean	$minus	Treat minus sign as splitter also.
@@ -270,7 +269,7 @@ function StrUnderline2Ucfirst($str, $minus = false)
 	$s = '';
 	if (empty($ar))
 		$s = ucfirst($str);
-	else 
+	else
 		foreach ($ar as $s1) {
 			if ('' != $s1)
 				$s .= ucfirst($s1);
@@ -283,7 +282,7 @@ function StrUnderline2Ucfirst($str, $minus = false)
  * 截取子字符串，中文按长度1计算
  * 在计算截取起始位置和截取长度时，中文也是按长度1计算的
  * 比如$str='大中小'，SubstrGb($str, 1, 1) = '中';
- * 
+ *
  * Obsolete, see: http://www.fwolf.com/blog/post/133
  * @link http://www.fwolf.com/blog/post/133
  * @param   string  $str
