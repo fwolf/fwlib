@@ -71,6 +71,10 @@ class Form
 		'keep_div'	=> false,
 		// Label is before input or after it ?
 		'label_pos'	=> 'before',
+		// Spacer between mutli item, eg: radio
+		'spacer'	=> '',
+		// Only image has src attrib
+		'src'		=> '',
 		// Value normally has no default value
 		'value'		=> null,
 	);
@@ -116,13 +120,19 @@ class Form
 	/**
 	 * Add element attribe define
 	 * @param	string	$name
-	 * @param	string	$key
+	 * @param	mixed	$key
 	 * @param	mixed	$val
 	 * @see		$aElement
 	 */
 	public function AddElementAttrib($name, $key, $val = null) {
-		if (isset($this->aElement[$name]))
-			$this->aElement[$name]['attrib'][$key] = $val;
+		if (isset($this->aElement[$name])) {
+			if (is_array($key)) {
+				foreach ($key as $k => $v)
+					$this->aElement[$name]['attrib'][$k] = $v;
+			}
+			else
+				$this->aElement[$name]['attrib'][$key] = $val;
+		}
 	} // end of func AddElementAttrib
 
 
@@ -168,9 +178,7 @@ class Form
 		switch ($elt['type']) {
 			case 'checkbox':
 			case 'file':
-			case 'image':
 			case 'password':
-			case 'radio':
 			case 'text':
 				$s_html .= $this->GetElementInput($elt);
 				break;
@@ -183,10 +191,12 @@ class Form
 				// Do not need outer div, so use return directly.
 				return $this->GetElementHidden($elt);
 				break;
-/*
-				$s_html .= $this->GetElementFile($elt);
+			case 'image':
+				$s_html .= $this->GetElementImage($elt);
 				break;
-*/
+			case 'radio':
+				$s_html .= $this->GetElementRadio($elt);
+				break;
 		}
 
 		if (isset($elt['attrib']['keep_div'])
@@ -251,6 +261,63 @@ class Form
 
 		return $s_html;
 	} // end of func GetElementInput
+
+
+	/**
+	 * Get html of element radio
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementRadio($elt) {
+		$s_html = '';
+		$t = $elt;
+		$s_spacer = (isset($elt['attrib']['spacer']))
+			? $elt['attrib']['spacer'] : '';
+		$i_id = 1;
+		// Value is an array like array('label' => , 'value' =>)
+		foreach ($elt['attrib']['value'] as $v) {
+			$t['label'] = $v['label'];
+			$t['attrib']['value'] = $v['value'];
+			$s_t = $this->GetElementInput($t) . $s_spacer;
+
+			// Id can't be same, so rename them
+			$s_t = str_replace('for="' . $elt['name'] . '"'
+				, 'for="' . $elt['name'] . '-' . $i_id . '"', $s_t);
+			$s_t = str_replace('id="' . $elt['name'] . '"'
+				, 'id="' . $elt['name'] . '-' . $i_id . '"', $s_t);
+
+			$i_id ++;
+			$s_html .= $s_t;
+		}
+
+		return $s_html;
+	} // end of func GetElementRadio
+
+
+	/**
+	 * Get html of element image
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementImage($elt) {
+		// No label
+		$s_html = $this->GetElementHidden($elt);
+
+		if (isset($elt['attrib']['src']))
+			$s_html = str_replace('/>'
+				, 'src="' . $elt['attrib']['src'] . '" />'
+				, $s_html);
+
+		// Label is alt text
+		if (isset($elt['label']))
+			$s_html = str_replace('/>'
+				, 'alt="' . $elt['label'] . '" />'
+				, $s_html);
+
+		return $s_html;
+	} // end of func GetElementImage
 
 
 	/**
