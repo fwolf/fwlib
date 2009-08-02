@@ -163,6 +163,12 @@ class Form
 	 * @see AddElement()
 	 */
 	public function GetElement($elt) {
+		// Apply element's default value
+		foreach ($this->aElementAttribDefault as $k => $v) {
+			if (!isset($elt['attrib'][$k]) && !empty($v))
+				$elt['attrib'][$k] = $v;
+		}
+
 		$s_html = '';
 
 		if (isset($elt['attrib']['label_align'])
