@@ -72,6 +72,8 @@ class Form
 		'keep_div'	=> false,
 		// Label is before input or after it ?
 		'label_pos'	=> 'before',
+		// For select, multiple means multi-select, value is size
+		'multiple'	=> null,
 		// Selection or value list, usually be array
 		'option'	=> null,
 		// Spacer between mutli item, eg: radio
@@ -206,6 +208,9 @@ class Form
 			case 'radio':
 				$s_html .= $this->GetElementRadio($elt);
 				break;
+			case 'select':
+				$s_html .= $this->GetElementSelect($elt);
+				break;
 		}
 
 		if (isset($elt['attrib']['keep_div'])
@@ -335,6 +340,45 @@ class Form
 
 		return $s_html;
 	} // end of func GetElementRadio
+
+
+	/**
+	 * Get html of element select
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementSelect($elt) {
+		// Div, label, and input html
+		$s_html = $this->GetElementInput($elt);
+		// Input -> select
+		$s_html = str_replace('<input', '<select', $s_html);
+		if (empty($elt['attrib']['multiple']))
+			$s_html = str_replace('/>', '>', $s_html);
+		else
+			$s_html = str_replace('/>', 'multiple="multiple" size="'
+			. $elt['attrib']['multiple'] . '">', $s_html);
+
+		// Options
+		$s_option = '';
+		// Option is an array like array('label' => , 'option' =>)
+		foreach ($elt['attrib']['option'] as $v) {
+			// <option value="volvo">Volvo</option>
+			$s_t = 'value="' . $v['option']
+				. '">' . $v['label'] . '</option>' . "\n";
+
+			// Selected ?
+			if (isset($elt['value']) && ($elt['value'] == $v['option']))
+				$s_t = '<option selected="selected" ' . $s_t;
+			else
+				$s_t = '<option ' . $s_t;
+
+			$s_html .= $s_t;
+		}
+
+		$s_html .= "</select>\n";
+		return $s_html;
+	} // end of func GetElementSelect
 
 
 	/**
