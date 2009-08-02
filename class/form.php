@@ -195,6 +195,11 @@ class Form
 			case 'submit':
 				$s_html .= $this->GetElementButton($elt);
 				break;
+			case 'xbutton':
+			case 'xreset':
+			case 'xsubmit':
+				$s_html .= $this->GetElementButtonX($elt);
+				break;
 			case 'checkbox':
 				$s_html .= $this->GetElementCheckbox($elt);
 				break;
@@ -440,6 +445,30 @@ class Form
 		$s_html .= "</textarea>\n";
 		return $s_html;
 	} // end of func GetElementTextarea
+
+
+	/**
+	 * Get html of element button, not the input type=button one
+	 * @param	array	$elt
+	 * @return	string
+	 * @see	AddElement()
+	 */
+	protected function GetElementButtonX($elt) {
+		// Remove leading 'x'
+		$elt['type'] = substr($elt['type'], 1);
+
+		$s_html = $this->GetHtmlInput($elt);
+		$s_html = str_replace('<input', '<button', $s_html);
+		// Can have value, alough useless
+		if (isset($elt['value']))
+			$s_html = str_replace('/>', 'value="' . $elt['value'] . '" />'
+				, $s_html);
+		// Label set bteween tags
+		if (isset($elt['label']))
+			$s_html = str_replace('/>', '>' . $elt['label'] . '</button>'
+				, $s_html);
+		return $s_html;
+	} // end of func GetElementButtonX
 
 
 	/**
