@@ -51,6 +51,7 @@ class Form
 	 * 		name,
 	 * 		type,
 	 * 		label,
+	 * 		value,
 	 * 		attrib = array(
 	 * 		),
 	 * 	)
@@ -77,8 +78,6 @@ class Form
 		'spacer'	=> '',
 		// Only image has src attrib
 		'src'		=> '',
-		// Value normally has no default value
-		'value'		=> null,
 	);
 
 	/**
@@ -153,7 +152,7 @@ class Form
 		}
 		else {
 			if (!empty($v) && isset($this->aElement[$name]))
-				$this->aElement[$name]['attrib']['value'] = $v;
+				$this->aElement[$name]['value'] = $v;
 		}
 	} // end of func AddElementValue
 
@@ -276,9 +275,9 @@ class Form
 	 */
 	protected function GetElementHidden($elt) {
 		$s_html = $this->GetHtmlInput($elt);
-		if (isset($elt['attrib']['value']))
+		if (isset($elt['value']))
 			$s_html = str_replace('/>'
-				, 'value="' . $elt['attrib']['value'] . '" />'
+				, 'value="' . $elt['value'] . '" />'
 				, $s_html);
 		return $s_html;
 	} // end of func GetElementHidden
@@ -319,8 +318,9 @@ class Form
 		$i_id = 1;
 		// Option is an array like array('label' => , 'option' =>)
 		foreach ($elt['attrib']['option'] as $v) {
+			// Use input go get label and input html.
 			$t['label'] = $v['label'];
-			$t['attrib']['value'] = $v['option'];
+			$t['value'] = $v['option'];
 			$s_t = $this->GetElementInput($t) . $s_spacer;
 
 			// Id can't be same, so rename them
