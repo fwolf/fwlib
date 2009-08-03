@@ -86,6 +86,7 @@ bid section					|招标标段
 bidder						|投标人
 bidding agency, bagy		|招标代理（机构）
 bidding document, bid_doc	|招标文件
+bid_doc_add					|招标文件的澄清、修改或补遗(Clarification, Modification and Amendment of Bidding Documents)
 bidding document edit system, bdes	|标书制作软件/系统
 bidding evaluation, be		|评标，标书评审
 bidding evaluation assistance system, beas	|辅助评标系统，评标辅助系统
@@ -226,6 +227,7 @@ qualification, qual			|资质，资格
 	postqualification		|资格后审
 	prequalification		|资格预审
 	qual_by					|资质发证机关/部门
+	qual_doc				|资审文件
 	qual_level				|资质等级
 	qual_rno				|资质证书编号
 	qual_time				|取得资格时间
