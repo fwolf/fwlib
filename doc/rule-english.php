@@ -64,6 +64,7 @@ achievement, achv			|业绩
 address, addr				|地址
 aggregate, agg				|汇总，侧重于不是简单数学累加的情况
 allocate, alloc, alo		|分配，侧重于把一个整体划分到各个单体，比如把总分分配到每个子项上
+administrative power executive monitoring mechanism, apemm	|行政权利运行监控机制
 amount, amt					|总数，数量，有时即可指数量，也可指总合计，所以慎用，替代词：quantity
 announcement, announce, anc	|公告
 annual inspection, ai		|年检
