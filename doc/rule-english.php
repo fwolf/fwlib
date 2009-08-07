@@ -176,6 +176,7 @@ item No.					|产品标号
 job title, jtitle			|工作职务
 landscaping					|景观美化，园林绿化
 landscaping enterprise, lent	|园林绿化企业
+leading group, lg			|领导小组
 lecture						|讲课稿
 legal representative, lgr	|法定代表人
 less than, lt				|小于或等于（bash中的用法）
