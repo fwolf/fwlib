@@ -209,6 +209,12 @@ class Form
 			case 'date_my97':
 				$s_html .= $this->GetElementDateMy97($elt);
 				break;
+			case 'fieldset':
+				return $this->GetElementFieldset($elt);
+				break;
+			case 'fieldset_end':
+				return $this->GetElementFieldsetEnd($elt);
+				break;
 			case 'hidden':
 				// Do not need outer div, so use return directly.
 				return $this->GetElementHidden($elt);
@@ -238,7 +244,7 @@ class Form
 		else
 			$this->iFlagKeepDiv = false;
 		if (false == $this->iFlagKeepDiv)
-			$s_html .= '</div>' . "\n";
+			$s_html .= '</div>' . "\n\n";
 
 		return $s_html;
 	} // end of func GetElement
@@ -322,6 +328,42 @@ class Form
 
 		return $s_html;
 	} // end of func GetElementDateMy97
+
+
+	/**
+	 * Get html of element fieldset(begin)
+	 *
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementFieldset($elt) {
+		$s_html = $this->GetHtmlInput($elt);
+		$s_html = str_replace('<input type="fieldset"'
+			, '<fieldset', $s_html);
+
+		// Label as legend
+		if (isset($elt['label']))
+			$s_html = str_replace('/>'
+				, '>' . "\n	" . '<legend>' . $elt['label']
+					. '</legend>' . "\n"
+				, $s_html);
+		else
+			$s_html = str_replace('/>', ">\n", $s_html);
+
+		return $s_html;
+	} // end of func GetElementFieldset
+
+
+	/**
+	 * Get html of element fieldset(end)
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementFieldsetEnd($elt) {
+		return "</fieldset>\n\n";
+	} // end of func GetElementFieldsetEnd
 
 
 	/**
