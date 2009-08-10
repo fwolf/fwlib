@@ -79,6 +79,8 @@ class Form
 		'multiple'	=> null,
 		// Selection or value list, usually be array
 		'option'	=> null,
+		// For date input(My97DatePicker) only
+		'param'		=> '',
 		// For textarea only
 		'rows'		=> null,
 		// Spacer between mutli item, eg: radio
@@ -189,6 +191,7 @@ class Form
 			$s_html .= '<div class="' . $s_div . '" id="fl_elt_div_'
 				. $elt['name'] . '">' . "\n";
 
+		// :TODO: autocomplete
 		switch ($elt['type']) {
 			case 'button':
 			case 'reset':
@@ -202,6 +205,9 @@ class Form
 				break;
 			case 'checkbox':
 				$s_html .= $this->GetElementCheckbox($elt);
+				break;
+			case 'date_my97':
+				$s_html .= $this->GetElementDateMy97($elt);
 				break;
 			case 'hidden':
 				// Do not need outer div, so use return directly.
@@ -283,6 +289,39 @@ class Form
 
 		return $s_html;
 	} // end of func GetElementCheckbox
+
+
+	/**
+	 * Get html of element date, using My97DatePicker
+	 *
+	 * Must include WdatePicker.js in tpl manually:
+	 * <script type="text/javascript" src="/js/DatePicker/WdatePicker.js"></script>
+	 * @param	array	$elt
+	 * @return	string
+	 * @see AddElement()
+	 */
+	protected function GetElementDateMy97($elt) {
+		$s_html = $this->GetElementText($elt);
+		// Make type for input right(input)
+		$s_html = str_replace('<input type="date_my97"'
+			, '<input type="input"', $s_html);
+
+		if (isset($elt['value']))
+			$s_html = str_replace('/>'
+				, 'value="' . $elt['value'] . '" />'
+				, $s_html);
+
+		// Add My97DatePicker part
+		if (isset($elt['attrib']['param']))
+			$s_param = $elt['attrib']['param'];
+		else
+			$s_param = $this->aElementAttribDefault['param'];
+		$s_html = str_replace('/>'
+			, 'class="Wdate" onfocus="WdatePicker({' . $s_param . '})" />'
+			, $s_html);
+
+		return $s_html;
+	} // end of func GetElementDateMy97
 
 
 	/**
