@@ -370,11 +370,19 @@ class Form
 		$s_html = $this->GetElementText($elt);
 		// Input -> select
 		$s_html = str_replace('<input', '<select', $s_html);
-		if (empty($elt['attrib']['multiple']))
+		if (empty($elt['attrib']['multiple'])) {
 			$s_html = str_replace('/>', '>', $s_html);
-		else
+		}
+		else {
 			$s_html = str_replace('/>', 'multiple="multiple" size="'
 			. $elt['attrib']['multiple'] . '">', $s_html);
+			// Set name to array format
+			$s_html = str_replace('<select type="select" name="'
+				. $elt['name'] . '"'
+				, '<select type="select" name="'
+				. $elt['name'] . '[]"'
+				, $s_html);
+		}
 
 		// Options
 		$s_option = '';
