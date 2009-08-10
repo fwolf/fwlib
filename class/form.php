@@ -393,7 +393,17 @@ class Form
 				. '">' . $v['label'] . '</option>' . "\n";
 
 			// Selected ?
-			if (isset($elt['value']) && ($elt['value'] == $v['option']))
+			// Value can be array if multiple is set
+			// Array - in_array, and = for string
+			$b_selected = false;
+			if (isset($elt['value'])) {
+				if (is_array($elt['value'])
+					&& in_array($v['option'], $elt['value']))
+					$b_selected = true;
+				elseif ($elt['value'] == $v['option'])
+					$b_selected = true;
+			}
+			if ($b_selected)
 				$s_t = '<option selected="selected" ' . $s_t;
 			else
 				$s_t = '<option ' . $s_t;
