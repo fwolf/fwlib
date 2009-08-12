@@ -219,6 +219,12 @@ class Form
 				// Do not need outer div, so use return directly.
 				return $this->GetElementHidden($elt);
 				break;
+			case 'html':
+				$s_html .= $elt['label'] . "\n";
+				break;
+			case 'htmlraw':
+				return $elt['label'] . "\n";
+				break;
 			case 'image':
 				$s_html .= $this->GetElementImage($elt);
 				break;
