@@ -31,17 +31,18 @@ class Form
 {
 	/**
 	 * Configuration
+	 * array(
+	 * 	action 	=> url
+	 * 	enctype	=> useful when upload file
+	 * 	method	=> POST or GET
+	 * 	name	=> same as id
+	 * )
 	 * @var	array
+	 * @see	Reset()
+	 * @see	SetConfig()
+	 * @see	SetConfigEnctype()
 	 */
-	protected $aConfig = array(
-		'action'	=> '',
-		// enctype default 'application/x-www-form-urlencoded'
-		'enctype'	=> '',
-		// Default id=name, so only define one
-		//'id'		=> 'fwolflib_form',
-		'method'	=> 'POST',
-		'name'		=> 'fl_form',
-	);
+	protected $aConfig = array();
 
 	/**
 	 * Form element define, raw order
@@ -103,7 +104,7 @@ class Form
 	 * contruct
 	 */
 	public function __construct() {
-
+		$this->Reset();
 	} // end of func __construct
 
 
@@ -667,6 +668,20 @@ class Form
 
 		return $s_input;
 	} // end of func GetHtmlInput
+
+
+	/**
+	 * Reset all data to default, prepare to create a new form
+	 */
+	public function Reset() {
+		$this->aConfig = array(
+			'action'	=> '',
+			'enctype'	=> '',
+			'method'	=> 'POST',
+			'name'		=> 'fl_form',
+		);
+		$this->aElement = array();
+	} // end of func Reset
 
 
 	/**
