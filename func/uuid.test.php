@@ -23,7 +23,7 @@ if (! defined('SIMPLE_TEST')) {
 require_once('fwolflib/func/uuid.php');
 
 class TestFuncUuid extends UnitTestCase {
-	
+
     function TestUuidParse() {
     	// Generate and parse data back
     	$ar = UuidParse(Uuid());
@@ -34,14 +34,17 @@ class TestFuncUuid extends UnitTestCase {
     	$ar = UuidParse(Uuid('0001', '1312.101'));
     	$this->assertIdentical($ar['custom_2'], '1312.101');
     	// Parae data
-    	$ar = UuidParse('4822afd9-861b-0000-25cd-8302650aa932');
+    	$ar = UuidParse('4822afd9-861b-0000-8302-650a25cda932');
     	$this->assertIdentical($ar['time_low'], 1210232793);
     	$this->assertIdentical($ar['time_mid'], 34331);
     	$this->assertIdentical($ar['custom_1'], '0000');
     	$this->assertIdentical($ar['custom_2'], '8302650a');
     	$this->assertIdentical($ar['ip'], '131.2.101.10');
-    } // end of func 
-    
+
+		// Speed test
+		UuidSpeedTest(5000);
+    } // end of func
+
 } // end of class TestFuncString
 
 

@@ -1,25 +1,26 @@
 <?php
 /**
  * UUID generator
- * 
+ *
  * Using method nodkz at mail dot ru post on <http://us.php.net/uniqid>,
  * but format changed.
- * 
+ *
  * <code>
  * UUID format:
- * [time_low]-[time_mid]-[custom_1]-[random_1]-[custom_2]-[random_2]
+ * [time_low]-[time_mid]-[custom_1]-[custom_2](part1/2)
+ * 	-[custom_2](part2/2)[random_1][random_2]
  * time_low:	8 chars, seconds in microtime, hex format.
  * time_mid:	4 chars, micro-second in microtime, plus 10000, hex format.
  * custom_1:	4 chars, user defined, '0000' if empty, hex format suggested.
- * random_1:	4 chars, random string, hex format.
  * custom_2:	8 chars, user defined, hex of user ip if empty,
  * 					and random hex string if user ip cannot get, hex format too.
+ * random_1:	4 chars, random string, hex format.
  * random_2:	4 chars, random string, hex format.
  * </code>
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
+ * @copyright	Copyright 2008-2009, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2008-05-08
  * @version		$Id$
  */
@@ -29,9 +30,9 @@ require_once('fwolflib/func/client.php');
 
 /**
  * Get a uuid
- * 
+ *
  * User can combine cus and cus2 to sort uuid.
- * @param	string	$s_cus	Custom part in uuid, 4 chars long, 
+ * @param	string	$s_cus	Custom part in uuid, 4 chars long,
  * 							positioned in 3rd section,
  *							default fill by '0'.
  * @param	string	$s_cus2	Custom part2 in uuid, 8 chars long,
@@ -44,16 +45,16 @@ require_once('fwolflib/func/client.php');
  */
 function Uuid($s_cus = '0000', $s_cus2 = '') {
     $ar = explode(" ", microtime());
-    
+
     // Prepare custom string 2
     if (empty($s_cus2))
     	$s_cus2 = ClientIpToHex();
     if (8 != strlen($s_cus2))
-    	$s_cus2 = substr($s_cus2 . 
+    	$s_cus2 = substr($s_cus2 .
 			sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff)), 0, 8);
     //if (empty($s_cus2) || (8 != strlen($s_cus2)))
     //	$s_cus2 = sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-    
+
     return sprintf('%08s-%04s-%04s-%04s-%04s%04x%04x',
     	// Unixtime, 8 chars from right-side end
     	// 2030-12-31 = 1924876800(dec) = 72bb4a00(hex)
@@ -122,7 +123,7 @@ function UuidParse($uuid) {
 
 /**
  * Test how many uuid can this program generate per second
- * 
+ *
  * @param	long	$num	Number of uuid generated in test, the more the result more currect.
  * @param	string	$file	If assigned, result will be write to this file, 1 uuid per line.
  */
@@ -149,6 +150,6 @@ function UuidSpeedTest($num = 100, $file = '') {
 	// Write to file ?
 	if (!empty($file))
 		file_put_contents($file, $s);
-} // end of function UuidSpeedTest 
-	
+} // end of function UuidSpeedTest
+
 ?>
