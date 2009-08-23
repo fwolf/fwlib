@@ -12,7 +12,7 @@ disp_listtable.php
 doc-markdown.php
 ----------------
 ### DocMarkdown
-	Easy write/display doc using Markdown markup language. 
+	Easy write/display doc using Markdown markup language.
 
 list_table.php
 --------------
@@ -56,6 +56,9 @@ client.php
 ### GetBrowserType()
 	检查客户端的浏览器是NS还是IE(old)
 
+### GetClientIp()
+	Get ip of client.
+
 config.php
 ----------
 	GetCfg and SetCfg function.
@@ -78,10 +81,10 @@ datetime.php
 
 dbwrite.php
 	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
-	
+
 download.php
 	Download contents as a file.
-	
+
 ecl.php
 	Smarty echo line, end with \n or <br /> according running mod
 

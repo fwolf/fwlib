@@ -23,10 +23,10 @@ if (! defined('SIMPLE_TEST')) {
 require_once('fwolflib/func/client.php');
 
 class TestFuncClient extends UnitTestCase {
-	
+
     function TestClientIpFromToHex() {
     	// Default value
-    	$this->assertEqual(ClientIpToHex(), '8302650a');
+    	$this->assertEqual(ClientIpToHex('131.2.101.10'), '8302650a');
     	$this->assertEqual(ClientIpFromHex('8302650a'), '131.2.101.10');
     	// Loopback address
     	$this->assertEqual(ClientIpToHex('127.000.000.001'), '7f000001');
@@ -40,8 +40,8 @@ class TestFuncClient extends UnitTestCase {
     	// Error parameters handel
     	$this->assertEqual(ClientIpToHex('ABCD'), '');
     	$this->assertEqual(ClientIpFromHex('ABCD'), '');
-    } // end of func 
-    
+    } // end of func
+
 } // end of class TestFuncString
 
 
