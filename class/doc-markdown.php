@@ -480,22 +480,22 @@ hr {
 .article h4 {counter-reset: c-level4}
 .article h2:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1, decimal) "、";
+	content: "§ " counter(c-level1, decimal) " ";
 	counter-increment: c-level1 1
 }
 .article h3:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "、";
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) " ";
 	counter-increment: c-level2 1
 }
 .article h4:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "、";
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) " ";
 	counter-increment: c-level3 1
 }
 .article h5:before {
 	/*display: marker; */
-	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "." counter(c-level4, decimal) "、";
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "." counter(c-level4, decimal) " ";
 	counter-increment: c-level4 1
 }
 .article li {
