@@ -168,6 +168,74 @@ class Form
 
 
 	/**
+	 * Example of Generate task edit form
+	 * @return	string
+	 */
+	protected function EgGenFormTaskEdit() {
+		$this->oForm->Reset();
+
+		$this->oForm->SetConfig(array(
+			'name'	=> 'form_task_edit',
+		));
+		$this->oForm->AddElement('text', 'title', '任务名称'
+			, array('html_add' => 'style="color: red;"'));
+
+		$this->oForm->AddElement('fieldset', 'fs_1', '第一组');
+		$this->oForm->AddElement('checkbox', 'cb_1', '选项1'
+			, array('checked' => true, 'option' => 1));
+		$this->oForm->AddElement('checkbox', 'cb_2', '选项2'
+			, array('checked' => false, 'label_align' => 'after'));
+		$this->oForm->AddElementAttrib('cb_2', 'option', 2);
+		$this->oForm->AddElement('file', 'fu_1', '上传文件');
+		$this->oForm->AddElement('fieldset_end', 'fse_1', '第一组');
+
+		$this->oForm->AddElement('hidden', 'hid_1', 'Hide');
+		$this->oForm->AddElementValue('hid_1', "I'm hidden.");
+		$this->oForm->AddElement('image', 'img_1', '图片？'
+			, array('src' => 'http://www.acronymfinder.com/~/st/i/deli.gif'));
+		$this->oForm->AddElement('password', 'pwd_1', '密码'
+			, array('html_add' => 'style="color: red;"'));
+		$this->oForm->AddElement('radio', 'rad_1', '只能选一个：');
+		$this->oForm->AddElementAttrib('rad_1', array(
+			'spacer' => '<br />',
+			'label_align' => 'after',
+		));
+		$this->oForm->AddElementAttrib('rad_1', 'option', array(
+			array('label' => '选择1', 'option' => '1'),
+			array('label' => '选择2', 'option' => '2'),
+		));
+		$this->oForm->AddElement('select', 'sel_1', '选一个');
+		$this->oForm->AddElementAttrib('sel_1', 'option', array(
+			array('label' => '选择11', 'option' => '11'),
+			array('label' => '选择22', 'option' => '22'),
+			array('label' => '选择33', 'option' => '33'),
+			array('label' => '选择44', 'option' => '44'),
+		));
+		$this->oForm->AddElementAttrib('sel_1', 'multiple', 8);
+		$this->oForm->AddElementValue('sel_1', array(22, 44));
+		$this->oForm->AddElement('select', 'sel_2', '再选一个');
+		$this->oForm->AddElementAttrib('sel_2', 'option', array(
+			array('label' => '选择11', 'option' => '11'),
+			array('label' => '选择22', 'option' => '22'),
+			array('label' => '选择33', 'option' => '33'),
+			array('label' => '选择44', 'option' => '44'),
+		));
+		$this->oForm->AddElementValue('sel_2', 22);
+		$this->oForm->AddElement('textarea', 'tx_2', '详细说明'
+			, array('rows' => 4, 'cols' => 50));
+		$this->oForm->AddElement('date_my97', 'date_1', '时间'
+			, array('param' => 'lang:\'zh-cn\''));
+		$this->oForm->AddElement('html', 'html_1', '<strong> or </strong>');
+		$this->oForm->AddElement('xsubmit', 'form_save', '保存');
+		$this->oForm->AddElementAttrib('form_save', 'keep_div', true);
+		$this->oForm->AddElement('htmlraw', 'html_2', '<strong> OR </strong>');
+		$this->oForm->AddElement('xreset', 'form_reset', '重置');
+
+		return $this->oForm->GetHtml();
+	} // end of func EgGenFormTaskEdit
+
+
+	/**
 	 * Get html of an element
 	 * @param	array	$v
 	 * @return	string
@@ -184,12 +252,12 @@ class Form
 
 		if (isset($elt['attrib']['label_align'])
 			&& ('after' == $elt['attrib']['label_align']))
-			$s_div = 'fl_elt_div_lr';
+			$s_div = 'fl_frm_elt_lr';
 		else
-			$s_div = 'fl_elt_div_ll';
+			$s_div = 'fl_frm_elt_ll';
 
 		if (false == $this->iFlagKeepDiv)
-			$s_html .= '<div class="' . $s_div . '" id="fl_elt_div_'
+			$s_html .= '<div class="' . $s_div . '" id="fl_frm_elt_'
 				. $elt['name'] . '">' . "\n";
 
 		// :TODO: autocomplete
@@ -207,6 +275,7 @@ class Form
 			case 'checkbox':
 				$s_html .= $this->GetElementCheckbox($elt);
 				break;
+			case 'datetime':
 			case 'date_my97':
 				$s_html .= $this->GetElementDateMy97($elt);
 				break;
@@ -588,21 +657,21 @@ class Form
 		$s_html .= '
 		<style type="text/css" media="screen, print">
 		<!--
-		#' . $this->aConfig['name'] . ' .fl_elt_div_ll {
+		#' . $this->aConfig['name'] . ' .fl_frm_elt_ll {
 			clear: left;
-			margin-top: 0.2em;
+			padding-top: 0.2em;
 		}
-		#' . $this->aConfig['name'] . ' .fl_elt_div_ll label {
+		#' . $this->aConfig['name'] . ' .fl_frm_elt_ll label {
 			float: left;
 			text-align: right;
 			margin-right: 0.3em;
 			padding-top: 0.2em;
 		}
-		#' . $this->aConfig['name'] . ' .fl_elt_div_lr {
+		#' . $this->aConfig['name'] . ' .fl_frm_elt_lr {
 			/*clear: right;*/
-			margin-top: 0.2em;
+			padding-top: 0.2em;
 		}
-		#' . $this->aConfig['name'] . ' .fl_elt_div_lr label {
+		#' . $this->aConfig['name'] . ' .fl_frm_elt_lr label {
 			/*float: right;*/
 			text-align: left;
 			margin-left: 0.3em;
