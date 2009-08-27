@@ -1,11 +1,11 @@
 <?php
 /**
  * Funcs about client side info
- * 
+ *
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2003-2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
+ * @copyright	Copyright 2003-2009, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2006-07-03
  * @version		$Id$
  */
@@ -40,7 +40,8 @@ function ClientIpFromHex($hex) {
 function ClientIpToHex($ip = "") {
 	$hex = "";
 	if('' == $ip)
-		$ip = getenv('REMOTE_ADDR');
+		//$ip = getenv('REMOTE_ADDR');
+		$ip = GetClientIp();
 	if (false == ip2long($ip))
 		return '';
 	else {
@@ -63,14 +64,38 @@ function ClientIpToHex($ip = "") {
 function GetBrowserType()
 {
 	$str = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-	if (false === strpos($str, 'MSIE'))
-	{
+	if (false === strpos($str, 'MSIE')) {
 	    return('NS');
 	}
-	else
-	{
+	else {
 	    return('IE');
 	}
 } // end func GetBrowserType
+
+
+/**
+ * Get ip of client
+ *
+ * @return	string
+ * @link http://roshanbh.com.np/2007/12/getting-real-ip-address-in-php.html
+ */
+function GetClientIp() {
+	$s = '';
+
+	// Original way: check ip from share internet
+	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+		$s = $_SERVER['HTTP_CLIENT_IP'];
+	}
+	// Using proxy ?
+	elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		$s = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	}
+	// Another way
+	else {
+		$s = $_SERVER['REMOTE_ADDR'];
+	}
+	return $s;
+} // end of func GetClientIp
+
 
 ?>

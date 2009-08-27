@@ -148,6 +148,7 @@ economic nature, en			|经济性质
 eligible bidders			|合格的投标人
 electronic bidding document, ebd	|电子招标文件
 electronic tendering document, etd	|电子投标文件
+element, elt				|元素
 employer					|雇主，工作单位
 end date, ed				|结束日期
 end time, et				|结束时间
@@ -162,6 +163,7 @@ expert evaluation, ee		|专家评审
 expiration date, expt		|过期时间(简写中date->time)
 fee							|费用，规费
 floor area					|占地面积
+form, frm					|表单，表格
 fraud						|欺诈
 goods						|货物
 great_than, gt				|大于或等于（bash中的用法）
