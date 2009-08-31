@@ -91,8 +91,11 @@ function GetClientIp() {
 		$s = $_SERVER['HTTP_X_FORWARDED_FOR'];
 	}
 	// Another way
-	else {
+	elseif (!empty($_SERVER['REMOTE_ADDR'])) {
 		$s = $_SERVER['REMOTE_ADDR'];
+	}
+	else {
+		$s = '';
 	}
 	return $s;
 } // end of func GetClientIp

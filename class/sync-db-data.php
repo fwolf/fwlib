@@ -2,8 +2,8 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @copyright	Copyright 2008-2009, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2008-05-20
  * @version		$Id$
  */
@@ -15,10 +15,10 @@ require_once('fwolflib/func/uuid.php');
 
 /**
  * Sync data between 2 database source
- * 
+ *
  * at now, only from 1 to another,
  * cannot do two-side sync yet.
- * 
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2008, Fwolf
@@ -28,16 +28,16 @@ require_once('fwolflib/func/uuid.php');
  * @see			AdoDb
  */
 class SyncDbData {
-	
+
 	/**
 	 * Oneway sync config
-	 * 
+	 *
 	 * If 1 tbl from source need write to 2 tbl to destination
 	 * set destination tbl in queue an array.
-	 * 
+	 *
 	 * 1 source tbl can only accur once in queue array index,
 	 * because timestamp is record by it.
-	 * 
+	 *
 	 * <code>
 	 * srce		Source db profile(array)
 	 * dest		Destination db profile(array)
@@ -46,65 +46,65 @@ class SyncDbData {
 	 * 		tbl_srce => array(tbl_dest1, tbl_dest2),
 	 * )
 	 * </code>
-	 * 
+	 *
 	 * Will auto call data parse function, if not exist, use original data.
 	 * eg: DataConvertTblSrce
 	 * This function accept data array retrieve from source,
 	 * and return data array will write to destination.
-	 * 
+	 *
 	 * When destination write done, update timestamp in record tbl.
-	 * 
+	 *
 	 * Change to assign through function param, here is just a sample.
 	 * @var	array
 	 */
 	//public $aConfigOneway = array();
-	
+
 	/**
 	 * Log message
 	 * @var	array
 	 */
 	protected $aLog = array();
-	
+
 	/**
 	 * Number of rows have processed
 	 * @var	integer
 	 */
 	protected $iBatchDone = 0;
-	
+
 	/**
 	 * Process N rows per run
 	 * @var	integer
 	 */
 	public $iBatchSize = 100;
-	
+
 	/**
 	 * Source db profile name
 	 * A join of db type, host, name in db config array, '-' splitted.
 	 * @var	string
 	 */
 	protected $sDbProfSrce = '';
-	
+
 	/**
 	 * Name of record table
-	 * 
+	 *
 	 * Create in destination db.
 	 * @var	string
 	 */
 	public $sTblRecord = 'sync_db_data_record';
-	
+
 	/**
 	 * Db object - source
 	 * @var object
 	 */
 	protected $oDbSrce = null;
-	
+
 	/**
 	 * Db object - destination
 	 * @var object
 	 */
 	protected $oDbDest = null;
-	
-	
+
+
 	/**
 	 * construct
 	 */
@@ -114,8 +114,8 @@ class SyncDbData {
 		// Do check after we know target db
 		//$this->CheckTblRecord();
 	} // end of func __construct
-	
-	
+
+
 	/**
 	 * destruct, output log message, only when there is some sync happen.
 	 */
@@ -124,8 +124,8 @@ class SyncDbData {
 			foreach ($this->aLog as &$log)
 				Ecl($log);
 	} // end of function destruct
-	
-	
+
+
 	/**
 	 * Check and install record table if not exists
 	 * @param	object	$db		Db connection
@@ -135,7 +135,7 @@ class SyncDbData {
 	{
 		if (empty($tbl))
 			$tbl = $this->sTblRecord;
-		
+
 		if (!$db->TblExists($tbl)) {
 			// Table doesn't exist, create it
 			// SQL for Create table diffs from several db
@@ -174,7 +174,7 @@ class SyncDbData {
 				$this->Log('Table record create syntax not implement.');
 				die();
 			}
-			
+
 			// Execute create table sql
 			$db->Execute($sql);
 			if (0 < $db->ErrorNo())
@@ -188,7 +188,7 @@ class SyncDbData {
 				$db->Execute("CREATE INDEX idx_{$tbl}_1 ON
 					$tbl(db_prof, tbl_title)
 					");
-				
+
 				// Log table create information
 				$this->Log("Log table $tbl doesn't exist, create it, done.");
 			}
@@ -199,18 +199,18 @@ class SyncDbData {
 			$this->Log("Log table $tbl already exists.");
 		}
 	} // end of function CheckTblRecord
-	  
+
 
 	/**
 	 * Connect to db, using func defined in Adodb, check error here.
-	 * 
+	 *
 	 * <code>
 	 * $s = array(type, host, user, pass, name, lang);
 	 * type is mysql/sybase_ase etc,
 	 * name is dbname to select,
 	 * lang is db server charset.
 	 * </code>
-	 * 
+	 *
 	 * Useing my extended ADODB class now, little difference when new object.
 	 * @var array	$dbprofile	Server config array
 	 * @return object			Db connection object
@@ -221,7 +221,7 @@ class SyncDbData {
 		$conn = &new Adodb($dbprofile);
 		$conn->Connect();
 		//var_dump($conn);
-		
+
 		if (0 !=$conn->ErrorNo())
 		{
 			// Display error
@@ -230,11 +230,11 @@ class SyncDbData {
 			$this->Log($s);
 			die();
 		}
-		else 
+		else
 			return $conn;
 	} // end of function DbConn
-	
-	
+
+
 	/**
 	 * Get last timestamp remembered
 	 * @param	$db_dest	Destination db connection, find here
@@ -260,8 +260,8 @@ class SyncDbData {
 			return '';
 		}
 	} // end of function GetLastTs
-	
-	
+
+
 	/*
 	 * Save or output log message, change to save now, output when destruct.
 	 * @param	string	$log
@@ -272,8 +272,8 @@ class SyncDbData {
 		//Ecl($log);
 		$this->aLog[] = $log;
 	} // end of function Log
-	
-	
+
+
 	/**
 	 * Set last timestamp, for next round
 	 * @param	$db_dest	Destination db connection, write here
@@ -317,8 +317,8 @@ class SyncDbData {
 			return false;
 		}
 	} // end of function SetLastTs
-	
-	
+
+
 	/**
 	 * Do oneway sync
 	 * @param	array	&$config
@@ -332,7 +332,7 @@ class SyncDbData {
 				. '-' . $config['srce']['name'];
 			$this->oDbSrce = &$db_srce;
 		}
-			
+
 		if (!empty($config['dest'])) {
 			$db_dest = $this->DbConn($config['dest']);
 			$this->oDbDest = &$db_dest;
@@ -353,8 +353,8 @@ class SyncDbData {
 		$this->Log("SyncOneway done, total {$this->iBatchDone} rows wrote,"
 			. " db query(s) $i_db_query_times times.\n");
 	} // end of function SyncOneway
-	
-	
+
+
 	/**
 	 * Do oneway sync on a single table
 	 * @param	object	$db_srce	Source db connection
@@ -371,7 +371,7 @@ class SyncDbData {
 			$this->Log("Table $tbl_srce in source db hasn't timestamp column.");
 			die();
 		}
-		
+
 		// Retrieve data from source db
 		$ar_conf = array(
 			'SELECT' => '*',
@@ -391,7 +391,7 @@ class SyncDbData {
 		}
 		$sql = $db_srce->GenSql($ar_conf);
 		$rs = $db_srce->SelectLimit($sql, $this->iBatchSize - $this->iBatchDone);
-		
+
 		if (!empty($rs) && 0 < $rs->RowCount()) {
 			// Got data, prepare write to destination db
 			// Multi-rows write mode
@@ -400,16 +400,16 @@ class SyncDbData {
 			while (!$rs->EOF) {
 				// Get one data row, and convert it to dest format
 				$ar = $rs->FetchRow();
-				
+
                 // Php-sybase in ubuntu intrepid use mssql wrongly, so read timestamp
                 // error way, need to correct, and before encoding convert.
                 if (16 != strlen($ar[$col_ts]))
                         $ar[$col_ts] = bin2hex($ar[$col_ts]);
                 // Remember timestamp, the last one will write to record table below
                 $last_ts = strval($ar[$col_ts]);
-				
+
 				$ar = $db_srce->EncodingConvert($ar);
-				
+
 				// Add data from source db to queue, will convert later
 				if (!empty($ar))
 					$ar_rows[] = $ar;
@@ -417,7 +417,7 @@ class SyncDbData {
 			// Maybe any reason cause no data in $ar_rows
 			if (empty($ar_rows))
 				return 0;
-			
+
 			// Write data rows to db
 			//print_r($ar_rows);
 			// If $tbl_dest is string, convert to array
@@ -427,7 +427,7 @@ class SyncDbData {
 			// Loop as if $tbl_dest is multi table
 			foreach ($tbl_dest as &$tbl_dest_single) {
 				$i_batch_done_single = 0;
-				// Important: call data convert function 
+				// Important: call data convert function
 				$s_func = 'DataConvert' . StrUnderline2Ucfirst($tbl_srce)
 					. 'To' . StrUnderline2Ucfirst($tbl_dest_single);
 				$ar_dest = array();
@@ -442,7 +442,7 @@ class SyncDbData {
 				else
 					// No data convert needed
 					$ar_dest = &$ar_rows;
-				
+
 				// If got final data, write to db
 				if (!empty($ar_dest)) {
 					// Must loop manually, because each row's update/insert is difference
@@ -455,13 +455,13 @@ class SyncDbData {
 					}
 					//$db_dest->Write($tbl_dest, $ar_rows);
 				}
-				
+
 				// Log single table sync message
 				if (0 < $i_batch_done_single)
 					$this->Log("SyncOnewayTbl $tbl_srce -> $tbl_dest_single, "
 						. "$i_batch_done_single rows wrote.");
 			}
-			
+
 			// Notice, if a table need to write to 2 table in dest,
 			// and 1 table write successful and another fail, it will still set last ts.
 			if (0 <= $i_batch_done)
@@ -471,8 +471,8 @@ class SyncDbData {
 		else
 			return 0;
 	} // end of function SyncOnewayTbl
-	
-	
+
+
 	/**
 	 * Trim a string, used in array_walk, so param need to be reference
 	 * @param	string	&$str
@@ -483,8 +483,8 @@ class SyncDbData {
 		$str = trim($str);
 		return $str;
 	} // end of function Trim
-	
-	
+
+
 	/**
 	 * Generate an UUID, can be re-write by sub class
 	 * @return	string
@@ -492,5 +492,7 @@ class SyncDbData {
 	protected function Uuid() {
 		return Uuid();
 	} // end of function Uuid
+
+
 } // end of class SyncDbData
 ?>

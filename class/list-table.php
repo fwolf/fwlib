@@ -2,8 +2,8 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2003-2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @copyright	Copyright 2003-2009, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2003-05-17 12:17:14
  * @version		$Id$
  */
@@ -48,8 +48,8 @@ require_once('fwolflib/func/request.php');
  *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2003-2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @copyright	Copyright 2003-2009, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2003-05-17 12:17:14
  * @version		$Id$
  */
@@ -81,7 +81,8 @@ class ListTable
 	 */
 	protected $aConfig = array(
 		// 浅蓝色配色方案
-		'code_prefix'		=> 'fwolflib-list_table',	// Used in id/class in html and css.
+		// fwolflib-list-table = fl-lt
+		'code_prefix'		=> 'fl-lt',		// Used in id/class in html and css.
 		'color_bg_th'		=> '#d0dcff',	// 表头（第0行）
 		'color_bg_tr_even'	=> '#fff',		// 偶数行
 		'color_bg_tr_hover'	=> '#e3e3de',	// 鼠标指向时变色
@@ -104,7 +105,7 @@ class ListTable
 		'pager_top'			=> true,		// Is or not use pager top, used when pager=true
 		'param'				=> 'p',			// Used in url to set page no.
 		'rows_total'		=> 0,
-		'tpl'				=> 'list_table.tpl',
+		'tpl'				=> 'list-table.tpl',
 		);
 
 	/**
