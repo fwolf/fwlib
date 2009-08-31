@@ -169,72 +169,90 @@ class Form
 
 	/**
 	 * Example of Generate task edit form
+	 * @param	object	&$form
 	 * @return	string
 	 */
-	protected function EgGenFormTaskEdit() {
-		$this->oForm->Reset();
+	protected function EgGenFormTaskEdit(&$form) {
+		if (empty($form))
+			$form = $this->oForm;
+		$form->Reset();
 
-		$this->oForm->SetConfig(array(
+		$form->SetConfig(array(
 			'name'	=> 'frm_task_edit',
 		));
 
-		$this->oForm->AddElement('text', 'title', '任务名称'
+		$form->AddElement('text', 'title', '任务名称'
 			, array('html-add' => 'style="color: red;"'));
 
-		$this->oForm->AddElement('fieldset', 'fs_1', '第一组');
-		$this->oForm->AddElement('checkbox', 'cb_1', '选项1'
+		$form->AddElement('fieldset', 'fs_1', '第一组');
+		$form->AddElement('checkbox', 'cb_1', '选项1'
 			, array('checked' => true, 'option' => 1));
-		$this->oForm->AddElement('checkbox', 'cb_2', '选项2'
+		$form->AddElement('checkbox', 'cb_2', '选项2'
 			, array('checked' => false, 'label_align' => 'after'));
-		$this->oForm->AddElementAttrib('cb_2', 'option', 2);
-		$this->oForm->AddElement('file', 'fu_1', '上传文件');
-		$this->oForm->AddElement('fieldset_end', 'fse_1', '第一组');
+		$form->AddElementAttrib('cb_2', 'option', 2);
+		$form->AddElement('file', 'fu_1', '上传文件');
+		$form->AddElement('fieldset_end', 'fse_1', '第一组');
 
-		$this->oForm->AddElement('hidden', 'hid_1', 'Hide');
-		$this->oForm->AddElementValue('hid_1', "I'm hidden.");
-		$this->oForm->AddElement('image', 'img_1', '图片？'
+		$form->AddElement('hidden', 'hid_1', 'Hide');
+		$form->AddElementValue('hid_1', "I'm hidden.");
+		$form->AddElement('image', 'img_1', '图片？'
 			, array('src' => 'http://www.acronymfinder.com/~/st/i/deli.gif'));
-		$this->oForm->AddElement('password', 'pwd_1', '密码'
+		$form->AddElement('password', 'pwd_1', '密码'
 			, array('html-add' => 'style="color: red;"'));
-		$this->oForm->AddElement('radio', 'rad_1', '只能选一个：');
-		$this->oForm->AddElementAttrib('rad_1', array(
+		$form->AddElement('radio', 'rad_1', '只能选一个：');
+		$form->AddElementAttrib('rad_1', array(
 			'spacer' => '<br />',
 			'label_align' => 'after',
 		));
-		$this->oForm->AddElementAttrib('rad_1', 'option', array(
+		$form->AddElementAttrib('rad_1', 'option', array(
 			array('label' => '选择1', 'option' => '1'),
 			array('label' => '选择2', 'option' => '2'),
 		));
-		$this->oForm->AddElement('select', 'sel_1', '选一个');
-		$this->oForm->AddElementAttrib('sel_1', 'option', array(
+		$form->AddElement('select', 'sel_1', '选一个');
+		$form->AddElementAttrib('sel_1', 'option', array(
 			array('label' => '选择11', 'option' => '11'),
 			array('label' => '选择22', 'option' => '22'),
 			array('label' => '选择33', 'option' => '33'),
 			array('label' => '选择44', 'option' => '44'),
 		));
-		$this->oForm->AddElementAttrib('sel_1', 'multiple', 8);
-		$this->oForm->AddElementValue('sel_1', array(22, 44));
-		$this->oForm->AddElement('select', 'sel_2', '再选一个');
-		$this->oForm->AddElementAttrib('sel_2', 'option', array(
+		$form->AddElementAttrib('sel_1', 'multiple', 8);
+		$form->AddElementValue('sel_1', array(22, 44));
+		$form->AddElement('select', 'sel_2', '再选一个');
+		$form->AddElementAttrib('sel_2', 'option', array(
 			array('label' => '选择11', 'option' => '11'),
 			array('label' => '选择22', 'option' => '22'),
 			array('label' => '选择33', 'option' => '33'),
 			array('label' => '选择44', 'option' => '44'),
 		));
-		$this->oForm->AddElementValue('sel_2', 22);
-		$this->oForm->AddElement('textarea', 'tx_2', '详细说明'
+		$form->AddElementValue('sel_2', 22);
+		$form->AddElement('textarea', 'tx_2', '详细说明'
 			, array('rows' => 4, 'cols' => 50));
-		$this->oForm->AddElement('date_my97', 'date_1', '时间'
+		$form->AddElement('date_my97', 'date_1', '时间'
 			, array('param' => 'lang:\'zh-cn\''));
 
-		$this->oForm->AddElement('html', 'html_1', '<strong> or </strong>');
-		$this->oForm->AddElement('xsubmit', 'frm_save', '保存');
-		$this->oForm->AddElementAttrib('frm_save', 'keep_div', true);
-		$this->oForm->AddElement('htmlraw', 'html_2', '<strong> OR </strong>');
-		$this->oForm->AddElement('xreset', 'frm_reset', '重置');
+		$form->AddElement('html', 'html_1', '<strong> or </strong>');
+		$form->AddElement('xsubmit', 'frm_save', '保存');
+		$form->AddElementAttrib('frm_save', 'keep_div', true);
+		$form->AddElement('htmlraw', 'html_2', '<strong> OR </strong>');
+		$form->AddElement('xreset', 'frm_reset', '重置');
 
-		return $this->oForm->GetHtml();
+//		return $this->oForm->GetHtml();
+		return $form;
 	} // end of func EgGenFormTaskEdit
+
+
+	/**
+	 * Generate a form state, to validate this is not a
+	 * 	fake form pretend by a hacker.
+	 * Just like .NET's _viewstate
+	 * @return	string
+	 */
+	protected function GenFormState() {
+		$s = session_id() . $this->aConfig['name'];
+		$s = sha1($s);
+		$s = str_replace(array('a', 'e', 'i', 'o', 'u'), '', $s);
+		return $s;
+	} // end of func GenFormState
 
 
 	/**
@@ -704,7 +722,8 @@ class Form
 		// Form state, to validate form is posted, and security.
 		// Hidden element, not need id property.
 		$s_html .= '<input type="hidden" name="'
-			. $this->aConfig['name'] . '_fs" />'
+			. $this->aConfig['name'] . '_fs"'
+			. ' value="' . $this->GenFormState() . '"/>'
 			. "\n";
 
 		// Form footer
@@ -748,6 +767,21 @@ class Form
 
 		return $s_input;
 	} // end of func GetHtmlInput
+
+
+	/**
+	 * Check if it can get $_POST data from this form
+	 * Also include a little security check.
+	 * @return	boolean
+	 */
+	public function IsPost() {
+		if (isset($_POST[$this->aConfig['name'] . '_fs'])
+			&& ($_POST[$this->aConfig['name'] . '_fs']
+				== $this->GenFormState()))
+			return true;
+		else
+			return false;
+	} // end of func IsPost
 
 
 	/**
