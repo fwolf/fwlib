@@ -127,29 +127,6 @@ class SyncDbData {
 
 
 	/**
-	 * Check and create db connection
-	 * @param	array	&$config
-	 */
-	protected function ChkDbConn(&$config) {
-		// Check and connection db
-		if (!empty($config['srce'])) {
-			$db_srce = $this->DbConn($config['srce']);
-			$this->sDbProfSrce = $config['srce']['type']
-				. '-' . $config['srce']['host']
-				. '-' . $config['srce']['name'];
-			$this->oDbSrce = &$db_srce;
-		}
-
-		if (!empty($config['dest'])) {
-			$db_dest = $this->DbConn($config['dest']);
-			$this->oDbDest = &$db_dest;
-			// Record tbl was create in destination db
-			$this->CheckTblRecord($db_dest);
-		}
-	} // end of func ChkDbConn
-
-
-	/**
 	 * Check and install record table if not exists
 	 * @param	object	$db		Db connection
 	 * @param	string	$tbl	Name of record tbl, if empty, use $this->sTblRecord
@@ -226,8 +203,9 @@ class SyncDbData {
 
 	/**
 	 * Check and create db connection
+	 * @param	array	&$config
 	 */
-	protected function ChkDbConn() {
+	protected function ChkDbConn(&$config) {
 		// Check and connection db
 		if (!empty($config['srce'])) {
 			$db_srce = $this->DbConn($config['srce']);
@@ -386,7 +364,7 @@ class SyncDbData {
 				if ($this->iBatchDone < $this->iBatchSize)
 					// Notice, $tbl_dest maybe an array
 					$this->iBatchDone += $this->SyncOnewayTbl(
-						$db_srce, $db_dest, $tbl_srce, $tbl_dest);
+						$this->oDbSrce, $this->oDbDest, $tbl_srce, $tbl_dest);
 		}
 		// Output message
 		global $i_db_query_times;
