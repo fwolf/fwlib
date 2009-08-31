@@ -81,8 +81,8 @@ class ListTable
 	 */
 	protected $aConfig = array(
 		// 浅蓝色配色方案
-		// fwolflib-list-table = fl-lt
-		'code_prefix'		=> 'fl-lt',		// Used in id/class in html and css.
+		// fwolflib-list-table = fl_lt
+		'code_prefix'		=> 'fl_lt',		// Used in id/class in html and css.
 		'color_bg_th'		=> '#d0dcff',	// 表头（第0行）
 		'color_bg_tr_even'	=> '#fff',		// 偶数行
 		'color_bg_tr_hover'	=> '#e3e3de',	// 鼠标指向时变色
@@ -162,14 +162,14 @@ class ListTable
 	 * 	while $sId can be applyed css inline in tpl file.
 	 * @var	string
 	 */
-	protected $sClass = 'fl-lt';
+	protected $sClass = 'fl_lt';
 
 	/**
 	 * Identify of this list,
 	 * Also used in html, as div id property.
 	 * @var	string
 	 */
-	protected $sId = 'fl-lt';
+	protected $sId = 'fl_lt';
 
 
 	/**

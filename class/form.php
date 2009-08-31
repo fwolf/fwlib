@@ -71,11 +71,11 @@ class Form
 		// For textarea only
 		'cols'		=> null,
 		// Additional html define ?
-		'html_add'	=> '',
+		'html-add'	=> '',
 		// Will following element stay in same row ?
 		'keep_div'	=> false,
 		// Label is before input or after it ?
-		'label_pos'	=> 'before',
+		'label-pos'	=> 'before',
 		// For select, multiple means multi-select, value is size
 		'multiple'	=> null,
 		// Selection or value list, usually be array
@@ -175,10 +175,11 @@ class Form
 		$this->oForm->Reset();
 
 		$this->oForm->SetConfig(array(
-			'name'	=> 'form_task_edit',
+			'name'	=> 'frm_task_edit',
 		));
+
 		$this->oForm->AddElement('text', 'title', '任务名称'
-			, array('html_add' => 'style="color: red;"'));
+			, array('html-add' => 'style="color: red;"'));
 
 		$this->oForm->AddElement('fieldset', 'fs_1', '第一组');
 		$this->oForm->AddElement('checkbox', 'cb_1', '选项1'
@@ -194,7 +195,7 @@ class Form
 		$this->oForm->AddElement('image', 'img_1', '图片？'
 			, array('src' => 'http://www.acronymfinder.com/~/st/i/deli.gif'));
 		$this->oForm->AddElement('password', 'pwd_1', '密码'
-			, array('html_add' => 'style="color: red;"'));
+			, array('html-add' => 'style="color: red;"'));
 		$this->oForm->AddElement('radio', 'rad_1', '只能选一个：');
 		$this->oForm->AddElementAttrib('rad_1', array(
 			'spacer' => '<br />',
@@ -225,11 +226,12 @@ class Form
 			, array('rows' => 4, 'cols' => 50));
 		$this->oForm->AddElement('date_my97', 'date_1', '时间'
 			, array('param' => 'lang:\'zh-cn\''));
+
 		$this->oForm->AddElement('html', 'html_1', '<strong> or </strong>');
-		$this->oForm->AddElement('xsubmit', 'form_save', '保存');
-		$this->oForm->AddElementAttrib('form_save', 'keep_div', true);
+		$this->oForm->AddElement('xsubmit', 'frm_save', '保存');
+		$this->oForm->AddElementAttrib('frm_save', 'keep_div', true);
 		$this->oForm->AddElement('htmlraw', 'html_2', '<strong> OR </strong>');
-		$this->oForm->AddElement('xreset', 'form_reset', '重置');
+		$this->oForm->AddElement('xreset', 'frm_reset', '重置');
 
 		return $this->oForm->GetHtml();
 	} // end of func EgGenFormTaskEdit
@@ -388,10 +390,13 @@ class Form
 		$s_html = str_replace('<input type="date_my97"'
 			, '<input type="input"', $s_html);
 
+		// Value is already set in GetElementHidden()
+/*
 		if (isset($elt['value']))
 			$s_html = str_replace('/>'
-				, 'value="' . $elt['value'] . '" />'
+				, ' value="' . $elt['value'] . '" />'
 				, $s_html);
+*/
 
 		// Add My97DatePicker part
 		if (isset($elt['attrib']['param']))
@@ -452,7 +457,7 @@ class Form
 		$s_html = $this->GetHtmlInput($elt);
 		if (isset($elt['value']))
 			$s_html = str_replace('/>'
-				, 'value="' . $elt['value'] . '" />'
+				, ' value="' . $elt['value'] . '" />'
 				, $s_html);
 		return $s_html;
 	} // end of func GetElementHidden
@@ -689,12 +694,18 @@ class Form
 		}
 		if (!empty($this->aConfig['name']))
 			$s_html .= 'id="' . $this->aConfig['name'] . '" ';
-		$s_html .= " >\n";
+		$s_html .= ' class="fl_frm"' . " >\n";
 
 		// Form body
 		foreach ($this->aElement as $v) {
 			$s_html .= $this->GetElement($v);
 		}
+
+		// Form state, to validate form is posted, and security.
+		// Hidden element, not need id property.
+		$s_html .= '<input type="hidden" name="'
+			. $this->aConfig['name'] . '_fs" />'
+			. "\n";
 
 		// Form footer
 		$s_html .= "</form>\n";
@@ -730,9 +741,9 @@ class Form
 		$s_input .= 'type="' . $elt['type'] . '" ';
 		$s_input .= 'name="' . $elt['name'] . '" ';
 		$s_input .= 'id="' . $elt['name'] . '" ';
-		if (isset($elt['attrib']['html_add'])
-			&& (true == $elt['attrib']['html_add']))
-			$s_input .= $elt['attrib']['html_add'];
+		if (isset($elt['attrib']['html-add'])
+			&& (true == $elt['attrib']['html-add']))
+			$s_input .= $elt['attrib']['html-add'];
 		$s_input .= '/>' . "\n";
 
 		return $s_input;
@@ -747,7 +758,7 @@ class Form
 			'action'	=> '',
 			'enctype'	=> '',
 			'method'	=> 'POST',
-			'name'		=> 'fl_form',
+			'name'		=> 'fl_frm',
 		);
 		$this->aElement = array();
 	} // end of func Reset

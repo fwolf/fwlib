@@ -19,7 +19,7 @@ $ar_info['description']	= '常用英文及缩写。';
 
 $ar_body = array();
 $ar_body[] = '
-<div class="single_line" markdown="1">
+<div class="single-line" markdown="1">
 
 ## 命名词库
 
