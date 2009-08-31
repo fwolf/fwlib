@@ -9,7 +9,7 @@
  */
 
 require_once('fwolflib/class/form.php');
-require_once('fwolflib/class/list_table.php');
+require_once('fwolflib/class/list-table.php');
 require_once('fwolflib/func/string.php');
 require_once('fwolflib/func/request.php');
 

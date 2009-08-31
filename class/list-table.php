@@ -162,14 +162,14 @@ class ListTable
 	 * 	while $sId can be applyed css inline in tpl file.
 	 * @var	string
 	 */
-	protected $sClass = 'fwolflib-list_table';
+	protected $sClass = 'fl-lt';
 
 	/**
 	 * Identify of this list,
 	 * Also used in html, as div id property.
 	 * @var	string
 	 */
-	protected $sId = 'fwolflib-list_table';
+	protected $sId = 'fl-lt';
 
 
 	/**

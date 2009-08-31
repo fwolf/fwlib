@@ -127,6 +127,29 @@ class SyncDbData {
 
 
 	/**
+	 * Check and create db connection
+	 * @param	array	&$config
+	 */
+	protected function ChkDbConn(&$config) {
+		// Check and connection db
+		if (!empty($config['srce'])) {
+			$db_srce = $this->DbConn($config['srce']);
+			$this->sDbProfSrce = $config['srce']['type']
+				. '-' . $config['srce']['host']
+				. '-' . $config['srce']['name'];
+			$this->oDbSrce = &$db_srce;
+		}
+
+		if (!empty($config['dest'])) {
+			$db_dest = $this->DbConn($config['dest']);
+			$this->oDbDest = &$db_dest;
+			// Record tbl was create in destination db
+			$this->CheckTblRecord($db_dest);
+		}
+	} // end of func ChkDbConn
+
+
+	/**
 	 * Check and install record table if not exists
 	 * @param	object	$db		Db connection
 	 * @param	string	$tbl	Name of record tbl, if empty, use $this->sTblRecord
@@ -199,6 +222,28 @@ class SyncDbData {
 			$this->Log("Log table $tbl already exists.");
 		}
 	} // end of function CheckTblRecord
+
+
+	/**
+	 * Check and create db connection
+	 */
+	protected function ChkDbConn() {
+		// Check and connection db
+		if (!empty($config['srce'])) {
+			$db_srce = $this->DbConn($config['srce']);
+			$this->sDbProfSrce = $config['srce']['type']
+				. '-' . $config['srce']['host']
+				. '-' . $config['srce']['name'];
+			$this->oDbSrce = &$db_srce;
+		}
+
+		if (!empty($config['dest'])) {
+			$db_dest = $this->DbConn($config['dest']);
+			$this->oDbDest = &$db_dest;
+			// Record tbl was create in destination db
+			$this->CheckTblRecord($db_dest);
+		}
+	} // end of func ChkDbConn
 
 
 	/**
@@ -320,25 +365,20 @@ class SyncDbData {
 
 
 	/**
+	 * Check if data had been deleted from srce
+	 * @param	array	&$config
+	 */
+	public function SyncChkDel(&$config) {
+	} // end of func SyncChkDel
+
+
+	/**
 	 * Do oneway sync
 	 * @param	array	&$config
 	 */
 	public function SyncOneway(&$config) {
-		// Check and connection db
-		if (!empty($config['srce'])) {
-			$db_srce = $this->DbConn($config['srce']);
-			$this->sDbProfSrce = $config['srce']['type']
-				. '-' . $config['srce']['host']
-				. '-' . $config['srce']['name'];
-			$this->oDbSrce = &$db_srce;
-		}
+		$this->ChkDbConn($config);
 
-		if (!empty($config['dest'])) {
-			$db_dest = $this->DbConn($config['dest']);
-			$this->oDbDest = &$db_dest;
-			// Record tbl was create in destination db
-			$this->CheckTblRecord($db_dest);
-		}
 		// Doing queue
 		$this->iBatchDone = 0;
 		if (!empty($config['queue']) && is_array($config['queue'])) {
