@@ -772,12 +772,17 @@ class Form
 	/**
 	 * Check if it can get $_POST data from this form
 	 * Also include a little security check.
+	 *
+	 * If form state generated diff with posted,
+	 * 	probably form is not postd from original page,
+	 * 	so we assume it is an attack, treat as not a valid POST.
 	 * @return	boolean
+	 * @see	GenFormState()
 	 */
 	public function IsPost() {
-		if (isset($_POST[$this->aConfig['name'] . '_fs'])
-			&& ($_POST[$this->aConfig['name'] . '_fs']
-				== $this->GenFormState()))
+		$s = $this->aConfig['name'] . '_fs';
+		if (isset($_POST[$s])
+			&& ($_POST[$s] == $this->GenFormState()))
 			return true;
 		else
 			return false;

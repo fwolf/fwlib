@@ -30,7 +30,7 @@ function HtmlEncode($str)
 	$outstr=str_replace(' ' , '&nbsp;'  , $outstr);
 	$outstr=str_replace(chr(9), '　　'  , $outstr);
 	return $outstr;
-} // end of function HtmlEncode
+} // end of func HtmlEncode
 
 
 /**
@@ -60,7 +60,7 @@ function IsGbChar($str = '', $pos = 0)
 		    return(false);
 		}
 	}
-} // end of function IsGbChar
+} // end of func IsGbChar
 
 
 /**
@@ -95,7 +95,7 @@ function RandomString($len, $mode)
 		$result .= $str[$num];
 	}
 	return $result;
-} // end of function RandomString
+} // end of func RandomString
 
 
 /**
@@ -187,7 +187,7 @@ function StrlenGb($str = '')
 		$j++;
 	}
 	return($j);
-} // end of function StrlenGb
+} // end of func StrlenGb
 
 
 /**
@@ -225,7 +225,7 @@ function StrReForm( $str, $s1, $s2 = '', $embody = false, $istrim = true )
 		$s = $s1 . $s . $s1;
 	}
 	return( $s );
-} // end of function StrReForm
+} // end of func StrReForm
 
 
 /**
@@ -312,7 +312,7 @@ function SubstrGb($str = '', $start = 0, $len = 0)
         }
 	}
 	return $tmp;
-} // end of function SubstrGb
+} // end of func SubstrGb
 
 
 ?>
