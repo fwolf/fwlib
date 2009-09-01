@@ -112,7 +112,7 @@ class SyncDbData {
 	{
 		$this->Log('========  ' . date('Y-m-d H:i:s') . '  ========');
 		// Do check after we know target db
-		//$this->CheckTblRecord();
+		//$this->ChkTblRecord();
 	} // end of func __construct
 
 
@@ -123,7 +123,30 @@ class SyncDbData {
 		if (0 < $this->iBatchDone)
 			foreach ($this->aLog as &$log)
 				Ecl($log);
-	} // end of function destruct
+	} // end of func destruct
+
+
+	/**
+	 * Check and create db connection
+	 * @param	array	&$config
+	 */
+	protected function ChkDbConn(&$config) {
+		// Check and connection db
+		if (!empty($config['srce'])) {
+			$db_srce = $this->DbConn($config['srce']);
+			$this->sDbProfSrce = $config['srce']['type']
+				. '-' . $config['srce']['host']
+				. '-' . $config['srce']['name'];
+			$this->oDbSrce = &$db_srce;
+		}
+
+		if (!empty($config['dest'])) {
+			$db_dest = $this->DbConn($config['dest']);
+			$this->oDbDest = &$db_dest;
+			// Record tbl was create in destination db
+			$this->ChkTblRecord($db_dest);
+		}
+	} // end of func ChkDbConn
 
 
 	/**
@@ -131,7 +154,7 @@ class SyncDbData {
 	 * @param	object	$db		Db connection
 	 * @param	string	$tbl	Name of record tbl, if empty, use $this->sTblRecord
 	 */
-	protected function CheckTblRecord($db, $tbl = '')
+	protected function ChkTblRecord($db, $tbl = '')
 	{
 		if (empty($tbl))
 			$tbl = $this->sTblRecord;
@@ -198,30 +221,7 @@ class SyncDbData {
 			// Log table exist information
 			$this->Log("Log table $tbl already exists.");
 		}
-	} // end of function CheckTblRecord
-
-
-	/**
-	 * Check and create db connection
-	 * @param	array	&$config
-	 */
-	protected function ChkDbConn(&$config) {
-		// Check and connection db
-		if (!empty($config['srce'])) {
-			$db_srce = $this->DbConn($config['srce']);
-			$this->sDbProfSrce = $config['srce']['type']
-				. '-' . $config['srce']['host']
-				. '-' . $config['srce']['name'];
-			$this->oDbSrce = &$db_srce;
-		}
-
-		if (!empty($config['dest'])) {
-			$db_dest = $this->DbConn($config['dest']);
-			$this->oDbDest = &$db_dest;
-			// Record tbl was create in destination db
-			$this->CheckTblRecord($db_dest);
-		}
-	} // end of func ChkDbConn
+	} // end of func ChkTblRecord
 
 
 	/**
@@ -255,7 +255,7 @@ class SyncDbData {
 		}
 		else
 			return $conn;
-	} // end of function DbConn
+	} // end of func DbConn
 
 
 	/**
@@ -282,7 +282,7 @@ class SyncDbData {
 		else {
 			return '';
 		}
-	} // end of function GetLastTs
+	} // end of func GetLastTs
 
 
 	/*
@@ -294,7 +294,7 @@ class SyncDbData {
 		//$this->sSummary .= $log;
 		//Ecl($log);
 		$this->aLog[] = $log;
-	} // end of function Log
+	} // end of func Log
 
 
 	/**
@@ -339,7 +339,7 @@ class SyncDbData {
 		else {
 			return false;
 		}
-	} // end of function SetLastTs
+	} // end of func SetLastTs
 
 
 	/**
@@ -347,7 +347,37 @@ class SyncDbData {
 	 * @param	array	&$config
 	 */
 	public function SyncChkDel(&$config) {
+		$this->ChkDbConn($config);
+
+		// Doing queue
+		$this->iBatchDone = 0;
+		if (!empty($config['queue']) && is_array($config['queue'])) {
+			foreach ($config['queue'] as $tbl_srce => $tbl_dest)
+				if ($this->iBatchDone < $this->iBatchSize)
+					// Notice, $tbl_dest maybe an array
+					$this->iBatchDone += $this->SyncChkDelTbl(
+						$this->oDbSrce, $this->oDbDest, $tbl_srce, $tbl_dest);
+		}
+/*
+		// Output message
+		global $i_db_query_times;
+		$this->Log("SyncOneway done, total {$this->iBatchDone} rows wrote,"
+			. " db query(s) $i_db_query_times times.\n");
+*/
 	} // end of func SyncChkDel
+
+
+	/**
+	 * Check if data had been deleted from srce on a single table
+	 * @param	object	$db_srce	Source db connection
+	 * @param	object	$db_dest	Destination db connection
+	 * @param	string	$tbl_srce	Source table
+	 * @param	mixed	$tbl_dest	Destination table(name or array of name)
+	 * @return	integer		Number of rows deleted on destination db.
+	 */
+	public function SyncChkDelTbl($db_srce, $db_dest, $tbl_srce, $tbl_dest) {
+		$this->Log("$tbl_srce <> $tbl_dest.");
+	} // end of func SyncChkDelTbl
 
 
 	/**
@@ -370,7 +400,7 @@ class SyncDbData {
 		global $i_db_query_times;
 		$this->Log("SyncOneway done, total {$this->iBatchDone} rows wrote,"
 			. " db query(s) $i_db_query_times times.\n");
-	} // end of function SyncOneway
+	} // end of func SyncOneway
 
 
 	/**
@@ -488,7 +518,7 @@ class SyncDbData {
 		}
 		else
 			return 0;
-	} // end of function SyncOnewayTbl
+	} // end of func SyncOnewayTbl
 
 
 	/**
@@ -500,7 +530,7 @@ class SyncDbData {
 	{
 		$str = trim($str);
 		return $str;
-	} // end of function Trim
+	} // end of func Trim
 
 
 	/**
@@ -509,7 +539,7 @@ class SyncDbData {
 	 */
 	protected function Uuid() {
 		return Uuid();
-	} // end of function Uuid
+	} // end of func Uuid
 
 
 } // end of class SyncDbData
