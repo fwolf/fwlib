@@ -350,7 +350,7 @@ class Adodb
 			return -1;
 		else
 			return $this->Affected_Rows();
-	} // end of function DelRow
+	} // end of func DelRow
 
 
 	/**
@@ -432,7 +432,7 @@ class Adodb
 		else {
 			die("FindColTs not implemented!\n");
 		}
-	} // end of function FindColTs
+	} // end of func FindColTs
 
 
 	/**
@@ -441,7 +441,7 @@ class Adodb
 	 * @param	string	$cond	Condition, can be where, having etc, raw sql string.
 	 * @return	int		-1 error/0 not found/N > 0 number of rows
 	 */
-	public function GetRowCount($tbl, $cond) {
+	public function GetRowCount($tbl, $cond = '') {
 		$rs = $this->PExecute($this->GenSql(array(
 			'SELECT' => array('c' => 'count(1)'),
 			'FROM'	=> $tbl,
@@ -451,7 +451,7 @@ class Adodb
 			return -1;
 		else
 			return $rs->fields['c'];
-	} // end of function GetRowCount
+	} // end of func GetRowCount
 
 
 	/**
@@ -493,7 +493,7 @@ class Adodb
 			return $this->oSg->GetSqlPrepare($ar_sql);
 		else
 			return '';
-	} // end of function GenSqlPrepare
+	} // end of func GenSqlPrepare
 
 
 	/**
@@ -663,7 +663,7 @@ class Adodb
 		else
 			// Mysql
 			return false;
-	} // end of function IsTsUnique
+	} // end of func IsTsUnique
 
 
 	/**
@@ -755,7 +755,7 @@ class Adodb
 			$rs = $this->Execute($sql);
 			return (0 == $this->ErrorNo());
 		}
-	} // end of function TblExists
+	} // end of func TblExists
 
 
 	/**
@@ -903,6 +903,6 @@ class Adodb
 		}
 		else
 			return -1;
-	} // end of function Write
+	} // end of func Write
 } // end of class Adodb
 ?>

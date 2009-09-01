@@ -347,9 +347,15 @@ class SyncDbData {
 	 * @param	array	&$config
 	 */
 	public function SyncChkDel(&$config) {
+		if ($this->iBatchDone >= $this->iBatchSize) {
+			$this->Log('Data sync not complete, delete check will not run.');
+			return;
+		}
+
 		$this->ChkDbConn($config);
 
 		// Doing queue
+		$i_batch_done = $this->iBatchDone;	// Temp save
 		$this->iBatchDone = 0;
 		if (!empty($config['queue']) && is_array($config['queue'])) {
 			foreach ($config['queue'] as $tbl_srce => $tbl_dest)
@@ -358,12 +364,15 @@ class SyncDbData {
 					$this->iBatchDone += $this->SyncChkDelTbl(
 						$this->oDbSrce, $this->oDbDest, $tbl_srce, $tbl_dest);
 		}
-/*
+
 		// Output message
 		global $i_db_query_times;
-		$this->Log("SyncOneway done, total {$this->iBatchDone} rows wrote,"
+		$this->Log("SyncChkDel done, total {$this->iBatchDone} rows deleted,"
 			. " db query(s) $i_db_query_times times.\n");
-*/
+
+		// Reset stat data for other operation
+		$i_db_query_times = 0;
+		$this->iBatchDone += $i_batch_done;	// Temp restore
 	} // end of func SyncChkDel
 
 
@@ -376,7 +385,26 @@ class SyncDbData {
 	 * @return	integer		Number of rows deleted on destination db.
 	 */
 	public function SyncChkDelTbl($db_srce, $db_dest, $tbl_srce, $tbl_dest) {
-		$this->Log("$tbl_srce <> $tbl_dest.");
+		if (is_array($tbl_dest)) {
+			$i = 0;
+			foreach ($tbl_dest as $dest)
+				$i += $this->SyncChkDelTbl($db_srce, $db_dest
+					, $tbl_srce, $dest);
+			return $i;
+		}
+		// In below, $tbl_dest is STRING now
+
+		// Get row count from each side
+		$i_srce = $db_srce->GetRowCount($tbl_srce);
+		$i_dest = $db_dest->GetRowCount($tbl_dest);
+
+		// Log check begin
+		$s_log = "Delete check: $tbl_srce($i_srce) <- ";
+		$s_log .= $tbl_dest . '(' . $i_dest . ') ';
+
+		$this->Log($s_log . '.');
+		// :DEBUG:
+		$this->iBatchDone ++;
 	} // end of func SyncChkDelTbl
 
 
@@ -388,6 +416,7 @@ class SyncDbData {
 		$this->ChkDbConn($config);
 
 		// Doing queue
+		$i_batch_done = $this->iBatchDone;	// Temp save
 		$this->iBatchDone = 0;
 		if (!empty($config['queue']) && is_array($config['queue'])) {
 			foreach ($config['queue'] as $tbl_srce => $tbl_dest)
@@ -400,6 +429,10 @@ class SyncDbData {
 		global $i_db_query_times;
 		$this->Log("SyncOneway done, total {$this->iBatchDone} rows wrote,"
 			. " db query(s) $i_db_query_times times.\n");
+
+		// Reset stat data for other operation
+		$i_db_query_times = 0;
+		$this->iBatchDone += $i_batch_done;	// Temp restore
 	} // end of func SyncOneway
 
 
