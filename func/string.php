@@ -20,15 +20,21 @@ function HtmlEncode($str)
 	if (empty($str))
 	    return('');
 
-	$outstr=$str;
-	$outstr=str_replace('&', '&amp;'  , $outstr);
-	$outstr=str_replace('<', '&lt;'  , $outstr);
-	$outstr=str_replace('>', '&gt;'  , $outstr);
-	$outstr=str_replace(chr(13), '<br />'  , $outstr);
-	$outstr=str_replace(chr(34), '&quot;'  , $outstr);
-	$outstr=str_replace('  ', '&nbsp; '  , $outstr);
-	$outstr=str_replace(' ' , '&nbsp;'  , $outstr);
-	$outstr=str_replace(chr(9), '　　'  , $outstr);
+	$ar = array(
+		'&'		=> '&amp;',
+		'<'		=> '&lt;',
+		'>'		=> '&gt;',
+		chr(9)	=> '　　',
+		chr(13)	=> '<br />',
+		chr(34)	=> '&quot;',
+		'  '	=> '&nbsp; ',
+		' '		=> '&nbsp;',
+		'&nbsp;&nbsp;'	=> '&nbsp; ',
+	);
+	$ar_search = array_keys($ar);
+	$ar_replace = array_values($ar);
+
+	$outstr = str_replace($ar_search, $ar_replace, $str);
 	return $outstr;
 } // end of func HtmlEncode
 
