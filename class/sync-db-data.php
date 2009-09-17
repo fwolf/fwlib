@@ -120,7 +120,7 @@ class SyncDbData {
 	 * destruct, output log message, only when there is some sync happen.
 	 */
 	public function __destruct() {
-		if (0 < $this->iBatchDone)
+		if (0 != $this->iBatchDone)
 			foreach ($this->aLog as &$log)
 				Ecl($log);
 	} // end of func destruct
@@ -344,6 +344,8 @@ class SyncDbData {
 
 	/**
 	 * Check if data had been deleted from srce
+	 * Caution if dest table's data is ONLY from srce table,
+	 * 	if not, you shouldn't use this func.
 	 * @param	array	&$config
 	 */
 	public function SyncChkDel(&$config) {
@@ -398,13 +400,87 @@ class SyncDbData {
 		$i_srce = $db_srce->GetRowCount($tbl_srce);
 		$i_dest = $db_dest->GetRowCount($tbl_dest);
 
-		// Log check begin
-		$s_log = "Delete check: $tbl_srce($i_srce) <- ";
-		$s_log .= $tbl_dest . '(' . $i_dest . ') ';
+		// Need ? compare row count.
+		if ($i_srce < $i_dest) {
+			// Log check begin
+			$s_log = "Delete check: $tbl_srce($i_srce) <- ";
+			$s_log .= $tbl_dest . '(' . $i_dest . ')';
+			//$this->Log($s_log . ' .');
 
-		$this->Log($s_log . '.');
-		// :DEBUG:
-		$this->iBatchDone ++;
+			// Find unnecessary PK in dest(srce To dest)
+			// DataCompare func return PK of rows need to del
+			$s_func = 'DataCompare' . StrUnderline2Ucfirst($tbl_srce)
+				. 'To' . StrUnderline2Ucfirst($tbl_dest);
+			if (method_exists($this, $s_func)) {
+				// Got the rows
+				$ar_todel = $this->$s_func();
+				if (!empty($ar_todel)) {
+					// Do del
+					$ar_conf = array(
+						'DELETE' => $tbl_dest,
+						'LIMIT' => 1,
+					);
+
+					// Apply PK to WHERE clause
+					// Notice: order of pk must same with $ar_todel
+					$pk = $this->oDbDest->GetMetaPrimaryKey($tbl_dest);
+					if (!is_array($pk))
+						$pk = array(0 => $pk);
+					foreach ($pk as $key) {
+						$ar_conf['WHERE'][] = "$key = "
+							. $this->oDbDest->Param($key);
+					}
+					// Prepare sql
+					$sql = $this->oDbDest->GenSqlPrepare($ar_conf);
+					$stmt = $this->oDbDest->Prepare($sql);
+
+					// Execute sql
+					$this->oDbDest->EncodingConvert($ar_todel);
+					try {
+						$this->oDbDest->Execute($stmt, $ar_todel);
+					}
+					catch (Exception $e) {
+						// Show error message ?
+						$this->oDbDest->RollbackTrans();
+						$s_log .= ' fail(1) .';
+						$this->Log($s_log);
+						$this->Log("\tError when execute del sql on $tbl_dest .");
+						return -100;
+					}
+					// Any error ?
+					if (0 != $this->oDbDest->ErrorNo()) {
+						$s_log .= ' fail(2) .';
+						$this->Log($s_log);
+						// Log to error log file
+						$this->Log('	ErrorNo: ' . $this->oDbDest->ErrorNo()
+							. "\n\tErrorMsg: " . $this->oDbDest->ErrorMsg()
+							);
+						$this->oDbDest->RollbackTrans();
+						return -100;
+					}
+					else {
+						$this->oDbDest->CommitTrans();
+						// Ok, count affected rows
+						// But Affectd_Rows can't use with prepare
+						$i = count($ar_todel);
+						$s_log .= ", $i rows deleted.";
+						$this->Log($s_log);
+						return $i;
+					}
+					// Sql execute completed
+				}
+
+				// :DEBUG: Make msg always printed
+				//$this->iBatchDone ++;
+			}
+			else {
+				// Need compare func
+				$s_log .= ' fail .';
+				$this->Log($s_log);
+				$this->Log("	Compare func needed: $tbl_srce To $tbl_dest .");
+				return 0;
+			}
+		}
 	} // end of func SyncChkDelTbl
 
 
