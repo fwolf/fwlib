@@ -16,7 +16,7 @@
  */
 function Strtotime1($time) {
 	if (!empty($time)) {
-		$time = str_replace(':000', '', $time);
+		$time = preg_replace('/:\d{3}/', '', $time);
 	}
 	return strtotime($time);
 } // end of func Strtotime1
