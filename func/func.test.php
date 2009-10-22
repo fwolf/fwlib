@@ -31,6 +31,8 @@ $test->addTestFile('uuid.test.php');
 
 $test->run(new HtmlReporter('utf-8'));
 
+// Want to remove duplicate report ?
+// Remove "run report" part in each unit test file.
 
 /*
 // Change output charset in this way.
