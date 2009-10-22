@@ -59,6 +59,7 @@ client.php
 ### GetClientIp()
 	Get ip of client.
 
+
 config.php
 ----------
 	GetCfg and SetCfg function.
@@ -70,7 +71,15 @@ config.php
 	Limit program can only run on prefered server.
 
 ### SetCfg($cfg, $value)
-		Set global config by config string $cfg using value $value.
+	Set global config by config string $cfg using value $value.
+
+
+crypt.php
+---------
+
+### MCryptSmplIvDecrypt/MCryptSmplIvEncrypt(...)
+	Use mcrypt to de/encrypt, using a simple way to generate IV.
+
 
 datetime.php
 ------------
@@ -79,14 +88,18 @@ datetime.php
 ### Strtotime1()
 	Remove ':000' before original strtotime().
 
+
 dbwrite.php
 	向数据库中写入数据，根据指定的主键或联合主键自动判断是insert还是update。
+
 
 download.php
 	Download contents as a file.
 
+
 ecl.php
 	Smarty echo line, end with \n or <br /> according running mod
+
 
 env.php
 -------
@@ -101,9 +114,13 @@ env.php
 ### NixOs()
 	判断当前主机是否nix操作系统
 
+
 escape_color.php
 	Covert escape color to html code
+
+
 filesystem.php
+
 	文件系统常用函数
 	BaseName1($filename)
 		Manual get basename instead of using pathinfo()
@@ -121,14 +138,18 @@ filesystem.php
 		Count size of a file
 	ListDir($dir)
 		List files and file-information of a directory order by mtime asc.
+
+
 formatbytesize.php
 	Convert variant byte size to human readable format string.
+
 
 ini.php
 -------
 
 ### IniGet($filepath, $section = '', $item = '')
 	Read ini file, return array of part of the value, notice to retrieve global value, set $section to ' ' instead of ''.
+
 
 request.php
 -----------
@@ -143,10 +164,12 @@ request.php
 ###	GetSelfUrl()
 	Get self url which user visit, including GET parameters.
 
+
 regex_match.php
 ---------------
 ###	RegexMatch($preg, $str = '', $csrts = true)
 	Match content using preg, return result array or '' if non-match
+
 
 string.php
 ----------
@@ -157,6 +180,7 @@ url.php
 
 utf8_fix.php
 	Convert string like '_D0_D0_D0' to normal string
+
 
 uuid.php
 --------
@@ -169,6 +193,7 @@ uuid.php
 
 ### UuidSpeedTest($num, $file)
 	Test how many uuid can this program generate per second.
+
 
 validate.php
 ------------
@@ -183,6 +208,7 @@ validate.php
 ===
 js:
 ===
+
 common.js
 	通用JS函数集
 cookie.js

@@ -261,6 +261,7 @@ self service, ss			|自助服务
 sequence, seq				|顺序
 sign in						|签到
 size						|尺寸
+simple, smpl				|简单
 source of funds, sof?		|资金来源
 special report				|专题报道
 speciality					|（所学）专业
