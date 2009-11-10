@@ -43,14 +43,17 @@ function GetCfg($cfg) {
  * @return	boolean
  */
 function LimitServerId($id, $die = true) {
-	$serverid = GetCfg('serverid');
+	$serverid = GetCfg('server.id');
+	if (empty($serverid))
+		$serverid = GetCfg('serverid');
+
 	$msg = '';
 	if (is_array($id)) {
 		if (!in_array($serverid, $id))
 			$msg = 'This program can only run on these servers: ' . implode(',', $id) . '.';
 	} elseif ($serverid != $id)
 		$msg = 'This program can only run on server ' . $id . '.';
-	
+
 	if (!empty($msg))
 		if (true == $die)
 			die($msg);
