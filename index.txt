@@ -1,5 +1,11 @@
 class:
 ======
+
+benchmark.php
+-------------
+### Benchmark
+	Benchmark code running time cost by set marker in code and display result at end.
+
 curl.php
 	Curl relate functions.
 dbbak2sql.php
