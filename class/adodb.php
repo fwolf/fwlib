@@ -309,7 +309,7 @@ class Adodb
 		// Can also use $this->aDbProfile['type']
 		// mysql, mysqli
 		if ($this->IsDbMysql()) {
-			$this->__conn->Execute('set names "' . $this->aDbProfile['lang'] . '"');
+			$this->__conn->Execute('set names "' . str_replace('utf-8', 'utf8', $this->aDbProfile['lang']) . '"');
 		}
 
 		return $rs;
