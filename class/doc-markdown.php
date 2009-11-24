@@ -363,10 +363,16 @@ html, body, div, span, applet,
 		line-height: 2em;
 		margin-left: 1.364em;
 	}
-	p, td, th, li {
+	p, td, th, li, dt, dd {
 		font-size: 1em;
 		line-height: 2em;
 		margin-left: 3em;
+	}
+	dt:after {
+		content: "：";
+	}
+	dd {
+		margin-left: 6em;
 	}
     pre {
     	margin-left: 5em;
