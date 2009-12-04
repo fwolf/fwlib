@@ -241,6 +241,7 @@ qualified bidder\'s list, qbl	|合格的投标人列表
 quality, **qlty**, qual		|质量
 quantity, qnty				|数量，可用来替代amount
 quote						|报价（动词）
+random, rnd					|随机
 random select, rs			|随机抽取
 reasonable range, rr		|合理范围
 recommendation				|推荐意见

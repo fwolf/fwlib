@@ -198,4 +198,20 @@ function ToLink($str, $linkAddress, $targetWindow = '', $paramStr = '')
     return($s_url);
 }
 
+
+/**
+ * Find url plan from url
+ *
+ * eg: http://www.google.com/, plan = http
+ * @param	string	$url
+ * @return	string
+ */
+function UrlPlan($url) {
+	$i = preg_match('/^(\w+):\/\//', $url, $ar);
+	if (1 == $i)
+		return $ar[1];
+	else
+		return '';
+} // end of func UrlPlan
+
 ?>

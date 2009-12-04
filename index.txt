@@ -181,10 +181,17 @@ string.php
 ----------
 	常用字符串函数集
 
+
 url.php
+-------
 	处理url字符串，增加或设置/更改URL参数。
 
+### UrlPlan($url)
+	Get http/https from an url.
+
+
 utf8_fix.php
+------------
 	Convert string like '_D0_D0_D0' to normal string
 
 

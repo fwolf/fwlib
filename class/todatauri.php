@@ -9,6 +9,7 @@ require_once('fwolflib/class/curl.php');
 require_once('fwolflib/func/download.php');
 require_once('fwolflib/func/env.php');
 require_once('fwolflib/func/request.php');
+require_once('fwolflib/func/url.php');
 
 /**
  * Convert css, js, image in a html file, to save it in ONE file like mht.
@@ -98,6 +99,12 @@ class ToDataUri extends Curl
 	 * @var	string
 	 */
 	protected $mUrlBase = '';
+
+	/**
+	 * http or https, for Baseurl
+	 * @var	string
+	 */
+	protected $sUrlPlan = '';
 
 
 	/**
@@ -402,6 +409,10 @@ class ToDataUri extends Curl
 		if ('/' != $baseurl{strlen($baseurl) - 1})
 			$baseurl .= '/';
 		$this->mUrlBase = $baseurl;
+
+		// Url plan
+		$this->sUrlPlan = UrlPlan($this->mUrlBase);
+
 		$this->mInfo .= "Baseurl: $baseurl<br />\n";
 		if ($this->mCliMode)
 			echo "[Curl ] Baseurl: $baseurl\n";
@@ -584,8 +595,10 @@ class ToDataUri extends Curl
 		$src = strtolower($url);
 		if (('http://' == substr($src, 0, 7)) || ('https://' == substr($src, 0, 8)))
 			return $this->ParseUrl2Data($url);
-		else
-		{
+		elseif ('//' == substr($src, 0, 2)) {
+			// For IBM developerworks
+			return $this->ParseUrl2Data($this->sUrlPlan . ':' . $url);
+		} else {
 			// Link baseurl with file needed to parse
 			if ('/' == $url{0})
 			{
