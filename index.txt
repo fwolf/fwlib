@@ -20,6 +20,11 @@ doc-markdown.php
 ### DocMarkdown
 	Easy write/display doc using Markdown markup language.
 
+ebay.php
+--------
+### Ebay
+	eBay API caller class.
+
 list-table.php
 --------------
 ### ListTable
