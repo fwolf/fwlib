@@ -91,7 +91,7 @@ class ListTable
 		'fit_empty'			=> '&nbsp;',
 		'page_cur'			=> 1,
 		'page_size'			=> 10,
-		'pager'				=> true,		// Is or not use pager
+		'pager'				=> false,		// Is or not use pager
 		'pager_bottom'		=> true,		// Is or not use pager bottom, used when pager=true
 		'pager_text_cur'	=> '共{rows_total}条记录，每页显示{page_size}条，当前为第{page_cur}/{page_max}页',
 		'pager_text_first'	=> '首页',
@@ -485,7 +485,13 @@ class ListTable
 	 * 								if fail, set to 1.
 	 * @see		$aConfig
 	 */
-	public function SetPager($rows_total, $page_cur = 0) {
+	public function SetPager($rows_total= 0, $page_cur = 0) {
+		// Enable pager disp
+		$this->aConfig['pager'] = true;
+
+		if (0 == $rows_total)
+			$rows_total = count($this->aData);
+
 		if (0 == $page_cur)
 			$page_cur = &$this->aConfig['page_cur'];
 		else
@@ -533,7 +539,7 @@ class ListTable
 				$s .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";
 			$this->oTpl->assign_by_ref('lt_url_form_hidden', $s);
 		}
-	} // end of function SetPager
+	} // end of func SetPager
 
 
 	/**
@@ -629,7 +635,7 @@ class ListTable
 		$str_html .= '<script language="JavaScript" type="text/JavaScript">function jump(p) {if (document.URL.match(/(page=[0-9]+)/)){document.URL=(document.URL.replace(/(page=[0-9]+)/, "page=" + p));}else{if (document.URL.match(/[?]{1}/)) {document.URL=document.URL + "&page=" + p;} else {document.URL=document.URL + "?page=" + p;}}return false;}</script>';
 
 		return($str_html);
-	} // end function GetIndex
+	} // end func GetIndex
 
 
 } // end class ListTable
