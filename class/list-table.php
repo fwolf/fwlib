@@ -489,6 +489,7 @@ class ListTable
 		// Enable pager disp
 		$this->aConfig['pager'] = true;
 
+		// Auto compute total rows if not assigned
 		if (0 == $rows_total)
 			$rows_total = count($this->aData);
 
@@ -497,10 +498,24 @@ class ListTable
 		else
 			$this->aConfig['page_cur'] = &$page_cur;
 
-		$i = ceil($rows_total / $this->aConfig['page_size']);
+		// Some param needed
+		$page_size = $this->aConfig['page_size'];
+		$i = ceil($rows_total / $page_size);
 		if ($i < $page_cur)
 			$page_cur = $i;
-		$page_max = ceil($rows_total / $this->aConfig['page_size']);
+		if (1 > $page_cur)
+			$page_cur = 1;
+		$page_max = ceil($rows_total / $page_size);
+
+		// If data rows exceeds page_size, trim it
+		if (count($this->aData) > $page_size) {
+			// If page = 3/5, trim page 1, 2 first
+			for ($i = 0; $i < ($page_cur - 1) * $page_size; $i ++)
+				unset($this->aData[$i]);
+			// Then trim page 4, 5
+			for ($i = $page_cur * $page_size; $i < $page_max * $page_size; $i ++)
+				unset($this->aData[$i]);
+		}
 
 		$this->aConfig['rows_total'] = $rows_total;
 		$this->aConfig['pager_text_cur'] = str_replace(

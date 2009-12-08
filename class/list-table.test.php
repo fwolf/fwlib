@@ -93,6 +93,7 @@ table, td, th {
 	border: 1px solid black;
 	border-collapse: collapse;
 	width: 100%;
+	table-layout: fixed;
 }
 -->
 </style>
@@ -116,9 +117,9 @@ table, td, th {
 			$this->aT[$i] = RandomString(3, 'A');
 		}
 
-		for ($i = 0; $i < $i_col; $i++)
-			for ($j = 0; $j < $i_row; $j++) {
-				$this->aD[$i][$j] = RandomString(6, '0');
+		for ($j = 0; $j < $i_row; $j++)
+			for ($i = 0; $i < $i_col; $i++) {
+				$this->aD[$j][$i] = "$j - $i";
 			}
 
 	} // end of func GenTbl
