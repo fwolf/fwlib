@@ -51,6 +51,12 @@ class TestListTable extends UnitTestCase {
 	public $sCss = '';
 
 	/**
+	 * Js
+	 * @var	string
+	 */
+	public $sJs = '';
+
+	/**
 	 * Tpl filename
 	 * @var	string
 	 */
@@ -70,6 +76,7 @@ class TestListTable extends UnitTestCase {
 		$this->oLt = new ListTable($o_tpl);
 
 		$this->GenCss();
+		$this->GenJs();
 		$this->GenTbl();
 		$this->GenTpl();
 
@@ -93,17 +100,54 @@ table, td, th {
 	border: 1px solid black;
 	border-collapse: collapse;
 	width: 100%;
-	table-layout: fixed;
+	/* 等宽表格 */
+	/*table-layout: fixed;*/
 }
 -->
 </style>
 
+<!-- This MUST before table code -->
 <script type="text/javascript" src="/js/jquery.js">
 </script>
 
-
 ';
 	} // end of func GenCss
+
+
+	/**
+	 * Generate js for better table view
+	 */
+	protected function GenJs() {
+		$this->sJs = '
+<!-- This MUST be after table code -->
+<script type="text/javascript">
+<!--//--><![CDATA[//>
+<!--
+
+// Assign width for col n
+
+// If "table-layout: fixed;" is assigned also,
+// then td width is assigned + fixed_for_left,
+// content width exceed limit will auto wrap,
+// but overflow content can also been seen.
+
+$(".fl_lt table").css("table-layout", "fixed");
+
+$(".fl_lt tr > td:nth-child(2)").css("background-color", "green");
+// * include th & td
+$(".fl_lt tr > *:nth-child(1)").css("width", "12em");
+//$(".fl_lt tr > td:nth-child(1)").css("width", "1em");
+
+// If "table-layout: fixed;" is not assigned,
+// width limit will work, but overflow content
+// will make width raise.
+$(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "12em");
+
+//--><!]]>
+</script>
+
+';
+	} // end of func GenJs
 
 
 	/**
@@ -117,10 +161,12 @@ table, td, th {
 			$this->aT[$i] = RandomString(3, 'A');
 		}
 
-		for ($j = 0; $j < $i_row; $j++)
-			for ($i = 0; $i < $i_col; $i++) {
+		for ($j = 0; $j < $i_row; $j++) {
+			$this->aD[$j][0] = "$j - <strong>0</strong> - " . RandomString(20, 'a');
+			for ($i = 1; $i < $i_col; $i++) {
 				$this->aD[$j][$i] = "$j - $i";
 			}
+		}
 
 	} // end of func GenTbl
 
@@ -291,7 +337,8 @@ table, td, th {
 
     function TestBasicTable() {
 		$ar_conf = array(
-			'tpl'	=> $this->sTpl,
+			'tpl'		=> $this->sTpl,
+			'page_size'	=> 3,
 		);
 		$this->oLt->SetConfig($ar_conf);
 
@@ -301,6 +348,12 @@ table, td, th {
 
 		echo $this->sCss;
 		echo($this->oLt->GetHtml());
+
+		// Another table in same page
+		$this->oLt->SetId('lt1');
+		echo($this->oLt->GetHtml());
+
+		echo $this->sJs;
     } // end of func TestBasicTable
 
 } // end of class TestListTable
