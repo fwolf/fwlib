@@ -195,6 +195,74 @@ class Ebay
 		$this->iSiteid = GetCfg('ebay.siteid');
 	} // end of func GetToken
 
+
+	/**
+	 * Parse result of GetOrders
+	 *
+	 * @param	string	$xml
+	 * @return	array
+	 */
+	public function ParseGetOrders($xml) {
+		$rs = simplexml_load_string($xml);
+		if ('Success' == $rs->Ack) {
+			$ar = array();
+			if (0 < count($rs->OrderArray->Order)) {
+				$i = 0;
+				foreach ($rs->OrderArray->Order as $order) {
+					$ar[$i]['OrderID'] = strval($order->OrderID);
+					$ar[$i]['OrderStatus'] = strval($order->OrderStatus);
+					$ar[$i]['BuyerUserID'] = strval($order->BuyerUserID);
+					$ar[$i]['Total'] = strval($order->Total);
+					$ar[$i]['Subtotal'] = strval($order->Subtotal);
+					$ar[$i]['CreatedTime'] = strval($order->CreatedTime);
+					$ar[$i]['CreatedTime'] = date('Y-m-d H:i:s O', strtotime($ar[$i]['CreatedTime']));
+
+					// Shipping
+					if (empty($order->ShippingServiceSelected))
+						$ar[$i]['ShippingServiceCost'] = 0;
+					else
+						$ar[$i]['ShippingServiceCost'] = strval($order->ShippingServiceSelected->ShippingServiceCost);
+					$ar[$i]['ShippingAddress'] =
+						strval($order->ShippingAddress->Name)
+						. ', ' . strval($order->ShippingAddress->Street1)
+						. strval($order->ShippingAddress->Street2)
+						. ', ' . strval($order->ShippingAddress->CityName)
+						. ', ' . strval($order->ShippingAddress->StateOrProvince)
+						. ', ' . strval($order->ShippingAddress->CountryName)
+						;
+					$ar[$i]['ShippingAddress'] = str_replace(', , ', ', ', $ar[$i]['ShippingAddress']);
+					$ar[$i]['ShippingAddressPostalCode'] =
+						strval($order->ShippingAddress->PostalCode);
+					$ar[$i]['ShippingAddressPhone'] =
+						strval($order->ShippingAddress->Phone);
+					$ar[$i]['ShippingAddressPhone'] = str_replace('Invalid Request', '', $ar[$i]['ShippingAddressPhone']);
+
+					// Transaction
+					if (empty($order->TransactionArray))
+						$ar[$i]['Transaction'] = array();
+					else {
+						$j = 0;
+						foreach ($order->TransactionArray->Transaction as $trans) {
+							$ar[$i]['Transaction'][$j] = array();
+							$ar_t = &$ar[$i]['Transaction'][$j];
+							$ar_t['ItemID'] = strval($trans->Item->ItemID);
+							$ar_t['QuantityPurchased'] = strval($trans->QuantityPurchased);
+							$ar_t['TransactionPrice'] = strval($trans->TransactionPrice);
+
+							$j ++;
+						}
+					}
+
+					$i ++;
+				}
+			}
+
+			return $ar;
+		} else {
+			return array();
+		}
+	} // end of func ParseGetOrders
+
 /*
 <?xml version="1.0" encoding="utf-8"?>
 <GetOrdersRequest xmlns="urn:ebay:apis:eBLBaseComponents">
