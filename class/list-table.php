@@ -96,7 +96,10 @@ class ListTable
 		'page_size'			=> 10,
 		'pager'				=> false,		// Is or not use pager
 		'pager_bottom'		=> true,		// Is or not use pager bottom, used when pager=true
+		// This is a message template
+		// When display, use key append by '_value'
 		'pager_text_cur'	=> '共{rows_total}条记录，每页显示{page_size}条，当前为第{page_cur}/{page_max}页',
+
 		'pager_text_first'	=> '首页',
 		'pager_text_goto1'	=> '转到第',
 		'pager_text_goto2'	=> '页',
@@ -106,7 +109,7 @@ class ListTable
 		'pager_text_prev'	=> '上一页',
 		'pager_text_spacer'	=> ' | ',		// To be between below texts.
 		'pager_top'			=> true,		// Is or not use pager top, used when pager=true
-		'param'				=> 'p',			// Used in url to set page no.
+//		'param'				=> 'p',			// Used in url to set page no.
 		'rows_total'		=> 0,
 		'tpl'				=> 'list-table.tpl',
 		);
@@ -378,10 +381,8 @@ class ListTable
 			}
 		}
 		$this->aUrl['base'] = GetSelfUrl(false);
-		if (isset($this->aParam[$this->aConfig['param']])) {
-			$this->aConfig['page_cur'] = intval($this->aParam[$this->aConfig['param']]);
-			if (0 == $this->aConfig['page_cur'])
-				$this->aConfig['page_cur'] = 1;
+		if (isset($this->aParam[$this->aConfig['page_param']])) {
+			$this->ParsePageCur($this->aParam[$this->aConfig['page_param']]);
 		}
 		return $this->aParam;
 	} // end of func GetParam
@@ -429,7 +430,8 @@ class ListTable
 		// Max
 		if (0 < $this->aConfig['rows_total']
 			&& 0 < $this->aConfig['page_size']) {
-			$i = ceil($rows_total / $page_size);
+			$i = ceil($this->aConfig['rows_total']
+				/ $this->aConfig['page_size']);
 			if ($i < $page_cur)
 				$page_cur = $i;
 		}
@@ -504,7 +506,7 @@ class ListTable
 		if (empty($id))
 			$this->sId = $this->aConfig['code_prefix'];
 		else
-			$this->sId = $this->aConfig['code_prefix'] . '-' . $id;
+			$this->sId = $this->aConfig['code_prefix'] . '_' . $id;
 		if (!empty($class))
 			$this->sClass = $class;
 		else
@@ -515,6 +517,8 @@ class ListTable
 
 		// Change page_param
 		$this->aConfig['page_param'] = $this->sId . '_p';
+		$this->ParsePageCur();
+
 		return $this->sId;
 	} // end of func SetId
 
@@ -537,6 +541,7 @@ class ListTable
 		// Auto compute total rows if not assigned
 		if (0 == $rows_total)
 			$rows_total = count($this->aData);
+		$this->aConfig['rows_total'] = $rows_total;
 
 		// Some param needed
 		$page_cur = $this->ParsePageCur($page_cur);
@@ -553,10 +558,9 @@ class ListTable
 				unset($this->aData[$i]);
 		}
 
-		$this->aConfig['rows_total'] = $rows_total;
-		$this->aConfig['pager_text_cur'] = str_replace(
+		$this->aConfig['pager_text_cur_value'] = str_replace(
 			array('{page_cur}', '{page_max}', '{rows_total}', '{page_size}'),
-			array($page_cur, $page_max, $rows_total, $this->aConfig['page_size']),
+			array($page_cur, $page_max, $rows_total, $page_size),
 			$this->aConfig['pager_text_cur']);
 
 		// Generate url for pager
@@ -567,8 +571,11 @@ class ListTable
 //				. '-page_no=' . $page_cur;
 //			$this->aUrl['prev'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . ($page_cur - 1);
-			$this->aUrl['first'] = $this->SetParam($this->aConfig['param'], 1);
-			$this->aUrl['prev'] = $this->SetParam($this->aConfig['param'], $page_cur - 1);
+			$this->aUrl['first'] = $this->SetParam($this->aConfig['page_param'], 1);
+			$this->aUrl['prev'] = $this->SetParam($this->aConfig['page_param'], $page_cur - 1);
+		} else {
+			$this->aUrl['first'] = '';
+			$this->aUrl['prev'] = '';
 		}
 		if ($page_cur < $page_max) {
 			// Not last page
@@ -576,19 +583,22 @@ class ListTable
 //				. '-page_no=' . ($page_cur + 1);
 //			$this->aUrl['last'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . $page_max;
-			$this->aUrl['next'] = $this->SetParam($this->aConfig['param'], $page_cur + 1);
-			$this->aUrl['last'] = $this->SetParam($this->aConfig['param'], $page_max);
+			$this->aUrl['next'] = $this->SetParam($this->aConfig['page_param'], $page_cur + 1);
+			$this->aUrl['last'] = $this->SetParam($this->aConfig['page_param'], $page_max);
+		} else {
+			$this->aUrl['next'] = '';
+			$this->aUrl['last'] = '';
 		}
 
 		// Assign url to tpl
 		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
-		$this->oTpl->assign_by_ref('lt_url_form', $this->SetParam(array(), $this->aConfig['param']));
+		$this->oTpl->assign('lt_url_form', $this->SetParam(array(), $this->aConfig['page_param']));
 		// Assign hidden input
 		if (!empty($this->aParam)) {
 			$s = '';
 			foreach ($this->aParam as $k => $v)
 				$s .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";
-			$this->oTpl->assign_by_ref('lt_url_form_hidden', $s);
+			$this->oTpl->assign('lt_url_form_hidden', $s);
 		}
 	} // end of func SetPager
 

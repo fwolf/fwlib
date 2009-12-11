@@ -181,20 +181,20 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 	Template of ListTable
 *}
 
-<div {if (0 < strlen($lt_id))} id="{$lt_id}-div" {/if}
+<div {if (0 < strlen($lt_id))} id="{$lt_id}_div" {/if}
 	{if (0 < strlen($lt_class))} class="{$lt_class}" {/if}>
 
 	{if (true == $lt_config.pager && true == $lt_config.pager_top)}
-	<span id="{$lt_id}-pager_top" class="{$lt_id}-pager">
+	<span id="{$lt_id}_pager_top" class="{$lt_id}_pager">
 		{if (!empty($lt_url.first))}<a href="{$lt_url.first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.prev))}<a href="{$lt_url.prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.next))}<a href="{$lt_url.next}">{$lt_config.pager_text_next}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.last))}<a href="{$lt_url.last}">{$lt_config.pager_text_last}</a>{$lt_config.pager_text_spacer}{/if}
-		{$lt_config.pager_text_cur}{$lt_config.pager_text_spacer}
+		{$lt_config.pager_text_cur_value}{$lt_config.pager_text_spacer}
 		{$lt_config.pager_text_goto1}
 		<form method="get" action="{$lt_url_form}">
 			{$lt_url_form_hidden}
-			<input type="text" name="{$lt_config.param}" value="{$lt_config.page_cur}" size="{if (99 < $lt_config.page_max)}<?php echo strlen(strval($lt_config.page_max)) - 1;?>{else}1{/if}" />
+			<input type="text" name="{$lt_config.page_param}" value="{$lt_config.page_cur}" size="{if (99 < $lt_config.page_max)}<?php echo strlen(strval($lt_config.page_max)) - 1;?>{else}1{/if}" />
 			{$lt_config.pager_text_goto2}
 			<input type="submit" value="{$lt_config.pager_text_goto3}" />
 		</form>
@@ -224,17 +224,17 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 	</table>
 
 	{if (true == $lt_config.pager && true == $lt_config.pager_bottom)}
-	<span id="{$lt_id}-pager_bottom" class="{$lt_id}-pager">
+	<span id="{$lt_id}_pager_bottom" class="{$lt_id}_pager">
 	{* Same with upper pager text *}
 		{if (!empty($lt_url.first))}<a href="{$lt_url.first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.prev))}<a href="{$lt_url.prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.next))}<a href="{$lt_url.next}">{$lt_config.pager_text_next}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.last))}<a href="{$lt_url.last}">{$lt_config.pager_text_last}</a>{$lt_config.pager_text_spacer}{/if}
-		{$lt_config.pager_text_cur}{$lt_config.pager_text_spacer}
+		{$lt_config.pager_text_cur_value}{$lt_config.pager_text_spacer}
 		{$lt_config.pager_text_goto1}
 		<form method="get" action="{$lt_url_form}">
 			{$lt_url_form_hidden}
-			<input type="text" name="{$lt_config.param}" value="{$lt_config.page_cur}" size="{if (99 < $lt_config.page_max)}<?php echo strlen(strval($lt_config.page_max)) - 1;?>{else}1{/if}" />
+			<input type="text" name="{$lt_config.page_param}" value="{$lt_config.page_cur}" size="{if (99 < $lt_config.page_max)}<?php echo strlen(strval($lt_config.page_max)) - 1;?>{else}1{/if}" />
 			{$lt_config.pager_text_goto2}
 			<input type="submit" value="{$lt_config.pager_text_goto3}" />
 		</form>
@@ -285,44 +285,44 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 */
 	// 设置行颜色、隔行变色
 	// th用class不起作用，改成直接对styles属性赋值 1/2
-	//$("#{$lt_id}-div th").addClass(".{$lt_id}_th");
-	$("#{$lt_id}-div th").css("background-color", "{$lt_config.color_bg_th}");
-	$("#{$lt_id}-div tbody tr:even").addClass("{$lt_id}_tr_even");
-	//$("#{$lt_id}-div tbody tr:hover").addClass("{$lt_id}_tr_hover");
-	$("#{$lt_id}-div tbody tr:odd").addClass("{$lt_id}_tr_odd");
+	//$("#{$lt_id}_div th").addClass(".{$lt_id}_th");
+	$("#{$lt_id}_div th").css("background-color", "{$lt_config.color_bg_th}");
+	$("#{$lt_id}_div tbody tr:even").addClass("{$lt_id}_tr_even");
+	//$("#{$lt_id}_div tbody tr:hover").addClass("{$lt_id}_tr_hover");
+	$("#{$lt_id}_div tbody tr:odd").addClass("{$lt_id}_tr_odd");
 	// When mouseover and mouseout, change color
-	$("#{$lt_id}-div tbody tr").mouseover(function() {literal}{{/literal}
+	$("#{$lt_id}_div tbody tr").mouseover(function() {literal}{{/literal}
 		$(this).addClass("{$lt_id}_tr_hover");
 		{literal}}{/literal});
-	$("#{$lt_id}-div tbody tr").mouseout(function() {literal}{{/literal}
+	$("#{$lt_id}_div tbody tr").mouseout(function() {literal}{{/literal}
 		$(this).removeClass("{$lt_id}_tr_hover");
 		{literal}}{/literal});
 
 	// Pager\'s width is same with table, and position
-	$(".{$lt_id}-pager").css("display", "block");
-	$(".{$lt_id}-pager").css("text-align", "right");
+	$(".{$lt_id}_pager").css("display", "block");
+	$(".{$lt_id}_pager").css("text-align", "right");
 	// Pager top leave a little margin-bottom to look better
-	$("#{$lt_id}-pager_top").css("margin-bottom", "0.1em");
+	$("#{$lt_id}_pager_top").css("margin-bottom", "0.1em");
 	if ($.browser.msie)
 	{literal}{{/literal}
-		$(".{$lt_id}-pager").css("width", $("#{$lt_id}-div table").attr("clientWidth"));
+		$(".{$lt_id}_pager").css("width", $("#{$lt_id}_div table").attr("clientWidth"));
 		// Same left margin with table
-		$(".{$lt_id}-pager").css("margin-left"
-			, ($("#{$lt_id}-div").attr("clientWidth")
-			- $("#{$lt_id}-div table").attr("clientWidth")) / 2);
+		$(".{$lt_id}_pager").css("margin-left"
+			, ($("#{$lt_id}_div").attr("clientWidth")
+			- $("#{$lt_id}_div table").attr("clientWidth")) / 2);
 	{literal}}{/literal}
 	else
 	{literal}{{/literal}
-		$(".{$lt_id}-pager").css("width"
-			, $("#{$lt_id}-div table").css("width").replace("px", "") * 1);
-		$(".{$lt_id}-pager").css("margin-left"
-			, ($("#{$lt_id}-div").css("width").replace("px", "") * 1
-			- $("#{$lt_id}-div table").css("width").replace("px", "") * 1) / 2);
+		$(".{$lt_id}_pager").css("width"
+			, $("#{$lt_id}_div table").css("width").replace("px", "") * 1);
+		$(".{$lt_id}_pager").css("margin-left"
+			, ($("#{$lt_id}_div").css("width").replace("px", "") * 1
+			- $("#{$lt_id}_div table").css("width").replace("px", "") * 1) / 2);
 
 	// Form vision
-	$(".{$lt_id}-pager form").css("display", "inline");
+	$(".{$lt_id}_pager form").css("display", "inline");
 	// Pager input auto select when click
-	$(".{$lt_id}-pager form input").mouseover(function() {literal}{{/literal}
+	$(".{$lt_id}_pager form input").mouseover(function() {literal}{{/literal}
 		this.select();
 		{literal}}{/literal});
 	{literal}}{/literal}
@@ -351,6 +351,11 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 
 		// Another table in same page
 		$this->oLt->SetId('lt1');
+		// Data is trimmed, need re-make
+		$this->GenTbl();
+		$this->oLt->SetData($this->aD, $this->aT);
+		// MUST refresh pager
+		$this->oLt->SetPager();
 		echo($this->oLt->GetHtml());
 
 		echo $this->sJs;
