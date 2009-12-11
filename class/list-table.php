@@ -71,9 +71,11 @@ class ListTable
 	 * fit_empty:		If an value in data is empty, set to this value.
 	 * 					Title will always set to field name in same situation.
 	 * code_prefix:		Prefix auto add before $sId, use to generate html.
+	 * page_cur:		Current page no, ONLY USED TO DISP PAGER.
+	 * page_param:		Param name of page number in URL,
+	 * 					Will change if $sId changed.
 	 * page_size:		Rows per page, ONLY USED TO DISP PAGER, havn't any
 	 * 					effect to list data.
-	 * page_cur:		Current page no, ONLY USED TO DISP PAGER.
 	 * rows_total:		Total rows, ONLY USED TO DISP PAGER.
 	 * tpl:				Smarty template file to use.
 	 * </code>
@@ -90,6 +92,7 @@ class ListTable
 		'fit_data_title'	=> 0,
 		'fit_empty'			=> '&nbsp;',
 		'page_cur'			=> 1,
+		'page_param'		=> 'p',
 		'page_size'			=> 10,
 		'pager'				=> false,		// Is or not use pager
 		'pager_bottom'		=> true,		// Is or not use pager bottom, used when pager=true
@@ -399,6 +402,45 @@ class ListTable
 
 
 	/**
+	 * Parse & compute page_cur param
+	 *
+	 * @param	int	$p	Page num param come from outer
+	 * @return	int
+	 */
+	protected function ParsePageCur($p = 0) {
+		if (0 == $p) {
+			// Read from GET prarm
+			$i = GetRequest($_REQUEST, $this->aConfig['page_param']);
+			// Special & dangous setting, use only if 1 LT in page
+			$i1 = GetRequest($_REQUEST, 'p');
+			if (!empty($i))
+				$page_cur = $i;
+			elseif (!empty($i1))
+				$page_cur = $i1;
+			else
+				$page_cur = 1;
+		} else
+			$page_cur = $p;
+
+		// Validate min and max
+		// Min
+		if (1 > $page_cur)
+			$page_cur = 1;
+		// Max
+		if (0 < $this->aConfig['rows_total']
+			&& 0 < $this->aConfig['page_size']) {
+			$i = ceil($rows_total / $page_size);
+			if ($i < $page_cur)
+				$page_cur = $i;
+		}
+
+		// Result
+		$this->aConfig['page_cur'] = $page_cur;
+		return $page_cur;
+	} // end of func ParsePageCur
+
+
+	/**
 	 * Set configuration
 	 * @param	array|string	$c	Config array or name/value pair.
 	 * @param	string			$v	Config value
@@ -470,6 +512,9 @@ class ListTable
 			$this->sClass = $this->sId;
 		$this->oTpl->assign_by_ref('lt_id', $this->sId);
 		$this->oTpl->assign_by_ref('lt_class', $this->sClass);
+
+		// Change page_param
+		$this->aConfig['page_param'] = $this->sId . '_p';
 		return $this->sId;
 	} // end of func SetId
 
@@ -493,18 +538,9 @@ class ListTable
 		if (0 == $rows_total)
 			$rows_total = count($this->aData);
 
-		if (0 == $page_cur)
-			$page_cur = &$this->aConfig['page_cur'];
-		else
-			$this->aConfig['page_cur'] = &$page_cur;
-
 		// Some param needed
+		$page_cur = $this->ParsePageCur($page_cur);
 		$page_size = $this->aConfig['page_size'];
-		$i = ceil($rows_total / $page_size);
-		if ($i < $page_cur)
-			$page_cur = $i;
-		if (1 > $page_cur)
-			$page_cur = 1;
 		$page_max = ceil($rows_total / $page_size);
 
 		// If data rows exceeds page_size, trim it

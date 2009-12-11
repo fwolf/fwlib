@@ -141,7 +141,7 @@ $(".fl_lt tr > *:nth-child(1)").css("width", "12em");
 // If "table-layout: fixed;" is not assigned,
 // width limit will work, but overflow content
 // will make width raise.
-$(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "12em");
+$(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 
 //--><!]]>
 </script>
@@ -343,7 +343,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "12em");
 		$this->oLt->SetConfig($ar_conf);
 
 		$this->oLt->SetData($this->aD, $this->aT);
-		$this->oLt->SetId('');
+		//$this->oLt->SetId('');
 		$this->oLt->SetPager();
 
 		echo $this->sCss;

@@ -140,6 +140,7 @@ description, desc			|（产品）描述
 design enterprise, dent		|设计企业
 detail, dtl					|详细信息
 determine the winning bidder, dtwb	|确定中标人
+Development and Reform Commission, drc	|发改委
 diploma						|学历
 direct contract， contracted out directly	|直接发包
 director, dir				|负责人
