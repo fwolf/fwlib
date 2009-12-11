@@ -593,6 +593,7 @@ class ListTable
 		// Assign url to tpl
 		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
 		$this->oTpl->assign('lt_url_form', $this->SetParam(array(), $this->aConfig['page_param']));
+
 		// Assign hidden input
 		if (!empty($this->aParam)) {
 			$s = '';
@@ -600,6 +601,10 @@ class ListTable
 				$s .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";
 			$this->oTpl->assign('lt_url_form_hidden', $s);
 		}
+
+		// Add page_param deleted in above SetParam
+		// needed to display right form url in next table in this page
+		$this->SetParam($this->aConfig['page_param'], $page_cur);
 	} // end of func SetPager
 
 
@@ -622,12 +627,11 @@ class ListTable
 				$this->aParam[addslashes($key)] = addslashes($val);
 			if (!is_array($v))
 				$v = array($v);
-			if (is_array($v))
-				foreach ($v as $val)
-					if (isset($this->aParam[$val]))
-						unset($this->aParam[$val]);
-
+			foreach ($v as $val)
+				if (isset($this->aParam[$val]))
+					unset($this->aParam[$val]);
 		}
+
 		// Generate url and return
 		$s = '';
 		foreach ($this->aParam as $k => $v)
