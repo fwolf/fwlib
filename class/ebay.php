@@ -223,16 +223,19 @@ class Ebay
 					else
 						$ar[$i]['ShippingServiceCost'] = strval($order->ShippingServiceSelected->ShippingServiceCost);
 					$ar[$i]['ShippingAddress'] =
-						strval($order->ShippingAddress->Name)
-						. ', ' . strval($order->ShippingAddress->Street1)
-						. strval($order->ShippingAddress->Street2)
-						. ', ' . strval($order->ShippingAddress->CityName)
-						. ', ' . strval($order->ShippingAddress->StateOrProvince)
-						. ', ' . strval($order->ShippingAddress->CountryName)
+						strval($order->ShippingAddress->Name) . '<br />'
+						. strval($order->ShippingAddress->Street1) . '<br />'
+						. strval($order->ShippingAddress->Street2) . '<br />'
+						. strval($order->ShippingAddress->PostalCode) . ' ' . strval($order->ShippingAddress->CityName) . '<br />'
+						. strval($order->ShippingAddress->StateOrProvince) . '<br />'
+						. strval($order->ShippingAddress->CountryName)
 						;
-					$ar[$i]['ShippingAddress'] = str_replace(', , ', ', ', $ar[$i]['ShippingAddress']);
-					$ar[$i]['ShippingAddressPostalCode'] =
-						strval($order->ShippingAddress->PostalCode);
+					$ar[$i]['ShippingAddress'] = str_replace(
+						'<br /><br />'
+						, '<br />'
+						, $ar[$i]['ShippingAddress']);
+//					$ar[$i]['ShippingAddressPostalCode'] =
+//						strval($order->ShippingAddress->PostalCode);
 					$ar[$i]['ShippingAddressPhone'] =
 						strval($order->ShippingAddress->Phone);
 					$ar[$i]['ShippingAddressPhone'] = str_replace('Invalid Request', '', $ar[$i]['ShippingAddressPhone']);
