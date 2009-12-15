@@ -223,16 +223,16 @@ class Ebay
 					else
 						$ar[$i]['ShippingServiceCost'] = strval($order->ShippingServiceSelected->ShippingServiceCost);
 					$ar[$i]['ShippingAddress'] =
-						strval($order->ShippingAddress->Name) . '<br />'
-						. strval($order->ShippingAddress->Street1) . '<br />'
-						. strval($order->ShippingAddress->Street2) . '<br />'
-						. strval($order->ShippingAddress->PostalCode) . ' ' . strval($order->ShippingAddress->CityName) . '<br />'
-						. strval($order->ShippingAddress->StateOrProvince) . '<br />'
+						strval($order->ShippingAddress->Name) . "\n"
+						. strval($order->ShippingAddress->Street1) . "\n"
+						. strval($order->ShippingAddress->Street2) . "\n"
+						. strval($order->ShippingAddress->PostalCode) . ' ' . strval($order->ShippingAddress->CityName) . "\n"
+						. strval($order->ShippingAddress->StateOrProvince) . "\n"
 						. strval($order->ShippingAddress->CountryName)
 						;
 					$ar[$i]['ShippingAddress'] = str_replace(
-						'<br /><br />'
-						, '<br />'
+						"\n\n"
+						, "\n"
 						, $ar[$i]['ShippingAddress']);
 //					$ar[$i]['ShippingAddressPostalCode'] =
 //						strval($order->ShippingAddress->PostalCode);
