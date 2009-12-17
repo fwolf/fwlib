@@ -21,6 +21,7 @@ if (! defined('SIMPLE_TEST')) {
 
 // Require library define file which need test
 require_once('fwolflib/func/crypt.php');
+require_once('fwolflib/func/request.php');
 
 class TestFuncCrypt extends UnitTestCase {
 
@@ -42,7 +43,11 @@ class TestFuncCrypt extends UnitTestCase {
 
 // Change output charset in this way.
 // {{{
-$test = new TestFuncCrypt();
-$test->run(new HtmlReporter('utf-8'));
+$s_url = GetSelfUrl(false);
+$s_url = substr($s_url, strrpos($s_url, '/') + 1);
+if ('crypt.test.php' == $s_url) {
+	$test = new TestFuncCrypt();
+	$test->run(new HtmlReporter('utf-8'));
+}
 // }}}
 ?>

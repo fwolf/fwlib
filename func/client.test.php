@@ -21,6 +21,7 @@ if (! defined('SIMPLE_TEST')) {
 
 // Require library define file which need test
 require_once('fwolflib/func/client.php');
+require_once('fwolflib/func/request.php');
 
 class TestFuncClient extends UnitTestCase {
 
@@ -47,7 +48,11 @@ class TestFuncClient extends UnitTestCase {
 
 // Change output charset in this way.
 // {{{
-$test = new TestFuncClient();
-$test->run(new HtmlReporter('utf-8'));
+$s_url = GetSelfUrl(false);
+$s_url = substr($s_url, strrpos($s_url, '/') + 1);
+if ('client.test.php' == $s_url) {
+	$test = new TestFuncClient();
+	$test->run(new HtmlReporter('utf-8'));
+}
 // }}}
 ?>

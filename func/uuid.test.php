@@ -20,6 +20,7 @@ if (! defined('SIMPLE_TEST')) {
 // }}}
 
 // Require library define file which need test
+require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/uuid.php');
 
 class TestFuncUuid extends UnitTestCase {
@@ -50,7 +51,11 @@ class TestFuncUuid extends UnitTestCase {
 
 // Change output charset in this way.
 // {{{
-$test = new TestFuncUuid();
-$test->run(new HtmlReporter('utf-8'));
+$s_url = GetSelfUrl(false);
+$s_url = substr($s_url, strrpos($s_url, '/') + 1);
+if ('uuid.test.php' == $s_url) {
+	$test = new TestFuncUuid();
+	$test->run(new HtmlReporter('utf-8'));
+}
 // }}}
 ?>

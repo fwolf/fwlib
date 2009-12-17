@@ -209,7 +209,7 @@ abstract class View {
 		else
 			// An invalid action is given
 			$this->oCtl->ViewErrorDisp("The given action {$this->sAction} invalid or method $s_func doesn't exists.");
-	} // end of function GenContent
+	} // end of func GenContent
 
 
 	/**
@@ -222,7 +222,7 @@ abstract class View {
 
 		$this->sOutputFooter = $this->oTpl->fetch($this->aTplFile['footer']);
 		return $this->sOutputFooter;
-	} // end of function GenFooter
+	} // end of func GenFooter
 
 
 	/**
@@ -232,7 +232,7 @@ abstract class View {
 	{
 		$this->sOutputHeader = $this->oTpl->fetch($this->aTplFile['header']);
 		return $this->sOutputHeader;
-	} // end of function GenHeader
+	} // end of func GenHeader
 
 
 	/**
@@ -242,7 +242,7 @@ abstract class View {
 	{
 		$this->sOutputMenu = $this->oTpl->fetch($this->aTplFile['menu']);
 		return $this->sOutputMenu;
-	} // end of function GenMenu
+	} // end of func GenMenu
 
 
 	/**
