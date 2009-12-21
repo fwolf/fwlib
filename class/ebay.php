@@ -166,6 +166,24 @@ class Ebay
 
 
 	/**
+	 * Generate XML for func GetSellerTransactions
+	 *
+	 * @param	array	&$param
+	 * @return	string
+	 * @link	http://developer.ebay.com/DevZone/XML/docs/Reference/eBay/GetSellerTransactions.html
+	 */
+	public function GenRequestGetSellerTransactions(&$param) {
+		$s = $this->GenRequestHeader('GetSellerTransactions');
+
+		// Common part
+		$s .= $this->GenRequestCommon($param);
+
+		$s .= $this->GenRequestFooter('GetSellerTransactions');
+		return $s;
+	} // end of func GenRequestGetSellerTransactions
+
+
+	/**
 	 * Generate XML for request, common header part
 	 *
 	 * @param	string	$func
@@ -265,6 +283,78 @@ class Ebay
 			return array();
 		}
 	} // end of func ParseGetOrders
+
+
+	/**
+	 * Parse result of GetOrders
+	 *
+	 * @param	string	$xml
+	 * @return	array
+	 */
+	public function ParseGetSellerTransactions($xml) {
+		$rs = simplexml_load_string($xml);
+		if ('Success' == $rs->Ack) {
+			$ar = array();
+			if (0 < count($rs->TransactionArray->Transaction)) {
+				$i = 0;
+				foreach ($rs->TransactionArray->Transaction as $trans) {
+					$ar[$i]['TransactionID'] = strval($trans->TransactionID);
+					$ar[$i]['TransactionPrice'] = strval($trans->TransactionPrice);
+					$ar[$i]['BuyerUserID'] = strval($trans->Buyer->UserID);
+					$ar[$i]['AmountPaid'] = strval($trans->AmountPaid);
+
+					// Shipping
+					if (empty($trans->ShippingServiceSelected))
+						$ar[$i]['ShippingServiceCost'] = 0;
+					else
+						$ar[$i]['ShippingServiceCost'] = strval($trans->ShippingServiceSelected->ShippingServiceCost);
+					$ar[$i]['ShippingAddress'] = $this->ParseShippingAddress($trans->Buyer->BuyerInfo->ShippingAddress);
+
+					$ar[$i]['PaidTime'] = strval($trans->PaidTime);
+					if (empty($ar[$i]['PaidTime']))
+						// Not paided
+						$ar[$i]['PaidTime'] = strval($trans->Status->CompleteStatus);
+					else
+						$ar[$i]['PaidTime'] = date('Y-m-d H:i:s O', strtotime($ar[$i]['PaidTime']));
+
+					// Item, only 1 type, qnty => 1
+					$ar[$i]['ItemID'] = strval($trans->Item->ItemID);
+					$ar[$i]['ItemPrice'] = strval($trans->Item->SellingStatus->CurrentPrice);
+					$ar[$i]['QuantityPurchased'] = strval($trans->QuantityPurchased);
+
+					// Have not been multipled ?
+					$ar[$i]['TransactionPrice'] = strval($trans->TransactionPrice);
+
+					$i ++;
+				}
+			}
+
+			return $ar;
+		} else {
+			return array();
+		}
+	} // end of func ParseGetSellerTransactions
+
+
+	/**
+	 * Parse shipping address
+	 *
+	 * @param	object	$addr	$trans/order->ShippingAddress
+	 * @return	string
+	 */
+	protected function ParseShippingAddress($addr) {
+		$s =
+			strval($addr->Name) . "\n"
+			. strval($addr->Street1) . "\n"
+			. strval($addr->Street2) . "\n"
+			. strval($addr->PostalCode) . ' ' . strval($addr->CityName) . "\n"
+			. strval($addr->StateOrProvince) . "\n"
+			. strval($addr->CountryName)
+			;
+		$s = str_replace("\n\n", "\n", $s);
+		return $s;
+	} // end of func ParseShippingAddress
+
 
 /*
 <?xml version="1.0" encoding="utf-8"?>
