@@ -177,6 +177,8 @@ function Rfc2047Encode($str, $encoding = 'utf-8')
 
 /**
  * 返回字符串的长度，一个中文字按一个单位算
+ *
+ * Check also: mb_strwidth()
  * @param	string	$str
  * @return	int
  */
@@ -321,4 +323,89 @@ function SubstrGb($str = '', $start = 0, $len = 0)
 } // end of func SubstrGb
 
 
+/**
+ * Get substr by display width, and ignore html tag's length
+ *
+ * Using mb_strimwidth()
+ *
+ * Attention: No consider of html complement.
+ * @link http://www.fwolf.com/blog/post/133
+ * @param	string	$str	Source string
+ * @param	int		$len	Length
+ * @param	string	$marker	If str length exceed, cut & fill with this
+ * @param	int		$start	Start position
+ * @param	string	$encoding	Default is utf-8
+ * @return	string
+ */
+function SubstrIgnHtml($str, $len, $marker, $start = 0, $encoding = 'utf-8') {
+	$i = preg_match_all('/<[^>]*>/i', $str, $ar);
+	if (0 == $i) {
+		// No html in $str
+		$str = htmlspecialchars_decode($str);
+		$str = mb_strimwidth($str, $start, $len, $marker, $encoding);
+		$str = htmlspecialchars($str);
+		return $str;
+	} else {
+		// Have html tags, need split str into parts by html
+		$ar = $ar[0];
+		$ar_s = array();
+		for ($i = 0; $i < count($ar); $i ++) {
+			// Find sub str
+			$j = strpos($str, $ar[$i]);
+			// Add to new ar: before, tag
+			if (0 != $j)
+				$ar_s[] = substr($str, 0, $j);
+			$ar_s[] = $ar[$i];
+			// Trim origin str, so we start from 0 again next loop
+			$str = substr($str, $j + strlen($ar[$i]));
+		}
+
+		// Loop to cut needed length
+		$s_result = '';
+		$i_length = $len - mb_strwidth($marker, $encoding);
+		$f_tag = 0;		// In html tag ?
+		$i = 0;
+		while ($i < count($ar_s)) {
+			$s = $ar_s[$i];
+			$i ++;
+
+			// Is it self-end html tag ?
+			if (0 < preg_match('/\/\s*>/', $s)) {
+				$s_result .= $s;
+			} elseif (0 < preg_match('/<\s*\//', $s)) {
+				// End of html tag ?
+				// When len exceed, only end tag allowed
+				if (0 < $f_tag) {
+					$s_result .= $s;
+					$f_tag --;
+				}
+			} elseif (0 < strpos($s, '>')) {
+				// Begin of html tag ?
+				// When len exceed, no start tag allowed
+				if (0 < $i_length) {
+					$s_result .= $s;
+					$f_tag ++;
+				}
+			} else {
+				// Real string
+				$s = htmlspecialchars_decode($s);
+				if (0 == $i_length) {
+					// Already got length
+					continue;
+				} elseif (mb_strwidth($s, $encoding) < $i_length) {
+					// Can add to rs completely
+					$i_length -= mb_strwidth($s, $encoding);
+					$s_result .= htmlspecialchars($s);
+				} else {
+					// Need cut then add to rs
+					$s_result .= htmlspecialchars(mb_strimwidth($s, 0, $i_length, '', $encoding)) . $marker;
+					$i_length = 0;
+				}
+			}
+		}
+
+		return $s_result;
+	}
+	return '';
+} // end of func SubstrIgnHtml
 ?>

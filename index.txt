@@ -186,6 +186,9 @@ string.php
 ----------
 	常用字符串函数集
 
+### SubstrIgnHtml($str, $len, $marker, $start = 0, $encoding = 'utf-8')
+	Get substr by display width, and ignore html tag's length.
+
 
 url.php
 -------

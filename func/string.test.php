@@ -19,6 +19,7 @@ if (! defined('SIMPLE_TEST')) {
 // }}}
 
 // Require library define file which need test
+require_once('fwolflib/func/ecl.php');
 require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/string.php');
 
@@ -33,7 +34,22 @@ class TestFuncString extends UnitTestCase {
     	$y = '来自sjzlbz@sina.com的自动回复 ';	// Without tailing ' ', will error.
     	$this->assertEqual(Rfc2047Decode($x), $y);
 
-    } // end of func
+    } // end of func TestRfc2047Decode
+
+
+    function TestSubstrIgnHtml() {
+    	$x = '测试12&lt;4测试';
+    	$x = SubstrIgnHtml($x, 11, '...');
+		$y = '测试12&lt;4...';
+    	$this->assertEqual($x, $y);
+
+    	$x = '测<b><i><br / >试</i></b>&quot;<b>234测试</b>';
+    	$x = SubstrIgnHtml($x, 9, '...');
+		$y = '测<b><i><br / >试</i></b>&quot;<b>2...</b>';
+    	$this->assertEqual($x, $y);
+
+    } // end of func TestSubstrIgnHtml
+
 
 } // end of class TestFuncString
 
