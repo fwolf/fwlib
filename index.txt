@@ -15,38 +15,52 @@ dbupdater.php
 disp_listtable.php
 	列表类，以包含表头、分页、数据表格的方式显示各种列表。
 
+
 doc-markdown.php
 ----------------
 ### DocMarkdown
 	Easy write/display doc using Markdown markup language.
+
 
 ebay.php
 --------
 ### Ebay
 	eBay API caller class.
 
+
+excel.php
+---------
+### Excel
+	Generate excel file, xml mode, need high version of MS Excel.
+
+
 list-table.php
 --------------
 ### ListTable
 	General table style display html to list data.
+
 
 mail_parser.php
 ---------------
 ### MailParser
 	Parse a maildir format mail file, got every information, especially attachments.
 
+
 mailsender.php
 	Easy send mail using PHPMailer.
+
 
 sql_generator.php
 -----------------
 ### SqlGenerator
 	Tools class to generator compative sql parse, Adodb object needed.
 
+
 toadtauri.php
 -------------
 ### ToDataUri
 	Can save html all in 1 file.
+
 
 ubb.php
 	Ubb类，完成对UBB代码的转换
