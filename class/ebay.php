@@ -221,26 +221,30 @@ class Ebay
 	 * @return	array
 	 */
 	public function ParseGetOrders($xml) {
+		if (empty($xml)) return array();
+
 		$rs = simplexml_load_string($xml);
 		if ('Success' == $rs->Ack) {
 			$ar = array();
 			if (0 < count($rs->OrderArray->Order)) {
 				$i = 0;
 				foreach ($rs->OrderArray->Order as $order) {
-					$ar[$i]['OrderID'] = strval($order->OrderID);
-					$ar[$i]['OrderStatus'] = strval($order->OrderStatus);
-					$ar[$i]['BuyerUserID'] = strval($order->BuyerUserID);
-					$ar[$i]['Total'] = strval($order->Total);
-					$ar[$i]['Subtotal'] = strval($order->Subtotal);
-					$ar[$i]['CreatedTime'] = strval($order->CreatedTime);
-					$ar[$i]['CreatedTime'] = date('Y-m-d H:i:s O', strtotime($ar[$i]['CreatedTime']));
+					// Unique id
+					$id = strval($order->OrderID);
+					$ar[$id]['OrderID'] = strval($order->OrderID);
+					$ar[$id]['OrderStatus'] = strval($order->OrderStatus);
+					$ar[$id]['BuyerUserID'] = strval($order->BuyerUserID);
+					$ar[$id]['Total'] = strval($order->Total);
+					$ar[$id]['Subtotal'] = strval($order->Subtotal);
+					$ar[$id]['CreatedTime'] = strval($order->CreatedTime);
+					$ar[$id]['CreatedTime'] = date('Y-m-d H:i:s O', strtotime($ar[$id]['CreatedTime']));
 
 					// Shipping
 					if (empty($order->ShippingServiceSelected))
-						$ar[$i]['ShippingServiceCost'] = 0;
+						$ar[$id]['ShippingServiceCost'] = 0;
 					else
-						$ar[$i]['ShippingServiceCost'] = strval($order->ShippingServiceSelected->ShippingServiceCost);
-					$ar[$i]['ShippingAddress'] =
+						$ar[$id]['ShippingServiceCost'] = strval($order->ShippingServiceSelected->ShippingServiceCost);
+					$ar[$id]['ShippingAddress'] =
 						strval($order->ShippingAddress->Name) . "\n"
 						. strval($order->ShippingAddress->Street1) . "\n"
 						. strval($order->ShippingAddress->Street2) . "\n"
@@ -248,24 +252,24 @@ class Ebay
 						. strval($order->ShippingAddress->StateOrProvince) . "\n"
 						. strval($order->ShippingAddress->CountryName)
 						;
-					$ar[$i]['ShippingAddress'] = str_replace(
+					$ar[$id]['ShippingAddress'] = str_replace(
 						"\n\n"
 						, "\n"
-						, $ar[$i]['ShippingAddress']);
-//					$ar[$i]['ShippingAddressPostalCode'] =
+						, $ar[$id]['ShippingAddress']);
+//					$ar[$id]['ShippingAddressPostalCode'] =
 //						strval($order->ShippingAddress->PostalCode);
-					$ar[$i]['ShippingAddressPhone'] =
+					$ar[$id]['ShippingAddressPhone'] =
 						strval($order->ShippingAddress->Phone);
-					$ar[$i]['ShippingAddressPhone'] = str_replace('Invalid Request', '', $ar[$i]['ShippingAddressPhone']);
+					$ar[$id]['ShippingAddressPhone'] = str_replace('Invalid Request', '', $ar[$id]['ShippingAddressPhone']);
 
 					// Transaction
 					if (empty($order->TransactionArray))
-						$ar[$i]['Transaction'] = array();
+						$ar[$id]['Transaction'] = array();
 					else {
 						$j = 0;
 						foreach ($order->TransactionArray->Transaction as $trans) {
-							$ar[$i]['Transaction'][$j] = array();
-							$ar_t = &$ar[$i]['Transaction'][$j];
+							$ar[$id]['Transaction'][$j] = array();
+							$ar_t = &$ar[$id]['Transaction'][$j];
 							$ar_t['ItemID'] = strval($trans->Item->ItemID);
 							$ar_t['QuantityPurchased'] = strval($trans->QuantityPurchased);
 							$ar_t['TransactionPrice'] = strval($trans->TransactionPrice);
@@ -292,38 +296,42 @@ class Ebay
 	 * @return	array
 	 */
 	public function ParseGetSellerTransactions($xml) {
+		if (empty($xml)) return array();
+
 		$rs = simplexml_load_string($xml);
 		if ('Success' == $rs->Ack) {
 			$ar = array();
 			if (0 < count($rs->TransactionArray->Transaction)) {
 				$i = 0;
 				foreach ($rs->TransactionArray->Transaction as $trans) {
-					$ar[$i]['TransactionID'] = strval($trans->TransactionID);
-					$ar[$i]['TransactionPrice'] = strval($trans->TransactionPrice);
-					$ar[$i]['BuyerUserID'] = strval($trans->Buyer->UserID);
-					$ar[$i]['AmountPaid'] = strval($trans->AmountPaid);
+					// Unique id
+					$id = strval($trans->TransactionID);
+					$ar[$id]['TransactionID'] = strval($trans->TransactionID);
+					$ar[$id]['TransactionPrice'] = strval($trans->TransactionPrice);
+					$ar[$id]['BuyerUserID'] = strval($trans->Buyer->UserID);
+					$ar[$id]['AmountPaid'] = strval($trans->AmountPaid);
 
 					// Shipping
 					if (empty($trans->ShippingServiceSelected))
-						$ar[$i]['ShippingServiceCost'] = 0;
+						$ar[$id]['ShippingServiceCost'] = 0;
 					else
-						$ar[$i]['ShippingServiceCost'] = strval($trans->ShippingServiceSelected->ShippingServiceCost);
-					$ar[$i]['ShippingAddress'] = $this->ParseShippingAddress($trans->Buyer->BuyerInfo->ShippingAddress);
+						$ar[$id]['ShippingServiceCost'] = strval($trans->ShippingServiceSelected->ShippingServiceCost);
+					$ar[$id]['ShippingAddress'] = $this->ParseShippingAddress($trans->Buyer->BuyerInfo->ShippingAddress);
 
-					$ar[$i]['PaidTime'] = strval($trans->PaidTime);
-					if (empty($ar[$i]['PaidTime']))
+					$ar[$id]['PaidTime'] = strval($trans->PaidTime);
+					if (empty($ar[$id]['PaidTime']))
 						// Not paided
-						$ar[$i]['PaidTime'] = strval($trans->Status->CompleteStatus);
+						$ar[$id]['PaidTime'] = strval($trans->Status->CompleteStatus);
 					else
-						$ar[$i]['PaidTime'] = date('Y-m-d H:i:s O', strtotime($ar[$i]['PaidTime']));
+						$ar[$id]['PaidTime'] = date('Y-m-d H:i:s O', strtotime($ar[$id]['PaidTime']));
 
 					// Item, only 1 type, qnty => 1
-					$ar[$i]['ItemID'] = strval($trans->Item->ItemID);
-					$ar[$i]['ItemPrice'] = strval($trans->Item->SellingStatus->CurrentPrice);
-					$ar[$i]['QuantityPurchased'] = strval($trans->QuantityPurchased);
+					$ar[$id]['ItemID'] = strval($trans->Item->ItemID);
+					$ar[$id]['ItemPrice'] = strval($trans->Item->SellingStatus->CurrentPrice);
+					$ar[$id]['QuantityPurchased'] = strval($trans->QuantityPurchased);
 
 					// Have not been multipled ?
-					$ar[$i]['TransactionPrice'] = strval($trans->TransactionPrice);
+					$ar[$id]['TransactionPrice'] = strval($trans->TransactionPrice);
 
 					$i ++;
 				}
