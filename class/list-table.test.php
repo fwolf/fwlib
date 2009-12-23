@@ -21,6 +21,7 @@ if (! defined('SIMPLE_TEST')) {
 // Require library define file which need test
 require_once('fwolflib/class/list-table.php');
 require_once('fwolflib/func/ecl.php');
+require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/string.php');
 require_once('smarty/Smarty.class.php');
 
@@ -204,8 +205,8 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 	<table>
 		<thead>
 		<tr>
-		{foreach from=$lt_title item=title}
-			<th>{$title}</th>
+		{foreach from=$lt_title key=key item=title}
+			<th>{$title}{if 1==$lt_config.orderby && $key==$lt_config.orderby_idx} {$lt_config.orderby_text}{/if}</th>
 		{/foreach}
 		</tr>
 		</thead>
@@ -354,11 +355,18 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 		// Data is trimmed, need re-make
 		$this->GenTbl();
 		$this->oLt->SetData($this->aD, $this->aT);
+		// Set sort
+		$this->oLt->SetOrderby(0, 'asc');
 		// MUST refresh pager
 		$this->oLt->SetPager();
 		echo($this->oLt->GetHtml());
 
 		echo $this->sJs;
+
+		Ecl('ListTable::GetSqlInfo()');
+		echo('<pre>'
+			. var_export($this->oLt->GetSqlInfo('mysql'), true)
+			. '</pre>');
     } // end of func TestBasicTable
 
 } // end of class TestListTable
@@ -366,7 +374,11 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 
 // Change output charset in this way.
 // {{{
-$test = new TestListTable();
-$test->run(new HtmlReporter('utf-8'));
+$s_url = GetSelfUrl(false);
+$s_url = substr($s_url, strrpos($s_url, '/') + 1);
+if ('list-table.test.php' == $s_url) {
+	$test = new TestListTable();
+	$test->run(new HtmlReporter('utf-8'));
+}
 // }}}
 ?>

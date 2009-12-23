@@ -91,6 +91,14 @@ class ListTable
 		'color_bg_tr_odd'	=> '#eef2ff',	// 奇数行，tbody后从0开始算
 		'fit_data_title'	=> 0,
 		'fit_empty'			=> '&nbsp;',
+		'orderby'			=> 0,			// 0=off, 1=on
+		'orderby_dir'		=> 'asc',
+		'orderby_idx'		=> '',			// Idx of th ar
+		'orderby_text'		=> '',
+		// &#8592 = ← &#8593 = ↑ &#8594 = → &#8595 = ↓
+		// &#8710 = ∆ &#8711 = ∇
+		'orderby_text_asc'	=> '↑',
+		'orderby_text_desc'	=> '↓',
 		'page_cur'			=> 1,
 		'page_param'		=> 'p',
 		'page_size'			=> 10,
@@ -390,14 +398,24 @@ class ListTable
 
 	/**
 	 * Get info about some part of query sql, eg: limit, order by
+	 *
+	 * @param	string	$dbtype
 	 * @return	array
 	 */
-	public function GetSqlInfo() {
+	public function GetSqlInfo($dbtype = 'mysql') {
 		$ar = array();
-		$ar['limit'] = array(
-			'offset'	=> $this->aConfig['page_size'] * ($this->aConfig['page_cur'] - 1),
-			'count'		=> $this->aConfig['page_size'],
+		// Mysql style
+		if ('mysql' == $dbtype) {
+			$ar['limit'] = array(
+				'offset'	=> $this->aConfig['page_size'] * ($this->aConfig['page_cur'] - 1),
+				'count'		=> $this->aConfig['page_size'],
 			);
+			if (1 == $this->aConfig['orderby'])
+				$ar['orderby'] = array(
+					'orderby'	=> $this->aConfig['orderby_idx'],
+					'dir'		=> $this->aConfig['orderby_dir'],
+				);
+		}
 		return $ar;
 	} // end of func GetSqlInfo
 
@@ -521,6 +539,29 @@ class ListTable
 
 		return $this->sId;
 	} // end of func SetId
+
+
+	/**
+	 * Set orderby info
+	 *
+	 * Didn't validate $idx to th array.
+	 * @param	mixed	$idx	Idx of th array
+	 * @param	string	$dir	asc/desc, lower letter only
+	 */
+	public function SetOrderby($idx, $dir = 'asc') {
+		$this->aConfig['orderby'] = 1;
+		$this->aConfig['orderby_idx'] = $idx;
+		$dir = strtolower($dir);
+		if ('asc' == $dir) {
+			$this->aConfig['orderby_dir'] = 'asc';
+			$this->aConfig['orderby_text']
+				= $this->aConfig['orderby_text_asc'];
+		} elseif ('desc' == $dir) {
+			$this->aConfig['orderby_dir'] = 'desc';
+			$this->aConfig['orderby_text']
+				= $this->aConfig['orderby_text_desc'];
+		}
+	} // end of func SetOrderby
 
 
 	/**
