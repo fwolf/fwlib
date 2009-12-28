@@ -412,7 +412,7 @@ class ListTable
 			);
 			if (1 == $this->aConfig['orderby'])
 				$ar['orderby'] = array(
-					'orderby'	=> $this->aConfig['orderby_idx'],
+					'col'		=> $this->aConfig['orderby_idx'],
 					'dir'		=> $this->aConfig['orderby_dir'],
 				);
 		}

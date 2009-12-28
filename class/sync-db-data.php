@@ -518,6 +518,7 @@ class SyncDbData {
 	 * @param	object	$db_dest	Destination db connection
 	 * @param	string	$tbl_srce	Source table
 	 * @param	mixed	$tbl_dest	Destination table(name or array of name)
+	 * 								Main dest tbl should define before others.
 	 * @return	integer		Number of rows write to destination db.
 	 */
 	public function SyncOnewayTbl($db_srce, $db_dest, $tbl_srce, $tbl_dest) {

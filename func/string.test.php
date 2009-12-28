@@ -25,6 +25,18 @@ require_once('fwolflib/func/string.php');
 
 class TestFuncString extends UnitTestCase {
 
+    function TestPin15To18() {
+    	$x = '340524800101001';
+    	$y = '34052419800101001X';
+    	$this->assertEqual(Pin15To18($x), $y);
+
+    	$x = '410881790605552';
+    	$y = '410881197906055521';
+    	$this->assertEqual(Pin15To18($x), $y);
+
+    } // end of func TestPin15To18
+
+
     function TestRfc2047Decode() {
     	$x = 'Re: =?utf-8?B?5aiB5Y6/55Sz5oql5Yi25bqm?=';
     	$y = 'Re: 威县申报制度';

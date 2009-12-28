@@ -70,6 +70,43 @@ function IsGbChar($str = '', $pos = 0)
 
 
 /**
+ * Convert 15-digi pin to 18-digi
+ *
+ * @param	string	$pin
+ * @return	string
+ */
+function Pin15To18($pin) {
+	if (15 != strlen($pin))
+		// Error, which value should I return ?
+		return $pin;
+
+	$s = substr($pin, 0, 6) . '19' . substr($pin, 6);
+
+	$n = 0;
+	for ($i = 17; 0 < $i; $i --) {
+		$n += (pow(2, $i) % 11) * intval($s{17 - $i});
+	}
+	$n = $n % 11;
+	switch ($n) {
+		case	0:
+			$s_last = '1';
+			break;
+		case	1:
+			$s_last = '0';
+			break;
+		case	2:
+			$s_last = 'X';
+			break;
+		default:
+			$s_last = strval(12 - $n);
+			break;
+	}
+
+	return $s . $s_last;
+} // end of func Pin15To18
+
+
+/**
  * 生成随机字符串
  * a表示包含小写字符，A表示包含大写字符，0表示包含数字
  * @param	int		$len	字符串长度
