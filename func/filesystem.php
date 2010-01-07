@@ -74,7 +74,7 @@ function DirName1($filename)
 
 /**
  * Count size of a directory, recursive
- * 	 This function also recursive executed automatic
+ * 	 This func also recursive executed automatic
  * @param	string	$path
  * @return	long
  */
@@ -96,7 +96,7 @@ function DirSize($path)
 		}
 	}
 	return $i;
-}// end of function DirSize
+}// end of func DirSize
 
 
 /**
@@ -133,7 +133,7 @@ function FileName1($filename)
 
 /**
  * Count size of a file
- * 	 This function is diffrence to php func filesize,
+ * 	 This func is diffrence to php func filesize,
  *		It use stat & count blksize & blocks file used.
  *		11 = blksize, blocksize of filesystem IO *
  *		12 = blocks, number of blocks allocated

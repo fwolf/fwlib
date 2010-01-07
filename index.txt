@@ -6,6 +6,13 @@ benchmark.php
 ### Benchmark
 	Benchmark code running time cost by set marker in code and display result at end.
 
+
+cache.php
+---------
+### Cache
+	Key - value like cache system, data store in filesystem.
+
+
 curl.php
 	Curl relate functions.
 dbbak2sql.php

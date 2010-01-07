@@ -5,7 +5,7 @@
  * @subpackage	class-test
  * @copyright   Copyright 2009, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.class.test@gmail.com>
- * @since		2000-12-08
+ * @since		2009-12-08
  */
 
 // Define like this, so test can run both under eclipse and web alone.
