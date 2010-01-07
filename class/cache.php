@@ -26,7 +26,7 @@ abstract class Cache{
 	 * Dir where data file store
 	 * @var	string
 	 */
-	public $sDir = '';
+	public $sCacheDir = '';
 
 
 	/**
@@ -41,7 +41,7 @@ abstract class Cache{
 	 *
 	 * @var	string
 	 */
-	public $sRule = '';
+	public $sCacheRule = '';
 
 
 	/**
@@ -50,7 +50,7 @@ abstract class Cache{
 	 * @param	array	$ar_cfg
 	 */
 	public function __construct($ar_cfg = array()) {
-		$this->SetCfg($ar_cfg);
+		$this->CacheSetCfg($ar_cfg);
 	} // end of func __construct
 
 
@@ -61,7 +61,7 @@ abstract class Cache{
 	 * @param	string	$dir
 	 * @return	string
 	 */
-	public function CheckDir($dir) {
+	public function CacheCheckDir($dir) {
 		if (empty($dir))
 			return("Cache dir {$dir} is not defined.");
 
@@ -69,7 +69,7 @@ abstract class Cache{
 			return("Cache dir {$dir} is not writable.");
 
 		return '';
-	} // end of func CheckDir
+	} // end of func CacheCheckDir
 
 
 	/**
@@ -79,15 +79,15 @@ abstract class Cache{
 	 * @param	string	$rule
 	 * @return	string
 	 */
-	public function CheckRule($rule) {
+	public function CacheCheckRule($rule) {
 		if (2 > strlen($rule))
 			return("Cache rule is not defined or too short.");
 
 		if (0 != (strlen($rule) % 2))
-			return("Cache rule {$this->sRule} may not right.");
+			return("Cache rule {$this->sCacheRule} may not right.");
 
 		return '';
-	} // end of func CheckRule
+	} // end of func CacheCheckRule
 
 
 	/**
@@ -95,9 +95,9 @@ abstract class Cache{
 	 *
 	 * @param	string	$key
 	 */
-	protected function Gen($key) {
-		$s_cache = $this->GenCache($key);
-		$this->Write($key, $s_cache);
+	protected function CacheGen($key) {
+		$s_cache = $this->CacheGenVal($key);
+		$this->CacheWrite($key, $s_cache);
 	} // end of func Gen
 
 
@@ -107,30 +107,30 @@ abstract class Cache{
 	 * @param	string	$key
 	 * @return	string
 	 */
-	abstract protected function GenCache($key);
+	abstract protected function CacheGenVal($key);
 
 
 	/**
-	 * Lifetime of cache data file, meature by second
+	 * CacheLifetime of cache data file, meature by second
 	 *
 	 * @param	string	$key
 	 * @return	int
 	 */
-	abstract public function Lifetime($key);
+	abstract public function CacheLifetime($key);
 
 
 	/**
 	 * Load cache data
 	 *
 	 * @param	string	$key
-	 * @param	int		$flag	@see Read()
+	 * @param	int		$flag	@see CacheRead()
 	 * @return	mixed
 	 */
-	public function Load($key, $flag) {
-		if ($this->NeedUpdate($key))
-			$this->Gen($key);
+	public function CacheLoad($key, $flag) {
+		if ($this->CacheNeedUpdate($key))
+			$this->CacheGen($key);
 
-		return $this->Read($key, $flag);
+		return $this->CacheRead($key, $flag);
 	} // end of func Load
 
 
@@ -140,20 +140,20 @@ abstract class Cache{
 	 * @param	string	$key
 	 * @return	boolean
 	 */
-	protected function NeedUpdate($key) {
-		$s_file = $this->Path($key);
+	protected function CacheNeedUpdate($key) {
+		$s_file = $this->CachePath($key);
 
 		// File doesn't exist
 		if (!file_exists($s_file))
 			return true;
 
-		// Out of lifetime
-		if ($this->Lifetime($key)
+		// Out of CacheLifetime
+		if ($this->CacheLifetime($key)
 			> (time() - filemtime($s_file)))
 			return false;
 		else
 			return true;
-	} // end of func NeedUpdate
+	} // end of func CacheNeedUpdate
 
 
 	/**
@@ -162,18 +162,18 @@ abstract class Cache{
 	 * @param	string	$key
 	 * @return	string
 	 */
-	public function Path($key) {
-		$s_path = $this->sDir;
+	public function CachePath($key) {
+		$s_path = $this->sCacheDir;
 
-		$ar_rule = str_split($this->sRule, 2);
+		$ar_rule = str_split($this->sCacheRule, 2);
 		if (empty($ar_rule))
 			return $s_path;
 
 		foreach ($ar_rule as $rule)
-			$s_path .= $this->PathSec($rule, $key) . '/';
+			$s_path .= $this->CachePathSec($rule, $key) . '/';
 
 		// Filename
-		$s_path .= $this->PathFile($key);
+		$s_path .= $this->CachePathFile($key);
 
 		return $s_path;
 	} // end of func Path
@@ -185,9 +185,9 @@ abstract class Cache{
 	 * @param	string	$key
 	 * @return	string
 	 */
-	protected function PathFile($key) {
+	protected function CachePathFile($key) {
 		return substr(md5($key), 0, 8);
-	} // end of func PathFile
+	} // end of func CachePathFile
 
 
 	/**
@@ -196,9 +196,9 @@ abstract class Cache{
 	 * @param	string	$rule
 	 * @param	string	$key
 	 * @return	string
-	 * @see	$sRule
+	 * @see	$sCacheRule
 	 */
-	protected function PathSec($rule, $key) {
+	protected function CachePathSec($rule, $key) {
 		$i_len = 2;
 
 		if ($i_len > strlen($rule))
@@ -219,7 +219,7 @@ abstract class Cache{
 			$s_seed = $key;
 		}
 		return(substr($s_seed, $i_start, 2));
-	} // end of func PathSec
+	} // end of func CachePathSec
 
 
 	/**
@@ -230,8 +230,8 @@ abstract class Cache{
 	 * 							0=string, 1=array, 2=object
 	 * @return	mixed
 	 */
-	protected function Read($key, $flag = 0) {
-		$s_file = $this->Path($key);
+	protected function CacheRead($key, $flag = 0) {
+		$s_file = $this->CachePath($key);
 		$s_cache = file_get_contents($s_file);
 
 		$rs = null;
@@ -260,21 +260,21 @@ abstract class Cache{
 	 *
 	 * @param	array	$ar_cfg
 	 */
-	public function SetCfg($ar_cfg) {
+	public function CacheSetCfg($ar_cfg) {
 		if (empty($ar_cfg))
 			return;
 
 		if (isset($ar_cfg['dir'])) {
-			$s = $this->CheckDir($ar_cfg['dir']);
+			$s = $this->CacheCheckDir($ar_cfg['dir']);
 			if (empty($s))
-				$this->sDir = $ar_cfg['dir'];
+				$this->sCacheDir = $ar_cfg['dir'];
 			else
 				die($s);
 		}
 		if (isset($ar_cfg['rule'])) {
-			$s = $this->CheckRule($ar_cfg['rule']);
+			$s = $this->CacheCheckRule($ar_cfg['rule']);
 			if (empty($s))
-				$this->sRule = $ar_cfg['rule'];
+				$this->sCacheRule = $ar_cfg['rule'];
 			else
 				die($s);
 		}
@@ -287,8 +287,8 @@ abstract class Cache{
 	 * @param	string	$key
 	 * @param	mixed	$val
 	 */
-	public function Write($key, $val) {
-		$s_file = $this->Path($key);
+	public function CacheWrite($key, $val) {
+		$s_file = $this->CachePath($key);
 		$s_cache = json_encode($val);
 
 		// Create each level dir if not exists

@@ -46,7 +46,7 @@ class TestCache extends UnitTestCase {
 
 
     function TestPath() {
-		$this->oCh->SetCfg(array(
+		$this->oCh->CacheSetCfg(array(
 			'dir'	=> '/tmp/cache/',
 			'rule'	=> '1140',
 		));
@@ -55,36 +55,36 @@ class TestCache extends UnitTestCase {
 		//Ecl(md5($key));
 
 		$x = '/tmp/cache/d0/ex/3ed0dc6e';
-		$y = $this->oCh->Path($key);
+		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
-		$this->oCh->SetCfg(array('rule' => '1131'));
+		$this->oCh->CacheSetCfg(array('rule' => '1131'));
 		$x = '/tmp/cache/d0/te/3ed0dc6e';
-		$y = $this->oCh->Path($key);
+		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Notice: Directly use key's part as path may cause wrong
-		$this->oCh->SetCfg(array('rule' => '2342'));
+		$this->oCh->CacheSetCfg(array('rule' => '2342'));
 		$x = '/tmp/cache/57//i/3ed0dc6e';
-		$y = $this->oCh->Path($key);
+		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage
-		$this->oCh->SetCfg(array('rule' => '1011'));
+		$this->oCh->CacheSetCfg(array('rule' => '1011'));
 		$x = '/tmp/cache/3e/d0/3ed0dc6e';
-		$y = $this->oCh->Path($key);
+		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage 2
-		$this->oCh->SetCfg(array('rule' => '2021'));
+		$this->oCh->CacheSetCfg(array('rule' => '2021'));
 		$x = '/tmp/cache/b6/9c/3ed0dc6e';
-		$y = $this->oCh->Path($key);
+		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		//Ecl($y);
 
 		// Read/write
-		$v = $this->oCh->Load($key, 1);
+		$v = $this->oCh->CacheLoad($key, 1);
 		var_dump($v);
     } // end of func TestPath
 
@@ -92,14 +92,14 @@ class TestCache extends UnitTestCase {
 
 
 class CacheTest extends Cache {
-	protected function GenCache($key) {
+	protected function CacheGenVal($key) {
 		$this->sDummy = RandomString(30, 'a0');
 		return $this;
-	} // end of func GenCache
+	} // end of func CacheGenVal
 
-	public function Lifetime($key) {
+	public function CacheLifetime($key) {
 		return 10;
-	} // end of func Lifetime
+	} // end of func CacheLifetime
 } // end of class CacheTest
 
 
