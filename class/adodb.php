@@ -2,10 +2,9 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2008-2009, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @copyright	Copyright 2008-2010, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2008-04-22
- * @version		$Id$
  */
 
 // Set include path in __construct
@@ -18,27 +17,27 @@ require_once('fwolflib/func/ecl.php');
  *
  * Include all ADODB had, and add a little others.
  *
- * Piror use this class' method and property, it the get/set/call target
+ * Piror use this class' method and property, if the get/set/call target
  * is not exists, use original ADODB's, this can be done by php's mechematic
  * of overload __call __get __set.
  *
  * 这似乎是extend ADODB的一种比较好的方式，比官方网站文档上给的按不同数据库来继承子类的方式，
  * 我认为要更方便一些。缺点是没有对RecordSet对象进行处理。
  *
- * Adocb for Sybase bug:
- * Affected_Rows() in windows 2003 不可用，httpd进程会出错中止
+ * Adodb for Sybase bug:
+ * Affected_Rows() in windows 2003 不可用，httpd 进程会出错中止
  *
  * 执行sql查询的系列更改中，限定系统/HTML/PHP使用$sSysCharset指定的编码，涉及函数列在__call()中，
  * 但一些通过数组等其它方式传递参数的ADODB方法仍然无法通过这种方式实现sql编码自动转换。
  *
  * 执行返回的数据还是需要转码的，不过返回数据的种类太多，放在应用中实现更简单一些，这里不自动执行，
  * 只提供一个EncodingConvert方法供用户调用。
+ *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
+ * @copyright	Copyright 2008-2010, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2008-04-08
- * @version		$Id$
  */
 class Adodb
 {

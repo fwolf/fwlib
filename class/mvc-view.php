@@ -2,10 +2,9 @@
 /**
  * @package		fwolflib
  * @subpackage	class.mvc
- * @copyright	Copyright 2008-2009, Fwolf
+ * @copyright	Copyright 2008-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
  * @since		2008-04-06
- * @version		$Id$
  */
 
 require_once('fwolflib/class/form.php');
@@ -25,12 +24,12 @@ require_once('fwolflib/func/request.php');
  * Action的处理主要在View中，Action的默认值也在View中赋予和实现。
  *
  * If need to re-generate some part, you can directly call GenFooter() etc.
+ *
  * @package		fwolflib
  * @subpackage	class.mvc
- * @copyright	Copyright 2008-2009, Fwolf
+ * @copyright	Copyright 2008-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
  * @since		2008-04-06
- * @version		$Id$
  * @see			Controler
  * @see			Module
  */
@@ -49,22 +48,22 @@ abstract class View {
 	public $oCtl = null;
 
 	/**
-	 * Form object
+	 * Form object, auto new when first used.
 	 * @var	object
 	 */
-	public $oForm = null;
+	//public $oForm = null;
 
 	/**
-	 * ListTable object
+	 * ListTable object, auto new when first used.
 	 * @var	object
 	 */
-	public $oLt = null;
+	//public $oLt = null;
 
 	/**
-	 * Template object
+	 * Template object, auto new when first used.
 	 * @var	object
 	 */
-	public $oTpl = null;
+	//public $oTpl = null;
 
 	/**
 	 * Action parameter, the view command to determin what to display
@@ -123,7 +122,9 @@ abstract class View {
 	protected $sViewTitle = '';
 
 
-	abstract protected function CheckObjTpl();	// 检查、确定$oTpl已初始化
+	// New Tpl object
+	abstract protected function NewObjTpl();
+
 
 	/*
 	// Changed to define directly in this class (below),
@@ -147,9 +148,11 @@ abstract class View {
 		$this->oCtl = $ctl;
 		$this->sAction = GetGet('a');
 
-		$this->CheckObjForm();
-		$this->CheckObjTpl();
-		$this->CheckObjLt();
+/*
+		$this->NewObjForm();
+		$this->NewObjTpl();
+		$this->NewObjLt();
+*/
 
 		/* Template dir must be set before using
 		$this->GenHeader();
@@ -161,31 +164,22 @@ abstract class View {
 
 
 	/**
-	 * Check & init Form object
-	 * @param	boolean	$forcenew
-	 * @see	$oForm
+	 * Auto new obj if null
+	 *
+	 * @param	string	$name
+	 * @return	object
 	 */
-	protected function CheckObjForm($forcenew = false) {
-		if (empty($this->oForm) || $forcenew) {
-			$this->oForm = new Form;
-		}
-		return $this->oForm;
-	} // end of func CheckObjForm
-
-
-	/**
-	 * Check & init ListTable object
-	 * @param	boolean	$forcenew
-	 * @see	$oLt
-	 */
-	protected function CheckObjLt($forcenew = false)
+	public function __get($name)
 	{
-		if (empty($this->oLt) || $forcenew)
-		{
-			$this->oLt = new ListTable($this->oTpl);
+		if ('o' == $name{0}) {
+			$s_func = 'NewObj' . substr($name, 1);
+			if (method_exists($this, $s_func))
+				// New object
+				$this->$name = $this->$s_func();
 		}
-		return $this->oLt;
-	} // end of func CheckObjLt
+
+		return $this->$name;
+	} // end of func __get
 
 
 	/**
@@ -270,6 +264,26 @@ abstract class View {
 
 		return $this->sOutput;
 	} // end of func GetOutput
+
+
+	/**
+	 * New Form object
+	 *
+	 * @see	$oForm
+	 */
+	protected function NewObjForm() {
+		return new Form;
+	} // end of func NewObjForm
+
+
+	/**
+	 * New ListTable object
+	 *
+	 * @see	$oLt
+	 */
+	protected function NewObjLt() {
+		return new ListTable($this->oTpl);
+	} // end of func NewObjLt
 
 
 	/**
