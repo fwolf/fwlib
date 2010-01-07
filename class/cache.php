@@ -96,17 +96,8 @@ abstract class Cache{
 	 * @param	string	$key
 	 */
 	protected function Gen($key) {
-		$s_file = $this->Path($key);
 		$s_cache = $this->GenCache($key);
-		$s_cache = json_encode($s_cache);
-
-		// Create each level dir if not exists
-		$s_dir = DirName1($s_file);
-		if (!file_exists($s_dir))
-			mkdir($s_dir, 0755, true);
-
-		// Finally write file
-		file_put_contents($s_file, $s_cache, LOCK_EX);
+		$this->Write($key, $s_cache);
 	} // end of func Gen
 
 
@@ -288,6 +279,26 @@ abstract class Cache{
 				die($s);
 		}
 	} // end of func SetCfg
+
+
+	/**
+	 * Write data to cache file
+	 *
+	 * @param	string	$key
+	 * @param	mixed	$val
+	 */
+	public function Write($key, $val) {
+		$s_file = $this->Path($key);
+		$s_cache = json_encode($val);
+
+		// Create each level dir if not exists
+		$s_dir = DirName1($s_file);
+		if (!file_exists($s_dir))
+			mkdir($s_dir, 0755, true);
+
+		// Finally write file
+		file_put_contents($s_file, $s_cache, LOCK_EX);
+	} // end of func Write
 
 } // end of class Cache
 
