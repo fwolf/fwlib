@@ -7,6 +7,7 @@
  * @since		2008-04-06
  */
 
+require_once('fwolflib/class/cache.php');
 require_once('fwolflib/class/form.php');
 require_once('fwolflib/class/list-table.php');
 require_once('fwolflib/func/string.php');
@@ -33,7 +34,14 @@ require_once('fwolflib/func/request.php');
  * @see			Controler
  * @see			Module
  */
-abstract class View {
+abstract class View extends Cache{
+
+	/**
+	 * If cache turned on
+	 * Remember to set cache config before turned it on.
+	 * @var	boolean
+	 */
+	public $bCacheOn = false;
 
 	/**
 	 * If use tidy to format output html code, default false.
@@ -183,6 +191,52 @@ abstract class View {
 
 
 	/**
+	 * Gen key of cache
+	 *
+	 * @return	string
+	 */
+	protected function CacheGenKey() {
+		$key = $_SERVER['REQUEST_URI'];
+		$key = str_replace(array('?', '&', '='), '/', $key);
+		return $key;
+	} // end of func CacheGenKey
+
+
+	/**
+	 * Cache gen, directly use output html.
+	 *
+	 * @param	string	$key
+	 * @return	string
+	 */
+	protected function CacheGenVal($key) {
+		return $this->GetOutput();
+	} // end of func CacheGenVal
+
+
+	/**
+	 * Get content to output with cache
+	 *
+	 * @return	string
+	 */
+	public function CacheGetOutput() {
+		$key = $this->CacheGenKey();
+		return $this->CacheLoad($key, 0);
+	} // end of func CacheGetOutput
+
+
+	/**
+	 * Got cache lifetime, by second
+	 * Should often re-define in sub class.
+	 *
+	 * @param	string	$key
+	 * @return	int
+	 */
+	public function CacheLifetime($key) {
+		return 60 * 60;
+	} // end of func CacheLifetime
+
+
+	/**
 	 * Generate main content of page
 	 *
 	 * Doing this by call sub-method according to $sAction,
@@ -241,6 +295,8 @@ abstract class View {
 
 	/**
 	 * Get content to output
+	 *
+	 * @return string
 	 * @see $sOutput
 	 */
 	public function GetOutput()

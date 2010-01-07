@@ -2,8 +2,8 @@
 /**
 * @package      fwolflib
 * @subpackage	mvc
-* @copyright    Copyright 2008, Fwolf
-* @author       Fwolf <fwolf.aide+fwolflib-mvc@gmail.com>
+* @copyright    Copyright 2008-2010, Fwolf
+* @author       Fwolf <fwolf.aide+fwolflib.mvc@gmail.com>
 */
 
 require_once('fwolflib/func/request.php');
@@ -35,10 +35,9 @@ if (!defined('P2R')) define('P2R', './');
  *
  * @package		fwolflib
  * @subpackage	mvc
- * @copyright	Copyright 2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-mvc@gmail.com>
+ * @copyright	Copyright 2008-2010, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.mvc@gmail.com>
  * @since		2008-04-06
- * @version		$Id$
  * @see			Module
  * @see			View
  */
@@ -175,7 +174,10 @@ abstract class Controler
 			$this->oView = new $class($this);
 			//$p->oCtl = $this;	// Set caller object	// Moved to __contruct of View class, transfer $this when do new().
 
-			echo $this->oView->GetOutput();
+			if ($this->oView->bCacheOn)
+				echo $this->oView->CacheGetOutput();
+			else
+				echo $this->oView->GetOutput();
 		}
 		else
 		{
