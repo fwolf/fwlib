@@ -712,7 +712,7 @@ class ListTable
 		if (1 > $this->mCurPage)			   { $this->mCurPage = 1;	 }
 		if ($this->mCurPage > $total_pages)	{ $this->mCurPage = $total_pages; }
 		//生成的HTML字符串
-		$str_html = '<table width="80%" border="0" cellspacing="0" cellpadding="0" align="center"><FORM METHOD="get" ACTION="' . $this->mSubmitUrl . '" onSubmit="return jump(page.value);"><tr><td align="right">';
+		$str_html = '<table width="80%" border="0" cellspacing="0" cellpadding="0" align="center"><form method="get" action="' . $this->mSubmitUrl . '" onSubmit="return jump(page.value);"><tr><td align="right">';
 
 		if (($this->mCurPage == 1) || ($total_pages == 1))
 		{
@@ -737,7 +737,7 @@ class ListTable
 			$str_html .='<a href=' . $s_url . ' title="' . $this->mIndexTips[0][3] . '">' . $this->mIndexTips[$this->mIndexTipsId][3] . '</a>　';
 		}
 		$str_html .= '当前为第' . $this->mCurPage . '/' . $total_pages . '页，共' . $this->mTotalRows . '条记录　';
-		$str_html .= '跳转<input name="page" id="page" type="text" value="' . $this->mCurPage . '" size="3" align="right"> <input type="button" value="Go" onClick="return jump(page.value);"></td></tr></FORM></table>';
+		$str_html .= '跳转<input name="page" id="page" type="text" value="' . $this->mCurPage . '" size="3" align="right"> <input type="button" value="Go" onClick="return jump(page.value);"></td></tr></form></table>';
 		$str_html .= '<script language="JavaScript" type="text/JavaScript">function jump(p) {if (document.URL.match(/(page=[0-9]+)/)){document.URL=(document.URL.replace(/(page=[0-9]+)/, "page=" + p));}else{if (document.URL.match(/[?]{1}/)) {document.URL=document.URL + "&page=" + p;} else {document.URL=document.URL + "?page=" + p;}}return false;}</script>';
 
 		return($str_html);

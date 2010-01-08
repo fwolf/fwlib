@@ -181,12 +181,14 @@ abstract class View extends Cache{
 	{
 		if ('o' == $name{0}) {
 			$s_func = 'NewObj' . substr($name, 1);
-			if (method_exists($this, $s_func))
+			if (method_exists($this, $s_func)) {
 				// New object
 				$this->$name = $this->$s_func();
+				return $this->$name;
+			}
 		}
 
-		return $this->$name;
+		return null;
 	} // end of func __get
 
 
