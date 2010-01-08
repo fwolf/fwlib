@@ -381,7 +381,7 @@ abstract class View extends Cache{
 		$tidy->parseString($html, $config, 'utf8');
 		$tidy->cleanRepair();
 
-		return $tidy;
+		return tidy_get_output($tidy);
 	} // end of func Tidy
 
 } // end of class View
