@@ -65,6 +65,9 @@ abstract class Cache{
 		if (empty($dir))
 			return("Cache dir {$dir} is not defined.");
 
+		if (!file_exists($dir))
+			mkdir($dir, 0755, true);
+
 		if (!is_writable($dir))
 			return("Cache dir {$dir} is not writable.");
 
