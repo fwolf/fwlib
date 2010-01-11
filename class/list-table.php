@@ -146,9 +146,8 @@ class ListTable
 	 * <code>
 	 * array(
 	 * 	base	=> Original page url
-	 * 	o_cur	=> Cur orderby link
-	 * 	o_other	=> Other orderby link
-	 * 	p_cur	=> Cur page link
+	 * 	o_cur	=> Cur orderby link(modified)
+	 * 	o_other	=> Other orderby link(modified)
 	 * 	p_first	=> First page link
 	 * 	p_last	=> Last page link
 	 * 	p_next	=> Next page link
@@ -160,8 +159,7 @@ class ListTable
 	protected $aUrl = array(
 		'base'		=> '',
 		'o_cur'			=> '',
-//		'o_other'		=> '',
-		'p_cur'			=> '',
+		'o_other'		=> '',
 		'p_first'		=> '',
 		'p_last'		=> '',
 		'p_next'		=> '',
@@ -209,7 +207,6 @@ class ListTable
 	 */
 	public function __construct(&$tpl, $ard = array(), $art = array(),
 		$id = '', &$conf = array())	{
-		$this->GetParam();
 		$this->oTpl = $tpl;
 
 		// Config will effect SetData, so set it first.
@@ -398,6 +395,11 @@ class ListTable
 		if (isset($this->aParam[$this->aConfig['page_param']])) {
 			$this->ParsePageCur($this->aParam[$this->aConfig['page_param']]);
 		}
+
+		// Orderby
+		if (isset($this->aParam[$this->aConfig['orderby_param'] . '_idx']))
+			$this->SetOrderby($this->aParam[$this->aConfig['orderby_param'] . '_idx'], $this->aParam[$this->aConfig['orderby_param'] . '_dir']);
+
 		return $this->aParam;
 	} // end of func GetParam
 
@@ -449,7 +451,7 @@ class ListTable
 		// Orderby
 		$s = $this->aConfig['orderby_param'];
 		$s_idx = GetRequest($_REQUEST, $s . '_idx');
-		if (!empty($s_idx)) {
+		if (0 < strlen($s_idx)) {
 			// Orderby enabled
 			$s_dir = GetRequest($_REQUEST, $s . '_dir', 'asc');
 			$ar['ORDERBY'] = $s_idx . ' ' . $s_dir;
@@ -579,6 +581,9 @@ class ListTable
 		// Change orderby param
 		$this->aConfig['orderby_param'] = $this->sId . '_o';
 
+		// Find param by new Id
+		$this->GetParam();
+
 		return $this->sId;
 	} // end of func SetId
 
@@ -592,17 +597,37 @@ class ListTable
 	 */
 	public function SetOrderby($idx, $dir = 'asc') {
 		$this->aConfig['orderby'] = 1;
+
+		// If had got orderby info from url, exit
+		if (0 < strlen($this->aConfig['orderby_idx']))
+			return;
+
 		$this->aConfig['orderby_idx'] = $idx;
 		$dir = strtolower($dir);
 		if ('asc' == $dir) {
+			$dir_rev = 'desc';
 			$this->aConfig['orderby_dir'] = 'asc';
 			$this->aConfig['orderby_text']
 				= $this->aConfig['orderby_text_asc'];
-		} elseif ('desc' == $dir) {
+		} else {
+			$dir_rev = 'asc';
 			$this->aConfig['orderby_dir'] = 'desc';
 			$this->aConfig['orderby_text']
 				= $this->aConfig['orderby_text_desc'];
 		}
+
+		// Url param
+		// Empty idx will fill in tpl
+		// Keep value of $this->aParam first
+		$ar = $this->aParam;
+		$this->aUrl['o_cur'] = $this->SetParam(array($this->aConfig['orderby_param'] . '_dir' => $dir_rev)
+			, array($this->aConfig['orderby_param'] . '_idx'));
+		// Same with cur dir, or all new 'asc'
+		$this->aUrl['o_other'] = $this->SetParam(array($this->aConfig['orderby_param'] . '_dir'=> $this->aConfig['orderby_dir'])
+			, array($this->aConfig['orderby_param'] . '_idx'));;
+		// Restore value of $this->aParam
+		$this->aParam = $ar;
+		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
 	} // end of func SetOrderby
 
 
@@ -648,7 +673,6 @@ class ListTable
 
 		// Generate url for pager
 		//$this->aUrl['base'] = GetSelfUrl(true);	// Move to GetParam()
-		$this->aUrl['p_cur'] = $this->SetParam($this->aConfig['page_param'], $page_cur);
 		if (1 < $page_cur) {
 			// Not first page
 //			$this->aUrl['first'] = $this->aUrl['base'] . '&' . $this->sId

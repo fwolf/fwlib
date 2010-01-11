@@ -208,7 +208,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 		{foreach from=$lt_title key=key item=title}
 			<th>
 				{if 1==$lt_config.orderby}
-					<a href="{$lt_url.p_cur}&{$lt_config.orderby_param}_idx={$key}&{$lt_config.orderby_param}_dir={if asc==$lt_config.orderby_dir && $key==$lt_config.orderby_idx}desc{else}asc{/if}">
+					<a href="{if $key==$lt_config.orderby_idx}{$lt_url.o_cur}{else}{$lt_url.o_other}{/if}&{$lt_config.orderby_param}_idx={$key}">
 						{$title}{$key}
 						{if $key==$lt_config.orderby_idx}
 							{$lt_config.orderby_text}
