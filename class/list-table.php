@@ -146,20 +146,26 @@ class ListTable
 	 * <code>
 	 * array(
 	 * 	base	=> Original page url
-	 * 	first	=> First page
-	 * 	last	=> Last page
-	 * 	next	=> Next page
-	 * 	prev	=> Prev page
+	 * 	o_cur	=> Cur orderby link
+	 * 	o_other	=> Other orderby link
+	 * 	p_cur	=> Cur page link
+	 * 	p_first	=> First page link
+	 * 	p_last	=> Last page link
+	 * 	p_next	=> Next page link
+	 * 	p_prev	=> Prev page link
 	 * )
 	 * </code>
 	 * @var	array
 	 */
 	protected $aUrl = array(
 		'base'		=> '',
-		'first'		=> '',
-		'last'		=> '',
-		'next'		=> '',
-		'prev'		=> '',
+		'o_cur'			=> '',
+//		'o_other'		=> '',
+		'p_cur'			=> '',
+		'p_first'		=> '',
+		'p_last'		=> '',
+		'p_next'		=> '',
+		'p_prev'		=> '',
 		);
 
 	/**
@@ -372,8 +378,7 @@ class ListTable
 	 * Get full output html
 	 * @return	string
 	 */
-	public function GetHtml()
-	{
+	public function GetHtml() {
 		return $this->oTpl->fetch($this->aConfig['tpl']);
 	} // end of func GetHtml
 
@@ -643,17 +648,18 @@ class ListTable
 
 		// Generate url for pager
 		//$this->aUrl['base'] = GetSelfUrl(true);	// Move to GetParam()
+		$this->aUrl['p_cur'] = $this->SetParam($this->aConfig['page_param'], $page_cur);
 		if (1 < $page_cur) {
 			// Not first page
 //			$this->aUrl['first'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . $page_cur;
 //			$this->aUrl['prev'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . ($page_cur - 1);
-			$this->aUrl['first'] = $this->SetParam($this->aConfig['page_param'], 1);
-			$this->aUrl['prev'] = $this->SetParam($this->aConfig['page_param'], $page_cur - 1);
+			$this->aUrl['p_first'] = $this->SetParam($this->aConfig['page_param'], 1);
+			$this->aUrl['p_prev'] = $this->SetParam($this->aConfig['page_param'], $page_cur - 1);
 		} else {
-			$this->aUrl['first'] = '';
-			$this->aUrl['prev'] = '';
+			$this->aUrl['p_first'] = '';
+			$this->aUrl['p_prev'] = '';
 		}
 		if ($page_cur < $page_max) {
 			// Not last page
@@ -661,11 +667,11 @@ class ListTable
 //				. '-page_no=' . ($page_cur + 1);
 //			$this->aUrl['last'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . $page_max;
-			$this->aUrl['next'] = $this->SetParam($this->aConfig['page_param'], $page_cur + 1);
-			$this->aUrl['last'] = $this->SetParam($this->aConfig['page_param'], $page_max);
+			$this->aUrl['p_next'] = $this->SetParam($this->aConfig['page_param'], $page_cur + 1);
+			$this->aUrl['p_last'] = $this->SetParam($this->aConfig['page_param'], $page_max);
 		} else {
-			$this->aUrl['next'] = '';
-			$this->aUrl['last'] = '';
+			$this->aUrl['p_next'] = '';
+			$this->aUrl['p_last'] = '';
 		}
 
 		// Assign url to tpl

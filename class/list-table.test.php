@@ -187,10 +187,10 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 
 	{if (true == $lt_config.pager && true == $lt_config.pager_top)}
 	<span id="{$lt_id}_pager_top" class="{$lt_id}_pager">
-		{if (!empty($lt_url.first))}<a href="{$lt_url.first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
-		{if (!empty($lt_url.prev))}<a href="{$lt_url.prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
-		{if (!empty($lt_url.next))}<a href="{$lt_url.next}">{$lt_config.pager_text_next}</a>{$lt_config.pager_text_spacer}{/if}
-		{if (!empty($lt_url.last))}<a href="{$lt_url.last}">{$lt_config.pager_text_last}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_first))}<a href="{$lt_url.p_first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_prev))}<a href="{$lt_url.p_prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_next))}<a href="{$lt_url.p_next}">{$lt_config.pager_text_next}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_last))}<a href="{$lt_url.p_last}">{$lt_config.pager_text_last}</a>{$lt_config.pager_text_spacer}{/if}
 		{$lt_config.pager_text_cur_value}{$lt_config.pager_text_spacer}
 		{$lt_config.pager_text_goto1}
 		<form method="get" action="{$lt_url_form}">
@@ -206,7 +206,18 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 		<thead>
 		<tr>
 		{foreach from=$lt_title key=key item=title}
-			<th>{$title}{if 1==$lt_config.orderby && $key==$lt_config.orderby_idx} {$lt_config.orderby_text}{/if}</th>
+			<th>
+				{if 1==$lt_config.orderby}
+					<a href="{$lt_url.p_cur}&{$lt_config.orderby_param}_idx={$key}&{$lt_config.orderby_param}_dir={if asc==$lt_config.orderby_dir && $key==$lt_config.orderby_idx}desc{else}asc{/if}">
+						{$title}{$key}
+						{if $key==$lt_config.orderby_idx}
+							{$lt_config.orderby_text}
+						{/if}
+					</a>
+				{else}
+					{$title}
+				{/if}
+			</th>
 		{/foreach}
 		</tr>
 		</thead>
@@ -227,10 +238,10 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 	{if (true == $lt_config.pager && true == $lt_config.pager_bottom)}
 	<span id="{$lt_id}_pager_bottom" class="{$lt_id}_pager">
 	{* Same with upper pager text *}
-		{if (!empty($lt_url.first))}<a href="{$lt_url.first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
-		{if (!empty($lt_url.prev))}<a href="{$lt_url.prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
-		{if (!empty($lt_url.next))}<a href="{$lt_url.next}">{$lt_config.pager_text_next}</a>{$lt_config.pager_text_spacer}{/if}
-		{if (!empty($lt_url.last))}<a href="{$lt_url.last}">{$lt_config.pager_text_last}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_first))}<a href="{$lt_url.p_first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_prev))}<a href="{$lt_url.p_prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_next))}<a href="{$lt_url.p_next}">{$lt_config.pager_text_next}</a>{$lt_config.pager_text_spacer}{/if}
+		{if (!empty($lt_url.p_last))}<a href="{$lt_url.p_last}">{$lt_config.pager_text_last}</a>{$lt_config.pager_text_spacer}{/if}
 		{$lt_config.pager_text_cur_value}{$lt_config.pager_text_spacer}
 		{$lt_config.pager_text_goto1}
 		<form method="get" action="{$lt_url_form}">
