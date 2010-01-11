@@ -94,6 +94,7 @@ class ListTable
 		'orderby'			=> 0,			// 0=off, 1=on
 		'orderby_dir'		=> 'asc',
 		'orderby_idx'		=> '',			// Idx of th ar
+		'orderby_param'		=> 'o',
 		'orderby_text'		=> '',
 		// &#8592 = ← &#8593 = ↑ &#8594 = → &#8595 = ↓
 		// &#8710 = ∆ &#8711 = ∇
@@ -420,6 +421,40 @@ class ListTable
 
 
 	/**
+	 * Get info about some part of query sql from url $_REQUEST
+	 * what can directly use in SqlGenerator, eg: limit, orderby
+	 *
+	 * @return	array
+	 * @see	SqlGenerator
+	 */
+	public function GetSqlInfoFromUrl() {
+		$ar = array();
+
+		// Limit
+		$s = $this->aConfig['page_param'];
+		$i_page = intval(GetRequest($_REQUEST, $s));
+		if (0 < $i_page)
+			// Page 1 start from 0
+			$i_page --;
+		else
+			$i_page = 0;
+		$ar['LIMIT'] = $i_page * $this->aConfig['page_size']
+			. ', ' . $this->aConfig['page_size'];
+
+		// Orderby
+		$s = $this->aConfig['orderby_param'];
+		$s_idx = GetRequest($_REQUEST, $s . '_idx');
+		if (!empty($s_idx)) {
+			// Orderby enabled
+			$s_dir = GetRequest($_REQUEST, $s . '_dir', 'asc');
+			$ar['ORDERBY'] = $s_idx . ' ' . $s_dir;
+		}
+
+		return $ar;
+	} // end of func GetSqlInfoFromUrl
+
+
+	/**
 	 * Parse & compute page_cur param
 	 *
 	 * @param	int	$p	Page num param come from outer
@@ -535,6 +570,9 @@ class ListTable
 		// Change page_param
 		$this->aConfig['page_param'] = $this->sId . '_p';
 		$this->ParsePageCur();
+
+		// Change orderby param
+		$this->aConfig['orderby_param'] = $this->sId . '_o';
 
 		return $this->sId;
 	} // end of func SetId

@@ -363,6 +363,11 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 
 		echo $this->sJs;
 
+		Ecl('ListTable::GetSqlInfoFromUrl()');
+		echo('<pre>'
+			. var_export($this->oLt->GetSqlInfoFromUrl(), true)
+			. '</pre>');
+
 		Ecl('ListTable::GetSqlInfo()');
 		echo('<pre>'
 			. var_export($this->oLt->GetSqlInfo(), true)
