@@ -365,7 +365,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 
 		Ecl('ListTable::GetSqlInfo()');
 		echo('<pre>'
-			. var_export($this->oLt->GetSqlInfo('mysql'), true)
+			. var_export($this->oLt->GetSqlInfo(), true)
 			. '</pre>');
     } // end of func TestBasicTable
 

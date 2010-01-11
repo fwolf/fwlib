@@ -397,25 +397,24 @@ class ListTable
 
 
 	/**
-	 * Get info about some part of query sql, eg: limit, order by
+	 * Get info about some part of query sql
+	 * what can directly use in SqlGenerator, eg: limit, orderby
 	 *
-	 * @param	string	$dbtype
 	 * @return	array
+	 * @see	SqlGenerator
 	 */
-	public function GetSqlInfo($dbtype = 'mysql') {
+	public function GetSqlInfo() {
 		$ar = array();
-		// Mysql style
-		if ('mysql' == $dbtype) {
-			$ar['limit'] = array(
-				'offset'	=> $this->aConfig['page_size'] * ($this->aConfig['page_cur'] - 1),
-				'count'		=> $this->aConfig['page_size'],
-			);
-			if (1 == $this->aConfig['orderby'])
-				$ar['orderby'] = array(
-					'col'		=> $this->aConfig['orderby_idx'],
-					'dir'		=> $this->aConfig['orderby_dir'],
-				);
+
+		$ar['LIMIT'] = $this->aConfig['page_size'] * ($this->aConfig['page_cur'] - 1)
+			. ', ' . $this->aConfig['page_size'];
+
+		if (1 == $this->aConfig['orderby']) {
+			// orderby_idx is column name
+			$ar['ORDERBY'] = $this->aConfig['orderby_idx']
+				. ' ' . $this->aConfig['orderby_dir'];
 		}
+
 		return $ar;
 	} // end of func GetSqlInfo
 
