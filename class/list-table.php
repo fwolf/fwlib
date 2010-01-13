@@ -438,14 +438,8 @@ class ListTable
 		$ar = array();
 
 		// Limit
-		$s = $this->aConfig['page_param'];
-		$i_page = intval(GetRequest($_REQUEST, $s));
-		if (0 < $i_page)
-			// Page 1 start from 0
-			$i_page --;
-		else
-			$i_page = 0;
-		$ar['LIMIT'] = $i_page * $this->aConfig['page_size']
+		$i_page = $this->ParsePageCur();
+		$ar['LIMIT'] = ($i_page - 1) * $this->aConfig['page_size']
 			. ', ' . $this->aConfig['page_size'];
 
 		// Orderby
@@ -492,7 +486,7 @@ class ListTable
 			$i = ceil($this->aConfig['rows_total']
 				/ $this->aConfig['page_size']);
 			if ($i < $page_cur)
-				$page_cur = $i;
+				$page_cur = intval($i);
 		}
 
 		// Result
