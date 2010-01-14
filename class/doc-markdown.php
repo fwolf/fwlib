@@ -340,26 +340,33 @@ html, body, div, span, applet,
 	-------- Styles come from other framework
 	My change
 */
-	h1, h2, h3, h4, h5, h6 {
+	h1, h2, h3 {
 		font-weight: bold;
-		font-family: "黑体", inherit;
+		font-family: "SimHei", inherit;
 	}
 	h1 {
 		font-size: 2em;
 		line-height: 3em;
 	}
 	h2 {
+		background-color: #8BB98B;
 		font-size: 1.5em;
-		line-height: 2em;
+		line-height: 1.5em;
+		margin-bottom: 0.35em;
 		margin-left: 1em;
+		margin-right: 1em;
+		margin-top: 0.65em;
 	}
 	h3 {
 		font-size: 1.3em;
 		line-height: 2em;
+		margin-bottom: 0.1em;
 		margin-left: 1.154em;
+		margin-top: 0.2em;
 	}
 	h4, h5, h6 {
-		font-size: 1.1em;
+		font-family: "FangSong", inherit;
+		font-size: 1.15em;
 		line-height: 2em;
 		margin-left: 1.364em;
 	}
