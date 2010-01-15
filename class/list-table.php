@@ -391,7 +391,16 @@ class ListTable
 				$this->aParam[$k] = addslashes($v);
 			}
 		}
+
+		// :NOTICE: Will got only url of backend if ProxyPass actived
+		// Can treat as below before new ListTable obj.
+/*
+		$ar = array('/needless1/', '/needless1/');
+		$_SERVER['REQUEST_URI'] = str_replace($ar, '/', $_SERVER['REQUEST_URI']);
+		$_SERVER['SCRIPT_NAME'] = str_replace($ar, '/', $_SERVER['SCRIPT_NAME']);
+*/
 		$this->aUrl['base'] = GetSelfUrl(false);
+
 		if (isset($this->aParam[$this->aConfig['page_param']])) {
 			$this->ParsePageCur($this->aParam[$this->aConfig['page_param']]);
 		}
