@@ -370,18 +370,21 @@ abstract class View extends Cache{
 	 */
 	public function Tidy(&$html)
 	{
-		// Specify configuration
-		$config = array(
-		           'indent'         => true,
-		           'indent-spaces'	=> 4,
-		           'output-xhtml'   => true,
-		           'wrap'           => 200);
-		// Do tidy
-		$tidy = new tidy;
-		$tidy->parseString($html, $config, 'utf8');
-		$tidy->cleanRepair();
+		if (true == class_exists("tidy")) {
+			// Specify configuration
+			$config = array(
+					   'indent'         => true,
+					   'indent-spaces'	=> 2,
+					   'output-xhtml'   => true,
+					   'wrap'           => 200);
+			// Do tidy
+			$tidy = new tidy;
+			$tidy->parseString($html, $config, 'utf8');
+			$tidy->cleanRepair();
 
-		return tidy_get_output($tidy);
+			return tidy_get_output($tidy);
+		} else
+			return $html;
 	} // end of func Tidy
 
 } // end of class View
