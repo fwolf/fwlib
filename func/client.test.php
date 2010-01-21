@@ -2,11 +2,10 @@
 /**
  * Test - client function
  * @package     fwolflib
- * @subpackage	func-test
- * @copyright   Copyright 2004-2008, Fwolf
- * @author      Fwolf <fwolf.aide+fwolflib-func-test@gmail.com>
+ * @subpackage	func.test
+ * @copyright   Copyright 2004-2010, Fwolf
+ * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2008-05-08
- * @version		$Id$
  */
 
 // Define like this, so test can run both under eclipse and web alone.
@@ -41,9 +40,9 @@ class TestFuncClient extends UnitTestCase {
     	// Error parameters handel
     	$this->assertEqual(ClientIpToHex('ABCD'), '');
     	$this->assertEqual(ClientIpFromHex('ABCD'), '');
-    } // end of func
+    } // end of func TestClientIpFromToHex
 
-} // end of class TestFuncString
+} // end of class TestFuncClient
 
 
 // Change output charset in this way.

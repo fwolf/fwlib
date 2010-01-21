@@ -203,6 +203,8 @@ function ToLink($str, $linkAddress, $targetWindow = '', $paramStr = '')
  * Find url plan from url
  *
  * eg: http://www.google.com/, plan = http
+ *
+ * Obsolete, changed to request.php::GetUrlPlan()
  * @param	string	$url
  * @return	string
  */

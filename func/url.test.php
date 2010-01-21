@@ -2,8 +2,8 @@
 /**
  * Test - url func
  * @package     fwolflib
- * @subpackage	func-test
- * @copyright   Copyright 2009, Fwolf
+ * @subpackage	func.test
+ * @copyright   Copyright 2009-2010, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2009-12-04
  */
@@ -24,7 +24,7 @@ require_once('fwolflib/func/url.php');
 class TestFuncUrl extends UnitTestCase {
 
     function TestUrlPlan() {
-    	$url = 'http://www.google.com/?a=http://something';
+    	$url = 'http://www.google.com/?a=https://something';
     	$this->assertEqual(UrlPlan($url), 'http');
 
     	$url = 'https://www.fwolf.com/';
@@ -32,14 +32,18 @@ class TestFuncUrl extends UnitTestCase {
 
     	$url = 'ftp://domain.tld/';
     	$this->assertEqual(UrlPlan($url), 'ftp');
-    } // end of func
+    } // end of func TestUrlPlan
 
 } // end of class TestFuncUrl
 
 
 // Change output charset in this way.
 // {{{
-$test = new TestFuncUrl();
-$test->run(new HtmlReporter('utf-8'));
+$s_url = GetSelfUrl(false);
+$s_url = substr($s_url, strrpos($s_url, '/') + 1);
+if ('url.test.php' == $s_url) {
+	$test = new TestFuncUrl();
+	$test->run(new HtmlReporter('utf-8'));
+}
 // }}}
 ?>

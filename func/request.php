@@ -40,6 +40,58 @@ function GetGet($var, $default='')
 
 
 /**
+ * Get and return modified url param
+ *
+ * If $k is string, then $v is string too and means add $k=$v.
+ * if $k is array, then $v is array to,
+ * and k-v/values in $k/$v is added/removed to/from url param.
+ *
+ * @param	mixed	$k
+ * @param	mixed	$v
+ * @param	boolean	$b_with_url	If true, return value include self url.
+ * @return	string	'?' and '&' included.
+ */
+function GetParam($k = '', $v = '', $b_with_url = false) {
+	$ar_param = $_GET;
+	if (!empty($ar_param) && !get_magic_quotes_gpc()) {
+		foreach ($ar_param as &$p) {
+			$p = addslashes($p);
+		}
+	}
+
+	// $k $v is string
+	if (!is_array($k) && !is_array($v) && '' != $k) {
+		$ar_param[addslashes($k)] = addslashes($v);
+	}
+
+	// $k $v is array
+	if (is_array($k)) {
+		foreach ($k as $key => $val)
+			$ar_param[addslashes($key)] = addslashes($val);
+		if (!is_array($v))
+			$v = array($v);
+		foreach ($v as $val)
+			if (isset($ar_param[$val]))
+				unset($ar_param[$val]);
+	}
+
+	// Combine param
+	$s = '';
+	if (!empty($ar_param))
+		foreach ($ar_param as $k => $v)
+			$s .= "&$k=$v";
+	if (!empty($s))
+		$s{0} = '?';
+
+	// Add self url
+	if (true == $b_with_url)
+		$s = GetSelfUrl(false) . $s;
+
+	return $s;
+} // end of func GetParam
+
+
+/**
  * Get variant from $_POST
  * @param	string	$var		Name of variant
  * @param	mixed	$default	If variant is not given, return this.
@@ -65,8 +117,7 @@ function GetPost($var, $default='')
  * @param	mixed	$default	If variant is not given, return this
  * @return	mixed
  */
-function GetRequest(&$r, $var, $default = null)
-{
+function GetRequest(&$r, $var, $default = null) {
 	if (isset($r[$var]))
 	{
 		$val = $r[$var];
@@ -88,11 +139,11 @@ function GetRequest(&$r, $var, $default = null)
 function GetSelfUrl($with_get_param = true) {
 	if (isset($_SERVER["HTTPS"]) && 'on' == $_SERVER["HTTPS"])
 		$url = 'https://';
-	else 
+	else
 		$url = 'http://';
-	
+
 	$s_t = ($with_get_param) ? $_SERVER['REQUEST_URI'] : $_SERVER["SCRIPT_NAME"];
-	
+
 	$url .= $_SERVER["HTTP_HOST"] . $s_t;
 	return $url;
 } // end of func GetSelfUrl
@@ -104,10 +155,27 @@ function GetSelfUrl($with_get_param = true) {
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
  */
-function GetSession($var, $default='')
-{
+function GetSession($var, $default='') {
 	$_SESSION[$var] = GetRequest($_SESSION, $var, $default);
 	return $_SESSION[$var];
 } // end of func GetSession
+
+
+/**
+ * Get url plan from url or self
+ *
+ * eg: http://www.google.com/, plan = http
+ * @param	string	$url	Default: self url
+ * @return	string
+ */
+function GetUrlPlan($url = '') {
+	if (empty($url))
+		$url = GetSelfUrl();
+	$i = preg_match('/^(\w+):\/\//', $url, $ar);
+	if (1 == $i)
+		return $ar[1];
+	else
+		return '';
+} // end of func GetUrlPlan
 
 ?>

@@ -1,5 +1,5 @@
 class:
-======
+============================================================
 
 benchmark.php
 -------------
@@ -74,7 +74,7 @@ ubb.php
 
 
 func:
-=====
+============================================================
 
 client.php
 ----------
@@ -185,16 +185,22 @@ ini.php
 
 request.php
 -----------
-	和get与post参数有关的函数集。
+	与 GET 和 POST 参数及 http 请求有关的函数集。
 
 ### GetGet($var, $default)
 	Get varient from $_GET
+
+### GetParam($k = '', $v = '', $b_with_url = false)
+	Get and return modified url param.
 
 ### GetPost($var, $default)
 	Get varient from $_POST
 
 ###	GetSelfUrl()
 	Get self url which user visit, including GET parameters.
+
+### GetUrlPlan($url = '')
+	Get http/https from an url or self.
 
 
 regex_match.php
@@ -217,9 +223,6 @@ string.php
 url.php
 -------
 	处理url字符串，增加或设置/更改URL参数。
-
-### UrlPlan($url)
-	Get http/https from an url.
 
 
 utf8_fix.php

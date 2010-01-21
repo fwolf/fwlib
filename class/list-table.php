@@ -722,12 +722,15 @@ class ListTable
 	/**
 	 * Set url param, get the url
 	 *
-	 * If $k is string, then $v is string to and means $k=$v.
-	 * if $k is array, then means key=>val in $k is added, and val in $v is removed.
-	 * Always 'remember' setting and return result url.
+	 * If $k is string, then $v is string too and means $k=$v.
+	 * if $k is array, then $v is array to,
+	 * and values in $k/$v is added/removed from url param.
+	 * Always 'save' setting and return result url.
+	 *
 	 * @param	mixed	$k
 	 * @param	mixed	$v
 	 * @return	string
+	 * @see func/request.php::GetParam()
 	 */
 	public function SetParam($k, $v = '') {
 		if (!is_array($k) && !is_array($v)) {

@@ -26,7 +26,9 @@ $test = &new TestSuite('Group test for func/*');
 
 $test->addTestFile('client.test.php');
 $test->addTestFile('crypt.test.php');
+$test->addTestFile('request.test.php');
 $test->addTestFile('string.test.php');
+$test->addTestFile('url.test.php');
 $test->addTestFile('uuid.test.php');
 
 $test->run(new HtmlReporter('utf-8'));
