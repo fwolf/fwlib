@@ -373,10 +373,12 @@ abstract class View extends Cache{
 		if (true == class_exists("tidy")) {
 			// Specify configuration
 			$config = array(
-					   'indent'         => true,
-					   'indent-spaces'	=> 2,
-					   'output-xhtml'   => true,
-					   'wrap'           => 200);
+				'doctype'		=> 'strict',
+				'indent'		=> true,
+				'indent-spaces'	=> 2,
+				'output-xhtml'	=> true,
+				'wrap'			=> 200
+			);
 			// Do tidy
 			$tidy = new tidy;
 			$tidy->parseString($html, $config, 'utf8');
