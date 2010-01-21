@@ -81,11 +81,20 @@ class TestCache extends UnitTestCase {
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
+		// Common usage 3
+		$this->oCh->CacheSetCfg(array('rule' => '55'));
+		$x = '/tmp/cache/89/3ed0dc6e';
+		$y = $this->oCh->CachePath($key);
+		$this->assertEqual($x, $y);
+
 		//Ecl($y);
 
 		// Read/write
 		$v = $this->oCh->CacheLoad($key, 1);
 		var_dump($v);
+		Ecl(hash('crc32', $key)
+			. '|'
+			. $this->oCh->CachePath($key));
     } // end of func TestPath
 
 } // end of class TestCache
@@ -98,7 +107,7 @@ class CacheTest extends Cache {
 	} // end of func CacheGenVal
 
 	public function CacheLifetime($key) {
-		return 10;
+		return 0;
 	} // end of func CacheLifetime
 } // end of class CacheTest
 

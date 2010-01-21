@@ -33,11 +33,12 @@ abstract class Cache{
 	 * Cache file store rule
 	 *
 	 * Group by every 2-chars, their means:
-	 * 10	first 2 char of md5 hash, 36 * 36 = 1296
+	 * 10	first 2 char of md5 hash, 16 * 16 = 256
 	 * 11	3-4 char of md5 hash
 	 * 20	last 2 char of md5 hash
 	 * 30	first 2 char of key
 	 * 40	last 2 char of key
+	 * 5n	crc32, n=0..3, 16 * 16 = 256
 	 *
 	 * @var	string
 	 */
@@ -101,7 +102,7 @@ abstract class Cache{
 	protected function CacheGen($key) {
 		$s_cache = $this->CacheGenVal($key);
 		$this->CacheWrite($key, $s_cache);
-	} // end of func Gen
+	} // end of func CacheGen
 
 
 	/**
@@ -134,7 +135,7 @@ abstract class Cache{
 			$this->CacheGen($key);
 
 		return $this->CacheRead($key, $flag);
-	} // end of func Load
+	} // end of func CacheLoad
 
 
 	/**
@@ -209,17 +210,27 @@ abstract class Cache{
 
 		$i = intval($rule{1});
 		if (1 == $rule{0}) {
+			// md5 from start
 			$i_start = $i_len * $i;
 			$s_seed = md5($key);
 		} elseif (2 == $rule{0}) {
+			// md5 from end
 			$i_start = -1 * $i_len * ($i + 1);
 			$s_seed = md5($key);
 		} elseif (3 == $rule{0}) {
+			// raw from start
 			$i_start = $i_len * $i;
 			$s_seed = $key;
 		} elseif (4 == $rule{0}) {
+			// raw from end
 			$i_start = -1 * $i_len * ($i + 1);
 			$s_seed = $key;
+		} elseif (5 == $rule{0}) {
+			// crc32
+			if (3 < $i)
+				$i = $i % 3;
+			$i_start = $i_len * $i;
+			$s_seed = hash('crc32', $key);
 		}
 		return(substr($s_seed, $i_start, 2));
 	} // end of func CachePathSec
@@ -231,6 +242,7 @@ abstract class Cache{
 	 * @param	string	$key
 	 * @param	int		$flag	Which type value shoud I return ?
 	 * 							0=string, 1=array, 2=object
+	 * 							3=raw string
 	 * @return	mixed
 	 */
 	protected function CacheRead($key, $flag = 0) {
@@ -250,12 +262,13 @@ abstract class Cache{
 			case 2:
 				$rs = json_decode($s_cache, false);
 				break;
+			case 3:
 			default:
 				$rs = &$s_cache;
 		}
 
 		return $rs;
-	} // end of func Read
+	} // end of func CacheRead
 
 
 	/**
@@ -281,7 +294,7 @@ abstract class Cache{
 			else
 				die($s);
 		}
-	} // end of func SetCfg
+	} // end of func CacheSetCfg
 
 
 	/**
@@ -301,7 +314,7 @@ abstract class Cache{
 
 		// Finally write file
 		file_put_contents($s_file, $s_cache, LOCK_EX);
-	} // end of func Write
+	} // end of func CacheWrite
 
 } // end of class Cache
 
