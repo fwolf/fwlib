@@ -127,11 +127,22 @@ abstract class Controler
 		// Db query times
 		if (isset($i_db_query_times))
 			$s .= ", $i_db_query_times db queries";
+
+		// Cache
+		if (true == $view->bCacheOn) {
+			$key = $view->CacheGenKey();
+			$s .= ', cache: '
+				. ($view->CacheLifetime($key) + filemtime($view->CachePath($key)) - time())
+				. '/'
+				. $view->CacheLifetime($key);
+		}
+
 		$s .= '.';
 
 		// Assign msg to View's template object
 		if (!is_null($view->oTpl))
 			$view->oTpl->assign('debug_info_runtime', $s);
+
 	} // end of func SetInfoRuntime
 
 

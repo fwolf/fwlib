@@ -197,7 +197,7 @@ abstract class View extends Cache{
 	 *
 	 * @return	string
 	 */
-	protected function CacheGenKey() {
+	public function CacheGenKey() {
 		$key = $_SERVER['REQUEST_URI'];
 		$key = str_replace(array('?', '&', '=', '//'), '/', $key);
 
