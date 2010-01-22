@@ -128,7 +128,7 @@ abstract class Controler
 		if (isset($i_db_query_times))
 			$s .= ", $i_db_query_times db queries";
 
-		// Cache
+		// Cache, Notice: this msg is delayed if cache on.
 		if (true == $view->bCacheOn) {
 			$key = $view->CacheGenKey();
 			$s .= ', cache: '

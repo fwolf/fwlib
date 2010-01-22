@@ -227,7 +227,7 @@ abstract class View extends Cache{
 	 */
 	public function CacheGetOutput() {
 		$key = $this->CacheGenKey();
-		return $this->CacheLoad($key, 0);
+		return $this->CacheLoad($key, 3);
 	} // end of func CacheGetOutput
 
 
@@ -241,6 +241,26 @@ abstract class View extends Cache{
 	public function CacheLifetime($key) {
 		return 60 * 60;
 	} // end of func CacheLifetime
+
+
+	/**
+	 * Write data to cache file, raw string
+	 *
+	 * @param	string	$key
+	 * @param	mixed	$val
+	 */
+	public function CacheWrite($key, $val) {
+		$s_file = $this->CachePath($key);
+		$s_cache = &$val;
+
+		// Create each level dir if not exists
+		$s_dir = DirName1($s_file);
+		if (!file_exists($s_dir))
+			mkdir($s_dir, 0755, true);
+
+		// Finally write file
+		file_put_contents($s_file, $s_cache, LOCK_EX);
+	} // end of func CacheWrite
 
 
 	/**
