@@ -131,8 +131,12 @@ abstract class Controler
 		// Cache, Notice: this msg is delayed if cache on.
 		if (true == $view->bCacheOn) {
 			$key = $view->CacheGenKey();
+			if (file_exists($view->CachePath($key)))
+				$i = $view->CacheLifetime($key) + filemtime($view->CachePath($key)) - time();
+			else
+				$i = 0;
 			$s .= ', cache: '
-				. ($view->CacheLifetime($key) + filemtime($view->CachePath($key)) - time())
+				. $i
 				. '/'
 				. $view->CacheLifetime($key);
 		}
