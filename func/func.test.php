@@ -24,6 +24,7 @@ require_once('simpletest/reporter.php');
 
 $test = &new TestSuite('Group test for func/*');
 
+$test->addTestFile('array.test.php');
 $test->addTestFile('client.test.php');
 $test->addTestFile('crypt.test.php');
 $test->addTestFile('request.test.php');

@@ -2,13 +2,13 @@ class:
 ============================================================
 
 benchmark.php
--------------
+------------------------------------------------------------
 ### Benchmark
 	Benchmark code running time cost by set marker in code and display result at end.
 
 
 cache.php
----------
+------------------------------------------------------------
 ### Cache
 	Key - value like cache system, data store in filesystem.
 
@@ -24,31 +24,31 @@ disp_listtable.php
 
 
 doc-markdown.php
-----------------
+------------------------------------------------------------
 ### DocMarkdown
 	Easy write/display doc using Markdown markup language.
 
 
 ebay.php
---------
+------------------------------------------------------------
 ### Ebay
 	eBay API caller class.
 
 
 excel.php
----------
+------------------------------------------------------------
 ### Excel
 	Generate excel file, xml mode, need high version of MS Excel.
 
 
 list-table.php
---------------
+------------------------------------------------------------
 ### ListTable
 	General table style display html to list data.
 
 
 mail_parser.php
----------------
+------------------------------------------------------------
 ### MailParser
 	Parse a maildir format mail file, got every information, especially attachments.
 
@@ -58,13 +58,13 @@ mailsender.php
 
 
 sql_generator.php
------------------
+------------------------------------------------------------
 ### SqlGenerator
 	Tools class to generator compative sql parse, Adodb object needed.
 
 
 toadtauri.php
--------------
+------------------------------------------------------------
 ### ToDataUri
 	Can save html all in 1 file.
 
@@ -76,8 +76,15 @@ ubb.php
 func:
 ============================================================
 
+array.php
+------------------------------------------------------------
+
+### ArrayRead($ar, $key, $val_default = null)
+	Read value from array.
+
+
 client.php
-----------
+------------------------------------------------------------
 
 ### ClientIpFromHex($hex)
 	Get user ip from hex string.
@@ -93,7 +100,7 @@ client.php
 
 
 config.php
-----------
+------------------------------------------------------------
 	GetCfg and SetCfg function.
 
 ### GetCfg($cfg)
@@ -107,14 +114,14 @@ config.php
 
 
 crypt.php
----------
+------------------------------------------------------------
 
 ### MCryptSmplIvDecrypt/MCryptSmplIvEncrypt(...)
 	Use mcrypt to de/encrypt, using a simple way to generate IV.
 
 
 datetime.php
-------------
+------------------------------------------------------------
 	Date and time func.
 
 ### Strtotime1()
@@ -134,7 +141,7 @@ ecl.php
 
 
 env.php
--------
+------------------------------------------------------------
 	Runtime environment and server env variant.
 
 ### ForceHttps()
@@ -177,14 +184,14 @@ formatbytesize.php
 
 
 ini.php
--------
+------------------------------------------------------------
 
 ### IniGet($filepath, $section = '', $item = '')
 	Read ini file, return array of part of the value, notice to retrieve global value, set $section to ' ' instead of ''.
 
 
 request.php
------------
+------------------------------------------------------------
 	与 GET 和 POST 参数及 http 请求有关的函数集。
 
 ### GetGet($var, $default)
@@ -204,13 +211,13 @@ request.php
 
 
 regex_match.php
----------------
+------------------------------------------------------------
 ###	RegexMatch($preg, $str = '', $csrts = true)
 	Match content using preg, return result array or '' if non-match
 
 
 string.php
-----------
+------------------------------------------------------------
 	常用字符串函数集
 
 ### Pin15To18($pin)
@@ -221,17 +228,17 @@ string.php
 
 
 url.php
--------
+------------------------------------------------------------
 	处理url字符串，增加或设置/更改URL参数。
 
 
 utf8_fix.php
-------------
+------------------------------------------------------------
 	Convert string like '_D0_D0_D0' to normal string
 
 
 uuid.php
---------
+------------------------------------------------------------
 
 ### Uuid($s_cus, $s_cus2)
 	Generate an UUID.
@@ -244,7 +251,7 @@ uuid.php
 
 
 validate.php
-------------
+------------------------------------------------------------
 
 ### ValidateIp($ip)
 	If an ip string given is valid address.
