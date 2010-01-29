@@ -246,11 +246,11 @@ class ToDataUri extends Curl
 
 			// Check condition by element attribute
 			$check = true;
-			if (!empty($cond))
-			{
-				foreach ($cond as $k=>$v)
+			if (!empty($cond)) {
+				foreach ($cond as $k=>$v) {
 					if ($v != $item->getAttribute($k))
 						$check = false;
+				}
 			}
 			// In-document js have text/javascript also, but src is empty
 			if (('script' == $tag) && ('' == $item->getAttribute('src')))
@@ -571,7 +571,10 @@ class ToDataUri extends Curl
 				$this->DomChange($dom, 'img', 'src');
 				//$this->DomChange($dom, 'link', 'href', array('rel'=>'stylesheet', 'type'=>'text/css'));
 				$this->DomChange($dom, 'link', 'href', array('rel'=>'stylesheet'));
-				$this->DomChange($dom, 'script', 'src', array('type'=>'text/javascript'));
+
+				// array('type'=>'text/javascript')
+				// Js condition not requested anymore
+				$this->DomChange($dom, 'script', 'src');
 
 				$this->AddInfo($dom);
 				$this->mHtml = $dom->saveHTML();
