@@ -376,6 +376,27 @@ class Adodb
 
 
 	/**
+	 * Convert data encoding
+	 * from system(usually utf-8) to db
+	 *
+	 * Use recursive mechanism, beware of loop hole.
+	 * @param mixed	&$s	Source to convert
+	 * @return mixed
+	 */
+	public function EncodingConvertReverse(&$s) {
+		if (is_array($s) && !empty($s))
+			foreach ($s as &$val)
+				$this->EncodingConvertReverse($val);
+
+		if (is_string($s)) {
+			if ($this->sSysCharset != $this->aDbProfile['lang'])
+				$s = mb_convert_encoding($s, $this->aDbProfile['lang'], $this->sSysCharset);
+		}
+		return $s;
+	} // end of func EncodingConvertReverse
+
+
+	/**
 	 * Find name of timestamp column of a table
 	 * @param	$tbl	Table name
 	 * @return	string
