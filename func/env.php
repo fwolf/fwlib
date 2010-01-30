@@ -23,15 +23,17 @@ function ForceHttps() {
 
 
 /**
- * Check if this program is running under cli mod, or is viewing in browser
+ * Check if this program is running under cli mod, or is viewing in browser.
  *
  * Tested in nix os only
  * @return	boolean
  */
-function IsCli()
-{
+function IsCli() {
+/*
 	if (isset($_ENV['_']) && (('/usr/bin/php' == substr($_ENV['_'], 0, 12))
 		|| ($_SERVER["SCRIPT_FILENAME"] == $_ENV['_'])))    //chmod +x xxx.php and run itself
+*/
+	if (!empty($_ENV['_']))
 		$is_cli = true;
 	else
 		$is_cli = false;
