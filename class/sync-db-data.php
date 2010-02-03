@@ -85,6 +85,13 @@ class SyncDbData {
 	protected $sDbProfSrce = '';
 
 	/**
+	 * Lock file to avoid run duplicate.
+	 *
+	 * @var	string
+	 */
+	public $sLockFile = '/tmp/sync-db-data.lock';
+
+	/**
 	 * Name of record table
 	 *
 	 * Create in destination db.
@@ -108,11 +115,19 @@ class SyncDbData {
 	/**
 	 * construct
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		$this->Log('========  ' . date('Y-m-d H:i:s') . '  ========');
+
+		// Check if lockfile exists
+		if (file_exists($this->sLockFile)) {
+			Ecl("\n========  " . date('Y-m-d H:i:s') . '  ========');
+			die("Lock file exists, previous run not end, quit.\n");
+		} else
+			$this->LockFileCreate();
+
 		// Do check after we know target db
 		//$this->ChkTblRecord();
+
 	} // end of func __construct
 
 
@@ -123,6 +138,8 @@ class SyncDbData {
 		if (0 != $this->iBatchDone)
 			foreach ($this->aLog as &$log)
 				Ecl($log);
+
+		$this->LockFileDelete();
 	} // end of func destruct
 
 
@@ -195,7 +212,7 @@ class SyncDbData {
 					";
 			else {
 				$this->Log('Table record create syntax not implement.');
-				die();
+				$this->Quit();
 			}
 
 			// Execute create table sql
@@ -204,7 +221,7 @@ class SyncDbData {
 			{
 				$this->Log($db->ErrorNo() . ' - '  . $db->ErrorMsg());
 				$this->Log("Log table $tbl doesn't exists and create fail.");
-				die();
+				$this->Quit();
 			}
 			else {
 				// Sybase - create index
@@ -251,7 +268,7 @@ class SyncDbData {
 			$s = 'ErrorNo: ' . $conn->ErrorNo() . "\n"
 				. "ErrorMsg: " . $conn->ErrorMsg();
 			$this->Log($s);
-			die();
+			$this->Quit();
 		}
 		else
 			return $conn;
@@ -285,6 +302,30 @@ class SyncDbData {
 	} // end of func GetLastTs
 
 
+	/**
+	 * Create lock file.
+	 *
+	 * @return	$this
+	 */
+	protected function LockFileCreate() {
+		if (is_writable($this->sLockFile))
+			file_put_contents($this->sLockFile, '');
+		return $this;
+	} // end of func LockFileCreate
+
+
+	/**
+	 * Delete lock file.
+	 *
+	 * @return	$this
+	 */
+	protected function LockFileDelete() {
+		if (is_writable($this->sLockFile))
+			unlink($this->sLockFile);
+		return $this;
+	} // end of func LockFileDelete
+
+
 	/*
 	 * Save or output log message, change to save now, output when destruct.
 	 * @param	string	$log
@@ -295,6 +336,15 @@ class SyncDbData {
 		//Ecl($log);
 		$this->aLog[] = $log;
 	} // end of func Log
+
+
+	/**
+	 * Quit this program when error
+	 */
+	protected function Quit() {
+		$this->LockFileDelete();
+		die();
+	} // end of func Quit
 
 
 	/**
@@ -527,7 +577,7 @@ class SyncDbData {
 		$col_ts = $db_srce->FindColTs($tbl_srce);
 		if (empty($col_ts)) {
 			$this->Log("Table $tbl_srce in source db hasn't timestamp column.");
-			die();
+			$this->Quit();
 		}
 
 		// Retrieve data from source db
