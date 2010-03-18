@@ -374,7 +374,7 @@ function SubstrGb($str = '', $start = 0, $len = 0)
  * @param	string	$encoding	Default is utf-8
  * @return	string
  */
-function SubstrIgnHtml($str, $len, $marker, $start = 0, $encoding = 'utf-8') {
+function SubstrIgnHtml($str, $len, $marker = '...', $start = 0, $encoding = 'utf-8') {
 	$i = preg_match_all('/<[^>]*>/i', $str, $ar);
 	if (0 == $i) {
 		// No html in $str
