@@ -18,6 +18,8 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
 /**
  * Basic class of all.
  *
+ * Log included.
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2010, Fwolf
@@ -50,6 +52,26 @@ class Fwolflib {
 	 * @var	string
 	 */
 	public $sFormatTime = 'Y-m-d H:i:s';
+
+
+	/**
+	 * Auto new obj if not set, for some special var only
+	 *
+	 * @param	string	$name
+	 * @return	object
+	 */
+	public function __get($name) {
+		if ('o' == $name{0}) {
+			$s_func = 'NewObj' . substr($name, 1);
+			if (method_exists($this, $s_func)) {
+				// New object
+				$this->$name = $this->$s_func();
+				return $this->$name;
+			}
+		}
+
+		return null;
+	} // end of func __get
 
 
 	/**

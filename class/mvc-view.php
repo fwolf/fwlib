@@ -172,7 +172,7 @@ abstract class View extends Cache{
 
 
 	/**
-	 * Auto new obj if null
+	 * Auto new obj if not set, for some special var only
 	 *
 	 * @param	string	$name
 	 * @return	object
