@@ -1,9 +1,17 @@
 <?php
 /**
 * @package      fwolflib
-* @copyright    Copyright 2007, Fwolf
+* @copyright    Copyright 2007-2010, Fwolf
 * @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
 */
+
+if (0 <= version_compare(phpversion(), '5.3.0')) {
+	require_once(__DIR__ . '/fwolflib.php');
+	require_once(__DIR__ . '/../func/array.php');
+} else {
+	require_once(dirname(__FILE__) . '/fwolflib.php');
+	require_once(dirname(__FILE__) . '/../func/array.php');
+}
 
 /**
 * A class aimed to use curl function efficiency
@@ -16,8 +24,8 @@
 * @since      2007-03-14
 * @version    $Id$
 */
-class Curl
-{
+class Curl extends Fwolflib {
+
 	/**
 	 * File to save cookie
 	 * @var	string
@@ -54,21 +62,27 @@ class Curl
 	 * Construct function
 	 * @access public
 	 */
-	function __construct()
-	{
+	function __construct() {
+		parent::__construct();
+
 		$this->mSh = curl_init();
 		$this->SetoptCommon();
-	} // end of func construct
+	} // end of func __construct
 
 
 	/**
 	 * Destruct function
 	 * @access public
 	 */
-	function __destruct()
-	{
+	function __destruct() {
 		curl_close($this->mSh);
-	} // end of func destruct
+
+		// Write log to file
+		if (!empty($this->mLogfile))
+			file_put_contents($this->mLogfile, $this->LogGet(), FILE_APPEND);
+
+		parent::__destruct();
+	} // end of func __destruct
 
 
 	/**
@@ -136,41 +150,6 @@ class Curl
 		$s = curl_getinfo($this->mSh, CURLINFO_CONTENT_TYPE);
 		return $s;
 	} // end of func GetLastContentType
-
-
-	/**
-	 * Output log
-	 * @param	string	$log		Content of log
-	 * @param	int		$pre_format Format of string pretend before log message, -1=none/0=full date and time/1=only time.
-	 */
-	public function Log($log = '', $pre_format=0)
-	{
-		if (empty($log))
-			return;
-
-		switch ($pre_format)
-		{
-			case -1:
-				$s_pre = '';
-				break;
-			case 0:
-				$s_pre = date('Y-m-d H:i:s');
-				break;
-			case 1:
-				$s_pre = date('H:i:s');
-				break;
-			default:
-				$s_pre = '';
-		}
-		if (!empty($s_pre))
-			$s_pre = "[$s_pre] ";
-		$log = $s_pre. "$log\n";
-
-		if (empty($this->mLogfile))
-			echo $log;
-		else
-			file_put_contents($this->mLogfile, $log, FILE_APPEND);
-	} // end of func Log
 
 
 	/**

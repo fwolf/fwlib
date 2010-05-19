@@ -55,6 +55,20 @@ class Fwolflib {
 
 
 	/**
+	 * Dummy constructor
+	 */
+	public function __construct() {
+	} // end of func __construct
+
+
+	/**
+	 * Dummy destructor
+	 */
+	public function __destruct() {
+	} // end of func __destruct
+
+
+	/**
 	 * Auto new obj if not set, for some special var only
 	 *
 	 * @param	string	$name
