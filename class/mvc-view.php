@@ -261,13 +261,6 @@ abstract class View extends Cache{
 	 */
 	protected function CacheNeedUpdate($key) {
 		if ('0' == GetGet('cache')) {
-/*
-			// Moved to CacheGenKey()
-			// Make cache refresh
-			unset($_GET['cache']);
-			// And after-action use new key
-			$key = str_replace('/cache/0', '', $key);
-*/
 			return true;
 		} else
 			return parent::CacheNeedUpdate($key);
