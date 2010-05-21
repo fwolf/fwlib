@@ -26,6 +26,8 @@ require_once('fwolflib/func/request.php');
  *
  * If need to re-generate some part, you can directly call GenFooter() etc.
  *
+ * Apply 'cache=0' at end of url will force cache update, notice there is no cache stored for url plused 'cache=0'.
+ *
  * @package		fwolflib
  * @subpackage	class.mvc
  * @copyright	Copyright 2008-2010, Fwolf
@@ -241,6 +243,24 @@ abstract class View extends Cache{
 	public function CacheLifetime($key) {
 		return 60 * 60;
 	} // end of func CacheLifetime
+
+
+	/**
+	 * Is cache data file need update/create ?
+	 *
+	 * @param	string	$key
+	 * @return	boolean
+	 */
+	protected function CacheNeedUpdate(&$key) {
+		if ('0' == GetGet('cache')) {
+			// Make cache refresh
+			unset($_GET['cache']);
+			// And after-action use new key
+			$key = str_replace('/cache/0', '', $key);
+			return true;
+		} else
+			return parent::CacheNeedUpdate($key);
+	} // end of func CacheNeedUpdate
 
 
 	/**

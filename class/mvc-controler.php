@@ -8,6 +8,7 @@
 
 require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/string.php');
+require_once('fwolflib/func/url.php');
 
 /*
 // In subclass or subclass for an app,
@@ -131,14 +132,37 @@ abstract class Controler
 		// Cache, Notice: this msg is delayed if cache on.
 		if (true == $view->bCacheOn) {
 			$key = $view->CacheGenKey();
-			if (file_exists($view->CachePath($key)))
-				$i = $view->CacheLifetime($key) + filemtime($view->CachePath($key)) - time();
-			else
+			if (file_exists($view->CachePath($key))) {
+				$t1 = filemtime($view->CachePath($key));
+				$i = $view->CacheLifetime($key) + $t1 - time();
+			} else {
+				$t1 = 0;
 				$i = 0;
+			}
+			$t2 = $t1 + $view->CacheLifetime($key);
+			// Time format
+			$t1 = date('Ymd.His', $t1);
+			$t2 = date('Ymd.His', $t2);
 			$s .= ', cache: '
-				. $i
-				. '/'
-				. $view->CacheLifetime($key);
+				. $t1 . '+'
+				. $view->CacheLifetime($key)
+				. '=' . $t2 . '/'
+				. $i;
+
+			// Refresh link, avoid robot claw
+			$s .= ' <a href="javascript:';
+			$s_t = SetUrlParam(GetSelfUrl(true), 'cache', 0);
+			// Avoid robot claw, break it to several part
+			$ar = preg_split('/(\:|\/|\.|\?|\&)/', $s_t, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+			$i = count($ar);	// Impossible =0
+			for ($j = 0; $j < $i; $j++)
+				// fcr = footer cache refresh
+				$s .= "fcr$j='{$ar[$i - $j - 1]}';";
+			$s .= 'fcr=';
+			for ($j = 0; $j < $i; $j++)
+				$s .= 'fcr' . ($i - $j - 1) . '+';
+			$s .= '\'\';location.href=fcr;';
+			$s .= '">R</a>';
 		}
 
 		$s .= '.';
