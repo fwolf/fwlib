@@ -52,6 +52,12 @@ abstract class View extends Cache{
 	public $bOutputTidy = false;
 
 	/**
+	 * If show debug info on footer ?
+	 * @var	boolean
+	 */
+	public $bShowDebugInfo = false;
+
+	/**
 	 * View's caller -- Controler object
 	 * @var	object
 	 */
@@ -314,12 +320,16 @@ abstract class View extends Cache{
 	/**
 	 * Generate footer part
 	 */
-	public function GenFooter()
-	{
-		// Set time used and db query executed time
-		$this->oCtl->SetInfoRuntime($this);
-
+	public function GenFooter() {
 		$this->sOutputFooter = $this->oTpl->fetch($this->aTplFile['footer']);
+
+		// Set time used and db query executed time
+		if ($this->bShowDebugInfo)
+			$this->sOutputFooter = str_replace('<!-- debug info -->'
+				, $this->oCtl->GetDebugInfo($this)
+				. '<!-- debug info -->'
+				, $this->sOutputFooter);
+
 		return $this->sOutputFooter;
 	} // end of func GenFooter
 

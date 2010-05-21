@@ -100,7 +100,7 @@ abstract class Controler
 
 
 	/**
-	 * Set run time length and db query times to View to display out.
+	 * Get run time length and db query times etc.
 	 *
 	 * Need fwolflib::View,
 	 * and use global var $i_db_query_times set in fwolflib::Adodb::CountDbQueryTimes
@@ -110,12 +110,13 @@ abstract class Controler
 	 * Cost about 0.05 more second when have db query.
 	 *
 	 * Eg: Processed in 0.054994 seconds, 6 db queries.
+	 *
 	 * @param	object	&$view	View object
 	 * @global	int		$i_db_query_times
+	 * @return	string
 	 * @see	View::GenFooter
 	 */
-	public function SetInfoRuntime(&$view)
-	{
+	public function GetDebugInfo(&$view) {
 		global $i_db_query_times;
 
 		// Record run end time
@@ -124,7 +125,7 @@ abstract class Controler
 		$s = '';
 		$time_used = $this->fTimeEnd - $this->fTimeStart;
 		$time_used = round($time_used, 4);
-		$s .= "Processed in $time_used seconds";
+		$s .= "<p>Processed in $time_used seconds";
 		// Db query times
 		if (isset($i_db_query_times))
 			$s .= ", $i_db_query_times db queries";
@@ -168,13 +169,10 @@ abstract class Controler
 			$s .= '">R</a>';
 		}
 
-		$s .= '.';
+		$s .= ".</p>\n";
 
-		// Assign msg to View's template object
-		if (!is_null($view->oTpl))
-			$view->oTpl->assign('debug_info_runtime', $s);
-
-	} // end of func SetInfoRuntime
+		return $s;
+	} // end of func GetDebugInfo
 
 
 	/**
