@@ -14,7 +14,17 @@ cache.php
 
 
 curl.php
-	Curl relate functions.
+------------------------------------------------------------
+### Curl
+	A class aimed to use curl function efficiency. Very useful in write a game bot, or an information thief program.
+
+
+curl-comm.php
+------------------------------------------------------------
+### CurlComm
+	Commucate with server via http using Curl.
+
+
 dbbak2sql.php
 	Backup db to standard sql files.
 dbupdater.php
@@ -41,6 +51,12 @@ excel.php
 	Generate excel file, xml mode, need high version of MS Excel.
 
 
+fwolflib.php
+------------------------------------------------------------
+### Fwolflib
+	Basic class of all. Log included.
+
+
 list-table.php
 ------------------------------------------------------------
 ### ListTable
@@ -63,7 +79,7 @@ sql_generator.php
 	Tools class to generator compative sql parse, Adodb object needed.
 
 
-toadtauri.php
+todatauri.php
 ------------------------------------------------------------
 ### ToDataUri
 	Can save html all in 1 file.
