@@ -26,6 +26,8 @@ require_once('fwolflib/func/request.php');
  *
  * If need to re-generate some part, you can directly call GenFooter() etc.
  *
+ * Apply 'cache=0' at end of url will force cache update, notice there is no cache stored for url plused 'cache=0'.
+ *
  * @package		fwolflib
  * @subpackage	class.mvc
  * @copyright	Copyright 2008-2010, Fwolf
@@ -48,6 +50,12 @@ abstract class View extends Cache{
 	 * @var boolean
 	 */
 	public $bOutputTidy = false;
+
+	/**
+	 * If show debug info on footer ?
+	 * @var	boolean
+	 */
+	public $bShowDebugInfo = false;
 
 	/**
 	 * View's caller -- Controler object
@@ -205,6 +213,14 @@ abstract class View extends Cache{
 		if (0 < strlen($key) && '/' == $key{0})
 			$key = substr($key, 1);
 
+		// When force update cache, ignore 'cache=0' in url
+		if ('0' == GetGet('cache')) {
+			// Can't unset($_GET['cache']);
+			// Because CacheNeedUpdate() need to check later
+
+			$key = str_replace('/cache/0', '', $key);
+		}
+
 		return $key;
 	} // end of func CacheGenKey
 
@@ -241,6 +257,20 @@ abstract class View extends Cache{
 	public function CacheLifetime($key) {
 		return 60 * 60;
 	} // end of func CacheLifetime
+
+
+	/**
+	 * Is cache data file need update/create ?
+	 *
+	 * @param	string	$key
+	 * @return	boolean
+	 */
+	protected function CacheNeedUpdate($key) {
+		if ('0' == GetGet('cache')) {
+			return true;
+		} else
+			return parent::CacheNeedUpdate($key);
+	} // end of func CacheNeedUpdate
 
 
 	/**
@@ -290,12 +320,16 @@ abstract class View extends Cache{
 	/**
 	 * Generate footer part
 	 */
-	public function GenFooter()
-	{
-		// Set time used and db query executed time
-		$this->oCtl->SetInfoRuntime($this);
-
+	public function GenFooter() {
 		$this->sOutputFooter = $this->oTpl->fetch($this->aTplFile['footer']);
+
+		// Set time used and db query executed time
+		if ($this->bShowDebugInfo)
+			$this->sOutputFooter = str_replace('<!-- debug info -->'
+				, $this->oCtl->GetDebugInfo($this)
+				. '<!-- debug info -->'
+				, $this->sOutputFooter);
+
 		return $this->sOutputFooter;
 	} // end of func GenFooter
 

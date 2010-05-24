@@ -1,10 +1,11 @@
 <?php
 /**
-* @package     MaGod
-* @copyright   Copyright 2003, Fwolf
-* @author      Fwolf <fwolf001@163.net>
-* @version    $Id$
-*/
+ * @package		fwolflib
+ * @subpackage	func
+ * @copyright	Copyright 2003-2010, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
+ * @since		2003 someday
+ */
 
 /**
 * 增加或设置/更改URL参数

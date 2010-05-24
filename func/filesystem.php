@@ -194,6 +194,7 @@ function ListDir($dir)
 	asort($ar_t, SORT_NUMERIC);
 	// Build result array, count file or dir size
 	$i = 0;
+	$files = array();
 	foreach ($ar_t as $key=>$value)
 	{
 		$i++;

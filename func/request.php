@@ -3,9 +3,8 @@
  * @package		fwolflib
  * @subpackage	func
  * @copyright	Copyright 2007-2008, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
+ * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2007-01-21
- * @version		$Id$
  */
 
 /**

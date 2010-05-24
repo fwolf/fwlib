@@ -116,6 +116,7 @@ commercial bid, cb			|商务标
 comparison and choice, cc	|比选，比较、选择
 composing					|排版
 comprehensive evaluation method, cem	|综合评估法
+config, cfg, conf			|配置
 construction, cons			|施工，建设
 	construction bureau, cb	|建设局
 	construction engineering trading center, cetc	|建设工程交易中心
@@ -346,7 +347,7 @@ scope				|purview
 text				|content
 time				|
 timestamp			|lasttime
-value				|intvalue, strvalue, datevalue
+value				|val, intvalue, strvalue, datevalue
 
 </div>
 ';
