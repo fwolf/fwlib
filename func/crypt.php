@@ -1,9 +1,10 @@
 <?php
 /**
  * Func about encrypt and decrypt.
+ *
  * @package     fwolflib
  * @subpackage	func
- * @copyright   Copyright 2009, Fwolf
+ * @copyright   Copyright 2009-2010, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2009-10-22
  */
@@ -11,6 +12,9 @@
 
 require_once('fwolflib/func/ecl.php');
 require_once('fwolflib/func/env.php');
+
+if (!function_exists('mcrypt_module_open'))
+	die('Module mcrypt not installed.');
 
 
 // Get mcrypt supported algorithms:
