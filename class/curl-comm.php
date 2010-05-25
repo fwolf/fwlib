@@ -10,10 +10,12 @@
 if (0 <= version_compare(phpversion(), '5.3.0')) {
 	require_once(__DIR__ . '/curl.php');
 	require_once(__DIR__ . '/../func/crypt.php');
+	require_once(__DIR__ . '/../func/ecl.php');
 	require_once(__DIR__ . '/../func/string.php');
 } else {
 	require_once(dirname(__FILE__) . '/curl.php');
 	require_once(dirname(__FILE__) . '/../func/crypt.php');
+	require_once(dirname(__FILE__) . '/../func/ecl.php');
 	require_once(dirname(__FILE__) . '/../func/string.php');
 }
 
