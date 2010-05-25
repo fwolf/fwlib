@@ -176,13 +176,18 @@ class CurlComm extends Curl {
 		$s = $this->MsgEncrypt($msg);
 		$s = $this->Post($this->sUrlRemote, array('msg' => $s));
 		// Decrypt result
-		$ar = $this->MsgDecrypt($s);
+		if (!empty($s))
+			$ar = $this->MsgDecrypt($s);
+		else
+			$ar = array();
 		return $ar;
 	} // end of func CommSend
 
 
 	/**
 	 * Send signal to server to test remote url readable
+	 *
+	 * @return	int	0/ok, 1 error.
 	 */
 	public function CommSendTest() {
 		$this->Log('Say hello to server.', 1);
@@ -197,8 +202,11 @@ class CurlComm extends Curl {
 		if (isset($ar['code'])) {
 			$this->Log('Server code: ' . $ar['code'], 1);
 			$this->Log('Server msg: ' . $ar['msg'], 1);
-		} else
+			return 0;
+		} else {
 			$this->Log('No valid server return msg.');
+			return 1;
+		}
 	} // end of func CommSendTest
 
 
