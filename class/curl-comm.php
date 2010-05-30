@@ -204,9 +204,11 @@ class CurlComm extends Curl {
 		if (isset($ar['code'])) {
 			$this->Log('Server code: ' . $ar['code'], 1);
 			$this->Log('Server msg: ' . $ar['msg'], 1);
+			$this->Log('Comm send test ok.', 3);
 			return 0;
 		} else {
-			$this->Log('No valid server return msg.');
+			$this->Log('No valid server return msg.', 1);
+			$this->Log('Comm send test ok.', 3);
 			return 1;
 		}
 	} // end of func CommSendTest

@@ -273,9 +273,7 @@ class Adodb
 			if (empty($rs)) {
 				throw new Exception('Db connect fail, please check php errorlog.', -1);
 			}
-		}
-		catch (Exception $e)
-		{
+		} catch (Exception $e) {
 			// Get error trace message
 			$i_ob = ob_get_level();
 			if (0 != $i_ob)
@@ -301,6 +299,7 @@ class Adodb
 			error_log('');
 			error_log('======== Adodb db connect error');
 			error_log("\n" . $s_trace);
+			error_log($this->sErrorMsg);
 			//error_log('');
 
 			//var_dump($e);
