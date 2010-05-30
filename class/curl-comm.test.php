@@ -1,4 +1,4 @@
-<?Php
+<?php
 /**
  * @package		fwolflib
  * @subpackage	class
@@ -40,7 +40,7 @@ if (empty($_POST)) {
 		'url_remote'	=> $s_url_remote,
 	);
 	$o_cc = new CurlComm($ar_cfg);
-	if (1 == $o_cc->CommSendTest()) {
+	if (0 != $o_cc->CommSendTest()) {
 		echo $o_cc->LogGet(1);
 		Ecl('Conn test error.');
 		unlink($f_lock);

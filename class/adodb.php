@@ -104,6 +104,12 @@ class Adodb
 	protected $oSg;
 
 	/**
+	 * Error msg
+	 * @var	string
+	 */
+	public $sErrorMsg = '';
+
+	/**
 	 * System charset
 	 *
 	 * In common, this is your php script/operation system charset
@@ -286,8 +292,9 @@ class Adodb
 			}
 
 			// Print error
-			Ecl($e->getCode());
-			Ecl($e->getMessage());
+			$this->sErrorMsg = 'Error, code '
+				. $e->getCode()
+				. ', msg: ' . $e->getMessage();
 
 			// Log error
 			$s_trace = str_replace('&nbsp;', '>', strip_tags($s_trace));
@@ -301,7 +308,8 @@ class Adodb
 			if (0 != $i_ob) {
 				ob_end_flush();
 			}
-			exit();
+			//exit();
+			return false;
 		}
 
 		// 针对mysql 4.1以上，UTF8编码的数据库，需要在连接后指定编码
@@ -311,7 +319,8 @@ class Adodb
 			$this->__conn->Execute('set names "' . str_replace('utf-8', 'utf8', $this->aDbProfile['lang']) . '"');
 		}
 
-		return $rs;
+		//return $rs;
+		return true;
 	} // end of func Connect
 
 

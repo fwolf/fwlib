@@ -45,10 +45,8 @@ class Fwolflib {
 	 */
 	public $aLog = array();
 
-
 	/**
 	 * Default time format
-	 *
 	 * @var	string
 	 */
 	public $sFormatTime = 'Y-m-d H:i:s';

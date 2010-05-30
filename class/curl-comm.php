@@ -189,7 +189,7 @@ class CurlComm extends Curl {
 	/**
 	 * Send signal to server to test remote url readable
 	 *
-	 * @return	int	0/ok, 1 error.
+	 * @return	int	0/ok, other error.
 	 */
 	public function CommSendTest() {
 		$this->Log('Say hello to server.', 1);
@@ -245,12 +245,12 @@ class CurlComm extends Curl {
 	 * @return	$this
 	 */
 	public function SetCfg($ar_cfg = array()) {
-		if (empty($ar_cfg))
-			return $this;
-
-		$this->sCryptAlgo = ArrayRead($ar_cfg, 'crypt_algo', $this->sCryptAlgo);
-		$this->sCryptKey = ArrayRead($ar_cfg, 'crypt_key', '');
-		$this->sUrlRemote = ArrayRead($ar_cfg, 'url_remote', '');
+		if (!empty($ar_cfg)) {
+			$this->sCryptAlgo = ArrayRead($ar_cfg, 'crypt_algo', $this->sCryptAlgo);
+			$this->sCryptKey = ArrayRead($ar_cfg, 'crypt_key', '');
+			$this->sUrlRemote = ArrayRead($ar_cfg, 'url_remote', '');
+		}
+		return $this;
 	} // end of func SetCfg
 
 
