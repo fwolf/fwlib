@@ -22,7 +22,7 @@ require_once('simpletest/unit_tester.php');
 require_once('simpletest/reporter.php');
 */
 
-$test = &new TestSuite('Group test for func/*');
+$test = new TestSuite('Group test for func/*');
 
 $test->addTestFile('array.test.php');
 $test->addTestFile('client.test.php');

@@ -258,7 +258,7 @@ class SyncDbData {
 	protected function DbConn($dbprofile)
 	{
 		//$conn = DbConn($s);
-		$conn = &new Adodb($dbprofile);
+		$conn = new Adodb($dbprofile);
 		$conn->Connect();
 		//var_dump($conn);
 

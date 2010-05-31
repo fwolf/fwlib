@@ -192,7 +192,7 @@ CREATE TABLE $this->sTblLog (
 	 */
 	private function &DbConn($server)
 	{
-		$conn = &new Adodb($server);
+		$conn = new Adodb($server);
 		$conn->Connect();
 		return $conn;
 	} // end of func DbConn
