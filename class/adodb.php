@@ -289,8 +289,9 @@ class Adodb
 
 
 			// Log error
-			$s_trace = "\n======== Adodb db connect error\n"
-				. str_replace('&nbsp;', '>', strip_tags($s_trace));
+			$s_trace = "======== Adodb db connect error\n"
+				. str_replace('&nbsp;', '>', strip_tags($s_trace))
+				. $this->ErrorMsg() . "\n";
 			$this->sErrorMsg = $s_trace;
 			error_log($s_trace);
 

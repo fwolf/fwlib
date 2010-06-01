@@ -112,7 +112,7 @@ class SyncDbCurl extends CurlComm {
 	protected function NewObjDb() {
 		$obj = new Adodb($this->aDbProf);
 		if (false == $obj->Connect()) {
-			$this->Log('Db conn fail: ' . $obj->sErrorMsg, 5);
+			$this->Log('Db conn fail.', 5);
 			return null;
 		} else {
 			$this->Log('New obj db.', 1);
@@ -159,8 +159,7 @@ class SyncDbCurl extends CurlComm {
 			if (0 == $ar['code']) {
 				$this->Log('Test remote db conn ok.', 1);
 			} else {
-				$this->Log('Test remote db conn fail, msg: '
-					. $ar['msg'], 5);
+				$this->Log('Test remote db conn fail.', 5);
 				return 2;
 			}
 		} else {
