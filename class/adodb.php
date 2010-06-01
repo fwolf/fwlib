@@ -241,10 +241,8 @@ class Adodb
 	 * @param $forcenew			Force new connection
 	 * @return boolean
 	 */
-	public function Connect($forcenew = false)
-	{
-		try
-		{
+	public function Connect($forcenew = false) {
+		try {
 			// Disable error display tempratory
 			$s = ini_get("display_errors");
 			ini_set("display_errors", "0");
@@ -289,6 +287,14 @@ class Adodb
 				echo $s_t;
 			}
 
+
+			// Log error
+			$s_trace = "\n======== Adodb db connect error\n"
+				. str_replace('&nbsp;', '>', strip_tags($s_trace));
+			$this->sErrorMsg = $s_trace;
+			error_log($s_trace);
+
+/*
 			// Print error
 			$this->sErrorMsg = 'Error, code '
 				. $e->getCode()
@@ -301,6 +307,7 @@ class Adodb
 			error_log("\n" . $s_trace);
 			error_log($this->sErrorMsg);
 			//error_log('');
+*/
 
 			//var_dump($e);
 			//echo $e;

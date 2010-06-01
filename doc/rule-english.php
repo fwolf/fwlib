@@ -131,6 +131,7 @@ constructor					|（一级）建造师
 	registered constructor, rc	|注册建造师，一般缩写可用这个
 contact, ctc				|联系人
 contract, cnt				|合同
+convert, cvt				|转换
 credit						|信用，荣誉
 creator						|创建者，录入人
 degree						|学位

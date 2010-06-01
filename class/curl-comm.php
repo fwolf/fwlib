@@ -135,7 +135,7 @@ class CurlComm extends Curl {
 	 */
 	protected function CommReturn($ar_request) {
 		$s = 'CommReturn'
-			. StrUnderline2Ucfirst($ar_request['action']);
+			. StrUnderline2Ucfirst($ar_request['action'], true);
 		if (method_exists($this, $s)) {
 			if (empty($ar_request['msg']))
 				return $this->$s();
@@ -154,7 +154,7 @@ class CurlComm extends Curl {
 	/**
 	 * Return hello msg to CommSendTest
 	 *
-	 * @see		CommSendtest()
+	 * @see		CommSendTest()
 	 * @return	array
 	 */
 	protected function CommReturnHello() {
@@ -208,7 +208,7 @@ class CurlComm extends Curl {
 			return 0;
 		} else {
 			$this->Log('No valid server return msg.', 1);
-			$this->Log('Comm send test ok.', 3);
+			$this->Log('Comm send test fail.', 5);
 			return 1;
 		}
 	} // end of func CommSendTest
