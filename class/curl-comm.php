@@ -28,6 +28,7 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
  * array(
  * 	action
  * 	msg		Various action may have diff type msg, array or string.
+ * 	msg_extra
  * )
  *
  * Msg return format(after decrypted):
@@ -37,6 +38,12 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
  * 		If code=0, no error, msg is data array.
  * 		If code<>0, error, msg is string error msg.
  * )
+ *
+ *
+ * Roadmap:
+ *
+ * 1.1	2010-06-08	Msg extra can be added when send to remote.
+ * 1.0	2010-06-01	Basic communicate feature.
  *
  * @package		fwolflib
  * @subpackage	class
@@ -119,13 +126,13 @@ class CurlComm extends Curl {
 			$rs['code'] = 1;
 			$rs['msg'] = 'Empty input msg.';
 		} else {
-			$ar_request = $this->MsgDecrypt($_POST['msg']);
+			$ar_req = $this->MsgDecrypt($_POST['msg']);
 			// Check input msg format
-			if (empty($ar_request['action'])) {
+			if (empty($ar_req['action'])) {
 				$rs['code'] = 2;
 				$rs['msg'] = 'Empty action.';
 			} else {
-				$rs = $this->CommReturn($ar_request);
+				$rs = $this->CommReturn($ar_req);
 			}
 		}
 
@@ -137,21 +144,19 @@ class CurlComm extends Curl {
 	/**
 	 * Call action func, return result
 	 *
-	 * @param	array	$ar_request
+	 * @param	array	$ar_req
 	 * @return	array
 	 */
-	protected function CommReturn($ar_request) {
+	protected function CommReturn($ar_req) {
 		$s = 'CommReturn'
-			. StrUnderline2Ucfirst($ar_request['action'], true);
+			. StrUnderline2Ucfirst($ar_req['action'], true);
 		if (method_exists($this, $s)) {
-			if (empty($ar_request['msg']))
-				return $this->$s();
-			else
-				return $this->$s($ar_request['msg']);
-		} else {
+			return $this->$s($ar_req);
+		}
+		else {
 			$rs = array();
 			$rs['code'] = 3;
-			$rs['msg'] = 'Action "'	. $ar_request['action']
+			$rs['msg'] = 'Action "'	. $ar_req['action']
 				. '" is not implemented.';
 			return $rs;
 		}
@@ -162,12 +167,14 @@ class CurlComm extends Curl {
 	 * Return hello msg to CommSendTest
 	 *
 	 * @see		CommSendTest()
+	 * @param	array	$ar_req
 	 * @return	array
 	 */
-	protected function CommReturnHello() {
+	protected function CommReturnHello($ar_req = array()) {
 		return array(
 			'code'	=> 0,
 			'msg'	=> json_encode(array(
+				'request'	=> var_export($ar_req, true),
 				'math 1 + 1 = 2',
 				'people 1 + 1 > 2',
 				)),
