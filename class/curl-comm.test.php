@@ -40,6 +40,7 @@ if (empty($_POST)) {
 		'url_remote'	=> $s_url_remote,
 	);
 	$o_cc = new CurlComm($ar_cfg);
+	$o_cc->aMsgExtra = array('msg_extra' => 'something useful');
 	if (0 != $o_cc->CommSendTest()) {
 		echo $o_cc->LogGet(1);
 		Ecl('Conn test error.');
@@ -47,7 +48,7 @@ if (empty($_POST)) {
 		die();
 	}
 
-	echo $o_cc->LogGet(3);
+	echo $o_cc->LogGet(1);
 
 	unlink($f_lock);
 } else {

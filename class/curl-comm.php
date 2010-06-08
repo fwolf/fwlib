@@ -47,6 +47,13 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
 class CurlComm extends Curl {
 
 	/**
+	 * Extra msg will be added when comm
+	 * Notice: Avoid conflict with other msg.
+	 * @var	array
+	 */
+	public $aMsgExtra = array();
+
+	/**
 	 * Algorithm of crypt
 	 * @var	string
 	 */
@@ -175,6 +182,10 @@ class CurlComm extends Curl {
 	 * @return	array
 	 */
 	public function CommSend($msg) {
+		// Adding msg extra
+		if (!empty($this->aMsgExtra))
+			$msg = array_merge($msg, $this->aMsgExtra);
+
 		$s = $this->MsgEncrypt($msg);
 		$s = $this->Post($this->sUrlRemote, array('msg' => $s));
 		// Decrypt result
