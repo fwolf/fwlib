@@ -31,18 +31,27 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
  * it's somehow 'two-way' sync.
  *
  * Also I have some additional thought:
- * - Make app read and write to remote db through this.
- * - When write to remote db and remote side not accessable,
+ * - Make app read and write to server/remote db through this.
+ * - When write to server/remote db and remote side not accessable,
  * cache it and can call re-write later.
+ *
+ *
+ * When act as server, make config vars as less as possible,
+ * db param can passed in through POST,
+ * but crypt key must be assigned.
+ *
+ * When act as client, can connect to multi server,
+ * each have difference config, job, crypt etc,
+ * client comm with them one by one.
  *
  *
  * Roadmap:
  *
- * 0.4	Cache for write to remote db, and re-call them.
- * 0.3	Provide app read and write functional from/to remote db.
- * 0.2	Sync push to remote.
- * 0.11	Auto call data convert func.
- * 0.1	[:TODO:] Sync pull from remote.
+ * 1.4	Cache for write to remote db, and re-call them.
+ * 1.3	Provide app read and write functional from/to remote db.
+ * 1.2	Sync push to server.
+ * 1.1	Auto call data convert func.
+ * 1.0	[:TODO:] Sync pull from server.
  *
  * @package		fwolflib
  * @subpackage	class
@@ -54,11 +63,28 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
 class SyncDbCurl extends CurlComm {
 
 	/**
-	 * Db conn profile
-	 * array(type, host, user, pass, name, lang)
+	 * Default value of config
+	 * array(
+	 * 	url,
+	 * 	db_client	=> array(
+	 * 		type, host, user, pass, name, lang
+	 * 	),
+	 * 	db_server	=> array(
+	 * 		type, host, user, pass, name, lang
+	 * 	),
+	 * pull		=> '' or array(),
+	 * push		=> '' or array(),
+	 * )
 	 * @var	array
 	 */
-	protected $aDbProf = array();
+	public $aCfgDefault = array();
+
+	/**
+	 * Config of all server, empty val will fill by $aCfgDefault.
+	 * @see	$aCfgDefault
+	 * @var	array
+	 */
+	public $aCfgServer = array();
 
 	/**
 	 * Db conn obj
@@ -77,21 +103,44 @@ class SyncDbCurl extends CurlComm {
 		unset($this->oDb);
 
 		parent::__construct($ar_cfg);
+
+		// Server will auto start, manual start client
+		if (empty($_POST))
+			$this->StartClient();
 	} // end of func __construct
+
+
+	/**
+	 * At server, conn to db before call action func.
+	 *
+	 * @param	array	$ar_req
+	 * @return	array
+	 */
+	protected function CommReturn($ar_req) {
+		// Db, use posted db config first.
+		if (isset($ar_req['db_server']))
+			$ar_db_prof = $ar_req['db_server'];
+		else
+			// Using default config
+			// Notice, there is no server config array on the server.
+			// so we only read default config.
+			$ar_db_prof = $this->aCfgDefault['db_server'];
+		$this->oDb = $this->NewObjDb($ar_db_prof);
+
+		return parent::CommReturn($ar_req);
+	} // end of func CommReturn
 
 
 	/**
 	 * Test db conn @ server side.
 	 *
 	 * @see		TestDb()
+	 * @see		CommReturn()	Db is connected here.
+	 * @param	array	$ar_req	Request msg array
 	 * @return	array
 	 */
-	protected function CommReturnTestDb() {
+	protected function CommReturnTestDb($ar_req = array()) {
 		$ar = array();
-
-		// Active auto obj new
-		$this->oDb;
-
 		if (empty($this->oDb)) {
 			$ar['code'] = 1;
 			$ar['msg'] = 'Test server db conn fail.';
@@ -106,15 +155,17 @@ class SyncDbCurl extends CurlComm {
 	/**
 	 * New db conn obj
 	 *
+	 * @param	array	$db_prof
 	 * @return	object
 	 * @see	$oDb
 	 */
-	protected function NewObjDb() {
-		$obj = new Adodb($this->aDbProf);
+	protected function NewObjDb($db_prof) {
+		$obj = new Adodb($db_prof);
 		if (false == $obj->Connect()) {
 			$this->Log('Db conn fail.', 5);
 			return null;
-		} else {
+		}
+		else {
 			$this->Log('New obj db.', 1);
 			return $obj;
 		}
@@ -130,45 +181,115 @@ class SyncDbCurl extends CurlComm {
 	public function SetCfg($ar_cfg = array()) {
 		parent::SetCfg($ar_cfg);
 		if (!empty($ar_cfg)) {
-			$this->aDbProf = ArrayRead($ar_cfg, 'db_prof', array());
+			$this->aCfgDefault = ArrayRead($ar_cfg, 'default', array());
+			$this->aCfgServer = ArrayRead($ar_cfg, 'server', array());
 		}
 		return $this;
 	} // end of func SetCfg
 
 
 	/**
+	 * Fill server config using default
+	 *
+	 * @return	$this
+	 */
+	protected function SetCfgServer() {
+		// These keys in cfg default can assign to server.
+		$ar_keys = array('url', 'db_client', 'db_server'
+			, 'pull', 'push');
+
+		if (!empty($this->aCfgServer)) {
+			foreach ($this->aCfgServer as $server => &$cfg) {
+				foreach ($ar_keys as $key) {
+					if (empty($cfg[$key])
+						&& !empty($this->aCfgDefault[$key]))
+						$cfg[$key] = $this->aCfgDefault[$key];
+				}
+				if (empty($cfg)) {
+					// Invalid server config
+					$this->Log('Invalid server config: ' . $server, 4);
+				}
+			}
+		}
+
+		$this->Log('Got ' . count($this->aCfgServer)
+			. ' server todo.', 1);
+
+		return $this;
+	} // end of func SetCfgServer
+
+
+	/**
+	 * Act as client
+	 *
+	 * @return	$this
+	 */
+	public function StartClient() {
+		// Fill server config using default
+		$this->SetCfgServer();
+
+		if (empty($this->aCfgServer)) {
+			$this->Log('Got no valid server config.', 5);
+			return $this;
+		}
+
+		foreach ($this->aCfgServer as $server => $cfg) {
+			$this->Log('Treat server "' . $server . '".', 3);
+			$this->sUrlRemote = $cfg['url'];
+			if (!empty($cfg['db_server']))
+				$this->aMsgExtra['db_server'] = $cfg['db_server'];
+
+			// Test curl connection
+			if (0 != $this->CommSendTest()) {
+				$this->Log('Error conn to server "' . $server
+					. '" ', 4);
+				return $this;
+			}
+			// Test db connection
+			if (0 != $this->TestDb($cfg)) {
+				$this->Log('Error when test db.', 5);
+				return $this;
+			}
+
+			// Begin pull and push
+		}
+
+		return $this;
+	} // end of func StartClient
+
+
+	/**
 	 * Test db connection
 	 *
+	 * @param	array	$cfg
 	 * @return	int 0=ok, other=error.
 	 */
-	public function TestDb() {
-		// Active auto obj new
-		$this->oDb;
-
-		// Local db
+	public function TestDb($cfg) {
+		// Client db
+		$this->oDb = $this->NewObjDb($cfg['db_client']);
 		if (empty($this->oDb)) {
-			$this->Log('Test local db conn fail.', 5);
+			$this->Log('Test client db conn fail.', 5);
 			return 1;
 		}
 		$this->Log('Test local db conn ok.', 1);
 
-		// Remote db
+		// Server db
 		$ar = array('action' => 'test-db');
 		$ar = $this->CommSend($ar);
 		if (isset($ar['code'])) {
 			if (0 == $ar['code']) {
-				$this->Log('Test remote db conn ok.', 1);
+				$this->Log('Test server db conn ok.', 1);
 			} else {
-				$this->Log('Test remote db conn fail.', 5);
+				$this->Log('Test server db conn fail.', 5);
 				return 2;
 			}
 		} else {
-			$this->Log('Test remote db conn fail, invalid response.', 5);
+			$this->Log('Test server db conn fail, invalid response.', 5);
 			return 3;
 		}
 
 
-		$this->Log('Db conn ok, both local and remote.', 3);
+		$this->Log('Db conn ok, both local and server.', 3);
 		return 0;
 	} // end of func TestDb
 

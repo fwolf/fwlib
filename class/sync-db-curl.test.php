@@ -17,25 +17,54 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
 }
 
 
-// Config
-$s_url_remote = 'http://local.fwolf.com/dev/fwolflib/class/sync-db-curl.test.php';
+// Config, can be multi-server
+// Global/default config
+$ar_default = array(
+	'url'		=> '',
+	'db_client'	=> array(
+		'type'	=> 'mysql',
+		'host'	=> 'localhost',
+		'user'	=> 'test',
+		'pass'	=> '',
+		'name'	=> 't-sync-db-curl1',
+		'lang'	=> 'utf-8',
+	),
+	'db_server'	=> array(
+		'type'	=> 'mysql',
+		'host'	=> 'localhost',
+		'user'	=> 'test',
+		'pass'	=> '',
+		'name'	=> 't-sync-db-curl',
+		'lang'	=> 'utf-8',
+	),
+	'pull'		=> '',
+	'push'		=> '',
+);
 $s_crypt_key = 'blahblahblah';
-$ar_db_client = array(
+
+
+// Per server config, if any part is missing, use default.
+// Key is name of server, will be recorded in db log tbl.
+$ar_server['test server'] = array(
+	'url'	=> 'http://local.fwolf.com/dev/fwolflib/class/sync-db-curl.test.php',
+);
+$ar_server['test server']['db_server'] = array(
 	'type'	=> 'mysql',
 	'host'	=> 'localhost',
 	'user'	=> 'test',
 	'pass'	=> '',
-	'name'	=> 't-sync-db-curl1',
+	'name'	=> 't-sync-db-curl2',
 	'lang'	=> 'utf-8',
 );
-$ar_db_server = $ar_db_client;
-$ar_db_server['name'] = 't-sync-db-curl2';
+$ar_server['test server2'] = array(
+	'url'	=> 'http://local.fwolf.com/dev/fwolflib/class/sync-db-curl.test1.php',
+);
 
 
 if (empty($_POST)) {
 	// Act as client
 
-	// Avoid duplicate run
+	// Avoid duplicate run at client side.
 	$f_lock = sys_get_temp_dir() . '/sync-db-curl.test.lock';
 	if (file_exists($f_lock)) {
 		// Already running
@@ -47,35 +76,19 @@ if (empty($_POST)) {
 
 	$ar_cfg = array(
 		'crypt_key'		=> $s_crypt_key,
-		'url_remote'	=> $s_url_remote,
-		'db_prof'		=> $ar_db_client,
+		'default'		=> $ar_default,
+		'server'		=> $ar_server,
 	);
 	$o_sdc = new SyncDbCurl($ar_cfg);
-
-	// Test curl conn
-	if (1 == $o_sdc->CommSendTest()) {
-		echo $o_sdc->LogGet(1);
-		Ecl('Conn test error.');
-		unlink($f_lock);
-		die();
-	}
-
-	// Test local db conn
-	if (0 != $o_sdc->TestDb()) {
-		echo $o_sdc->LogGet(5);
-		unlink($f_lock);
-		die('');
-	}
-
-
 	echo $o_sdc->LogGet(3);
+
 	unlink($f_lock);
 } else {
 	// Act as server
 	// Server need dup run, lock un-needed.
 	$ar_cfg = array(
 		'crypt_key'		=> $s_crypt_key,
-		'db_prof'		=> $ar_db_server,
+		'default'		=> $ar_default,
 	);
 	$o_sdc = new SyncDbCurl($ar_cfg);
 }
