@@ -19,9 +19,24 @@ if (! defined('SIMPLE_TEST')) {
 // }}}
 
 // Require library define file which need test
+require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/url.php');
 
 class TestFuncUrl extends UnitTestCase {
+
+	function TestSetUrlParam() {
+		$url = 'http://www.domain.tld/?a=1&b=2&';
+
+		$url1 = SetUrlParam($url, 'a', 2);
+		$this->assertEqual($url1, 'http://www.domain.tld/?a=2&b=2');
+
+		$url1 = SetUrlParam($url, 'b', 3);
+		$this->assertEqual($url1, 'http://www.domain.tld/?a=1&b=3');
+
+		$url1 = SetUrlParam($url, 'c');
+		$this->assertEqual($url1, 'http://www.domain.tld/?a=1&b=2&c=');
+
+	} // end of func TestSetUrlParam
 
     function TestUrlPlan() {
     	$url = 'http://www.google.com/?a=https://something';

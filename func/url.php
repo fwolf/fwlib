@@ -7,6 +7,42 @@
  * @since		2003 someday
  */
 
+
+/**
+* 将数组转换为URL地址
+*
+* 要进行转换的源数组必须是{@link UrlToArray()}结果的格式，即数组的第一个元素为文件地址，其余为各参数
+* @access   public
+* @see      UrlToArray()
+* @param    array   $ar 数组
+* @return   string
+*/
+function ArrayToUrl(&$ar)
+{
+    $i = count($ar);
+    $s_url = '';
+    if (0 < $i)
+    {
+        $s_url .= $ar[0][0] . '?';
+        for ($j = 1; $j < $i; $j++)
+        {
+            foreach ($ar[$j] as $key=>$val)
+            {
+                $s_url .= $val . '=';
+            }
+            $s_url = substr($s_url, 0, strlen($s_url) - 1);
+            $s_url .= '&';
+        }
+        $s_url = substr($s_url, 0, strlen($s_url) - 1);
+    }
+    //去掉URL尾端的无效字符
+    $s_url = str_replace('&=', '', $s_url);
+//    $s_url = ereg_replace ('[&]+$', '', $s_url);
+    $s_url = preg_replace ('/[&]+$/', '', $s_url);
+    return($s_url);
+} // end function ArrayToUrl
+
+
 /**
 * 增加或设置/更改URL参数
 * @access   public
@@ -18,8 +54,7 @@
 */
 function SetUrlParam($urlStr, $strName, $strValue = '')
 {
-    if (empty($strName) && empty($strValue))
-    {
+    if (empty($strName) && empty($strValue)) {
         return($urlStr);
     }
     $ar = UrlToArray($urlStr);
@@ -42,6 +77,33 @@ function SetUrlParam($urlStr, $strName, $strValue = '')
     }
     return(ArrayToUrl($ar));
 } // end function SetUrlParam
+
+
+/**
+ * 为指定的文字内容按照指定的规则格式化成一个链接的HTML代码，返回该HTML字符串
+ * @access  public
+ * @param   string  $str            要进行格式化的内容
+ * @param   string  $linkAddress    链接地址
+ * @param   string  $targetWindow   链接的目标窗口
+ * @param   string  $paramStr       其他参数字符串，按照原样加到链接代码中
+ * @return  string
+ */
+function ToLink($str, $linkAddress, $targetWindow = '', $paramStr = '')
+{
+    $s_url = '';
+    $s_url .= '<a href="' . $linkAddress . '" ';
+    if (!empty($targetWindow))
+    {
+        $s_url .= 'target="' . $targetWindow . '" ';
+    }
+    if (!empty($paramStr))
+    {
+        $s_url .= $paramStr;
+    }
+    $s_url .= '>' . $str . '</a>';
+    return($s_url);
+}
+
 
 /**
 * 去掉URL参数
@@ -73,6 +135,7 @@ function UnsetUrlParam($urlStr, $strName)
     return(ArrayToUrl($ar2));
 } // end function UnsetUrlParam
 
+
 /**
 * 将URL地址转换为数组
 *
@@ -82,8 +145,7 @@ function UnsetUrlParam($urlStr, $strName)
 * @param    string  $urlStr URL地址
 * @return   array
 */
-function UrlToArray($urlStr)
-{
+function UrlToArray($urlStr) {
     /*
     示例：转换 'http://localhost/index.php?a=1&b=&c=d.php?e=5&f=6'的结果为
     Array(
@@ -109,28 +171,26 @@ function UrlToArray($urlStr)
     $i = 0;
     //先寻找“?”
     $i = strpos($str, '?');
-    if (1 > $i)
-    {
+    if (1 > $i) {
         //URL中没有?，说明其没有参数
         array_push($ar, array($str, ''));
     }
-    else
-    {
+    else {
         array_push($ar, array(substr($str, 0, $i), ''));
         $str = substr($str, $i + 1) . '&';
         //解析用&间隔的参数
-        while (!empty($str))
-        {
+        while (!empty($str)) {
             $i = strpos($str, '&');
-            if (0 < $i)
-            {
+            if (0 < $i) {
                 $sub_str = substr($str, 0, $i);
                 //分析$sub_str这个等式
                 array_push($ar, split('[=]', $sub_str));
                 $str = substr($str, $i + 1);
             }
-            else
-            {
+            elseif ('&' == $str[0]) {
+				$str = substr($str, 1);
+			}
+			else {
                 //剩下的不可识别字符
                 array_push($ar, array(substr($str, 0, 1), ''));
                 $str = substr($str, 1);
@@ -139,65 +199,6 @@ function UrlToArray($urlStr)
     }
     return($ar);
 } // end function UrlToArray
-
-/**
-* 将数组转换为URL地址
-*
-* 要进行转换的源数组必须是{@link UrlToArray()}结果的格式，即数组的第一个元素为文件地址，其余为各参数
-* @access   public
-* @see      UrlToArray()
-* @param    array   $ar 数组
-* @return   string
-*/
-function ArrayToUrl(&$ar)
-{
-    $i = count($ar);
-    $s_url = '';
-    if (0 < $i)
-    {
-        $s_url .= $ar[0][0] . '?';
-        for ($j = 1; $j < $i; $j++)
-        {
-            foreach ($ar[$j] as $key=>$val)
-            {
-                $s_url .= $val . '=';
-            }
-            $s_url = substr($s_url, 0, strlen($s_url) - 1);
-            $s_url .= '&';
-        }
-        $s_url = substr($s_url, 0, strlen($s_url) - 1);
-    }
-    //去掉URL尾端的无效字符
-    $s_url = str_replace('&=', '', $s_url);
-    $s_url = ereg_replace ('[&]+$', '', $s_url);
-    return($s_url);
-} // end function ArrayToUrl
-
-
-/**
- * 为指定的文字内容按照指定的规则格式化成一个链接的HTML代码，返回该HTML字符串
- * @access  public
- * @param   string  $str            要进行格式化的内容
- * @param   string  $linkAddress    链接地址
- * @param   string  $targetWindow   链接的目标窗口
- * @param   string  $paramStr       其他参数字符串，按照原样加到链接代码中
- * @return  string
- */
-function ToLink($str, $linkAddress, $targetWindow = '', $paramStr = '')
-{
-    $s_url = '';
-    $s_url .= '<a href="' . $linkAddress . '" ';
-    if (!empty($targetWindow))
-    {
-        $s_url .= 'target="' . $targetWindow . '" ';
-    }
-    if (!empty($paramStr))
-    {
-        $s_url .= $paramStr;
-    }
-    $s_url .= '>' . $str . '</a>';
-    return($s_url);
-}
 
 
 /**
