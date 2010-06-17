@@ -3,7 +3,7 @@
  * 字符串函数集
  * @package     fwolflib
  * @subpackage	func
- * @copyright   Copyright 2004-2009, Fwolf
+ * @copyright   Copyright 2004-2010, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		Before 2008-04-07
  * @version		$Id$

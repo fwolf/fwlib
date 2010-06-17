@@ -3,7 +3,7 @@
  * Test - string func
  * @package     fwolflib
  * @subpackage	func-test
- * @copyright   Copyright 2004-2009, Fwolf
+ * @copyright   Copyright 2004-2010, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2008-05-08
  */
@@ -31,7 +31,7 @@ class TestFuncString extends UnitTestCase {
     	$this->assertEqual(Pin15To18($x), $y);
 
     	$x = '410881790605552';
-    	$y = '410881197906055521';
+    	$y = '410881197906055527';
     	$this->assertEqual(Pin15To18($x), $y);
 
     } // end of func TestPin15To18
