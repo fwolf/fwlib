@@ -482,7 +482,8 @@ class ListTable
 				$page_cur = $i1;
 			else
 				$page_cur = 1;
-		} else
+		}
+		else
 			$page_cur = $p;
 
 		// Validate min and max

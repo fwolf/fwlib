@@ -186,7 +186,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 	{if (0 < strlen($lt_class))} class="{$lt_class}" {/if}>
 
 	{if (true == $lt_config.pager && true == $lt_config.pager_top)}
-	<span id="{$lt_id}_pager_top" class="{$lt_id}_pager">
+	<div id="{$lt_id}_pager_top" class="{$lt_id}_pager">
 		{if (!empty($lt_url.p_first))}<a href="{$lt_url.p_first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.p_prev))}<a href="{$lt_url.p_prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.p_next))}<a href="{$lt_url.p_next}">{$lt_config.pager_text_next}</a>{$lt_config.pager_text_spacer}{/if}
@@ -199,7 +199,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 			{$lt_config.pager_text_goto2}
 			<input type="submit" value="{$lt_config.pager_text_goto3}" />
 		</form>
-	</span>
+	</div>
 	{/if}
 
 	<table>
@@ -236,7 +236,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 	</table>
 
 	{if (true == $lt_config.pager && true == $lt_config.pager_bottom)}
-	<span id="{$lt_id}_pager_bottom" class="{$lt_id}_pager">
+	<div id="{$lt_id}_pager_bottom" class="{$lt_id}_pager">
 	{* Same with upper pager text *}
 		{if (!empty($lt_url.p_first))}<a href="{$lt_url.p_first}">{$lt_config.pager_text_first}</a>{$lt_config.pager_text_spacer}{/if}
 		{if (!empty($lt_url.p_prev))}<a href="{$lt_url.p_prev}">{$lt_config.pager_text_prev}</a>{$lt_config.pager_text_spacer}{/if}
@@ -250,7 +250,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 			{$lt_config.pager_text_goto2}
 			<input type="submit" value="{$lt_config.pager_text_goto3}" />
 		</form>
-	</span>
+	</div>
 	{/if}
 
 </div>
