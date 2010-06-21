@@ -133,6 +133,7 @@ contact, ctc				|联系人
 contract, cnt				|合同
 convert, cvt				|转换
 credit						|信用，荣誉
+credit evaluation system, ces	|信用评价体系
 creator						|创建者，录入人
 degree						|学位
 delivery					|发送

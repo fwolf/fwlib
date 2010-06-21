@@ -16,17 +16,40 @@ require_once('fwolflib/func/request.php');
 /**
  * View in MVC
  *
- * View是在Controler和Module之间起到一个融合的作用，它从Controler接受命令，从Module中接受数据，然后使用适当的模板和顺序来生成最终的html代码，然后交给Controler输出。
+ * View是在Controler和Module之间起到一个融合的作用，它从Controler接受命令，
+ * 从Module中接受数据，然后使用适当的模板和顺序来生成最终的html代码，
+ * 然后交给Controler输出。
  *
- * View主要体现为各项功能的page.php页面，相似的功能可以放在一个文件中进行处理，方便一些Module调用的共享。
+ * View主要体现为各项功能的page.php页面，相似的功能可以放在一个文件中进行处理，
+ * 方便一些Module调用的共享。
  *
  * View从Module得到结果数据后，使用Smarty模板进行加工，生成html，再交给Controler输出。
  *
  * Action的处理主要在View中，Action的默认值也在View中赋予和实现。
  *
+ *
+ * Output generate sequence:
+ * GetOutput()
+ * 	GenHeader()
+ * 	GenMenu()
+ * 	GenContent()
+ * 		Will auto call GenXxx() or GenContentXxx() is exists.
+ * 	GenFooter()
+ *
+ *
  * If need to re-generate some part, you can directly call GenFooter() etc.
  *
- * Apply 'cache=0' at end of url will force cache update, notice there is no cache stored for url plused 'cache=0'.
+ * Apply 'cache=0' at end of url will force cache update,
+ * notice there is no cache stored for url plused 'cache=0'.
+ *
+ *
+ * Roadmap:
+ *
+ * 2010-06-21	1.1
+ * 		Rename GenContentXxx() to GenXxx(), with backward compative.
+ * 2010-05-21	1.0	60d16e2417
+ * 		Basic feature.
+ *
  *
  * @package		fwolflib
  * @subpackage	class.mvc
@@ -36,7 +59,7 @@ require_once('fwolflib/func/request.php');
  * @see			Controler
  * @see			Module
  */
-abstract class View extends Cache{
+abstract class View extends Cache {
 
 	/**
 	 * If cache turned on
@@ -299,17 +322,24 @@ abstract class View extends Cache{
 	 * Doing this by call sub-method according to $sAction,
 	 * Also, this can be override by extended class.
 	 */
-	public function GenContent()
-	{
+	public function GenContent() {
+		if ('content' == strtolower($this->sAction))
+			$this->oCtl->ViewErrorDisp("Action shoud not named 'content'.");
+
 		if (empty($this->sAction))
 			$this->oCtl->ViewErrorDisp("No action given.");
 
 		// Check if action relate method existence, call it or report error.
-		$s_func = 'GenContent' . StrUnderline2Ucfirst($this->sAction, true);
-		if (method_exists($this, $s_func))
-		{
+		$s = StrUnderline2Ucfirst($this->sAction, true);
+		$s_func = 'Gen' . $s;
+		$s_func1 = 'GenContent' . $s;
+		if (method_exists($this, $s_func)) {
 			$this->sOutputContent = $this->$s_func();
 			return $this->sOutputContent;
+		}
+		elseif (method_exists($this, $s_func1)) {
+				$this->sOutputContent = $this->$s_func1();
+				return $this->sOutputContent;
 		}
 		else
 			// An invalid action is given
