@@ -240,8 +240,9 @@ class ListTable
 		$ar_title = array();
 		$ar_data = array();
 
-		// Will compare by array keys, data use it's first row
-		$keys_data = array_keys($this->aData[0]);
+		// Will compare by array keys, data use it's first/current row
+//		$keys_data = array_keys($this->aData[0]);
+		$keys_data = array_keys(current($this->aData));
 		$keys_title = array_keys($this->aTitle);
 
 		switch ($this->aConfig['fit_data_title'])
