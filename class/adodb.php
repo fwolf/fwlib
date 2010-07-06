@@ -750,6 +750,7 @@ class Adodb
 			'intn', // Sybase - tinyint
 			'mediumint',
 			'numeric',
+			'numericn',	// Sybase - numeric
 			'real',
 			'smallint',
 			'tinyint',
