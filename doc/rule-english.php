@@ -141,6 +141,7 @@ department, dept			|部门
 	department of construction, doc	|建设厅
 description, desc			|（产品）描述
 design enterprise, dent		|设计企业
+destination, dest			|目标，目的地
 detail, dtl					|详细信息
 determine the winning bidder, dtwb	|确定中标人
 Development and Reform Commission, drc	|发改委
@@ -267,6 +268,7 @@ sequence, seq				|顺序
 sign in						|签到
 size						|尺寸
 simple, smpl				|简单
+source, srce				|源头，来源
 source of funds, sof?		|资金来源
 special report				|专题报道
 speciality					|（所学）专业

@@ -32,8 +32,20 @@ class TestFuncArray extends UnitTestCase {
     	$this->assertEqual($x, 2);
     	$x = ArrayRead($ar, 3);
     	$this->assertEqual($x, null);
-
     } // end of func TestArrayRead
+
+
+    function TestFilterWildcard() {
+		$rule = 'a*, -*b, -??c, +?d*';
+		$ar_srce = array(
+			'ab',
+			'abc',
+			'adc',
+		);
+		$ar = FilterWildcard($ar_srce, $rule);
+		$this->assertEqual($ar, array('adc'));
+	} // end of func TestFilterWildcard
+
 
 } // end of class TestFuncArray
 

@@ -105,6 +105,9 @@ array.php
 ### ArrayRead($ar, $key, $val_default = null)
 	Read value from array.
 
+### FilterWildcard($ar_srce, $rules)
+	Filter an array by wildcard rules.
+
 
 client.php
 ------------------------------------------------------------
