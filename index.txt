@@ -243,6 +243,9 @@ string.php
 ------------------------------------------------------------
 	常用字符串函数集
 
+### MatchWildcard ($str, $rule)
+	Match a string with rule including wildcard.
+
 ### Pin15To18($pin)
 	Convert 15-digi pin to 18-digi.
 

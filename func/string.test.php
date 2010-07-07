@@ -2,7 +2,7 @@
 /**
  * Test - string func
  * @package     fwolflib
- * @subpackage	func-test
+ * @subpackage	func.test
  * @copyright   Copyright 2004-2010, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2008-05-08
@@ -24,6 +24,16 @@ require_once('fwolflib/func/request.php');
 require_once('fwolflib/func/string.php');
 
 class TestFuncString extends UnitTestCase {
+
+	function TestMatchWildcard() {
+		$s = 'abcdefg';
+		$this->assertEqual(true, MatchWildcard($s, 'a*e?g'));
+		$this->assertEqual(true, MatchWildcard($s, '?b*e*'));
+		$this->assertEqual(false, MatchWildcard($s, '?b*e?'));
+		$s = 'abc';
+		$this->assertEqual(true, MatchWildcard($s, 'a*'));
+	} // end of func TestMatchWildcard
+
 
     function TestPin15To18() {
     	$x = '340524800101001';

@@ -6,7 +6,6 @@
  * @copyright   Copyright 2004-2010, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		Before 2008-04-07
- * @version		$Id$
  */
 
 
@@ -46,27 +45,46 @@ function HtmlEncode($str)
  * @param	int		$pos
  * @return	boolean
  */
-function IsGbChar($str = '', $pos = 0)
-{
-    if (empty($str))
-    {
+function IsGbChar($str = '', $pos = 0) {
+    if (empty($str)) {
         return(false);
     }
-	else
-	{
+	else {
 		//检查连续的两个字节
 	    $s1 = ord(substr($str, $pos, 1));
 	    $s2 = ord(substr($str, $pos + 1, 1));
-		if ((160 < $s1) && (248 > $s1) && (160 < $s2) && (255 > $s2))
-		{
+		if ((160 < $s1) && (248 > $s1) && (160 < $s2) && (255 > $s2)) {
 		    return(true);
 		}
-		else
-		{
+		else {
 		    return(false);
 		}
 	}
 } // end of func IsGbChar
+
+
+/**
+ * Match a string with rule including wildcard.
+ *
+ * Eg: 'abcd' match rule '*c?'
+ *
+ * @param	string	$str
+ * @param	string	$rule
+ * @return	boolean
+ */
+function MatchWildcard ($str, $rule) {
+	// Convert wildcard rule to regex
+	$rule = str_replace('*', '.+', $rule);
+	$rule = str_replace('?', '.{1}', $rule);
+	$rule = '/' . $rule . '/';
+
+	if (1 == preg_match($rule, $str, $ar_match))
+		// Must match whole string, same length
+		if (strlen($ar_match[0]) == strlen($str))
+			return true;
+
+	return false;
+} // end of func MatchWildcard
 
 
 /**
@@ -445,4 +463,6 @@ function SubstrIgnHtml($str, $len, $marker = '...', $start = 0, $encoding = 'utf
 	}
 	return '';
 } // end of func SubstrIgnHtml
+
+
 ?>
