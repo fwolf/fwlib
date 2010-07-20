@@ -468,10 +468,11 @@ class ToDataUri extends Curl
 		// Discuz! error, I have no other ways to detect current encoding
 		// v4.0.0, printed page:
 		//<meta http-equiv="Content-Type" content="text/html; charset=CHARSET">
-		if ('charset' == $charset)
-		{
-			$charset = mb_detect_encoding($this->mHtml, "gb2312, gbk, big5, utf-8");
-			$charset = strtolower($charset);
+		if ('charset' == $charset) {
+			// Treat later
+			$charset = '';
+			//$charset = mb_detect_encoding($this->mHtml, "gb2312, gbk, big5, utf-8");
+			//$charset = strtolower($charset);
 		}
 		// :THINK: Use mb_check_encoding check again?
 
@@ -488,9 +489,9 @@ class ToDataUri extends Curl
 			$this->mInfo .= "Original charset: $charset<br />\n";
 		} else {
 			// Doc has no charset meta, force added
-			$charset = strtolower(mb_detect_encoding($this->mHtml));
-			if ('utf-8' != $charset)
-			{
+			$charset = strtolower(mb_detect_encoding($this->mHtml
+				, "gb2312, gbk, big5, utf-8"));
+			if ('utf-8' != $charset) {
 				$this->mHtml = mb_convert_encoding($this->mHtml, 'utf-8', $charset);
 				$this->mInfo .= "Original charset: $charset<br />\n";
 			}
