@@ -184,7 +184,7 @@ function UrlToArray($urlStr) {
             if (0 < $i) {
                 $sub_str = substr($str, 0, $i);
                 //分析$sub_str这个等式
-                array_push($ar, split('[=]', $sub_str));
+                array_push($ar, preg_split('/[=]/', $sub_str));
                 $str = substr($str, $i + 1);
             }
             elseif ('&' == $str[0]) {
