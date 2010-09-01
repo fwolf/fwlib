@@ -16,7 +16,7 @@ require_once('fwolflib/func/uuid.php');
 /**
  * Sync data between 2 database source
  *
- * at now, only from 1 to another,
+ * At now, only from 1 to another,
  * cannot do two-side sync yet.
  *
  * @package		fwolflib

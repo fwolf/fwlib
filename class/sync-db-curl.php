@@ -10,7 +10,8 @@
 if (0 <= version_compare(phpversion(), '5.3.0')) {
 	require_once(__DIR__ . '/adodb.php');
 	require_once(__DIR__ . '/curl-comm.php');
-} else {
+}
+else {
 	require_once(dirname(__FILE__) . '/adodb.php');
 	require_once(dirname(__FILE__) . '/curl-comm.php');
 }
@@ -252,10 +253,53 @@ class SyncDbCurl extends CurlComm {
 			}
 
 			// Begin pull and push
+			if (!empty($cfg['pull']))
+				$this->StartClientPull($cfg);
 		}
 
 		return $this;
 	} // end of func StartClient
+
+
+	/**
+	 * Do pull of a single server
+	 *
+	 * @param	array	$cfg
+	 */
+	public function StartClientPull($cfg) {
+		// Which tbl to pull ?
+		$ar_tbl = $this->oDb->MetaTables('TABLES');
+		if (!empty($ar_tbl)) {
+			$ar_tbl = FilterWildcard($ar_tbl, $cfg['pull']);
+			$this->Log('Got ' . count($ar_tbl) . ' tables to pull: '
+				. implode(', ', $ar_tbl), 3);
+
+			// Pull tables
+			if (!empty($ar_tbl)) {
+				foreach ($ar_tbl as $s_tbl) {
+					$this->StartClientPullTbl($cfg, $s_tbl);
+				}
+			}
+		}
+		else {
+			$this->Log('Pull fail: no tables on client side.', 4);
+		}
+	} // end of func StartClientPull
+
+
+	/**
+	 * Do pull of a single table
+	 *
+	 * @param	array	$cfg
+	 * @param	string	$s_tbl
+	 */
+	public function StartClientPullTbl($cfg, $s_tbl) {
+		if (empty($s_tbl)) {
+			$this->Log('StartClientPullTbl: empty table name.', 5);
+		}
+		else
+			$this->Log("StartClientPullTbl: $s_tbl");
+	} // end of func StartClientPullTbl
 
 
 	/**

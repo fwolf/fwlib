@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		fwolflib
- * @subpackage	class
+ * @subpackage	class.test
  * @copyright	Copyright 2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-05-25
@@ -17,7 +17,6 @@ if (0 <= version_compare(phpversion(), '5.3.0')) {
 }
 
 
-// Config, can be multi-server
 // Global/default config
 $ar_default = array(
 	'url'		=> '',
@@ -27,6 +26,7 @@ $ar_default = array(
 		'user'	=> 'test',
 		'pass'	=> '',
 		'name'	=> 't-sync-db-curl1',
+//		'name'	=> 't-2008-zbb',
 		'lang'	=> 'utf-8',
 	),
 	'db_server'	=> array(
@@ -34,7 +34,7 @@ $ar_default = array(
 		'host'	=> 'localhost',
 		'user'	=> 'test',
 		'pass'	=> '',
-		'name'	=> 't-sync-db-curl',
+		'name'	=> 't-sync-db-curl2',
 		'lang'	=> 'utf-8',
 	),
 	'pull'		=> '',
@@ -53,11 +53,13 @@ $ar_server['test server']['db_server'] = array(
 	'host'	=> 'localhost',
 	'user'	=> 'test',
 	'pass'	=> '',
-	'name'	=> 't-sync-db-curl2',
+	'name'	=> 't-2008-zbb',
 	'lang'	=> 'utf-8',
 );
+$ar_server['test server']['pull'] = 'ent*, -*cert_hbb_??
+	-*pm, +re????, -v*';
 $ar_server['test server2'] = array(
-	'url'	=> 'http://local.fwolf.com/dev/fwolflib/class/sync-db-curl.test1.php',
+	'url'	=> 'http://local.fwolf.com/dev/fwolflib/class/sync-db-curl.test.php',
 );
 
 
