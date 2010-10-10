@@ -2,13 +2,15 @@
 /**
  * Smarty echo line, end with \n or <br /> according running mod
  * @package     fwolflib
- * @copyright   Copyright 2006, Fwolf
+ * @copyright   Copyright 2006-2010, Fwolf
  * @author      Fwolf <fwolf.aide@gmail.com>
  * @since		2006-10-27
- * @version		$Id$
  */
 
-require_once('fwolflib/func/env.php');
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/env.php');
+
 
 /*
  * Smarty echo line, end with \n or <br /> according running mod
@@ -18,8 +20,7 @@ require_once('fwolflib/func/env.php');
  * @param	int		$noecho	Return output string(1) instead of echo out(0).
  * @return	string
  */
-function Ecl($str, $mode = 0, $noecho = 1)
-{
+function Ecl($str, $mode = 0, $noecho = 1) {
 	if (0 == $mode)
 		$mode = IsCli() ?  2 : 1;
 	if (1 == $mode)

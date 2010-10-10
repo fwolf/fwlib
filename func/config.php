@@ -8,6 +8,8 @@
  * @version		$Id$
  */
 
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
 
 /**
  * Get global config setting

@@ -2,16 +2,19 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2004-2008, Fwolf
+ * @copyright	Copyright 2004-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  */
 
-require_once('fwolflib/func/regex_match.php');
-require_once('fwolflib/func/string.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/regex_match.php');
+require_once(FWOLFLIB . 'func/string.php');
+
 
 /**
  * Parse a mail format message
- * 
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2004-2008, Fwolf
@@ -19,21 +22,21 @@ require_once('fwolflib/func/string.php');
  * @since		2007-08-05
  * @version		$Id$
  */
-class MailParser {
-	
+class MailParser extends Fwolflib{
+
 	/**
 	 * Error message
 	 * @var string
 	 */
 	public $mErrorMsg = '';
-	
+
 	/**
 	 * Error number
 	 * 0: no error
 	 * @var int
 	 */
 	public $mErrorNo = 0;
-	
+
 	/**
 	 * Whole mail message
 	 * @var string
@@ -46,68 +49,68 @@ class MailParser {
 	 * @var int
 	 */
 	public $mMsgAttachmentNamedCount = 0;
-	
+
 	/**
 	 * Body part of mail
 	 * @var string
 	 */
 	protected $mMsgBody = '';
-	
+
 	/**
 	 * Contents in mail body
 	 * @var array
 	 */
 	public $mMsgBodyContent = '';
-	
+
 	/**
 	 * Header part of mail
 	 * @var string
 	 */
 	protected $mMsgHeader = '';
-	
+
 	/**
 	 * Delivered-To: in mail header
 	 * @var string
 	 */
 	public $mMsgHeaderDeliveredTo = '';
-	
+
 	/**
 	 * From: in mail header
 	 * @var string
 	 */
 	public $mMsgHeaderFrom = '';
-	
+
 	/**
 	 * Message-ID: in mail header
 	 * @var string
 	 */
 	public $mMsgHeaderMessageId = '';
-	
+
 	/**
 	 * Subject: in mail header
 	 * @var string
 	 */
 	public $mMsgHeaderSubject = '';
-	
+
 	/**
 	 * To: in mail header
 	 * @var string
 	 */
 	public $mMsgHeaderTo = '';
-	
+
 	/**
 	 * X-Sender: in mail header
 	 * @var string
 	 */
 	public $mMsgHeaderXSender = '';
-	
+
 	/**
 	 * Simple info about mail message
 	 * @var array
 	 */
 	public $mMsgInfo = array();
-	
-	
+
+
 	/**
 	 * Constructor
 	 * @param	string	$msg	Mail message
@@ -118,8 +121,8 @@ class MailParser {
 			$this->Parse();
 		}
 	} // end of func __construct
-	
-	
+
+
 	/**
 	 * Name an un-named attachment
 	 * Generate from microtime
@@ -135,7 +138,7 @@ class MailParser {
 		$this->mMsgAttachmentNamedCount ++;
 		// Design to name up to 99 attachments, adds '0' before name if attachments count below 10
 		$s_name = date('Ymd') . '_' . substr(md5($this->mMsgHeaderMessageId), 0, 8) . '_' . ((1 == strlen(strval($this->mMsgAttachmentNamedCount)))?'0':'') . strval($this->mMsgAttachmentNamedCount);
-		
+
 		// Get extension from mime type
 		$ar = array(
 			'application/java-archive' => '.jar',
@@ -248,11 +251,11 @@ class MailParser {
 			$s_ext = $ar[$mime];
 		else
 			$s_ext = '';
-		
+
 		return $s_name . $s_ext;
 	} // end of func NameAttachment
-	
-	
+
+
 	/**
 	 * Parse mail message
 	 * @param	string	$msg	Mail message, If given, will reset all vars and start a new parse process. On default, deal $mMsg will not cause a reset.
@@ -264,12 +267,12 @@ class MailParser {
 			$this->Reset();
 			$this->mMsg = $msg;
 		}
-		
+
 		// Msg length
 		$this->mMsgInfo['msg_length'] = strlen($this->mMsg);
 		$this->mMsg = trim($this->mMsg);
 		$this->mMsgInfo['msg_length_trimmed'] = strlen($this->mMsg);
-		
+
 		// Split header & body, find FIRST empty line
 		if (0 == preg_match('/\n{2}/m', $this->mMsg, $matches, PREG_OFFSET_CAPTURE)) {
 			// No empty line, what's wrong ?
@@ -281,17 +284,17 @@ class MailParser {
 			$i = $matches[0][1];
 			$this->mMsgHeader = substr($this->mMsg, 0, $i);
 			$this->mMsgBody = substr($this->mMsg, $i + 1);
-			
+
 			$this->mMsgInfo['header_length'] = strlen($this->mMsgHeader);
 			$this->mMsgInfo['body_length'] = strlen($this->mMsgBody);
 		}
-		
+
 		// Parse header & body
 		$this->ParseHeader();
 		$this->ParseBody();
 	} // end of func Parse
-	
-	
+
+
 	/**
 	 * Parse body part of mail
 	 * @see $mMsgBody
@@ -303,10 +306,10 @@ class MailParser {
 		if (is_array($b))
 			$b = $b[1];
 		$this->ParseBodyContent($this->mMsgBody, $b);
-		
+
 	} // end of func ParseBody
-	
-	
+
+
 	/**
 	 * Parse content of mail body, recursive
 	 * @param	string	$c	Content of mail, with boundary or inline
@@ -324,11 +327,11 @@ class MailParser {
 				$this->mMsgBodyContent[] = $this->ParseDecode($c);
 		} else {
 			// Split msg with boundary
-			
+
 			// Confirm boundary first, some mail client will modify boundary slightly(add several '-' before it, or change it's content)
 			// Content-Type: multipart/mixed; boundary="----=_NextPart_000_0018_01C74EFC.64789E20"
 			// ------=_NextPart_000_0018_01C74EFC.64789E20
-			
+
 			// Seems message is splitted by "--boundary"
 			// Content-Type: multipart/mixed; boundary="K8nIJk4ghYZn606h"
 			/*
@@ -338,7 +341,7 @@ class MailParser {
 			}
 			*/
 			$b = "--$b";
-				
+
 			// Using new boundary, find every part
 			//echo memory_get_usage() . "$b<br />\n";
 			$ar = explode($b, $c);
@@ -346,7 +349,7 @@ class MailParser {
 			if (!empty($ar)) {
 				foreach ($ar as $part) {
 					// Parse every part
-					// Un-standard boundary declare: 
+					// Un-standard boundary declare:
 					//	boundary=Apple-Mail-10-288581275
 					//	I used a regex recall '\1'
 					// Also +? to refuse '贪婪' of regex
@@ -369,10 +372,10 @@ class MailParser {
 			}
 		}
 	} // end of func ParseBodyContent
-	
-	
+
+
 	/**
-	 * Decode parts of mail body, usually find by ParseBodyContent	 * 
+	 * Decode parts of mail body, usually find by ParseBodyContent	 *
 	 * @param	string	$c	Parts string
 	 * @return	array
 	 * @see ParseBodyContent()
@@ -394,15 +397,15 @@ class MailParser {
 		Content-ID: <3561580184000005@web36903.mail.mud.yahoo.com>
 		*/
 		$c = trim($c);
-		
+
 		// Find "header" part, identify by "two \n"
 		//$s_h = substr($c, 0, strpos($c, "\n\n"));
 		//if (empty($s_h)) {
-		
-		// Find "header" part, identify by 'Content'		
+
+		// Find "header" part, identify by 'Content'
 		if (!(('Content' == substr($c, 0, 7)) || ('content' == substr($c, 0, 7)))) {
 			// No content define, output directly
-			$rs = array('type' => 'text/plain', 
+			$rs = array('type' => 'text/plain',
 				'content' => $c,
 				'charset' => '',
 				'encoding' => '',
@@ -420,7 +423,7 @@ class MailParser {
 				$s_header = substr($c, 0, $i);
 				$s_body = substr($c, $i +1);
 			}
-			
+
 			// Prepare default value
 			$rs = array();
 			$rs['type'] = '';
@@ -428,7 +431,7 @@ class MailParser {
 			$rs['charset'] = '';
 			$rs['encoding'] = '';
 			$rs['filename'] = '';
-			
+
 			// Is there a Content-Type define ?
 			$s_t = RegexMatch('/Content-Type: ([\w\d\/\-\+\.]+)[;\s]/i', $s_header);
 			if (!empty($s_t)) {
@@ -447,19 +450,19 @@ class MailParser {
 				if ('utf-8' != strtolower($s_t))
 					$s_body = mb_convert_encoding($s_body, 'utf-8', $s_t);
 			}
-			
+
 			// quoted-printable encoding ? its format like '=0D=0A'
 			if (0 < substr_count($s_header, 'quoted-printable')) {
 				$s_body = quoted_printable_decode($s_body);
 				$rs['encoding'] = 'quoted-printable';
 			}
-			
-			// Base64 encoding ? 
+
+			// Base64 encoding ?
 			if (0 < substr_count($s_header, 'base64')) {
 				$s_body = base64_decode($s_body);
 				$rs['encoding'] = 'base64';
 			}
-			
+
 			// Content-Disposition:, means this is an attachment
 			if (0 < substr_count($s_header, 'Content-Disposition:')
 				|| 0 < substr_count($s_header, 'Content-ID:')
@@ -509,17 +512,17 @@ class MailParser {
 				// Not an attachment
 				$rs['filename'] = '';
 			}
-			
+
 			// 7bit, 8bit, inline need no change to $s_body
-			
+
 			// Set $s_body
 			$rs['content'] = $s_body;
 		}
-		
+
 		return $rs;
 	} // end of func ParseDecode
-	
-	
+
+
 	/**
 	 * Parse header part of mail
 	 * @see $mMsgHeader
@@ -535,7 +538,7 @@ class MailParser {
 			// Fake a message-id
 			$this->mMsgHeaderMessageId = md5($this->mMsgHeader);
 		}
-		// Subject: 
+		// Subject:
 		//$this->mMsgHeaderSubject = imap_utf8(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
 		$this->mMsgHeaderSubject = Rfc2047Decode(RegexMatch('/^Subject: (.*)/m', $this->mMsgHeader));
 		// To: <Undisclosed-Recipient:;@gmail-pop.l.google.com>
@@ -543,8 +546,8 @@ class MailParser {
 		// X-Sender: sammynatural@gmail.com
 		$this->mMsgHeaderXSender = RegexMatch('/^X-Sender: (.*)/m', $this->mMsgHeader);
 	} // end of func ParseHeader
-	
-	
+
+
 	/**
 	 * Reset all vars, prepare to a new parse process.
 	 */
@@ -565,7 +568,7 @@ class MailParser {
 		$this->mMsgHeaderXSender = '';
 		$this->mMsgInfo = array();
 	} // end of func Reset
-	
+
 } // end of class MailParser
 
 /*
@@ -634,7 +637,7 @@ class parseMail {
 	var $message_id="";
 	var $content_type="";
 	var $part =array();
-	
+
 	// decode a mail header
 	function parseMail($text="") {
 		$start=0;
@@ -683,19 +686,19 @@ class parseMail {
 		$this->date=$date;
 		$this->content_type=$content_type;
 		$this->message_id=$message_id;
-		
+
 		if (preg_match("/^multipart\/mixed;/",$content_type)) {
 			$b=strpos($content_type,"boundary=");
 			$boundary=substr($content_type,$b+strlen("boundary="));
 			$boundary=substr($boundary,1,strlen($boundary)-2);
 			$this->multipartSplit($boundary,substr($text,$start));
-			
+
 		} else {
 			$this->part[0]['Content-Type']=$content_type;
 			$this->part[0]['content']=substr($text,$start);
 		}
 	}
-	// decode a multipart header 
+	// decode a multipart header
 	function multipartHeaders($partid,$mailbody) {
 		$text=substr($mailbody,$this->part[$partid]['start'],
 		             $this->part[$partid]['ende']-$this->part[$partid]['start']);
@@ -731,7 +734,7 @@ class parseMail {
 			$this->part[$partid]['content']=base64_decode(substr($text,$start));
 			$c_t_e="8bit";
 		} else {
-			$this->part[$partid]['content']=substr($text,$start);	
+			$this->part[$partid]['content']=substr($text,$start);
 		}
 		$this->part[$partid]['Content-Type']=$c_t;
 		$this->part[$partid]['Content-Transfer-Encoding']=$c_t_e;
@@ -741,7 +744,7 @@ class parseMail {
 		unset($this->part[$partid]['ende']);
 	}
 	// we have a multipart message body
-    // split the parts 
+    // split the parts
 	function multipartSplit($boundary,$text) {
 		$start=0;
 		$b_len=strlen("--".$boundary);
@@ -751,7 +754,7 @@ class parseMail {
 			if (substr($text,$end+$b_len,1)=="\n") {
 				// '\n' => part boundary
 				$this->part[$partcount]['start']=$end+$b_len+1;
-				if ($partcount) { 
+				if ($partcount) {
 					$this->part[$partcount-1]['ende']=$end-1;
 					$this->multipartHeaders($partcount-1,$text);
 				}
@@ -759,12 +762,12 @@ class parseMail {
 				$partcount++;
 			} else {
 				// '--' => end boundary
-				$this->part[$partcount-1]['ende']=$end-1;				
+				$this->part[$partcount-1]['ende']=$end-1;
 				$this->multipartHeaders($partcount-1,$text);
 				break;
 			}
-		}	
+		}
 	}
-} 
-  
+}
+
 ?>

@@ -2,11 +2,13 @@
 /**
  * 转换escape颜色
  * @package     fwolflib
- * @copyright   Copyright 2006-2008, Fwolf
+ * @copyright   Copyright 2006-2010, Fwolf
  * @author      Fwolf <fwolf.aide@gmail.com>
  * @since		2006-07-17
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**
@@ -22,7 +24,7 @@ function EscapeColor($str, $attr='', $fg='', $bg='')
 {
 	// Define some data
 	$s_esc = "\x1b[";	// or \033[
-	
+
 	$ar_attr = array();
 	$ar_attr['reset']		= 0;	// 0	Reset All Attributes (return to normal mode)
 	$ar_attr[0]				= 0;
@@ -59,7 +61,7 @@ function EscapeColor($str, $attr='', $fg='', $bg='')
 	$ar_fg[36]			= 36;
 	$ar_fg['white']		= 37;	// 37	White
 	$ar_fg[37]			= 37;
-	
+
 	$ar_bg = array();
 	$ar_bg['black']		= 40;	// 40	Black
 	$ar_bg[40]			= 40;
@@ -83,21 +85,21 @@ function EscapeColor($str, $attr='', $fg='', $bg='')
 	$attr = strtolower($attr);
 	if (isset($ar_attr[$attr]))
 		$s_attr = $ar_attr[$attr];
-	else 
+	else
 		$s_attr = '';
-	
+
 	$fg = strtolower($fg);
 	if (isset($ar_fg[$fg]))
 		$s_fg = ';' . $ar_fg[$fg];
-	else 
+	else
 		$s_fg = '';
 
 	$bg = strtolower($bg);
 	if (isset($ar_bg[$bg]))
 		$s_bg = ';' . $ar_bg[$bg];
-	else 
+	else
 		$s_bg = '';
-	
+
 	return $s_esc . $s_attr . $s_fg . $s_bg . 'm' . $str . $s_esc . '0m';
 } // end of func EscapeColor
 
@@ -116,19 +118,19 @@ function EscapeColor2Html($in)
 	//$in = str_replace("\x1b[01;", "\x1b[1;", $in);
 	//$in = str_replace("\x1b[00;", "\x1b[0;", $in);
 	//$in = str_replace("\x1b[00m", "\x1b[0m", $in);
-	
+
 	//attr:
 	$in = preg_replace("/\x1b\[0*m/",
 		"</span>", $in);	//0 - reset
-	$in = preg_replace("/\x1b\[0?[278];([\d;]+)m/", 
+	$in = preg_replace("/\x1b\[0?[278];([\d;]+)m/",
 		"\x1b[\\1m", $in);	//2,7,8 - dim(dark?),reverse,hidden - ignore
-	$in = preg_replace("/\x1b\[0?1;([\d;]+)m/", 
+	$in = preg_replace("/\x1b\[0?1;([\d;]+)m/",
 		"<span style=\"font-weight: bold;\">\x1b[\\1m", $in);	//1 - bold
-	$in = preg_replace("/\x1b\[0?3;([\d;]+)m/", 
+	$in = preg_replace("/\x1b\[0?3;([\d;]+)m/",
 		"<span style=\"text-decoration: underline;\">\x1b[\\1m", $in);	//3 - underline
-	$in = preg_replace("/\x1b\[0?5;([\d;]+)m/", 
+	$in = preg_replace("/\x1b\[0?5;([\d;]+)m/",
 		"<span style=\"text-decoration: blink;\">\x1b[\\1m", $in);	//5 - blink
-	
+
 	//fg colors:
 	$fgcolor = array(
 		30	=>	'black',
@@ -149,10 +151,10 @@ function EscapeColor2Html($in)
 	$in = preg_replace($key, $replace, $in);
 
 	//bg colors ??
-	
+
 	//remove un-recoginized colors
 	$in = preg_replace("/\x1b\[[\d;]*m/", '', $in);
-	
+
 	//merge duplicate <span> markup
 	$in = preg_replace("/<span style=\"([^>]*)\"><span style=\"([^>]*)\">/",
 		"<span style=\"\\1 \\2\">", $in);
@@ -166,7 +168,7 @@ function EscapeColor2Html($in)
 
 	//remove \t
 	$in = str_replace("\x07", '', $in);
-	
+
 	//add losted </span> sometimes
 	//this must run twice because the second <span> used in the 1st replace
 	//will not be tract as the beginning <span> in remain search
@@ -177,7 +179,7 @@ function EscapeColor2Html($in)
 		"<span\\1>\\2</span><span", $in);
 	$in = preg_replace("/<span([^>]*)>([^<]*)[\n\r]/",
 		"<span\\1>\\2</span>\n", $in);
-	
+
 	//clean escape control chars
 	$escape_control = array(
 		"/\x1b\\[(\\d+;)?\\d*[ABCDGJKnr]/",
@@ -188,12 +190,12 @@ function EscapeColor2Html($in)
 		"/\x1b\&gt;/",
 		);
 	$in = preg_replace($escape_control, "", $in);
-	
-	//clean remain esc code	
+
+	//clean remain esc code
 	//$in = str_replace("\x1b[", 'ESC[', $in);
-	
+
 	return($in);
-	
+
 	/* Old useless code
 	//define colors
 	$colormap = array(
@@ -244,7 +246,7 @@ function EscapeColor2Html($in)
 	//del the begin color from colormap and $in
 	$in = str_replace($colormap[$color_begin], '', $in);
 	unset($colormap[$color_begin]);
-	
+
 	$search = array_values($colormap);
 	$replace = array_keys($colormap);
 
@@ -257,7 +259,7 @@ function EscapeColor2Html($in)
 		else
 			$val = "<span style=\"color: $val;\">";
 	}
-		
+
 	$str = str_replace($search, $replace, $in);
 	//fix some html repeat
 	$str = str_replace('</span></span>', '</span>', $str);
@@ -287,7 +289,7 @@ function EscapeColorTable()
 			{
 				if (0 == $bold)
 					echo EscapeColor(" [{$fg}m  ", $bold, $fg, $bg);
-				else 
+				else
 					echo EscapeColor(" [$bold;{$fg}m", $bold, $fg, $bg);
 			}
 			echo "\n";
@@ -306,7 +308,7 @@ function EscapeColorTable()
 
 /*
 	http://linuxgazette.net/issue65/padala.html
-	
+
 	The Color Code:     <ESC>[{attr};{fg};{bg}m
 
 	 I'll explain the escape sequence to produce colors. The sequence to be printed or echoed to the terminal is
@@ -323,7 +325,7 @@ function EscapeColorTable()
 	5	Blink
 	7 	Reverse
 	8	Hidden
-	
+
 	{fg} is one of the following
 	30	Black
 	31	Red
@@ -333,7 +335,7 @@ function EscapeColorTable()
 	35	Magenta
 	36	Cyan
 	37	White
-	
+
 	{bg} is one of the following
 	40	Black
 	41	Red
@@ -343,9 +345,9 @@ function EscapeColorTable()
 	45	Magenta
 	46	Cyan
 	47	White
-	
+
 	So to get a blinking line with Blue foreground and Green background, the combination to be used should be
-	
+
 	echo "^[[5;34;42mIn color"
 	which actually is very ugly. :-) Revert back with
 	echo "^[0;37;40m"

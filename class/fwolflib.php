@@ -7,13 +7,10 @@
  * @since		2010-01-30
  */
 
-if (0 <= version_compare(phpversion(), '5.3.0')) {
-	//require_once(__DIR__ . '/fwolflib.php');
-	require_once(__DIR__ . '/../func/env.php');
-} else {
-	//require_once(dirname(__FILE__) . '/fwolflib.php');
-	require_once(dirname(__FILE__) . '/../func/env.php');
-}
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/env.php');
+
 
 /**
  * Basic class of all.

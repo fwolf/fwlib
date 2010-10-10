@@ -2,10 +2,14 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2009, Fwolf
+ * @copyright	Copyright 2009-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-11-17
  */
+
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+
 
 /**
  * Program execute time benchmark toosl.
@@ -16,13 +20,14 @@
  * http://pear.php.net/package/Benchmark/docs/latest/__filesource/fsource_Benchmark__Benchmark-1.2.7doctimer_example.php.html
  * http://www.mdsjack.bo.it/index.php?page=kwikemark
  * http://www.phpclasses.org/browse/package/2244.html
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2009, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-11-17
  */
-class Benchmark{
+class Benchmark extends Fwolflib {
 
 	/**
 	 * Define color group

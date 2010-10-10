@@ -7,7 +7,10 @@
  * @since		2010-01-07
  */
 
-require_once('fwolflib/func/filesystem.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/filesystem.php');
+
 
 /**
  * Key - value like cache system, data store in filesystem.
@@ -20,7 +23,7 @@ require_once('fwolflib/func/filesystem.php');
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-01-07
  */
-abstract class Cache{
+abstract class Cache extends Fwolflib {
 
 	/**
 	 * Dir where data file store

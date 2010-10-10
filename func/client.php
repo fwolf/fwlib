@@ -7,8 +7,10 @@
  * @copyright	Copyright 2003-2009, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2006-07-03
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**

@@ -7,6 +7,10 @@
  * @since		2009-12-22
  */
 
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+
+
 /**
  * @package		fwolflib
  * @subpackage	class
@@ -15,7 +19,7 @@
  * @since		2009-12-22
  * @link http://www.phplamp.org/2008/06/php-to-excel-clas/
  */
-class Excel{
+class Excel extends Fwolflib {
 
 	/**
 	 * Array of row in xml

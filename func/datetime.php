@@ -9,6 +9,9 @@
  */
 
 
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
+
 /**
  * strtotime added remove of ':000' in sybase time(probably because dblib)
  * @param	string	$time

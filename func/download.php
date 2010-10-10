@@ -2,14 +2,16 @@
 /**
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2007, Fwolf
+ * @copyright	Copyright 2007-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
  * @since		2007-04-29
- * @version		$Id$
  */
 
-require_once('fwolflib/func/env.php');
-require_once('fwolflib/func/filesystem.php');
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/env.php');
+require_once(FWOLFLIB . 'func/filesystem.php');
+
 
 /**
  * Download content as a file
@@ -23,7 +25,7 @@ function Download($content, $filename = '', $mime = 'application/force-download'
 	list($usec, $sec) = explode(" ", microtime());
 	$usec = substr(strval($usec), 2, 3);
 	$tmpfilename = $sec . $usec;
-	
+
 	if (empty($filename)) {
 		// Use timestamp as filename if not provide
 		$filename = $tmpfilename;
@@ -43,7 +45,7 @@ function Download($content, $filename = '', $mime = 'application/force-download'
 		// And check again
 		if (!is_dir($s_tmp) || !is_writable($s_tmp))
 			die('No temp dir to store file content which need to downloaded.');
-		
+
 		$filepath = $s_tmp;
 	}
 	// Add the ending '/' to tmp path
@@ -54,7 +56,7 @@ function Download($content, $filename = '', $mime = 'application/force-download'
 
 	file_put_contents($tmpfilename, $content);
 	$result = DownloadFile($tmpfilename, $filename, $mime);
-	
+
 	unlink($tmpfilename);
 	return $result;
 }
@@ -75,21 +77,21 @@ function DownloadFile($filepath, $filename = '', $mime = 'application/force-down
 	// If no client filename given, use original name
 	if (empty($filename))
 		$filename = BaseName1($filepath);
-	
+
 	// Begin writing headers
 	header("Cache-Control:");
 	header("Cache-Control: public");
-	
+
 	//Use the switch-generated Content-Type
 	header("Content-Type: $mime");
-	
+
 	// workaround for IE filename bug with multiple periods / multiple dots in filename
 	// that adds square brackets to filename - eg. setup.abc.exe becomes setup[1].abc.exe
-	if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) 
+	if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
 		// count is reference (&count) in str_replace, so can't use it.
 		$filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
 		//$iefilename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
-		
+
 	header("Content-Disposition: attachment; filename=\"$filename\"");
 	//header("Content-Range: $from-$to fsize");  加上压缩包头信息不正确
 	//header("Content-Length: $content_size");   加上压缩包头信息不正确
@@ -100,7 +102,7 @@ function DownloadFile($filepath, $filename = '', $mime = 'application/force-down
 	$size = filesize($filepath);
 	$size_downloaded = 0;	// Avoid infinite loop
 	$size_step = 1024 * 8;	// Control download speed
-	
+
 	$fp = fopen($filepath, "rb");
 	//fseek($fp,$range);
 	// Start buffered download
@@ -113,7 +115,7 @@ function DownloadFile($filepath, $filename = '', $mime = 'application/force-down
 		//flush();   这个是多余的函数,加上会使压缩包下载不完整
 		//ob_flush();  这个也是多余的函数,加上会使压缩包下载不完整
 	}
-	
+
 	fclose($fp);
 	//unlink($ft_name);
 	exit;

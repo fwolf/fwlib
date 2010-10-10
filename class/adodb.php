@@ -7,10 +7,13 @@
  * @since		2008-04-22
  */
 
+
 // Set include path in __construct
 //require_once('adodb/adodb.inc.php');
-require_once('fwolflib/class/sql_generator.php');
-require_once('fwolflib/func/ecl.php');
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/sql_generator.php');
+require_once(FWOLFLIB . 'func/ecl.php');
+
 
 /**
  * Extended ADODB class
@@ -39,8 +42,7 @@ require_once('fwolflib/func/ecl.php');
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2008-04-08
  */
-class Adodb
-{
+class Adodb extends Fwolflib {
 	/**
 	 * Real ADODB connection object
 	 * @var object

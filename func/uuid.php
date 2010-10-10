@@ -19,14 +19,16 @@
  * </code>
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2008-2009, Fwolf
+ * @copyright	Copyright 2008-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2008-05-08
- * @version		$Id$
  */
 
-require_once('fwolflib/func/ecl.php');
-require_once('fwolflib/func/client.php');
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/ecl.php');
+require_once(FWOLFLIB . 'func/client.php');
+
 
 /**
  * Get a uuid

@@ -1,15 +1,17 @@
 <?php
 /**
  * Function about ini file read, write and modify.
- * 
+ *
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2008, Fwolf
+ * @copyright	Copyright 2008-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
  * @since		2008-04-23
- * @version		$Id$
  * @link		http://www.php.net/manual/en/function.parse-ini-file.php
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**
@@ -37,7 +39,7 @@ function IniGet($filepath, $section = '', $item = '')
 			)
 	*/
 	$rs = array();
-	
+
     $i = 0;
     $s_section = '';		// Current scaning section name
     foreach ($ini as $line)
@@ -48,7 +50,7 @@ function IniGet($filepath, $section = '', $item = '')
         // Comments
         if ((';' == $line{0}) || ('#' == $line{0}))
         	continue;
-    	
+
         // Section
         if ('[' == $line{0})
         {
@@ -56,7 +58,7 @@ function IniGet($filepath, $section = '', $item = '')
             $i++;
             continue;
         }
-        
+
         // Key-value pair
         list($key, $value) = explode('=', $line, 2);
         $key = trim($key);
@@ -79,7 +81,7 @@ function IniGet($filepath, $section = '', $item = '')
                 $rs[$s_section][$key] = $value;
         }
     }
-    
+
     // Return values by param
     if (empty($section))
     	return $rs;
@@ -87,17 +89,17 @@ function IniGet($filepath, $section = '', $item = '')
     {
     	if (isset($rs[$section]))
     		return $rs[$section];
-    	else 
+    	else
     		return '';
     }
-    else 
+    else
     {
     	if (isset($rs[$section][$item]))
     		return $rs[$section][$item];
-    	else 
+    	else
     		return '';
     }
-    
+
 } // end of func IniGet
 
 ?>

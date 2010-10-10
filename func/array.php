@@ -10,11 +10,8 @@
  */
 
 
-if (0 <= version_compare(phpversion(), '5.3.0')) {
-	require_once(__DIR__ . '/string.php');
-} else {
-	require_once(dirname(__FILE__) . '/string.php');
-}
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/string.php');
 
 
 /**

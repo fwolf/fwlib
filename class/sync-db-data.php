@@ -5,13 +5,15 @@
  * @copyright	Copyright 2008-2009, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2008-05-20
- * @version		$Id$
  */
 
-require_once('fwolflib/class/adodb.php');
-require_once('fwolflib/func/ecl.php');
-require_once('fwolflib/func/string.php');
-require_once('fwolflib/func/uuid.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/adodb.php');
+require_once(FWOLFLIB . 'func/ecl.php');
+require_once(FWOLFLIB . 'func/string.php');
+require_once(FWOLFLIB . 'func/uuid.php');
+
 
 /**
  * Sync data between 2 database source
@@ -27,7 +29,7 @@ require_once('fwolflib/func/uuid.php');
  * @version		$Id$
  * @see			AdoDb
  */
-class SyncDbData {
+class SyncDbData extends Fwolflib {
 
 	/**
 	 * Oneway sync config

@@ -9,6 +9,9 @@
  */
 
 
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
+
 /**
  * 把一个字符串转换为可以用HTML输出的格式
  * @param	string	$str

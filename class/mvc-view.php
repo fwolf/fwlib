@@ -7,11 +7,14 @@
  * @since		2008-04-06
  */
 
-require_once('fwolflib/class/cache.php');
-require_once('fwolflib/class/form.php');
-require_once('fwolflib/class/list-table.php');
-require_once('fwolflib/func/string.php');
-require_once('fwolflib/func/request.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/cache.php');
+require_once(FWOLFLIB . 'class/form.php');
+require_once(FWOLFLIB . 'class/list-table.php');
+require_once(FWOLFLIB . 'func/string.php');
+require_once(FWOLFLIB . 'func/request.php');
+
 
 /**
  * View in MVC

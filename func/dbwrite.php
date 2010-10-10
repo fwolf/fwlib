@@ -8,6 +8,9 @@
  */
 
 
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
+
 /**
  * 向数据库中写入数据
  * 根据指定的主键或联合主键自动判断是insert还是update

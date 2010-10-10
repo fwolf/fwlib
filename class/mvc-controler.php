@@ -6,9 +6,12 @@
 * @author       Fwolf <fwolf.aide+fwolflib.mvc@gmail.com>
 */
 
-require_once('fwolflib/func/request.php');
-require_once('fwolflib/func/string.php');
-require_once('fwolflib/func/url.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/request.php');
+require_once(FWOLFLIB . 'func/string.php');
+require_once(FWOLFLIB . 'func/url.php');
+
 
 /*
 // In subclass or subclass for an app,
@@ -42,8 +45,7 @@ if (!defined('P2R')) define('P2R', './');
  * @see			Module
  * @see			View
  */
-abstract class Controler
-{
+abstract class Controler extends Fwolflib {
 	/**
 	 * Run end time, used to caculate run time length
 	 * @var	float

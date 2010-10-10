@@ -5,9 +5,10 @@
  * @copyright	Copyright 2003-2008, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2003-08-25
- * @version		$Id$
  */
 
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
 
 
 /**
@@ -21,7 +22,7 @@
  * require_once('fwolflib/class/adodb.php');
  * require_once('adodb/tohtml.inc.php');
  * header('Content-Type: text/html; charset=utf-8');
- * 
+ *
  * $db = new Adodb(array(
  * 	'type' => 'mysqli',
  * 	'host' => '192.168.0.5',
@@ -30,10 +31,10 @@
  * 	'pass' => '2008-moo',
  * 	'lang' => 'utf8',
  * 	));
- * 
+ *
  * $db->Connect();
- * 
- * 
+ *
+ *
  * // Test INSERT, normal mode
  * $ar = array(
  * 	'INSERT' => 'bagy_cc_anc',
@@ -41,8 +42,8 @@
  * 	);
  * $sql = $db->GenSql($ar);
  * TestSql($sql);
- * 
- * 
+ *
+ *
  * // Test INSERT, special mode
  * $ar['VALUES'] = array(
  * 	'authcode' => 'v_authcode',
@@ -54,8 +55,8 @@
  * 	);
  * $sql = $db->GenSql($ar);
  * TestSql($sql);
- * 
- * 
+ *
+ *
  * // Test Update, normal mode
  * $ar = array('UPDATE', 'SET', 'WHERE', 'ORDERBY', 'LIMIT');
  * $ar = array(
@@ -67,8 +68,8 @@
  * 	);
  * $sql = $db->GenSql($ar);
  * TestSql($sql);
- * 
- * 
+ *
+ *
  * // Test Update, special mode
  * $ar['SET'] = array(
  * 	'email' => 'b@a.com',
@@ -84,8 +85,8 @@
  * //$ar['LIMIT'] = array(2, 1);	// Update can only limit [roucount]
  * $sql = $db->GenSql($ar);
  * TestSql($sql);
- * 
- * 
+ *
+ *
  * // Test DELETE, normal mode
  * $ar = array('DELETE', 'WHERE', 'ORDERBY', 'LIMIT');
  * $ar = array(
@@ -96,11 +97,11 @@
  * 	);
  * $sql = $db->GenSql($ar);
  * TestSql($sql);
- * 
- * 
+ *
+ *
  * // Delete special mode is obmitted
- * 
- * 
+ *
+ *
  * // Test SELECT, normal mode
  * $ar = array('SELECT', 'FROM', 'WHERE', 'GROUPBY', 'HAVING',
  * 				'ORDERBY', 'LIMIT');
@@ -115,8 +116,8 @@
  * 	);
  * $sql = $db->GenSql($ar);
  * TestSql($sql);
- * 
- * 
+ *
+ *
  * // Test SELECT, special mode
  * $ar['SELECT'] = array(
  * 	'a.id', 'c.email', 'a.authcode', 'bagy_cc_anc.proj_title', 'b.title'
@@ -135,8 +136,8 @@
  * $ar['LIMIT'] = array(1, 3);
  * $sql = $db->GenSql($ar);
  * TestSql($sql);
- * 
- * 
+ *
+ *
  * function TestSql($sql)
  * {
  * 	global $db;
@@ -144,13 +145,13 @@
  * 	$rs = $db->Execute($sql);
  * 	if (!empty($rs))
  * 		ecl(rs2html($rs));
- * 	else 
+ * 	else
  * 		ecl($db->ErrorNo() . ' : ' . $db->ErrorMsg());
  * 	ecl('<hr />');
  * } // end of func TestSql
  * ?>
  * </code>
- * 
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2003-2008, Fwolf
@@ -158,8 +159,7 @@
  * @since		2003-08-25 09:48:31
  * @version		$Id$
  */
-class SqlGenerator
-{
+class SqlGenerator extends Fwolflib {
 
     /**
 	 * From part user set, used in SELECT only
@@ -208,13 +208,13 @@ class SqlGenerator
      * @var mixed
      */
     protected $mValues = '';
-    
+
     /**
 	 * Where part user set.
 	 * @var mixed
 	 */
     protected $mWhere = '';
-    
+
     /**
      * Db object who call $this
      * @var object
@@ -232,7 +232,7 @@ class SqlGenerator
 	 * @var string
 	 */
     protected $sInsert = '';
-    
+
     /**
      * Delete sql part generated
      * @var	string
@@ -321,8 +321,8 @@ class SqlGenerator
 		if (!empty($db))
 			$this->oDb = $db;
 	} // end of func __construct
-	
-	
+
+
 	/**
 	 * 重置已经设定的参数, or part of them
 	 *
@@ -333,7 +333,7 @@ class SqlGenerator
 	{
 		// order by => ORDERBY
 		$part = str_replace(' ', '', (strtolower($part)));
-		
+
 		// Reset-able part
 		$ar_part = array(
 			'SELECT',
@@ -349,7 +349,7 @@ class SqlGenerator
 			'ORDERBY',
 			'LIMIT',
 			);
-		
+
 	    if (empty($part) || 'all' == $part)
 	    {
 	    	// Reset all
@@ -360,7 +360,7 @@ class SqlGenerator
 	    		$this->${"sSql$s"} = '';
 	    	}
 	    }
-	    else 
+	    else
 	    {
 	    	// Reset 1 part
 	    	$s = ucfirst($part);
@@ -368,8 +368,8 @@ class SqlGenerator
 	    	$this->${"sSql$s"} = '';
 	    }
 	} // end of function Clear
-	
-	
+
+
 	/**
 	 * Generate an DELETE sql
 	 * @param	array	$ar_config
@@ -383,7 +383,7 @@ class SqlGenerator
 			// config value has been set already, here only use it's 'name'
 			$ar = &$ar_config;
 		}
-		else 
+		else
 		{
 			// Using all parts, by this sequence
 			// http://dev.mysql.com/doc/refman/5.0/en/delete.html
@@ -397,8 +397,8 @@ class SqlGenerator
 		}
 		return $sql;
 	} // end of func GenDelete
-	
-	
+
+
 	/**
 	 * Generate an INSERT sql
 	 * @param	array	$ar_config
@@ -412,7 +412,7 @@ class SqlGenerator
 			// config value has been set already, here only use it's 'name'
 			$ar = &$ar_config;
 		}
-		else 
+		else
 		{
 			// Using all parts, by this sequence
 			// http://dev.mysql.com/doc/refman/5.0/en/insert.html
@@ -426,8 +426,8 @@ class SqlGenerator
 		}
 		return $sql;
 	} // end of func GenInsert
-	
-	
+
+
 	/**
 	 * Generate an SELECT sql
 	 * @param	array	$ar_config
@@ -441,7 +441,7 @@ class SqlGenerator
 			// config value has been set already, here only use it's 'name'
 			$ar = &$ar_config;
 		}
-		else 
+		else
 		{
 			// Using all parts, by this sequence
 			// http://dev.mysql.com/doc/refman/5.0/en/select.html
@@ -456,11 +456,11 @@ class SqlGenerator
 		}
 		return $sql;
 	} // end of func GenSelect
-	
-	
+
+
 	/**
 	 * Generate SQL part, which param is array and need to list out in plain format.
-	 * 
+	 *
 	 * @param mixed		$param
 	 * @param string	$s_split	String used between parts.
 	 * @return string
@@ -475,19 +475,19 @@ class SqlGenerator
 				/*
 				if (is_int($k))
 					$sql .= ", $v";
-				else 
+				else
 					$sql .= ", $k $v";
 				*/
 				$sql .= "$s_split $v";
 			}
-		else 
+		else
 			$sql .= "$s_split $param";
 		$sql = substr($sql, strlen($s_split));
-		
+
 		return $sql;
 	} // end of func GenSqlArray
-	
-	
+
+
 	/**
 	 * Generate SQL part, which param is array and need use AS in it.
 	 * @link http://dev.mysql.com/doc/refman/5.0/en/select.html
@@ -498,8 +498,8 @@ class SqlGenerator
 	 * @param boolean	$quote	AS column alias, need to be quoted(true),
 	 * 							AS table alias, need not to be quoted(false).
 	 * @param boolean	$tas	True = reverse order, in table alias and select list,
-	 * 							array($k=>$v) means 'FROM $v AS $k', 
-	 * 							set by $v => $k is because 1 table can have multi alias, 
+	 * 							array($k=>$v) means 'FROM $v AS $k',
+	 * 							set by $v => $k is because 1 table can have multi alias,
 	 * 							and alias are unique, and this way is more goodlook when
 	 * 							combile indexed and non-indexed item in list
 	 * 							(non-indexed will use it's original name).
@@ -517,7 +517,7 @@ class SqlGenerator
 				{
 					$sql .= ", $v";
 				}
-				else 
+				else
 				{
 					// table AS a
 					// tabel AS 'a'
@@ -525,18 +525,18 @@ class SqlGenerator
 					$s_as = ($use_as) ? 'AS' : '';
 					if ($tas)
 						$sql .= ", $v $s_as $s_split{$k}$s_split";
-					else 
+					else
 						$sql .= ", $k $s_as $s_split{$v}$s_split";
 				}
 			}
-		else 
+		else
 			$sql .= ", $param";
 		$sql = substr($sql, 2);
-		
+
 		return $sql;
 	} // end of func GenSqlArrayAs
-	
-	
+
+
 	/**
 	 * Generate SQL part, SET subparse of UPDATE
 	 * @link http://dev.mysql.com/doc/refman/5.0/en/update.html
@@ -556,18 +556,18 @@ class SqlGenerator
 			}
 			$sql = ' SET ' . substr($sql, 2);
 		}
-		else 
+		else
 		{
 			// If you fogot 'SET ', I add for you
 			if ('SET ' != substr(strtoupper(trim($param)), 0, 4))
 				$sql .= ' SET ';
 			$sql .= $param;
 		}
-		
+
 		return $sql;
 	} // end of func GenSqlArraySet
-	
-	
+
+
 	/**
 	 * Generate SQL part, VALUES subparse of INSERT
 	 * @link http://dev.mysql.com/doc/refman/5.0/en/insert.html
@@ -592,15 +592,15 @@ class SqlGenerator
 			$sql2 = substr($sql2, 2);
 			$sql .= $sql1 . ' ) VALUES ( ' . $sql2 . ' ) ';
 		}
-		else 
+		else
 		{
 			$sql = $param;
 		}
-		
+
 		return $sql;
 	} // end of func GenSqlArrayValues
-	
-	
+
+
 	/**
 	 * Smarty quote string in sql, by check columns type
 	 * @param	string	$table
@@ -630,7 +630,7 @@ class SqlGenerator
 			)))
 			// Need not quote, output directly
 			return $val;
-		else 
+		else
 		{
 			// Need quote, use db's quote method
 			$val = stripslashes($val);
@@ -639,7 +639,7 @@ class SqlGenerator
 		*/
 	} // end of func GenSqlQuote
 
-	
+
 	/**
 	 * Generate an UPDATE sql
 	 * @param	array	$ar_config
@@ -653,7 +653,7 @@ class SqlGenerator
 			// config value has been set already, here only use it's 'name'
 			$ar = &$ar_config;
 		}
-		else 
+		else
 		{
 			// Using all parts, by this sequence
 			// http://dev.mysql.com/doc/refman/5.0/en/update.html
@@ -667,8 +667,8 @@ class SqlGenerator
 		}
 		return $sql;
 	} // end of func GenUpdate
-	
-	
+
+
 	/**
 	 * Get DELETE sql only
 	 * @param	array	$ar_config
@@ -679,7 +679,7 @@ class SqlGenerator
 		return $this->GetSql($ar_config, 'DELETE');
 	} // end of func GetDelete
 
-	
+
 	/**
 	 * Get INSERT sql only
 	 * @param	array	$ar_config
@@ -690,7 +690,7 @@ class SqlGenerator
 		return $this->GetSql($ar_config, 'INSERT');
 	} // end of func GetInsert
 
-	
+
 	/**
 	 * Get SELECT sql only
 	 * @param	array	$ar_config
@@ -701,10 +701,10 @@ class SqlGenerator
 		return $this->GetSql($ar_config, 'SELECT');
 	} // end of func GetSelect
 
-	
+
 	/**
 	 * Get SQL statement
-	 * 
+	 *
 	 * If use SELECT, UPDATE, INSERT, DELETE simultaneously,
 	 * System will select the first on occurs by this order.
 	 * @param	array	$ar_config	Array(SELECT=>..., FROM=>...)
@@ -716,7 +716,7 @@ class SqlGenerator
 	{
 		$action = strtoupper($action);
 		$this->Set($ar_config);
-		
+
 		// Got real action
 		if (is_array($ar_config) && !empty($ar_config))
 			foreach ($ar_config as $part => $param)
@@ -729,20 +729,20 @@ class SqlGenerator
 					)
 					$action = $part;
 			}
-		
+
 		// Call seperate func to generate sql
 		$action = ucfirst(strtolower($action));
 		$sql = $this->{"Gen$action"}($ar_config);
-		
+
 		return $sql;
 	} // end of func GetSql
-	
-	
+
+
 	/**
 	 * Get SQL statement for Prepare usage
-	 * 
+	 *
 	 * value -> ? or :name, and quote chars removed
-	 * 
+	 *
 	 * Only simple treatment now.
 	 * @param	array	$ar_config	Same as GenSql()
 	 * @return	string
@@ -756,7 +756,7 @@ class SqlGenerator
 		// Notice: For oracle, not tested yet.
 		$sql = preg_replace('/\'(:[^\']+)\'/', '$1', $sql);
 		*/
-		
+
 		// Better treatment
 		// Remove duplicate ' in sql add by SqlGenerator,
 		// Execute after Prepare will auto recoginize variant type and quote,
@@ -770,11 +770,11 @@ class SqlGenerator
 		$sql = preg_replace(
 			"/ {$s_quote}([\?\:\w\-_]+){$s_quote}([, ])/i",
 			" $1$2", $sql);
-		
+
 		return $sql;
 	} // end of function GetSqlPrepare
-	
-	
+
+
 	/**
 	 * Get UPDATE sql only
 	 * @param	array	$ar_config
@@ -785,7 +785,7 @@ class SqlGenerator
 		return $this->GetSql($ar_config, 'UPDATE');
 	} // end of func GetUpdate
 
-	
+
 	/**
 	 * Set value in array to property
 	 * @param	array	&$ar_config
@@ -810,7 +810,7 @@ class SqlGenerator
 			}
 			// Write data back to config
 			$ar_config = $ar;
-			
+
 			foreach ($ar_config as $part => $param)
 			{
 				// Write config to property
@@ -819,8 +819,8 @@ class SqlGenerator
 			}
 		}
 	} // end of function
-	
-	
+
+
     /**
 	 * Set Delete
 	 * @param	mixed	$param
@@ -833,7 +833,7 @@ class SqlGenerator
 
 		// Retrieve table schema, so VALUES/SET can detimine how to quote
 		$this->oDb->GetMetaColumn($param);
-		
+
 		return $this->sSqlDelete;
 	} // end of func SetDelete
 
@@ -863,7 +863,7 @@ class SqlGenerator
 		$this->sSqlGroupby = ' GROUP BY' . $this->GenSqlArray($param);
 		return $this->sSqlGroupby;
 	} // end of func SetGroupby
-	
+
 
 	/**
 	 * Set Having
@@ -877,7 +877,7 @@ class SqlGenerator
 		return $this->sSqlHaving;
 	} // end of func SetHaving
 
-	
+
 	/**
 	 * Set Insert
 	 * @param	mixed	$param
@@ -887,10 +887,10 @@ class SqlGenerator
 	{
 		$this->sInsert = $param;
 		$this->sSqlInsert = ' INSERT INTO ' . $param;
-		
+
 		// Retrieve table schema, so VALUES/SET can detimine how to quote
 		$this->oDb->GetMetaColumn($param);
-		
+
 		return $this->sSqlInsert;
 	} // end of func SetInsert
 
@@ -907,7 +907,7 @@ class SqlGenerator
 			$this->mLimit = $param;
 			$this->sSqlLimit = ' LIMIT ' . $this->GenSqlArray($param);
 		}
-		else 
+		else
 		{
 			$this->mLimit = '';
 			$this->sSqlLimit = '';
@@ -915,7 +915,7 @@ class SqlGenerator
 		return $this->sSqlLimit;
 	} // end of func SetLimit
 
-	
+
 	/**
 	 * Set Order by
 	 * @param	mixed	$param
@@ -940,7 +940,7 @@ class SqlGenerator
 		$this->sSqlSelect = ' SELECT ' . $this->GenSqlArrayAs($param, true, true, true);
 		return $this->sSqlSelect;
 	} // end of func SetSelect
-	
+
 
 	/**
 	 * Set Set
@@ -972,7 +972,7 @@ class SqlGenerator
 
 		return $this->sSqlUpdate;
 	} // end of func SetUpdate
-	
+
 
 	/**
 	 * Set Values
@@ -1002,6 +1002,6 @@ class SqlGenerator
 		return $this->sSqlWhere;
 	} // end of func SetWhere
 
-	
+
 } // end of class SqlGenerator
 ?>

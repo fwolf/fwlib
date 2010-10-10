@@ -2,12 +2,15 @@
 /**
 * @package      fwolflib
 * @subpackage	class
-* @copyright    Copyright 2009, Fwolf
+* @copyright    Copyright 2009-2010, Fwolf
 * @author       Fwolf <fwolf.aide+fwolflib.class@gmail.com>
 */
 
-require_once('fwolflib/func/string.php');
-require_once('fwolflib/func/validate.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/string.php');
+require_once(FWOLFLIB . 'func/validate.php');
+
 
 /**
  * Form operate class
@@ -22,13 +25,11 @@ require_once('fwolflib/func/validate.php');
  *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2009, Fwolf
+ * @copyright	Copyright 2009-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2009-07-26
- * @version		$Id$
  */
-class Form
-{
+class Form extends Fwolflib {
 	/**
 	 * Configuration
 	 * array(

@@ -1,11 +1,14 @@
 <?php
 /*
  * @package		fwolflib
- * @copyright	Copyright 2006, Fwolf
+ * @copyright	Copyright 2006-2010, Fwolf
  * @author		Fwolf <fwolf.aide@gmail.com>
  * @since		2006-07-12
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
 
 /*
  * Convert string like '_D0_D0_D0' to normal string
@@ -37,5 +40,5 @@ function Utf8Fix($in, $keep_gb2312=false)
 		$out = mb_convert_encoding($out, 'utf-8', 'gbk');
 	return $out;
 } // end of function Utf8Fix
- 
+
 ?>

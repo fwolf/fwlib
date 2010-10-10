@@ -2,12 +2,15 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2009, Fwolf
+ * @copyright	Copyright 2009-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-12-08
  */
 
-require_once('fwolflib/func/config.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/config.php');
+
 
 /**
  * Ebay API
@@ -18,8 +21,7 @@ require_once('fwolflib/func/config.php');
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-12-08
  */
-class Ebay
-{
+class Ebay extends Fwolflib {
 	/**
 	 * Id and Token
 	 * @var	array

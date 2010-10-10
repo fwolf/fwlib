@@ -1,5 +1,7 @@
 <?php
 /**
+ * Obsoleted.
+ *
 * @package      MaGod
 * @copyright    Copyright 2003, Fwolf
 * @author       Fwolf <fwolf001@tom.com>
@@ -58,7 +60,7 @@ require_once('MaGod/MaGod.php');
 * @access     public
 * @version    $Id$
 */
-class DispListTable 
+class DispListTable
 {
 	/**
 	 * 显示列表之前是否重置模板数据
@@ -80,8 +82,8 @@ class DispListTable
      * @access  private
      * @var array
      */
-    var $mIndexTips = array(array('第一页', '上一页', '下一页', '最后页'), 
-                            array('|<', '<<', '>>', '>|'), 
+    var $mIndexTips = array(array('第一页', '上一页', '下一页', '最后页'),
+                            array('|<', '<<', '>>', '>|'),
                             array('<b>|</b><font face="Wingdings 3" style="font-family: \'Wingdings 3\';">&#161;</font>', '<font face="Wingdings 3" style="font-family: \'Wingdings 3\';">&#161;</font>', '<font face="Wingdings 3" style="font-family: \'Wingdings 3\';">&#162;</font>', '<font face="Wingdings 3" style="font-family: \'Wingdings 3\';">&#162;</font><b>|</b>'),  // 197/198
                             array('<font face="Webdings" style="font-family: \'Webdings\';">&#57;</font>', '<font face="Webdings" style="font-family: \'Webdings\';">&#55;</font>', '<font face="Webdings" style="font-family: \'Webdings\';">&#56;</font>', '<font face="Webdings" style="font-family: \'Webdings\';">&#58;</font>'));
 
@@ -313,7 +315,7 @@ class DispListTable
 		//
 		$this->mTotalRows = count($this->mrAr);
     } // end of function SetData
-    
+
     /**
     * 显示最终表格
     *
@@ -524,7 +526,7 @@ class DispListTable
         $this->mrTpl->set_var('td_height',                  $this->mTdHeight);
 
         $this->mrTpl->show_block('main');
-        
+
         $this->mHtmlStr = $this->mrTpl->get('o_main');
         return($this->mHtmlStr);
 */

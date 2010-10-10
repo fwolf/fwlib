@@ -1,11 +1,14 @@
 <?php
 /**
  * @package		fwolflib
- * @copyright	Copyright 2007, Fwolf
+ * @copyright	Copyright 2007-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib@gmail.com>
  * @since		2007-08-15
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
 
 /**
  * Match content using preg, return result array or '' if non-match

@@ -4,11 +4,13 @@
  *
  * Original is_cli.php and nixos.php merged in this.
  * @package		fwolflib
- * @copyright	Copyright 2006-2008, Fwolf
+ * @copyright	Copyright 2006-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib@gmail.com>
  * @since		2006-07-08
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**

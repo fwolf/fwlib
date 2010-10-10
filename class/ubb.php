@@ -1,5 +1,7 @@
 <?php
 /**
+ * Obsoleted.
+ *
 * @package      MaGod
 * @copyright    Copyright 2004, Fwolf
 * @author       Fwolf <fwolf001@tom.com>

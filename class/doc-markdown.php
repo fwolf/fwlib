@@ -2,11 +2,14 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2009, Fwolf
+ * @copyright	Copyright 2009-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-04-12
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+
 
 /**
  * Display text document writing by MarkDown markup language.
@@ -19,8 +22,7 @@
  * @since		2009-04-12
  * @version		$Id$
  */
-class DocMarkdown
-{
+class DocMarkdown extends Fwolflib {
 	/**
 	 * Some config vars
 	 * @var	array

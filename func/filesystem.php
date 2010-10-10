@@ -1,11 +1,14 @@
 <?php
 /**
  * @package		fwolflib
- * @copyright	Copyright 2006, Fwolf
- * @author		Fwolf, fwolf.aide@gmail.com
+ * @subpackage	func
+ * @copyright	Copyright 2006-2010, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2006-10-07
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**

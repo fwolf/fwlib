@@ -10,8 +10,9 @@
  */
 
 
-require_once('fwolflib/func/ecl.php');
-require_once('fwolflib/func/env.php');
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/ecl.php');
+require_once(FWOLFLIB . 'func/env.php');
 
 if (!function_exists('mcrypt_module_open'))
 	die('Module mcrypt not installed.');

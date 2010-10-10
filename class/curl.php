@@ -5,13 +5,10 @@
 * @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
 */
 
-if (0 <= version_compare(phpversion(), '5.3.0')) {
-	require_once(__DIR__ . '/fwolflib.php');
-	require_once(__DIR__ . '/../func/array.php');
-} else {
-	require_once(dirname(__FILE__) . '/fwolflib.php');
-	require_once(dirname(__FILE__) . '/../func/array.php');
-}
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/array.php');
+
 
 /**
 * A class aimed to use curl function efficiency

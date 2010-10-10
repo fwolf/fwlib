@@ -6,7 +6,10 @@
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  */
 
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once("phpmailer/class.phpmailer.php");
+
 
 /**
  * Mail Sender

@@ -6,7 +6,10 @@
 * @author       Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
 */
 
-require_once('fwolflib/func/string.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/string.php');
+
 
 /**
  * Module in MVC
@@ -24,7 +27,7 @@ require_once('fwolflib/func/string.php');
  * @see			Controler
  * @see			View
  */
-abstract class Module {
+abstract class Module extends Fwolflib {
 
 	/**
 	 * Number of items in list

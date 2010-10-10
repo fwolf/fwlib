@@ -6,8 +6,11 @@
  * @author		Fwolf <fwolf.aide-fwolflib-class@gmail.com>
  */
 
-require_once('fwolflib/class/adodb.php');
-require_once('fwolflib/func/env.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/adodb.php');
+require_once(FWOLFLIB . 'func/env.php');
+
 
 //// From fwolflib r12, Don't modify it outside fwolflib ! ////
 
@@ -32,8 +35,7 @@ require_once('fwolflib/func/env.php');
  * @since		2006-12-10
  * @version		$Id$
  */
-class DbUpdater
-{
+class DbUpdater extends Fwolflib {
 	/**
 	 * Db server information array
 	 * 	Array item: type, host, user, pass, name.

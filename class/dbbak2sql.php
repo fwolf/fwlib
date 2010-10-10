@@ -5,7 +5,10 @@
 * @author       Fwolf <fwolf.aide@gmail.com>
 */
 
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once('adodb/adodb.inc.php');
+
 
 /**
 * Data backup tool, result is sql format.
@@ -18,8 +21,7 @@ require_once('adodb/adodb.inc.php');
 * @access     public
 * @version    $Id$
 */
-class DbBak2Sql
-{
+class DbBak2Sql extends Fwolflib {
 	/**
 	 * Charset of database
 	 * If charset of db diff from os, do convert when execute sql.
@@ -35,7 +37,7 @@ class DbBak2Sql
 	 * @see	$mCharsetDb
 	 */
 	var $mCharsetOs = '';
-	
+
 	/**
 	 * Db connection object
 	 * @var object
@@ -59,7 +61,7 @@ class DbBak2Sql
 	 * @see	$mTargetPath
 	 */
 	var $mLogFile = 'dbbak2sql.log';
-	
+
 	/**
 	 * Db server information array
 	 * 	Array item: host, user, pass, name, type.
@@ -124,7 +126,7 @@ class DbBak2Sql
 		if (!empty($server))
 			$this->SetDatabase($server);
 	} // end of func __construct
-	  
+
 
 	/**
 	 * Do backup to database
@@ -139,7 +141,7 @@ class DbBak2Sql
 		$this->Summary();
 	} // end of func Bak
 
-	
+
 	/**
 	 * Do backup to a single table
 	 * @access	private
@@ -150,22 +152,22 @@ class DbBak2Sql
 		// Clear sql file(sql is save to seperated file, not need clear anymore
 		//file_put_contents($this->mTargetPath . "/$tbl.sql", '');
 		$this->Log("Begin to backup $tbl, ");
-		
+
 		$cols = $this->GetTblFields($tbl);
-		
+
 		// Split sql to 10000 rows per step
 		$sql_step = 10000;
 		$sql_offset = 0;
 		// Rows and Byte count
 		$done_rows = 0;
 		$done_bytes = 0;
-		
+
 		// Get total rows
 		$sql = "select count(1) as c from $tbl";
 		$rs = $this->mDb->Execute($sql);
 		$rowcount = $rs->fields['c'];
 		$this->Log("Got $rowcount rows: ");
-		
+
 		// Write rs to sql
 		// GetInsertSQL failed for unknown reason, manual generate sql
 		//$sql = $this->mDb->GetInsertSQL($rs, $cols, false, false);
@@ -173,11 +175,11 @@ class DbBak2Sql
 		$sql = "truncate table $tbl;\n";
 		if (true == $this->NeedIdentityInsert())
 			$sql .= "set identity_insert $tbl on;\n";
-		
+
 		// Backup by groupby will cause two situation:
 		// 1. one sql file will contain rows diffs with sql_step.
 		// 2. sql file saved's number sometimes is not continued.
-		
+
 		// Groupby rules is converted to where clauses
 		$ar_where = $this->GroupbyRule2WhereSql($tbl);
 		while ($sql_offset < $rowcount)
@@ -235,9 +237,9 @@ class DbBak2Sql
 		if (true == $this->NeedIdentityInsert())
 			$sql .= "set identity_insert $tbl off;\n";
 		file_put_contents($bakfile, $sql, FILE_APPEND);
-				
+
 		$this->Log("Saved $done_rows rows, Total size: $done_bytes bytes.\n");
-		
+
 	} // end of func BakTable
 
 
@@ -250,10 +252,10 @@ class DbBak2Sql
 	private function &DbConn($server)
 	{
 		global $ADODB_FETCH_MODE;
-		
+
 		//ADODB设定
 		$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
-		
+
 		try
 		{
 			$conn = &ADONewConnection($server['type']);
@@ -341,7 +343,7 @@ class DbBak2Sql
 			$groupby = $this->mTableGroupby[$tbl];
 			$sql = "select distinct $groupby from $tbl";
 			$rs = $this->mDb->Execute($sql);
-			
+
 			// Convert every rows to where sql
 			$cols = explode(',', $groupby);
 			$rs_cols = $this->mDb->MetaColumns($tbl, false);
@@ -374,8 +376,8 @@ class DbBak2Sql
 		echo $log;
 		$this->mSummary .= $log;
 	} // end of func Log
-	
-	
+
+
 	/**
 	 * Determin if current db driver need set identity_insert tbl on/off
 	 * @access	private
@@ -407,7 +409,7 @@ class DbBak2Sql
 		$varchar = array('char', 'charn', 'text', 'varchar', 'varchar2', 'varcharn');
 		if (true == in_array($type, $varchar))
 			$val = '"' . addslashes($val) . '"';
-		
+
 		// Datetime field
 		$datestyle = array('date', 'daten', 'datetime', 'datetimn');
 		if (in_array($type, $datestyle))
@@ -415,7 +417,7 @@ class DbBak2Sql
 				$val = 'null';
 			else
 				$val = '"' . $val . '"';
-		
+
 		// If a numeric field is null
 		if (!in_array($type, $varchar) && !in_array($type, $datestyle) && is_null($val))
 			$val = 'null';
@@ -442,7 +444,7 @@ class DbBak2Sql
 				if (empty($cols))
 					$cols = $this->GetTblFields($tbl);
 				$rs_cols = $this->mDb->MetaColumns($tbl, false);
-			
+
 				while (!$rs->EOF)
 				{
 					// Insert sql begin
@@ -466,7 +468,7 @@ class DbBak2Sql
 		return $sql;
 	} // end of func Rs2Sql
 
-	
+
 	/**
 	 * Accept database information from outside class
 	 *	Didnot validate data send in.
@@ -554,7 +556,7 @@ class DbBak2Sql
 		echo $this->mSummary . "\n";
 	} // end of func Summary
 
-	
+
 } // end of class DbBak2Sql
 /*
 $db = DbConn();

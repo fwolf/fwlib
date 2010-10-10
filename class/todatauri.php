@@ -5,11 +5,14 @@
 * @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
 */
 
-require_once('fwolflib/class/curl.php');
-require_once('fwolflib/func/download.php');
-require_once('fwolflib/func/env.php');
-require_once('fwolflib/func/request.php');
-require_once('fwolflib/func/url.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/curl.php');
+require_once(FWOLFLIB . 'func/download.php');
+require_once(FWOLFLIB . 'func/env.php');
+require_once(FWOLFLIB . 'func/request.php');
+require_once(FWOLFLIB . 'func/url.php');
+
 
 /**
  * Convert css, js, image in a html file, to save it in ONE file like mht.
@@ -20,8 +23,7 @@ require_once('fwolflib/func/url.php');
  * @since		2007-04-06
  * @version		$Id$
  */
-class ToDataUri extends Curl
-{
+class ToDataUri extends Curl {
 	/**
 	 * Cache of src already retrieved
 	 * Format: url=>base64_data

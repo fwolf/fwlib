@@ -7,14 +7,11 @@
  * @since		2010-05-25
  */
 
-if (0 <= version_compare(phpversion(), '5.3.0')) {
-	require_once(__DIR__ . '/adodb.php');
-	require_once(__DIR__ . '/curl-comm.php');
-}
-else {
-	require_once(dirname(__FILE__) . '/adodb.php');
-	require_once(dirname(__FILE__) . '/curl-comm.php');
-}
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/adodb.php');
+require_once(FWOLFLIB . 'class/curl-comm.php');
+
 
 /**
  * Sync db data via curl communication.

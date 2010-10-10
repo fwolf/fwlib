@@ -2,13 +2,15 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2003-2009, Fwolf
+ * @copyright	Copyright 2003-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2003-05-17 12:17:14
- * @version		$Id$
  */
 
-require_once('fwolflib/func/request.php');
+
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'func/request.php');
+
 
 /**
  * Generate table list
@@ -53,8 +55,7 @@ require_once('fwolflib/func/request.php');
  * @since		2003-05-17 12:17:14
  * @version		$Id$
  */
-class ListTable
-{
+class ListTable extends Fwolflib {
 	/**
 	 * Configuration
 	 *

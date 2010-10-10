@@ -3,19 +3,21 @@
  * Functions about validate some data.
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2006-2008, Fwolf
+ * @copyright	Copyright 2006-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
  * @since		2006-07-09
- * @version		$Id$
  */
 
-require_once('fwolflib/func/env.php');
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/env.php');
+
 
 /**
  * Validate an email address.
- * 
+ *
  * Provide email address (raw input)
- * Returns true if the email address has the email 
+ * Returns true if the email address has the email
  * address format and the domain exists.
  * @link http://www.linuxjournal.com/article/9585
  * @param	string	$email
@@ -68,7 +70,7 @@ function ValidateEmail($email)
 		elseif (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
 			str_replace("\\\\", "", $local)))
 		{
-			// character not valid in local part unless 
+			// character not valid in local part unless
 			// local part is quoted
 			if (!preg_match('/^"(\\\\"|[^"])+"$/',
 				str_replace("\\\\", "", $local)))
@@ -76,8 +78,8 @@ function ValidateEmail($email)
 				$is_valid = false;
 			}
 		}
-		
-		// :NOTICE: Some network provider will return fake A record if 
+
+		// :NOTICE: Some network provider will return fake A record if
 		// a dns query return fail, usually disp some ads.
 		// So we only check MX record.
 		if ($is_valid && NixOs())

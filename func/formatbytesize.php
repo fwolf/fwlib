@@ -1,11 +1,14 @@
 <?php
 /**
  * @package		fwolflib
- * @copyright	Copyright 2006, Fwolf
+ * @copyright	Copyright 2006-2010, Fwolf
  * @author		Fwolf, fwolf.aide@gmail.com
  * @since		2006-09-27
- * @version		$Id$
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
 
 /**
  * Convert variant byte size to human readable format string

@@ -8,6 +8,9 @@
  */
 
 
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
+
 /**
 * 将数组转换为URL地址
 *

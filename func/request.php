@@ -2,10 +2,14 @@
 /**
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2007-2008, Fwolf
+ * @copyright	Copyright 2007-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2007-01-21
  */
+
+
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+
 
 /**
  * Get variant from $_COOKIE
