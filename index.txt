@@ -185,24 +185,35 @@ escape_color.php
 
 
 filesystem.php
-
+--------------
 	文件系统常用函数
-	BaseName1($filename)
-		Manual get basename instead of using pathinfo()
-	DelFile($file_or_dir)
-		Delete a dir or file completedly
-	DirName1($filename)
-		Manual get dirname instead of using pathinfo()
-	DirSize($path)
-		Count size of a directory, recursive
-	FileExt1($filename)
-		Manual get extension instead of using pathinfo()
-	FileName1($filename)
-		Manual get filename instead of using pathinfo()
-	FileSize1($file)
-		Count size of a file
-	ListDir($dir)
-		List files and file-information of a directory order by mtime asc.
+
+### BaseName1 ($filename)
+	Manual get basename instead of using pathinfo()
+
+### DelFile ($file_or_dir)
+	Delete a dir or file completedly
+
+### DirName1 ($filename)
+	Manual get dirname instead of using pathinfo()
+
+### DirSize ($path)
+	Count size of a directory, recursive
+
+### FileExt1 ($filename)
+	Manual get extension instead of using pathinfo()
+
+### FileName1 ($filename)
+	Manual get filename instead of using pathinfo()
+
+### FileSize1 ($file)
+	Count size of a file
+
+### GetFilenameToWrite ($s_file)
+	Get/gen a filename to write as a new file.
+
+### ListDir ($dir)
+	List files and file-information of a directory order by mtime asc.
 
 
 formatbytesize.php
@@ -299,4 +310,3 @@ cookie.js
 	Cookie操作JS函数集
 validate.js
 	数据效验JS函数集
-

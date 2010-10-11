@@ -18,9 +18,12 @@ if (! defined('SIMPLE_TEST')) {
 //header('Content-Type: text/html; charset=utf-8');
 // }}}
 
+
 // Require library define file which need test
-require_once('fwolflib/func/array.php');
-require_once('fwolflib/func/request.php');
+require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(FWOLFLIB . 'func/array.php');
+require_once(FWOLFLIB . 'func/request.php');
+
 
 class TestFuncArray extends UnitTestCase {
 

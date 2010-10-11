@@ -16,8 +16,7 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
  * @param	string	$filename
  * @return	string
  */
-function BaseName1($filename)
-{
+function BaseName1 ($filename) {
 	$i = strrpos($filename, '/');
 	if (false === $i)
 		return $filename;
@@ -31,8 +30,7 @@ function BaseName1($filename)
  * 	When del a dir, del all dir and files under it also.
  * @param	string	$name
  */
-function DelFile($name)
-{
+function DelFile ($name) {
 	//:Notice: Lost link file will got nothing using realpath, basename, dirname
 	//	So trans in full path as $name all the time.
 	if(!is_link($name))
@@ -65,8 +63,7 @@ function DelFile($name)
  * @param	string	$filename
  * @return	string
  */
-function DirName1($filename)
-{
+function DirName1 ($filename) {
 	$i = strrpos($filename, '/');
 	if (false === $i)
 		return '';
@@ -81,8 +78,7 @@ function DirName1($filename)
  * @param	string	$path
  * @return	long
  */
-function DirSize($path)
-{
+function DirSize ($path) {
 	$i = 0;
 	$files = scandir($path);
 	foreach ($files as $file)
@@ -107,8 +103,7 @@ function DirSize($path)
  * @param	string	$filename
  * @return	string
  */
-function FileExt1($filename)
-{
+function FileExt1 ($filename) {
 	$i1 = strrpos($filename, '.');
 	$i2 = strrpos($filename, '/');
 	if ($i1 < $i2)
@@ -123,8 +118,7 @@ function FileExt1($filename)
  * @param	string	$filename
  * @return	string
  */
-function FileName1($filename)
-{
+function FileName1 ($filename) {
 	$basename = Basename1($filename);
 	$i = strrpos($basename, '.');
 	if (false === $i)
@@ -143,8 +137,7 @@ function FileName1($filename)
  * @param	string	$file
  * @return	long
  */
-function FileSize1($file)
-{
+function FileSize1 ($file) {
 	if (is_link($file))
 		$s = lstat($file);
 	else
@@ -158,14 +151,50 @@ function FileSize1($file)
 
 
 /**
+ * Get/gen a filename to write as a new file.
+ *
+ * Before write, there is a filename, but if file exists,
+ * need plus -1, -2, -nnn at end of filename but before file extention,
+ * this func will do this job and return suitable filename.
+ *
+ * Will remove special chars in filename.
+ *
+ * Can use with dir as well as regular file.
+ *
+ * @param	string	$s_file	Path to dest file.
+ * @return	string
+ */
+function GetFilenameToWrite ($s_file) {
+	// Remove special chars in filename
+	$ar = array('?', '&', ';', '=', ':', "\\");
+	$s_file = str_replace($ar, '_', $s_file);
+	$s_file = trim($s_file);
+
+	$s_dir = DirName1($s_file) . '/';
+	$s_name = FileName1($s_file);
+	$s_ext = FileExt1($s_file);
+
+	// Auto skip exists file, no overwrite.(-1, -2...-9, -10, -11.ext)
+	$i = 1;
+	while (file_exists($s_file)) {
+		$s_file = $s_dir . $s_name;
+		$s_file .= '-' . strval($i++);
+		if (!empty($s_ext))
+			$s_file .= '.' . $s_ext;
+	}
+
+	return $s_file;
+} // end of func GetFilenameToWrite
+
+
+/**
  * List files and file-information of a directory
  * 	By default, sort files by mtime asc
  *  Returned array is started from 1
  * param	string	$dir
  * return	array
  */
-function ListDir($dir)
-{
+function ListDir ($dir) {
 	//List files
 	$dir = realpath($dir);
 	if (empty($dir))

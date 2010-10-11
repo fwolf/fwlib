@@ -1,12 +1,12 @@
 <?php
 /**
  * Group Test - func
+ *
  * @package     fwolflib
- * @subpackage	func-test
- * @copyright   Copyright 2009, Fwolf
- * @author      Fwolf <fwolf.aide+fwolflib.func-test@gmail.com>
+ * @subpackage	func.test
+ * @copyright   Copyright 2009-2010, Fwolf
+ * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2009-10-22
- * @version		$Id$
  */
 
 // Define like this, so test can run both under eclipse and web alone.
@@ -27,6 +27,7 @@ $test = new TestSuite('Group test for func/*');
 $test->addTestFile('array.test.php');
 $test->addTestFile('client.test.php');
 $test->addTestFile('crypt.test.php');
+$test->addTestFile('filesystem.test.php');
 $test->addTestFile('request.test.php');
 $test->addTestFile('string.test.php');
 $test->addTestFile('url.test.php');
