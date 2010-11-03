@@ -65,6 +65,12 @@ require_once(FWOLFLIB . 'func/request.php');
 abstract class View extends Cache {
 
 	/**
+	 * Action parameter, the view command to determin what to display
+	 * @var string	// $_GET['a'], means which action user prefered of the module
+	 */
+	protected $sAction = null;
+
+	/**
 	 * If cache turned on
 	 * Remember to set cache config before turned it on.
 	 * @var	boolean
@@ -72,16 +78,11 @@ abstract class View extends Cache {
 	public $bCacheOn = false;
 
 	/**
-	 * If use tidy to format output html code, default false.
-	 * @var boolean
+	 * Css file url used in header
+	 * eg: 'default.css', 'screen, print', indexed by 0,1
+	 * @var	array
 	 */
-	public $bOutputTidy = false;
-
-	/**
-	 * If show debug info on footer ?
-	 * @var	boolean
-	 */
-	public $bShowDebugInfo = false;
+	public $aCss = array();
 
 	/**
 	 * View's caller -- Controler object
@@ -93,35 +94,13 @@ abstract class View extends Cache {
 	 * Form object, auto new when first used.
 	 * @var	object
 	 */
-	//public $oForm = null;
+	public $oForm = null;
 
 	/**
 	 * ListTable object, auto new when first used.
 	 * @var	object
 	 */
-	//public $oLt = null;
-
-	/**
-	 * Template object, auto new when first used.
-	 * @var	object
-	 */
-	//public $oTpl = null;
-
-	/**
-	 * Action parameter, the view command to determin what to display
-	 * @var string	// $_GET['a'], means which action user prefered of the module
-	 */
-	protected $sAction = null;
-
-	/**
-	 * Template file path
-	 * @var	array
-	 */
-	protected $aTplFile = array(
-		'footer' => 'footer.tpl',
-		'header' => 'header.tpl',
-		'menu' => 'menu.tpl',
-		);
+	public $oLt = null;
 
 	/**
 	 * Output content generated
@@ -158,6 +137,34 @@ abstract class View extends Cache {
 	protected $sOutputMenu = '';
 
 	/**
+	 * If use tidy to format output html code, default false.
+	 * @var boolean
+	 */
+	public $bOutputTidy = false;
+
+	/**
+	 * If show debug info on footer ?
+	 * @var	boolean
+	 */
+	public $bShowDebugInfo = false;
+
+	/**
+	 * Template object, auto new when first used.
+	 * @var	object
+	 */
+	public $oTpl = null;
+
+	/**
+	 * Template file path
+	 * @var	array
+	 */
+	protected $aTplFile = array(
+		'footer' => 'footer.tpl',
+		'header' => 'header.tpl',
+		'menu' => 'menu.tpl',
+		);
+
+	/**
 	 * Html <title> of this view
 	 * @var	string
 	 */
@@ -185,8 +192,12 @@ abstract class View extends Cache {
 	 * construct
 	 * @param object	&$ctl	Caller controler object
 	 */
-	public function __construct(&$ctl)
-	{
+	public function __construct (&$ctl) {
+		// For auto-new
+		unset($this->oForm);
+		unset($this->oLt);
+		unset($this->oTpl);
+
 		$this->oCtl = $ctl;
 		$this->sAction = GetGet('a');
 
@@ -370,8 +381,8 @@ abstract class View extends Cache {
 	/**
 	 * Generate header part
 	 */
-	public function GenHeader()
-	{
+	public function GenHeader () {
+		$this->oTpl->assign_by_ref('css', $this->aCss);
 		$this->sOutputHeader = $this->oTpl->fetch($this->aTplFile['header']);
 		return $this->sOutputHeader;
 	} // end of func GenHeader

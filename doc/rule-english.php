@@ -114,6 +114,7 @@ checker						|审核人，检查人
 class						|等级，级别
 commercial bid, cb			|商务标
 comparison and choice, cc	|比选，比较、选择
+complaint, compl			|投诉
 composing					|排版
 comprehensive evaluation method, cem	|综合评估法
 config, cfg, conf			|配置
