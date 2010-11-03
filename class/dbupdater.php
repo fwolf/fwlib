@@ -334,7 +334,7 @@ CREATE TABLE $this->sTblLog (
 	 * @access	private
 	 * @param	string	$log
 	 */
-	private function Log($log)
+	public function Log($log)
 	{
 		$this->sSummary .= $log;
 	} // end of func Log
