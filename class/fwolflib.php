@@ -90,7 +90,7 @@ class Fwolflib {
 	 * @param	int		$level
 	 * @return	$this
 	 */
-	public function Log($msg, $level = 3) {
+	public function Log ($msg, $level = 3) {
 		$this->aLog[] = array(
 			'level'	=> $level,
 			'time'	=> date($this->sFormatTime),

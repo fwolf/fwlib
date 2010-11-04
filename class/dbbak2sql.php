@@ -369,8 +369,7 @@ class DbBak2Sql extends Fwolflib {
 	 * @access	private
 	 * @param	string	$log
 	 */
-	private function Log($log)
-	{
+	public function Log ($log) {
 		$logfile = $this->mTargetPath . '/'  . $this->mLogFile;
 		file_put_contents($logfile, $log, FILE_APPEND);
 		echo $log;
