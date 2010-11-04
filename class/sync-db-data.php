@@ -65,7 +65,7 @@ class SyncDbData extends Fwolflib {
 	 * Log message
 	 * @var	array
 	 */
-	protected $aLog = array();
+	public $aLog = array();
 
 	/**
 	 * Number of rows have processed
@@ -332,7 +332,7 @@ class SyncDbData extends Fwolflib {
 	 * Save or output log message, change to save now, output when destruct.
 	 * @param	string	$log
 	 */
-	protected function Log($log)
+	public function Log($log)
 	{
 		//$this->sSummary .= $log;
 		//Ecl($log);
