@@ -26,6 +26,18 @@ require_once(FWOLFLIB . 'func/env.php');
 class Fwolflib {
 
 	/**
+	 * Configuation
+	 * @var	array
+	 */
+	public $aConfig = array();
+
+	/**
+	 * Default time format
+	 * @var	string
+	 */
+	public $sFormatTime = 'Y-m-d H:i:s';
+
+	/**
 	 * Log msg.
 	 *
 	 * array(
@@ -41,12 +53,6 @@ class Fwolflib {
 	 * @var	array
 	 */
 	public $aLog = array();
-
-	/**
-	 * Default time format
-	 * @var	string
-	 */
-	public $sFormatTime = 'Y-m-d H:i:s';
 
 
 	/**
@@ -123,6 +129,28 @@ class Fwolflib {
 
 		return $s;
 	} // end of func LogGet
+
+
+	/**
+	 * Set config array
+	 *
+	 * @see		$aConfig
+	 * @param	array	$k
+	 * @param	mixed	$v
+	 */
+	public function SetConfig ($k, $v = null) {
+		if (is_array($k)) {
+			// Use array $k only, ignore $v
+			if (!empty($k)) {
+				foreach ($k as $key => $val)
+					$this->aConfig[$key] = $val;
+			}
+		}
+		else {
+			// Use array $k => $v
+			$this->aConfig[$k] = $v;
+		}
+	} // end of func SetConfig
 
 
 } // end of class Fwolflib

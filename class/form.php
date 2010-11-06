@@ -43,7 +43,7 @@ class Form extends Fwolflib {
 	 * @see	SetConfig()
 	 * @see	SetConfigEnctype()
 	 */
-	protected $aConfig = array();
+	public $aConfig = array();
 
 	/**
 	 * Form element define, raw order

@@ -82,7 +82,7 @@ class ListTable extends Fwolflib {
 	 * </code>
 	 * @var	array
 	 */
-	protected $aConfig = array(
+	public $aConfig = array(
 		// 浅蓝色配色方案
 		// fwolflib-list-table = fl_lt
 		'code_prefix'		=> 'fl_lt',		// Used in id/class in html and css.

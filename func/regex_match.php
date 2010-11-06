@@ -17,7 +17,7 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
  *   remind which value you use it for.
  * @param	string	$preg
  * @param	string	$str
- * @param 	int		$csrts	Convert single result to str(array -> str)
+ * @param 	boolean	$csrts	Convert single result to str(array -> str) ?
  * @return	mixed
  * @access	public
  */

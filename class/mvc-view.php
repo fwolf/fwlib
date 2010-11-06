@@ -463,11 +463,11 @@ abstract class View extends Cache {
 
 	/**
 	 * Use tidy to format html string
+	 *
 	 * @param string	&$html
 	 * @return string
 	 */
-	public function Tidy(&$html)
-	{
+	public function Tidy (&$html) {
 		if (true == class_exists("tidy")) {
 			// Specify configuration
 			$config = array(
@@ -483,8 +483,10 @@ abstract class View extends Cache {
 			$tidy->cleanRepair();
 
 			return tidy_get_output($tidy);
-		} else
+		} else {
+			$this->Log('Tidy is not installed !', 4);
 			return $html;
+		}
 	} // end of func Tidy
 
 } // end of class View
