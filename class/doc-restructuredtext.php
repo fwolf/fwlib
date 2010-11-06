@@ -58,6 +58,9 @@ class DocReStructuredText extends Fwolflib {
 	 * @var	array
 	 */
 	public $aConfig = array(
+		// Use script jquery ?
+		'js_jquery'	=> false,
+
 		// Tidy output html ?
 		'output_tidy'	=> false,
 
@@ -84,6 +87,12 @@ class DocReStructuredText extends Fwolflib {
 	 * @var array
 	 */
 	protected $aHeader = array();
+
+	/**
+	 * Result html
+	 * @var	string
+	 */
+	public $sHtml = '';
 
 	/**
 	 * Document infomation
@@ -154,6 +163,96 @@ class DocReStructuredText extends Fwolflib {
 
 
 	/**
+	 * Put log bottom at document
+	 *
+	 * @param	$level	Only output log which's level >= $level
+	 * @return	string
+	 */
+	public function AddLog ($level = 3) {
+		$s_log = parent::LogGet($level);
+		$s_log = "<div class='log'>$s_log</div>";
+
+		// Insert to document
+		$this->sHtml = $this->AddToFooter($this->sHtml, $s_log);
+
+		return $this->sHtml;
+	} // end of func AddLog
+
+
+	/**
+	 * Add some code to footer
+	 *
+	 * @param	string	$s_html
+	 * @param	string	$s_add
+	 * @return	stirng
+	 */
+	public function AddToFooter ($s_html, $s_add) {
+		$i = strrpos($s_html, '</body>');
+		if (! (false === $i)) {
+			$s_html = substr($s_html, 0, $i) . $s_add
+				. "\n</body>\n</html>";
+		}
+
+		return $s_html;
+	} // end of func AddToFooter
+
+
+	/**
+	 * Add jquery lib link in <head>
+	 *
+	 * @param	string	$s_html
+	 * @return	string
+	 */
+	protected function AddJsJquery ($s_html) {
+		$s_html = str_replace('</head>'
+			, '<script type="text/javascript" src="'
+					. $this->aConfig['path_jquery'] . '">'
+				. '</script>'
+				. "\n</head>"
+			, $s_html);
+
+		return $s_html;
+	} // end of func AddJsJquery
+
+
+	/**
+	 * Add js code, which can show source of prefered part.
+	 *
+	 * @return	string
+	 */
+	public function AddJsShowSource () {
+		$s = '
+			<script type="text/javascript">
+			<!--//--><![CDATA[//>
+			<!--
+
+			// At first, hide all source code
+			$(".show_source").next("pre").css("display", "none");
+
+
+			// Click to show/hide source code
+			$(".show_source").click(function() {
+				obj = $(this).next();
+				if ("none" == obj.css("display")) {
+					// Show it
+					obj.show("slow");
+				}
+				else {
+					// Hide it
+					obj.hide("fast");
+				}
+			});
+
+			//--><!]]>
+			</script>
+		';
+
+		$this->sHtml = $this->AddToFooter($this->sHtml, $s);
+		return $this->sHtml;
+	} // end of func AddJsShowSource
+
+
+	/**
 	 * Gen cmd options
 	 *
 	 * @return	string
@@ -217,6 +316,36 @@ class DocReStructuredText extends Fwolflib {
 
 		return $s_out;
 	} // end of func GetDocutilsCssPath
+
+
+	/**
+	 * Modify html doctype declare
+	 *
+	 * @param	string	$s_html
+	 * @return	string
+	 */
+	protected function ModifyHtmlDoctype ($s_html) {
+		$s_html = str_replace('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+			, "<!DOCTYPE html\n	PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+			, $s_html);
+		return $s_html;
+	} // end of func ModifyHtmlDoctype
+
+
+	/**
+	 * Modify html <style> tag, to met validator.w3.org
+	 *
+	 * @param	string	$s_html
+	 * @return	string
+	 */
+	protected function ModifyHtmlTagStyle ($s_html) {
+		$s_html = str_replace('</style>'
+			, "-->\n</style>", $s_html);
+		$s_html = str_replace('<style type="text/css">'
+			, "<style type=\"text/css\" media=\"screen, print\">\n<!--"
+			, $s_html);
+		return $s_html;
+	} // end of func ModifyHtmlTagStyle
 
 
 	/**
@@ -307,10 +436,19 @@ class DocReStructuredText extends Fwolflib {
 		unlink($f_tmp);
 		$s_out = implode("\n", $ar_out);
 
+		// Fix html
+		$s_out = $this->ModifyHtmlDoctype($s_out);
+		$s_out = $this->ModifyHtmlTagStyle($s_out);
+
+		// Need jQuery ?
+		if ($this->aConfig['js_jquery'])
+			$s_out = $this->AddJsJquery($s_out);
+
 		// Tidy ?
 		if ($this->aConfig['output_tidy'])
 			$s_out = $this->Tidy($s_out);
 
+		$this->sHtml = $s_out;
 		return $s_out;
 	} // end of func ToHtml
 

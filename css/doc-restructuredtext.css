@@ -7,3 +7,19 @@
  * @author		Fwolf <fwolf.aide+fwolflib.css@gmail.com>
  * @since		2010-11-06
  */
+
+/* Make eye confortable */
+body {
+	background-color: rgb(204, 232, 207);
+}
+
+
+/* Show source code */
+.show_source {
+	cursor: pointer;
+	text-decoration: underline;
+}
+pre {
+	background-color: #CCCCCC;
+	padding: 1em;
+}
