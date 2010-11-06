@@ -68,6 +68,10 @@ class DocReStructuredText extends Fwolflib {
 		// http://code.google.com/apis/ajaxlibs/
 		'path_jquery'	=> 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js',
 		//'path_jquery'	=> '/js/jquery.js',
+
+		// Show opiton, default
+		'show_ads'		=> false,
+		'show_counter'	=> true,
 	);
 
 	/**
@@ -163,38 +167,79 @@ class DocReStructuredText extends Fwolflib {
 
 
 	/**
-	 * Put log bottom at document
+	 * Add my html footer
 	 *
-	 * @param	$level	Only output log which's level >= $level
-	 * @return	string
-	 */
-	public function AddLog ($level = 3) {
-		$s_log = parent::LogGet($level);
-		$s_log = "<div class='log'>$s_log</div>";
-
-		// Insert to document
-		$this->sHtml = $this->AddToFooter($this->sHtml, $s_log);
-
-		return $this->sHtml;
-	} // end of func AddLog
-
-
-	/**
-	 * Add some code to footer
+	 * Some code is cp from fwolfweb
 	 *
 	 * @param	string	$s_html
-	 * @param	string	$s_add
-	 * @return	stirng
+	 * @return	string
 	 */
-	public function AddToFooter ($s_html, $s_add) {
-		$i = strrpos($s_html, '</body>');
-		if (! (false === $i)) {
-			$s_html = substr($s_html, 0, $i) . $s_add
-				. "\n</body>\n</html>";
+	public function AddFooter ($s_html) {
+		$s = '';
+		if ($this->aConfig['show_ads']) {
+			$s .= '
+				<div id="ads_bottom">
+					<br />
+					<script type="text/javascript">
+					<!--//--><![CDATA[//>
+					<!--
+						google_ad_client = "pub-7916103707935920";
+						google_ad_width = 728;
+						google_ad_height = 90;
+						google_ad_format = "728x90_as";
+						google_ad_type = "text_image";
+						//2006-10-28: independence_application
+						google_ad_channel = "1115184146";
+						google_color_border = "B4D0DC";
+						google_color_bg = "FFFFFF";
+						google_color_link = "0033FF";
+						google_color_text = "6F6F6F";
+						google_color_url = "008000";
+					//--><!]]>
+					</script>
+					<script type="text/javascript"
+					  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+					</script>
+				</div>
+			';
 		}
 
+		$s .= '
+			<div id="footer">
+				<hr />
+				<a class="img" href="http://validator.w3.org/check?uri=referer">
+					<img src="http://www.fwolf.com/icon/xhtml-1.0.png" alt="Valid XHTML 1.0!" />
+				</a>
+				<span class="spacer" >&nbsp;</span>
+				<a class="img" href="http://jigsaw.w3.org/css-validator/check/referer">
+					<img src="http://www.fwolf.com/icon/css.png" alt="Valid CSS!" />
+				</a>
+		';
+
+		if ($this->aConfig['show_counter']) {
+			$s .= '
+				<span class="spacer" >&nbsp;</span>
+				<script type="text/javascript" src="http://js.users.51.la/272422.js"></script>
+				<noscript>
+					<div>
+						<a href="http://www.51.la/?272422">
+							<img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/272422.asp" style="border:none" />
+						</a>
+					</div>
+				</noscript>
+			';
+		}
+
+		$s .= '
+				<span id="copyright">
+					Copyright &copy; 2005-2010 <a href="http://www.fwolf.com/">Fwolf</a>, All Rights Reserved.
+				</span>
+			</div>
+		';
+
+		$s_html = $this->AddToFooter($s_html, $s);
 		return $s_html;
-	} // end of func AddToFooter
+	} // end of func AddFooter
 
 
 	/**
@@ -247,9 +292,62 @@ class DocReStructuredText extends Fwolflib {
 			</script>
 		';
 
-		$this->sHtml = $this->AddToFooter($this->sHtml, $s);
+		$this->sHtml = $this->AddToFooterBefore($this->sHtml, $s);
 		return $this->sHtml;
 	} // end of func AddJsShowSource
+
+
+	/**
+	 * Put log bottom at document
+	 *
+	 * @param	$level	Only output log which's level >= $level
+	 * @return	string
+	 */
+	public function AddLog ($level = 3) {
+		$s_log = parent::LogGet($level);
+		$s_log = "<div class='log'>$s_log</div>";
+
+		// Insert to document
+		$this->sHtml = $this->AddToFooterBefore($this->sHtml, $s_log);
+
+		return $this->sHtml;
+	} // end of func AddLog
+
+
+	/**
+	 * Add some code to footer
+	 *
+	 * @param	string	$s_html
+	 * @param	string	$s_add
+	 * @return	stirng
+	 */
+	public function AddToFooter ($s_html, $s_add) {
+		$i = strrpos($s_html, '</body>');
+		if (! (false === $i)) {
+			$s_html = substr($s_html, 0, $i) . $s_add
+				. "\n</body>\n</html>";
+		}
+
+		return $s_html;
+	} // end of func AddToFooter
+
+
+	/**
+	 * Add some code before footer div
+	 *
+	 * @param	string	$s_html
+	 * @param	string	$s_add
+	 * @return	stirng
+	 */
+	public function AddToFooterBefore ($s_html, $s_add) {
+		$i = strrpos($s_html, '<div id="footer">');
+		if (! (false === $i)) {
+			$s_html = substr($s_html, 0, $i) . $s_add . "\n"
+				. substr($s_html, $i);
+		}
+
+		return $s_html;
+	} // end of func AddToFooterBefore
 
 
 	/**
@@ -443,6 +541,9 @@ class DocReStructuredText extends Fwolflib {
 		// Need jQuery ?
 		if ($this->aConfig['js_jquery'])
 			$s_out = $this->AddJsJquery($s_out);
+
+		// Add my footer
+		$s_out = $this->AddFooter($s_out);
 
 		// Tidy ?
 		if ($this->aConfig['output_tidy'])

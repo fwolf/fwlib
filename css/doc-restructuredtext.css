@@ -23,3 +23,20 @@ pre {
 	background-color: #CCCCCC;
 	padding: 1em;
 }
+
+
+/* Footer icon and copyright text. */
+div#footer img, div#footer span.spacer {
+	float: left;
+	margin-top: 0.2em;
+}
+div#footer span#copyright {
+	float: right;
+	margin-right: 0%;
+}
+hr {
+	background-color: #B0C4DE;
+	border: 0px;
+	color: #B0C4DE;
+	height: 1px;
+} /* LightSteelBlue = #B0C4DE */
