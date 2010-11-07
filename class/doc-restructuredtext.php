@@ -134,7 +134,7 @@ class DocReStructuredText extends Fwolflib {
 	 */
 	public function __construct ($path_docutils = '') {
 		$this->InitConfig();
-		$this->SetPathDocutils($path_docutils);
+		$this->GetPathDocutils($path_docutils);
 
 		// Get docutils writer html4css1 path, and add to cmd param
 		$this->aCmdOption[] = 'stylesheet-path="'
@@ -242,6 +242,8 @@ class DocReStructuredText extends Fwolflib {
 
 	/**
 	 * Add js code, which can show source of prefered part.
+	 *
+	 * Need: $this->aConfig['js_jquery'] = true;
 	 *
 	 * @return	string
 	 */
@@ -357,20 +359,6 @@ class DocReStructuredText extends Fwolflib {
 
 
 	/**
-	 * Generate output html
-	 *
-	 * @return string
-	 */
-	public function GenOutputHtml() {
-		$s = '';
-		$s .= $this->GenOutputHtmlHeader();
-		$s .= $this->GenOutputHtmlBody();
-		$s .= $this->GenOutputHtmlFooter();
-		return $s;
-	} // end of func GenOutputHtml
-
-
-	/**
 	 * Get default path of docutils writer html4css1
 	 *
 	 * @return	string
@@ -397,11 +385,56 @@ class DocReStructuredText extends Fwolflib {
 
 
 	/**
+	 * Detect and set path of docutils
+	 *
+	 * @param	$s_path		Manual additional path
+	 * @return	string
+	 */
+	public function GetPathDocutils ($s_path) {
+		// Possible path of docutils execute file for choose
+		$ar_path = array(
+			'/usr/bin/',
+			'/usr/local/bin/',
+			'/bin/',
+		);
+
+		if (!empty($s_path)) {
+			// Add to array
+			array_unshift($ar_path, $s_path);
+		}
+
+		// Find a usable path
+		$b_found = false;
+		while (!$b_found && !empty($ar_path)) {
+			$this->sPathDocutils = $ar_path[0];
+			if (is_executable($this->sPathDocutils . 'rst2html.py')) {
+				$b_found = true;
+				break;
+			}
+			array_shift($ar_path);
+		}
+		if ($b_found) {
+			$this->Log('Got docutils execute file in '
+				. $this->sPathDocutils, 1);
+		}
+		else {
+			$this->sPathDocutils = '';
+			$this->Log('Can\' find docutils execute file.', 5);
+		}
+
+		return $this->sPathDocutils;
+	} // end of func GetPathDocutils
+
+
+	/**
 	 * Init config vars, give default value.
 	 *
 	 * @return	this
 	 */
 	public function InitConfig () {
+		// Use pipe to exec cmd instead of tmp file ?
+		$this->aConfig['cmd_pipe']	= true;
+
 		// Use script jquery ?
 		$this->aConfig['js_jquery']	= false;
 
@@ -453,64 +486,6 @@ class DocReStructuredText extends Fwolflib {
 
 
 	/**
-	 * Set info array
-	 */
-	public function SetInfoFwolflib() {
-		$this->aInfo['package']		= "fwolflib";
-		$this->aInfo['subpackage']	= "doc";
-		$this->aInfo['copyright1']	= "Copyright &copy; 2009, Fwolf";
-		$this->aInfo['since']		= "2009-04-19";
-		$this->aInfo['version']		= "\$Id\$";
-		$this->aInfo['copyright2']	= array(
-			'Copyright &copy; 2009, Fwolf',
-			'All Rights Reserved.',
-		);
-	} // end of func SetInfoFwolflib
-
-
-	/**
-	 * Detect and set path of docutils
-	 *
-	 * @param	$s_path		Manual additional path
-	 * @return	string
-	 */
-	public function SetPathDocutils ($s_path) {
-		// Possible path of docutils execute file for choose
-		$ar_path = array(
-			'/usr/bin/',
-			'/usr/local/bin/',
-			'/bin/',
-		);
-
-		if (!empty($s_path)) {
-			// Add to array
-			array_unshift($ar_path, $s_path);
-		}
-
-		// Find a usable path
-		$b_found = false;
-		while (!$b_found && !empty($ar_path)) {
-			$this->sPathDocutils = $ar_path[0];
-			if (is_executable($this->sPathDocutils . 'rst2html.py')) {
-				$b_found = true;
-				break;
-			}
-			array_shift($ar_path);
-		}
-		if ($b_found) {
-			$this->Log('Got docutils execute file in '
-				. $this->sPathDocutils, 1);
-		}
-		else {
-			$this->sPathDocutils = '';
-			$this->Log('Can\' find docutils execute file.', 5);
-		}
-
-		return $this->sPathDocutils;
-	} // end of func SetPathDocutils
-
-
-	/**
 	 * Tidy output html
 	 *
 	 * @param	&$s_html
@@ -528,18 +503,38 @@ class DocReStructuredText extends Fwolflib {
 	 * @return	string
 	 */
 	public function ToHtml ($s_rst) {
-		$f_tmp = tempnam(sys_get_temp_dir(), 'fwolflib.doc-restructuredtext.');
-		file_put_contents($f_tmp, $s_rst);
+		if ($this->aConfig['cmd_pipe']) {
+			// Use pipe
+		}
+		else {
+			// Use tmp file
+			$f_tmp = tempnam(sys_get_temp_dir(), 'fwolflib.doc-restructuredtext.');
+			file_put_contents($f_tmp, $s_rst);
 
-		// Execute cmd, got result.
-		$s_cmd = $this->sPathDocutils . "rst2html.py "
-			. $this->GenCmdOption() . " $f_tmp";
-		$s_cmd = escapeshellcmd($s_cmd);
-		$this->Log("ToHtml by cmd: $s_cmd", 1);
-		exec($s_cmd, $ar_out);
+			// Execute cmd, got result.
+			$s_cmd = $this->sPathDocutils . "rst2html.py "
+				. $this->GenCmdOption() . " $f_tmp";
+			$s_cmd = escapeshellcmd($s_cmd);
+			$this->Log("ToHtml by cmd: $s_cmd", 1);
+			exec($s_cmd, $ar_out);
 
-		unlink($f_tmp);
-		$s_out = implode("\n", $ar_out);
+			unlink($f_tmp);
+			$s_out = implode("\n", $ar_out);
+		}
+
+		$this->sHtml = $s_out;
+		return $s_out;
+	} // end of func ToHtml
+
+
+	/**
+	 * Convert reStructuredText content to html, and adjust
+	 *
+	 * @param	string	$s_rst
+	 * @return	string
+	 */
+	public function ToHtmlFull ($s_rst) {
+		$s_out = $this->ToHtml($s_rst);
 
 		// Fix html
 		$s_out = $this->ModifyHtmlDoctype($s_out);
@@ -558,7 +553,33 @@ class DocReStructuredText extends Fwolflib {
 
 		$this->sHtml = $s_out;
 		return $s_out;
-	} // end of func ToHtml
+	} // end of func ToHtmlFull
+
+
+	/**
+	 * Convert reStructuredText to html, only html body part.
+	 *
+	 * Without <body> tag.
+	 *
+	 * @param	string	$s_rst
+	 * @return	string
+	 */
+	public function ToHtmlSimple ($s_rst) {
+		$s_out = $this->ToHtml($s_rst);
+
+		// Trim html before <body>
+		$i = strpos($s_out, '<body>');
+		if (!(false === $i))
+			$s_out = substr($s_out, $i + 6);
+
+		// Trim html after <body>
+		$i = strrpos($s_out, '</body>');
+		if (!(false === $i))
+			$s_out = substr($s_out, 0, $i );
+
+		$this->sHtml = $s_out;
+		return $s_out;
+	} // end of func ToHtmlSimple
 
 
 } // end of class DocReStructuredText
