@@ -499,12 +499,43 @@ class DocReStructuredText extends Fwolflib {
 	/**
 	 * Convert reStructuredText content to html format
 	 *
+	 * Note: I had run benchmark to compare pipe and tmpfile,
+	 * 		result is, they are almost same.
+	 *
 	 * @param	string	$s_rst
 	 * @return	string
 	 */
 	public function ToHtml ($s_rst) {
+		$s_cmd = $this->sPathDocutils . "rst2html.py "
+				. $this->GenCmdOption();
+		$s_cmd = escapeshellcmd($s_cmd);
+
 		if ($this->aConfig['cmd_pipe']) {
 			// Use pipe
+			$desc = array(
+				0 => array('pipe', 'r'),
+				1 => array('pipe', 'w'),
+			);
+
+			$proc = proc_open($s_cmd, $desc, $pipes);
+
+			if (!is_resource($proc))
+				$this->Log('Pipe can\'t open !', 5);
+			else
+				$this->Log("Tohtml using pipe by cmd: $s_cmd", 1);
+
+			$fp = $pipes[0];
+			fwrite($fp, $s_rst);
+			fflush($fp);
+			fclose($fp);
+
+			$s_out = '';
+			while (!feof($pipes[1])) {
+				$s_out .= fgets($pipes[1]);
+			}
+			fclose($pipes[1]);
+
+			proc_close($proc);
 		}
 		else {
 			// Use tmp file
@@ -512,9 +543,7 @@ class DocReStructuredText extends Fwolflib {
 			file_put_contents($f_tmp, $s_rst);
 
 			// Execute cmd, got result.
-			$s_cmd = $this->sPathDocutils . "rst2html.py "
-				. $this->GenCmdOption() . " $f_tmp";
-			$s_cmd = escapeshellcmd($s_cmd);
+			$s_cmd .= " $f_tmp";
 			$this->Log("ToHtml by cmd: $s_cmd", 1);
 			exec($s_cmd, $ar_out);
 
