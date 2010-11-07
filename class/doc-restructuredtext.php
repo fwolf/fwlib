@@ -28,15 +28,6 @@ require_once(FWOLFLIB . 'class/mvc-view.php');
 class DocReStructuredText extends Fwolflib {
 
 	/**
-	 * Body text
-	 *
-	 * Will display out by sequence of their index if is array,
-	 * or easy output if is string.
-	 * @var mixed
-	 */
-	public $aBody = array();
-
-	/**
 	 * Cmd options when used rst2xxx.py
 	 *
 	 * Param is combined in, eg: tab-width=4
@@ -46,6 +37,10 @@ class DocReStructuredText extends Fwolflib {
 		'embed-stylesheet',
 		//'link-stylesheet',
 
+		// h1 is for title
+		'initial-header-level=2',
+
+		//'no-doc-title',
 		//'no-xml-declaration',
 
 		// Params why not support ?
@@ -54,70 +49,10 @@ class DocReStructuredText extends Fwolflib {
 	);
 
 	/**
-	 * Stored css styles, and their type
-	 * @var array
-	 */
-	protected $aCss = array();
-
-	/**
-	 * Footer text
-	 * @var array
-	 */
-	protected $aFooter = array();
-
-	/**
-	 * Header text
-	 * @var array
-	 */
-	protected $aHeader = array();
-
-	/**
 	 * Result html
 	 * @var	string
 	 */
 	public $sHtml = '';
-
-	/**
-	 * Document infomation
-	 *
-	 * Will display out by sequence of their index,
-	 * Do NOT change there sequence.
-	 * @var array
-	 */
-	public $aInfo = array(
-		'title'			=> "Document title(aInfo['title'])",
-		'author'		=> "Document author(aInfo['author'])",
-		'authormail'	=> "Document author's mail(aInfo['authormail'])",
-		'keywords'		=> "Keywords used in html <meta>(aInfo['keywords'])",
-		'description'	=> "Description used in html <meta>(aInfo['description'])",
-
-		// Above part can be set (aBody[]) in doc script.
-		// Below 2 parts can be rewritten in __construct of subclass
-
-		// Verinfo part
-		'package'		=> "Phpdoc style package(aInfo['package'])",
-		'subpackage'	=> "Phpdoc style subpackage(aInfo['subpackage'])",
-		'copyright1'	=> "Copyright show in verinfo(aInfo['copyright1'])",
-		'since'			=> "When is this file born(aInfo['since'])",
-		'version'		=> "\$Id\$",
-		// Footer part
-		'copyright2'	=> array(
-			"Copyright show in footer(aInfo['copyright2'])",
-			"Will display in footer by list style.",
-		),
-	);
-
-	/**
-	 * Cmd line option
-	 * @var	array
-	 */
-	public $aOption = array();
-
-	/**
-	 * Tidy output html ?
-	 * @var	boolean
-	 */
-	public $bOutputTidy = false;
 
 	/**
 	 * Actural path of docutils execute file.
