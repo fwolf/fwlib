@@ -31,7 +31,12 @@ class Fwolflib {
 	 * Notice: re-define var in sub-class will overwrite var in parent class.
 	 * @var	array
 	 */
-	public $aConfig = array();
+	public $aConfig = array(
+		// Log level eq/gt this will write to php errorlog
+		'log_errorlog'	=> 4,
+		// Print backtrace in log
+		'log_backtrace'	=> false,
+	);
 
 	/**
 	 * Default time format
@@ -41,6 +46,8 @@ class Fwolflib {
 
 	/**
 	 * Log msg.
+	 *
+	 * Log level 5(or 4) can be used as error or warning.
 	 *
 	 * array(
 	 * 	i	=> array(
@@ -99,11 +106,33 @@ class Fwolflib {
 	 * @return	$this
 	 */
 	public function Log ($msg, $level = 3) {
-		$this->aLog[] = array(
+		$ar = array(
 			'level'	=> $level,
 			'time'	=> date($this->sFormatTime),
 			'msg'	=> $msg,
 		);
+		$this->aLog[] = $ar;
+
+		// Log to errorlog ?
+		if ($this->aConfig['log_errorlog'] <= $level) {
+			$s_error = "Log {$ar['level']}: {$ar['msg']}\n";
+
+			// Log backtrace
+			if ($this->aConfig['log_backtrace']) {
+				$ar = debug_backtrace();
+				foreach ($ar as $error) {
+					$s_error .= "\tLine " . $error['line']
+						. ' in ' . $error['file'] . "\n";
+					if (!empty($error['class']))
+						$s_error .= "\t\t" . $error['class']
+							. '::' . $error['function'] . "()\n";
+					elseif (!empty($error['function']))
+						$s_error .= "\t\t" . $error['function'] . "()\n";
+				}
+			}
+
+			error_log($s_error);
+		}
 
 		return $this;
 	} // end of func Log
