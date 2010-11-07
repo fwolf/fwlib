@@ -344,6 +344,13 @@ class DocReStructuredText extends Fwolflib {
 			$this->sPathDocutils = $ar_path[0];
 			if (is_executable($this->sPathDocutils . 'rst2html.py')) {
 				$b_found = true;
+				$this->aConfig['cmd_.py'] = true;
+				break;
+			}
+			// In some env like my (MT) Centos5, cmd hasn't .py extension
+			if (is_executable($this->sPathDocutils . 'rst2html')) {
+				$b_found = true;
+				$this->aConfig['cmd_.py'] = false;
 				break;
 			}
 			array_shift($ar_path);
@@ -362,11 +369,27 @@ class DocReStructuredText extends Fwolflib {
 
 
 	/**
+	 * Got path of rst2html.py cmd
+	 *
+	 * @return	string
+	 */
+	public function GetPathRst2Html () {
+		if ($this->aConfig['cmd_.py'])
+			$s = $this->sPathDocutils . "rst2html.py ";
+		else
+			$s = $this->sPathDocutils . "rst2html ";
+		return $s;
+	} // end of func GetPathRst2Html
+
+
+	/**
 	 * Init config vars, give default value.
 	 *
 	 * @return	this
 	 */
 	public function InitConfig () {
+		// Will set in GetPathDocutils()
+		$this->aConfig['cmd_.py']	= true;
 		// Use pipe to exec cmd instead of tmp file ?
 		$this->aConfig['cmd_pipe']	= true;
 
@@ -441,7 +464,7 @@ class DocReStructuredText extends Fwolflib {
 	 * @return	string
 	 */
 	public function ToHtml ($s_rst) {
-		$s_cmd = $this->sPathDocutils . "rst2html.py "
+		$s_cmd = $this->GetPathRst2Html()
 				. $this->GenCmdOption();
 		$s_cmd = escapeshellcmd($s_cmd);
 
