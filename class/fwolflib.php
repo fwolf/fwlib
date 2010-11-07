@@ -27,6 +27,8 @@ class Fwolflib {
 
 	/**
 	 * Configuation
+	 *
+	 * Notice: re-define var in sub-class will overwrite var in parent class.
 	 * @var	array
 	 */
 	public $aConfig = array();

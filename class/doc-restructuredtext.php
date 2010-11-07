@@ -54,27 +54,6 @@ class DocReStructuredText extends Fwolflib {
 	);
 
 	/**
-	 * Some config vars come from reference
-	 * @var	array
-	 */
-	public $aConfig = array(
-		// Use script jquery ?
-		'js_jquery'	=> false,
-
-		// Tidy output html ?
-		'output_tidy'	=> false,
-
-		// Using 'Google AJAX Libraries API' now
-		// http://code.google.com/apis/ajaxlibs/
-		'path_jquery'	=> 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js',
-		//'path_jquery'	=> '/js/jquery.js',
-
-		// Show opiton, default
-		'show_ads'		=> false,
-		'show_counter'	=> true,
-	);
-
-	/**
 	 * Stored css styles, and their type
 	 * @var array
 	 */
@@ -154,6 +133,7 @@ class DocReStructuredText extends Fwolflib {
 	 * @var param	string	$path_docutils	Path of docutils exec file
 	 */
 	public function __construct ($path_docutils = '') {
+		$this->InitConfig();
 		$this->SetPathDocutils($path_docutils);
 
 		// Get docutils writer html4css1 path, and add to cmd param
@@ -417,6 +397,32 @@ class DocReStructuredText extends Fwolflib {
 
 
 	/**
+	 * Init config vars, give default value.
+	 *
+	 * @return	this
+	 */
+	public function InitConfig () {
+		// Use script jquery ?
+		$this->aConfig['js_jquery']	= false;
+
+		// Tidy output html ?
+		$this->aConfig['output_tidy'] = false;
+
+		// Using 'Google AJAX Libraries API' now
+		// http://code.google.com/apis/ajaxlibs/
+		$this->aConfig['path_jquery']
+			= 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js';
+		//	= '/js/jquery.js';
+
+		// Show opiton, default
+		$this->aConfig['show_ads']		= false;
+		$this->aConfig['show_counter']	= true;
+
+		return $this;
+	} // end of func InitConfig
+
+
+	/**
 	 * Modify html doctype declare
 	 *
 	 * @param	string	$s_html
@@ -473,6 +479,7 @@ class DocReStructuredText extends Fwolflib {
 		$ar_path = array(
 			'/usr/bin/',
 			'/usr/local/bin/',
+			'/bin/',
 		);
 
 		if (!empty($s_path)) {
