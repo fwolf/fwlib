@@ -299,8 +299,8 @@ class DocReStructuredText extends Fwolflib {
 	 * @return	string
 	 */
 	public function GetDocutilsCssPath () {
-		$s_cmd = $this->sPathDocutils . 'rst2html.py '
-			. '--help |grep -A6 stylesheet-path=';
+		$s_cmd = $this->GetPathRst2Html()
+			. '--help |grep -A7 stylesheet-path=';
 		exec($s_cmd, $ar_out);
 		$s_out = implode('', $ar_out);
 		$s_out = str_replace('                        ', '', $s_out);
