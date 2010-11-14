@@ -43,7 +43,13 @@ hr {
 
 
 /* Single line table, printable */
-table, td, th {
+table.single-line, table.single-line td, table.single-line th {
 	border: 1px solid black;
 	border-collapse: collapse;
 }
+/*
+	Note:
+		I want to underscore in name, eg: single_line,
+		but rst auto-convert them to single-line
+		when using directive ``..	class:: single-line`` .
+*/
