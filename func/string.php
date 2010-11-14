@@ -417,6 +417,8 @@ function SubstrIgnHtml($str, $len, $marker = '...', $start = 0, $encoding = 'utf
 			// Trim origin str, so we start from 0 again next loop
 			$str = substr($str, $j + strlen($ar[$i]));
 		}
+		// Tail of $str, which after html tags
+		$ar_s[] = $str;
 
 		// Loop to cut needed length
 		$s_result = '';

@@ -70,6 +70,10 @@ class TestFuncString extends UnitTestCase {
 		$y = '测<b><i><br / >试</i></b>&quot;<b>2...</b>';
     	$this->assertEqual($x, $y);
 
+		$x = '`reStructuredText 中文示例 <?f=20101113-restructuredtext-example.rst>`_';
+		$y = SubstrIgnHtml($x, 71, '');
+		$this->assertEqual($x, $y);
+
     } // end of func TestSubstrIgnHtml
 
 
