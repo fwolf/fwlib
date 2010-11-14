@@ -2,7 +2,7 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2009-2010, Fwolf
+ * @copyright	Copyright © 2009-2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-04-12
  */
@@ -17,7 +17,7 @@ require_once(dirname(__FILE__) . '/fwolflib.php');
  * Need jQuery locate at /js/jquery.js
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2009, Fwolf
+ * @copyright	Copyright © 2009, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-04-12
  * @version		$Id$

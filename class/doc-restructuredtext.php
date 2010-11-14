@@ -2,7 +2,7 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2010, Fwolf
+ * @copyright	Copyright © 2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-10-19
  */
@@ -10,6 +10,8 @@
 
 require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once(FWOLFLIB . 'class/mvc-view.php');
+require_once(FWOLFLIB . 'func/array.php');
+require_once(FWOLFLIB . 'func/string.php');
 
 
 /**
@@ -21,7 +23,7 @@ require_once(FWOLFLIB . 'class/mvc-view.php');
  *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2010, Fwolf
+ * @copyright	Copyright © 2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-10-19
  */
@@ -291,6 +293,98 @@ class DocReStructuredText extends Fwolflib {
 			return $s;
 		}
 	} // end of func GenCmdOption
+
+
+	/**
+	 * Gen magic comment including mode, coding
+	 *
+	 * @return	string
+	 */
+	public function GenRstMagicComment () {
+		return "..	-*- mode: rst -*-\n"
+			. "..	-*- coding: utf-8 -*-\n\n";
+	} // end of func GenRstMagicComment
+
+
+	/**
+	 * Gen simple table by rst syntax
+	 *
+	 * Param $ar_thead[] format:
+	 * array(
+	 *	idx, index of data in $ar_data
+	 *	title, text display in <th>, can be empty.
+	 *	width, possible max length of text display in <td>
+	 * )
+	 * All text in th/td will be cut short if length > width.
+	 * Columns' width will become td's width by their proportion,
+	 * so it should make narrow col a bit wider.
+	 *
+	 * $ar_data is 2-dim array, index of 1st dim is ignored,
+	 * index of 2st dim will be called by $ar_thead[][idx].
+	 *
+	 * @param	array	$ar_thead
+	 * @param	array	$ar_data
+	 * @return	string
+	 */
+	public function GenRstTable ($ar_thead, $ar_data) {
+		// Split between column
+		$s_split = str_repeat(' ', 4);
+		//$s_split = "\t";
+
+		// Table split line, total 3, 2 on/under th, 1 in table bottom line.
+		$s_line = '';
+		foreach ($ar_thead as $col) {
+			$s_line .= str_repeat('=', $col['width']) . $s_split;
+		}
+		$s_line .= "\n";
+
+		// Begin, th first
+		$s_table = $s_line;
+		foreach ($ar_thead as $col) {
+			// Make them length = width
+			$s = SubstrIgnHtml(ArrayRead($col, 'title', '')
+					. str_repeat(' ', $col['width'])
+				, $col['width'], '');
+			// Add space in case of chinese width mismatch
+			$s .= str_repeat(' ', $col['width']
+				- mb_strwidth(strip_tags($s), 'utf-8'));
+			$s_table .= $s . $s_split;
+		}
+		$s_table .= "\n" . $s_line;
+
+		// Then, td
+		foreach ($ar_data as $row) {
+			foreach ($ar_thead as $col) {
+				// Trim/fill length
+				$s = SubstrIgnHtml(ArrayRead($row, $col['idx'], '')
+						. str_repeat(' ', $col['width'])
+					, $col['width'], '');
+				// Add space in case of chinese width mismatch
+				$s .= str_repeat(' ', $col['width']
+					- mb_strwidth(strip_tags($s), 'utf-8'));
+				$s_table .= $s . $s_split;
+			}
+			$s_table .= "\n";
+		}
+
+		// Table bottom
+		$s_table .= $s_line;
+
+		return $s_table;
+	} // end of func GenRstTable
+
+
+	/**
+	 * Gen title by rst syntax
+	 *
+	 * @param	string	$s_title
+	 * @return	string
+	 */
+	public function GenRstTitle ($s_title) {
+		return str_repeat('=', 70) . "\n"
+			. $s_title . "\n"
+			. str_repeat('=', 70) . "\n\n";
+	} // end of func GenRstTitle
 
 
 	/**

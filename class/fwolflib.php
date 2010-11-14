@@ -2,7 +2,7 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2010, Fwolf
+ * @copyright	Copyright © 2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-01-30
  */
@@ -19,7 +19,7 @@ require_once(FWOLFLIB . 'func/env.php');
  *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2010, Fwolf
+ * @copyright	Copyright © 2010, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-01-30
  */

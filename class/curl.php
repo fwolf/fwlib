@@ -1,7 +1,7 @@
 <?php
 /**
 * @package      fwolflib
-* @copyright    Copyright 2007-2010, Fwolf
+* @copyright    Copyright © 2007-2010, Fwolf
 * @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
 */
 
@@ -16,7 +16,7 @@ require_once(FWOLFLIB . 'func/array.php');
 * Very useful in write a game bot, or an information thief program.
 *
 * @package    fwolflib
-* @copyright  Copyright 2007, Fwolf
+* @copyright  Copyright © 2007, Fwolf
 * @author     Fwolf <fwolf.aide+fwolflib@gmail.com>
 * @since      2007-03-14
 * @version    $Id$
