@@ -11,7 +11,6 @@
 require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once(FWOLFLIB . 'class/mvc-view.php');
 require_once(FWOLFLIB . 'func/array.php');
-require_once(FWOLFLIB . 'func/string.php');
 
 
 /**
@@ -342,12 +341,9 @@ class DocReStructuredText extends Fwolflib {
 		$s_table = $s_line;
 		foreach ($ar_thead as $col) {
 			// Make them length = width
-			$s = SubstrIgnHtml(ArrayRead($col, 'title', '')
+			$s = mb_strimwidth(ArrayRead($col, 'title', '')
 					. str_repeat(' ', $col['width'])
-				, $col['width'], '');
-			// Add space in case of chinese width mismatch
-			$s .= str_repeat(' ', $col['width']
-				- mb_strwidth(strip_tags($s), 'utf-8'));
+				, 0, $col['width'], '', 'utf-8');
 			$s_table .= $s . $s_split;
 		}
 		$s_table .= "\n" . $s_line;
@@ -356,12 +352,9 @@ class DocReStructuredText extends Fwolflib {
 		foreach ($ar_data as $row) {
 			foreach ($ar_thead as $col) {
 				// Trim/fill length
-				$s = SubstrIgnHtml(ArrayRead($row, $col['idx'], '')
+				$s = mb_strimwidth(ArrayRead($row, $col['idx'], '')
 						. str_repeat(' ', $col['width'])
-					, $col['width'], '');
-				// Add space in case of chinese width mismatch
-				$s .= str_repeat(' ', $col['width']
-					- mb_strwidth(strip_tags($s), 'utf-8'));
+					, 0, $col['width'], '', 'utf-8');
 				$s_table .= $s . $s_split;
 			}
 			$s_table .= "\n";
