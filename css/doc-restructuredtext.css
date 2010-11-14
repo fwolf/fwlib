@@ -40,3 +40,10 @@ hr {
 	color: #B0C4DE;
 	height: 1px;
 } /* LightSteelBlue = #B0C4DE */
+
+
+/* Single line table, printable */
+table, td, th {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
