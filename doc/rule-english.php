@@ -60,6 +60,7 @@ submit, subm	|提交
 单词、缩写					|	含义
 ----------------------------|-------------
 abnormal, abn				|不正常的
+accept, acceptance, acpt	|接到，受理
 achievement, achv			|业绩
 address, addr				|地址
 aggregate, agg				|汇总，侧重于不是简单数学累加的情况
@@ -115,6 +116,7 @@ class						|等级，级别
 commercial bid, cb			|商务标
 comparison and choice, cc	|比选，比较、选择
 complaint, compl			|投诉
+complainant, complnt		|投诉人
 composing					|排版
 comprehensive evaluation method, cem	|综合评估法
 config, cfg, conf			|配置
@@ -158,8 +160,8 @@ element, elt				|元素
 employer					|雇主，工作单位
 end date, ed				|结束日期
 end time, et				|结束时间
-enterprice, ent				|企业
-enterprice-establishing		|招商
+enterprise, ent				|企业
+enterprise-establishing		|招商
 engineering, eng			|工程，范围比项目小
 estimate, est				|预计
 evaluated lowest bid price method, elbpm	|经评审的最低投标价法，也可简单绎为lowest bid method, lpm，与综合评估法cem相对应。
@@ -257,9 +259,12 @@ registered capital, rc		|注册资金
 registered number, rno		|注册号
 registered number of approval, approval number, ano	|批准文号
 reject, rej					|退回
-rejected bid, rb			|废标
+	rejected bid, rb		|废标
 required, req, r			|需要的，必需的
 responsible person, rp		|企业负责人
+satisfaction, sat			|满意
+	customer satisfaction rate, csr	|客户满意率
+	degree of satisfaction, dos	|满意度
 scale						|（公司）规模
 scientific outlook on development, sood	|科学发展观
 scope						|范围，是数据库中的关键字，需要和其他单词组合使用，单独用可以用 purview
@@ -285,11 +290,13 @@ structure， stru				|结构
 submit, subm				|提交
 submission, subm			|申请书
 substantial response		|实质性响应
+suggestion, sug				|建议
 supervision					|监督，管理，监理(行为)
-supervision/supervising engineer, se	|监理工程师，证书上和国际上是consultant engineer咨询工程师，但我们还是沿用 se 这个更号理解的翻译好了
-supervision suggestion order, sso	|监督意见(书)
-[construction/project] supervision enterprise, sent	|监理企业
-supervisor, sup				|监理(人)
+	supervision/supervising engineer, se	|监理工程师，证书上和国际上是consultant engineer咨询工程师，但我们还是沿用 se 这个更号理解的翻译好了
+	supervision suggestion order, sso	|监督意见(书)
+	[construction/project] supervision enterprise, sent	|监理企业
+	supervisor, sup				|监理(人)
+supplement, supp			|补充，补遗，附录
 supplier					|供货商
 symposium					|座谈会
 technical bid, tb			|技术标
