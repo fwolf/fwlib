@@ -53,10 +53,15 @@ class Sms extends Fwolflib {
 	 * 	Format phone number.
 	 * 	Remove duplicate number.
 	 *
-	 * @param	string	$s_dest
+	 * @param	mixed	$s_dest
 	 * @return	array
 	 */
 	public function DestParse ($s_dest) {
+		// If array given, still need convert to string
+		// to format and validate phone number.
+		if (is_array($s_dest))
+			$s_dest = implode(',', $s_dest);
+
 		// Replace all special chars to ','
 		$s_dest = str_replace('，', ',', $s_dest);
 		$s_dest = preg_replace('/[ ,;\r\n\t]{1,}/'
@@ -196,16 +201,17 @@ class Sms extends Fwolflib {
 	/**
 	 * Send sms using gammu smsd inject method.
 	 *
-	 * @param	string	$s_dest	Dest phone number, split by ' ,;，\r\n'.
-	 * @param	string	$s_sms	Msg to send.
-	 * @param	integer	$i_cat	Category of sms, for stat.
-	 * @return	integer			Actual valid phone number sent.
+	 * @param	mixed	$ar_dest	Dest phone number array
+	 * 								or string split by ' ,;，\r\n'.
+	 * @param	string	$s_sms		Msg to send.
+	 * @param	integer	$i_cat		Category of sms, for stat.
+	 * @return	integer				Actual valid phone number sent.
 	 */
-	public function SendUsingGammuSmsdInject ($s_dest, $s_sms, $i_cat = 0) {
+	public function SendUsingGammuSmsdInject ($ar_dest, $s_sms, $i_cat = 0) {
 		if (empty($this->aConfig['path_gammu_smsd_inject']))
 			$this->GetPathGammuSmsdInject();
 
-		$ar_dest = $this->DestParse($s_dest);
+		$ar_dest = $this->DestParse($ar_dest);
 		if (1 > count($ar_dest)) {
 			$this->Log('No valid number to sent.', 4);
 			return 0;
