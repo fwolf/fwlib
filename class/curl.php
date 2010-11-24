@@ -16,10 +16,9 @@ require_once(FWOLFLIB . 'func/array.php');
 * Very useful in write a game bot, or an information thief program.
 *
 * @package    fwolflib
-* @copyright  Copyright © 2007, Fwolf
+* @copyright  Copyright © 2007-2010, Fwolf
 * @author     Fwolf <fwolf.aide+fwolflib@gmail.com>
 * @since      2007-03-14
-* @version    $Id$
 */
 class Curl extends Fwolflib {
 
@@ -84,13 +83,13 @@ class Curl extends Fwolflib {
 
 	/**
 	 * Http get content from host
+	 *
 	 * @param	string	$url	Host address
 	 * @param	mixed	$param	Get parameter, can be string or array.
 	 * @access	public
 	 * @return	string
 	 */
-	public function Get($url, $param = '')
-	{
+	public function Get ($url, $param = '') {
 		curl_setopt($this->mSh, CURLOPT_HTTPGET, true);
 
 		// Remove endding '?" of url
@@ -118,7 +117,7 @@ class Curl extends Fwolflib {
 		curl_setopt($this->mSh, CURLOPT_URL, $url . $param);
 		$this->mRs = curl_exec($this->mSh);
 
-		if (0 != curl_error($this->mSh))
+		if (0 != curl_errno($this->mSh))
 			$this->Log(curl_error($this->mSh));
 
 		return $this->mRs;
@@ -193,18 +192,16 @@ class Curl extends Fwolflib {
 
 	/**
 	 * Http post content from host
+	 *
 	 * @param	string	$url	Host address
 	 * @param	mixed	$param	Post parameter, can be string or array.
-	 * @access	public
 	 * @return	string
 	 */
-	public function Post($url, $param = '')
-	{
+	public function Post ($url, $param = '') {
 		curl_setopt($this->mSh, CURLOPT_POST, true);
 
 		// Parse param, convert array to string
-		if (is_array($param))
-		{
+		if (is_array($param)) {
 			$s = '';
 			foreach ($param as $key=>$val)
 				$s .= "$key=$val&";
@@ -215,8 +212,8 @@ class Curl extends Fwolflib {
 		curl_setopt($this->mSh, CURLOPT_URL, $url);
 		$this->mRs = curl_exec($this->mSh);
 
-		if (0 != curl_error($this->mSh))
-			$this->Log(curl_error($this->mSh));
+		if (0 != curl_errno($this->mSh))
+			$this->Log(curl_error($this->mSh), 4);
 
 		return $this->mRs;
 	} // end of func Post
@@ -301,12 +298,11 @@ class Curl extends Fwolflib {
 	/**
 	 * Enable or disable ssl verify functin
 	 * Ssl verify is enabled by curl in default
+	 *
 	 * @param	boolean	$en		True to enable, false to disable
 	 */
-	public function SetoptSslverify($en = true)
-	{
-		if (false === $en)
-		{
+	public function SetoptSslverify ($en = true)	{
+		if (false === $en) {
 		    curl_setopt($this->mSh, CURLOPT_SSL_VERIFYPEER, false);
 		    curl_setopt($this->mSh, CURLOPT_SSL_VERIFYHOST, false);
 		}
