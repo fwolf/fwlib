@@ -57,6 +57,10 @@ class TestClassSms extends UnitTestCase {
 		";
 		$ar_dest = array('13912345678', '13921345678');
 		$this->assertEqual($ar_dest, $this->oSms->DestParse($s_dest));
+
+		$s_dest = "13012345678,13012345679";
+		$ar_dest = array('13012345678', '13012345679');
+		$this->assertEqual($ar_dest, $this->oSms->DestParse($s_dest));
     } // end of func TestDestParse
 
     function TestSendUsingGammuSmsdInject () {

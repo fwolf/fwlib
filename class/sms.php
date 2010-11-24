@@ -73,7 +73,7 @@ class Sms extends Fwolflib {
 
 		// Remove duplicate
 		$ar = array();
-		foreach ($ar_dest as $dest) {
+		foreach ($ar_dest as &$dest) {
 			// Invalid length
 			if (11 != strlen($dest))
 				continue;
