@@ -31,7 +31,10 @@ class TestFuncFilesystem extends UnitTestCase {
 
     function TestGetFilenameToWrite () {
 		// Prepare a filename
-		$s_name = sys_get_temp_dir() . Uuid();
+		$s_name = sys_get_temp_dir();
+		if ('/' != substr($s_name, -1))
+			$s_name .= '/';
+		$s_name .= Uuid();
 		$s_ext = 'ext';
 		$s_file = $s_name . '.' . $s_ext;
 

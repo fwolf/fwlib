@@ -43,7 +43,7 @@ class TestFuncUuid extends UnitTestCase {
     	$this->assertIdentical($ar['ip'], '131.2.101.10');
 
 		// Speed test
-		UuidSpeedTest(5000);
+		UuidSpeedTest(500);
     } // end of func
 
 } // end of class TestFuncString

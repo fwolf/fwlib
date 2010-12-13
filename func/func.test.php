@@ -24,14 +24,15 @@ require_once('simpletest/reporter.php');
 
 $test = new TestSuite('Group test for func/*');
 
-$test->addTestFile('array.test.php');
-$test->addTestFile('client.test.php');
-$test->addTestFile('crypt.test.php');
-$test->addTestFile('filesystem.test.php');
-$test->addTestFile('request.test.php');
-$test->addTestFile('string.test.php');
-$test->addTestFile('url.test.php');
-$test->addTestFile('uuid.test.php');
+$test->addFile('array.test.php');
+$test->addFile('client.test.php');
+$test->addFile('crypt.test.php');
+$test->addFile('filesystem.test.php');
+$test->addFile('request.test.php');
+$test->addFile('string.test.php');
+$test->addFile('url.test.php');
+$test->addFile('uuid.test.php');
+$test->addFile('validate.test.php');
 
 $test->run(new HtmlReporter('utf-8'));
 

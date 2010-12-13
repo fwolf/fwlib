@@ -25,21 +25,24 @@ require_once('fwolflib/func/request.php');
 class TestFuncClient extends UnitTestCase {
 
     function TestClientIpFromToHex() {
-    	// Default value
-    	$this->assertEqual(ClientIpToHex('131.2.101.10'), '8302650a');
-    	$this->assertEqual(ClientIpFromHex('8302650a'), '131.2.101.10');
-    	// Loopback address
-    	$this->assertEqual(ClientIpToHex('127.000.000.001'), '7f000001');
-    	$this->assertEqual(ClientIpFromHex('7f000001'), '127.0.0.1');
-    	// Mask address
-    	$this->assertEqual(ClientIpToHex('255.255.255.255'), 'ffffffff');
-    	$this->assertEqual(ClientIpFromHex('ffffffff'), '255.255.255.255');
-    	// Normal address
-    	$this->assertEqual(ClientIpToHex('202.99.160.68'), 'ca63a044');
-    	$this->assertEqual(ClientIpFromHex('ca63a044'), '202.99.160.68');
-    	// Error parameters handel
-    	$this->assertEqual(ClientIpToHex('ABCD'), '');
-    	$this->assertEqual(ClientIpFromHex('ABCD'), '');
+		// Default value
+		$this->assertEqual(ClientIpToHex('131.2.101.10'), '8302650a');
+		$this->assertEqual(ClientIpFromHex('8302650a'), '131.2.101.10');
+		// Loopback address
+		$this->assertEqual(ClientIpToHex('127.0.0.1'), '7f000001');
+		$this->assertEqual(ClientIpFromHex('7f000001'), '127.0.0.1');
+		// Error format
+		$this->assertEqual(ClientIpToHex('127.00.00.01'), '');
+
+		// Mask address
+		$this->assertEqual(ClientIpToHex('255.255.255.255'), 'ffffffff');
+		$this->assertEqual(ClientIpFromHex('ffffffff'), '255.255.255.255');
+		// Normal address
+		$this->assertEqual(ClientIpToHex('202.99.160.68'), 'ca63a044');
+		$this->assertEqual(ClientIpFromHex('ca63a044'), '202.99.160.68');
+		// Error parameters handel
+		$this->assertEqual(ClientIpToHex('ABCD'), '');
+		$this->assertEqual(ClientIpFromHex('ABCD'), '');
     } // end of func TestClientIpFromToHex
 
 } // end of class TestFuncClient
