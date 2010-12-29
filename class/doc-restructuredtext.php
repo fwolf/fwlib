@@ -20,6 +20,8 @@ require_once(FWOLFLIB . 'func/array.php');
  *
  * Need jQuery, locate assigned in $aConfig['path_jquery']
  *
+ * :TODO: Highlight: http://softwaremaniacs.org/soft/highlight/en/
+ *
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright © 2010, Fwolf
@@ -148,7 +150,7 @@ class DocReStructuredText extends Fwolflib {
 
 		$s .= '
 				<span id="copyright">
-					Copyright &copy; 2005-2010 <a href="http://www.fwolf.com/">Fwolf</a>, All Rights Reserved.
+					Copyright &copy; 2010 <a href="http://www.fwolf.com/">Fwolf</a>, All Rights Reserved.
 				</span>
 			</div>
 		';

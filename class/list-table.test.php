@@ -203,6 +203,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 	{/if}
 
 	<table>
+		{if (!empty($title))}
 		<thead>
 		<tr>
 		{foreach from=$lt_title key=key item=title}
@@ -221,6 +222,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 		{/foreach}
 		</tr>
 		</thead>
+		{/if}
 
 		<tbody>
 		{foreach from=$lt_data item=row}
