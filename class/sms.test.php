@@ -34,7 +34,7 @@ class TestClassSms extends UnitTestCase {
 			'type'	=> 'mysqli',
 			'host'	=> 'localhost',
 			'user'	=> 't-sms',
-			'pass'	=> '8f608bc275',
+			'pass'	=> '',
 			'name'	=> 't-sms',
 			'lang'	=> 'utf-8',
 		);
@@ -44,6 +44,35 @@ class TestClassSms extends UnitTestCase {
 		// Cat of debug sms
 		$this->iCat = 1020000;
 	} // end of func __construct
+
+
+	function TestCountPart () {
+		$s_sms = '';	// 0
+		$this->assertEqual(0, $this->oSms->CountPart($s_sms));
+		$s_sms = '01234567890123456789012345678901234567890123456789'
+			. '01234567890123456789012345678901234567890123456789'
+			. '0123456789012345678901234567890123456789';	// 140
+		$this->assertEqual(1, $this->oSms->CountPart($s_sms));
+		$s_sms = '01234567890123456789012345678901234567890123456789'
+			. '01234567890123456789012345678901234567890123456789
+01234567890123456789012345678901234567890';	// 141
+		$this->assertEqual(2, $this->oSms->CountPart($s_sms));
+
+		$s_sms = '一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十'
+			. '一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十
+一二三四五六七八';	// 69
+		$this->assertEqual(1, $this->oSms->CountPart($s_sms));
+		$s_sms = '0123456789一二三四五六七八九十一二三四五六七八九十'
+			. '一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十'
+			. '一二三四五六七八九十';	// 70
+		$this->assertEqual(1, $this->oSms->CountPart($s_sms));
+		$s_sms = '0123456789一二三四五六七八九十一二三四五六七八九十'
+			. '一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十'
+			. '一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十'
+			. '一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十'
+			. '一二三四五六七八九十一二三四五六七八九十';	// 140
+		$this->assertEqual(2, $this->oSms->CountPart($s_sms));
+	} // end of func TestCountPart
 
 
     function TestDestParse () {
@@ -64,7 +93,7 @@ class TestClassSms extends UnitTestCase {
     } // end of func TestDestParse
 
     function TestSendUsingGammuSmsdInject () {
-		$this->oSms->SendUsingGammuSmsdInject('13912345678'
+		$this->oSms->SendUsingGammuSmsdInject('1391234567'
 			, '测试短信', $this->iCat);
     } // end of func TestSendUsingGammuSmsdInject
 

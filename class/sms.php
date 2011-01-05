@@ -46,6 +46,30 @@ class Sms extends Fwolflib {
 
 
 	/**
+	 * Count sms will split to N part to send
+	 *
+	 * If only ascii chars include, 140 chars for 1 sms part,
+	 * if has chinese chars, 70 chars for 1 sms part only.
+	 *
+	 * 1 chinese char will count as 1 char.
+	 *
+	 * @param	string	$s_sms
+	 * @return	integer
+	 */
+	public function CountPart ($s_sms = '') {
+		// Is there chinese in sms ?
+		if (mb_strlen($s_sms, 'utf-8') == strlen($s_sms)) {
+			// No chinese, 140 chars per part
+			return (ceil(strlen($s_sms) / 140));
+		}
+		else {
+			// Convert chinese char to ascii, for count
+			return (ceil(mb_strlen($s_sms, 'utf-8') / 70));
+		}
+	} // end of func CountPart
+
+
+	/**
 	 * Parse dest/phone number string.
 	 *
 	 * Do:
@@ -114,6 +138,7 @@ class Sms extends Fwolflib {
 		$ar_data['cnt_cu']	= 0;
 		$ar_data['cnt_ct']	= 0;
 		$ar_data['dest']	= implode(',', $ar_dest);
+		$ar_data['cnt_part']= $this->CountPart($s_sms);
 		$ar_data['sms']		= $s_sms;
 
 		// Which company's number ?
