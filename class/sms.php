@@ -201,6 +201,10 @@ class Sms extends Fwolflib {
 	/**
 	 * Send sms using gammu smsd inject method.
 	 *
+	 * Notice: On webserver, need assign www-data to gammu group,
+	 * 	and make /var/log/gammu-smsd.log g+w .
+	 * 	Modem server need not, only conn to db is required.
+	 *
 	 * @param	mixed	$ar_dest	Dest phone number array
 	 * 								or string split by ' ,;，\r\n'.
 	 * @param	string	$s_sms		Msg to send.
@@ -234,10 +238,15 @@ class Sms extends Fwolflib {
 		// Loop to sent
 		foreach ($ar_dest as $dest) {
 			$s_cmd = $s_sms1 . $dest . $s_sms2;
-			exec($s_cmd);
-			//$ar_output = array();
-			//$i_return = 0;
-			//exec($s_cmd, $ar_output, $i_return);
+			//exec($s_cmd);
+			$ar_output = array();
+			$i_return = 0;
+			exec($s_cmd, $ar_output, $i_return);
+			if (0 != $i_return) {
+				// Error occur
+				$this->Log('Gammu inject error: ' . $ar_output[1], 5);
+				return 0;
+			}
 		}
 
 		return count($ar_dest);
@@ -257,7 +266,7 @@ CREATE TABLE sms_stat (
 	st					DATETIME			NOT NULL,
 	-- Cat of msg
 	cat					INTEGER				NOT NULL DEFAULT 0,
-	-- Total number count
+	-- Total dest number count
 	cnt					INTEGER				NOT NULL DEFAULT 0,
 	-- Count of China Mobile
 	cnt_cm				INTEGER				NOT NULL DEFAULT 0,
@@ -267,6 +276,8 @@ CREATE TABLE sms_stat (
 	cnt_ct				INTEGER				NOT NULL DEFAULT 0,
 	-- Dest phone numbers
 	dest				TEXT				NOT NULL,
+	-- Will sms split to N part to send
+	cnt_part			INTEGER				NOT NULL DEFAULT 0,
 	-- Msg
 	sms					TEXT				NOT NULL,
 	ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

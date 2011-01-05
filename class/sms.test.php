@@ -34,12 +34,12 @@ class TestClassSms extends UnitTestCase {
 			'type'	=> 'mysqli',
 			'host'	=> 'localhost',
 			'user'	=> 't-sms',
-			'pass'	=> '',
+			'pass'	=> '8f608bc275',
 			'name'	=> 't-sms',
 			'lang'	=> 'utf-8',
 		);
 		$o_db = new Adodb($ar_db);
-		//$o_db->Connect();
+		$o_db->Connect();
 		$this->oSms = new Sms($o_db);
 		// Cat of debug sms
 		$this->iCat = 1020000;
@@ -64,7 +64,7 @@ class TestClassSms extends UnitTestCase {
     } // end of func TestDestParse
 
     function TestSendUsingGammuSmsdInject () {
-		$this->oSms->SendUsingGammuSmsdInject('1391234567'
+		$this->oSms->SendUsingGammuSmsdInject('13912345678'
 			, '测试短信', $this->iCat);
     } // end of func TestSendUsingGammuSmsdInject
 
