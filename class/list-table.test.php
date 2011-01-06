@@ -312,6 +312,10 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 		$(this).removeClass("{$lt_id}_tr_hover");
 		{literal}}{/literal});
 
+	// Vertical align of td
+	$("#{$lt_id}_div th").css("vertical-align", "middle");
+	$("#{$lt_id}_div td").css("vertical-align", "middle");
+
 	// Pager\'s width is same with table, and position
 	$(".{$lt_id}_pager").css("display", "block");
 	$(".{$lt_id}_pager").css("text-align", "right");
