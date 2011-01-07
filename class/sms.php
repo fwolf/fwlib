@@ -104,7 +104,7 @@ class Sms extends Fwolflib {
 		$ar = array();
 		foreach ($ar_dest as &$dest) {
 			// Invalid length
-			if (11 != strlen($dest))
+			if (11 != strlen($dest) && '10' != substr($dest, 0, 2))
 				continue;
 
 			if (false == in_array($dest, $ar))
