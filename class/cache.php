@@ -20,7 +20,7 @@ require_once(FWOLFLIB . 'func/filesystem.php');
  * Workflow:
  * -	CacheKey(), hash user request key.
  * -	CacheGet()
- * 		-	Try read, CacheGetMethod()
+ * 		-	Try read, CacheGetType()
  * 		-	If fail, gen cache, CacheGen(), CacheSet()
  * -	CacheSet()
  * -	CacheDel()
@@ -39,76 +39,10 @@ abstract class Cache extends Fwolflib {
 	 *
 	 * @param	array	$ar_cfg
 	 */
-	public function __construct($ar_cfg = array()) {
+	public function __construct ($ar_cfg = array()) {
 		$this->Init()
 			->SetCfg($ar_cfg);
 	} // end of func __construct
-
-
-	/**
-	 * Gen and write cache data file
-	 *
-	 * @param	string	$key
-	 */
-	protected function CacheGen($key) {
-		$s_cache = $this->CacheGenVal($key);
-		$this->CacheWrite($key, $s_cache);
-	} // end of func CacheGen
-
-
-	/**
-	 * Gen cache data file content
-	 *
-	 * @param	string	$key
-	 * @return	string
-	 */
-	abstract protected function CacheGenVal($key);
-
-
-	/**
-	 * CacheLifetime of cache data file, meature by second
-	 *
-	 * @param	string	$key
-	 * @return	int
-	 */
-	abstract public function CacheLifetime($key);
-
-
-	/**
-	 * Load cache data
-	 *
-	 * @param	string	$key
-	 * @param	int		$flag	@see CacheRead()
-	 * @return	mixed
-	 */
-	public function CacheLoad($key, $flag) {
-		if ($this->CacheNeedUpdate($key))
-			$this->CacheGen($key);
-
-		return $this->CacheRead($key, $flag);
-	} // end of func CacheLoad
-
-
-	/**
-	 * Is cache data file need update/create ?
-	 *
-	 * @param	string	$key
-	 * @return	boolean
-	 */
-	protected function CacheNeedUpdate($key) {
-		$s_file = $this->CachePath($key);
-
-		// File doesn't exist
-		if (!file_exists($s_file))
-			return true;
-
-		// Out of CacheLifetime
-		if ($this->CacheLifetime($key)
-			> (time() - filemtime($s_file)))
-			return false;
-		else
-			return true;
-	} // end of func CacheNeedUpdate
 
 
 	/**
@@ -117,7 +51,7 @@ abstract class Cache extends Fwolflib {
 	 * @param	string	$key
 	 * @return	string
 	 */
-	public function CachePath($key) {
+	public function CacheFilePath($key) {
 		$s_path = $this->aCfg['file-dir'];
 
 		$ar_rule = str_split($this->aCfg['file-rule'], 2);
@@ -125,10 +59,10 @@ abstract class Cache extends Fwolflib {
 			return $s_path;
 
 		foreach ($ar_rule as $rule)
-			$s_path .= $this->CachePathSec($rule, $key) . '/';
+			$s_path .= $this->CacheFilePathSec($rule, $key) . '/';
 
 		// Filename
-		$s_path .= $this->CachePathFile($key);
+		$s_path .= $this->CacheFilePathFile($key);
 
 		return $s_path;
 	} // end of func Path
@@ -140,9 +74,9 @@ abstract class Cache extends Fwolflib {
 	 * @param	string	$key
 	 * @return	string
 	 */
-	protected function CachePathFile($key) {
+	protected function CacheFilePathFile($key) {
 		return substr(md5($key), 0, 8);
-	} // end of func CachePathFile
+	} // end of func CacheFilePathFile
 
 
 	/**
@@ -153,7 +87,7 @@ abstract class Cache extends Fwolflib {
 	 * @return	string
 	 * @see	$sCacheRule
 	 */
-	protected function CachePathSec($rule, $key) {
+	protected function CacheFilePathSec($rule, $key) {
 		$i_len = 2;
 
 		if ($i_len > strlen($rule))
@@ -184,7 +118,54 @@ abstract class Cache extends Fwolflib {
 			$s_seed = hash('crc32', $key);
 		}
 		return(substr($s_seed, $i_start, 2));
-	} // end of func CachePathSec
+	} // end of func CacheFilePathSec
+
+
+	/**
+	 * Gen and write cache data file
+	 *
+	 * @param	string	$key
+	 * @return	mixed		// Generated cache data.
+	 */
+	protected function CacheGen($key) {
+		$val = $this->CacheGenVal($key);
+		$this->CacheSet($key, $val);
+		return $val;
+	} // end of func CacheGen
+
+
+	/**
+	 * Gen cache data, implement by child class
+	 *
+	 * @param	string	$key
+	 * @return	string
+	 */
+	abstract protected function CacheGenVal($key);
+
+
+	/**
+	 * Load cache data
+	 *
+	 * @param	string	$key
+	 * @param	int		$flag	May used by type func.
+	 * @return	mixed
+	 */
+	public function CacheGet($key, $flag) {
+		// Error check
+		if (empty($this->aCfg['type'])) {
+			$this->Log('Cache type is not set.', 5);
+			return NULL;
+		}
+
+		$s = 'CacheGet' . ucfirst($this->aCfg['type']);
+		if (method_exists($this, $s))
+			return $this->{$s}($key, $flag);
+		else {
+			$this->Log('Cache get method for type '
+				. $this->aCfg['type'] . ' not implement.', 5);
+			return NULL;
+		}
+	} // end of func CacheGet
 
 
 	/**
@@ -196,40 +177,102 @@ abstract class Cache extends Fwolflib {
 	 * 							3=raw string
 	 * @return	mixed
 	 */
-	protected function CacheRead($key, $flag = 0) {
-		$s_file = $this->CachePath($key);
-		$s_cache = file_get_contents($s_file);
+	protected function CacheGetFile($key, $flag = 0) {
+		if ($this->CacheNeedUpdate($key))
+			return $this->CacheGen($key);
+		else {
+			// Read from file and parse it.
+			$s_file = $this->CacheFilePath($key);
+			$s_cache = file_get_contents($s_file);
 
-		$rs = null;
-		switch ($flag) {
-			case 0:
-				$rs = json_decode($s_cache, true);
-				if (is_array($rs))
-					$rs = $rs[0];
-				break;
-			case 1:
-				$rs = json_decode($s_cache, true);
-				break;
-			case 2:
-				$rs = json_decode($s_cache, false);
-				break;
-			case 3:
-			default:
-				$rs = &$s_cache;
+			$rs = null;
+			switch ($flag) {
+				case 0:
+					$rs = json_decode($s_cache, true);
+					if (is_array($rs))
+						$rs = $rs[0];
+					break;
+				case 1:
+					$rs = json_decode($s_cache, true);
+					break;
+				case 2:
+					$rs = json_decode($s_cache, false);
+					break;
+				case 3:
+				default:
+					$rs = &$s_cache;
+			}
+			return $rs;
 		}
-
-		return $rs;
-	} // end of func CacheRead
+	} // end of func CacheGetFile
 
 
 	/**
-	 * Write data to cache file
+	 * CacheLifetime of cache data, meature by second
+	 *
+	 * @param	string	$key
+	 * @return	int
+	 */
+	abstract public function CacheLifetime($key);
+
+
+	/**
+	 * Is cache data file need update/create ?
+	 *
+	 * @param	string	$key
+	 * @return	boolean
+	 */
+	protected function CacheNeedUpdate($key) {
+		$s_file = $this->CacheFilePath($key);
+
+		// File doesn't exist
+		if (!file_exists($s_file))
+			return true;
+
+		// Out of CacheLifetime
+		if ($this->CacheLifetime($key)
+			> (time() - filemtime($s_file)))
+			return false;
+		else
+			return true;
+	} // end of func CacheNeedUpdate
+
+
+	/**
+	 * Write data to cache
 	 *
 	 * @param	string	$key
 	 * @param	mixed	$val
+	 * @return	$this
 	 */
-	public function CacheWrite($key, $val) {
-		$s_file = $this->CachePath($key);
+	public function CacheSet ($key, $val) {
+		// Error check
+		if (empty($this->aCfg['type'])) {
+			$this->Log('Cache type is not set.', 5);
+			return this;
+		}
+
+		$s = 'CacheSet' . ucfirst($this->aCfg['type']);
+		if (method_exists($this, $s)) {
+			$this->{$s}($key, $val);
+		}
+		else {
+			$this->Log('Cache set method for type '
+				. $this->aCfg['type'] . ' not implement.', 5);
+		}
+		return $this;
+	} // end of func CacheSet
+
+
+	/**
+	 * Write data to cache, type file
+	 *
+	 * @param	string	$key
+	 * @param	mixed	$val
+	 * @return	$this
+	 */
+	public function CacheSetFile ($key, $val) {
+		$s_file = $this->CacheFilePath($key);
 		$s_cache = json_encode($val);
 
 		// Create each level dir if not exists
@@ -239,7 +282,8 @@ abstract class Cache extends Fwolflib {
 
 		// Finally write file
 		file_put_contents($s_file, $s_cache, LOCK_EX);
-	} // end of func CacheWrite
+		return $this;
+	} // end of func CacheSetFile
 
 
 	/**
@@ -294,10 +338,13 @@ abstract class Cache extends Fwolflib {
 	 * @return	object
 	 */
 	protected function Init () {
-		// Method file: dir where data file store
+		// Cache type: file, memcached
+		$this->aCfg['type'] = '';
+
+		// Type file: dir where data file store
 		$this->aCfg['file-dir'] = '';
 		/**
-		 * Method file: cache file store rule
+		 * Type file: cache file store rule
 		 *
 		 * Group by every 2-chars, their means:
 		 * 10	first 2 char of md5 hash, 16 * 16 = 256

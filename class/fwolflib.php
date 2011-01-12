@@ -67,14 +67,14 @@ class Fwolflib {
 	/**
 	 * Dummy constructor
 	 */
-	public function __construct() {
+	public function __construct () {
 	} // end of func __construct
 
 
 	/**
 	 * Dummy destructor
 	 */
-	public function __destruct() {
+	public function __destruct () {
 	} // end of func __destruct
 
 
@@ -84,7 +84,7 @@ class Fwolflib {
 	 * @param	string	$name
 	 * @return	object
 	 */
-	public function __get($name) {
+	public function __get ($name) {
 		if ('o' == $name{0}) {
 			$s_func = 'NewObj' . substr($name, 1);
 			if (method_exists($this, $s_func)) {
@@ -156,7 +156,7 @@ class Fwolflib {
 	 * @param	$level	Only output log which's level >= $level
 	 * @return	string
 	 */
-	public function LogGet($level = 3) {
+	public function LogGet ($level = 3) {
 		if (IsCli())
 			$s_split = "\n";
 		else
