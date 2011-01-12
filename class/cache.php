@@ -52,9 +52,9 @@ abstract class Cache extends Fwolflib {
 	 * @return	string
 	 */
 	public function CacheFilePath($key) {
-		$s_path = $this->aCfg['file-dir'];
+		$s_path = $this->aCfg['cache-file-dir'];
 
-		$ar_rule = str_split($this->aCfg['file-rule'], 2);
+		$ar_rule = str_split($this->aCfg['cache-file-rule'], 2);
 		if (empty($ar_rule))
 			return $s_path;
 
@@ -152,17 +152,17 @@ abstract class Cache extends Fwolflib {
 	 */
 	public function CacheGet($key, $flag) {
 		// Error check
-		if (empty($this->aCfg['type'])) {
+		if (empty($this->aCfg['cache-type'])) {
 			$this->Log('Cache type is not set.', 5);
 			return NULL;
 		}
 
-		$s = 'CacheGet' . ucfirst($this->aCfg['type']);
+		$s = 'CacheGet' . ucfirst($this->aCfg['cache-type']);
 		if (method_exists($this, $s))
 			return $this->{$s}($key, $flag);
 		else {
 			$this->Log('Cache get method for type '
-				. $this->aCfg['type'] . ' not implement.', 5);
+				. $this->aCfg['cache-type'] . ' not implement.', 5);
 			return NULL;
 		}
 	} // end of func CacheGet
@@ -247,18 +247,18 @@ abstract class Cache extends Fwolflib {
 	 */
 	public function CacheSet ($key, $val) {
 		// Error check
-		if (empty($this->aCfg['type'])) {
+		if (empty($this->aCfg['cache-type'])) {
 			$this->Log('Cache type is not set.', 5);
 			return this;
 		}
 
-		$s = 'CacheSet' . ucfirst($this->aCfg['type']);
+		$s = 'CacheSet' . ucfirst($this->aCfg['cache-type']);
 		if (method_exists($this, $s)) {
 			$this->{$s}($key, $val);
 		}
 		else {
 			$this->Log('Cache set method for type '
-				. $this->aCfg['type'] . ' not implement.', 5);
+				. $this->aCfg['cache-type'] . ' not implement.', 5);
 		}
 		return $this;
 	} // end of func CacheSet
@@ -326,7 +326,7 @@ abstract class Cache extends Fwolflib {
 			return("Cache rule is not defined or too short.");
 
 		if (0 != (strlen($rule) % 2))
-			return("Cache rule {$this->aCfg['file-rule']} may not right.");
+			return("Cache rule {$this->aCfg['cache-file-rule']} may not right.");
 
 		return '';
 	} // end of func ChkCfgFileRule
@@ -339,10 +339,10 @@ abstract class Cache extends Fwolflib {
 	 */
 	protected function Init () {
 		// Cache type: file, memcached
-		$this->aCfg['type'] = '';
+		$this->aCfg['cache-type'] = '';
 
 		// Type file: dir where data file store
-		$this->aCfg['file-dir'] = '';
+		$this->aCfg['cache-file-dir'] = '';
 		/**
 		 * Type file: cache file store rule
 		 *
@@ -355,7 +355,7 @@ abstract class Cache extends Fwolflib {
 		 * 5n	crc32, n=0..3, 16 * 16 = 256
 		 * Join these str with '/', got full path of cache file.
 		 */
-		$this->aCfg['file-rule'] = '';
+		$this->aCfg['cache-file-rule'] = '';
 
 		return $this;
 	} // end of func Init
@@ -370,13 +370,13 @@ abstract class Cache extends Fwolflib {
 		parent::SetCfg($ar_cfg);
 
 		// Check config
-		if (!empty($this->aCfg['file-dir'])) {
-			$s = $this->ChkCfgFileDir($this->aCfg['file-dir']);
+		if (!empty($this->aCfg['cache-file-dir'])) {
+			$s = $this->ChkCfgFileDir($this->aCfg['cache-file-dir']);
 			if (!empty($s))
 				die($s);
 		}
-		if (!empty($this->aCfg['file-rule'])) {
-			$s = $this->ChkCfgFileRule($this->aCfg['file-rule']);
+		if (!empty($this->aCfg['cache-file-rule'])) {
+			$s = $this->ChkCfgFileRule($this->aCfg['cache-file-rule']);
 			if (!empty($s))
 				die($s);
 		}
