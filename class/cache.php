@@ -2,7 +2,7 @@
 /**
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2010, Fwolf
+ * @copyright	Copyright 2010-2011, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-01-07
  */
@@ -17,9 +17,17 @@ require_once(FWOLFLIB . 'func/filesystem.php');
  *
  * Key is split by '/', just like URL.
  *
+ * Workflow:
+ * -	CacheKey(), hash user request key.
+ * -	CacheGet()
+ * 		-	Try read, CacheGetMethod()
+ * 		-	If fail, gen cache, CacheGen(), CacheSet()
+ * -	CacheSet()
+ * -	CacheDel()
+ *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2010, Fwolf
+ * @copyright	Copyright 2010-2011, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2010-01-07
  */
@@ -54,47 +62,9 @@ abstract class Cache extends Fwolflib {
 	 * @param	array	$ar_cfg
 	 */
 	public function __construct($ar_cfg = array()) {
-		$this->CacheSetCfg($ar_cfg);
+		$this->Init()
+			->SetConfig($ar_cfg);
 	} // end of func __construct
-
-
-	/**
-	 * Check cache data store dir valid and writable
-	 * If error, return error msg, else return empty str.
-	 *
-	 * @param	string	$dir
-	 * @return	string
-	 */
-	public function CacheCheckDir($dir) {
-		if (empty($dir))
-			return("Cache dir {$dir} is not defined.");
-
-		if (!file_exists($dir))
-			mkdir($dir, 0755, true);
-
-		if (!is_writable($dir))
-			return("Cache dir {$dir} is not writable.");
-
-		return '';
-	} // end of func CacheCheckDir
-
-
-	/**
-	 * Check cache rule exist and valid
-	 * If error, return error msg, else return empty str.
-	 *
-	 * @param	string	$rule
-	 * @return	string
-	 */
-	public function CacheCheckRule($rule) {
-		if (2 > strlen($rule))
-			return("Cache rule is not defined or too short.");
-
-		if (0 != (strlen($rule) % 2))
-			return("Cache rule {$this->sCacheRule} may not right.");
-
-		return '';
-	} // end of func CacheCheckRule
 
 
 	/**
@@ -170,9 +140,9 @@ abstract class Cache extends Fwolflib {
 	 * @return	string
 	 */
 	public function CachePath($key) {
-		$s_path = $this->sCacheDir;
+		$s_path = $this->aConfig['file-dir'];
 
-		$ar_rule = str_split($this->sCacheRule, 2);
+		$ar_rule = str_split($this->aConfig['file-rule'], 2);
 		if (empty($ar_rule))
 			return $s_path;
 
@@ -275,32 +245,6 @@ abstract class Cache extends Fwolflib {
 
 
 	/**
-	 * Set config
-	 *
-	 * @param	array	$ar_cfg
-	 */
-	public function CacheSetCfg($ar_cfg) {
-		if (empty($ar_cfg))
-			return;
-
-		if (isset($ar_cfg['dir'])) {
-			$s = $this->CacheCheckDir($ar_cfg['dir']);
-			if (empty($s))
-				$this->sCacheDir = $ar_cfg['dir'];
-			else
-				die($s);
-		}
-		if (isset($ar_cfg['rule'])) {
-			$s = $this->CacheCheckRule($ar_cfg['rule']);
-			if (empty($s))
-				$this->sCacheRule = $ar_cfg['rule'];
-			else
-				die($s);
-		}
-	} // end of func CacheSetCfg
-
-
-	/**
 	 * Write data to cache file
 	 *
 	 * @param	string	$key
@@ -318,6 +262,101 @@ abstract class Cache extends Fwolflib {
 		// Finally write file
 		file_put_contents($s_file, $s_cache, LOCK_EX);
 	} // end of func CacheWrite
+
+
+	/**
+	 * Check config/cache store dir valid and writable
+	 * If error, return error msg, else return empty str.
+	 *
+	 * @param	string	$dir
+	 * @return	string
+	 */
+	public function ChkCfgFileDir($dir) {
+		$s = '';
+
+		if (empty($dir))
+			$s = "Cache dir {$dir} is not defined.";
+
+		if (!file_exists($dir)) {
+			if (false == mkdir($dir, 0755, true))
+				$s = "Fail to create cache dir {$dir}.";
+		}
+		else {
+			if (!is_writable($dir))
+				$s = "Cache dir {$dir} is not writable.";
+		}
+
+		if (!empty($s))
+			$this->Log($s, 5);
+		return $s;
+	} // end of func ChkCfgFileDir
+
+
+	/**
+	 * Check cache rule exist and valid
+	 * If error, return error msg, else return empty str.
+	 *
+	 * @param	string	$rule
+	 * @return	string
+	 */
+	public function ChkCfgFileRule($rule) {
+		if (2 > strlen($rule))
+			return("Cache rule is not defined or too short.");
+
+		if (0 != (strlen($rule) % 2))
+			return("Cache rule {$this->aConfig['file-rule']} may not right.");
+
+		return '';
+	} // end of func ChkCfgFileRule
+
+
+	/**
+	 * Init config vars
+	 *
+	 * @return	object
+	 */
+	protected function Init () {
+		// Method file: dir where data file store
+		$this->aConfig['file-dir'] = '';
+		/**
+		 * Method file: cache file store rule
+		 *
+		 * Group by every 2-chars, their means:
+		 * 10	first 2 char of md5 hash, 16 * 16 = 256
+		 * 11	3-4 char of md5 hash
+		 * 20	last 2 char of md5 hash
+		 * 30	first 2 char of key
+		 * 40	last 2 char of key
+		 * 5n	crc32, n=0..3, 16 * 16 = 256
+		 * Join these str with '/', got full path of cache file.
+		 */
+		$this->aConfig['file-rule'] = '';
+
+		return $this;
+	} // end of func Init
+
+
+	/**
+	 * Set config
+	 *
+	 * @param	array	$ar_cfg
+	 */
+	public function SetConfig($ar_cfg) {
+		parent::SetConfig($ar_cfg);
+
+		// Check config
+		if (!empty($this->aConfig['file-dir'])) {
+			$s = $this->ChkCfgFileDir($this->aConfig['file-dir']);
+			if (!empty($s))
+				die($s);
+		}
+		if (!empty($this->aConfig['file-rule'])) {
+			$s = $this->ChkCfgFileRule($this->aConfig['file-rule']);
+			if (!empty($s))
+				die($s);
+		}
+	} // end of func SetConfig
+
 
 } // end of class Cache
 

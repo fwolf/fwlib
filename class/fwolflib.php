@@ -99,6 +99,18 @@ class Fwolflib {
 
 
 	/**
+	 * Init func, set config vars etc.
+	 * Usually used to set $this->aConfig in sub class.
+	 *
+	 * @link	$aConfig
+	 * @return	object
+	 */
+	 protected function Init () {
+		 return $this;
+	 } // end of func Init
+
+
+	/**
 	 * Record log msg.
 	 *
 	 * @param	string	$msg

@@ -19,10 +19,11 @@ if (! defined('SIMPLE_TEST')) {
 // }}}
 
 // Require library define file which need test
-require_once('fwolflib/class/cache.php');
-require_once('fwolflib/func/ecl.php');
-require_once('fwolflib/func/request.php');
-require_once('fwolflib/func/string.php');
+require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/cache.php');
+require_once(FWOLFLIB . 'func/ecl.php');
+require_once(FWOLFLIB . 'func/request.php');
+require_once(FWOLFLIB . 'func/string.php');
 
 class TestCache extends UnitTestCase {
 
@@ -39,16 +40,16 @@ class TestCache extends UnitTestCase {
 	public function __construct() {
 		$ar_cfg = array(
 			'dir'		=> '/tmp/cache/',
-			'rule'		=> '1142',
+			'file-rule'		=> '1142',
 		);
 		$this->oCh = new CacheTest($ar_cfg);
 	} // end of func __construct
 
 
     function TestPath() {
-		$this->oCh->CacheSetCfg(array(
-			'dir'	=> '/tmp/cache/',
-			'rule'	=> '1140',
+		$this->oCh->SetConfig(array(
+			'file-dir'	=> '/tmp/cache/',
+			'file-rule'	=> '1140',
 		));
 		$key = 'site/index';
 
@@ -58,31 +59,31 @@ class TestCache extends UnitTestCase {
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
-		$this->oCh->CacheSetCfg(array('rule' => '1131'));
+		$this->oCh->SetConfig(array('file-rule' => '1131'));
 		$x = '/tmp/cache/d0/te/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Notice: Directly use key's part as path may cause wrong
-		$this->oCh->CacheSetCfg(array('rule' => '2342'));
+		$this->oCh->SetConfig(array('file-rule' => '2342'));
 		$x = '/tmp/cache/57//i/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage
-		$this->oCh->CacheSetCfg(array('rule' => '1011'));
+		$this->oCh->SetConfig(array('file-rule' => '1011'));
 		$x = '/tmp/cache/3e/d0/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage 2
-		$this->oCh->CacheSetCfg(array('rule' => '2021'));
+		$this->oCh->SetConfig(array('file-rule' => '2021'));
 		$x = '/tmp/cache/b6/9c/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage 3
-		$this->oCh->CacheSetCfg(array('rule' => '55'));
+		$this->oCh->SetConfig(array('file-rule' => '55'));
 		$x = '/tmp/cache/89/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
