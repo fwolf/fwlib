@@ -31,7 +31,7 @@ class Fwolflib {
 	 * Notice: re-define var in sub-class will overwrite var in parent class.
 	 * @var	array
 	 */
-	public $aConfig = array(
+	public $aCfg = array(
 		// Log level eq/gt this will write to php errorlog
 		'log_errorlog'	=> 4,
 		// Print backtrace in log
@@ -100,9 +100,9 @@ class Fwolflib {
 
 	/**
 	 * Init func, set config vars etc.
-	 * Usually used to set $this->aConfig in sub class.
+	 * Usually used to set $this->aCfg in sub class.
 	 *
-	 * @link	$aConfig
+	 * @link	$aCfg
 	 * @return	object
 	 */
 	 protected function Init () {
@@ -126,11 +126,11 @@ class Fwolflib {
 		$this->aLog[] = $ar;
 
 		// Log to errorlog ?
-		if ($this->aConfig['log_errorlog'] <= $level) {
+		if ($this->aCfg['log_errorlog'] <= $level) {
 			$s_error = "Log {$ar['level']}: {$ar['msg']}\n";
 
 			// Log backtrace
-			if ($this->aConfig['log_backtrace']) {
+			if ($this->aCfg['log_backtrace']) {
 				$ar = debug_backtrace();
 				foreach ($ar as $error) {
 					$s_error .= "\tLine " . $error['line']
@@ -177,23 +177,23 @@ class Fwolflib {
 	/**
 	 * Set config array
 	 *
-	 * @see		$aConfig
+	 * @see		$aCfg
 	 * @param	array	$k
 	 * @param	mixed	$v
 	 */
-	public function SetConfig ($k, $v = null) {
+	public function SetCfg ($k, $v = null) {
 		if (is_array($k)) {
 			// Use array $k only, ignore $v
 			if (!empty($k)) {
 				foreach ($k as $key => $val)
-					$this->aConfig[$key] = $val;
+					$this->aCfg[$key] = $val;
 			}
 		}
 		else {
 			// Use array $k => $v
-			$this->aConfig[$k] = $v;
+			$this->aCfg[$k] = $v;
 		}
-	} // end of func SetConfig
+	} // end of func SetCfg
 
 
 } // end of class Fwolflib

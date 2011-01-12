@@ -59,7 +59,7 @@ class SyncDbData extends Fwolflib {
 	 * Change to assign through function param, here is just a sample.
 	 * @var	array
 	 */
-	//public $aConfigOneway = array();
+	//public $aCfgOneway = array();
 
 	/**
 	 * Log message

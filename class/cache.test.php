@@ -47,7 +47,7 @@ class TestCache extends UnitTestCase {
 
 
     function TestPath() {
-		$this->oCh->SetConfig(array(
+		$this->oCh->SetCfg(array(
 			'file-dir'	=> '/tmp/cache/',
 			'file-rule'	=> '1140',
 		));
@@ -59,31 +59,31 @@ class TestCache extends UnitTestCase {
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
-		$this->oCh->SetConfig(array('file-rule' => '1131'));
+		$this->oCh->SetCfg(array('file-rule' => '1131'));
 		$x = '/tmp/cache/d0/te/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Notice: Directly use key's part as path may cause wrong
-		$this->oCh->SetConfig(array('file-rule' => '2342'));
+		$this->oCh->SetCfg(array('file-rule' => '2342'));
 		$x = '/tmp/cache/57//i/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage
-		$this->oCh->SetConfig(array('file-rule' => '1011'));
+		$this->oCh->SetCfg(array('file-rule' => '1011'));
 		$x = '/tmp/cache/3e/d0/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage 2
-		$this->oCh->SetConfig(array('file-rule' => '2021'));
+		$this->oCh->SetCfg(array('file-rule' => '2021'));
 		$x = '/tmp/cache/b6/9c/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);
 
 		// Common usage 3
-		$this->oCh->SetConfig(array('file-rule' => '55'));
+		$this->oCh->SetCfg(array('file-rule' => '55'));
 		$x = '/tmp/cache/89/3ed0dc6e';
 		$y = $this->oCh->CachePath($key);
 		$this->assertEqual($x, $y);

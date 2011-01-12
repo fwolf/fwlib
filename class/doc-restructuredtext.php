@@ -18,7 +18,7 @@ require_once(FWOLFLIB . 'func/array.php');
  *
  * Also include some other convert feature.
  *
- * Need jQuery, locate assigned in $aConfig['path_jquery']
+ * Need jQuery, locate assigned in $aCfg['path_jquery']
  *
  * :TODO: Highlight: http://softwaremaniacs.org/soft/highlight/en/
  *
@@ -94,7 +94,7 @@ class DocReStructuredText extends Fwolflib {
 	 */
 	public function AddFooter ($s_html) {
 		$s = '';
-		if ($this->aConfig['show_ads']) {
+		if ($this->aCfg['show_ads']) {
 			$s .= '
 				<div id="ads_bottom">
 					<br />
@@ -134,7 +134,7 @@ class DocReStructuredText extends Fwolflib {
 				</a>
 		';
 
-		if ($this->aConfig['show_counter']) {
+		if ($this->aCfg['show_counter']) {
 			$s .= '
 				<span class="spacer" >&nbsp;</span>
 				<script type="text/javascript" src="http://js.users.51.la/272422.js"></script>
@@ -169,7 +169,7 @@ class DocReStructuredText extends Fwolflib {
 	protected function AddJsJquery ($s_html) {
 		$s_html = str_replace('</head>'
 			, '<script type="text/javascript" src="'
-					. $this->aConfig['path_jquery'] . '">'
+					. $this->aCfg['path_jquery'] . '">'
 				. '</script>'
 				. "\n</head>"
 			, $s_html);
@@ -181,7 +181,7 @@ class DocReStructuredText extends Fwolflib {
 	/**
 	 * Add js code, which can show source of prefered part.
 	 *
-	 * Need: $this->aConfig['js_jquery'] = true;
+	 * Need: $this->aCfg['js_jquery'] = true;
 	 *
 	 * @return	string
 	 */
@@ -433,13 +433,13 @@ class DocReStructuredText extends Fwolflib {
 			$this->sPathDocutils = $ar_path[0];
 			if (is_executable($this->sPathDocutils . 'rst2html.py')) {
 				$b_found = true;
-				$this->aConfig['cmd_.py'] = true;
+				$this->aCfg['cmd_.py'] = true;
 				break;
 			}
 			// In some env like my (MT) Centos5, cmd hasn't .py extension
 			if (is_executable($this->sPathDocutils . 'rst2html')) {
 				$b_found = true;
-				$this->aConfig['cmd_.py'] = false;
+				$this->aCfg['cmd_.py'] = false;
 				break;
 			}
 			array_shift($ar_path);
@@ -463,7 +463,7 @@ class DocReStructuredText extends Fwolflib {
 	 * @return	string
 	 */
 	public function GetPathRst2Html () {
-		if ($this->aConfig['cmd_.py'])
+		if ($this->aCfg['cmd_.py'])
 			$s = $this->sPathDocutils . "rst2html.py ";
 		else
 			$s = $this->sPathDocutils . "rst2html ";
@@ -478,25 +478,25 @@ class DocReStructuredText extends Fwolflib {
 	 */
 	public function InitConfig () {
 		// Will set in GetPathDocutils()
-		$this->aConfig['cmd_.py']	= true;
+		$this->aCfg['cmd_.py']	= true;
 		// Use pipe to exec cmd instead of tmp file ?
-		$this->aConfig['cmd_pipe']	= true;
+		$this->aCfg['cmd_pipe']	= true;
 
 		// Use script jquery ?
-		$this->aConfig['js_jquery']	= false;
+		$this->aCfg['js_jquery']	= false;
 
 		// Tidy output html ?
-		$this->aConfig['output_tidy'] = false;
+		$this->aCfg['output_tidy'] = false;
 
 		// Using 'Google AJAX Libraries API' now
 		// http://code.google.com/apis/ajaxlibs/
-		$this->aConfig['path_jquery']
+		$this->aCfg['path_jquery']
 			= 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js';
 		//	= '/js/jquery.js';
 
 		// Show opiton, default
-		$this->aConfig['show_ads']		= false;
-		$this->aConfig['show_counter']	= true;
+		$this->aCfg['show_ads']		= false;
+		$this->aCfg['show_counter']	= true;
 
 		return $this;
 	} // end of func InitConfig
@@ -557,7 +557,7 @@ class DocReStructuredText extends Fwolflib {
 				. $this->GenCmdOption();
 		$s_cmd = escapeshellcmd($s_cmd);
 
-		if ($this->aConfig['cmd_pipe']) {
+		if ($this->aCfg['cmd_pipe']) {
 			// Use pipe
 			$desc = array(
 				0 => array('pipe', 'r'),
@@ -617,14 +617,14 @@ class DocReStructuredText extends Fwolflib {
 		$s_out = $this->ModifyHtmlTagStyle($s_out);
 
 		// Need jQuery ?
-		if ($this->aConfig['js_jquery'])
+		if ($this->aCfg['js_jquery'])
 			$s_out = $this->AddJsJquery($s_out);
 
 		// Add my footer
 		$s_out = $this->AddFooter($s_out);
 
 		// Tidy ?
-		if ($this->aConfig['output_tidy'])
+		if ($this->aCfg['output_tidy'])
 			$s_out = $this->Tidy($s_out);
 
 		$this->sHtml = $s_out;

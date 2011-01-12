@@ -33,28 +33,6 @@ require_once(FWOLFLIB . 'func/filesystem.php');
  */
 abstract class Cache extends Fwolflib {
 
-	/**
-	 * Dir where data file store
-	 * @var	string
-	 */
-	public $sCacheDir = '';
-
-
-	/**
-	 * Cache file store rule
-	 *
-	 * Group by every 2-chars, their means:
-	 * 10	first 2 char of md5 hash, 16 * 16 = 256
-	 * 11	3-4 char of md5 hash
-	 * 20	last 2 char of md5 hash
-	 * 30	first 2 char of key
-	 * 40	last 2 char of key
-	 * 5n	crc32, n=0..3, 16 * 16 = 256
-	 *
-	 * @var	string
-	 */
-	public $sCacheRule = '';
-
 
 	/**
 	 * Constructor
@@ -63,7 +41,7 @@ abstract class Cache extends Fwolflib {
 	 */
 	public function __construct($ar_cfg = array()) {
 		$this->Init()
-			->SetConfig($ar_cfg);
+			->SetCfg($ar_cfg);
 	} // end of func __construct
 
 
@@ -140,9 +118,9 @@ abstract class Cache extends Fwolflib {
 	 * @return	string
 	 */
 	public function CachePath($key) {
-		$s_path = $this->aConfig['file-dir'];
+		$s_path = $this->aCfg['file-dir'];
 
-		$ar_rule = str_split($this->aConfig['file-rule'], 2);
+		$ar_rule = str_split($this->aCfg['file-rule'], 2);
 		if (empty($ar_rule))
 			return $s_path;
 
@@ -304,7 +282,7 @@ abstract class Cache extends Fwolflib {
 			return("Cache rule is not defined or too short.");
 
 		if (0 != (strlen($rule) % 2))
-			return("Cache rule {$this->aConfig['file-rule']} may not right.");
+			return("Cache rule {$this->aCfg['file-rule']} may not right.");
 
 		return '';
 	} // end of func ChkCfgFileRule
@@ -317,7 +295,7 @@ abstract class Cache extends Fwolflib {
 	 */
 	protected function Init () {
 		// Method file: dir where data file store
-		$this->aConfig['file-dir'] = '';
+		$this->aCfg['file-dir'] = '';
 		/**
 		 * Method file: cache file store rule
 		 *
@@ -330,7 +308,7 @@ abstract class Cache extends Fwolflib {
 		 * 5n	crc32, n=0..3, 16 * 16 = 256
 		 * Join these str with '/', got full path of cache file.
 		 */
-		$this->aConfig['file-rule'] = '';
+		$this->aCfg['file-rule'] = '';
 
 		return $this;
 	} // end of func Init
@@ -341,21 +319,21 @@ abstract class Cache extends Fwolflib {
 	 *
 	 * @param	array	$ar_cfg
 	 */
-	public function SetConfig($ar_cfg) {
-		parent::SetConfig($ar_cfg);
+	public function SetCfg($ar_cfg) {
+		parent::SetCfg($ar_cfg);
 
 		// Check config
-		if (!empty($this->aConfig['file-dir'])) {
-			$s = $this->ChkCfgFileDir($this->aConfig['file-dir']);
+		if (!empty($this->aCfg['file-dir'])) {
+			$s = $this->ChkCfgFileDir($this->aCfg['file-dir']);
 			if (!empty($s))
 				die($s);
 		}
-		if (!empty($this->aConfig['file-rule'])) {
-			$s = $this->ChkCfgFileRule($this->aConfig['file-rule']);
+		if (!empty($this->aCfg['file-rule'])) {
+			$s = $this->ChkCfgFileRule($this->aCfg['file-rule']);
 			if (!empty($s))
 				die($s);
 		}
-	} // end of func SetConfig
+	} // end of func SetCfg
 
 
 } // end of class Cache

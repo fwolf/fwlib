@@ -40,8 +40,8 @@ require_once(FWOLFLIB . 'func/request.php');
  *
  * // New object
  * //$this->oLt = new ListTable($this->oTpl, $ard, $art, '', $ar_conf);
- * // Or cal SetXxx func, note that SetConfig MUST before SetData
- * $this->oLt->SetConfig($ar_conf);
+ * // Or cal SetXxx func, note that SetCfg MUST before SetData
+ * $this->oLt->SetCfg($ar_conf);
  * $this->oLt->SetData($ar, $art);
  *
  * // Got output html
@@ -82,7 +82,7 @@ class ListTable extends Fwolflib {
 	 * </code>
 	 * @var	array
 	 */
-	public $aConfig = array(
+	public $aCfg = array(
 		// 浅蓝色配色方案
 		// fwolflib-list-table = fl_lt
 		'code_prefix'		=> 'fl_lt',		// Used in id/class in html and css.
@@ -211,8 +211,8 @@ class ListTable extends Fwolflib {
 		$this->oTpl = $tpl;
 
 		// Config will effect SetData, so set it first.
-		$this->SetConfig($conf);
-		$this->oTpl->assign_by_ref('lt_config', $this->aConfig);
+		$this->SetCfg($conf);
+		$this->oTpl->assign_by_ref('lt_config', $this->aCfg);
 
 		$this->SetData($ard, $art);
 		$this->SetId($id);
@@ -230,7 +230,7 @@ class ListTable extends Fwolflib {
 	 * 					3=fit to mostest, all items in title or data allowed.
 	 * </code>
 	 * Notice: data have multi row(2 dim), title have only 1 row(1 dim).
-	 * @see	$aConfig['fit_data_title']
+	 * @see	$aCfg['fit_data_title']
 	 */
 	protected function FitDataTitle()
 	{
@@ -246,7 +246,7 @@ class ListTable extends Fwolflib {
 		$keys_data = array_keys(current($this->aData));
 		$keys_title = array_keys($this->aTitle);
 
-		switch ($this->aConfig['fit_data_title'])
+		switch ($this->aCfg['fit_data_title'])
 		{
 			case 0:
 				// data fit to title
@@ -262,7 +262,7 @@ class ListTable extends Fwolflib {
 							if (isset($row[$keys_data[$k]]))
 								$ar_data[$idx][$keys_data[$k]] = &$row[$keys_data[$k]];
 							else
-								$ar_data[$idx][$keys_data[$k]] = $this->aConfig['fit_empty'];
+								$ar_data[$idx][$keys_data[$k]] = $this->aCfg['fit_empty'];
 				}
 				else
 				{
@@ -272,7 +272,7 @@ class ListTable extends Fwolflib {
 							if (isset($row[$v]))
 								$ar_data[$idx][$v] = &$row[$v];
 							else
-								$ar_data[$idx][$v] = $this->aConfig['fit_empty'];
+								$ar_data[$idx][$v] = $this->aCfg['fit_empty'];
 				}
 				break;
 			case 1:
@@ -320,9 +320,9 @@ class ListTable extends Fwolflib {
 							unset($ar_title[$v]);
 				}
 				// Then use function itself to fit data to cutted title
-				$this->aConfig['fit_data_title'] = 0;
+				$this->aCfg['fit_data_title'] = 0;
 				$this->FitDataTitle();
-				$this->aConfig['fit_data_title'] = 2;
+				$this->aCfg['fit_data_title'] = 2;
 				$ar_data = &$this->aData;
 				$ar_title = &$this->aTitle;
 				break;
@@ -356,9 +356,9 @@ class ListTable extends Fwolflib {
 				}
 				$this->aTitle = &$ar_title;
 				// Then use function itself to fit data to cutted title
-				$this->aConfig['fit_data_title'] = 0;
+				$this->aCfg['fit_data_title'] = 0;
 				$this->FitDataTitle();
-				$this->aConfig['fit_data_title'] = 2;
+				$this->aCfg['fit_data_title'] = 2;
 				$ar_data = &$this->aData;
 				$ar_title = &$this->aTitle;
 				break;
@@ -378,7 +378,7 @@ class ListTable extends Fwolflib {
 	 * @return	string
 	 */
 	public function GetHtml() {
-		return $this->oTpl->fetch($this->aConfig['tpl']);
+		return $this->oTpl->fetch($this->aCfg['tpl']);
 	} // end of func GetHtml
 
 
@@ -403,13 +403,13 @@ class ListTable extends Fwolflib {
 */
 		$this->aUrl['base'] = GetSelfUrl(false);
 
-		if (isset($this->aParam[$this->aConfig['page_param']])) {
-			$this->ParsePageCur($this->aParam[$this->aConfig['page_param']]);
+		if (isset($this->aParam[$this->aCfg['page_param']])) {
+			$this->ParsePageCur($this->aParam[$this->aCfg['page_param']]);
 		}
 
 		// Orderby
-		if (isset($this->aParam[$this->aConfig['orderby_param'] . '_idx']))
-			$this->SetOrderby($this->aParam[$this->aConfig['orderby_param'] . '_idx'], $this->aParam[$this->aConfig['orderby_param'] . '_dir']);
+		if (isset($this->aParam[$this->aCfg['orderby_param'] . '_idx']))
+			$this->SetOrderby($this->aParam[$this->aCfg['orderby_param'] . '_idx'], $this->aParam[$this->aCfg['orderby_param'] . '_dir']);
 
 		return $this->aParam;
 	} // end of func GetParam
@@ -425,13 +425,13 @@ class ListTable extends Fwolflib {
 	public function GetSqlInfo() {
 		$ar = array();
 
-		$ar['LIMIT'] = $this->aConfig['page_size'] * ($this->aConfig['page_cur'] - 1)
-			. ', ' . $this->aConfig['page_size'];
+		$ar['LIMIT'] = $this->aCfg['page_size'] * ($this->aCfg['page_cur'] - 1)
+			. ', ' . $this->aCfg['page_size'];
 
-		if (1 == $this->aConfig['orderby']) {
+		if (1 == $this->aCfg['orderby']) {
 			// orderby_idx is column name
-			$ar['ORDERBY'] = $this->aConfig['orderby_idx']
-				. ' ' . $this->aConfig['orderby_dir'];
+			$ar['ORDERBY'] = $this->aCfg['orderby_idx']
+				. ' ' . $this->aCfg['orderby_dir'];
 		}
 
 		return $ar;
@@ -450,11 +450,11 @@ class ListTable extends Fwolflib {
 
 		// Limit
 		$i_page = $this->ParsePageCur();
-		$ar['LIMIT'] = ($i_page - 1) * $this->aConfig['page_size']
-			. ', ' . $this->aConfig['page_size'];
+		$ar['LIMIT'] = ($i_page - 1) * $this->aCfg['page_size']
+			. ', ' . $this->aCfg['page_size'];
 
 		// Orderby
-		$s = $this->aConfig['orderby_param'];
+		$s = $this->aCfg['orderby_param'];
 		$s_idx = GetRequest($_REQUEST, $s . '_idx');
 		if (0 < strlen($s_idx)) {
 			// Orderby enabled
@@ -475,7 +475,7 @@ class ListTable extends Fwolflib {
 	protected function ParsePageCur($p = 0) {
 		if (0 == $p) {
 			// Read from GET prarm
-			$i = GetRequest($_REQUEST, $this->aConfig['page_param']);
+			$i = GetRequest($_REQUEST, $this->aCfg['page_param']);
 			// Special & dangous setting, use only if 1 LT in page
 			$i1 = GetRequest($_REQUEST, 'p');
 			if (!empty($i))
@@ -493,16 +493,16 @@ class ListTable extends Fwolflib {
 		if (1 > $page_cur)
 			$page_cur = 1;
 		// Max
-		if (0 < $this->aConfig['rows_total']
-			&& 0 < $this->aConfig['page_size']) {
-			$i = ceil($this->aConfig['rows_total']
-				/ $this->aConfig['page_size']);
+		if (0 < $this->aCfg['rows_total']
+			&& 0 < $this->aCfg['page_size']) {
+			$i = ceil($this->aCfg['rows_total']
+				/ $this->aCfg['page_size']);
 			if ($i < $page_cur)
 				$page_cur = intval($i);
 		}
 
 		// Result
-		$this->aConfig['page_cur'] = $page_cur;
+		$this->aCfg['page_cur'] = $page_cur;
 		return $page_cur;
 	} // end of func ParsePageCur
 
@@ -511,17 +511,17 @@ class ListTable extends Fwolflib {
 	 * Set configuration
 	 * @param	array|string	$c	Config array or name/value pair.
 	 * @param	string			$v	Config value
-	 * @see	$aConfig
+	 * @see	$aCfg
 	 */
-	public function SetConfig($c, $v = '') {
+	public function SetCfg($c, $v = '') {
 		if (is_array($c)) {
 			if (!empty($c))
 				foreach ($c as $idx => $val)
-					$this->SetConfig($idx, $val);
+					$this->SetCfg($idx, $val);
 		}
 		else
-			$this->aConfig[$c] = $v;
-	} // end of func SetConfig
+			$this->aCfg[$c] = $v;
+	} // end of func SetCfg
 
 
 	/**
@@ -569,9 +569,9 @@ class ListTable extends Fwolflib {
 	 */
 	public function SetId($id, $class = '')	{
 		if (empty($id))
-			$this->sId = $this->aConfig['code_prefix'];
+			$this->sId = $this->aCfg['code_prefix'];
 		else
-			$this->sId = $this->aConfig['code_prefix'] . '_' . $id;
+			$this->sId = $this->aCfg['code_prefix'] . '_' . $id;
 		if (!empty($class))
 			$this->sClass = $class;
 		else
@@ -581,11 +581,11 @@ class ListTable extends Fwolflib {
 		$this->oTpl->assign_by_ref('lt_class', $this->sClass);
 
 		// Change page_param
-		$this->aConfig['page_param'] = $this->sId . '_p';
+		$this->aCfg['page_param'] = $this->sId . '_p';
 		$this->ParsePageCur();
 
 		// Change orderby param
-		$this->aConfig['orderby_param'] = $this->sId . '_o';
+		$this->aCfg['orderby_param'] = $this->sId . '_o';
 
 		// Find param by new Id
 		$this->GetParam();
@@ -602,35 +602,35 @@ class ListTable extends Fwolflib {
 	 * @param	string	$dir	asc/desc, lower letter only
 	 */
 	public function SetOrderby($idx, $dir = 'asc') {
-		$this->aConfig['orderby'] = 1;
+		$this->aCfg['orderby'] = 1;
 
 		// If had got orderby info from url, exit
-		if (0 < strlen($this->aConfig['orderby_idx']))
+		if (0 < strlen($this->aCfg['orderby_idx']))
 			return;
 
-		$this->aConfig['orderby_idx'] = $idx;
+		$this->aCfg['orderby_idx'] = $idx;
 		$dir = strtolower($dir);
 		if ('asc' == $dir) {
 			$dir_rev = 'desc';
-			$this->aConfig['orderby_dir'] = 'asc';
-			$this->aConfig['orderby_text']
-				= $this->aConfig['orderby_text_asc'];
+			$this->aCfg['orderby_dir'] = 'asc';
+			$this->aCfg['orderby_text']
+				= $this->aCfg['orderby_text_asc'];
 		} else {
 			$dir_rev = 'asc';
-			$this->aConfig['orderby_dir'] = 'desc';
-			$this->aConfig['orderby_text']
-				= $this->aConfig['orderby_text_desc'];
+			$this->aCfg['orderby_dir'] = 'desc';
+			$this->aCfg['orderby_text']
+				= $this->aCfg['orderby_text_desc'];
 		}
 
 		// Url param
 		// Empty idx will fill in tpl
 		// Keep value of $this->aParam first
 		$ar = $this->aParam;
-		$this->aUrl['o_cur'] = $this->SetParam(array($this->aConfig['orderby_param'] . '_dir' => $dir_rev)
-			, array($this->aConfig['orderby_param'] . '_idx'));
+		$this->aUrl['o_cur'] = $this->SetParam(array($this->aCfg['orderby_param'] . '_dir' => $dir_rev)
+			, array($this->aCfg['orderby_param'] . '_idx'));
 		// Same with cur dir, or all new 'asc'
-		$this->aUrl['o_other'] = $this->SetParam(array($this->aConfig['orderby_param'] . '_dir'=> $this->aConfig['orderby_dir'])
-			, array($this->aConfig['orderby_param'] . '_idx'));;
+		$this->aUrl['o_other'] = $this->SetParam(array($this->aCfg['orderby_param'] . '_dir'=> $this->aCfg['orderby_dir'])
+			, array($this->aCfg['orderby_param'] . '_idx'));;
 		// Restore value of $this->aParam
 		$this->aParam = $ar;
 		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
@@ -640,26 +640,26 @@ class ListTable extends Fwolflib {
 	/**
 	 * Set pager info
 	 *
-	 * Config data will also write to $aConfig, the difference with direct set config
+	 * Config data will also write to $aCfg, the difference with direct set config
 	 * is this will add more treatment about pager.
-	 * And use after SetConfig()
+	 * And use after SetCfg()
 	 * @param	int		$rows_total	Total row/record number
 	 * @param	int		$page_cur	Current displayed page, default is get from GET param
 	 * 								if fail, set to 1.
-	 * @see		$aConfig
+	 * @see		$aCfg
 	 */
 	public function SetPager($rows_total= 0, $page_cur = 0) {
 		// Enable pager disp
-		$this->aConfig['pager'] = true;
+		$this->aCfg['pager'] = true;
 
 		// Auto compute total rows if not assigned
 		if (0 == $rows_total)
 			$rows_total = count($this->aData);
-		$this->aConfig['rows_total'] = $rows_total;
+		$this->aCfg['rows_total'] = $rows_total;
 
 		// Some param needed
 		$page_cur = $this->ParsePageCur($page_cur);
-		$page_size = $this->aConfig['page_size'];
+		$page_size = $this->aCfg['page_size'];
 		$page_max = ceil($rows_total / $page_size);
 
 		// If data rows exceeds page_size, trim it
@@ -672,10 +672,10 @@ class ListTable extends Fwolflib {
 				unset($this->aData[$i]);
 		}
 
-		$this->aConfig['pager_text_cur_value'] = str_replace(
+		$this->aCfg['pager_text_cur_value'] = str_replace(
 			array('{page_cur}', '{page_max}', '{rows_total}', '{page_size}'),
 			array($page_cur, $page_max, $rows_total, $page_size),
-			$this->aConfig['pager_text_cur']);
+			$this->aCfg['pager_text_cur']);
 
 		// Generate url for pager
 		//$this->aUrl['base'] = GetSelfUrl(true);	// Move to GetParam()
@@ -685,8 +685,8 @@ class ListTable extends Fwolflib {
 //				. '-page_no=' . $page_cur;
 //			$this->aUrl['prev'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . ($page_cur - 1);
-			$this->aUrl['p_first'] = $this->SetParam($this->aConfig['page_param'], 1);
-			$this->aUrl['p_prev'] = $this->SetParam($this->aConfig['page_param'], $page_cur - 1);
+			$this->aUrl['p_first'] = $this->SetParam($this->aCfg['page_param'], 1);
+			$this->aUrl['p_prev'] = $this->SetParam($this->aCfg['page_param'], $page_cur - 1);
 		} else {
 			$this->aUrl['p_first'] = '';
 			$this->aUrl['p_prev'] = '';
@@ -697,8 +697,8 @@ class ListTable extends Fwolflib {
 //				. '-page_no=' . ($page_cur + 1);
 //			$this->aUrl['last'] = $this->aUrl['base'] . '&' . $this->sId
 //				. '-page_no=' . $page_max;
-			$this->aUrl['p_next'] = $this->SetParam($this->aConfig['page_param'], $page_cur + 1);
-			$this->aUrl['p_last'] = $this->SetParam($this->aConfig['page_param'], $page_max);
+			$this->aUrl['p_next'] = $this->SetParam($this->aCfg['page_param'], $page_cur + 1);
+			$this->aUrl['p_last'] = $this->SetParam($this->aCfg['page_param'], $page_max);
 		} else {
 			$this->aUrl['p_next'] = '';
 			$this->aUrl['p_last'] = '';
@@ -706,7 +706,7 @@ class ListTable extends Fwolflib {
 
 		// Assign url to tpl
 		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
-		$this->oTpl->assign('lt_url_form', $this->SetParam(array(), $this->aConfig['page_param']));
+		$this->oTpl->assign('lt_url_form', $this->SetParam(array(), $this->aCfg['page_param']));
 
 		// Assign hidden input
 		if (!empty($this->aParam)) {
@@ -718,7 +718,7 @@ class ListTable extends Fwolflib {
 
 		// Add page_param deleted in above SetParam
 		// needed to display right form url in next table in this page
-		$this->SetParam($this->aConfig['page_param'], $page_cur);
+		$this->SetParam($this->aCfg['page_param'], $page_cur);
 	} // end of func SetPager
 
 

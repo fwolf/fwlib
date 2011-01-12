@@ -168,7 +168,7 @@ class Sms extends Fwolflib {
 	 * @return	string
 	 */
 	public function GetPathGammuSmsdInject ($s_path = '') {
-		$ar_path = $this->aConfig['path_bin'];
+		$ar_path = $this->aCfg['path_bin'];
 
 		if (!empty($s_path)) {
 			// Add to array
@@ -188,14 +188,14 @@ class Sms extends Fwolflib {
 		if ($b_found) {
 			$this->Log('Got gammu smsd inject execute file: '
 				. $s_cmd, 1);
-			$this->aConfig['path_gammu_smsd_inject'] = $s_cmd;
+			$this->aCfg['path_gammu_smsd_inject'] = $s_cmd;
 		}
 		else {
 			$this->Log('Can\' find gammu smsd inject execute file.', 5);
 			exit();
 		}
 
-		return $this->aConfig['path_gammu_smsd_inject'];
+		return $this->aCfg['path_gammu_smsd_inject'];
 	} // end of func GetPathGammuSmsdInject
 
 
@@ -206,17 +206,17 @@ class Sms extends Fwolflib {
 	 */
 	public function InitConfig () {
 		// Possible bin path
-		$this->aConfig['path_bin'] = array(
+		$this->aCfg['path_bin'] = array(
 			'/usr/bin/',
 			'/usr/local/bin/',
 			'/bin/',
 		);
 
 		// Path of gammu-smsd-inject
-		$this->aConfig['path_gammu_smsd_inject'] = '';
+		$this->aCfg['path_gammu_smsd_inject'] = '';
 
 		// Cmd template of gammu-smsd-inject cmd
-		$this->aConfig['cmd_gammu_smsd_inject']
+		$this->aCfg['cmd_gammu_smsd_inject']
 			= '[cmd] TEXT [dest] -autolen 600 -report -validity MAX -unicode -textutf8 "[sms]"';
 
 		return $this;
@@ -237,7 +237,7 @@ class Sms extends Fwolflib {
 	 * @return	integer				Actual valid phone number sent.
 	 */
 	public function SendUsingGammuSmsdInject ($ar_dest, $s_sms, $i_cat = 0) {
-		if (empty($this->aConfig['path_gammu_smsd_inject']))
+		if (empty($this->aCfg['path_gammu_smsd_inject']))
 			$this->GetPathGammuSmsdInject();
 
 		$ar_dest = $this->DestParse($ar_dest);
@@ -249,8 +249,8 @@ class Sms extends Fwolflib {
 
 		// Prepare sms to sent
 		$s_sms = str_replace(array('[cmd]', '[sms]')
-			, array($this->aConfig['path_gammu_smsd_inject'], $s_sms)
-			, $this->aConfig['cmd_gammu_smsd_inject']);
+			, array($this->aCfg['path_gammu_smsd_inject'], $s_sms)
+			, $this->aCfg['cmd_gammu_smsd_inject']);
 		$i = strpos($s_sms, '[dest]');
 		if (1 > $i) {
 			$this->Log('Something wrong with gammu smsd inject cmd template'

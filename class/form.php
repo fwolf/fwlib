@@ -40,10 +40,10 @@ class Form extends Fwolflib {
 	 * )
 	 * @var	array
 	 * @see	Reset()
-	 * @see	SetConfig()
-	 * @see	SetConfigEnctype()
+	 * @see	SetCfg()
+	 * @see	SetCfgEnctype()
 	 */
-	public $aConfig = array();
+	public $aCfg = array();
 
 	/**
 	 * Form element define, raw order
@@ -125,7 +125,7 @@ class Form extends Fwolflib {
 			'attrib'	=> $attrib,
 		);
 		if ('file' == $type)
-			$this->SetConfigEnctype(1);
+			$this->SetCfgEnctype(1);
 	} // end of func AddElement
 
 
@@ -178,7 +178,7 @@ class Form extends Fwolflib {
 			$form = $this->oForm;
 		$form->Reset();
 
-		$form->SetConfig(array(
+		$form->SetCfg(array(
 			'name'	=> 'frm_task_edit',
 		));
 
@@ -249,7 +249,7 @@ class Form extends Fwolflib {
 	 * @return	string
 	 */
 	protected function GenFormState() {
-		$s = session_id() . $this->aConfig['name'];
+		$s = session_id() . $this->aCfg['name'];
 		$s = sha1($s);
 		$s = str_replace(array('a', 'e', 'i', 'o', 'u'), '', $s);
 		return $s;
@@ -681,21 +681,21 @@ class Form extends Fwolflib {
 		$s_html .= '
 		<style type="text/css" media="screen, print">
 		<!--
-		#' . $this->aConfig['name'] . ' .fl_frm_elt_ll {
+		#' . $this->aCfg['name'] . ' .fl_frm_elt_ll {
 			clear: left;
 			padding-top: 0.2em;
 		}
-		#' . $this->aConfig['name'] . ' .fl_frm_elt_ll label {
+		#' . $this->aCfg['name'] . ' .fl_frm_elt_ll label {
 			float: left;
 			text-align: right;
 			margin-right: 0.3em;
 			padding-top: 0.2em;
 		}
-		#' . $this->aConfig['name'] . ' .fl_frm_elt_lr {
+		#' . $this->aCfg['name'] . ' .fl_frm_elt_lr {
 			/*clear: right;*/
 			padding-top: 0.2em;
 		}
-		#' . $this->aConfig['name'] . ' .fl_frm_elt_lr label {
+		#' . $this->aCfg['name'] . ' .fl_frm_elt_lr label {
 			/*float: right;*/
 			text-align: left;
 			margin-left: 0.3em;
@@ -707,12 +707,12 @@ class Form extends Fwolflib {
 
 		// Form head
 		$s_html .= '<form ';
-		foreach ($this->aConfig as $k => $v) {
+		foreach ($this->aCfg as $k => $v) {
 			if (!empty($v))
 				$s_html .= $k . '="' . $v . '" ';
 		}
-		if (!empty($this->aConfig['name']))
-			$s_html .= 'id="' . $this->aConfig['name'] . '" ';
+		if (!empty($this->aCfg['name']))
+			$s_html .= 'id="' . $this->aCfg['name'] . '" ';
 		$s_html .= ' class="fl_frm"' . " >\n";
 
 		// Form body
@@ -723,7 +723,7 @@ class Form extends Fwolflib {
 		// Form state, to validate form is posted, and security.
 		// Hidden element, not need id property.
 		$s_html .= '<input type="hidden" name="'
-			. $this->aConfig['name'] . '_fs"'
+			. $this->aCfg['name'] . '_fs"'
 			. ' value="' . $this->GenFormState() . '"/>'
 			. "\n";
 
@@ -781,7 +781,7 @@ class Form extends Fwolflib {
 	 * @see	GenFormState()
 	 */
 	public function IsPost() {
-		$s = $this->aConfig['name'] . '_fs';
+		$s = $this->aCfg['name'] . '_fs';
 		if (isset($_POST[$s])
 			&& ($_POST[$s] == $this->GenFormState()))
 			return true;
@@ -794,7 +794,7 @@ class Form extends Fwolflib {
 	 * Reset all data to default, prepare to create a new form
 	 */
 	public function Reset() {
-		$this->aConfig = array(
+		$this->aCfg = array(
 			'action'	=> '',
 			'enctype'	=> '',
 			'method'	=> 'POST',
@@ -808,17 +808,17 @@ class Form extends Fwolflib {
 	 * Set configuration
 	 * @param	array|string	$c	Config array or name/value pair.
 	 * @param	string			$v	Config value
-	 * @see	$aConfig
+	 * @see	$aCfg
 	 */
-	public function SetConfig($c, $v = '') {
+	public function SetCfg($c, $v = '') {
 		if (is_array($c)) {
 			if (!empty($c))
 				foreach ($c as $idx => $val)
-					$this->SetConfig($idx, $val);
+					$this->SetCfg($idx, $val);
 		}
 		else
-			$this->aConfig[$c] = $v;
-	} // end of func SetConfig
+			$this->aCfg[$c] = $v;
+	} // end of func SetCfg
 
 
 	/**
@@ -827,13 +827,13 @@ class Form extends Fwolflib {
 	 * 						1:multipart/form-data
 	 * 						other value will empty the setting
 	 */
-	public function SetConfigEnctype($type = 0) {
+	public function SetCfgEnctype($type = 0) {
 		if (0 == $type)
-			$this->aConfig['enctype'] = 'application/x-www-form-urlencoded';
+			$this->aCfg['enctype'] = 'application/x-www-form-urlencoded';
 		else if (1 == $type)
-			$this->aConfig['enctype'] = 'multipart/form-data';
+			$this->aCfg['enctype'] = 'multipart/form-data';
 		else
-			$this->aConfig['enctype'] = '';
-	} // end of func SetConfigEnctype
+			$this->aCfg['enctype'] = '';
+	} // end of func SetCfgEnctype
 } // end of class Form
 ?>

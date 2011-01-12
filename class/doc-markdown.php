@@ -27,7 +27,7 @@ class DocMarkdown extends Fwolflib {
 	 * Some config vars
 	 * @var	array
 	 */
-	public $aConfig = array(
+	public $aCfg = array(
 		// Using 'Google AJAX Libraries API' now
 		// http://code.google.com/apis/ajaxlibs/
 		'path_jquery'	=> 'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
@@ -700,7 +700,7 @@ hr {
 	</style>
 
 	<script type="text/javascript"
-		src="' . $this->aConfig['path_jquery'] . '">
+		src="' . $this->aCfg['path_jquery'] . '">
 	</script>
 
 	<title>{info.title}</title>

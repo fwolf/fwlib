@@ -358,7 +358,7 @@ $(".fl_lt-lt1 tr > *:nth-child(1)").css("width", "50%");
 			'tpl'		=> $this->sTpl,
 			'page_size'	=> 3,
 		);
-		$this->oLt->SetConfig($ar_conf);
+		$this->oLt->SetCfg($ar_conf);
 
 		$this->oLt->SetData($this->aD, $this->aT);
 		//$this->oLt->SetId('');
