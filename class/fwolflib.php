@@ -31,12 +31,7 @@ class Fwolflib {
 	 * Notice: re-define var in sub-class will overwrite var in parent class.
 	 * @var	array
 	 */
-	public $aCfg = array(
-		// Log level eq/gt this will write to php errorlog
-		'log_errorlog'	=> 4,
-		// Print backtrace in log
-		'log_backtrace'	=> false,
-	);
+	public $aCfg = array();
 
 	/**
 	 * Default time format
@@ -102,11 +97,16 @@ class Fwolflib {
 	 * Init func, set config vars etc.
 	 * Usually used to set $this->aCfg in sub class.
 	 *
-	 * @link	$aCfg
+	 * @see		$aCfg
 	 * @return	object
 	 */
 	 protected function Init () {
-		 return $this;
+		// Log level eq/gt this will write to php errorlog
+		$this->aCfg['log-errorlog']	= 4;
+		// Print backtrace in log
+		$this->aCfg['log-backtrace'] = false;
+
+		return $this;
 	 } // end of func Init
 
 
@@ -126,11 +126,11 @@ class Fwolflib {
 		$this->aLog[] = $ar;
 
 		// Log to errorlog ?
-		if ($this->aCfg['log_errorlog'] <= $level) {
+		if ($this->aCfg['log-errorlog'] <= $level) {
 			$s_error = "Log {$ar['level']}: {$ar['msg']}\n";
 
 			// Log backtrace
-			if ($this->aCfg['log_backtrace']) {
+			if ($this->aCfg['log-backtrace']) {
 				$ar = debug_backtrace();
 				foreach ($ar as $error) {
 					$s_error .= "\tLine " . $error['line']
