@@ -60,9 +60,10 @@ class Fwolflib {
 
 
 	/**
-	 * Dummy constructor
+	 * constructor
 	 */
 	public function __construct () {
+		$this->Init();
 	} // end of func __construct
 
 

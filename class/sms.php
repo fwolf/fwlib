@@ -38,7 +38,7 @@ class Sms extends Fwolflib {
 	 * @param	object	$o_db
 	 */
 	public function __construct ($o_db = null) {
-		$this->InitConfig();
+		$this->Init();
 
 		if (!is_null($o_db))
 			$this->oDb = &$o_db;
@@ -204,7 +204,9 @@ class Sms extends Fwolflib {
 	 *
 	 * @return	this
 	 */
-	public function InitConfig () {
+	public function Init () {
+		parent::Init();
+
 		// Possible bin path
 		$this->aCfg['path_bin'] = array(
 			'/usr/bin/',
@@ -220,7 +222,7 @@ class Sms extends Fwolflib {
 			= '[cmd] TEXT [dest] -autolen 600 -report -validity MAX -unicode -textutf8 "[sms]"';
 
 		return $this;
-	} // end of func InitConfig
+	} // end of func Init
 
 
 	/**
