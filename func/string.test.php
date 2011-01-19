@@ -25,6 +25,42 @@ require_once('fwolflib/func/string.php');
 
 class TestFuncString extends UnitTestCase {
 
+	function TestJsonEncodeHex () {
+		$x = true;
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+		$x = 3.86;
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+		$x = array('a'=>1,'b'=>2,'c'=>3,'d'=>4,'e'=>5);
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+		$x = array(5 => 'a',4 => 'b', 3 => 'c');
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+		$x = array(1 => 'a',2 => 'b', 3 => 'c');
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+		$x = array('<foo>',"'bar'",'"baz"','&blong&', true);
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+		$x = array('<foo>' => "'bar'",'"baz"' => '&blong&', 3.86);
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+		$x = array('<foo>' => "'bar'",'"baz"' => '&blong&', 2 => 'a我d');
+		$y = JsonEncodeHex($x);
+		$this->assertEqual($x, json_decode($y, true));
+
+	} // end of func TestJsonEncodeHex
+
+
 	function TestMatchWildcard() {
 		$s = 'abcdefg';
 		$this->assertEqual(true, MatchWildcard($s, 'a*e?g'));

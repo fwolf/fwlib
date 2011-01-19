@@ -66,6 +66,62 @@ function IsGbChar($str = '', $pos = 0) {
 } // end of func IsGbChar
 
 
+/*
+ * Json encode with JSON_HEX_(TAG|AMP|APOS|QUOT) options
+ *
+ * @param	mixed	$val
+ * @return	string
+ */
+function JsonEncodeHex ($val) {
+	// Check json extension
+	if (!extension_loaded('json')) {
+		error_log('JsonEncodeHex(): json extension is not loaded.');
+		return NULL;
+	}
+
+	$s_json = '';
+	if (0 <= version_compare(PHP_VERSION, '5.3.0'))
+		$s_json =  json_encode($val, JSON_HEX_TAG|JSON_HEX_APOS
+			|JSON_HEX_QUOT|JSON_HEX_AMP);
+	else {
+		// Json treat list/array in different way([] vs {}).
+		if (is_array($val) || is_object($val)) {
+			$is_list = is_array($val) && (empty($val)
+				|| array_keys($val) === range(0, count($val) - 1));
+
+			if ($is_list ) {
+				$s_json = '[' . implode(',',
+					array_map('JsonEncodeHex', $val)) . ']';
+			} else {
+				$ar_t = array();
+				foreach ($val as $k => $v) {
+					$ar_t[] = JsonEncodeHex($k) . ':'
+						. JsonEncodeHex($v);
+				}
+				$s_json = '{' . implode(',', $ar_t) . '}';
+			}
+		}
+		elseif (is_string($val)) {
+			// Manual replace chars
+			$s_json = json_encode($val);
+			$s_json = substr($s_json, 1);
+			$s_json = substr($s_json, 0, strlen($s_json) - 1);
+			$s_json = str_replace(array(
+					'<', '>', "'", '\"', '&'
+				), array(
+					'\u003C', '\u003E', '\u0027', '\u0022', '\u0026'
+				), $s_json);
+			$s_json = '"' . $s_json . '"';
+		}
+		else {
+			// Int, floats, bools, null
+			$s_json = '"' . json_encode($val) . '"';
+		}
+	}
+	return $s_json;
+} // end of func JsonEncodeHex
+
+
 /**
  * Match a string with rule including wildcard.
  *
