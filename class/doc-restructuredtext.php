@@ -71,7 +71,8 @@ class DocReStructuredText extends Fwolflib {
 	 * @var param	string	$path_docutils	Path of docutils exec file
 	 */
 	public function __construct ($path_docutils = '') {
-		$this->InitConfig();
+		parent::__construct();
+
 		$this->GetPathDocutils($path_docutils);
 
 		// Get docutils writer html4css1 path, and add to cmd param
@@ -150,7 +151,7 @@ class DocReStructuredText extends Fwolflib {
 
 		$s .= '
 				<span id="copyright">
-					Copyright &copy; 2010 <a href="http://www.fwolf.com/">Fwolf</a>, All Rights Reserved.
+					Copyright &copy; 2011 <a href="http://www.fwolf.com/">Fwolf</a>, All Rights Reserved.
 				</span>
 			</div>
 		';
@@ -476,7 +477,9 @@ class DocReStructuredText extends Fwolflib {
 	 *
 	 * @return	this
 	 */
-	public function InitConfig () {
+	public function Init () {
+		parent::Init();
+
 		// Will set in GetPathDocutils()
 		$this->aCfg['cmd_.py']	= true;
 		// Use pipe to exec cmd instead of tmp file ?
