@@ -89,8 +89,9 @@ abstract class Controler extends Fwolflib {
 	/**
 	 * contruct
 	 */
-	public function __construct()
-	{
+	public function __construct() {
+		parent::__construct();
+
 		// Record run start time first
 		$this->fTimeStart = microtime(true);
 

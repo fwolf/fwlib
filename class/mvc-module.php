@@ -43,7 +43,7 @@ abstract class Module extends Fwolflib {
 	 * Database object
 	 * @var object
 	 */
-	protected $oDb = null;
+	public $oDb = null;
 
 	/**
 	 * Call view object
@@ -63,6 +63,8 @@ abstract class Module extends Fwolflib {
 	 * @param object	$view	Caller view object
 	 */
 	public function __construct($view){
+		parent::__construct();
+
 		$this->oView = &$view;
 	} // end of func __construct
 

@@ -193,6 +193,8 @@ abstract class View extends Cache {
 	 * @param object	&$ctl	Caller controler object
 	 */
 	public function __construct (&$ctl) {
+		parent::__construct();
+
 		// For auto-new
 		unset($this->oForm);
 		unset($this->oLt);
