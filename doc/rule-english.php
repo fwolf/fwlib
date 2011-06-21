@@ -60,6 +60,7 @@ submit, subm	|提交
 单词、缩写					|	含义
 ----------------------------|-------------
 abnormal, abn				|不正常的
+abolish						|废除，废止（法规）
 accept, acceptance, acpt	|接到，受理
 achievement, achv			|业绩
 address, addr				|地址
@@ -85,6 +86,7 @@ bid inviting				|招标（邀请）
 bid issue date, bid			|发标日期
 bid opening, bo				|开标
 bid section					|招标标段
+bid winning notice, bwn		|中标通知书
 bidder						|投标人
 bidding agency, bagy		|招标代理（机构）
 bidding document, bid_doc	|招标文件
@@ -120,6 +122,7 @@ complainant, complnt		|投诉人
 composing					|排版
 comprehensive evaluation method, cem	|综合评估法
 config, cfg, conf			|配置
+confirm, cfm				|确认
 construction, cons			|施工，建设
 	construction bureau, cb	|建设局
 	construction engineering trading center, cetc	|建设工程交易中心

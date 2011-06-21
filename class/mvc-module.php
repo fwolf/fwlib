@@ -60,11 +60,10 @@ abstract class Module extends Fwolflib {
 
 	/**
 	 * construct
-	 * @param object	&$view	Caller view object
+	 * @param object	$view	Caller view object
 	 */
-	public function __construct(&$view)
-	{
-		$this->oView = $view;
+	public function __construct($view){
+		$this->oView = &$view;
 	} // end of func __construct
 
 
