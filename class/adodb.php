@@ -132,8 +132,7 @@ class Adodb extends Fwolflib {
 	 * @var param	array	$dbprofile
 	 * @var param	string	$path_adodb		Include path of original ADODB
 	 */
-	public function __construct($dbprofile, $path_adodb = '')
-	{
+	public function __construct ($dbprofile, $path_adodb = '') {
 		// Include original adodb lib
 		if (empty($path_adodb))
 			$path_adodb = 'adodb/adodb.inc.php';
@@ -149,16 +148,15 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * Overload __call, redirect method call to adodb
+	 *
 	 * @var string	$name	Method name
 	 * @var array	$arg	Method argument
 	 * @global	int	$i_db_query_times
 	 * @return mixed
 	 */
-	public function __call($name, $arg)
-	{
+	public function __call ($name, $arg) {
 		// Before call, convert $sql encoding first
-		if ($this->sSysCharset != $this->aDbProfile['lang'])
-		{
+		if ($this->sSysCharset != $this->aDbProfile['lang']) {
 			// Method list by ADODB doc order
 			// $sql is the 1st param
 			if (in_array($name, array('Execute',
@@ -209,22 +207,22 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * Overload __get, redirect method call to adodb
+	 *
 	 * @param string	$name
 	 * @return mixed
 	 */
-	public function __get($name)
-	{
+	public function __get ($name) {
 		return $this->__conn->$name;
 	} // end of func __get
 
 
 	/**
 	 * Overload __set, redirect method call to adodb
+	 *
 	 * @param string	$name
 	 * @param mixed		$val
 	 */
-	public function __set($name, $val)
-	{
+	public function __set ($name, $val) {
 		$this->__conn->$name = $val;
 	} // end of func __set
 
@@ -243,7 +241,7 @@ class Adodb extends Fwolflib {
 	 * @param $forcenew			Force new connection
 	 * @return boolean
 	 */
-	public function Connect($forcenew = false) {
+	public function Connect ($forcenew = false) {
 		try {
 			// Disable error display tempratory
 			$s = ini_get("display_errors");
@@ -343,7 +341,7 @@ class Adodb extends Fwolflib {
 	 * so we can only use global vars to save this value.
 	 * @global	int	$i_db_query_times
 	 */
-	protected function CountDbQueryTimes() {
+	protected function CountDbQueryTimes () {
 		global $i_db_query_times;
 		$i_db_query_times ++;
 	} // end of func CountDbQueryTimes
@@ -351,11 +349,12 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * Delete rows by condition user given
+	 *
 	 * @param	string	$tbl
 	 * @param	string	$cond	Condition, can be where, having etc, raw sql string, not null.
 	 * @return	int		-1 error/0 not found/N > 0 number of rows
 	 */
-	public function DelRow($tbl, $cond) {
+	public function DelRow ($tbl, $cond) {
 		$cond = trim($cond);
 		if (empty($cond))
 			return -1;
@@ -378,14 +377,12 @@ class Adodb extends Fwolflib {
 	 * @param mixed	&$s	Source to convert
 	 * @return mixed
 	 */
-	public function EncodingConvert(&$s)
-	{
+	public function EncodingConvert (&$s) {
 		if (is_array($s) && !empty($s))
 			foreach ($s as &$val)
 				$this->EncodingConvert($val);
 
-		if (is_string($s))
-		{
+		if (is_string($s)) {
 			if ($this->sSysCharset != $this->aDbProfile['lang'])
 				$s = mb_convert_encoding($s, $this->sSysCharset, $this->aDbProfile['lang']);
 		}
@@ -401,7 +398,7 @@ class Adodb extends Fwolflib {
 	 * @param mixed	&$s	Source to convert
 	 * @return mixed
 	 */
-	public function EncodingConvertReverse(&$s) {
+	public function EncodingConvertReverse (&$s) {
 		if (is_array($s) && !empty($s))
 			foreach ($s as &$val)
 				$this->EncodingConvertReverse($val);
@@ -415,11 +412,24 @@ class Adodb extends Fwolflib {
 
 
 	/**
+	 * Generate SQL then exec it
+	 *
+	 * @param	array	$ar_sql		Same as GenSql()
+	 * @return	object
+	 * @see	GenSql()
+	 */
+	public function ExecuteGenSql ($ar_sql) {
+		return $this->Execute($this->GenSql($ar_sql));
+	} // end of func ExecuteGenSql
+
+
+	/**
 	 * Find name of timestamp column of a table
+	 *
 	 * @param	$tbl	Table name
 	 * @return	string
 	 */
-	public function FindColTs($tbl) {
+	public function FindColTs ($tbl) {
 		$ar_col = $this->GetMetaColumn($tbl);
 		if (empty($ar_col))
 			return '';
@@ -435,7 +445,7 @@ class Adodb extends Fwolflib {
 			*/
 			// New way:
 			// http://bbs.chinaunix.net/archiver/tid-930729.html
-			$rs = $this->Execute($this->GenSql(array(
+			$rs = $this->ExecuteGenSql(array(
 				'SELECT' => array(
 					'name'		=> 'a.name',
 					'length' 	=> 'a.length',
@@ -452,7 +462,7 @@ class Adodb extends Fwolflib {
 					'a.usertype = b.usertype',
 					'b.name = "timestamp"',		// Without this line, can retrieve sybase's col info
 					),
-				)));
+				));
 			if (!empty($rs) && 0 < $rs->RowCount())
 				return $rs->fields['name'];
 			else
@@ -475,11 +485,12 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * Get rows count by condition user given
+	 *
 	 * @param	string	$tbl
 	 * @param	string	$cond	Condition, can be where, having etc, raw sql string.
 	 * @return	int		-1 error/0 not found/N > 0 number of rows
 	 */
-	public function GetRowCount($tbl, $cond = '') {
+	public function GetRowCount ($tbl, $cond = '') {
 		$rs = $this->PExecute($this->GenSql(array(
 			'SELECT' => array('c' => 'count(1)'),
 			'FROM'	=> $tbl,
@@ -505,11 +516,9 @@ class Adodb extends Fwolflib {
 	 * @return string
 	 * @see	SqlGenerator
 	 */
-	public function GenSql($ar_sql)
-	{
+	public function GenSql ($ar_sql) {
 		// Changed to use SqlGenerator
-		if (!empty($ar_sql))
-		{
+		if (!empty($ar_sql)) {
 			return $this->oSg->GetSql($ar_sql);
 		}
 		else
@@ -526,7 +535,7 @@ class Adodb extends Fwolflib {
 	 * @see	GenSql()
 	 * @see	SqlGenerator
 	 */
-	public function GenSqlPrepare($ar_sql) {
+	public function GenSqlPrepare ($ar_sql) {
 		if (!empty($ar_sql))
 			return $this->oSg->GetSqlPrepare($ar_sql);
 		else
@@ -542,17 +551,14 @@ class Adodb extends Fwolflib {
 	 * @return	array
 	 * @see $aMetaColumn
 	 */
-	public function GetMetaColumn($table, $forcenew = false)
-	{
-		if (!isset($this->aMetaColumn[$table]) || (true == $forcenew))
-		{
+	public function GetMetaColumn ($table, $forcenew = false) {
+		if (!isset($this->aMetaColumn[$table]) || (true == $forcenew)) {
 			$this->aMetaColumn[$table] = $this->MetaColumns($table);
 
 			// Convert columns to native case
 			$col_name = $this->GetMetaColumnName($table);
 			// $col_name = array(COLUMN => column), $c is UPPER CASED
-			foreach ($this->aMetaColumn[$table] as $c => $ar)
-			{
+			foreach ($this->aMetaColumn[$table] as $c => $ar) {
 				$this->aMetaColumn[$table][$col_name[$c]] = $ar;
 				unset($this->aMetaColumn[$table][$c]);
 			}
@@ -570,15 +576,14 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * Get table column name
+	 *
 	 * @param	string	$table
 	 * @param	boolean	$forcenew	Force to retrieve instead of read from cache
 	 * @return	array
 	 * @see $aMetaColumnName
 	 */
-	public function GetMetaColumnName($table, $forcenew = false)
-	{
-		if (!isset($this->aMetaColumnName[$table]) || (true == $forcenew))
-		{
+	public function GetMetaColumnName ($table, $forcenew = false) {
+		if (!isset($this->aMetaColumnName[$table]) || (true == $forcenew)) {
 			$this->aMetaColumnName[$table] = $this->MetaColumnNames($table);
 		}
 		return $this->aMetaColumnName[$table];
@@ -587,12 +592,13 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * Get primary key column of a table
+	 *
 	 * @param	string	$table
 	 * @param	boolean	$forcenew	Force to retrieve instead of read from cache
 	 * @return	mixed	Single string value or array when primary key contain multi columns.
 	 * @see $aMetaPrimaryKey
 	 */
-	public function GetMetaPrimaryKey($table, $forcenew = false) {
+	public function GetMetaPrimaryKey ($table, $forcenew = false) {
 		if (!isset($this->aMetaPrimaryKey[$table]) || (true == $forcenew)) {
 			// Find using Adodb first
 			$ar = $this->MetaPrimaryKeys($table);
@@ -619,7 +625,7 @@ class Adodb extends Fwolflib {
 					and id = object_id('sgqyjbqk')
 				 */
 				if ($this->IsDbSybase()) {
-					$rs = $this->PExecute($this->GenSql(array(
+					$rs = $this->PExecuteGenSql(array(
 						'select' => array('name', 'keycnt',
 							'k1' => "index_col('$table', indid, 1)",
 							'k2' => "index_col('$table', indid, 2)",
@@ -630,7 +636,7 @@ class Adodb extends Fwolflib {
 							'status & 2048 = 2048 ',
 							"id = object_id('$table')",
 							)
-						)));
+						));
 					if (true == $rs && 0 < $rs->RowCount()) {
 						// Got
 						$ar = array($rs->fields['k1']);
@@ -675,27 +681,30 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * If current db is a mysql db.
+	 *
 	 * @return	boolean
 	 */
-	public function IsDbMysql() {
+	public function IsDbMysql () {
 		return ('mysql' == substr($this->__conn->databaseType, 0, 5));
 	} // end of func IsDbMysql
 
 
 	/**
 	 * If current db is a sybase db.
+	 *
 	 * @return	boolean
 	 */
-	public function IsDbSybase() {
+	public function IsDbSybase () {
 		return ('sybase' == substr($this->aDbProfile['type'], 0, 6));
 	} // end of func IsDbSybase
 
 
 	/**
 	 * Is timestamp column's value is unique
+	 *
 	 * @return	boolean
 	 */
-	public function IsTsUnique() {
+	public function IsTsUnique () {
 		if ('sybase' == $this->IsDbSybase())
 			return true;
 		else
@@ -706,12 +715,12 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * Prepare and execute sql
+	 *
 	 * @param	string	$sql
 	 * @param	array	$inputarr	Optional parameters in sql
 	 * @return	object
 	 */
-	public function PExecute($sql, $inputarr = false)
-	{
+	public function PExecute ($sql, $inputarr = false) {
 		$stmt = $this->Prepare($sql);
 		$this->BeginTrans();
 		$rs = $this->Execute($stmt, $inputarr);
@@ -729,13 +738,26 @@ class Adodb extends Fwolflib {
 
 
 	/**
+	 * Generate, prepare and exec SQL
+	 *
+	 * @param	array	$ar_sql		Same as GenSql()
+	 * @return	object
+	 * @see	GenSql()
+	 */
+	public function PExecuteGenSql ($ar_sql) {
+		return $this->PExecute($this->GenSqlPrepare($ar_sql));
+	} // end of func ExecuteGenSql
+
+
+	/**
 	 * Smarty quote string in sql, by check columns type
+	 *
 	 * @param	string	$table
 	 * @param	string	$column
 	 * @param	mixed	$val
 	 * @return	string
 	 */
-	public function QuoteValue($table, $column, $val) {
+	public function QuoteValue ($table, $column, $val) {
 		$this->GetMetaColumn($table);
 		if (!isset($this->aMetaColumn[$table][$column]->type))
 			die("Column to quote not exists($table.$column).\n");
@@ -763,8 +785,7 @@ class Adodb extends Fwolflib {
 		//elseif ($this->IsDbSybase() && 'varbinary' == $type && 'timestamp' == $column)
 		elseif ($this->IsDbSybase() && 'timestamp' == $type)
 			return '0x' . $val;
-		else
-		{
+		else {
 			// Need quote, use db's quote method
 			$val = stripslashes($val);
 			return $this->qstr($val, false);
@@ -774,10 +795,11 @@ class Adodb extends Fwolflib {
 
 	/**
 	 * If a table exists in db ?
+	 *
 	 * @param	string	$tbl
 	 * @return	boolean
 	 */
-	public function TblExists($tbl) {
+	public function TblExists ($tbl) {
 		if ($this->IsDbSybase()) {
 			$sql = "select count(1) as c from sysobjects where name = '$tbl' and type = 'U'";
 			$rs = $this->Execute($sql);
@@ -813,7 +835,7 @@ class Adodb extends Fwolflib {
 	 * @return	int		Number of inserted or updated rows, -1 means some error,
 	 * 					0 and upper are normal result.
 	 */
-	public function Write($tbl, $data, $mode = 'A') {
+	public function Write ($tbl, $data, $mode = 'A') {
 		// Find primary key column first
 		$pk = $this->GetMetaPrimaryKey($tbl);
 
@@ -943,5 +965,7 @@ class Adodb extends Fwolflib {
 		else
 			return -1;
 	} // end of func Write
+
+
 } // end of class Adodb
 ?>

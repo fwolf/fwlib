@@ -121,6 +121,7 @@ complaint, compl			|投诉
 complainant, complnt		|投诉人
 composing					|排版
 comprehensive evaluation method, cem	|综合评估法
+compute, comp				|计算，特指较简单的，复杂的用 calc
 config, cfg, conf			|配置
 confirm, cfm				|确认
 construction, cons			|施工，建设
