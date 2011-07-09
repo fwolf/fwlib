@@ -741,12 +741,13 @@ class Adodb extends Fwolflib {
 	 * Generate, prepare and exec SQL
 	 *
 	 * @param	array	$ar_sql		Same as GenSql()
+	 * @param	array	$inputarr	Optional parameters in sql
 	 * @return	object
 	 * @see	GenSql()
 	 */
-	public function PExecuteGenSql ($ar_sql) {
-		return $this->PExecute($this->GenSqlPrepare($ar_sql));
-	} // end of func ExecuteGenSql
+	public function PExecuteGenSql ($ar_sql, $inputarr = false) {
+		return $this->PExecute($this->GenSqlPrepare($ar_sql), $inputarr);
+	} // end of func PExecuteGenSql
 
 
 	/**
