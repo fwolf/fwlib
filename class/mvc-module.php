@@ -1,10 +1,11 @@
 <?php
 /**
-* @package      fwolflib
-* @subpackage	class.mvc
-* @copyright    Copyright 2008-2009, Fwolf
-* @author       Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
-*/
+ * @package      fwolflib
+ * @subpackage	class.mvc
+ * @copyright    Copyright 2008-2011, Fwolf
+ * @author       Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
+ * @since		2008-04-06
+ */
 
 
 require_once(dirname(__FILE__) . '/fwolflib.php');
@@ -14,16 +15,16 @@ require_once(FWOLFLIB . 'func/string.php');
 /**
  * Module in MVC
  *
- * 从View接受命令，完成数据的处理。只返回处理的结果数据，不对数据进行格式化。
+ * 从View接受命令，完成数据的处理。
+ * 只返回处理的结果数据，不对数据进行格式化。
  *
  * Module主要体现为各对象的class.php文件，采用oop的思想来进行封装。
  *
  * @package		fwolflib
  * @subpackage	class.mvc
- * @copyright	Copyright 2008-2009, Fwolf
+ * @copyright	Copyright 2008-2011, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
  * @since		2008-04-06
- * @version		$Id$
  * @see			Controler
  * @see			View
  */
@@ -55,14 +56,14 @@ abstract class Module extends Fwolflib {
 	// Get db connection, because unknown db & dblib,
 	//	implete it in application module class.
 	// Also can extend db connect class easily.
-	abstract protected function DbConn($dbprofile);
+	abstract protected function DbConn ($dbprofile);
 
 
 	/**
 	 * construct
 	 * @param object	$view	Caller view object
 	 */
-	public function __construct($view){
+	public function __construct ($view) {
 		parent::__construct();
 
 		$this->oView = &$view;
@@ -75,10 +76,8 @@ abstract class Module extends Fwolflib {
 	 * @param array		$dbprofile	array(type,host,user,pass,name,lang)
 	 * @return object
 	 */
-	protected function CheckObjDb(&$db, $dbprofile)
-	{
-		if (empty($db))
-		{
+	protected function CheckObjDb (&$db, $dbprofile) {
+		if (empty($db)) {
 			$db = $this->DbConn($dbprofile);
 		}
 		return $db;
@@ -100,7 +99,7 @@ abstract class Module extends Fwolflib {
 	 * @return	array
 	 */
 /*
-	protected function FormActionNameDef() {
+	protected function FormActionNameDef () {
 		$ar = array();
 		$this->FormDefSameId($ar, 'field_same_id');
 		$ar['id_db']		= 'id_form';
@@ -117,7 +116,7 @@ abstract class Module extends Fwolflib {
 	 * @param	array	&$ar	Config array
 	 * @param	string	$id		Field id
 	 */
-	protected function FormDefSameId(&$ar, $id) {
+	protected function FormDefSameId (&$ar, $id) {
 		$ar[$id] = $id;
 	} // end of func FormDefSameId
 
@@ -129,7 +128,7 @@ abstract class Module extends Fwolflib {
 	 * @param	string	$form	Form name
 	 * @return	array
 	 */
-	public function FormGet($form) {
+	public function FormGet ($form) {
 		$s_form = 'Form' . StrUnderline2Ucfirst($form, true) . 'Def';
 
 		// If define method missing, return empty array
@@ -161,7 +160,7 @@ abstract class Module extends Fwolflib {
 	 * @return	array	Can use in Form::AddElementValue()
 	 * @see	Form::AddElementValue()
 	 */
-	public function FormSet($form) {
+	public function FormSet ($form) {
 		$s_form = 'Form' . StrUnderline2Ucfirst($form, true) . 'Def';
 
 		// If define method missing, return empty array
