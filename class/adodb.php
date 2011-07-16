@@ -504,6 +504,24 @@ class Adodb extends Fwolflib {
 
 
 	/**
+	 * Get delimiter between SQL for various db
+	 *
+	 * @return	string
+	 */
+	public function GetSqlDelimiter () {
+		if ($this->IsDbMysql())
+			return ";\n";
+		elseif ($this->IsDbSybase)
+			return "\nGO\n";
+		else {
+			$this->Log('GetSqlDelimiter() for this kind of db not implement.'
+				, 5);
+			return "\n";
+		}
+	} // end of func GetSqlDelimiter
+
+
+	/**
 	 * Generate SQL statement
 	 *
 	 * User should avoid use SELECT/UPDATE/INSERT/DELETE simultaneously.

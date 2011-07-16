@@ -122,6 +122,7 @@ complainant, complnt		|投诉人
 composing					|排版
 comprehensive evaluation method, cem	|综合评估法
 compute, comp				|计算，特指较简单的，复杂的用 calc
+condition, cond				|条件
 config, cfg, conf			|配置
 confirm, cfm				|确认
 construction, cons			|施工，建设
@@ -290,7 +291,7 @@ standard price, sp			|标准价，基准价
 start date, sd				|开始日期
 start time, st				|开始时间
 storey						|楼层，层
-structure， stru				|结构
+structure， stru, struct		|结构
 submit, subm				|提交
 submission, subm			|申请书
 substantial response		|实质性响应

@@ -61,8 +61,12 @@ class Fwolflib {
 
 	/**
 	 * constructor
+	 *
+	 * @param	array	$ar_cfg
 	 */
-	public function __construct () {
+	public function __construct ($ar_cfg = array()) {
+		if (!empty($ar_cfg))
+			$this->SetCfg($ar_cfg);
 		$this->Init();
 	} // end of func __construct
 
