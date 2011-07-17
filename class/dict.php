@@ -177,10 +177,11 @@ class Dict extends Fwolflib {
 	 * Get SQL for write dict data to db
 	 *
 	 * @param	object	$o_db	Adodb conn object.
+	 * @param	boolean	$b_truncate	With truncate part?
 	 * @return	string
 	 * @see		Adodb
 	 */
-	public function GetSql ($o_db) {
+	public function GetSql ($o_db, $b_truncate = true) {
 		if (empty($o_db) || !$o_db->IsConnected()) {
 			$this->Log('Db empty or not connected.', 4);
 			return '';
@@ -190,9 +191,10 @@ class Dict extends Fwolflib {
 			return '';
 		}
 
-		// TRUNCATE TABLE
-		$s_sql = 'TRUNCATE TABLE ' . $this->aCfg['dict-table']
-			. $o_db->GetSqlDelimiter();
+
+		// Result sql
+		$s_sql = '';
+
 		// Mysql set names
 		if ($o_db->IsDbMysql()) {
 			$s_sql .= 'SET NAMES \''
@@ -200,10 +202,17 @@ class Dict extends Fwolflib {
 				. '\'' . $o_db->GetSqlDelimiter();
 		}
 
+		// Truncate part ?
+		if ($b_truncate)
+			$s_sql .= $this->GetSqlTruncate($o_db);
+
+		// Begin transaction
+		$s_sql .= $o_db->GetSqlTransBegin();
+
 		// Data
 		if (!empty($this->aData))
 			foreach ($this->aData as $k => $ar_row) {
-// INSERT INTO code_i4 (code, title) VALUES (10001, 	'一般新闻');
+// INSERT INTO table (col1, col2) VALUES (val1, 	val2)[DELIMITER]
 				// Values part
 				$ar_val = array();
 				foreach ($ar_row as $key => $val)
@@ -216,8 +225,37 @@ class Dict extends Fwolflib {
 					. $o_db->GetSqlDelimiter();
 			}
 
+		// End transaction
+		$s_sql .= $o_db->GetSqlTransCommit();
+
 		return $s_sql;
 	} // end of func GetSql
+
+
+	/**
+	 * Get SQL for write dict data to db, truncate part.
+	 *
+	 * @param	object	$o_db	Adodb conn object.
+	 * @return	string
+	 * @see		Adodb
+	 */
+	public function GetSqlTruncate ($o_db) {
+		$s_sql = '';
+
+		// Begin transaction
+		if (!$o_db->IsDbSybase())
+			$s_sql .= $o_db->GetSqlTransBegin();
+
+		// TRUNCATE TABLE
+		$s_sql .= 'TRUNCATE TABLE ' . $this->aCfg['dict-table']
+			. $o_db->GetSqlDelimiter();
+
+		// End transaction
+		if (!$o_db->IsDbSybase())
+			$s_sql .= $o_db->GetSqlTransCommit();
+
+		return $s_sql;
+	} // end GetSqlTruncate
 
 
 	/**

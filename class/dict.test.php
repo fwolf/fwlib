@@ -114,7 +114,7 @@ class DictTest extends Dict {
 	public function SetStruct () {
 		parent::SetStruct();
 
-		$this->aCfg['dict-cols-pk'] = 'code';
+		$this->SetCfg('dict-cols-pk', 'code');
 	} // end of func SetStruct
 
 

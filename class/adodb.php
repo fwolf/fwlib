@@ -511,14 +511,47 @@ class Adodb extends Fwolflib {
 	public function GetSqlDelimiter () {
 		if ($this->IsDbMysql())
 			return ";\n";
-		elseif ($this->IsDbSybase)
-			return "\nGO\n";
+		elseif ($this->IsDbSybase())
+			return "\n";
 		else {
 			$this->Log('GetSqlDelimiter() for this kind of db not implement.'
 				, 5);
 			return "\n";
 		}
 	} // end of func GetSqlDelimiter
+
+
+	/**
+	 * Get SQL: begin transaction
+	 *
+	 * @return	string
+	 */
+	public function GetSqlTransBegin () {
+		if ($this->IsDbMysql())
+			return 'START TRANSACTION' . $this->GetSqlDelimiter();
+		else
+			return 'BEGIN TRANSACTION' . $this->GetSqlDelimiter();
+	} // end of func GetSqlTransBegin
+
+
+	/**
+	 * Get SQL: commit transaction
+	 *
+	 * @return	string
+	 */
+	public function GetSqlTransCommit () {
+		return 'COMMIT' . $this->GetSqlDelimiter();
+	} // end of func GetSqlTransCommit
+
+
+	/**
+	 * Get SQL: rollback transaction
+	 *
+	 * @return	string
+	 */
+	public function GetSqlTransRollback () {
+		return 'ROLLBACK' . $this->GetSqlDelimiter();
+	} // end of func GetSqlTransRollback
 
 
 	/**
