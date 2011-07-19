@@ -29,6 +29,14 @@ dbbak2sql.php
 	Backup db to standard sql files.
 dbupdater.php
 	Database mantance & update tools.
+
+
+dict.php
+------------------------------------------------------------
+### Dict
+	Dict data management, mostly for db.
+
+
 disp_listtable.php
 	列表类，以包含表头、分页、数据表格的方式显示各种列表。
 

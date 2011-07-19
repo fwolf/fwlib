@@ -35,7 +35,7 @@ function IsCli() {
 	if (isset($_ENV['_']) && (('/usr/bin/php' == substr($_ENV['_'], 0, 12))
 		|| ($_SERVER["SCRIPT_FILENAME"] == $_ENV['_'])))    //chmod +x xxx.php and run itself
 */
-	if (!empty($_ENV['_']))
+	if (!empty($_ENV['_']) || !empty($_SERVER['_']))
 		$is_cli = true;
 	else
 		$is_cli = false;
