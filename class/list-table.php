@@ -1,13 +1,4 @@
 <?php
-/**
- * @package		fwolflib
- * @subpackage	class
- * @copyright	Copyright 2003-2010, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
- * @since		2003-05-17 12:17:14
- */
-
-
 require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once(FWOLFLIB . 'func/request.php');
 
@@ -50,10 +41,9 @@ require_once(FWOLFLIB . 'func/request.php');
  *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2003-2009, Fwolf
+ * @copyright	Copyright 2003-2011, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2003-05-17 12:17:14
- * @version		$Id$
  */
 class ListTable extends Fwolflib {
 	/**
@@ -158,7 +148,7 @@ class ListTable extends Fwolflib {
 	 * @var	array
 	 */
 	protected $aUrl = array(
-		'base'		=> '',
+		'base'			=> '',
 		'o_cur'			=> '',
 		'o_other'		=> '',
 		'p_first'		=> '',
@@ -206,7 +196,7 @@ class ListTable extends Fwolflib {
 	 * 							when write to $sId.
 	 * @param	array	&$conf	Configuration.
 	 */
-	public function __construct(&$tpl, $ard = array(), $art = array(),
+	public function __construct (&$tpl, $ard = array(), $art = array(),
 		$id = '', &$conf = array())	{
 		$this->oTpl = $tpl;
 
@@ -232,8 +222,7 @@ class ListTable extends Fwolflib {
 	 * Notice: data have multi row(2 dim), title have only 1 row(1 dim).
 	 * @see	$aCfg['fit_data_title']
 	 */
-	protected function FitDataTitle()
-	{
+	protected function FitDataTitle () {
 		if (empty($this->aData) || empty($this->aTitle))
 			return ;
 
@@ -246,16 +235,14 @@ class ListTable extends Fwolflib {
 		$keys_data = array_keys(current($this->aData));
 		$keys_title = array_keys($this->aTitle);
 
-		switch ($this->aCfg['fit_data_title'])
-		{
+		switch ($this->aCfg['fit_data_title']) {
 			case 0:
 				// data fit to title
 
 				// Int index and string are difference
 				// In common, we check only title's index type
 				// Int index, can only fit by index position
-				if (0 === $keys_title[0])
-				{
+				if (0 === $keys_title[0]) {
 					$ar_title = &$this->aTitle;
 					foreach ($keys_title as $k => $v)
 						foreach ($this->aData as $idx => $row)
@@ -264,8 +251,7 @@ class ListTable extends Fwolflib {
 							else
 								$ar_data[$idx][$keys_data[$k]] = $this->aCfg['fit_empty'];
 				}
-				else
-				{
+				else {
 					$ar_title = &$this->aTitle;
 					foreach ($keys_title as $k => $v)
 						foreach ($this->aData as $idx => $row)
@@ -279,8 +265,7 @@ class ListTable extends Fwolflib {
 				// title fit to data, inser empty title if havn't
 
 				// Int index, can only fit by index position
-				if (0 === $keys_title[0])
-				{
+				if (0 === $keys_title[0]) {
 					$ar_data = &$this->aData;
 					foreach ($keys_data as $k => $v)
 						if (isset($keys_title[$k]))
@@ -289,8 +274,7 @@ class ListTable extends Fwolflib {
 							// Use data's index name
 							$ar_title[$k] = $v;
 				}
-				else
-				{
+				else {
 					$ar_data = &$this->aData;
 					foreach ($keys_data as $k => $v)
 						if (isset($this->aTitle[$v]))
@@ -304,15 +288,13 @@ class ListTable extends Fwolflib {
 				// Cut title first, then fit to title
 				// Cut title:
 				$ar_title = &$this->aTitle;
-				if (0 === $keys_title[0])
-				{
+				if (0 === $keys_title[0]) {
 					// Int indexed
 					// Remove title if title has more items than data
 					for ($i = count($keys_data); $i < count($keys_title); $i++)
 						unset($ar_title[$i]);
 				}
-				else
-				{
+				else {
 					// String indexed
 					// Remove item in title which not in data
 					foreach ($keys_title as $k => $v)
@@ -330,8 +312,7 @@ class ListTable extends Fwolflib {
 				// Fit to mostest
 				// Fill title first, then fit to title
 				// Fill title:
-				if (0 === $keys_title[0])
-				{
+				if (0 === $keys_title[0]) {
 					// Add as append
 					$ar_title = &$this->aTitle;
 					// Int indexed
@@ -340,8 +321,7 @@ class ListTable extends Fwolflib {
 						// Can only use field name in data
 						$ar_title[$i] = $keys_data[$i];
 				}
-				else
-				{
+				else {
 					// Add as insert
 					// need to merge keys first to keep order
 					$keys_merge = array_merge($keys_title, $keys_data);
@@ -377,7 +357,7 @@ class ListTable extends Fwolflib {
 	 * Get full output html
 	 * @return	string
 	 */
-	public function GetHtml() {
+	public function GetHtml () {
 		return $this->oTpl->fetch($this->aCfg['tpl']);
 	} // end of func GetHtml
 
@@ -422,7 +402,7 @@ class ListTable extends Fwolflib {
 	 * @return	array
 	 * @see	SqlGenerator
 	 */
-	public function GetSqlInfo() {
+	public function GetSqlInfo () {
 		$ar = array();
 
 		$ar['LIMIT'] = $this->aCfg['page_size'] * ($this->aCfg['page_cur'] - 1)
@@ -445,7 +425,7 @@ class ListTable extends Fwolflib {
 	 * @return	array
 	 * @see	SqlGenerator
 	 */
-	public function GetSqlInfoFromUrl() {
+	public function GetSqlInfoFromUrl () {
 		$ar = array();
 
 		// Limit
@@ -472,7 +452,7 @@ class ListTable extends Fwolflib {
 	 * @param	int	$p	Page num param come from outer
 	 * @return	int
 	 */
-	protected function ParsePageCur($p = 0) {
+	protected function ParsePageCur ($p = 0) {
 		if (0 == $p) {
 			// Read from GET prarm
 			$i = GetRequest($_REQUEST, $this->aCfg['page_param']);
@@ -508,29 +488,11 @@ class ListTable extends Fwolflib {
 
 
 	/**
-	 * Set configuration
-	 * @param	array|string	$c	Config array or name/value pair.
-	 * @param	string			$v	Config value
-	 * @see	$aCfg
-	 */
-	public function SetCfg($c, $v = '') {
-		if (is_array($c)) {
-			if (!empty($c))
-				foreach ($c as $idx => $val)
-					$this->SetCfg($idx, $val);
-		}
-		else
-			$this->aCfg[$c] = $v;
-	} // end of func SetCfg
-
-
-	/**
 	 * Set table data and title to display.
 	 * @param	array	&$ard	Data, will save as {@link $aData}.
 	 * @param	array	&$art	Title of list.
 	 */
-	public function SetData(&$ard = array(), &$art = array())
-	{
+	public function SetData (&$ard = array(), &$art = array()) {
 		if (!empty($ard))
 			$this->aData = $ard;
 		if (!empty($art))
@@ -567,7 +529,7 @@ class ListTable extends Fwolflib {
 	 * @param	string	$class
 	 * @return	string
 	 */
-	public function SetId($id, $class = '')	{
+	public function SetId ($id, $class = '') {
 		if (empty($id))
 			$this->sId = $this->aCfg['code_prefix'];
 		else
@@ -601,7 +563,7 @@ class ListTable extends Fwolflib {
 	 * @param	mixed	$idx	Idx of th array
 	 * @param	string	$dir	asc/desc, lower letter only
 	 */
-	public function SetOrderby($idx, $dir = 'asc') {
+	public function SetOrderby ($idx, $dir = 'asc') {
 		$this->aCfg['orderby'] = 1;
 
 		// If had got orderby info from url, exit
@@ -648,7 +610,7 @@ class ListTable extends Fwolflib {
 	 * 								if fail, set to 1.
 	 * @see		$aCfg
 	 */
-	public function SetPager($rows_total= 0, $page_cur = 0) {
+	public function SetPager ($rows_total= 0, $page_cur = 0) {
 		// Enable pager disp
 		$this->aCfg['pager'] = true;
 
@@ -735,7 +697,7 @@ class ListTable extends Fwolflib {
 	 * @return	string
 	 * @see func/request.php::GetParam()
 	 */
-	public function SetParam($k, $v = '') {
+	public function SetParam ($k, $v = '') {
 		if (!is_array($k) && !is_array($v)) {
 			$this->aParam[addslashes($k)] = addslashes($v);
 		}
@@ -758,66 +720,6 @@ class ListTable extends Fwolflib {
 		$s = $this->aUrl['base'] . $s;
 		return $s;
 	} // end of func SetParam
-
-
-	// Old method
-
-	/**
-	* 生成分页索引代码
-	*
-	* 所有参数使用相关的类变量，如果类变量没有事先赋值，则会使用默认值
-	* @access   private
-	* @return   string
-	*/
-	function GetIndex()
-	{
-		//条件不满足时，返回空串
-		if (0 == $this->mRowsPerPage)
-		{
-			return('');
-		}
-		//如果引用页的地址为.../dir/的话，那么将出错，因为document.URL是不包含参数的
-		//此问题已通过在JS中增加判断的方法解决
-		if (empty($this->mSubmitUrl))
-		{
-			$this->mSubmitUrl = $_SERVER['REQUEST_URI'];
-		}
-		//一共的页数
-		$total_pages = ceil($this->mTotalRows / $this->mRowsPerPage);
-		if (1 > $total_pages)		   { $total_pages = 1; }
-		if (1 > $this->mCurPage)			   { $this->mCurPage = 1;	 }
-		if ($this->mCurPage > $total_pages)	{ $this->mCurPage = $total_pages; }
-		//生成的HTML字符串
-		$str_html = '<table width="80%" border="0" cellspacing="0" cellpadding="0" align="center"><form method="get" action="' . $this->mSubmitUrl . '" onSubmit="return jump(page.value);"><tr><td align="right">';
-
-		if (($this->mCurPage == 1) || ($total_pages == 1))
-		{
-			$str_html .= $this->mIndexTips[$this->mIndexTipsId][0] . '　' . $this->mIndexTips[$this->mIndexTipsId][1] . '　';
-		}
-		else
-		{
-			$s_url = $this->SetUrlParam($this->mSubmitUrl, 'page', '1');
-			$str_html .= '<a href=' . $s_url . ' title="' . $this->mIndexTips[0][0] . '">' . $this->mIndexTips[$this->mIndexTipsId][0] . '</a>　';
-			$s_url = $this->SetUrlParam($this->mSubmitUrl, 'page', strval($this->mCurPage - 1));
-			$str_html .='<a href=' . $s_url . ' title="' . $this->mIndexTips[0][1] . '">' . $this->mIndexTips[$this->mIndexTipsId][1] . '</a>　';
-		}
-		if ($this->mCurPage == $total_pages)
-		{
-			$str_html .= $this->mIndexTips[$this->mIndexTipsId][2] . '　' . $this->mIndexTips[$this->mIndexTipsId][3] . '　';
-		}
-		else
-		{
-			$s_url = $this->SetUrlParam($this->mSubmitUrl, 'page', strval($this->mCurPage + 1));
-			$str_html .= '<a href=' . $s_url . ' title="' . $this->mIndexTips[0][2] . '">' . $this->mIndexTips[$this->mIndexTipsId][2] . '</a>　';
-			$s_url = $this->SetUrlParam($this->mSubmitUrl, 'page', strval($total_pages));
-			$str_html .='<a href=' . $s_url . ' title="' . $this->mIndexTips[0][3] . '">' . $this->mIndexTips[$this->mIndexTipsId][3] . '</a>　';
-		}
-		$str_html .= '当前为第' . $this->mCurPage . '/' . $total_pages . '页，共' . $this->mTotalRows . '条记录　';
-		$str_html .= '跳转<input name="page" id="page" type="text" value="' . $this->mCurPage . '" size="3" align="right"> <input type="button" value="Go" onClick="return jump(page.value);"></td></tr></form></table>';
-		$str_html .= '<script language="JavaScript" type="text/JavaScript">function jump(p) {if (document.URL.match(/(page=[0-9]+)/)){document.URL=(document.URL.replace(/(page=[0-9]+)/, "page=" + p));}else{if (document.URL.match(/[?]{1}/)) {document.URL=document.URL + "&page=" + p;} else {document.URL=document.URL + "?page=" + p;}}return false;}</script>';
-
-		return($str_html);
-	} // end func GetIndex
 
 
 } // end class ListTable
