@@ -112,6 +112,14 @@ class ListTable extends Fwolflib {
 //		'param'				=> 'p',			// Used in url to set page no.
 		'rows_total'		=> 0,
 		'tpl'				=> 'list-table.tpl',
+
+		// Add custom string in td/th/tr tag, eg: nowrap="nowrap"
+		// td/th can use index same with data array index,
+		// tr can use int index which's value is string too.
+		// For tr of th row, use th instead.
+		'td_add'			=> array(),
+		'th_add'			=> array(),
+		'tr_add'			=> array(),
 		);
 
 	/**
