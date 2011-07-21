@@ -1,17 +1,9 @@
 <?php
-/**
- * @package		fwolflib
- * @subpackage	class.mvc
- * @copyright	Copyright 2008-2010, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
- * @since		2008-04-06
- */
-
-
 require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once(FWOLFLIB . 'class/cache.php');
 require_once(FWOLFLIB . 'class/form.php');
 require_once(FWOLFLIB . 'class/list-table.php');
+require_once(FWOLFLIB . 'class/validator.php');
 require_once(FWOLFLIB . 'func/string.php');
 require_once(FWOLFLIB . 'func/request.php');
 
@@ -56,7 +48,7 @@ require_once(FWOLFLIB . 'func/request.php');
  *
  * @package		fwolflib
  * @subpackage	class.mvc
- * @copyright	Copyright 2008-2010, Fwolf
+ * @copyright	Copyright 2008-2011, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
  * @since		2008-04-06
  * @see			Controler
@@ -165,6 +157,12 @@ abstract class View extends Cache {
 		);
 
 	/**
+	 * Validator object.
+	 * @var	object
+	 */
+	public $oValidator = null;
+
+	/**
 	 * Html <title> of this view
 	 * @var	string
 	 */
@@ -199,6 +197,7 @@ abstract class View extends Cache {
 		unset($this->oForm);
 		unset($this->oLt);
 		unset($this->oTpl);
+		unset($this->oValidator);
 
 		$this->oCtl = $ctl;
 		$this->sAction = GetGet('a');
@@ -447,6 +446,17 @@ abstract class View extends Cache {
 	protected function NewObjLt() {
 		return new ListTable($this->oTpl);
 	} // end of func NewObjLt
+
+
+	/**
+	 * New Validator object
+	 *
+	 * @see	$oValidator
+	 * @return	object
+	 */
+	protected function NewObjValidator () {
+		return new Validator();
+	} // end of func NewObjValidator
 
 
 	/**

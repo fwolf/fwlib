@@ -97,6 +97,12 @@ ubb.php
 	Ubb类，完成对UBB代码的转换
 
 
+validator.php
+------------------------------------------------------------
+### Validator
+	Validate form data, include web frontend and php backend.
+
+
 css:
 ============================================================
 
