@@ -915,7 +915,7 @@ class Adodb extends Fwolflib {
 			$s_where = ' WHERE ';
 			foreach ($pk as $key)
 				$s_where .= " $key = " . $this->QuoteValue($tbl, $key, $data[0][$key])
-					. ' and ';
+					. ' AND ';
 			$s_where = substr($s_where, 0, strlen($s_where) - 5);
 			if (0 < $this->GetRowCount($tbl, $s_where))
 				$mode = 'U';

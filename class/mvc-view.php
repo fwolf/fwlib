@@ -344,21 +344,28 @@ abstract class View extends Cache {
 		if (empty($this->sAction))
 			$this->oCtl->ViewErrorDisp("No action given.");
 
-		// Check if action relate method existence, call it or report error.
-		$s = StrUnderline2Ucfirst($this->sAction, true);
-		$s_func = 'Gen' . $s;
-		$s_func1 = 'GenContent' . $s;
-		if (method_exists($this, $s_func)) {
-			$this->sOutputContent = $this->$s_func();
+		// Check if action relate method existence,
+		// call it or report error.
+		$s_func = StrUnderline2Ucfirst($this->sAction, true);
+		$s_func1 = 'Gen' . $s_func;
+		$s_func2 = 'GenContent' . $s_func;
+		if (method_exists($this, $s_func1)) {
+			$this->sOutputContent = $this->$s_func1();
 			return $this->sOutputContent;
 		}
-		elseif (method_exists($this, $s_func1)) {
-				$this->sOutputContent = $this->$s_func1();
+		elseif (method_exists($this, $s_func2)) {
+				$this->sOutputContent = $this->$s_func2();
+				return $this->sOutputContent;
+		}
+		// ?a=ajax-something
+		elseif ('ajax-' == strtolower(substr($this->sAction, 0, 5))
+			&& method_exists($this, $s_func)) {
+				$this->sOutputContent = $this->$s_func();
 				return $this->sOutputContent;
 		}
 		else
 			// An invalid action is given
-			$this->oCtl->ViewErrorDisp("The given action {$this->sAction} invalid or method $s_func doesn't exists.");
+			$this->oCtl->ViewErrorDisp("The given action {$this->sAction} invalid or method $s_func1 doesn't exists.");
 	} // end of func GenContent
 
 
