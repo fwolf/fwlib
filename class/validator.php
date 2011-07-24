@@ -117,12 +117,69 @@ class Validator extends Fwolflib {
 				$s_js .= $this->GetJsRule($rule);
 			}
 
+		if (!empty($this->aCfg['form-selector']))
+			$s_js .= $this->GetJsFormSubmit(
+				$this->aCfg['form-selector']);
+
 		if ($b_with_tag)
 			$s_js .= '//--><!]]>
 				</script>
 			';
 		return $s_js;
 	} // end of func GetJs
+
+
+	/**
+	 * Get check js for form submit
+	 *
+	 * @param	string	$s_form		Form selector
+	 * @return	string
+	 */
+	public function GetJsFormSubmit ($s_form) {
+		$s_js = '
+			$(\'' . $s_form . '\').submit(function () {
+				var rs_validate = true;	// Check result
+				var ar_err = new Array();
+		';
+
+		if (!empty($this->aRule))
+			foreach ($this->aRule as $rule) {
+				$s_js .= 'if (false == '
+					. StrUnderline2Ucfirst($this->aCfg['id-prefix']
+						. $rule['id'], true)
+					. '()) {
+					rs_validate = false;
+					ar_err.push(\'' . $rule['tip'] . '\');
+				}
+				';
+			}
+		if (!empty($this->aCfg['func-show-error']))
+		$s_js .= '
+				if (false == rs_validate)
+					// Show error msg
+					' . $this->aCfg['func-show-error']
+					. '(ar_err);
+		';
+		$s_js .= '
+				return rs_validate;
+			});
+		';
+		if (!empty($this->aCfg['form-submit-delay']))
+			$s_js .= '
+				// Disable multi-click for some time
+				$(\'' . $s_form . ' input[type="submit"]\')
+						.click(function () {
+							$(this).attr(\'disabled\', true);
+							setTimeout(function () {
+								$(\'' . $s_form . ' input[type="submit"]\')
+									.removeAttr(\'disabled\');
+							}, ' . (1000
+								* $this->aCfg['form-submit-delay'])
+							. ');
+				});
+			';
+		return $s_js;
+	} // end of func GetJsFormSubmit
 
 
 	/**
@@ -153,6 +210,7 @@ class Validator extends Fwolflib {
 					obj.removeClass(\''
 						. $this->aCfg['id-prefix'] . 'fail\');
 				}
+				return rs_validate;
 			} // end of func ' . $s_func . '
 		';
 
@@ -276,6 +334,13 @@ class Validator extends Fwolflib {
 		parent::Init();
 
 		$this->SetCfg('id-prefix', 'validate_');
+
+		// jQuery selector for form, empty for no submit check.
+		$this->SetCfg('form-selector', 'form');
+		// Disable submit button for some time when clicked.
+		$this->SetCfg('form-submit-delay', 3);
+		// Func to show error msg, use alert() ?
+		$this->SetCfg('func-show-error', '');
 		// Path of arrow img in tip
 		$this->SetCfg('path-img-arrow'
 			, P2R . 'images/validate-arrow.png');
