@@ -1,0 +1,399 @@
+/*
+ * Common CSS define.
+ *
+ * @package		fwolflib
+ * @subpackage	css
+ * @copyright	Copyright © 2011, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.css@gmail.com>
+ * @since		2011-07-26
+ */
+
+/*
+Inline syntax:
+<style type="text/css" media="screen, print">
+<!--
+
+-->
+</style>
+
+Link syntax:
+<link rel="stylesheet" type="text/css" media="screen, print" href="file.css" />
+*/
+
+
+/*
+ * You should use reset.css before this.
+*/
+
+
+/*
+ * Define body color and bg-color, fit web design standard.
+*/
+body {
+	background-color: rgb(204, 232, 207);
+	text-align: center;
+	/* font-size:0.83em; */	/* 基本上等于9px */
+	/* font-size:0.84em;
+	line-height: 1.5em;
+	font-family: Arial, Helvetica, sans-serif;*/
+}
+body, p, td, th, li {
+	font-family: Arial, Helvetica, San-serif, "宋体";
+/*	font-family: "宋体", verdana, helvetica, sans-serif;*/
+	font-size: 0.875em;
+	line-height: 1.5em;
+	color: #000000;
+}
+
+
+/*
+ * _Global basic settings
+ */
+h1, h2, h3, h4, h5, h6 {
+	font-weight: bold;
+	font-family: "黑体", inherit;
+}
+h1 {
+	font-size: 2em;
+	line-height: 3em;
+}
+h2 {
+	font-size: 1.5em;
+	line-height: 2em;
+	margin-left: 1em;
+}
+h3 {
+	font-size: 1.3em;
+	line-height: 2em;
+	margin-left: 1.154em;
+}
+h4, h5, h6 {
+	font-size: 1.1em;
+	line-height: 2em;
+	margin-left: 1.364em;
+}
+p, td, th, li {
+	font-size: 1em;
+	line-height: 2em;
+	margin-left: 3em;
+}
+pre {
+	margin-left: 2em;
+}
+th {
+	font-weight: bold;
+	text-align: center;
+}
+th, td {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+code {
+	color: #900;
+	/*font-size: 1.2em;*/	/* 基本上等于9px */
+	font-size: 1em;
+}
+abbr, acronym {
+	cursor: help;
+}
+
+/* To solve problem: img tag in <a> have bgcolor. */
+a.img {
+	background-color: transparent !important;
+	background-color: #000;
+}
+/* Unknown usage, these code just left here. */
+/*
+a img, :link img, :visited img {
+	border: 0;
+}
+*/
+
+
+/*
+ * Ajax select
+ */
+.ajax_select_close_bottom {
+	cursor: pointer;
+	margin-top: 2.5em;
+	text-align: right;
+	width: 100%;
+}
+.ajax_select_close_top {
+/*	color:blue;*/
+	cursor: pointer;
+	float: right;
+}
+div.ajax_select {
+	background-color: #FFF;
+	border: 1px solid #999;
+	display: none;
+	padding: 0.7em;
+	position: absolute;
+	text-align: center;
+	width: 700px;
+	z-index: 999;
+}
+div.ajax_select > .title {
+	float: left;
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-bottom: 0.7em;
+	padding-left: 2em;
+	text-align: center;
+	width: 90%;
+}
+div.ajax_select tr.hover {
+	background-color: #e3e3de;
+}
+div.ajax_select .loading, div.ajax_select .empty
+		, div.ajax_select .row_tpl {
+	display: none;
+}
+div.ajax_select .loading td, div.ajax_select .empty td
+		, div.ajax_select .tip td {
+	text-align: center;
+}
+div#ajax_bg {
+/*	background-image: url(../tpl/cttms2005/images/bg.png);*/
+	background: #E5E5E5;
+	display: none;
+	filter: alpha(opacity=60);
+	left: 0px;
+	opacity: 0.6;
+	position: absolute;
+	top: 0px;
+	z-index: 998;
+}
+
+
+/*
+ * Alert
+ */
+div.alert_fail, div.alert_success {
+	left: 0px;
+	position: absolute;
+	text-align: center;
+	top: 200px;
+	width: 99%;
+	z-index: 999;
+}
+div.alert_bg {
+	background: #E5E5E5;
+	filter: alpha(opacity=60);
+	height: 100%;
+	left: 0px;
+	opacity: 0.6;
+	position: absolute;
+	top: 0px;
+	width: 100%;
+	z-index: 998;
+}
+div.alert_fail fieldset, div.alert_success fieldset {
+	background: #FFF;
+	font-weight: bold;
+	margin: auto;
+	padding-bottom: 2em;
+	padding-top: 2em;
+	width: 40%;
+}
+div.alert_fail legend, div.alert_success legend {
+	font-weight: bold;
+	margin-left: 2em;
+	margin-right: 2em;
+}
+div.alert_fail fieldset {
+	border: 1px solid red;
+}
+div.alert_fail legend {
+	color: red;
+}
+div.alert_success fieldset {
+	border: 1px solid blue;
+}
+div.alert_success legend {
+	color: blue;
+}
+
+
+/*
+ * Auto numbered list(article), usually used in doc
+ */
+.article {counter-reset: c-level1} /* top c_lever need not reset */
+.article h2 {counter-reset: c-level2}
+.article h3 {counter-reset: c-level3}
+.article h4 {counter-reset: c-level4}
+.article h2:before {
+	/*display: marker; */
+	content: "§ " counter(c-level1, decimal) "、";
+	counter-increment: c-level1 1
+}
+.article h3:before {
+	/*display: marker; */
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "、";
+	counter-increment: c-level2 1
+}
+.article h4:before {
+	/*display: marker; */
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "、";
+	counter-increment: c-level3 1
+}
+.article h5:before {
+	/*display: marker; */
+	content: "§ " counter(c-level1) "." counter(c-level2, decimal) "." counter(c-level3, decimal) "." counter(c-level4, decimal) "、";
+	counter-increment: c-level4 1
+}
+.article li {
+	list-style-type: disc;
+	margin-left: 6em;
+}
+.article p {
+	text-indent: 2em;
+}
+/* p in li need not margin/indent, it will display as same as li */
+.article li p {
+	margin-left: 0em;
+	text-indent: 0em;
+}
+
+
+/*
+ * Blocks
+ */
+div.box_singleline {
+	border:solid black 1px;
+	padding:1px 4px 1px 4px;
+	margin: 1em 0;
+}
+div.box_singleline:hover {
+	border: 1px solid #00f;
+	background: #f8f8f8
+}
+
+
+/*
+ * Footer icon and copyright text.
+ */
+#footer img, #footer span.spacer {
+	float: left;
+	margin-top: 0.2em;
+}
+#footer ul#copyright {
+	float: right;
+	margin-right: 0%;
+	margin-top: 0%;
+	text-align: center;
+}
+#footer li, #footer p{
+	text-align: center;
+	margin-right: 1em;
+}
+hr {
+	border: 0px;
+	height: 1px;
+	color: #B0C4DE;
+	background-color: #B0C4DE;	 /* LightSteelBlue = #B0C4DE */
+}
+#ads_bottom {
+	text-align: center;
+}
+
+
+/*
+ * Link color method
+ */
+a {
+	text-decoration: none;
+}
+a:hover {
+	background-color: #b50394;
+	color: #fff;
+}
+/*
+a:hover {
+	background-color: #bcf;
+	color: #f34;
+}
+*/
+
+
+/*
+ * Scm version info
+ */
+#scminfo {
+	display: none;
+	line-height: 1.2em;
+	background-color: #ded9af;
+	width: 50em;	/* 需要根据内容大小适当调整 */
+	border: solid black 1px;
+	position: absolute;
+	overflow: hidden;
+	z-index: 100;
+	margin: -1em 0em 0em 1em;
+}
+#scminfo pre{
+	margin: 0em 0em 0em -1em;
+}
+#showhide_scminfo {
+	left: 0.5em;
+	position: absolute;
+	top: 0.5em;
+}
+
+
+/*
+ * Tips
+ */
+.tips li {
+	color: #009900;
+	list-style: url("../images/icon/tips.png") outside square;
+}
+
+
+/*
+ * Title and list
+ */
+h1 {
+	text-align:center;
+}
+div.list {
+	line-height: 1.2em;
+}
+/* general unorder list */
+ul.gen li {
+	list-style-type: disc;
+}
+
+
+/*
+ * Predefined useful class
+ */
+.left {float: left;}
+.right {float: right;}
+.clearit {clear: both;}
+
+/* =10px */
+.small {font-size: 0.625em;}
+/* =14px */
+.large {font-size: 0.875em;}
+/* =16px */
+.larger {font-size: 1em;}
+
+.soft {color: #D3D3D3;}
+.hide {display: none;}
+p.last {margin-bottom: 0px;}
+.error {
+	text-align: center;
+	color: red;
+}
+
+/* Single line table in div, printable */
+.single_line table, .single_line td, .single_line th {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+/* Temportary debug can apply this class */
+.debug {
+	border: 2px solid red;
+}
