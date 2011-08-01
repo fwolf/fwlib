@@ -35,17 +35,6 @@ abstract class Cache extends Fwolflib {
 
 
 	/**
-	 * Constructor
-	 *
-	 * @param	array	$ar_cfg
-	 */
-	public function __construct ($ar_cfg = array()) {
-		$this->Init()
-			->SetCfg($ar_cfg);
-	} // end of func __construct
-
-
-	/**
 	 * Compute path of a key's data file
 	 *
 	 * @param	string	$key
@@ -338,6 +327,8 @@ abstract class Cache extends Fwolflib {
 	 * @return	object
 	 */
 	protected function Init () {
+		parent::Init();
+
 		// Cache type: file, memcached
 		$this->aCfg['cache-type'] = '';
 
