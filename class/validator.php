@@ -9,6 +9,9 @@ require_once(FWOLFLIB . 'func/string.php');
  * Include both web frontend and php backend check.
  * Using jQuery to operate javascript.
  *
+ * Requirement:
+ * 	-	jQuery 1.2.6+ (Call scrollTop in GetJsJsAlert())
+ *
  * Ref: http://code.google.com/p/easyvalidator/
  * @package		fwolflib
  * @subpackage	class
@@ -136,7 +139,13 @@ class Validator extends Fwolflib {
 	 * @return	string
 	 */
 	public function GetJsFormSubmit ($s_form) {
-		$s_js = '
+		$s_js = '';
+
+		// Need pre define msg alert func ?
+		if ('jsalert' == $this->aCfg['func-show-error'])
+			$s_js .= $this->GetJsJsAlert();
+
+		$s_js .= '
 			$(\'' . $s_form . '\').submit(function () {
 				var rs_validate = true;	// Check result
 				var ar_err = new Array();
@@ -163,8 +172,17 @@ class Validator extends Fwolflib {
 						' . $this->aCfg['func-show-error']
 						. '(ar_err.join("\n"));
 				';
+			elseif ('jsalert' == $this->aCfg['func-show-error'])
+				$s_js .= '
+					if (false == rs_validate)
+						// Show error msg
+						' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
+							, true) . 'JsAlert'
+						. '(ar_err);
+				';
 		}
 		$s_js .= '
+				return false;
 				return rs_validate;
 			});
 		';
@@ -185,6 +203,96 @@ class Validator extends Fwolflib {
 			';
 		return $s_js;
 	} // end of func GetJsFormSubmit
+
+
+	/**
+	 * Get js for display alert msg using float div
+	 *
+	 * @return	string
+	 */
+	public function GetJsJsAlert () {
+		$s_js = '';
+		$s_func = StrUnderline2Ucfirst($this->aCfg['id-prefix']
+			, true) . 'JsAlert';
+
+		$s_id_div = $this->aCfg['id-prefix'] . 'js_alert';
+		$s_id_div_bg = $this->aCfg['id-prefix'] . 'js_alert_bg';
+		foreach (array('div', 'bg', 'fieldset', 'legend', 'li')
+				as $k) {
+			if (!empty($this->aCfg['func-jsalert-css-' . $k]))
+				$s = str_replace("\n", "\\\n"
+						, $this->aCfg['func-jsalert-css-' . $k]);
+			eval('$s_css_' . $k . ' = $s;');
+		}
+
+		$s_js .= '
+			function ' . $s_func . ' (msg) {
+				s_msg = \'\';
+				$(msg).each(function () {
+					s_msg += \'<li>\' + this + \'</li>\';
+				});
+
+				// Set css
+				if (undefined === b_' . $this->aCfg['id-prefix']
+						. 'css_setted) {
+					var b_' . $this->aCfg['id-prefix'] . 'css_setted = 1;
+					$(\'head\').append(\'\
+						<style type="text/css" media="screen, print">\
+						<!--\
+						#' . $s_id_div . ' {\
+						' . $s_css_div . '\
+						}\
+						#' . $s_id_div_bg . ' {\
+						' . $s_css_bg . '\
+						}\
+						#' . $s_id_div . ' fieldset {\
+						' . $s_css_fieldset . '\
+						}\
+						#' . $s_id_div . ' legend {\
+						' . $s_css_legend . '\
+						}\
+						#' . $s_id_div . ' li {\
+						' . $s_css_li . '\
+						}\
+						-->\
+						</style>\
+					\');
+				}
+
+				$(\'body\').append(\'\
+					<div id="' . $s_id_div . '" class="'
+							. $this->aCfg['func-jsalert-class'] . '">\
+						<fieldset>\
+						<legend align="center">　'
+							. $this->aCfg['func-jsalert-legend']
+							. '　</legend>\
+						<ul>\
+							\' + s_msg + \'\
+							<li><a href="javascript:void(0);"\
+								onclick="$(\\\'#' . $s_id_div
+										. '\\\').remove();'
+									. '$(\\\'#' . $s_id_div_bg
+										. '\\\').remove();">'
+								. $this->aCfg['func-jsalert-close']
+								. '</a></li>\
+						</ul>\
+						</fieldset>\
+					</div>\
+					<div id="' . $s_id_div_bg . '"></div>\
+				\');
+
+				$(\'#' . $s_id_div . '\').css(\'top\'
+					, ($(window).height() -
+							$(\'#' . $s_id_div . ' fieldset\')
+								.height())
+						/ 2 + $(window).scrollTop() + \'px\');
+				$(\'#' . $s_id_div_bg . '\')
+					.height($(document).height() * 1.2);
+			} // end of func ' . $s_func . '
+		';
+
+		return $s_js;
+	} // end of func GetJsJsAlert
 
 
 	/**
@@ -344,8 +452,58 @@ class Validator extends Fwolflib {
 		$this->SetCfg('form-selector', 'form');
 		// Disable submit button for some time when clicked.
 		$this->SetCfg('form-submit-delay', 3);
-		// Func to show error msg, use alert() ?
+
+		// Func to show error msg
+		//	empty: Means no error msg, only set red border
+		//	alert: Using javascipt original alert()
+		//	jsalert: Using js to show msg in a float div
+		//	other: User defined js function.
 		$this->SetCfg('func-show-error', '');
+		// Setting for func JsAlert
+		$this->SetCfg('func-jsalert-close', '继续');
+		$this->SetCfg('func-jsalert-legend', 'Form validate fail');
+		// JsAlert css
+		$this->SetCfg('func-jsalert-class', 'alert_fail');
+		$this->SetCfg('func-jsalert-css-div', '
+			left: 0px;
+			position: absolute;
+			text-align: center;
+			top: 200px;
+			width: 99%;
+			z-index: 999;
+		');
+		$this->SetCfg('func-jsalert-css-bg', '
+			background: #E5E5E5;
+			filter: alpha(opacity=60);
+			height: 100%;
+			left: 0px;
+			opacity: 0.6;
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			z-index: 998;
+		');
+		$this->SetCfg('func-jsalert-css-fieldset', '
+			background: white;
+			border: 1px solid red;
+			font-weight: bold;
+			margin: auto;
+			margin-top: -10em;
+			padding-bottom: 2em;
+			padding-top: 2em;
+			width: 40%;
+		');
+		$this->SetCfg('func-jsalert-css-legend', '
+			color: red;
+			font-weight: bold;
+			font-size: 1.1em;
+			margin-left: 2em;
+			margin-right: 2em;
+		');
+		$this->SetCfg('func-jsalert-css-li', '
+			list-style: square;
+		');
+
 		// Path of arrow img in tip
 		$this->SetCfg('path-img-arrow'
 			, P2R . 'images/validate-arrow.png');
