@@ -153,17 +153,22 @@ class Validator extends Fwolflib {
 				}
 				';
 			}
-		if (!empty($this->aCfg['func-show-error']))
-		$s_js .= '
-				if (false == rs_validate)
-					// Show error msg
-					' . $this->aCfg['func-show-error']
-					. '(ar_err);
-		';
+
+		// Error alert part.
+		if (!empty($this->aCfg['func-show-error'])) {
+			if ('alert' == $this->aCfg['func-show-error'])
+				$s_js .= '
+					if (false == rs_validate)
+						// Show error msg
+						' . $this->aCfg['func-show-error']
+						. '(ar_err.join("\n"));
+				';
+		}
 		$s_js .= '
 				return rs_validate;
 			});
 		';
+
 		if (!empty($this->aCfg['form-submit-delay']))
 			$s_js .= '
 				// Disable multi-click for some time
