@@ -163,6 +163,7 @@ class Validator extends Fwolflib {
 				';
 			}
 
+
 		// Error alert part.
 		if (!empty($this->aCfg['func-show-error'])) {
 			if ('alert' == $this->aCfg['func-show-error'])
@@ -174,33 +175,35 @@ class Validator extends Fwolflib {
 				';
 			elseif ('jsalert' == $this->aCfg['func-show-error'])
 				$s_js .= '
+					// Show error msg
 					if (false == rs_validate)
-						// Show error msg
 						' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
 							, true) . 'JsAlert'
 						. '(ar_err);
 				';
 		}
+
+
+		// Disable submit botton
+		if (!empty($this->aCfg['form-submit-delay']))
+			$s_js .= '
+				// Disable multi submit for some time
+				$(\'' . $s_form . ' input[type="submit"]\')
+					.attr(\'disabled\', true);
+				setTimeout(function () {
+					$(\'' . $s_form . ' input[type="submit"]\')
+						.removeAttr(\'disabled\');
+				}, '
+					. (1000	* $this->aCfg['form-submit-delay'])
+				. ');
+			';
+
+
 		$s_js .= '
-				return false;
 				return rs_validate;
 			});
 		';
 
-		if (!empty($this->aCfg['form-submit-delay']))
-			$s_js .= '
-				// Disable multi-click for some time
-				$(\'' . $s_form . ' input[type="submit"]\')
-						.click(function () {
-							$(this).attr(\'disabled\', true);
-							setTimeout(function () {
-								$(\'' . $s_form . ' input[type="submit"]\')
-									.removeAttr(\'disabled\');
-							}, ' . (1000
-								* $this->aCfg['form-submit-delay'])
-							. ');
-				});
-			';
 		return $s_js;
 	} // end of func GetJsFormSubmit
 
