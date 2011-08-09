@@ -65,6 +65,7 @@ class Fwolflib {
 	 * @param	array	$ar_cfg
 	 */
 	public function __construct ($ar_cfg = array()) {
+		$this->SetCfgDefault();
 		if (!empty($ar_cfg))
 			$this->SetCfg($ar_cfg);
 		$this->Init();
@@ -99,18 +100,12 @@ class Fwolflib {
 
 
 	/**
-	 * Init func, set config vars etc.
-	 * Usually used to set $this->aCfg in sub class.
+	 * Init func
+	 * Do things according default then user config.
 	 *
-	 * @see		$aCfg
 	 * @return	object
 	 */
 	 protected function Init () {
-		// Log level eq/gt this will write to php errorlog
-		$this->aCfg['log-errorlog']	= 4;
-		// Print backtrace in log
-		$this->aCfg['log-backtrace'] = false;
-
 		return $this;
 	 } // end of func Init
 
@@ -185,6 +180,7 @@ class Fwolflib {
 	 * @see		$aCfg
 	 * @param	array	$k
 	 * @param	mixed	$v
+	 * @return	this
 	 */
 	public function SetCfg ($k, $v = null) {
 		if (is_array($k)) {
@@ -198,7 +194,23 @@ class Fwolflib {
 			// Use array $k => $v
 			$this->aCfg[$k] = $v;
 		}
+		return $this;
 	} // end of func SetCfg
+
+
+	/**
+	 * Set default config.
+	 *
+	 * @return	object
+	 */
+	 protected function SetCfgDefault () {
+		// Log level eq/gt this will write to php errorlog
+		$this->aCfg['log-errorlog']	= 4;
+		// Print backtrace in log
+		$this->aCfg['log-backtrace'] = false;
+
+		return $this;
+	 } // end of func SetCfgDefault
 
 
 } // end of class Fwolflib
