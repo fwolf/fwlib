@@ -4,6 +4,7 @@ require_once(FWOLFLIB . 'class/cache.php');
 require_once(FWOLFLIB . 'class/form.php');
 require_once(FWOLFLIB . 'class/list-table.php');
 require_once(FWOLFLIB . 'class/validator.php');
+require_once(FWOLFLIB . 'class/ajax/ajax-sel-div.php');
 require_once(FWOLFLIB . 'func/string.php');
 require_once(FWOLFLIB . 'func/request.php');
 
@@ -61,6 +62,12 @@ abstract class View extends Cache {
 	 * @var string	// $_GET['a'], means which action user prefered of the module
 	 */
 	protected $sAction = null;
+
+	/**
+	 * Ajax select div object
+	 * @var	object
+	 */
+	public $oAjaxSelDiv = null;
 
 	/**
 	 * If cache turned on
@@ -194,6 +201,7 @@ abstract class View extends Cache {
 		parent::__construct();
 
 		// For auto-new
+		unset($this->oAjaxSelDiv);
 		unset($this->oForm);
 		unset($this->oLt);
 		unset($this->oTpl);
@@ -433,6 +441,16 @@ abstract class View extends Cache {
 
 		return $this->sOutput;
 	} // end of func GetOutput
+
+
+	/**
+	 * New AjaxSelectDiv object
+	 *
+	 * @see	$oAjaxSelectDiv
+	 */
+	protected function NewObjAjaxSelDiv() {
+		return new AjaxSelDiv();
+	} // end of func NewObjAjaxSelDiv
 
 
 	/**
