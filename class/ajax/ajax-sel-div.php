@@ -139,7 +139,7 @@ class AjaxSelDiv extends Fwolflib {
 					. $this->aCfg['title-close'] . '</div>
 			';
 
-		if (true == $this->aCfg['query'])
+		if (true == $this->aCfg['query']) {
 			$s_html .= '
 				<div id=\'' . $s_id_clearit . '\'></div>
 
@@ -151,6 +151,15 @@ class AjaxSelDiv extends Fwolflib {
 					. $s_id . '_submit\' value=\''
 						. $this->aCfg['query-submit-title'] . '\' />
 			';
+
+			// Put query url as hidden input, so can edit it when needed
+			$s_html .= '
+				<input type=\'hidden\' id=\''
+					. $s_id . '_url\' value=\''
+						. $this->aCfg['query-url'] . '\' />
+			';
+		}
+
 		$s_html .= '
 			<table id=\'' . $s_id_table . '\'>
 				<thead>
@@ -259,6 +268,7 @@ class AjaxSelDiv extends Fwolflib {
 
 			// Set click action
 			$(\'#' . $this->aCfg['query-id'] . '\').click(function () {
+				' . $this->aCfg['js-click'] . '
 				$(\'#' . $s_id_bg . '\').show();
 				$(\'#' . $s_id_div . '\').css({
 					\'top\': ($(window).height() -
@@ -291,7 +301,7 @@ class AjaxSelDiv extends Fwolflib {
 					$(\'#' . $s_id_loading . '\').show();
 					$(\'#' . $s_id_empty . '\').hide();
 					$.ajax({
-						url: \'' . $this->aCfg['query-url'] . '\',
+						url: $(\'#' . $s_id . '_url\').val(),
 						data: {\'' . $this->aCfg['query-var'] . '\':
 							$(\'#' . $s_id . '_query\').val()},
 						dataType: \'' . $this->aCfg['query-datatype'] . '\',
@@ -495,10 +505,12 @@ class AjaxSelDiv extends Fwolflib {
 		$this->SetCfg('offset-y', 0);
 
 		// User added js
-		// When user click select link
-		$this->SetCfg('js-sel', '');
+		// After user click on form input
+		$this->SetCfg('js-click', '');
 		// After treat server result
 		$this->SetCfg('js-query', '');
+		// When user click select link
+		$this->SetCfg('js-sel', '');
 
 
 		$this->SetCfg('css-bg', '
