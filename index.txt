@@ -327,6 +327,14 @@ validate.php
 js:
 ===
 
+
+alert.js
+------------------------------------------------------------
+
+### JsAlert (msg, title, s_id, b_show_close, b_show_bg)
+	Show msg using js/jQuery, with a float div.
+
+
 common.js
 	通用JS函数集
 cookie.js
