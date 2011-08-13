@@ -57,7 +57,7 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 	if (true == b_show_close)
 		s_div += '\
 				<li><a href="javascript:void(0);"\
-						onclick="JsAlertRemove(); return false;">\
+						onclick="return JsAlertRemove();">\
 					继续</a>\
 				</li>\
 		';
@@ -86,11 +86,14 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
  * Remove js alert msg
  *
  * Can only call inside link in msg list, 4 level below div.
+ *
+ * @return	false
  */
 function JsAlertRemove () {
 	// Remove bg first
 	$('#alert_bg').remove();
 	$('#alert').remove();
+	return false;
 } // end of func JsAlertRemove
 
 
