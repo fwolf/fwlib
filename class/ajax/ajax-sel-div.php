@@ -70,7 +70,8 @@ class AjaxSelDiv extends Fwolflib {
 				display: none;
 			}
 			#' . $s_id_empty . ' td, #' . $s_id_loading
-				. ' td, #' . $s_id_tip . ' td {
+				. ' td, #' . $s_id_tip
+				. ' td, .' . $s_id . '_col_select {
 				text-align: center;
 			}
 		';
@@ -279,6 +280,13 @@ class AjaxSelDiv extends Fwolflib {
 						- $(\'#' . $s_id_div . '\').width() / 2
 						+ ' . $this->aCfg['offset-x'] . ' + \'px\',
 				}).show();
+			';
+			// Do query at once when open select div
+			if (true == $this->aCfg['query-when-click'])
+				$s_js .= '
+					$(\'#' . $s_id . '_submit\').click();
+				';
+			$s_js .= '
 			});
 
 			// Set query action
@@ -464,6 +472,8 @@ class AjaxSelDiv extends Fwolflib {
 		$this->SetCfg('query-typing', true);
 		// Url to treat ajax request
 		$this->SetCfg('query-url', '');
+		// Do query when open select div ?
+		$this->SetCfg('query-when-click', false);
 		// Var name for value in user input for ajax POST
 		$this->SetCfg('query-var', 's');
 		$this->SetCfg('query-datatype', 'json');
