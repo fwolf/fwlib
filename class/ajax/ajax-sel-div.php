@@ -196,6 +196,7 @@ class AjaxSelDiv extends Fwolflib {
 		$s_html .= '
 							<a href=\'javascript:void(0);\'
 								onclick=\'javascript:
+									' . $this->aCfg['js-sel'] . '
 		';
 
 		// When select, write selected value
@@ -212,7 +213,6 @@ class AjaxSelDiv extends Fwolflib {
 		$s_html .= '
 									$("#' . $s_id_div . '").hide();
 									$("#' . $s_id_bg . '").hide();
-									' . $this->aCfg['js-sel'] . '
 								\' >选择</a>
 						</td>
 					</tr>
@@ -515,11 +515,12 @@ class AjaxSelDiv extends Fwolflib {
 		$this->SetCfg('offset-y', 0);
 
 		// User added js
-		// After user click on form input
+		// After user click on form input, before default action
 		$this->SetCfg('js-click', '');
 		// After treat server result
+		// After default action and before result show.
 		$this->SetCfg('js-query', '');
-		// When user click select link
+		// When user click select link, before default action
 		$this->SetCfg('js-sel', '');
 
 
