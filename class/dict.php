@@ -263,7 +263,7 @@ class Dict extends Fwolflib {
 	 *
 	 * @return	object
 	 */
-	protected function Init () {
+	public function Init () {
 		parent::Init();
 
 		$this->SetStruct();

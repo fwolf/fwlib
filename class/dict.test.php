@@ -99,7 +99,7 @@ class TestDict extends UnitTestCase {
 
 
 class DictTest extends Dict {
-	protected function Init () {
+	public function Init () {
 		parent::Init();
 
 		$this->Set(array(

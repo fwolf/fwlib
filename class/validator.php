@@ -444,10 +444,10 @@ class Validator extends Fwolflib {
 
 
 	/**
-	 * Init config
+	 * Set default config
 	 */
-	protected function Init () {
-		parent::Init();
+	protected function SetCfgDefault () {
+		parent::SetCfgDefault();
 
 		$this->SetCfg('id-prefix', 'validate_');
 
@@ -515,15 +515,7 @@ class Validator extends Fwolflib {
 		$this->SetCfg('tip-offset-y', -60);
 
 		return $this;
-	} // end of func Init
-
-
-	/**
-	 * Clear all rules
-	 */
-	public function Reset () {
-		$this->aRule = array();
-	} // end of func Reset
+	} // end of func SetCfgDefault
 
 
 	/**

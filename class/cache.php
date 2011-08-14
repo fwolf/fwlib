@@ -322,12 +322,12 @@ abstract class Cache extends Fwolflib {
 
 
 	/**
-	 * Init config vars
+	 * Set default config
 	 *
-	 * @return	object
+	 * @return	this
 	 */
-	protected function Init () {
-		parent::Init();
+	protected function SetCfgDefault () {
+		parent::SetCfgDefault();
 
 		// Cache type: file, memcached
 		$this->aCfg['cache-type'] = '';
@@ -349,16 +349,14 @@ abstract class Cache extends Fwolflib {
 		$this->aCfg['cache-file-rule'] = '';
 
 		return $this;
-	} // end of func Init
+	} // end of func SetCfgDefault
 
 
 	/**
-	 * Set config
-	 *
-	 * @param	array	$ar_cfg
+	 * Init treatment
 	 */
-	public function SetCfg($ar_cfg) {
-		parent::SetCfg($ar_cfg);
+	public function Init () {
+		parent::Init();
 
 		// Check config
 		if (!empty($this->aCfg['cache-file-dir'])) {
@@ -371,7 +369,7 @@ abstract class Cache extends Fwolflib {
 			if (!empty($s))
 				die($s);
 		}
-	} // end of func SetCfg
+	} // end of func Init
 
 
 } // end of class Cache

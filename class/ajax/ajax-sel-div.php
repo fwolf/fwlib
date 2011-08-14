@@ -391,7 +391,7 @@ class AjaxSelDiv extends Fwolflib {
 	/**
 	 * Init treatment
 	 */
-	protected function Init () {
+	public function Init () {
 		parent::Init();
 
 		// Prepare id vars
@@ -437,20 +437,13 @@ class AjaxSelDiv extends Fwolflib {
 
 
 	/**
-	 * Clear all rules
-	 */
-	public function Reset () {
-		$this->aRule = array();
-		$this->SetCfgDefault();
-	} // end of func Reset
-
-
-	/**
 	 * Set default config
 	 *
 	 * @return	this
 	 */
 	protected function SetCfgDefault () {
+		parent::SetCfgDefault();
+
 		$this->SetCfg('id-prefix', 'ajax_sel_div_');
 		$this->SetCfg('id', '1');
 		$this->SetCfg('title', '请选择');

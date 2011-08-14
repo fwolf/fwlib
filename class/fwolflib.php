@@ -105,7 +105,7 @@ class Fwolflib {
 	 *
 	 * @return	object
 	 */
-	 protected function Init () {
+	 public function Init () {
 		return $this;
 	 } // end of func Init
 
@@ -172,6 +172,19 @@ class Fwolflib {
 
 		return $s;
 	} // end of func LogGet
+
+
+	/**
+	 * Clear all rules
+	 *
+	 * @param	boolean		$b_init	Re-do init.
+	 */
+	public function Reset ($b_init = false) {
+		$this->aRule = array();
+		$this->SetCfgDefault();
+		if (true == $b_init)
+			$this->Init();
+	} // end of func Reset
 
 
 	/**
