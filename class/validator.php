@@ -79,7 +79,7 @@ class Validator extends Fwolflib {
 			}
 			.' . $this->aCfg['id-prefix'] . 'fail {
 				border: 2px solid red;
-				color:red;
+				color: red;
 			}
 		';
 
@@ -179,6 +179,13 @@ class Validator extends Fwolflib {
 					if (false == rs_validate)
 						' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
 							, true) . 'JsAlert'
+						. '(ar_err);
+				';
+			elseif ('JsAlert' == $this->aCfg['func-show-error'])
+				$s_js .= '
+					// Show error msg
+					if (false == rs_validate)
+						' . 'JsAlert'
 						. '(ar_err);
 				';
 		}
@@ -407,8 +414,6 @@ class Validator extends Fwolflib {
 		$s_js = '
 			$(\'#' . $id . '\').hover(
 				function(e) {
-					//var top = (e.pageY + yOffset);
-					//var left = (e.pageX + xOffset);
 					$(\'body\').append(\'\
 						<div id="' . $this->aCfg['id-prefix'] . 'tip">\
 							<img id="' . $this->aCfg['id-prefix']
@@ -421,8 +426,6 @@ class Validator extends Fwolflib {
 							$this->aCfg['tip-offset-y'] . ') + \'px\')
 						.css(\'left\', (e.pageX + ' .
 							$this->aCfg['tip-offset-x'] . ') + \'px\');
-						//.css(\'left\', left+\'px\');
-					//$(\'p#vtip\').bgiframe();
 				},
 				function() {
 					$(\'div#' . $this->aCfg['id-prefix'] . 'tip\')
@@ -439,6 +442,16 @@ class Validator extends Fwolflib {
 				}
 			);
 		';
+
+		// Append hint, common known as '*' after input
+		if (!empty($this->aCfg['hint-text']))
+			$s_js .= '
+				$(\'#' . $id . '\').after(\'\
+					<span class="' . $this->aCfg['hint-class']
+						. '">' . $this->aCfg['hint-text'] . '</span>\
+				\');
+			';
+
 		return $s_js;
 	} // end of func GetJsTip
 
@@ -456,13 +469,18 @@ class Validator extends Fwolflib {
 		// Disable submit button for some time when clicked.
 		$this->SetCfg('form-submit-delay', 3);
 
+		// Css id or class
+		$this->SetCfg('hint-class', 'required');
+		$this->SetCfg('hint-text', '*');
+
 		// Func to show error msg
 		//	empty: Means no error msg, only set red border
 		//	alert: Using javascipt original alert()
 		//	jsalert: Using js to show msg in a float div
-		//	other: User defined js function.
+		//	JsAlert: Using Fwolflib::js::JsAlert()
+		//	other: User defined js function(not implement).
 		$this->SetCfg('func-show-error', '');
-		// Setting for func JsAlert
+		// Setting for func jsalert
 		$this->SetCfg('func-jsalert-close', '继续');
 		$this->SetCfg('func-jsalert-legend', 'Form validate fail');
 		// JsAlert css
