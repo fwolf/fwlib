@@ -149,6 +149,7 @@ class Validator extends Fwolflib {
 			$(\'' . $s_form . '\').submit(function () {
 				var rs_validate = true;	// Check result
 				var ar_err = new Array();
+				var s_label = \'\';
 		';
 
 		if (!empty($this->aRule))
@@ -158,7 +159,18 @@ class Validator extends Fwolflib {
 						. $rule['id'], true)
 					. '()) {
 					rs_validate = false;
-					ar_err.push(\'' . $rule['tip'] . '\');
+
+					// If tip not start with label, prepend it.
+					s_label = $(\'label[for="' . $rule['id']
+						. '"]\').text().trim().replace(/(:|：)/g, \'\');
+					if ((0 < s_label.length) &&
+							(null == \'' . $rule['tip'] . '\'
+								.match(\'^\' + s_label)))
+						ar_err.push(s_label + \''
+								. $this->aCfg['tip-separator'] . '\'
+							+ \'' . $rule['tip'] . '\');
+					else
+						ar_err.push(\'' . $rule['tip'] . '\');
 				}
 				';
 			}
@@ -469,10 +481,6 @@ class Validator extends Fwolflib {
 		// Disable submit button for some time when clicked.
 		$this->SetCfg('form-submit-delay', 3);
 
-		// Css id or class
-		$this->SetCfg('hint-class', 'required');
-		$this->SetCfg('hint-text', '*');
-
 		// Func to show error msg
 		//	empty: Means no error msg, only set red border
 		//	alert: Using javascipt original alert()
@@ -525,12 +533,20 @@ class Validator extends Fwolflib {
 			list-style: square;
 		');
 
+		// Hint for input
+		$this->SetCfg('hint-class', 'required');
+		$this->SetCfg('hint-text', '*');
+
 		// Path of arrow img in tip
 		$this->SetCfg('path-img-arrow'
 			, P2R . 'images/validate-arrow.png');
+
 		// Tips distance from mouse
 		$this->SetCfg('tip-offset-x', -20);
 		$this->SetCfg('tip-offset-y', -60);
+		// Text between col name and tip,
+		// when auto prepend col name to tip.
+		$this->SetCfg('tip-separator', ': ');
 
 		return $this;
 	} // end of func SetCfgDefault
