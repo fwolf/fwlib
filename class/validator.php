@@ -147,58 +147,51 @@ class Validator extends Fwolflib {
 
 		$s_js .= '
 			$(\'' . $s_form . '\').submit(function () {
-				var rs_validate = true;	// Check result
 				var ar_err = new Array();
 				var s_label = \'\';
 		';
 
 		if (!empty($this->aRule))
 			foreach ($this->aRule as $rule) {
-				$s_js .= 'if (false == '
-					. StrUnderline2Ucfirst($this->aCfg['id-prefix']
+				$s_js .= '
+				$(' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
 						. $rule['id'], true)
-					. '()) {
-					rs_validate = false;
-
+					. '()).each(function () {
 					// If tip not start with label, prepend it.
 					s_label = $(\'label[for="' . $rule['id']
 						. '"]\').text().trim().replace(/(:|：)/g, \'\');
 					if ((0 < s_label.length) &&
-							(null == \'' . $rule['tip'] . '\'
-								.match(\'^\' + s_label)))
+							(null == this.match(\'^\' + s_label)))
 						ar_err.push(s_label + \''
 								. $this->aCfg['tip-separator'] . '\'
-							+ \'' . $rule['tip'] . '\');
+							+ this);
 					else
-						ar_err.push(\'' . $rule['tip'] . '\');
-				}
+						ar_err.push(this);
+				});
 				';
 			}
 
+		$s_js .= '
+			// Show error msg
+		';
 
 		// Error alert part.
 		if (!empty($this->aCfg['func-show-error'])) {
 			if ('alert' == $this->aCfg['func-show-error'])
 				$s_js .= '
-					if (false == rs_validate)
-						// Show error msg
-						' . $this->aCfg['func-show-error']
-						. '(ar_err.join("\n"));
+					if (0 < ar_err.length)
+						alert(ar_err.join("\n"));
 				';
 			elseif ('jsalert' == $this->aCfg['func-show-error'])
 				$s_js .= '
-					// Show error msg
-					if (false == rs_validate)
+					if (0 < ar_err.length)
 						' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
-							, true) . 'JsAlert'
-						. '(ar_err);
+							, true) . 'JsAlert(ar_err);
 				';
 			elseif ('JsAlert' == $this->aCfg['func-show-error'])
 				$s_js .= '
-					// Show error msg
-					if (false == rs_validate)
-						' . 'JsAlert'
-						. '(ar_err);
+					if (0 < ar_err.length)
+						' . 'JsAlert(ar_err);
 				';
 		}
 
@@ -219,7 +212,7 @@ class Validator extends Fwolflib {
 
 
 		$s_js .= '
-				return rs_validate;
+				return (0 == ar_err);
 			});
 		';
 
@@ -320,7 +313,8 @@ class Validator extends Fwolflib {
 	/**
 	 * Get validate js of one rule
 	 *
-	 * @param	array	$ar_rule	Col, rule, text: all string.
+	 * @param	array	$ar_rule	Id, tip/text: string;
+	 * 		rule: string/array of string.
 	 * @return	string
 	 */
 	public function GetJsRule ($ar_rule) {
@@ -332,12 +326,20 @@ class Validator extends Fwolflib {
 			. $ar_rule['id'], true);
 		// Validate func for this control
 		$s_js .= '
+			/**
+			 * Validate ' . $ar_rule['id'] . '
+			 *
+			 * @return	array	Empty means no error.
+			 */
 			function ' . $s_func . ' () {
 				var obj = $(\'#' . $ar_rule['id'] . '\');
-				var rs_validate = false;	// Check result
+				var ar_err = Array();
+				// Standard error, rule str can customize it.
+				var s_err = \'' . $ar_rule['tip'] . '\';
+
 				// Do check
-		' . $this->GetJsRuleStr($ar_rule['rule']) . '
-				if (false == rs_validate) {
+		' . $this->GetJsRuleStr($ar_rule) . '
+				if (0 < ar_err.length) {
 					obj.addClass(\''
 						. $this->aCfg['id-prefix'] . 'fail\');
 				}
@@ -345,7 +347,7 @@ class Validator extends Fwolflib {
 					obj.removeClass(\''
 						. $this->aCfg['id-prefix'] . 'fail\');
 				}
-				return rs_validate;
+				return ar_err;
 			} // end of func ' . $s_func . '
 		';
 
@@ -363,16 +365,17 @@ class Validator extends Fwolflib {
 	/**
 	 * Get js check str for rule(s)
 	 *
-	 * @param	mixed	$ar_rule
+	 * @param	array	$ar_rule	Id, tip/text: string;
+	 * 		rule: string/array of string.
 	 * @return	string
 	 */
 	public function GetJsRuleStr ($ar_rule) {
-		if (!is_array($ar_rule))
-			$ar_rule = array($ar_rule);
+		if (!is_array($ar_rule['rule']))
+			$ar_rule['rule'] = array($ar_rule['rule']);
 
 		$s_js = '';
-		foreach ($ar_rule as $rule) {
-			// Find rule cat
+		foreach ($ar_rule['rule'] as $rule) {
+			// Call by rule cat
 			if ('required' == substr($rule, 0, 8))
 				$s_js .= $this->GetJsRuleStrRequired();
 			elseif ('regex:' == substr($rule, 0, 6))
@@ -393,7 +396,8 @@ class Validator extends Fwolflib {
 		$rule = trim($rule);
 		$s_js = '
 			var reg_validate = new RegExp(' . $rule . ');
-			rs_validate = (reg_validate.test(obj.val().trim()));
+			if (!reg_validate.test(obj.val().trim()))
+				ar_err.push(s_err);
 		';
 		return $s_js;
 	} // end of func GetJsRuleStrRegex
@@ -406,7 +410,8 @@ class Validator extends Fwolflib {
 	 */
 	public function GetJsRuleStrRequired () {
 		$s_js = '
-			rs_validate = (0 < obj.val().trim().length);
+			if (0 == obj.val().trim().length)
+				ar_err.push(s_err);
 		';
 		return $s_js;
 	} // end of func GetJsRuleStrRequired
