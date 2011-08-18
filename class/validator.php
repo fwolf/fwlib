@@ -212,7 +212,7 @@ class Validator extends Fwolflib {
 
 
 		$s_js .= '
-				return (0 == ar_err);
+				return (0 == ar_err.length);
 			});
 		';
 
@@ -380,6 +380,8 @@ class Validator extends Fwolflib {
 				$s_js .= $this->GetJsRuleStrRequired();
 			elseif ('regex:' == substr($rule, 0, 6))
 				$s_js .= $this->GetJsRuleStrRegex(substr($rule, 6));
+			elseif ('url:' == substr($rule, 0, 4))
+				$s_js .= $this->GetJsRuleStrUrl(substr($rule, 4));
 		}
 
 		return $s_js;
@@ -415,6 +417,74 @@ class Validator extends Fwolflib {
 		';
 		return $s_js;
 	} // end of func GetJsRuleStrRequired
+
+
+	/**
+	 * Get js for rule: url
+	 *
+	 * @param	string	$rule
+	 * @return	string
+	 */
+	public function GetJsRuleStrUrl ($rule) {
+		$rule = trim($rule);
+		$ar = explode(',', $rule);
+
+		$s_js = '
+			var s_id = obj.attr(\'id\');
+			var data = Object();
+
+			// Gen post data
+		';
+
+		// Prepare data to do ajax post
+		if (0 == count($ar))
+			// No id assigned, data is itself only
+			$s_js .= '
+				data[obj.attr(\'id\')] = obj.val();
+				data = $.param(data);
+			';
+		elseif ('*' == trim($ar[1]))
+			// All form content needed
+			$s_js .= '
+				data = obj.parent(\'form\').serialize();
+			';
+		else {
+			// Itself and some other input needed
+			$s_js .= '
+				data[obj.attr(\'id\')] = obj.val();
+			';
+			for ($i = 1; $i < count($ar); $i++) {
+				$ar[$i] = trim($ar[$i]);
+				$s_js .= '
+					data[\'' . $ar[$i] . '\'] = $(\'#'
+						. $ar[$i] . '\').val();
+				';
+			}
+			$s_js .= '
+				data = $.param(data);
+			';
+		}
+
+		$s_js .= '
+			$.ajax({
+				async: false,
+				url: \'' . $ar[0] . '\',
+				data: data,
+				dataType: \'json\',
+				type: \'POST\',
+				success: function(msg) {
+					// Json return object, need convert to array
+					if (0 < msg.length)
+						ar_err = ar_err.concat($.makeArray(msg));
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					ar_err.push(\'Ajax request error code \'
+						+ jqXHR.status + \': \' + jqXHR.responseText);
+				}
+			});
+		';
+		return $s_js;
+	} // end of func GetJsRuleStrUrl
 
 
 	/**
