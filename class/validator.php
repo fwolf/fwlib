@@ -25,10 +25,12 @@ class Validator extends Fwolflib {
 	 * Validator rule
 	 *
 	 * array(
-	 * 	array(
-	 * 		id,		// Text or array of cols id text.
-	 * 		rule,	// Str/array of rules, start with regex, url etc.
-	 * 		tip,
+	 * 	id => array(
+	 * 		id,		// String
+	 * 		rule,	// Array of rules str, start with regex, url etc.
+	 * 		tip,	// String
+	 * 		show-error-blue,
+	 * 		show-error-keyup,	// Boolean
 	 * 	)
 	 * )
 	 * @var	array
@@ -431,7 +433,7 @@ class Validator extends Fwolflib {
 
 		$s_js = '
 			var s_id = obj.attr(\'id\');
-			var data = Object();
+			var data = new Object;
 
 			// Gen post data
 		';
@@ -544,6 +546,34 @@ class Validator extends Fwolflib {
 
 
 	/**
+	 * Reset rules, or some part of it.
+	 *
+	 * @param	mixed	$id			Str or array of str, empty means all.
+	 * @param	mixed	$part		Empty means all part, or assigned.
+	 * @return	this
+	 */
+	public function ResetRule ($id = array(), $part = '') {
+		if (empty($id))
+			$this->aRule = array();
+		else {
+			if (!is_array($id))
+				$id = array($id);
+			foreach ($id as $s_id) {
+				if (empty($part))
+					unset($this->aRule[$s_id]);
+				else {
+					if (!is_array($part))
+						$part = array($part);
+					foreach ($part as $s_part)
+						unset($this->aRule[$s_id][$s_part]);
+				}
+			}
+		}
+		return $this;
+	} // end of func ResetRule
+
+
+	/**
 	 * Set default config
 	 */
 	protected function SetCfgDefault () {
@@ -616,6 +646,11 @@ class Validator extends Fwolflib {
 		$this->SetCfg('path-img-arrow'
 			, P2R . 'images/validate-arrow.png');
 
+		// Show error in these event ?
+		// Each id can overwrite these default setting by SetRule()
+		$this->SetCfg('show-error-blur', true);
+		$this->SetCfg('show-error-keyup', false);
+
 		// Tips distance from mouse
 		$this->SetCfg('tip-offset-x', -20);
 		$this->SetCfg('tip-offset-y', -60);
@@ -631,27 +666,64 @@ class Validator extends Fwolflib {
 	 * Set validate rule
 	 *
 	 * @param	mixed	$id			Str or array of str.
-	 * @param	mixed	$s_rule		Str or array of rule.
-	 * @param	string	$s_tip		Rule info, or tips etc.
+	 * @param	array	$ar_cfg
+	 * @see		$aRule
+	 * @return	this
 	 */
-	public function SetRule ($id, $s_rule, $s_tip = '') {
-		if (empty($id) || empty($s_rule))
-			return;
+	public function SetRule ($id, $ar_cfg) {
+		if (empty($id))
+			return $this;
+		if (!is_array($id))
+			$id = array($id);
 
-		if (is_array($id))
-			foreach ($id as $v)
-				$this->aRule[] = array(
-					'id'	=> $v,
-					'rule'	=> $s_rule,
-					'tip'	=> $s_tip,
-				);
-		else
-			$this->aRule[] = array(
-				'id'	=> $id,
-				'rule'	=> $s_rule,
-				'tip'	=> $s_tip,
-			);
+		foreach ($id as $s_id) {
+			$this->aRule[$s_id]['id'] = $s_id;
+
+			// Rule: append
+			if (isset($ar_cfg['rule'])) {
+				if (!is_array($ar_cfg['rule']))
+					$ar_cfg['rule'] = array($ar_cfg['rule']);
+				foreach ($ar_cfg['rule'] as $s_rule)
+					$this->aRule[$s_id]['rule'][] = $s_rule;
+			}
+
+			// Other part: overwrite
+			foreach (array('tip', 'show-error-blur'
+				, 'show-error-keyup') as $s)
+				if (isset($ar_cfg[$s]))
+					$this->aRule[$s_id][$s] = $ar_cfg[$s];
+		}
+
+		return $this;
 	} // end of func SetRule
+
+
+	/**
+	 * Set validate rule, old way
+	 * for easy use and back compative.
+	 *
+	 * @param	mixed	$id			Str or array of str.
+	 * @param	mixed	$rule		Str or array of rule.
+	 * @param	string	$s_tip		Rule info, or tips etc.
+	 * @param	this
+	 */
+	public function SetRuleV1 ($id, $rule, $s_tip = '') {
+		if (empty($id) || empty($rule))
+			return $this;
+
+		if (!is_array($id))
+			$id = array($id);
+		foreach ($id as $s_id) {
+			$this->aRule[$s_id]['id'] = $s_id;
+			if (!is_array($rule))
+				$rule = array($rule);
+			foreach ($rule as $s_rule)
+				$this->aRule[$s_id]['rule'][] = $s_rule;
+			$this->aRule[$s_id]['tip'] = $s_tip;
+		}
+
+		return $this;
+	} // end of func SetRuleV1
 
 
 } // end of class Validator
