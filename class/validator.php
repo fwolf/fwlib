@@ -450,6 +450,8 @@ class Validator extends Fwolflib {
 	/**
 	 * Get js for rule: url
 	 *
+	 * Rule: url [, [id] | [id in form=id in url]]
+	 *
 	 * @param	string	$rule
 	 * @return	string
 	 */
@@ -477,16 +479,32 @@ class Validator extends Fwolflib {
 				data = obj.parent(\'form\').serialize();
 			';
 		else {
-			// Itself and some other input needed
+			// Itself and some other input needed, and may have rename
+
+			// Itself, useful here if later rules not include it self.
 			$s_js .= '
 				data[s_id] = obj.val();
 			';
 			for ($i = 1; $i < count($ar); $i++) {
 				$ar[$i] = trim($ar[$i]);
-				$s_js .= '
-					data[\'' . $ar[$i] . '\'] = $(\'#'
-						. $ar[$i] . '\').val();
-				';
+				if (empty($ar[$i]))
+					continue;
+
+				// Single val or indexed ?
+				if (0 < strpos($ar[$i], '=')) {
+					// Indexed
+					list($s_id_form, $s_id_url) = explode('=', $ar[$i]);
+					$s_js .= '
+						data[\'' . trim($s_id_url) . '\'] = $(\'#'
+							. trim($s_id_form) . '\').val();
+					';
+				}
+				else
+					// Single val
+					$s_js .= '
+						data[\'' . $ar[$i] . '\'] = $(\'#'
+							. $ar[$i] . '\').val();
+					';
 			}
 			$s_js .= '
 				data = $.param(data);
@@ -496,7 +514,7 @@ class Validator extends Fwolflib {
 		$s_js .= '
 			$.ajax({
 				async: false,
-				url: \'' . $ar[0] . '\',
+				url: \'' . trim($ar[0]) . '\',
 				data: data,
 				dataType: \'json\',
 				type: \'POST\',

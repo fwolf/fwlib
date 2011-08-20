@@ -488,14 +488,15 @@ class Adodb extends Fwolflib {
 	 *
 	 * @param	string	$tbl
 	 * @param	string	$cond	Condition, can be where, having etc, raw sql string.
-	 * @return	int		-1 error/0 not found/N > 0 number of rows
+	 * @return	int		-1: error/N >= 0: number of rows
 	 */
 	public function GetRowCount ($tbl, $cond = '') {
 		$rs = $this->PExecute($this->GenSql(array(
 			'SELECT' => array('c' => 'count(1)'),
 			'FROM'	=> $tbl,
 			)) . ' ' . $cond);
-		if (false == $rs || 0 == $rs->RowCount())
+		if (false == $rs || 0 != $this->ErrorNo()
+				|| 0 == $rs->RowCount())
 			// Execute error
 			return -1;
 		else
