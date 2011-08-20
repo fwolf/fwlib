@@ -10,7 +10,7 @@ require_once(FWOLFLIB . 'func/string.php');
  * Using jQuery to operate javascript.
  *
  * Requirement:
- * 	-	jQuery 1.2.6+ (Call scrollTop in GetJsJsAlert())
+ * 	-	jQuery 1.2.6+ (Call scrollTop in JsAlert())
  *
  * Ref: http://code.google.com/p/easyvalidator/
  * @package		fwolflib
@@ -150,52 +150,21 @@ class Validator extends Fwolflib {
 		$s_js .= '
 			$(\'' . $s_form . '\').submit(function () {
 				var ar_err = new Array();
-				var s_label = \'\';
 		';
 
 		if (!empty($this->aRule))
 			foreach ($this->aRule as $rule) {
 				$s_js .= '
-				$(' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
-						. $rule['id'], true)
-					. '()).each(function () {
-					// If tip not start with label, prepend it.
-					s_label = $(\'label[for="' . $rule['id']
-						. '"]\').text().trim().replace(/(:|：)/g, \'\');
-					if ((0 < s_label.length) &&
-							(null == this.match(\'^\' + s_label)))
-						ar_err.push(s_label + \''
-								. $this->aCfg['tip-separator'] . '\'
-							+ this);
-					else
-						ar_err.push(this);
-				});
+				ar_err = ar_err.concat('
+				. StrUnderline2Ucfirst($this->aCfg['id-prefix']
+					. $rule['id'], true)
+				. '(false));
 				';
 			}
 
 		$s_js .= '
 			// Show error msg
-		';
-
-		// Error alert part.
-		if (!empty($this->aCfg['func-show-error'])) {
-			if ('alert' == $this->aCfg['func-show-error'])
-				$s_js .= '
-					if (0 < ar_err.length)
-						alert(ar_err.join("\n"));
-				';
-			elseif ('jsalert' == $this->aCfg['func-show-error'])
-				$s_js .= '
-					if (0 < ar_err.length)
-						' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
-							, true) . 'JsAlert(ar_err);
-				';
-			elseif ('JsAlert' == $this->aCfg['func-show-error'])
-				$s_js .= '
-					if (0 < ar_err.length)
-						' . 'JsAlert(ar_err);
-				';
-		}
+		' . $this->GetJsShowErr();
 
 
 		// Disable submit botton
@@ -250,8 +219,8 @@ class Validator extends Fwolflib {
 				});
 
 				// Set css
-				if (undefined === b_' . $this->aCfg['id-prefix']
-						. 'css_setted) {
+				if (\'undefined\' == typeof(b_' . $this->aCfg['id-prefix']
+						. 'css_setted)) {
 					var b_' . $this->aCfg['id-prefix'] . 'css_setted = 1;
 					$(\'head\').append(\'\
 						<style type="text/css" media="screen, print">\
@@ -331,9 +300,10 @@ class Validator extends Fwolflib {
 			/**
 			 * Validate ' . $ar_rule['id'] . '
 			 *
+			 * @param	boolean	b_alert_err	// Alert when got err
 			 * @return	array	Empty means no error.
 			 */
-			function ' . $s_func . ' () {
+			function ' . $s_func . ' (b_alert_err) {
 				var obj = $(\'#' . $ar_rule['id'] . '\');
 				var ar_err = Array();
 				// Standard error, rule str can customize it.
@@ -349,16 +319,57 @@ class Validator extends Fwolflib {
 					obj.removeClass(\''
 						. $this->aCfg['id-prefix'] . 'fail\');
 				}
+
+				// If err msg not start with label, prepend it.
+				var s_label = \'\';
+				if (0 < ar_err.length) {
+					$(ar_err).each(function (index, value) {
+						s_label = $(\'label[for="' . $ar_rule['id']
+							. '"]\').text().trim()
+							.replace(/(:|：)/g, \'\');
+						if ((0 < s_label.length) &&
+								(null == value.match(\'^\' + s_label)))
+							ar_err[index] = (s_label + \''
+									. $this->aCfg['tip-separator'] . '\'
+								+ value);
+					});
+				}
+
+				// Alert err ? default false.
+				if (\'undefined\' == typeof(b_alert_err))
+					b_alert_err = false;
+				if (true == b_alert_err) {
+					' . $this->GetJsShowErr() . '
+				}
+
 				return ar_err;
 			} // end of func ' . $s_func . '
 		';
 
-		// Do validate when blur
+		// Do validate when blur, and alert if setted
 		$s_js .= '
 			$(\'#' . $ar_rule['id'] . '\').blur(function() {
-				' . $s_func . '();
+		';
+		if (true == (isset($ar_rule['show-error-blur'])
+				? $ar_rule['show-error-blur']
+				: $this->aCfg['show-error-blur']))
+			$s_js .= $s_func . '(true);';
+		else
+			$s_js .= $s_func . '(false);';
+		$s_js .= '
 			});
 		';
+
+		// Do validate when keyup, but no alert
+		if (true == (isset($ar_rule['show-error-keyup'])
+				? $ar_rule['show-error-keyup']
+				: $this->aCfg['show-error-keyup'])) {
+			$s_js .= '
+				$(\'#' . $ar_rule['id'] . '\').keyup(function() {
+					' . $s_func . '(false);
+				});
+			';
+		}
 
 		return $s_js;
 	} // end of func GetJsRule
@@ -442,7 +453,7 @@ class Validator extends Fwolflib {
 		if (0 == count($ar))
 			// No id assigned, data is itself only
 			$s_js .= '
-				data[obj.attr(\'id\')] = obj.val();
+				data[s_id] = obj.val();
 				data = $.param(data);
 			';
 		elseif ('*' == trim($ar[1]))
@@ -453,7 +464,7 @@ class Validator extends Fwolflib {
 		else {
 			// Itself and some other input needed
 			$s_js .= '
-				data[obj.attr(\'id\')] = obj.val();
+				data[s_id] = obj.val();
 			';
 			for ($i = 1; $i < count($ar); $i++) {
 				$ar[$i] = trim($ar[$i]);
@@ -487,6 +498,37 @@ class Validator extends Fwolflib {
 		';
 		return $s_js;
 	} // end of func GetJsRuleStrUrl
+
+
+	/**
+	 * Get js for show error msg by setting
+	 *
+	 * Array contain err msg is named 'ar_err'.
+	 * @return	string
+	 */
+	public function GetJsShowErr () {
+		$s_js = '';
+		// Error alert part.
+		if (!empty($this->aCfg['func-show-error'])) {
+			if ('alert' == $this->aCfg['func-show-error'])
+				$s_js .= '
+					if (0 < ar_err.length)
+						alert(ar_err.join("\n"));
+				';
+			elseif ('jsalert' == $this->aCfg['func-show-error'])
+				$s_js .= '
+					if (0 < ar_err.length)
+						' . StrUnderline2Ucfirst($this->aCfg['id-prefix']
+							, true) . 'JsAlert(ar_err);
+				';
+			elseif ('JsAlert' == $this->aCfg['func-show-error'])
+				$s_js .= '
+					if (0 < ar_err.length)
+						' . 'JsAlert(ar_err);
+				';
+		}
+		return $s_js;
+	} // end of func GetJsShowErr
 
 
 	/**
@@ -647,8 +689,11 @@ class Validator extends Fwolflib {
 			, P2R . 'images/validate-arrow.png');
 
 		// Show error in these event ?
-		// Each id can overwrite these default setting by SetRule()
-		$this->SetCfg('show-error-blur', true);
+		// Each id can overwrite these default setting by SetRule().
+		// Notice: If show-error-blur is true, and focus change from
+		// 1 input to 2 both validate false, there will be dup alert
+		// msg occur, bcs confirm alert will cause blur of 2nd input.
+		$this->SetCfg('show-error-blur', false);
 		$this->SetCfg('show-error-keyup', false);
 
 		// Tips distance from mouse
