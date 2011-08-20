@@ -167,6 +167,21 @@ class Validator extends Fwolflib {
 		' . $this->GetJsShowErr();
 
 
+		// Experiment focus validate fail input after alert error.
+		// This can't attach to blur event of each input,
+		// that may call alert recurrently, which is infinite loop.
+		// So use it only when form submit.
+		if (true == $this->aCfg['show-error-focus'])
+			$s_js .= '
+				var f = function() {
+					$(\'.' . $this->aCfg['id-prefix'] . 'fail\')
+						.first().focus();
+					$(\'' . $s_form . '\').unbind(\'mouseover\', f);
+				};
+				$(\'' . $s_form . '\').bind(\'mouseover\', f);
+			';
+
+
 		// Disable submit botton
 		if (!empty($this->aCfg['form-submit-delay']))
 			$s_js .= '
@@ -524,7 +539,7 @@ class Validator extends Fwolflib {
 			elseif ('JsAlert' == $this->aCfg['func-show-error'])
 				$s_js .= '
 					if (0 < ar_err.length)
-						' . 'JsAlert(ar_err);
+						JsAlert(ar_err);
 				';
 		}
 		return $s_js;
@@ -695,6 +710,9 @@ class Validator extends Fwolflib {
 		// msg occur, bcs confirm alert will cause blur of 2nd input.
 		$this->SetCfg('show-error-blur', false);
 		$this->SetCfg('show-error-keyup', false);
+
+		// Focus error input after show error
+		$this->SetCfg('show-error-focus', false);
 
 		// Tips distance from mouse
 		$this->SetCfg('tip-offset-x', -20);
