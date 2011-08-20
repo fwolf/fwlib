@@ -323,7 +323,17 @@ class Validator extends Fwolflib {
 				var ar_err = Array();
 				// Standard error, rule str can customize it.
 				var s_err = \'' . $ar_rule['tip'] . '\';
+			';
 
+		// Show loading img ? part 1/2
+		if (!empty($this->aCfg['path-img-loading']))
+			$s_js .= '
+				obj.after(\'<img id="'
+					. $this->aCfg['id-prefix'] . 'loading" src="'
+					. $this->aCfg['path-img-loading'] . '" />\');
+			';
+
+		$s_js .= '
 				// Do check
 		' . $this->GetJsRuleStr($ar_rule) . '
 				if (0 < ar_err.length) {
@@ -356,7 +366,16 @@ class Validator extends Fwolflib {
 				if (true == b_alert_err) {
 					' . $this->GetJsShowErr() . '
 				}
+		';
 
+		// Show loading img ? part 2/2
+		if (!empty($this->aCfg['path-img-loading']))
+			$s_js .= '
+				$(\'#' . $this->aCfg['id-prefix'] . 'loading\')
+					.remove();
+			';
+
+		$s_js .= '
 				return ar_err;
 			} // end of func ' . $s_func . '
 		';
@@ -720,6 +739,8 @@ class Validator extends Fwolflib {
 		// Path of arrow img in tip
 		$this->SetCfg('path-img-arrow'
 			, P2R . 'images/validate-arrow.png');
+		$this->SetCfg('path-img-loading'
+			, P2R . 'images/validate-loading.gif');
 
 		// Show error in these event ?
 		// Each id can overwrite these default setting by SetRule().
