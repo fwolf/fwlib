@@ -122,8 +122,14 @@ func:
 array.php
 ------------------------------------------------------------
 
+### ArrayAdd (&$ar_srce, $key, $val = 1)
+	Add value to array by key, if key not exist, init with value.
+
 ### ArrayRead($ar, $key, $val_default = null)
 	Read value from array.
+
+### ArraySort (&$ar_srce, $key, $b_asc = true, $joker = '')
+	Sort array by one of its 2lv keys, and maintain assoc index.
 
 ### FilterWildcard($ar_srce, $rules)
 	Filter an array by wildcard rules.

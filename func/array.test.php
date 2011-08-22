@@ -27,14 +27,27 @@ require_once(FWOLFLIB . 'func/request.php');
 
 class TestFuncArray extends UnitTestCase {
 
+    function TestArrayAdd () {
+		$ar = array();
+		ArrayAdd($ar, 'a', 3);
+		ArrayAdd($ar, 'a', 4);
+		$this->assertEqual($ar['a'], 7);
+
+		ArrayAdd($ar, 'b', 3);
+		ArrayAdd($ar, 'b', '4');
+		$this->assertEqual($ar['b'], '34');
+
+    } // end of func TestArrayAdd
+
+
     function TestArrayRead() {
-    	$ar = array('a' => 1);
-    	$x = ArrayRead($ar, 'a', '2');
-    	$this->assertEqual($x, 1);
-    	$x = ArrayRead($ar, 'b', '2');
-    	$this->assertEqual($x, 2);
-    	$x = ArrayRead($ar, 3);
-    	$this->assertEqual($x, null);
+		$ar = array('a' => 1);
+		$x = ArrayRead($ar, 'a', '2');
+		$this->assertEqual($x, 1);
+		$x = ArrayRead($ar, 'b', '2');
+		$this->assertEqual($x, 2);
+		$x = ArrayRead($ar, 3);
+		$this->assertEqual($x, null);
     } // end of func TestArrayRead
 
 

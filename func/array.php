@@ -4,7 +4,7 @@
  *
  * @package		fwolflib
  * @subpackage	func
- * @copyright   Copyright 2010, Fwolf
+ * @copyright   Copyright © 2010-2011, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2010-01-25
  */
@@ -12,6 +12,27 @@
 
 require_once(dirname(__FILE__) . '/../fwolflib.php');
 require_once(FWOLFLIB . 'func/string.php');
+
+
+/**
+ * Add value to array by key, if key not exist, init with value.
+ *
+ * @param	array	&$ar_srce
+ * @param	string	$key
+ * @param	mixed	$val		Default val if not assigned.
+ */
+function ArrayAdd (&$ar_srce, $key, $val = 1) {
+	if (isset($ar_srce[$key])) {
+		if (is_string($val))
+			$ar_srce[$key] .= $val;
+		else
+			$ar_srce[$key] += $val;
+	}
+	else
+		$ar_srce[$key] = $val;
+
+	return $ar_srce;
+} // end of func ArrayAdd
 
 
 /**
@@ -32,6 +53,36 @@ function ArrayRead($ar, $key, $val_default = null) {
 
     return $val_return;
 } // end of func ArrayRead
+
+
+/**
+ * Sort array by one of its 2lv keys, and maintain assoc index.
+ *
+ * @param	array	&$ar_srce	Array to be sort
+ * @param	mixed	$key
+ * @param	mixed	$b_asc		True = asc/false = desc, or use str.
+ * @param	mixed	$joker		Use when val of key isn't set.
+ * @return	array
+ */
+function ArraySort (&$ar_srce, $key, $b_asc = true, $joker = '') {
+	$ar_val = array();
+	foreach ($ar_srce as $k => $v)
+		$ar_val[$k] = isset($v[$key]) ? $v[$key] : $joker;
+
+	if (true === $b_asc || 'asc' == $b_asc)
+		asort($ar_val);
+	else
+		arsort($ar_val);
+
+	// Got currect order, write back.
+	$ar_rs = array();
+	foreach ($ar_val as $k => $v) {
+		$ar_val[$k] = &$ar_srce[$k];
+	}
+
+	$ar_srce = &$ar_val;
+	return $ar_srce;
+} // end of func ArraySort
 
 
 /**
