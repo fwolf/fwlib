@@ -15,7 +15,7 @@ require_once('fwolflib/func/filesystem.php');
 
 // Get file list
 $ar_exclude = array(
-	'changelog.syntax', 'example.php', 'index.php'
+	'changelog-syntax.txt', 'example.php', 'index.php'
 );
 $s_path = substr(__FILE__, 0, strrpos(__FILE__, '/') + 1);
 $ar = ListDir($s_path);
