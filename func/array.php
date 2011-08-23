@@ -80,7 +80,7 @@ function ArraySort (&$ar_srce, $key, $b_asc = true, $joker = '') {
 		$ar_val[$k] = &$ar_srce[$k];
 	}
 
-	$ar_srce = &$ar_val;
+	$ar_srce = $ar_val;
 	return $ar_srce;
 } // end of func ArraySort
 
