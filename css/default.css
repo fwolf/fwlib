@@ -49,6 +49,14 @@ body, p, td, th, li {
 /*
  * _Global basic settings
  */
+abbr, acronym {
+	cursor: help;
+}
+code {
+	color: #900;
+	/*font-size: 1.2em;*/	/* 基本上等于9px */
+	font-size: 1em;
+}
 h1, h2, h3, h4, h5, h6 {
 	font-weight: bold;
 	font-family: "黑体", inherit;
@@ -88,13 +96,15 @@ th, td {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 }
-code {
-	color: #900;
-	/*font-size: 1.2em;*/	/* 基本上等于9px */
-	font-size: 1em;
+.clearit {
+	clear: both;
 }
-abbr, acronym {
-	cursor: help;
+.error {
+	text-align: center;
+	color: red;
+}
+.required {
+	color: red;
 }
 
 /* To solve problem: img tag in <a> have bgcolor. */
@@ -164,55 +174,6 @@ div#ajax_bg {
 	position: absolute;
 	top: 0px;
 	z-index: 998;
-}
-
-
-/*
- * Alert
- */
-div.alert_fail, div.alert_success {
-	left: 0px;
-	position: absolute;
-	text-align: center;
-	top: 200px;
-	width: 99%;
-	z-index: 999;
-}
-div.alert_bg {
-	background: #E5E5E5;
-	filter: alpha(opacity=60);
-	height: 100%;
-	left: 0px;
-	opacity: 0.6;
-	position: absolute;
-	top: 0px;
-	width: 100%;
-	z-index: 998;
-}
-div.alert_fail fieldset, div.alert_success fieldset {
-	background: #FFF;
-	font-weight: bold;
-	margin: auto;
-	padding-bottom: 2em;
-	padding-top: 2em;
-	width: 40%;
-}
-div.alert_fail legend, div.alert_success legend {
-	font-weight: bold;
-	margin-left: 2em;
-	margin-right: 2em;
-}
-div.alert_fail fieldset {
-	border: 1px solid red;
-}
-div.alert_fail legend {
-	color: red;
-}
-div.alert_success fieldset {
-	border: 1px solid blue;
-}
-div.alert_success legend {
-	color: blue;
 }
 
 
@@ -317,6 +278,43 @@ a:hover {
 */
 
 
+/* Js Alert */
+div#alert {
+	left: 0px;
+	position: absolute;
+	text-align: center;
+	top: 200px;
+	width: 99%;
+	z-index: 999;
+}
+div#alert_bg {
+	background: #E5E5E5;
+	filter: alpha(opacity=60);
+	height: 100%;
+	left: 0px;
+	opacity: 0.6;
+	position: absolute;
+	top: 0px;
+	width: 100%;
+	z-index: 998;
+}
+div#alert fieldset {
+	background: #FFF;
+	border: 1px solid blue;
+	font-weight: bold;
+	margin: auto;
+	padding-bottom: 2em;
+	padding-top: 2em;
+	width: 40%;
+}
+div#alert legend {
+	color: blue;
+	font-weight: bold;
+	margin-left: 2em;
+	margin-right: 2em;
+}
+
+
 /*
  * Scm version info
  */
@@ -370,7 +368,6 @@ ul.gen li {
  */
 .left {float: left;}
 .right {float: right;}
-.clearit {clear: both;}
 
 /* =10px */
 .small {font-size: 0.625em;}
@@ -382,10 +379,6 @@ ul.gen li {
 .soft {color: #D3D3D3;}
 .hide {display: none;}
 p.last {margin-bottom: 0px;}
-.error {
-	text-align: center;
-	color: red;
-}
 
 /* Single line table in div, printable */
 .single_line table, .single_line td, .single_line th {
