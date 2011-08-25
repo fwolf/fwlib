@@ -10,5 +10,5 @@
  */
 
 header('Content-type: text/css');
-echo file_get_contents(__DIR__ . '/default.css');
+echo file_get_contents(dirname(__FILE__) . '/default.css');
 ?>

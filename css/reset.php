@@ -10,5 +10,5 @@
  */
 
 header('Content-type: text/css');
-echo file_get_contents(__DIR__ . '/reset.css');
+echo file_get_contents(dirname(__FILE__) . '/reset.css');
 ?>

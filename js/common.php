@@ -10,5 +10,5 @@
  */
 
 header('Content-type: application/javascript');
-echo file_get_contents(__DIR__ . '/common.js');
+echo file_get_contents(dirname(__FILE__) . '/common.js');
 ?>
