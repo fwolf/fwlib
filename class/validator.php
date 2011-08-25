@@ -29,7 +29,7 @@ class Validator extends Fwolflib {
 	 * 		id,		// String
 	 * 		rule,	// Array of rules str, start with regex, url etc.
 	 * 		tip,	// String
-	 * 		show-error-blue,
+	 * 		show-error-blur,	// Boolean
 	 * 		show-error-keyup,	// Boolean
 	 * 	)
 	 * )
@@ -767,18 +767,25 @@ class Validator extends Fwolflib {
 	/**
 	 * Set validate rule
 	 *
-	 * @param	mixed	$id			Str or array of str.
+	 * @param	mixed	$id			Str(, split) or array of str.
 	 * @param	array	$ar_cfg
 	 * @see		$aRule
 	 * @return	this
 	 */
 	public function SetRule ($id, $ar_cfg) {
+		// Id check, convert, trim
 		if (empty($id))
 			return $this;
 		if (!is_array($id))
-			$id = array($id);
+			// String, maybe ',' splitted
+			$id = explode(',', $id);
+		array_walk($id, create_function('&$v', '$v = trim($v);'));
 
 		foreach ($id as $s_id) {
+			// Id empty after explode ?
+			if (empty($s_id))
+				continue;
+
 			$this->aRule[$s_id]['id'] = $s_id;
 
 			// Rule: append
