@@ -80,10 +80,11 @@ class Validator extends Fwolflib {
 				left: 5px
 			}
 			.' . $this->aCfg['id-prefix'] . 'fail {
-				border: 2px solid red;
-				color: red;
+				background-color: #F6CBCB;
+			/*	border: 2px solid red;*/
+				color: black;
 			}
-		';
+		' . $this->aCfg['css-add'];
 
 
 		if ($b_with_tag)
@@ -675,6 +676,9 @@ class Validator extends Fwolflib {
 
 		$this->SetCfg('id-prefix', 'validate_');
 
+		// User custom additional css define, can overwrite GetCss()
+		$this->SetCfg('css-add', '');
+
 		// jQuery selector for form, empty for no submit check.
 		$this->SetCfg('form-selector', 'form');
 		// Disable submit button for some time when clicked.
@@ -687,6 +691,8 @@ class Validator extends Fwolflib {
 		//	JsAlert: Using Fwolflib::js::JsAlert()
 		//	other: User defined js function(not implement).
 		$this->SetCfg('func-show-error', '');
+
+		// Notice: Using JsAlert() now, jsalert is alost useless.
 		// Setting for func jsalert
 		$this->SetCfg('func-jsalert-close', '继续');
 		$this->SetCfg('func-jsalert-legend', 'Form validate fail');
