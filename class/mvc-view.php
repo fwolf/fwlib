@@ -78,8 +78,8 @@ abstract class View extends Cache {
 
 	/**
 	 * Css file url used in header
-	 * eg: 'default.css', 'screen, print', indexed by 0,1
-	 * @var	array
+	 * eg: array(array(0 => 'default.css', 1 => 'screen, print'), ...)
+	 * @var	array of array
 	 */
 	public $aCss = array();
 
@@ -94,6 +94,13 @@ abstract class View extends Cache {
 	 * @var	object
 	 */
 	public $oForm = null;
+
+	/**
+	 * Js file url used in header
+	 * eg: 'common.js', ..., Can index by string.
+	 * @var	array of string
+	 */
+	public $aJs = array();
 
 	/**
 	 * ListTable object, auto new when first used.
@@ -396,9 +403,15 @@ abstract class View extends Cache {
 
 	/**
 	 * Generate header part
+	 *
+	 * @see $aCss, $aJs
 	 */
 	public function GenHeader () {
 		$this->oTpl->assign_by_ref('css', $this->aCss);
+
+		$this->aJs = array_unique($this->aJs);
+		$this->oTpl->assign_by_ref('js', $this->aJs);
+
 		$this->sOutputHeader = $this->oTpl->fetch($this->aTplFile['header']);
 		return $this->sOutputHeader;
 	} // end of func GenHeader
