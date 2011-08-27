@@ -488,6 +488,8 @@ class Validator extends Fwolflib {
 
 		$s_js = '
 			var s_id = obj.attr(\'id\');
+			// Object can use as map type later in ajax post,
+			// array cannot.
 			var data = new Object;
 
 			// Gen post data

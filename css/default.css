@@ -371,10 +371,16 @@ ul.gen li {
 
 /* =10px */
 .small {font-size: 0.625em;}
-/* =14px */
-.large {font-size: 0.875em;}
+/* =14px ? 0.875 is almost normal size */
+.large {
+/*	font-size: 0.875em;*/
+	font-size: 1.1em;
+}
 /* =16px */
-.larger {font-size: 1em;}
+.larger {
+/*	font-size: 1em;*/
+	font-size: 1.5em;
+}
 
 .soft {color: #D3D3D3;}
 .hide {display: none;}
