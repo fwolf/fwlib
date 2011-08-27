@@ -326,6 +326,13 @@ class Validator extends Fwolflib {
 				var s_err = \'' . $ar_rule['tip'] . '\';
 			';
 
+		// Input is disabled ?
+		if (false == $this->aCfg['check-disabled'])
+			$s_js .= '
+				if (true == obj.attr(\'disabled\'))
+					return ar_err;
+			';
+
 		// Show loading img ? part 1/2
 		if (!empty($this->aCfg['path-img-loading']))
 			$s_js .= '
@@ -678,6 +685,10 @@ class Validator extends Fwolflib {
 
 		// User custom additional css define, can overwrite GetCss()
 		$this->SetCfg('css-add', '');
+
+		// Check when input is disabled
+		// Disabled input will be submit, needn't check in common.
+		$this->SetCfg('check-disabled', false);
 
 		// jQuery selector for form, empty for no submit check.
 		$this->SetCfg('form-selector', 'form');
