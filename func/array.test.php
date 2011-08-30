@@ -40,6 +40,120 @@ class TestFuncArray extends UnitTestCase {
     } // end of func TestArrayAdd
 
 
+    function TestArrayInsert () {
+		// Pos not exists, number indexed
+		$ar_srce = array('a', 'b', 'c');
+		$x = $ar_srce;
+		$x = ArrayInsert($x, 'd', array('d'));
+		$this->assertEqual(var_export($x, true)
+			, var_export(array('a', 'b', 'c', 'd'), true));
+
+		// Pos not exists, assoc indexed
+		$ar_srce = array(
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+		);
+		$x = $ar_srce;
+		$x = ArrayInsert($x, 'd', array('d'));
+		$this->assertEqual(var_export($x, true), var_export(array(
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+			0 => 'd',
+		), true));
+
+		// Assoc indexed, normal
+		$ar_srce = array(
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+			'd' => 4,
+			'e' => 5,
+		);
+		$ar_ins = array(
+			'ins1'	=> 'ins1',
+			'ins2'	=> 'ins2',
+		);
+		// Insert before a key
+		$x = $ar_srce;
+		ArrayInsert($x, 'c', $ar_ins, -2);
+		$this->assertEqual(var_export($x, true), var_export(array(
+			'a' => 1,
+			'ins1'	=> 'ins1',
+			'ins2'	=> 'ins2',
+			'b' => 2,
+			'c' => 3,
+			'd' => 4,
+			'e' => 5,
+		), true));
+
+		// Insert after a key
+		$x = $ar_srce;
+		ArrayInsert($x, 'c', $ar_ins, 2);
+		$this->assertEqual(var_export($x, true), var_export(array(
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+			'd' => 4,
+			'ins1'	=> 'ins1',
+			'ins2'	=> 'ins2',
+			'e' => 5,
+		), true));
+
+		// Replace
+		$x = $ar_srce;
+		ArrayInsert($x, 'a', $ar_ins, 0);
+		$this->assertEqual(var_export($x, true), var_export(array(
+			'ins1'	=> 'ins1',
+			'ins2'	=> 'ins2',
+			'b' => 2,
+			'c' => 3,
+			'd' => 4,
+			'e' => 5,
+		), true));
+
+		// Replace & not exist = append
+		$x = $ar_srce;
+		ArrayInsert($x, 'f', $ar_ins, 0);
+		$this->assertEqual(var_export($x, true), var_export(array(
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+			'd' => 4,
+			'e' => 5,
+			'ins1'	=> 'ins1',
+			'ins2'	=> 'ins2',
+		), true));
+
+		// Insert far before
+		$x = $ar_srce;
+		ArrayInsert($x, 'a', $ar_ins, -10);
+		$this->assertEqual(var_export($x, true), var_export(array(
+			'ins1'	=> 'ins1',
+			'ins2'	=> 'ins2',
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+			'd' => 4,
+			'e' => 5,
+		), true));
+
+		// Insert far after
+		$x = $ar_srce;
+		ArrayInsert($x, 'e', $ar_ins, 10);
+		$this->assertEqual(var_export($x, true), var_export(array(
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+			'd' => 4,
+			'e' => 5,
+			'ins1'	=> 'ins1',
+			'ins2'	=> 'ins2',
+		), true));
+	} // end of func TestTestArrayInsert
+
+
     function TestArrayRead() {
 		$ar = array('a' => 1);
 		$x = ArrayRead($ar, 'a', '2');

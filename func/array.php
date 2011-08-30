@@ -36,6 +36,78 @@ function ArrayAdd (&$ar_srce, $key, $val = 1) {
 
 
 /**
+ * Insert data to assigned position in srce array by assoc key.
+ *
+ * Can also use on numeric indexed array.
+ *
+ * If key in ins array already exists in srce array, according ins pos
+ * and original pos of the key, the later value overwrite before one,
+ * and it pos also leave as the before one. So if you can't use this
+ * to move item in array forward or backward.
+ *
+ * @param	array	&$ar_srce
+ * @param	mixed	$idx		Position idx, append @ end if not found.
+ * @param	array	$ar_ins		Array to insert, can have multi item.
+ * @param	integer	$i_pos		-1=insert before index, 0=replace index
+ * 		1=insert after index, default=1.
+ * 		If abs($i_pos)>0, eg: 2 means insert after 2-1 pos after $idx.
+ * 		a    b     c    d   e		Index
+ * 		  -2   -1  0  1   2			Insert position by $i_pos
+ * @return	array
+ */
+function ArrayInsert (&$ar_srce, $idx, $ar_ins, $i_pos = 1) {
+	if (empty($ar_ins))
+		return $ar_srce;
+
+	// Find ins position
+	$ar_key = array_keys($ar_srce);
+	$i_pos_ins = array_search($idx, $ar_key, true);
+	if (false === $i_pos_ins) {
+		// Idx not found, append.
+		foreach ($ar_ins as $k => $v)
+			if (isset($ar_srce[$k]))
+				$ar_srce[] = $v;
+			else
+				$ar_srce[$k] = $v;
+		return $ar_srce;
+	}
+
+	// Chg ins position by $i_pos
+	$i_pos_ins += $i_pos + (0 >= $i_pos ? 1 : 0);
+	$i_cnt_srce = count($ar_srce);
+	if (0 > $i_pos_ins)
+		$i_pos_ins = 0;
+	if ($i_cnt_srce < $i_pos_ins)
+		$i_pos_ins = $i_cnt_srce;
+
+	// Loop to gen result ar
+	$ar_rs = array();
+	$i_srce = -1;		// Need loop to $i_cnt_srce, not $i_cnt_srce-1
+	while ($i_srce < $i_cnt_srce) {
+		$i_srce ++;
+		if ($i_pos_ins == $i_srce) {
+			// Got insert position
+			foreach ($ar_ins as $k => $v)
+				// Notice: if key exists, will be overwrite.
+				$ar_rs[$k] = $v;
+		}
+
+		if ($i_srce == $i_cnt_srce)
+			continue;
+		// Insert original data
+		$k = $ar_key[$i_srce];
+		$ar_rs[$k] = $ar_srce[$k];
+	}
+	// Pos = 0, replace
+	if (0 == $i_pos)
+		unset($ar_rs[$ar_key[$i_pos_ins - 1]]);
+
+	$ar_srce = $ar_rs;
+	return $ar_srce;
+} // end of func ArrayInsert
+
+
+/**
  * Read value from array.
  *
  * @param	array	$ar
