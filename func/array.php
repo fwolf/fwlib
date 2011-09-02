@@ -36,6 +36,37 @@ function ArrayAdd (&$ar_srce, $key, $val = 1) {
 
 
 /**
+ * Eval string by replace tag with array value by index
+ *
+ * @param	string	$s_eval
+ * @param	array	$ar		Data array, must have assoc index.
+ * @return	mixed
+ */
+function ArrayEval ($s_eval, $ar = array()) {
+	if (empty($s_eval))
+		return null;
+	$s_eval = trim($s_eval);
+
+	// Replace tag with array value
+	if (!empty($ar))
+		foreach ($ar as $k => $v)
+			$s_eval = str_replace('{' . $k . '}', $v, $s_eval);
+
+	// Add tailing ';'
+	if (';' != substr($s_eval, -1))
+		$s_eval .= ';';
+
+	$rs = eval($s_eval);
+
+	if (is_null($rs))
+		// Need add return in eval str
+		$rs = eval('return ' . $s_eval);
+
+	return $rs;
+} // end of func ArrayEval
+
+
+/**
  * Insert data to assigned position in srce array by assoc key.
  *
  * Can also use on numeric indexed array.

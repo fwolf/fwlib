@@ -40,6 +40,19 @@ class TestFuncArray extends UnitTestCase {
     } // end of func TestArrayAdd
 
 
+    function TestArrayEval () {
+		$ar = array('a' => 'string');
+		$s_eval = 'substr("{a}", 1, 2) == "tr"';
+		$this->assertEqual(true, ArrayEval($s_eval, $ar));
+
+		$s_eval = 'substr("string", 1, 2) == "tr"';
+		$this->assertEqual(true, ArrayEval($s_eval));
+
+		$s_eval = 'substr("{a}", 1, 2) == "tr"; return false;';
+		$this->assertEqual(false, ArrayEval($s_eval, array()));
+	} // end of func TestArrayEval
+
+
     function TestArrayInsert () {
 		// Pos not exists, number indexed
 		$ar_srce = array('a', 'b', 'c');
