@@ -242,6 +242,15 @@ class Adodb extends Fwolflib {
 	 * @return boolean
 	 */
 	public function Connect ($forcenew = false) {
+		// If port assigned in host, grab it out and set alone
+		$ar = array();
+		$i = preg_match('/:(\d+)$/', $this->aDbProfile['host'], $ar);
+		if (0 < $i) {
+			$this->__conn->port = $ar[1];
+			$this->aDbProfile['host'] = preg_replace('/:(\d+)$/', ''
+				, $this->aDbProfile['host']);
+		}
+
 		try {
 			// Disable error display tempratory
 			$s = ini_get("display_errors");
