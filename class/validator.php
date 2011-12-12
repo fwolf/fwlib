@@ -111,7 +111,7 @@ class Validator extends Fwolflib {
 			';
 
 		$s_js .='
-			// Append css define to <head>
+			/* Append css define to <head> */
 			$(\'head\').append(\'\
 			' . str_replace("\n", "\\\n", $this->GetCss()) . '\
 			\');
@@ -119,7 +119,7 @@ class Validator extends Fwolflib {
 
 		if (!empty($this->aRule))
 			foreach ($this->aRule as $rule) {
-				$s_js .= '// Set validate for ' . $rule['id'] . "\n";
+				$s_js .= '/* Set validate for ' . $rule['id'] . " */\n";
 				$s_js .= $this->GetJsRule($rule);
 			}
 
@@ -164,7 +164,7 @@ class Validator extends Fwolflib {
 			}
 
 		$s_js .= '
-			// Show error msg
+			/* Show error msg */
 		' . $this->GetJsShowErr();
 
 
@@ -186,7 +186,7 @@ class Validator extends Fwolflib {
 		// Disable submit botton
 		if (!empty($this->aCfg['form-submit-delay']))
 			$s_js .= '
-				// Disable multi submit for some time
+				/* Disable multi submit for some time */
 				$(\'' . $s_form . ' input[type="submit"]\')
 					.attr(\'disabled\', true);
 				setTimeout(function () {
@@ -234,7 +234,7 @@ class Validator extends Fwolflib {
 					s_msg += \'<li>\' + this + \'</li>\';
 				});
 
-				// Set css
+				/* Set css */
 				if (\'undefined\' == typeof(b_' . $this->aCfg['id-prefix']
 						. 'css_setted)) {
 					var b_' . $this->aCfg['id-prefix'] . 'css_setted = 1;
@@ -290,7 +290,7 @@ class Validator extends Fwolflib {
 						/ 2 + $(window).scrollTop() + \'px\');
 				$(\'#' . $s_id_div_bg . '\')
 					.height($(document).height() * 1.2);
-			} // end of func ' . $s_func . '
+			} /* end of func ' . $s_func . ' */
 		';
 
 		return $s_js;
@@ -316,13 +316,13 @@ class Validator extends Fwolflib {
 			/**
 			 * Validate ' . $ar_rule['id'] . '
 			 *
-			 * @param	boolean	b_alert_err	// Alert when got err
+			 * @param	boolean	b_alert_err		Alert when got err
 			 * @return	array	Empty means no error.
 			 */
 			function ' . $s_func . ' (b_alert_err) {
 				var obj = $(\'#' . $ar_rule['id'] . '\');
 				var ar_err = Array();
-				// Standard error, rule str can customize it.
+				/* Standard error, rule str can customize it. */
 				var s_err = \'' . $ar_rule['tip'] . '\';
 			';
 
@@ -342,7 +342,7 @@ class Validator extends Fwolflib {
 			';
 
 		$s_js .= '
-				// Do check
+				/* Do check */
 		' . $this->GetJsRuleStr($ar_rule) . '
 				if (0 < ar_err.length) {
 					obj.addClass(\''
@@ -353,7 +353,7 @@ class Validator extends Fwolflib {
 						. $this->aCfg['id-prefix'] . 'fail\');
 				}
 
-				// If err msg not start with label, prepend it.
+				/* If err msg not start with label, prepend it. */
 				var s_label = \'\';
 				if (0 < ar_err.length) {
 					$(ar_err).each(function (index, value) {
@@ -368,7 +368,7 @@ class Validator extends Fwolflib {
 					});
 				}
 
-				// Alert err ? default false.
+				/* Alert err ? default false. */
 				if (\'undefined\' == typeof(b_alert_err))
 					b_alert_err = false;
 				if (true == b_alert_err) {
@@ -385,7 +385,7 @@ class Validator extends Fwolflib {
 
 		$s_js .= '
 				return ar_err;
-			} // end of func ' . $s_func . '
+			} /* end of func ' . $s_func . ' */
 		';
 
 		// Do validate when blur, and alert if setted
@@ -488,11 +488,13 @@ class Validator extends Fwolflib {
 
 		$s_js = '
 			var s_id = obj.attr(\'id\');
-			// Object can use as map type later in ajax post,
-			// array cannot.
+			/*
+				Object can use as map type later in ajax post,
+				while array cannot.
+			*/
 			var data = new Object;
 
-			// Gen post data
+			/* Gen post data */
 		';
 
 		// Prepare data to do ajax post
@@ -548,7 +550,7 @@ class Validator extends Fwolflib {
 				dataType: \'json\',
 				type: \'POST\',
 				success: function(msg) {
-					// Json return object, need convert to array
+					/* Json return object, need convert to array */
 					if (0 < msg.length)
 						ar_err = ar_err.concat($.makeArray(msg));
 				},
@@ -626,7 +628,7 @@ class Validator extends Fwolflib {
 				}
 			).mousemove(
 				function(e) {
-					// Same with above
+					/* Same with above */
 					$(\'div#' . $this->aCfg['id-prefix'] . 'tip\')
 						.css(\'top\', (e.pageY + ' .
 							$this->aCfg['tip-offset-y'] . ') + \'px\')

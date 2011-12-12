@@ -104,7 +104,7 @@ class AjaxSelDiv extends Fwolflib {
 		$s_js .= '<script type=\'text/javascript\'>
 			<!--//--><![CDATA[//>
 			<!--
-			// Append css define to <head>
+			/* Append css define to <head> */
 			$(\'head\').append(\'\
 			' . str_replace("\n", "\\\n", $s_css) . '\
 			\');
@@ -261,13 +261,13 @@ class AjaxSelDiv extends Fwolflib {
 		$s_js .= '<script type=\'text/javascript\'>
 			<!--//--><![CDATA[//>
 			<!--
-			// Set bg height and width
+			/* Set bg height and width */
 			$(\'#' . $s_id_bg . '\').css({
 				\'width\': $(document).width(),
 				\'height\': $(document).height() * 1.2,
 			});
 
-			// Set click action
+			/* Set click action */
 			$(\'#' . $this->aCfg['query-id'] . '\').click(function () {
 				' . $this->aCfg['js-click'] . '
 				$(\'#' . $s_id_bg . '\').show();
@@ -289,7 +289,7 @@ class AjaxSelDiv extends Fwolflib {
 			$s_js .= '
 			});
 
-			// Set query action
+			/* Set query action */
 			$(\'#' . $s_id . '_submit\').click(function () {
 		';
 
@@ -304,7 +304,7 @@ class AjaxSelDiv extends Fwolflib {
 			';
 
 		$s_js .= '
-					// Query begin
+					/* Query begin */
 					$(\'#' . $s_id_tip . '\').hide();
 					$(\'#' . $s_id_loading . '\').show();
 					$(\'#' . $s_id_empty . '\').hide();
@@ -317,7 +317,7 @@ class AjaxSelDiv extends Fwolflib {
 							$(\'#' . $s_id_loading . '\').hide();
 							$(\'.' . $s_id . '_row\').remove();
 							if (0 < msg.length) {
-								// Got result
+								/* Got result */
 								$(msg).each(function(){
 									tr = $(\'#' . $s_id . '_row_tpl\').clone();
 									tr.addClass(\'' . $s_id . '_row\');
@@ -334,7 +334,7 @@ class AjaxSelDiv extends Fwolflib {
 			}
 
 		$s_js .= '
-									// Row bg-color
+									/* Row bg-color */
 									tr.mouseenter(function () {
 										$(this).addClass(\''
 											. $s_id_tr_hover . '\');
@@ -350,14 +350,14 @@ class AjaxSelDiv extends Fwolflib {
 								});
 							}
 							else {
-								// No result
+								/* No result */
 								$(\'#' . $s_id_empty . '\').show();
 							}
 						}
 					});
 				}
 				else {
-					// Nothing to query
+					/* Nothing to query */
 					$(\'#' . $s_id_tip . '\').show();
 					$(\'#' . $s_id_loading . '\').hide();
 					$(\'#' . $s_id_empty . '\').hide();
@@ -374,7 +374,7 @@ class AjaxSelDiv extends Fwolflib {
 		';
 
 		$s_js .= '
-			// Link to hide select layer
+			/* Link to hide select layer */
 			$(\'#' . $s_id_close_bottom . ', #'
 				. $s_id_close_top . '\').click(function () {
 				$(this).parent().hide();
