@@ -20,12 +20,12 @@
  */
 function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 	if ('undefined' == typeof(s_id) || 1 > s_id.length)
-		// If conflict with other id, modify this.
+		/* If conflict with other id, modify this. */
 		s_id = 'alert';
-	// Store id to global var
+	/* Store id to global var */
 	s_js_alert_id = s_id;
 
-	// Param default value
+	/* Param default value */
 	if ('undefined' == typeof(b_show_close))
 		b_show_close = true;
 	if ('undefined' == typeof(b_show_bg))
@@ -38,13 +38,13 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 			<fieldset>\
 	';
 
-	// Title
+	/* Title */
 	if ('undefined' != typeof(title) && 0 < title.length)
 		s_div += '\
 				<legend alien="center">　' + title + '　</legend>\
 		';
 
-	// Msg
+	/* Msg */
 	s_div += '\
 			<ul>\
 	';
@@ -56,7 +56,7 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 		';
 	});
 
-	// Show close link ?
+	/* Show close link ? */
 	if (true == b_show_close)
 		s_div += '\
 				<li><a href="javascript:void(0);"\
@@ -74,20 +74,20 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 	var s_bg = '<div id="' + s_id + '_bg"></div>';
 
 
-	// Show them
+	/* Show them */
 	if (true == b_show_bg) {
 		$('body').append(s_bg);
-		// Adjust
+		/* Adjust */
 		$('#' + s_id + '_bg').height($(document).height() * 1.2);
 	}
 
 	$('body').append(s_div);
-	// Position
+	/* Position */
 	$('#' + s_id).css('top', $(window).scrollTop()
 		+ ($(window).height() -	$('#' + s_id).height()) / 3
 			+ 'px');
 
-} // end of func JsAlert
+} /* end of func JsAlert */
 
 
 /**
@@ -101,11 +101,11 @@ function JsAlertRemove () {
 	var s_id = ('undefined' == typeof(s_js_alert_id))
 		? 'alert'
 		: s_js_alert_id;
-	// Remove bg first
+	/* Remove bg first */
 	$('#' + s_id + '_bg').remove();
 	$('#' + s_id).remove();
 	return false;
-} // end of func JsAlertRemove
+} /* end of func JsAlertRemove */
 
 
 /* Css example */

@@ -10,10 +10,10 @@
  * function Validate()
  * {
  * 	var Submitted=false;
- * 	//防止表单被多次提交
+ * 	/ * 防止表单被多次提交 * /
  * 	if (Submitted==true) {alert("请不要重复提交！");return false;}
  * 	errfound= false;
- * 	if (!errfound) ValidLength('yhmc',"用户名称",3); 
+ * 	if (!errfound) ValidLength('yhmc',"用户名称",3);
  * 	......
  * 	if (!errfound) {Submitted=true;}
  * 	return !errfound;
@@ -29,19 +29,21 @@
  * @version    $Id$
  */
 
-//<script language="JavaScript">
+/*<script language="JavaScript">*/
 
-//检查用户的各种输入错误
-//检查字符串最小长度 ValidLength(item,col,len)
-//检查字符串最大长度 ValidLengthMax(item,col,len)   
-//检查特殊字符 ValidSpecchar(item,col)  
-//检查EMAIL的合法性 ValidEmail(item,col)     
-//检查数字的合法性 ValidNum(item,col)  
-//检查实数的合法性 ValidNumD(item,col)  
-//检查日期的合法性 ValidDate(item,col)  
-//检查是否合法IP地址 ValidIp(item,col)
+/*
+	检查用户的各种输入错误
+	检查字符串最小长度 ValidLength(item,col,len)
+	检查字符串最大长度 ValidLengthMax(item,col,len)
+	检查特殊字符 ValidSpecchar(item,col)
+	检查EMAIL的合法性 ValidEmail(item,col)
+	检查数字的合法性 ValidNum(item,col)
+	检查实数的合法性 ValidNumD(item,col)
+	检查日期的合法性 ValidDate(item,col)
+	检查是否合法IP地址 ValidIp(item,col)
+*/
 
-  
+
 /**
  * 显示出错信息
  * @param   string  name    出错对象名称
@@ -51,13 +53,13 @@
  */
 function ValidateFail(name, title, text)
 {
-    //abort if we already found an error
+    /* abort if we already found an error */
     if (errfound) return;
     alert(title+" 输入错误！\n\n"+text);
     GetElement(document, name).select();
     GetElement(document, name).focus();
     errfound = true;
-} // end of function ValidateFail
+} /* end of function ValidateFail */
 
 
 /**
@@ -69,7 +71,7 @@ function ValidateFail(name, title, text)
  */
 function ValidateIp(name, title)
 {
-	//检查特殊字符和节数是否正确
+	/* 检查特殊字符和节数是否正确 */
 	var pattern = /^(\d{1,3}\.){3}\d{1,3}$/;
 	if (!pattern.exec(GetData(name, 'value')))
 	{
@@ -80,7 +82,7 @@ function ValidateIp(name, title)
 		}
 		return false;
 	}
-	//检查每一节不能大于255
+	/* 检查每一节不能大于255 */
 	ar = GetData(name, 'value').split('.');
 	if (1>ar[0] || 254<ar[0])
 	{
@@ -102,32 +104,32 @@ function ValidateIp(name, title)
 		}
 	}
 	return true;
-} // end of function ValidateIp
+} /* end of function ValidateIp */
 
 
-//========================== Old Functions ========================
+/*========================== Old Functions ========================*/
 
 
-function ValidLength(item,col,len)   // 检查字符串最小长度
+function ValidLength(item,col,len)   /* 检查字符串最小长度 */
  {
   if (item.value.length < len) error(item,col,"您输入的长度不够，请输入至少 "+len+" 位");
   }
 
-function ValidLengthMax(item,col,len)   // 检查字符串最大长度
+function ValidLengthMax(item,col,len)   /* 检查字符串最大长度 */
  {
   if (item.value.length > len) error(item,col,"您输入的字符太多了，至多能输入 "+len+" 个字符");
   }
 
-function ValidSpecchar(item,col)  //检查特殊字符
+function ValidSpecchar(item,col)  /* 检查特殊字符 */
  {
-  //当前非法字符为：'（半角的单引号）
+  /* 当前非法字符为：'（半角的单引号） */
   if (item.value.length>0)
    {
     if (item.value.indexOf("'") != -1) error(item,col,"您输入了非法字符\n输入中不能含有'（半角的单引号）");
     }
   }
 
-function ValidEmail(item,col)     // 检查EMAIL的合法性
+function ValidEmail(item,col)     /* 检查EMAIL的合法性 */
  {
   if (item.value.length>0)
    {
@@ -135,8 +137,8 @@ function ValidEmail(item,col)     // 检查EMAIL的合法性
     if ((item.value.indexOf('@',0) == -1) || (item.value.indexOf('.',0) == -1) || (item.value.indexOf("'",0) != -1)) error(item,col,"您输入了非法的EMAIL地址\n或者EMAIL地址中含有非法字符");
     }
   }
-  
-function ValidNum(item,col)  //检查数字的合法性
+
+function ValidNum(item,col)  /* 检查数字的合法性 */
  {
   if (item.value.length>0)
    {
@@ -147,8 +149,8 @@ function ValidNum(item,col)  //检查数字的合法性
       }
     }
   }
-  
-function ValidNumD(item,col)  //检查实数的合法性
+
+function ValidNumD(item,col)  /* 检查实数的合法性 */
  {
   if (item.value.length>0)
    {
@@ -156,13 +158,13 @@ function ValidNumD(item,col)  //检查实数的合法性
     for (var i=0;i<item.value.length;i++)
      {
       var ch=item.value.substring(i,i+1);
-      if (ch==".") 
+      if (ch==".")
        {
         k++;
         }
       else
        {
-        if (("0">ch || ch>"9") && ch!=".") 
+        if (("0">ch || ch>"9") && ch!=".")
          {
           error(item,col,"您输入了非法的字符");
           return;
@@ -172,12 +174,12 @@ function ValidNumD(item,col)  //检查实数的合法性
     if (k>1) error(item,col,"您输入了 "+k+" 个小数点");
     if (k==1)
       if (item.value.substring(item.value.length-3,item.value.length-2) != ".")
-        if (item.value.substring(item.value.length-2,item.value.length-1) != ".") 
+        if (item.value.substring(item.value.length-2,item.value.length-1) != ".")
           if (item.value.substring(item.value.length-1,item.value.length) != ".") error(item,col,"最多输入两位小数");
     }
   }
 
-function ValidDate(item,col)  //检查日期的合法性
+function ValidDate(item,col)  /* 检查日期的合法性 */
  {
   if (item.value.length>0)
    {
@@ -186,7 +188,7 @@ function ValidDate(item,col)  //检查日期的合法性
     for (i=0;i<item.value.length;i++)
      {
       var ch=item.value.substring(i,i+1);
-      if (ch=="-") 
+      if (ch=="-")
        {
         n++;
         }
@@ -198,7 +200,7 @@ function ValidDate(item,col)  //检查日期的合法性
           if (n==1) {month=month*10+parseInt(ch);mn++;}
           if (n==2) {day=day*10+parseInt(ch);dn++;}
           }
-        else 
+        else
          {
           error(item,col,"请不要输入无关字符");
           }
@@ -210,15 +212,15 @@ function ValidDate(item,col)  //检查日期的合法性
     if (day>31 || day<1 || dn>2 || dn==0) error(item,col,"请输入1～31之间的日");
     }
   }
-  
-function ValidIp(item,col)  //检查是否合法IP地址
+
+function ValidIp(item,col)  /* 检查是否合法IP地址 */
  {
   var i,n,st,j;
   n=0;j=0;
   for (i=0;i<item.value.length;i++)
    {
     st=item.value.substr(i,1);
-    if (st==".") 
+    if (st==".")
      {
       j++;
       if (j==1 && n==0) error(item,col,"IP输入不完整");
@@ -235,15 +237,15 @@ function ValidIp(item,col)  //检查是否合法IP地址
   if (0>n || n>255) error(item,col,"IP只能是0－255的数字");
   if (n==0) error(item,col,"IP输入不完整");
   }
-  
 
-function error(elem,col,text)  //显示出错信息
+
+function error(elem,col,text)  /* 显示出错信息 */
  {
-  //abort if we already found an error
+  /* abort if we already found an error */
   if (errfound) return;
   alert(col+" 输入错误！\n\n"+text);
   elem.select();
   elem.focus();
   errfound = true;
   }
-//</script>
+/* </script> */

@@ -31,7 +31,7 @@ function GetData (obj, part) {
     if ('text' == part) {
         return GetElement(document, obj).text;
     }
-} // end of func GetData
+} /* end of func GetData */
 
 
 /**
@@ -55,7 +55,7 @@ function GetElement (parentobj, id) {
         obj = parentobj.layers[id];
     }
     return obj;
-} // end of func GetElement
+} /* end of func GetElement */
 
 
 /**
@@ -68,14 +68,14 @@ function GetElement (parentobj, id) {
  * @return	boolean
  */
 function OpenWindow (url, winname, spec, focus) {
-//  var newwin=window.open(url,"select_jsdw","toolbar=no,Location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=550,left=50,top=50");
-//  var newwin=window.open(url,"","");
+/*  var newwin=window.open(url,"select_jsdw","toolbar=no,Location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=550,left=50,top=50"); */
+/*  var newwin=window.open(url,"",""); */
 	var win = window.open(url, winname, spec);
 	if (true == focus) {
 		win.focus();
 	}
 	return false;
-} // end of func OpenWindow
+} /* end of func OpenWindow */
 
 
 /**
@@ -98,4 +98,4 @@ function SetData (id, part, data) {
     if ('text' == part) {
         GetElement(document, id).text = data;
     }
-} // end of func SetData
+} /* end of func SetData */

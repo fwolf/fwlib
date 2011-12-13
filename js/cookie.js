@@ -30,7 +30,7 @@ function GetCookie(name)
         if (i == 0) break;
     }
     return null;
-} // end of function GetCookie
+} /* end of function GetCookie */
 
 
 /**
@@ -44,7 +44,7 @@ function GetCookieVal(offset)
     var endstr = document.cookie.indexOf(";", offset);
     if (endstr == -1) endstr = document.cookie.length;
     return unescape(document.cookie.substring(offset, endstr));
-} // end of function GetCookieVal
+} /* end of function GetCookieVal */
 
 
 /**
@@ -59,7 +59,7 @@ function SetCookie(name, value, second)
     var exp = new Date();
     if (undefined == second)
     {
-        //COOKIE立刻超期，其实无用
+        /* COOKIE立刻超期，其实无用 */
         i_second = 0;
     }
     else
@@ -68,4 +68,4 @@ function SetCookie(name, value, second)
     }
     exp.setTime(exp.getTime() + i_second * 1000);
     document.cookie = name + '=' + value + '; expires=' + exp.toGMTString();
-} // end of function SetCookie
+} /* end of function SetCookie */
