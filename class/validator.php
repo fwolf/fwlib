@@ -588,7 +588,7 @@ class Validator extends Fwolflib {
 			elseif ('JsAlert' == $this->aCfg['func-show-error'])
 				$s_js .= '
 					if (0 < ar_err.length)
-						JsAlert(ar_err);
+						JsAlert(ar_err, \'\', \'t' . mt_rand(0, 9000) . '\');
 				';
 		}
 		return $s_js;

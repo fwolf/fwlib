@@ -23,7 +23,7 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 		/* If conflict with other id, modify this. */
 		s_id = 'alert';
 	/* Store id to global var */
-	s_js_alert_id = s_id;
+	s_js_alert_id = s_id;	/* Useless now */
 
 	/* Param default value */
 	if ('undefined' == typeof(b_show_close))
@@ -35,7 +35,7 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 
 	/* Iframe is hack for IE select overwrite div. */
 	s_div += '\
-		<div id=\'' + s_id + '\'>\
+		<div id=\'' + s_id + '\' class=\'js_alert\'>\
 			<iframe style=\'width: 100%; height: 100%;\
 				filter: alpha(opacity=0); opacity: 0;\'>\
 			</iframe>\
@@ -65,7 +65,7 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 		s_div += '\
 				<li><a id="' + s_id + '_close"\
 						href="javascript:void(0);"\
-						onclick="return JsAlertRemove();">\
+						onclick="return JsAlertRemove(\'' + s_id + '\');">\
 					继续</a>\
 				</li>\
 		';
@@ -76,7 +76,7 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 		</div>\
 	';
 
-	var s_bg = '<div id="' + s_id + '_bg"></div>';
+	var s_bg = '<div id="' + s_id + '_bg" class="js_alert_bg"></div>';
 
 
 	/* Show them */
@@ -94,7 +94,7 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 
 	/* For IE */
 	$('#' + s_id + '_close').click(function () {
-		return JsAlertRemove();
+		return JsAlertRemove(s_id);
 	});
 } /* end of func JsAlert */
 
@@ -104,12 +104,15 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
  *
  * Can only call inside link in msg list, 4 level below div.
  *
+ * @param	string	s_id
  * @return	false
  */
-function JsAlertRemove () {
+function JsAlertRemove (s_id) {
+/*
 	var s_id = ('undefined' == typeof(s_js_alert_id))
 		? 'alert'
 		: s_js_alert_id;
+*/
 	/* Remove bg first */
 	$('#' + s_id + '_bg').remove();
 	$('#' + s_id).remove();

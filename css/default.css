@@ -279,7 +279,7 @@ a:hover {
 
 
 /* Js Alert */
-div#alert {
+div.js_alert {
 	left: 0px;
 	position: absolute;
 	text-align: center;
@@ -287,7 +287,7 @@ div#alert {
 	width: 99%;
 	z-index: 999;
 }
-div#alert_bg {
+div.js_alert_bg {
 	background: #E5E5E5;
 	filter: alpha(opacity=60);
 	height: 100%;
@@ -298,7 +298,7 @@ div#alert_bg {
 	width: 100%;
 	z-index: 998;
 }
-div#alert fieldset {
+div.js_alert fieldset {
 	background: #FFF;
 	border: 1px solid blue;
 	font-weight: bold;
@@ -307,7 +307,7 @@ div#alert fieldset {
 	padding-top: 2em;
 	width: 40%;
 }
-div#alert legend {
+div.js_alert legend {
 	color: blue;
 	font-weight: bold;
 	margin-left: 2em;
