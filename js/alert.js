@@ -59,7 +59,8 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 	/* Show close link ? */
 	if (true == b_show_close)
 		s_div += '\
-				<li><a href="javascript:void(0);"\
+				<li><a id="' + s_id + '_close"\
+						href="javascript:void(0);"\
 						onclick="return JsAlertRemove();">\
 					继续</a>\
 				</li>\
@@ -87,6 +88,10 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 		+ ($(window).height() -	$('#' + s_id).height()) / 3
 			+ 'px');
 
+	/* For IE */
+	$('#' + s_id + '_close').click(function () {
+		return JsAlertRemove();
+	});
 } /* end of func JsAlert */
 
 
