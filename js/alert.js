@@ -33,8 +33,12 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 
 	var s_div = '';
 
+	/* Iframe is hack for IE select overwrite div. */
 	s_div += '\
 		<div id=\'' + s_id + '\'>\
+			<iframe style=\'width: 100%; height: 100%;\
+				filter: alpha(opacity=0); opacity: 0;\'>\
+			</iframe>\
 			<fieldset>\
 	';
 
