@@ -641,9 +641,9 @@ class Validator extends Fwolflib {
 		// Append hint, common known as '*' after input
 		if (!empty($this->aCfg['hint-text']))
 			$s_js .= '
-				$(\'#' . $id . '\').after(\'\
-					<span class="' . $this->aCfg['hint-class']
-						. '">' . $this->aCfg['hint-text'] . '</span>\
+				$(\'#' . $id . '\').after(\'<span class="'
+					. $this->aCfg['hint-class']
+					. '">' . $this->aCfg['hint-text'] . '</span>\
 				\');
 			';
 
