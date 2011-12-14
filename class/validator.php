@@ -357,8 +357,8 @@ class Validator extends Fwolflib {
 				var s_label = \'\';
 				if (0 < ar_err.length) {
 					$(ar_err).each(function (index, value) {
-						s_label = $(\'label[for="' . $ar_rule['id']
-							. '"]\').text().trim()
+						s_label = $.trim($(\'label[for="' . $ar_rule['id']
+							. '"]\').text())
 							.replace(/(:|：)/g, \'\');
 						if ((0 < s_label.length) &&
 								(null == value.match(\'^\' + s_label)))
@@ -453,7 +453,7 @@ class Validator extends Fwolflib {
 		$rule = trim($rule);
 		$s_js = '
 			var reg_validate = new RegExp(' . $rule . ');
-			if (!reg_validate.test(obj.val().trim()))
+			if (!reg_validate.test($.trim(obj.val())))
 				ar_err.push(s_err);
 		';
 		return $s_js;
@@ -467,7 +467,7 @@ class Validator extends Fwolflib {
 	 */
 	public function GetJsRuleStrRequired () {
 		$s_js = '
-			if (0 == obj.val().trim().length)
+			if (0 == $.trim(obj.val()).length)
 				ar_err.push(s_err);
 		';
 		return $s_js;
