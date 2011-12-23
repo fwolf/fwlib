@@ -175,8 +175,11 @@
 		$(".{$lt_id}_pager").css("width", $("#{$lt_id}_div table").attr("clientWidth"));
 		/* Same left margin with table */
 		$(".{$lt_id}_pager").css("margin-left"
-			, ($("#{$lt_id}_div").attr("clientWidth")
-			- $("#{$lt_id}_div table").attr("clientWidth")) / 2);
+			, (0 < $("#{$lt_id}_div").attr("clientWidth"))
+				? (($("#{$lt_id}_div").attr("clientWidth")
+					- $("#{$lt_id}_div table").attr("clientWidth")) / 2)
+				: $("#{$lt_id}_div table").attr("margin-left")
+			);
 	{literal}}{/literal}
 	else
 	{literal}{{/literal}
@@ -185,6 +188,7 @@
 		$(".{$lt_id}_pager").css("margin-left"
 			, ($("#{$lt_id}_div").css("width").replace("px", "") * 1
 			- $("#{$lt_id}_div table").css("width").replace("px", "") * 1) / 2);
+	{literal}}{/literal}
 
 	/* Form vision */
 	$(".{$lt_id}_pager form").css("display", "inline");
@@ -192,7 +196,6 @@
 	$(".{$lt_id}_pager form input").mouseover(function() {literal}{{/literal}
 		this.select();
 		{literal}}{/literal});
-	{literal}}{/literal}
 
 //--><!]]>
 </script>
