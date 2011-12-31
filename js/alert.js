@@ -21,7 +21,7 @@
 function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 	if ('undefined' == typeof(s_id) || 1 > s_id.length)
 		/* If conflict with other id, modify this. */
-		s_id = 'alert';
+		s_id = 'alert_' + String(Math.random()).substr(2);
 	/* Store id to global var */
 	s_js_alert_id = s_id;	/* Useless now */
 
@@ -113,9 +113,19 @@ function JsAlertRemove (s_id) {
 		? 'alert'
 		: s_js_alert_id;
 */
+
 	/* Remove bg first */
-	$('#' + s_id + '_bg').remove();
-	$('#' + s_id).remove();
+	if ('undefined' == typeof(s_id)) {
+		/* Remove by class */
+		$('.js_alert_bg').remove();
+		$('.js_alert').remove();
+	}
+	else {
+		/* Remove by id */
+		$('#' + s_id + '_bg').remove();
+		$('#' + s_id).remove();
+	}
+
 	return false;
 } /* end of func JsAlertRemove */
 
