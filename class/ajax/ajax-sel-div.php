@@ -196,27 +196,10 @@ class AjaxSelDiv extends Fwolflib {
 				$s_html .= '<input type=\'hidden\' class=\''
 					. $s_id . '_col_' . $k . '\' />' . "\n";
 
+		// Assign onclick using js, avoid lost event when cloning in IE.
 		$s_html .= '
 							<a href=\'javascript:void(0);\'
-								onclick=\'javascript:
-									' . $this->aCfg['js-sel'] . '
-		';
-
-		// When select, write selected value
-		if (!empty($this->aCfg['sel-link']))
-			foreach ($this->aCfg['sel-link'] as $k => $v)
-				$s_html .= '
-									$("#' . $v . '").val(
-										$(".' . $s_id
-											. '_col_' . $k . '",
-											$(this).parent().parent())
-											.' . $this->aCfg['list'][$k]['get'] . '());
-				';
-
-		$s_html .= '
-									$("#' . $s_id_div . '").hide();
-									$("#' . $s_id_bg . '").hide();
-								\' >选择</a>
+								>选择</a>
 						</td>
 					</tr>
 					<tr id=\'' . $s_id_loading . '\'>
@@ -326,6 +309,27 @@ class AjaxSelDiv extends Fwolflib {
 								$(msg).each(function(){
 									tr = $(\'#' . $s_id . '_row_tpl\').clone();
 									tr.addClass(\'' . $s_id . '_row\');
+
+									/* Attach onclick event */
+									/* Cloning in IE will lost event */
+									$(\'a\', tr).last().click(function () {
+										' . $this->aCfg['js-sel'] . '
+		';
+		// When select, write selected value
+		if (!empty($this->aCfg['sel-link']))
+			foreach ($this->aCfg['sel-link'] as $k => $v)
+				$s_js .= '
+										$("#' . $v . '").val(
+											$(".' . $s_id
+												. '_col_' . $k . '",
+												$(this).parent().parent())
+												.' . $this->aCfg['list'][$k]['get'] . '());
+		';
+
+		$s_js .= '
+										$("#' . $s_id_div . '").hide();
+										$("#' . $s_id_bg . '").hide();
+									});
 		';
 
 		// Assign result from ajax json to tr
