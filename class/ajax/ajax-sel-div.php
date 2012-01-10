@@ -40,7 +40,10 @@ class AjaxSelDiv extends Fwolflib {
 
 		// Html define
 		$s_html .= $this->GetHtmlCss();
-		$s_html .= '<div id=\'' . $s_id_bg . '\'></div>' . "\n";
+		$s_html .= '<div id=\'' . $s_id_bg . '\'>
+			<iframe style=\'position: absolute; z-index: -1;\'
+				frameborder=\'0\' src=\'about:blank\'></iframe>
+			</div>' . "\n";
 		$s_html .= $this->GetHtmlDiv();
 		$s_html .= $this->GetHtmlJs();
 
@@ -263,6 +266,9 @@ class AjaxSelDiv extends Fwolflib {
 			<!--
 			/* Set bg height and width */
 			$(\'#' . $s_id_bg . '\')
+				.css(\'width\', $(document).width())
+				.css(\'height\', $(document).height() * 1.2);
+			$(\'#' . $s_id_bg . ' iframe\')
 				.css(\'width\', $(document).width())
 				.css(\'height\', $(document).height() * 1.2);
 
