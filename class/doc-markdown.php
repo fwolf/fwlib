@@ -629,9 +629,9 @@ hr {
 			|| ('none' == obj.css('display'))
 			//|| (undefined == obj.css('display'))
 			)
-			obj.css({display: 'block'})
+			obj.css('display', 'block');
 		else if (('block' == obj.css('display')) || ('none' == value))
-			obj.css({display: 'none'});
+			obj.css('display', 'none');
 	} // end of function SwitchDisplay
 
 

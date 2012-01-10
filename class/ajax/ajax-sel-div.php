@@ -262,24 +262,23 @@ class AjaxSelDiv extends Fwolflib {
 			<!--//--><![CDATA[//>
 			<!--
 			/* Set bg height and width */
-			$(\'#' . $s_id_bg . '\').css({
-				\'width\': $(document).width(),
-				\'height\': $(document).height() * 1.2,
-			});
+			$(\'#' . $s_id_bg . '\')
+				.css(\'width\', $(document).width())
+				.css(\'height\', $(document).height() * 1.2);
 
 			/* Set click action */
 			$(\'#' . $this->aCfg['query-id'] . '\').click(function () {
 				' . $this->aCfg['js-click'] . '
 				$(\'#' . $s_id_bg . '\').show();
-				$(\'#' . $s_id_div . '\').css({
-					\'top\': ($(window).height() -
-							$(\'#' . $s_id_div . '\').height()) / 3
+				$(\'#' . $s_id_div . '\')
+					.css(\'top\', ($(window).height() -
+						$(\'#' . $s_id_div . '\').height()) / 3
 						+ $(window).scrollTop() + '
-							. $this->aCfg['offset-y'] . ' + \'px\',
-					\'left\': $(window).width() / 2
+						. $this->aCfg['offset-y'] . ' + \'px\')
+					.css(\'left\', $(window).width() / 2
 						- $(\'#' . $s_id_div . '\').width() / 2
-						+ ' . $this->aCfg['offset-x'] . ' + \'px\',
-				}).show();
+						+ ' . $this->aCfg['offset-x'] . ' + \'px\')
+					.show();
 			';
 			// Do query at once when open select div
 			if (true == $this->aCfg['query-when-click'])
