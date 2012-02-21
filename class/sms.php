@@ -38,7 +38,7 @@ class Sms extends Fwolflib {
 	 * @param	object	$o_db
 	 */
 	public function __construct ($o_db = null) {
-		$this->Init();
+		parent::__construct();
 
 		if (!is_null($o_db))
 			$this->oDb = &$o_db;

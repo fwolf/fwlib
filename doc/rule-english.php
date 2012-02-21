@@ -276,6 +276,7 @@ scale						|（公司）规模
 scientific outlook on development, sood	|科学发展观
 scope						|范围，是数据库中的关键字，需要和其他单词组合使用，单独用可以用 purview
 scope of business, sob		|经营范围
+self discipline pact, sdp	|自律公约
 self service, ss			|自助服务
 sequence, seq				|顺序
 sign in						|签到
