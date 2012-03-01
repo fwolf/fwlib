@@ -1,9 +1,8 @@
 <?php
 /**
- * 字符串函数集
- * @package     fwolflib
- * @subpackage	func
- * @copyright   Copyright 2004-2010, Fwolf
+ * Functions about string.
+ * @package     fwolflib\func
+ * @copyright   Copyright 2004-2012, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		Before 2008-04-07
  */
@@ -144,6 +143,59 @@ function MatchWildcard ($str, $rule) {
 
 	return false;
 } // end of func MatchWildcard
+
+
+/**
+ * Generate org code according to GB 11714-1997.
+ *
+ * @link	http://zh.wikisource.org/zh/GB_11714-1997_全国组织机构代码编制规则
+ * @param	string	$code_base	8-digit base code
+ * @return	string
+ */
+function OrgCodeGen ($code_base = '') {
+	$code_base = strtoupper($code_base);
+	// Gen random
+	if (empty($code_base))
+		$code_base = RandomString(8, '0A');
+	// Length check
+	else if (8 != strlen($code_base))
+		return '';
+	// Only 0-9 A-Z allowed
+	else if ('' != preg_replace('/[0-9A-Z]/', '', $code_base))
+		return '';
+
+
+	// Prepare value table
+	$ar_val = array();
+	// 0-9 to 0-9
+	for ($i = 48; $i < 58; $i ++)
+		$ar_val[chr($i)] = $i - 48;
+	// A-Z to 10-35
+	for ($i = 65; $i < 91; $i ++)
+		$ar_val[chr($i)] = $i - 55;
+
+	// Weight table
+	$ar_weight = array(3, 7, 9, 10, 5, 8, 4, 2);
+
+	// Add each digit value after plus it's weight
+	$j = 0;
+	for ($i = 0; $i <8; $i ++)
+		$j += $ar_val[$code_base{$i}] * $ar_weight[$i];
+
+	// Mod by 11
+	$j = $j % 11;
+
+	// Minus by 11
+	$j = 11 - $j;
+
+	// Return result
+	if (10 == $j)
+		return $code_base . '-X';
+	else if (11 == $j)
+		return $code_base . '-0';
+	else
+		return $code_base . '-' . strval($j);
+} // end of func OrgCodeGen
 
 
 /**

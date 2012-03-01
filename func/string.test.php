@@ -71,14 +71,38 @@ class TestFuncString extends UnitTestCase {
 	} // end of func TestMatchWildcard
 
 
-    function TestPin15To18() {
-    	$x = '340524800101001';
-    	$y = '34052419800101001X';
-    	$this->assertEqual(Pin15To18($x), $y);
+    function TestOrgCodeGen () {
+		$x = 'D2143569';
+		$y = 'D2143569-X';
+		$this->assertEqual(OrgCodeGen($x), $y);
 
-    	$x = '410881790605552';
-    	$y = '410881197906055527';
-    	$this->assertEqual(Pin15To18($x), $y);
+		$x = 'd2143569';
+		$y = 'D2143569-X';
+		$this->assertEqual(OrgCodeGen($x), $y);
+
+		$y = OrgCodeGen($x);
+		$x = substr($x, 0, 8);
+		$this->assertEqual(OrgCodeGen($x), $y);
+
+		$x = 'D214356';
+		$y = '';
+		$this->assertEqual(OrgCodeGen($x), $y);
+
+		$x = 'D214356-';
+		$y = '';
+		$this->assertEqual(OrgCodeGen($x), $y);
+
+    } // end of func TestOrgCodeGen
+
+
+    function TestPin15To18() {
+		$x = '340524800101001';
+		$y = '34052419800101001X';
+		$this->assertEqual(Pin15To18($x), $y);
+
+		$x = '410881790605552';
+		$y = '410881197906055527';
+		$this->assertEqual(Pin15To18($x), $y);
 
     } // end of func TestPin15To18
 
