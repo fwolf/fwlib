@@ -824,8 +824,13 @@ class Adodb extends Fwolflib {
 	 */
 	public function QuoteValue ($table, $column, $val) {
 		$this->GetMetaColumn($table);
-		if (!isset($this->aMetaColumn[$table][$column]->type))
-			die("Column to quote not exists($table.$column).\n");
+		if (!isset($this->aMetaColumn[$table][$column]->type)) {
+			error_log("Column to quote not exists($table.$column).\n");
+			// Return quoted value for safety
+			$val = stripslashes($val);
+			return $this->qstr($val, false);
+		}
+
 		//print_r($this->aMetaColumn[$table][$column]);
 		$type = $this->aMetaColumn[$table][$column]->type;
 		//var_dump($type);
