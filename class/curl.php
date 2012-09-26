@@ -1,11 +1,4 @@
 <?php
-/**
-* @package      fwolflib
-* @copyright    Copyright © 2007-2010, Fwolf
-* @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
-*/
-
-
 require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once(FWOLFLIB . 'func/array.php');
 
@@ -16,7 +9,7 @@ require_once(FWOLFLIB . 'func/array.php');
 * Very useful in write a game bot, or an information thief program.
 *
 * @package    fwolflib
-* @copyright  Copyright © 2007-2010, Fwolf
+* @copyright  Copyright © 2007-2012, Fwolf
 * @author     Fwolf <fwolf.aide+fwolflib@gmail.com>
 * @since      2007-03-14
 */
@@ -226,7 +219,7 @@ class Curl extends Fwolflib {
 	public function SetoptCommon()
 	{
 		$this->SetoptCookie();
-		$this->SetoptUseragent('ie6');
+		$this->SetoptUseragent('ff14');
 
 		curl_setopt($this->mSh, CURLOPT_AUTOREFERER, true);
 		// If got http error, report.
@@ -238,6 +231,11 @@ class Curl extends Fwolflib {
 		curl_setopt($this->mSh, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 		curl_setopt($this->mSh, CURLOPT_MAXREDIRS, 10);
 		curl_setopt($this->mSh, CURLOPT_TIMEOUT, 300);
+
+		// Accept all supported encoding(identity, deflate, gzip)
+		// See CURLOPT_ACCEPT_ENCODING in libcurl
+		// Set this to get uncompressed html content
+		curl_setopt($this->mSh, CURLOPT_ENCODING, '');
 	} // end of func SetoptCommon
 
 
@@ -314,8 +312,8 @@ class Curl extends Fwolflib {
 	 * @param	string	$browser
 	 * @access	public
 	 */
-	public function SetoptUseragent($browser)
-	{
+	public function SetoptUseragent ($browser) {
+		$b['ff14'] = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:14.0) Gecko/20100101 Firefox/14';
 		$b['ie6'] = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)';
 		$b['googlebot'] = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
 

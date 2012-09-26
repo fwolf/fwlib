@@ -1,11 +1,4 @@
 <?php
-/**
-* @package      fwolflib
-* @copyright    Copyright 2007-2008, Fwolf
-* @author       Fwolf <fwolf.aide+fwolflib@gmail.com>
-*/
-
-
 require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once(FWOLFLIB . 'class/curl.php');
 require_once(FWOLFLIB . 'func/download.php');
@@ -18,10 +11,9 @@ require_once(FWOLFLIB . 'func/url.php');
  * Convert css, js, image in a html file, to save it in ONE file like mht.
  *
  * @package		fwolflib
- * @copyright	Copyright 2007-2008, Fwolf
+ * @copyright	Copyright 2007-2012, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib@gmail.com>
  * @since		2007-04-06
- * @version		$Id$
  */
 class ToDataUri extends Curl {
 	/**
@@ -127,10 +119,10 @@ class ToDataUri extends Curl {
 
 	/**
 	 * Add process information to dom, display at bottom of page
+	 *
 	 * @param	DOMDocument	$dom
 	 */
-	protected function AddInfo(&$dom)
-	{
+	protected function AddInfo (&$dom) {
 		// :TODO: original url & this script url
 		// Using dom now, $this->mInfo is string, so...it's obsolete?
 
@@ -528,7 +520,7 @@ class ToDataUri extends Curl {
 		if (!empty($this->mUrl))
 		{
 			if ($this->mCliMode)
-				echo "[Curl ] Get html content from $this->mUrl ";
+				echo "[Curl ] Get html content from $this->mUrl\n";
 			$this->SetoptReferer($this->mUrl);
 			if (true == $this->mRetrieveHtml)
 				$this->mHtml = $this->Get($this->mUrl);
@@ -537,18 +529,21 @@ class ToDataUri extends Curl {
 				$this->Get($this->mUrl);
 				$this->mRs = $this->mHtml;
 			}
+
 			//$this->GetBaseUrl();
 			if (0 == strlen($this->mHtml))
 			{
 				// Some error happen
 				$this->mMsg .= curl_error($this->mSh);
 				if ($this->mCliMode)
-					echo "... Failed.\n";
+					echo "[Curl ] Failed.\n";
 			}
 			else
 			{
 				if ($this->mCliMode)
-					echo "... Ok.\n";
+					echo "[Curl ] Ok, "
+						. number_format(strlen($this->mRs))
+						. " bytes.\n";
 				$this->GetBaseUrl();
 				// Go ahead
 				$this->MbConvert();
@@ -563,7 +558,8 @@ class ToDataUri extends Curl {
 
 				// :TODO: parse un-wellform html error ?
 				// This way can erase some un-wellformed html error, like un-supported/un-readable chars etc.
-				$this->mHtml = mb_convert_encoding($this->mHtml, 'HTML-ENTITIES', "UTF-8");
+				$this->mHtml = mb_convert_encoding($this->mHtml
+					, 'HTML-ENTITIES', "UTF-8");
 				// Seems these warning message can't be erased.
 				@$dom->loadHTML($this->mHtml);
 				// :TODO: If parse all relative link href, can I make a proxy ?
