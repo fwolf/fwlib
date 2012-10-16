@@ -12,6 +12,33 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**
+ * Addslashes for any data, recursive.
+ *
+ * @param	mixed	$srce
+ * @return	mixed
+ */
+function AddslashesRecursive ($srce) {
+	if (empty($srce))
+		return $srce;
+
+	elseif (is_string($srce))
+		return addslashes($srce);
+
+	elseif (is_array($srce)) {
+		$ar_rs = array();
+		foreach ($srce as $k => $v) {
+			$ar_rs[addslashes($k)] = AddslashesRecursive($v);
+		}
+		return $ar_rs;
+	}
+
+	else
+		// Other data type, return original
+		return $srce;
+} // end of func AddslashesRecursive
+
+
+/**
  * 把一个字符串转换为可以用HTML输出的格式
  * @param	string	$str
  * @return	string

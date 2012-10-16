@@ -3,7 +3,7 @@
  * Test - request function
  * @package     fwolflib
  * @subpackage	func.test
- * @copyright   Copyright 2004-2010, Fwolf
+ * @copyright   Copyright 2004-2012, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2008-05-08
  */

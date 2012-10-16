@@ -2,13 +2,14 @@
 /**
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2007-2010, Fwolf
+ * @copyright	Copyright 2007-2012, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2007-01-21
  */
 
 
 require_once(dirname(__FILE__) . '/../fwolflib.php');
+require_once(dirname(__FILE__) . '/string.php');
 
 
 /**
@@ -29,8 +30,7 @@ function GetCookie($var, $default='')
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
  */
-function GetGet($var, $default='')
-{
+function GetGet ($var, $default='') {
 	return GetRequest($_GET, $var, $default);
 	/*
 	if (isset($_GET[$var]))
@@ -54,7 +54,7 @@ function GetGet($var, $default='')
  * @param	boolean	$b_with_url	If true, return value include self url.
  * @return	string	'?' and '&' included.
  */
-function GetParam($k = '', $v = '', $b_with_url = false) {
+function GetParam ($k = '', $v = '', $b_with_url = false) {
 	$ar_param = $_GET;
 	if (!empty($ar_param) && !get_magic_quotes_gpc()) {
 		foreach ($ar_param as &$p) {
@@ -100,8 +100,7 @@ function GetParam($k = '', $v = '', $b_with_url = false) {
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
  */
-function GetPost($var, $default='')
-{
+function GetPost ($var, $default='') {
 	return GetRequest($_POST, $var, $default);
 	/*
 	if (isset($_POST[$var]))
@@ -120,13 +119,14 @@ function GetPost($var, $default='')
  * @param	mixed	$default	If variant is not given, return this
  * @return	mixed
  */
-function GetRequest(&$r, $var, $default = null) {
-	if (isset($r[$var]))
-	{
+function GetRequest (&$r, $var, $default = null) {
+	if (isset($r[$var])) {
 		$val = $r[$var];
+
 		// Deal with special chars in parameters
-		if (!get_magic_quotes_gpc())
-			$val = addslashes($val);
+		// magic_quotes_gpc is deprecated from php 5.3.0
+		//if (!get_magic_quotes_gpc())
+		$val = AddslashesRecursive($val);
 	}
 	else
 		$val = $default;

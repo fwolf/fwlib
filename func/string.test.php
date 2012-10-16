@@ -25,6 +25,33 @@ require_once('fwolflib/func/string.php');
 
 class TestFuncString extends UnitTestCase {
 
+	function TestAddslashesRecursive () {
+		$x = array(
+			"It's 1.",
+			"It's 2."	=> "It's 3.",
+			2012,
+			"It's 4."	=> array(
+				"It's 5."	=> array(
+					"It's 6."	=> "It's 7.",
+				),
+			'end',
+			),
+		);
+		$y = array(
+			"It\\'s 1.",
+			"It\\'s 2."	=> "It\\'s 3.",
+			2012,
+			"It\\'s 4."	=> array(
+				"It\\'s 5."	=> array(
+					"It\\'s 6."	=> "It\\'s 7.",
+				),
+			"end",
+			),
+		);
+		$this->assertEqual($y, AddslashesRecursive($x));
+	} // end of func TestAddslashesRecursive
+
+
 	function TestJsonEncodeHex () {
 		$x = true;
 		$y = JsonEncodeHex($x);
