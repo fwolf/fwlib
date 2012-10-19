@@ -675,12 +675,14 @@ class ToDataUri extends Curl {
 	 * Set url of web page to process
 	 * @param	string	$url
 	 */
-	public	function SetUrl($url)
-	{
-		if (!empty($url) && $this->IsSafe($url))
+	public function SetUrl ($url) {
+		if (!empty($url) && $this->IsSafe($url)) {
+			// Convert encoded url(eg: chinese) back to original
+			$url = urldecode($url);
 			$this->mUrl = $url;
+		}
 	} // end of func SetUrl
 
-} // end of class ToDataUri
 
+} // end of class ToDataUri
 ?>
