@@ -124,9 +124,10 @@ function GetRequest (&$r, $var, $default = null) {
 		$val = $r[$var];
 
 		// Deal with special chars in parameters
-		// magic_quotes_gpc is deprecated from php 5.3.0
-		//if (!get_magic_quotes_gpc())
-		$val = AddslashesRecursive($val);
+		// magic_quotes_gpc is deprecated from php 5.4.0
+		if (version_compare(PHP_VERSION, '5.4.0', '>=')
+			|| !get_magic_quotes_gpc())
+			$val = AddslashesRecursive($val);
 	}
 	else
 		$val = $default;
