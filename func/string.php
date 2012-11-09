@@ -149,6 +149,38 @@ function JsonEncodeHex ($val) {
 
 
 /**
+ * Json encode, simulate JSON_UNESCAPED_UNICODE option is on.
+ *
+ * @param	mixed	$val
+ * @param	int		$option			Other original json_encode option
+ * @return	string
+ */
+function JsonEncodeUnicode ($val, $option = 0) {
+	if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+		return json_encode($val, JSON_UNESCAPED_UNICODE | $option);
+	}
+	else {
+		$val = json_encode($val, $option);
+		$val = preg_replace('/\\\u([0-9a-f]{4})/ie'
+			, "mb_convert_encoding(pack('H4', '\\1'), 'UTF-8', 'UCS-2BE')"
+			, $val);
+		return $val;
+
+		/*
+		 * Another way is use urlencode before json_encode,
+		 * and use urldecode after it.
+		 * But this way can't deal with array recursive,
+		 * and array have chinese char in array key.
+		 *
+		 * 3rd way:
+		 * mb_convert_encoding('&#37257;&#29233;', 'UTF-8', 'HTML-ENTITIES');
+		 * Need convert \uxxxx to &#xxxxx first.
+		 */
+	}
+} // end of func JsonEncodeUnicode
+
+
+/**
  * Match a string with rule including wildcard.
  *
  * Eg: 'abcd' match rule '*c?'

@@ -88,7 +88,16 @@ class TestFuncString extends UnitTestCase {
 	} // end of func TestJsonEncodeHex
 
 
-	function TestMatchWildcard() {
+	function TestJsonEncodeUnicode () {
+		$x = array('中文', array('中' => '文'));
+		$y = '["中文",{"中":"文"}]';
+		$this->assertEqual($y, JsonEncodeUnicode($x));
+
+		$this->assertEqual($x, json_decode($y, true));
+	} // end of func TestJsonEncodeUnicode
+
+
+	function TestMatchWildcard () {
 		$s = 'abcdefg';
 		$this->assertEqual(true, MatchWildcard($s, 'a*e?g'));
 		$this->assertEqual(true, MatchWildcard($s, '?b*e*'));

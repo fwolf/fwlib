@@ -440,6 +440,12 @@ string.php
 AddslashesRecursive ($srce)
 	Addslashes for any data, recursive.
 
+JsonEncodeHex ($val)
+	Json encode with JSON_HEX_(TAG|AMP|APOS|QUOT) options.
+
+JsonEncodeUnicode ($val, $option = 0)
+	Json encode, simulate JSON_UNESCAPED_UNICODE option is on.
+
 MatchWildcard ($str, $rule)
 	Match a string with rule including wildcard.
 
@@ -448,9 +454,6 @@ Pin15To18 ($pin)
 
 SubstrIgnHtml ($str, $len, $marker, $start = 0, $encoding = 'utf-8')
 	Get substr by display width, and ignore html tag's length.
-
-JsonEncodeHex ($val)
-	Json encode with JSON_HEX_(TAG|AMP|APOS|QUOT) options.
 
 
 
