@@ -114,18 +114,19 @@ class CacheFile extends Cache {
 	 * @param	int		$lifetime	Cache lifetime, in second.
 	 * @return	boolean				True means it IS expired.
 	 */
-	public function Expire ($key, $lifetime = 0) {
+	public function Expire ($key, $lifetime = NULL) {
 		$s_file = $this->FilePath($key);
-
-		if (0 == $lifetime && 0!= $this->aCfg['cache-file-lifetime'])
-			$lifetime = $this->aCfg['cache-file-lifetime'];
 
 		// File doesn't exist
 		if (!file_exists($s_file))
 			return true;
 
-		// Out of expire time
-		if (time() > (filemtime($s_file) + $lifetime))
+		if (0 == $lifetime)
+			return false;
+
+		// Check file expire time
+		$t_expire = $this->ExpireTime($lifetime, filemtime($s_file));
+		if (time() > $t_expire)
 			return true;
 		else
 			return false;
@@ -215,13 +216,12 @@ class CacheFile extends Cache {
 	 * return NULL when fail.
 	 *
 	 * @param	string	$key
-	 * @param	boolean	$b_chk_lt		Check lifetime or not
-	 * @param	int		$lifetime		Cache lifetime
+	 * @param	int		$lifetime		Cache lifetime, 0/no check, NULL/cfg
 	 * @return	mixed
 	 */
-	public function Get ($key, $b_chk_lt = true, $lifetime = 0) {
-		if ($b_chk_lt && $this->Expire($key, $lifetime)) {
-				return NULL;
+	public function Get ($key, $lifetime = NULL) {
+		if ($this->Expire($key, $lifetime)) {
+			return NULL;
 		}
 
 		// Read from file and parse it.
@@ -229,7 +229,7 @@ class CacheFile extends Cache {
 		$s_cache = file_get_contents($s_file);
 
 		return $this->ValDecode($s_cache);
-	} // end of func CacheGetFile
+	} // end of func Get
 
 
 	/**
@@ -300,9 +300,6 @@ class CacheFile extends Cache {
 		 * Join these str with '/', got full path of cache file.
 		 */
 		$this->aCfg['cache-file-rule'] = '10';
-
-		// Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
-		$this->aCfg['cache-file-lifetime'] = 86400;
 
 
 		return $this;

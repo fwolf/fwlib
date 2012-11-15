@@ -101,6 +101,35 @@ class Cache extends Fwolflib {
 
 
 	/**
+	 * Compute expiration time
+	 *
+	 * @param	int		$lifetime
+	 * @param	int		$t_base			Base start time, 0 use time().
+	 * @return	int						In unix time.
+	 */
+	public function ExpireTime ($lifetime = NULL, $t_base = 0) {
+		// If not set, use config
+		if (is_null($lifetime))
+			$lifetime = $this->aCfg['cache-lifetime'];
+
+		// 0 means never expire
+		if (0 == $lifetime)
+			return 0;
+
+		if (0 == $t_base)
+			$t_base = time();
+
+		// If smaller than 30days
+		if (2592000 >= $lifetime) {
+			return $t_base + $lifetime;
+		}
+
+		// Larger than 30days, it's unix timestamp, ignore $t_base
+		return $lifetime;
+	} // end of func ExpireTime
+
+
+	/**
 	 * Load cache data
 	 *
 	 * @param	string	$key
@@ -161,6 +190,15 @@ class Cache extends Fwolflib {
 		// 1: Json, decode to array.
 		// 2: Json, decode to object.
 		$this->aCfg['cache-store-method'] = 0;
+
+		// Default cache lifetime, in second
+		// Can be overwrite by param when get/set.
+		// Default/Max 30days:
+		//   60sec * 60min = 3600s * 24h = 86400s * 30 = 2592000s
+		// Larger than 30days, must assign unix time like memcached,
+		//   which is number of seconds since 1970-1-1 as an integer.
+		// 0 means forever.
+		$this->aCfg['cache-lifetime'] = 2592000;
 
 		return $this;
 	} // end of func SetCfgDefault

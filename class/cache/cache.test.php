@@ -86,6 +86,19 @@ class TestCache extends UnitTestCase {
 		var_dump($y);
 */
 
+		// Expire time
+		$x = 0;
+		$this->assertEqual($x, $this->oCh->ExpireTime($x));
+
+		$x = time() + 2592000;
+		$this->assertEqual($x, $this->oCh->ExpireTime(2592000));
+
+		$x = 2592001;
+		$this->assertEqual($x, $this->oCh->ExpireTime(2592001));
+
+		$x = time() + 2592000;
+		$this->assertEqual($x, $this->oCh->ExpireTime());
+
 	} // end of func TestCacheDefault
 
 
@@ -149,11 +162,18 @@ class TestCache extends UnitTestCase {
 
 		// Cache expire
 		$this->assertEqual(true, $this->oCh->Expire($key, -10));
+		$this->assertEqual(true, $this->oCh->Expire($key, strtotime('2012-1-1')));
 		$this->assertEqual(false, $this->oCh->Expire($key, 10));
+		$this->assertEqual(false, $this->oCh->Expire($key, 1));
 		$this->assertEqual(false, $this->oCh->Expire($key, 0));
+		$this->assertEqual(false, $this->oCh->Expire($key, NULL));
 
 		// Cache get
 		$this->assertEqual($v, $this->oCh->Get($key));
+		$this->assertEqual(NULL, $this->oCh->Get($key, -10));
+		$this->assertEqual($v, $this->oCh->Get($key, 0));
+		$this->assertEqual($v, $this->oCh->Get($key, 5));
+		$this->assertEqual($v, $this->oCh->Get($key, NULL));
 
 		$v = '你好';
 		$this->oCh->SetCfg('cache-store-method', 0);
