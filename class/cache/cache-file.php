@@ -6,8 +6,6 @@ require_once(FWOLFLIB . 'func/filesystem.php');
 /**
  * Key - value cache system, data store in file.
  *
- * Key is split by '/', just like URL.
- *
  * @package		fwolflib
  * @subpackage	class.cache
  * @copyright	Copyright 2010-2012, Fwolf
@@ -217,12 +215,11 @@ class CacheFile extends Cache {
 	 * return NULL when fail.
 	 *
 	 * @param	string	$key
-	 * @param	int		$flag			Cache store method
 	 * @param	boolean	$b_chk_lt		Check lifetime or not
 	 * @param	int		$lifetime		Cache lifetime
 	 * @return	mixed
 	 */
-	public function Get ($key, $flag = 0, $b_chk_lt = true, $lifetime = 0) {
+	public function Get ($key, $b_chk_lt = true, $lifetime = 0) {
 		if ($b_chk_lt && $this->Expire($key, $lifetime)) {
 				return NULL;
 		}
@@ -231,7 +228,7 @@ class CacheFile extends Cache {
 		$s_file = $this->FilePath($key);
 		$s_cache = file_get_contents($s_file);
 
-		return $this->ValDecode($s_cache, $flag);
+		return $this->ValDecode($s_cache);
 	} // end of func CacheGetFile
 
 
@@ -257,12 +254,11 @@ class CacheFile extends Cache {
 	 *
 	 * @param	string	$key
 	 * @param	mixed	$val
-	 * @param	int		$flag			Cache store method
 	 * @return	$this
 	 */
-	public function Set ($key, $val, $flag = 0) {
+	public function Set ($key, $val) {
 		$s_file = $this->FilePath($key);
-		$s_cache = $this->ValEncode($val, $flag);
+		$s_cache = $this->ValEncode($val);
 
 		// Create each level dir if not exists
 		$s_dir = DirName1($s_file);

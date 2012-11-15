@@ -143,7 +143,8 @@ class TestCache extends UnitTestCase {
 /*
 		// Cache set
 		$v = 'blah';
-		$this->oCh->Set($key, $v, 1);
+		$this->oCh->SetCfg('cache-store-method', 1);
+		$this->oCh->Set($key, $v);
 		$this->assertEqual(json_encode($v), file_get_contents($x));
 
 		// Cache expire
@@ -152,18 +153,24 @@ class TestCache extends UnitTestCase {
 		$this->assertEqual(false, $this->oCh->Expire($key, 0));
 
 		// Cache get
-		$this->assertEqual($v, $this->oCh->Get($key, 1));
+		$this->assertEqual($v, $this->oCh->Get($key));
 
 		$v = '你好';
-		$this->oCh->Set($key, $v, 0);
-		$this->assertEqual($v, $this->oCh->Get($key, 0));
+		$this->oCh->SetCfg('cache-store-method', 0);
+		$this->oCh->Set($key, $v);
+		$this->assertEqual($v, $this->oCh->Get($key));
 
 		$v = array('你' => '好');
-		$this->oCh->Set($key, $v, 1);
-		$this->assertEqual($v, $this->oCh->Get($key, 1));
+		$this->oCh->SetCfg('cache-store-method', 1);
+		$this->oCh->Set($key, $v);
+		$this->assertEqual($v, $this->oCh->Get($key));
 */
+		// End of cache write test.
 
 	} // end of func TestCacheFile
+
+
+} // end of class TestCache
 
 
 // Change output charset in this way.
