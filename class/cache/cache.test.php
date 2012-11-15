@@ -190,6 +190,97 @@ class TestCache extends UnitTestCase {
 	} // end of func TestCacheFile
 
 
+    function TestCacheMemcached () {
+		$this->oCh = Cache::Create('memcached');
+
+		// Empty server list
+		$ar = $this->oCh->oMemcached->getServerList();
+		$this->assertEqual($ar, array());
+
+
+		// Set server cfg
+		$x = array(
+			array(
+				'host'		=> 'localhost',
+				'port'		=> 11211,
+				'weight'	=> 0,
+			),
+		);
+		$this->oCh->SetCfg('cache-memcached-server', $x);
+		unset($this->oCh->oMemcached);
+		$ar = $this->oCh->oMemcached->getServerList();
+		$this->assertEqual($ar, $x);
+
+		$y = array('localhost', 11211);
+		$this->oCh->SetCfgServer($y);
+		$this->assertEqual($x, $this->oCh->oMemcached->getServerList());
+
+		// Memcache server recognize by array position, not assoc key
+		$y = array('h' => 'localhost', 'p' => 11211);
+		$this->oCh->SetCfgServer($y);
+		$this->assertEqual($x, $this->oCh->oMemcached->getServerList());
+
+		// Skip cache write after test
+/*
+		// Multi server
+		$x = array(
+			// Dead one
+			array(
+				'host'		=> 'localhost',
+				'port'		=> 11212,
+				'weight'	=> 67
+			),
+			// Alive one
+			array(
+				'host'		=> 'localhost',
+				'port'		=> 11211,
+				'weight'	=> 33
+			),
+		);
+		$this->oCh->SetCfgServer($x);
+		$this->assertEqual(array($x[1])
+			, $this->oCh->oMemcached->getServerList());
+
+		// Cache write
+		$key = RandomString(8, 'a0');
+		$x = 'blah';
+		$this->oCh->Set($key, $x);
+		$this->assertEqual($x, $this->oCh->Get($key));
+
+		$x = array('blah');
+		$this->oCh->Set($key, $x);
+		$this->assertEqual($x, $this->oCh->Get($key));
+
+		// Long key
+		$key = str_repeat('-', 300);
+		$x = 'blah';
+		$this->oCh->Set($key, $x);
+		$this->assertEqual($x, $this->oCh->Get($key));
+
+		// Cache get with expire
+		$key = RandomString(8, 'a0');
+		$this->oCh->Set($key, $x, -10);
+		$this->assertEqual(NULL, $this->oCh->Get($key));
+		$this->oCh->Set($key, $x, 0);
+		$this->assertEqual($x, $this->oCh->Get($key));
+		$this->oCh->Set($key, $x, 5);
+		$this->assertEqual($x, $this->oCh->Get($key));
+		$this->oCh->Set($key, $x, NULL);
+		$this->assertEqual($x, $this->oCh->Get($key));
+
+		// Massive set
+//  		$s = RandomString(2000000, 'a0');
+//  		for ($i = 0; $i < 100; $i++) {
+//  			$this->oCh->Set($i, $s, 3600);
+//  		}
+//  		$this->assertEqual(0, $this->oCh->oMemcached->getResultCode());
+
+*/
+		// End of cache write test
+
+	} // end of func TestCacheMemcached
+
+
 } // end of class TestCache
 
 
