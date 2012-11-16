@@ -98,6 +98,10 @@ class CacheMemcached extends Cache {
 		// Eliminate white space
 		$str = preg_replace('/\s/m', '', $str);
 
+		// Key can't be empty
+		if (empty($str))
+			$str = 'empty-key';
+
 		// Length limit
 		$i = strlen($this->aCfg['cache-memcached-option-default']
 			[Memcached::OPT_PREFIX_KEY]);

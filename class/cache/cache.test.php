@@ -257,6 +257,12 @@ class TestCache extends UnitTestCase {
 		$this->oCh->Set($key, $x, 60);
 		$this->assertEqual($x, $this->oCh->Get($key));
 
+		// Empty key
+		$key = '';
+		$x = 'blah';
+		$this->oCh->Set($key, $x, 60);
+		$this->assertEqual($x, $this->oCh->Get($key));
+
 		// Cache get with expire
 		$key = RandomString(8, 'a0');
 		$this->oCh->Set($key, $x, -10);
@@ -275,10 +281,10 @@ class TestCache extends UnitTestCase {
 //  		}
 //  		$this->assertEqual(0, $this->oCh->oMemcached->getResultCode());
 
-		// Big value exceed max item size
-		$s = RandomString(3000000, 'a0');
-		$this->oCh->Set($key, $s, 3600);
-		$this->assertEqual($s, $this->oCh->Get($key));
+//		// Big value exceed max item size
+//		$s = RandomString(3000000, 'a0');
+//		$this->oCh->Set($key, $s, 3600);
+//		$this->assertEqual($s, $this->oCh->Get($key));
 
 */
 		// End of cache write test
