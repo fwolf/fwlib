@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/fwolflib.php');
-require_once(FWOLFLIB . 'class/cache.php');
+require_once(FWOLFLIB . 'class/cache/cache.php');
 require_once(FWOLFLIB . 'class/form.php');
 require_once(FWOLFLIB . 'class/list-table.php');
 require_once(FWOLFLIB . 'class/validator.php');
@@ -41,7 +41,9 @@ require_once(FWOLFLIB . 'func/request.php');
  *
  * Roadmap:
  *
- * 2010-06-21	1.1
+ * 2012-11-16	1.2
+ * 		Using new Cache class, cache as inner object var now.
+ * 2010-06-21	1.1 c10b557466
  * 		Rename GenContentXxx() to GenXxx(), with backward compative.
  * 2010-05-21	1.0	60d16e2417
  * 		Basic feature.
@@ -49,13 +51,13 @@ require_once(FWOLFLIB . 'func/request.php');
  *
  * @package		fwolflib
  * @subpackage	class.mvc
- * @copyright	Copyright 2008-2011, Fwolf
+ * @copyright	Copyright 2008-2012, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
  * @since		2008-04-06
  * @see			Controler
  * @see			Module
  */
-abstract class View extends Cache {
+abstract class View extends Fwolflib {
 
 	/**
 	 * Action parameter, the view command to determin what to display
@@ -68,6 +70,12 @@ abstract class View extends Cache {
 	 * @var	object
 	 */
 	public $oAjaxSelDiv = null;
+
+	/**
+	 * Cache object
+	 * @var	object
+	 */
+	public $oCache = NULL;
 
 	/**
 	 * If cache turned on
@@ -209,6 +217,7 @@ abstract class View extends Cache {
 
 		// For auto-new
 		unset($this->oAjaxSelDiv);
+		unset($this->oCache);
 		unset($this->oForm);
 		unset($this->oLt);
 		unset($this->oTpl);
@@ -254,11 +263,31 @@ abstract class View extends Cache {
 
 
 	/**
-	 * Gen key of cache
+	 * Get content to output with cache
 	 *
 	 * @return	string
 	 */
-	public function CacheGenKey() {
+	public function CacheGetOutput() {
+		$key = $this->CacheKey();
+		// Try get
+		$s = $this->oCache->Get($key, $this->CacheLifetime());
+
+		if (is_null($s)) {
+			// Cache invalid, gen and set
+			$s = $this->GetOutput();
+			$this->oCache->Set($key, $s, $this->CacheLifetime());
+		}
+
+		return $s;
+	} // end of func CacheGetOutput
+
+
+	/**
+	 * Gen key of cache by request uri
+	 *
+	 * @return	string
+	 */
+	public function CacheKey() {
 		$key = $_SERVER['REQUEST_URI'];
 		$key = str_replace(array('?', '&', '=', '//'), '/', $key);
 
@@ -275,29 +304,7 @@ abstract class View extends Cache {
 		}
 
 		return $key;
-	} // end of func CacheGenKey
-
-
-	/**
-	 * Cache gen, directly use output html.
-	 *
-	 * @param	string	$key
-	 * @return	string
-	 */
-	protected function CacheGenVal($key) {
-		return $this->GetOutput();
-	} // end of func CacheGenVal
-
-
-	/**
-	 * Get content to output with cache
-	 *
-	 * @return	string
-	 */
-	public function CacheGetOutput() {
-		$key = $this->CacheGenKey();
-		return $this->CacheGet($key, 3);
-	} // end of func CacheGetOutput
+	} // end of func CacheKey
 
 
 	/**
@@ -307,43 +314,13 @@ abstract class View extends Cache {
 	 * @param	string	$key
 	 * @return	int
 	 */
-	public function CacheLifetime($key) {
-		return 60 * 60;
+	public function CacheLifetime ($key = '') {
+		if (empty($key))
+			$key = $this->CacheKey();
+
+		// Default 60s * 60m = 3600s
+		return 3600;
 	} // end of func CacheLifetime
-
-
-	/**
-	 * Is cache data file need update/create ?
-	 *
-	 * @param	string	$key
-	 * @return	boolean
-	 */
-	protected function CacheNeedUpdate($key) {
-		if ('0' == GetGet('cache')) {
-			return true;
-		} else
-			return parent::CacheNeedUpdate($key);
-	} // end of func CacheNeedUpdate
-
-
-	/**
-	 * Write data to cache file, raw string
-	 *
-	 * @param	string	$key
-	 * @param	mixed	$val
-	 */
-	public function CacheSetFile($key, $val) {
-		$s_file = $this->CacheFilePath($key);
-		$s_cache = &$val;
-
-		// Create each level dir if not exists
-		$s_dir = DirName1($s_file);
-		if (!file_exists($s_dir))
-			mkdir($s_dir, 0755, true);
-
-		// Finally write file
-		file_put_contents($s_file, $s_cache, LOCK_EX);
-	} // end of func CacheSetFile
 
 
 	/**
@@ -464,6 +441,18 @@ abstract class View extends Cache {
 	protected function NewObjAjaxSelDiv() {
 		return new AjaxSelDiv();
 	} // end of func NewObjAjaxSelDiv
+
+
+	/**
+	 * New Cache object
+	 *
+	 * Need replace by sub class, assign cache type
+	 *
+	 * @see	$oCache
+	 */
+	protected function NewObjCache () {
+		return Cache::Create('');
+	} // end of func NewObjCache
 
 
 	/**

@@ -135,26 +135,8 @@ abstract class Controler extends Fwolflib {
 
 		// Cache, Notice: this msg is delayed if cache on.
 		if (true == $view->bCacheOn) {
-			// Update file mtime
-			clearstatcache();
-
-			$key = $view->CacheGenKey();
-			if (file_exists($view->CachePath($key))) {
-				$t1 = filemtime($view->CachePath($key));
-				$i = $view->CacheLifetime($key) + $t1 - time();
-			} else {
-				$t1 = 0;
-				$i = 0;
-			}
-			$t2 = $t1 + $view->CacheLifetime($key);
-			// Time format
-			$t1 = date('Ymd.His', $t1);
-			$t2 = date('Ymd.His', $t2);
-			$s .= ', cache: '
-				. $t1 . '+'
-				. $view->CacheLifetime($key)
-				. '=' . $t2 . '/'
-				. $i;
+			$key = $view->CacheKey();
+			$s .= ', cache lifetime: ' . $view->CacheLifetime($key);
 
 			// Refresh link, avoid robot claw
 			$s .= ' <a href="javascript:';
