@@ -297,19 +297,16 @@ abstract class View extends Fwolflib {
 		$key = $_SERVER['REQUEST_URI'];
 		$key = str_replace(array('?', '&', '=', '//'), '/', $key);
 
-		// Remove '/' at beginning of url
-		if (0 < strlen($key) && '/' == $key{0})
-			$key = substr($key, 1);
-		// Remove tailing '/'
-		if ('/' == substr($key, -1))
-			$key = substr($key, 0, strlen($key) - 1);
-
 		// When force update cache, ignore 'cache=0' in url
 		if ('0' == GetGet('cache')) {
 			// Can't unset($_GET['cache']);
 			// Because it's used later
 			$key = str_replace('/cache/0', '', $key);
 		}
+
+		// Remove tailing '/'
+		if ('/' == substr($key, -1))
+			$key = substr($key, 0, strlen($key) - 1);
 
 		return $key;
 	} // end of func CacheKey
