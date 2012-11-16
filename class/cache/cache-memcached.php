@@ -65,7 +65,20 @@ class CacheMemcached extends Cache {
 	 */
 	public function Get ($key, $lifetime = NULL) {
 		// Lifetime is handle by memcached
-		$val = $this->oMemcached->get($this->Key($key));
+
+		// Is value splitted ?
+		$i_total = $this->oMemcached->get($this->Key($key . '[split]'));
+		if (false === $i_total) {
+			// No split
+			$val = $this->oMemcached->get($this->Key($key));
+		} else {
+			// Splited string
+			$val = '';
+			for ($i = 1; $i <= $i_total; $i++)
+				$val .= $this->oMemcached->get($this->Key($key
+					. '[split-' . $i . '/' . $i_total . ']'));
+		}
+
 		if (Memcached::RES_SUCCESS == $this->oMemcached->getResultCode())
 			return $this->ValDecode($val);
 		else
@@ -170,8 +183,29 @@ class CacheMemcached extends Cache {
 		// Convert expiration time
 		$lifetime = $this->ExpireTime($lifetime);
 
-		$rs = $this->oMemcached->set($this->Key($key)
-			, $this->ValEncode($val), $lifetime);
+		// Auto split large string val
+		if (is_string($val) && (strlen($val)
+			> $this->aCfg['cache-memcached-maxitemsize'])) {
+			$ar = str_split($val
+				, $this->aCfg['cache-memcached-maxitemsize']);
+			$i_total = count($ar);
+
+			// Set split total
+			$rs = $this->oMemcached->set($this->Key($key . '[split]')
+				, $i_total, $lifetime);
+
+			// Set split trunk
+			for ($i = 1; $i <= $i_total; $i++) {
+				$rs = $this->oMemcached->set($this->Key($key
+					. '[split-' . $i . '/' . $i_total . ']')
+					, $ar[$i - 1], $lifetime);
+			}
+		}
+		else {
+			// Normal set
+			$rs = $this->oMemcached->set($this->Key($key)
+				, $this->ValEncode($val), $lifetime);
+		}
 
 		if (false == $rs) {
 			$this->Log('Memcache set error '
@@ -199,6 +233,10 @@ class CacheMemcached extends Cache {
 		// Memcache server
 		// Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
 		$this->aCfg['cache-memcached-lifetime'] = 86400;
+
+		// Max item size, STRING val exceed this will auto split
+		//   and store automatic, user need only care other val type.
+		$this->aCfg['cache-memcached-maxitemsize'] = 1024000;
 
 		// Memcached default option, set when new memcached obj
 		$this->aCfg['cache-memcached-option-default'] = array(
