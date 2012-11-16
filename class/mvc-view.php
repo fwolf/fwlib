@@ -41,7 +41,7 @@ require_once(FWOLFLIB . 'func/request.php');
  *
  * Roadmap:
  *
- * 2012-11-16	1.2
+ * 2012-11-16	1.2 488a3fbf41
  * 		Using new Cache class, cache as inner object var now.
  * 2010-06-21	1.1 c10b557466
  * 		Rename GenContentXxx() to GenXxx(), with backward compative.
@@ -269,8 +269,14 @@ abstract class View extends Fwolflib {
 	 */
 	public function CacheGetOutput() {
 		$key = $this->CacheKey();
-		// Try get
-		$s = $this->oCache->Get($key, $this->CacheLifetime());
+
+		if ('0' == GetGet('cache')) {
+			// Cache temp off, but still gen & set
+			$s = NULL;
+		} else {
+			// Try get
+			$s = $this->oCache->Get($key, $this->CacheLifetime());
+		}
 
 		if (is_null($s)) {
 			// Cache invalid, gen and set
@@ -294,12 +300,14 @@ abstract class View extends Fwolflib {
 		// Remove '/' at beginning of url
 		if (0 < strlen($key) && '/' == $key{0})
 			$key = substr($key, 1);
+		// Remove tailing '/'
+		if ('/' == substr($key, -1))
+			$key = substr($key, 0, strlen($key) - 1);
 
 		// When force update cache, ignore 'cache=0' in url
 		if ('0' == GetGet('cache')) {
 			// Can't unset($_GET['cache']);
-			// Because CacheNeedUpdate() need to check later
-
+			// Because it's used later
 			$key = str_replace('/cache/0', '', $key);
 		}
 
