@@ -104,6 +104,22 @@ class CacheFile extends Cache {
 
 
 	/**
+	 * Delete cache data
+	 * @param	string	$key
+	 * @return	$this
+	 */
+	public function Del ($key) {
+		$s_file = $this->FilePath($key);
+
+		if (file_exists($s_file)) {
+			unlink($s_file);
+		}
+
+		return $this;
+	} // end of func Del
+
+
+	/**
 	 * Is cache data expire ?
 	 *
 	 * File cache does not keep lifetime in cache,

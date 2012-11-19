@@ -35,9 +35,39 @@ class CacheMemcached extends Cache {
 
 
 	/**
+	 * Delete cache data
+	 * @param	string	$key
+	 * @return	$this
+	 */
+	public function Del ($key) {
+		if (1 == $this->aCfg['cache-memcached-autosplit']) {
+			// Is value splitted ?
+			$i_total = $this->oMemcached->get($this->Key($key
+				. '[split]'));
+			if (false === $i_total) {
+				// No split found
+				$this->oMemcached->delete($this->Key($key));
+			} else {
+				// Splitted string
+				for ($i = 1; $i <= $i_total; $i++)
+					$this->oMemcached->delete($this->Key($key
+						. '[split-' . $i . '/' . $i_total . ']'));
+				$this->oMemcached->delete($this->Key($key . '[split]'));
+			}
+		}
+		else {
+			$this->oMemcached->delete($this->Key($key));
+		}
+
+		return $this;
+	} // end of func Del
+
+
+	/**
 	 * Is cache data expire ?
 	 *
 	 * Memcached expire when get fail.
+	 * Usually use Get and check NULL is enough.
 	 *
 	 * @param	string	$key
 	 * @param	int		$lifetime
@@ -45,7 +75,15 @@ class CacheMemcached extends Cache {
 	 */
 	public function Expire ($key, $lifetime = NULL) {
 		// Lifetime is handle by memcached
+
 		$val = $this->oMemcached->get($this->Key($key));
+		// Unknown item size, try twice
+		if ((Memcached::RES_SUCCESS !=
+			$this->oMemcached->getResultCode())
+			&& (1 == $this->aCfg['cache-memcached-autosplit'])) {
+			$val = $this->oMemcached->get($this->Key($key . '[split]'));
+		}
+
 		if (Memcached::RES_SUCCESS == $this->oMemcached->getResultCode())
 			return false;
 		else

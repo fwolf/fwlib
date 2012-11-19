@@ -184,6 +184,11 @@ class TestCache extends UnitTestCase {
 		$this->oCh->SetCfg('cache-store-method', 1);
 		$this->oCh->Set($key, $v);
 		$this->assertEqual($v, $this->oCh->Get($key));
+
+		// Cache del
+		$this->oCh->Del($key);
+		$this->assertEqual(NULL, $this->oCh->Get($key));
+
 */
 		// End of cache write test.
 
@@ -251,11 +256,29 @@ class TestCache extends UnitTestCase {
 		$this->oCh->Set($key, $x, 60);
 		$this->assertEqual($x, $this->oCh->Get($key));
 
+		// Cache expire
+		$this->oCh->SetCfg('cache-memcached-autosplit', 1);
+		$this->oCh->Set($key, $x, 60);
+		$this->assertEqual(false, $this->oCh->Expire($key));
+		$this->oCh->Set($key, $x, -10);
+		$this->assertEqual(true, $this->oCh->Expire($key));
+		$this->oCh->SetCfg('cache-memcached-autosplit', 0);
+		$this->oCh->Set($key, $x, 60);
+		$this->assertEqual(false, $this->oCh->Expire($key));
+		$this->oCh->Set($key, $x, -10);
+		$this->assertEqual(true, $this->oCh->Expire($key));
+
+		// Cache del
+		$this->oCh->Del($key);
+		$this->assertEqual(NULL, $this->oCh->Get($key));
+
 		// Long key
 		$key = str_repeat('-', 300);
 		$x = 'blah';
 		$this->oCh->Set($key, $x, 60);
 		$this->assertEqual($x, $this->oCh->Get($key));
+		$this->oCh->Del($key);
+		$this->assertEqual(NULL, $this->oCh->Get($key));
 
 		// Empty key
 		$key = '';
@@ -283,9 +306,14 @@ class TestCache extends UnitTestCase {
 
 		// Big value exceed max item size
 //		$s = RandomString(3000000, 'a0');
+//		$this->oCh->Del($key);		// Clear previous setted value
 //		$this->oCh->SetCfg('cache-memcached-autosplit', 1);
 //		$this->oCh->Set($key, $s, 3600);
 //		$this->assertEqual($s, $this->oCh->Get($key));
+//		$this->assertEqual(false, $this->oCh->Expire($key));
+//		$this->oCh->Del($key);
+//		$this->assertEqual(NULL, $this->oCh->Get($key));
+//		$this->assertEqual(true, $this->oCh->Expire($key));
 //		$this->oCh->SetCfg('cache-memcached-autosplit', 0);
 //		$this->oCh->Set($key, $s, 3600);
 //		$this->assertEqual(NULL, $this->oCh->Get($key));
