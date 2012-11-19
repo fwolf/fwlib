@@ -281,8 +281,24 @@ class TestCache extends UnitTestCase {
 //  		}
 //  		$this->assertEqual(0, $this->oCh->oMemcached->getResultCode());
 
-//		// Big value exceed max item size
+		// Big value exceed max item size
 //		$s = RandomString(3000000, 'a0');
+//		$this->oCh->SetCfg('cache-memcached-autosplit', 1);
+//		$this->oCh->Set($key, $s, 3600);
+//		$this->assertEqual($s, $this->oCh->Get($key));
+//		$this->oCh->SetCfg('cache-memcached-autosplit', 0);
+//		$this->oCh->Set($key, $s, 3600);
+//		$this->assertEqual(NULL, $this->oCh->Get($key));
+
+		// Big value size is computed AFTER compress if compress on
+//		$s = RandomString(1500000, 'a0');
+//		$this->oCh->oMemcached->setOption(Memcached::OPT_COMPRESSION
+//			, false);
+//		$this->oCh->SetCfg('cache-memcached-autosplit', 0);
+//		$this->oCh->Set($key, $s, 3600);
+//		$this->assertEqual(NULL, $this->oCh->Get($key));
+//		$this->oCh->oMemcached->setOption(Memcached::OPT_COMPRESSION
+//			, true);
 //		$this->oCh->Set($key, $s, 3600);
 //		$this->assertEqual($s, $this->oCh->Get($key));
 

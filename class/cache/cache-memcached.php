@@ -66,17 +66,24 @@ class CacheMemcached extends Cache {
 	public function Get ($key, $lifetime = NULL) {
 		// Lifetime is handle by memcached
 
-		// Is value splitted ?
-		$i_total = $this->oMemcached->get($this->Key($key . '[split]'));
-		if (false === $i_total) {
-			// No split
+		if (1 == $this->aCfg['cache-memcached-autosplit']) {
+			// Is value splitted ?
+			$i_total = $this->oMemcached->get($this->Key($key
+				. '[split]'));
+			if (false === $i_total) {
+				// No split found
+				$val = $this->oMemcached->get($this->Key($key));
+			} else {
+				// Splited string
+				$val = '';
+				for ($i = 1; $i <= $i_total; $i++)
+					$val .= $this->oMemcached->get($this->Key($key
+						. '[split-' . $i . '/' . $i_total . ']'));
+			}
+		}
+		else {
+			// Direct get
 			$val = $this->oMemcached->get($this->Key($key));
-		} else {
-			// Splited string
-			$val = '';
-			for ($i = 1; $i <= $i_total; $i++)
-				$val .= $this->oMemcached->get($this->Key($key
-					. '[split-' . $i . '/' . $i_total . ']'));
 		}
 
 		if (Memcached::RES_SUCCESS == $this->oMemcached->getResultCode())
@@ -188,7 +195,8 @@ class CacheMemcached extends Cache {
 		$lifetime = $this->ExpireTime($lifetime);
 
 		// Auto split large string val
-		if (is_string($val) && (strlen($val)
+		if ((1 == $this->aCfg['cache-memcached-autosplit'])
+			&& is_string($val) && (strlen($val)
 			> $this->aCfg['cache-memcached-maxitemsize'])) {
 			$ar = str_split($val
 				, $this->aCfg['cache-memcached-maxitemsize']);
@@ -237,6 +245,10 @@ class CacheMemcached extends Cache {
 		// Memcache server
 		// Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
 		$this->aCfg['cache-memcached-lifetime'] = 86400;
+
+		// Auto split store item larger than max item size
+		// 0/off, 1/on, when off, large item store will fail.
+		$this->aCfg['cache-memcached-autosplit'] = 0;
 
 		// Max item size, STRING val exceed this will auto split
 		//   and store automatic, user need only care other val type.
