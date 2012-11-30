@@ -792,8 +792,10 @@ class Form extends Fwolflib {
 
 	/**
 	 * Reset all data to default, prepare to create a new form
+	 *
+	 * @param	boolean		$b_init	Re-do init.
 	 */
-	public function Reset() {
+	public function Reset ($b_init = false) {
 		$this->aCfg = array(
 			'action'	=> '',
 			'enctype'	=> '',

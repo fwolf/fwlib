@@ -270,9 +270,10 @@ class CacheFile extends Cache {
 	 *
 	 * @param	string	$key
 	 * @param	mixed	$val
+	 * @param	int		$lifetime
 	 * @return	$this
 	 */
-	public function Set ($key, $val) {
+	public function Set ($key, $val, $lifetime = NULL) {
 		$s_file = $this->FilePath($key);
 		$s_cache = $this->ValEncode($val);
 

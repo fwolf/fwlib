@@ -139,7 +139,7 @@ class Adodb extends Fwolflib {
 		require_once($path_adodb);
 
 		$this->aDbProfile = $dbprofile;
-		$this->__conn = & ADONewConnection($dbprofile['type']);
+		$this->__conn = ADONewConnection($dbprofile['type']);
 
 		// Sql generator object
 		$this->oSg = new SqlGenerator($this);

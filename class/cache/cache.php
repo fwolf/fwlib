@@ -136,7 +136,7 @@ class Cache extends Fwolflib {
 	 * @param	int		$lifetime		Cache lifetime
 	 * @return	mixed
 	 */
-	public function Get ($key, $lifetime = 0) {
+	public function Get ($key, $lifetime = NULL) {
 		// Ignored lifetime
 		return $this->ValDecode(
 			ArrayRead($this->aCache, $this->Key($key))
@@ -165,7 +165,7 @@ class Cache extends Fwolflib {
 	 * @param	int		$lifetime
 	 * @return	$this
 	 */
-	public function Set ($key, $val, $lifetime = 0) {
+	public function Set ($key, $val, $lifetime = NULL) {
 		// Lifetime is useless.
 		$this->aCache[$this->Key($key)] = $this->ValEncode($val, 0);
 		return $this;
