@@ -211,7 +211,7 @@ class Cache extends Fwolflib {
 		//	User should determine the value DO suite cache type.
 		// 1: Json, decode to array.
 		// 2: Json, decode to object.
-		$this->aCfg['cache-store-method'] = 0;
+		$this->aCfg['cache-store-method'] = 1;
 
 		// Default cache lifetime, in second
 		// Can be overwrite by param when get/set.

@@ -73,12 +73,14 @@ class TestCache extends UnitTestCase {
 		$this->assertEqual($x, $this->oCh->ValDecode(
 			$this->oCh->ValEncode($x, 1), 1));
 
-		$x = new Fwolflib;
-		$this->assertEqual($x, $this->oCh->ValDecode(
-			$this->oCh->ValEncode($x, 0), 0));
 /*
 		// Json decode object has no class, so diff with original
 		// Also array in object must be convert back from stdClass
+		$this->oCh->SetCfg('cache-store-method', 2);
+		$x = new Fwolflib;
+		$this->assertEqual($x, $this->oCh->ValDecode(
+			$this->oCh->ValEncode($x, 0), 0));
+
 		$y = $this->oCh->ValDecode($this->oCh->ValEncode($x, 2), 2);
 		$y->aCfg = (array)$y->aCfg;
 		$this->assertEqual($x, $y);
@@ -258,7 +260,7 @@ class TestCache extends UnitTestCase {
 		$this->oCh->Set($key, $x, 60);
 		$this->assertEqual($x, $this->oCh->Get($key));
 
-		$x = array('blah');
+		$x = array('blah', array('foo' => 'boo'));
 		$this->oCh->Set($key, $x, 60);
 		$this->assertEqual($x, $this->oCh->Get($key));
 
