@@ -1,13 +1,4 @@
 <?php
-/**
- * @package      fwolflib
- * @subpackage	class.mvc
- * @copyright    Copyright 2008-2011, Fwolf
- * @author       Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
- * @since		2008-04-06
- */
-
-
 require_once(dirname(__FILE__) . '/fwolflib.php');
 require_once(FWOLFLIB . 'func/string.php');
 
@@ -15,20 +6,24 @@ require_once(FWOLFLIB . 'func/string.php');
 /**
  * Module in MVC
  *
- * 从View接受命令，完成数据的处理。
- * 只返回处理的结果数据，不对数据进行格式化。
- *
- * Module主要体现为各对象的class.php文件，采用oop的思想来进行封装。
+ * Do data compute or database relate operate.
+ * Usually only carry data, leave data format job to View.
  *
  * @package		fwolflib
  * @subpackage	class.mvc
- * @copyright	Copyright 2008-2011, Fwolf
+ * @copyright	Copyright 2008-2012, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class.mvc@gmail.com>
  * @since		2008-04-06
  * @see			Controler
  * @see			View
  */
 abstract class Module extends Fwolflib {
+
+	/**
+	 * Database object
+	 * @var object
+	 */
+	public $oDb = NULL;
 
 	/**
 	 * Number of items in list
@@ -41,16 +36,10 @@ abstract class Module extends Fwolflib {
 	public $iPageSize = 10;
 
 	/**
-	 * Database object
+	 * Caller: view object
 	 * @var object
 	 */
-	public $oDb = null;
-
-	/**
-	 * Call view object
-	 * @var object
-	 */
-	public $oView = null;
+	public $oView = NULL;
 
 
 	// Get db connection, because unknown db & dblib,
@@ -64,25 +53,14 @@ abstract class Module extends Fwolflib {
 	 * @param object	$view	Caller view object
 	 */
 	public function __construct ($view = null) {
+		// Unset for auto new
+		unset($this->oDb);
+
 		parent::__construct();
 
 		if (!is_null($view))
 			$this->oView = &$view;
 	} // end of func __construct
-
-
-	/**
-	 * Check & init db object
-	 * @param object	&$db			Db object
-	 * @param array		$dbprofile	array(type,host,user,pass,name,lang)
-	 * @return object
-	 */
-	protected function CheckObjDb (&$db, $dbprofile) {
-		if (empty($db)) {
-			$db = $this->DbConn($dbprofile);
-		}
-		return $db;
-	} // end of func CheckObjDb
 
 
 	/**
@@ -182,6 +160,38 @@ abstract class Module extends Fwolflib {
 
 		return $ar;
 	} // end of func FormSet
+
+
+	/**
+	 * New db object
+	 *
+	 * @return object
+	 */
+	protected function NewObjDb () {
+		return $this->DbConn($this->aCfg['dbprofile']);
+	} // end of func NewObjDb
+
+
+	/**
+	 * Set default config.
+	 *
+	 * @return	object
+	 */
+	 protected function SetCfgDefault () {
+		 parent::SetCfgDefault();
+
+		// Db profile
+		$this->aCfg['dbprofile'] = array(
+			'type'	=> 'mysql',
+			'host'	=> 'localhost',
+			'user'	=> 'user',
+			'pass'	=> 'pass',
+			'name'	=> 'name',
+			'lang'	=> 'utf-8',
+		);
+
+		return $this;
+	 } // end of func SetCfgDefault
 
 
 } // end of class Module
