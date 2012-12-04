@@ -99,6 +99,9 @@ class TestCache extends UnitTestCase {
 		$x = time() + 2592000;
 		$this->assertEqual($x, $this->oCh->ExpireTime());
 
+		// Get log
+		//var_dump(Cache::$aLogGet);
+
 	} // end of func TestCacheDefault
 
 
@@ -191,6 +194,9 @@ class TestCache extends UnitTestCase {
 
 */
 		// End of cache write test.
+
+		// Get log
+		//var_dump(Cache::$aLogGet);
 
 	} // end of func TestCacheFile
 
@@ -332,6 +338,9 @@ class TestCache extends UnitTestCase {
 
 */
 		// End of cache write test
+
+		// Get log
+		//var_dump(Cache::$aLogGet);
 
 	} // end of func TestCacheMemcached
 

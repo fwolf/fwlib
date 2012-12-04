@@ -106,22 +106,44 @@ class CacheMemcached extends Cache {
 
 		if (1 == $this->aCfg['cache-memcached-autosplit']) {
 			// Is value splitted ?
-			$i_total = $this->oMemcached->get($this->Key($key
-				. '[split]'));
+			$s_key = $this->Key($key . '[split]');
+			$i_total = $this->oMemcached->get($s_key);
+			parent::$aLogGet[] = array(
+				'key'	=> $s_key,
+				'success'	=> Memcached::RES_SUCCESS
+					== $this->oMemcached->getResultCode(),
+			);
 			if (false === $i_total) {
 				// No split found
 				$val = $this->oMemcached->get($this->Key($key));
+				parent::$aLogGet[] = array(
+					'key'	=> $this->Key($key),
+					'success'	=> Memcached::RES_SUCCESS
+						== $this->oMemcached->getResultCode(),
+				);
 			} else {
 				// Splited string
 				$val = '';
-				for ($i = 1; $i <= $i_total; $i++)
-					$val .= $this->oMemcached->get($this->Key($key
-						. '[split-' . $i . '/' . $i_total . ']'));
+				for ($i = 1; $i <= $i_total; $i++) {
+					$s_key = $this->Key($key
+						. '[split-' . $i . '/' . $i_total . ']');
+					$val .= $this->oMemcached->get($s_key);
+					parent::$aLogGet[] = array(
+						'key'	=> $s_key,
+						'success'	=> Memcached::RES_SUCCESS
+							== $this->oMemcached->getResultCode(),
+					);
+				}
 			}
 		}
 		else {
 			// Direct get
 			$val = $this->oMemcached->get($this->Key($key));
+			parent::$aLogGet[] = array(
+				'key'	=> $this->Key($key),
+				'success'	=> Memcached::RES_SUCCESS
+					== $this->oMemcached->getResultCode(),
+			);
 		}
 
 		if (Memcached::RES_SUCCESS == $this->oMemcached->getResultCode())

@@ -237,12 +237,20 @@ class CacheFile extends Cache {
 	 */
 	public function Get ($key, $lifetime = NULL) {
 		if ($this->Expire($key, $lifetime)) {
+			parent::$aLogGet[] = array(
+				'key'	=> $key,
+				'success'	=> false,
+			);
 			return NULL;
 		}
 
 		// Read from file and parse it.
 		$s_file = $this->FilePath($key);
 		$s_cache = file_get_contents($s_file);
+		parent::$aLogGet[] = array(
+			'key'	=> $key,
+			'success'	=> !(false === $s_cache),
+		);
 
 		return $this->ValDecode($s_cache);
 	} // end of func Get

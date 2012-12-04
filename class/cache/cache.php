@@ -31,6 +31,20 @@ class Cache extends Fwolflib {
 	 */
 	protected $aCache = array();
 
+	/**
+	 * Log for Get op's key and success flag
+	 *
+	 * array(
+	 * 	array(
+	 * 		key: string,
+	 * 		success: boolean,
+	 * 	)
+	 * )
+	 *
+	 * @var	array
+	 */
+	public static $aLogGet = array();
+
 
 	/**
 	 * Constructor
@@ -137,10 +151,18 @@ class Cache extends Fwolflib {
 	 * @return	mixed
 	 */
 	public function Get ($key, $lifetime = NULL) {
+		$key = $this->Key($key);
+
 		// Ignored lifetime
-		return $this->ValDecode(
-			ArrayRead($this->aCache, $this->Key($key))
+		$val = $this->ValDecode(
+			ArrayRead($this->aCache, $key, NULL)
 			, 0);
+
+		self::$aLogGet[] = array(
+			'key'	=> $key,
+			'success'	=> !is_null($val),
+		);
+		return $val;
 	} // end of func Get
 
 
