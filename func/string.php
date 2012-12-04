@@ -301,26 +301,21 @@ function Pin15To18($pin) {
  * @param	string	$mode	模式
  * @return	string
  */
-function RandomString($len, $mode)
-{
+function RandomString ($len, $mode = 'a0') {
 	$str = '';
-	if (preg_match('/[a]/', $mode))
-	{
+	if (preg_match('/[a]/', $mode)) {
 		$str .= 'abcdefghijklmnopqrstuvwxyz';
 	}
-	if (preg_match('/[A]/', $mode))
-	{
+	if (preg_match('/[A]/', $mode)) {
 		$str .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	}
-	if (preg_match('/[0]/', $mode))
-	{
+	if (preg_match('/[0]/', $mode)) {
 	    $str .= '0123456789';
 	}
 	$result = '';
 	$str_len = strlen($str);
 	$max = 1000;
-	for($i = 0;$i < $len;$i++)
-	{
+	for($i = 0; $i < $len; $i ++) {
 		$num = rand(0, $max);
 		$num = $num % $str_len;
 		$result .= $str[$num];
