@@ -156,6 +156,27 @@ abstract class Controler extends Fwolflib {
 
 		$s .= ".</p>\n";
 
+		// Add Cache log of get operate
+		if (!empty(Cache::$aLogGet)) {
+			$s = substr($s, 0, strlen($s) - 6);
+			$s .= ', cache <span style="cursor: pointer;"
+				onclick="javascript:
+				var obj=getElementById(\'fwlib_debuginfo_cache_logget\');
+				if (\'none\'==obj.style.display || \'\'==obj.style.display)
+					{obj.style.display=\'block\';}
+				else
+					{obj.style.display=\'none\';};">
+				logget</span>.</p>' . "\n";
+			$s .= '<ul id="fwlib_debuginfo_cache_logget"
+				style="display: none;">' . "\n";
+			foreach (Cache::$aLogGet as $v) {
+				$s .= '	<li style="text-align: left">'
+					. (($v['success']) ? '√' : '×') . ': '
+					. $v['key'] . '</li>' . "\n";
+			}
+			$s .= '</ul>' . "\n";
+		}
+
 		return $s;
 	} // end of func GetDebugInfo
 
