@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(FWOLFLIB . 'class/cache/cache.php');
 require_once(FWOLFLIB . 'func/string.php');
 
 
@@ -18,6 +19,18 @@ require_once(FWOLFLIB . 'func/string.php');
  * @see			View
  */
 abstract class Module extends Fwolflib {
+
+	/**
+	 * Cache object
+	 * @var	object
+	 */
+	public $oCache = NULL;
+
+	/**
+	 * Use cache or not
+	 * @var	boolean
+	 */
+	public $bCacheOn = FALSE;
 
 	/**
 	 * Database object
@@ -54,13 +67,76 @@ abstract class Module extends Fwolflib {
 	 */
 	public function __construct ($view = null) {
 		// Unset for auto new
+		unset($this->oCache);
 		unset($this->oDb);
 
 		parent::__construct();
 
 		if (!is_null($view))
 			$this->oView = &$view;
+
+		// Temp cache switch
+		if ('0' == GetGet('cache'))
+			$this->bCacheOn = FALSE;
 	} // end of func __construct
+
+
+	/**
+	 * Overload __call
+	 * Auto call CacheXxx func.
+	 *
+	 * @param	string	$name			Method name
+	 * @param	array	$arg			Method argument
+	 * @return	mixed
+	 */
+	public function __call ($name, $arg) {
+		// Func name start from Cache
+		if ('Cache' == substr($name, 0, 5)) {
+			$method = substr($name, 5);
+			if (method_exists($this, $method)) {
+				// Cache key prefix
+				$key = get_class($this) . '/' . $method . '/';
+				// Get cache lifetime by key prefix
+				$lifetime = $this->CacheLifetime($key);
+				// Real cache key need arg added
+				if (!empty($arg))
+					foreach ($arg as $k => $v)
+						$key .= $k . '/' . $v . '/';
+
+				$val = NULL;
+				// Try read from cache if cache on
+				if ($this->bCacheOn)
+					$val = $this->oCache->Get($key, $lifetime);
+
+				// Read cache fail, call real method
+				if (is_null($val)) {
+					$val = call_user_func_array(array($this, $method), $arg);
+					// Update cache
+					$this->oCache->Set($key, $val, $lifetime);
+				}
+
+				return $val;
+			}
+		}
+
+		// Default call, which may trigger error
+		$this->Log('Undefined method: ' . $name . '()', 5);
+		return NULL;
+	} // end of func __call
+
+
+	/**
+	 * Get cache lifetime
+	 * Subclass should rewrite this method,
+	 * to get lifetime by assigned key.
+	 *
+	 * @param	string	$key			Key, or key prefix
+	 * @return	int						Lifetime in seconds
+	 */
+	public function CacheLifetime ($key) {
+		// Use Cache obj default
+		return NULL;
+	} // end of func CacheLifetime
 
 
 	/**
@@ -160,6 +236,17 @@ abstract class Module extends Fwolflib {
 
 		return $ar;
 	} // end of func FormSet
+
+
+	/**
+	 * New Cache instance
+	 * Shoud be overwrited by sub class if use cache.
+	 *
+	 * @return object
+	 */
+	protected function NewObjCache () {
+		return Cache::Create('');
+	} // end of func NewObjCache
 
 
 	/**
