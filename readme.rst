@@ -287,6 +287,9 @@ datetime.php
 Date and time func.
 
 
+SecToStr ($i_sec, $b_simple = true)
+	Convert sec back to str describe.
+
 StrToSec ($str)
 	Convert str to seconds it means.
 

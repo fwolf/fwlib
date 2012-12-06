@@ -20,9 +20,22 @@ if (! defined('SIMPLE_TEST')) {
 
 // Require library define file which need test
 require_once(dirname(__FILE__) . '/datetime.php');
+require_once(dirname(__FILE__) . '/ecl.php');
 require_once(dirname(__FILE__) . '/request.php');
 
 class TestFuncDatetime extends UnitTestCase {
+
+	function TestSecToStr () {
+		$this->assertEqual(SecToStr(12), '12s');
+		$this->assertEqual(SecToStr(120), '2i');
+
+		$i = 65831316;
+		$this->assertEqual(StrToSec(SecToStr($i, false)), $i);
+
+		$i = 65831316985649;
+		$this->assertEqual(StrToSec(SecToStr($i, false)), $i);
+	} // end of func TestSecToStr
+
 
     function TestStrToSec () {
 		$this->assertEqual(StrToSec(''), 0);

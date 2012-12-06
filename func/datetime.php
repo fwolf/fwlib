@@ -14,6 +14,56 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**
+ * Convert sec back to str describe
+ *
+ * No week in result.
+ *
+ * @param	int		$i_sec
+ * @param	boolean	$b_simple				If true, use ymdhis instead of word
+ * @return	string
+ */
+function SecToStr ($i_sec, $b_simple = true) {
+	if (empty($i_sec) || !is_numeric($i_sec))
+		return '';
+
+	$ar_dict = array(
+		array('c', -1,	'century',	'centuries'),
+		array('y', 100,	'year',		'years'),
+		// 12m != 1y, can't count month in.
+//		array('m', 12,	'month',	'months'),
+		array('d', 365,	'day',		'days'),
+		array('h', 24,	'hour',		'hours'),
+		array('i', 60,	'minute',	'minutes'),
+		array('s', 60,	'second',	'seconds'),
+	);
+	$i = count($ar_dict);
+	// Loop from end of $ar_dict
+	$s = '';
+	while (0 < $i && 0 < $i_sec) {
+		// 1. for loop, 2. got current array index
+		$i --;
+
+		// Reach top level, end loop
+		if (-1 == $ar_dict[$i][1]) {
+			$s = $i_sec . $ar_dict[$i][(($b_simple) ? 0
+				: ((1 == $i_sec) ? 2 : 3))]
+				. ' ' . $s;
+			break;
+		}
+
+		$j = $i_sec % $ar_dict[$i][1];
+		if (0 != $j)
+			$s = $j . $ar_dict[$i][(($b_simple) ? 0
+				: ((1 == $i_sec) ? 2 : 3))]
+				. ' ' . $s;
+		$i_sec = floor($i_sec / $ar_dict[$i][1]);
+	}
+
+	return rtrim($s);
+} // end of func SecToStr
+
+
+/**
  * Convert str to seconds it means
  *
  * Like 1m, 20d or combined
