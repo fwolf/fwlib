@@ -287,6 +287,9 @@ datetime.php
 Date and time func.
 
 
+StrToSec ($str)
+	Convert str to seconds it means.
+
 Strtotime1 ()
 	Remove ':000' before original strtotime().
 

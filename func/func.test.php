@@ -4,7 +4,7 @@
  *
  * @package     fwolflib
  * @subpackage	func.test
- * @copyright   Copyright 2009-2010, Fwolf
+ * @copyright   Copyright 2009-2012, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2009-10-22
  */
@@ -27,6 +27,7 @@ $test = new TestSuite('Group test for func/*');
 $test->addFile('array.test.php');
 $test->addFile('client.test.php');
 $test->addFile('crypt.test.php');
+$test->addFile('datetime.test.php');
 $test->addFile('filesystem.test.php');
 $test->addFile('request.test.php');
 $test->addFile('string.test.php');
