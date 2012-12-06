@@ -1,7 +1,8 @@
 <?php
 require_once(dirname(__FILE__) . '/fwolflib.php');
-require_once(FWOLFLIB . 'class/cache/cache.php');
-require_once(FWOLFLIB . 'func/string.php');
+require_once(dirname(__FILE__) . '/cache/cache.php');
+require_once(dirname(__FILE__) . '/../func/request.php');
+require_once(dirname(__FILE__) . '/../func/string.php');
 
 
 /**
