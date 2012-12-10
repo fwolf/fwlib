@@ -95,7 +95,7 @@ class TestDict extends UnitTestCase {
 */
 
 
-} // end of class TestCache
+} // end of class TestDict
 
 
 class DictTest extends Dict {

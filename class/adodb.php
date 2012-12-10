@@ -496,78 +496,6 @@ class Adodb extends Fwolflib {
 
 
 	/**
-	 * Get rows count by condition user given
-	 *
-	 * @param	string	$tbl
-	 * @param	string	$cond	Condition, can be where, having etc, raw sql string.
-	 * @return	int		-1: error/N >= 0: number of rows
-	 */
-	public function GetRowCount ($tbl, $cond = '') {
-		$rs = $this->PExecute($this->GenSql(array(
-			'SELECT' => array('c' => 'count(1)'),
-			'FROM'	=> $tbl,
-			)) . ' ' . $cond);
-		if (false == $rs || 0 != $this->ErrorNo()
-				|| 0 == $rs->RowCount())
-			// Execute error
-			return -1;
-		else
-			return $rs->fields['c'];
-	} // end of func GetRowCount
-
-
-	/**
-	 * Get delimiter between SQL for various db
-	 *
-	 * @return	string
-	 */
-	public function GetSqlDelimiter () {
-		if ($this->IsDbMysql())
-			return ";\n";
-		elseif ($this->IsDbSybase())
-			return "\n";
-		else {
-			$this->Log('GetSqlDelimiter() for this kind of db not implement.'
-				, 5);
-			return "\n";
-		}
-	} // end of func GetSqlDelimiter
-
-
-	/**
-	 * Get SQL: begin transaction
-	 *
-	 * @return	string
-	 */
-	public function GetSqlTransBegin () {
-		if ($this->IsDbMysql())
-			return 'START TRANSACTION' . $this->GetSqlDelimiter();
-		else
-			return 'BEGIN TRANSACTION' . $this->GetSqlDelimiter();
-	} // end of func GetSqlTransBegin
-
-
-	/**
-	 * Get SQL: commit transaction
-	 *
-	 * @return	string
-	 */
-	public function GetSqlTransCommit () {
-		return 'COMMIT' . $this->GetSqlDelimiter();
-	} // end of func GetSqlTransCommit
-
-
-	/**
-	 * Get SQL: rollback transaction
-	 *
-	 * @return	string
-	 */
-	public function GetSqlTransRollback () {
-		return 'ROLLBACK' . $this->GetSqlDelimiter();
-	} // end of func GetSqlTransRollback
-
-
-	/**
 	 * Generate SQL statement
 	 *
 	 * User should avoid use SELECT/UPDATE/INSERT/DELETE simultaneously.
@@ -741,6 +669,78 @@ class Adodb extends Fwolflib {
 		else
 			return '';
 	} // end of func GetMetaPrimaryKey
+
+
+	/**
+	 * Get rows count by condition user given
+	 *
+	 * @param	string	$tbl
+	 * @param	string	$cond	Condition, can be where, having etc, raw sql string.
+	 * @return	int		-1: error/N >= 0: number of rows
+	 */
+	public function GetRowCount ($tbl, $cond = '') {
+		$rs = $this->PExecute($this->GenSql(array(
+			'SELECT' => array('c' => 'count(1)'),
+			'FROM'	=> $tbl,
+			)) . ' ' . $cond);
+		if (false == $rs || 0 != $this->ErrorNo()
+				|| 0 == $rs->RowCount())
+			// Execute error
+			return -1;
+		else
+			return $rs->fields['c'];
+	} // end of func GetRowCount
+
+
+	/**
+	 * Get delimiter between SQL for various db
+	 *
+	 * @return	string
+	 */
+	public function GetSqlDelimiter () {
+		if ($this->IsDbMysql())
+			return ";\n";
+		elseif ($this->IsDbSybase())
+			return "\n";
+		else {
+			$this->Log('GetSqlDelimiter() for this kind of db not implement.'
+				, 5);
+			return "\n";
+		}
+	} // end of func GetSqlDelimiter
+
+
+	/**
+	 * Get SQL: begin transaction
+	 *
+	 * @return	string
+	 */
+	public function GetSqlTransBegin () {
+		if ($this->IsDbMysql())
+			return 'START TRANSACTION' . $this->GetSqlDelimiter();
+		else
+			return 'BEGIN TRANSACTION' . $this->GetSqlDelimiter();
+	} // end of func GetSqlTransBegin
+
+
+	/**
+	 * Get SQL: commit transaction
+	 *
+	 * @return	string
+	 */
+	public function GetSqlTransCommit () {
+		return 'COMMIT' . $this->GetSqlDelimiter();
+	} // end of func GetSqlTransCommit
+
+
+	/**
+	 * Get SQL: rollback transaction
+	 *
+	 * @return	string
+	 */
+	public function GetSqlTransRollback () {
+		return 'ROLLBACK' . $this->GetSqlDelimiter();
+	} // end of func GetSqlTransRollback
 
 
 	/**
