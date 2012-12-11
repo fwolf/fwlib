@@ -458,6 +458,9 @@ MatchWildcard ($str, $rule)
 Pin15To18 ($pin)
 	Convert 15-digi pin to 18-digi.
 
+StrToArray ($s_srce, $s_splitter = ',', $b_trim = true, $b_remove_empty = true)
+	Convert string to array by splitter.
+
 SubstrIgnHtml ($str, $len, $marker, $start = 0, $encoding = 'utf-8')
 	Get substr by display width, and ignore html tag's length.
 

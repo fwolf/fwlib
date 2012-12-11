@@ -1,7 +1,9 @@
 <?php
 /**
- * Functions about string.
- * @package     fwolflib\func
+ * Functions about string
+ *
+ * @package     fwolflib
+ * @subpackage	func
  * @copyright   Copyright 2004-2012, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		Before 2008-04-07
@@ -454,6 +456,45 @@ function StrReForm( $str, $s1, $s2 = '', $embody = false, $istrim = true )
 	}
 	return( $s );
 } // end of func StrReForm
+
+
+/**
+ * Convert string to array by splitter
+ *
+ * @param	string	$s_srce
+ * @param	string	$s_splitter
+ * @param	boolean	$b_trim
+ * @param	boolean	$b_remove_empty
+ * @return	array
+ */
+function StrToArray ($s_srce, $s_splitter = ',', $b_trim = true
+	, $b_remove_empty = true) {
+	if (!is_string($s_srce))
+		$s_srce = strval($s_srce);
+
+	if (false === strpos($s_srce, $s_splitter)) {
+		$ar_rs = array($s_srce);
+	}
+	else {
+		$ar_rs = explode($s_splitter, $s_srce);
+	}
+
+	if ($b_trim) {
+		foreach ($ar_rs as &$v)
+			$v = trim($v);
+		unset($v);
+	}
+
+	if ($b_remove_empty) {
+		foreach ($ar_rs as $k => $v)
+			if (empty($v))
+				unset($ar_rs[$k]);
+		// Re generate array index
+		$ar_rs = array_merge($ar_rs, array());
+	}
+
+	return $ar_rs;
+} // end of func StrToArray
 
 
 /**

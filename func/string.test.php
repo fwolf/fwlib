@@ -1,9 +1,10 @@
 <?php
 /**
  * Test - string func
+ *
  * @package     fwolflib
  * @subpackage	func.test
- * @copyright   Copyright 2004-2010, Fwolf
+ * @copyright   Copyright 2004-2012, Fwolf
  * @author      Fwolf <fwolf.aide+fwolflib.func.test@gmail.com>
  * @since		2008-05-08
  */
@@ -153,6 +154,23 @@ class TestFuncString extends UnitTestCase {
     	$this->assertEqual(Rfc2047Decode($x), $y);
 
     } // end of func TestRfc2047Decode
+
+
+	function TestStrToArray () {
+		$x = ' blah ';
+		$y = array('blah');
+		$y2 = array(' blah ');
+		$this->assertEqual(StrToArray($x), $y);
+		$this->assertEqual(StrToArray($x, '|', false), $y2);
+
+		$x = ', a, b, c  , d  , ';
+		$this->assertEqual(StrToArray($x, ','), array('a', 'b', 'c', 'd'));
+		$this->assertEqual(StrToArray($x, ' '), array(',', 'a,', 'b,', 'c', ',', 'd', ','));
+		$this->assertEqual(StrToArray($x, ',', true, false),
+			array('', 'a', 'b', 'c',  'd', ''));
+		$this->assertEqual(StrToArray($x, ',', false, true),
+			array(' a', ' b', ' c  ',  ' d  ', ' '));
+	} // end of func TestStrToArray
 
 
     function TestSubstrIgnHtml() {
