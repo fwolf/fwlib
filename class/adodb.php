@@ -1,18 +1,10 @@
 <?php
-/**
- * @package		fwolflib
- * @subpackage	class
- * @copyright	Copyright 2008-2010, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
- * @since		2008-04-22
- */
-
-
 // Set include path in __construct
 //require_once('adodb/adodb.inc.php');
 require_once(dirname(__FILE__) . '/fwolflib.php');
-require_once(FWOLFLIB . 'class/sql_generator.php');
-require_once(FWOLFLIB . 'func/ecl.php');
+require_once(dirname(__FILE__) . '/sql_generator.php');
+require_once(dirname(__FILE__) . '/../func/ecl.php');
+require_once(dirname(__FILE__) . '/../func/string.php');
 
 
 /**
@@ -38,11 +30,12 @@ require_once(FWOLFLIB . 'func/ecl.php');
  *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright 2008-2010, Fwolf
+ * @copyright	Copyright 2008-2012, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2008-04-08
  */
 class Adodb extends Fwolflib {
+
 	/**
 	 * Real ADODB connection object
 	 * @var object
@@ -390,9 +383,11 @@ class Adodb extends Fwolflib {
 	 * @return mixed
 	 */
 	public function EncodingConvert (&$s) {
-		if (is_array($s) && !empty($s))
+		if (is_array($s) && !empty($s)) {
 			foreach ($s as &$val)
 				$this->EncodingConvert($val);
+			unset($val);
+		}
 
 		if (is_string($s)) {
 			if ($this->sSysCharset != $this->aDbProfile['lang'])
@@ -411,9 +406,11 @@ class Adodb extends Fwolflib {
 	 * @return mixed
 	 */
 	public function EncodingConvertReverse (&$s) {
-		if (is_array($s) && !empty($s))
+		if (is_array($s) && !empty($s)) {
 			foreach ($s as &$val)
 				$this->EncodingConvertReverse($val);
+			unset($val);
+		}
 
 		if (is_string($s)) {
 			if ($this->sSysCharset != $this->aDbProfile['lang'])
@@ -654,6 +651,7 @@ class Adodb extends Fwolflib {
 						$ar[] = $col_name[strtoupper($col)];
 					}
 				}
+				unset($col);
 			}
 
 			if (is_array($ar) && 1 == count($ar))
@@ -1005,6 +1003,7 @@ class Adodb extends Fwolflib {
 						$row[$key] = $v;
 					}
 				}
+				unset($row);
 			}
 			// Now, finanly, actual write data
 			// Auto convert encoding ?
