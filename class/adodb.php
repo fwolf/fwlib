@@ -126,6 +126,8 @@ class Adodb extends Fwolflib {
 	 * @var param	string	$path_adodb		Include path of original ADODB
 	 */
 	public function __construct ($dbprofile, $path_adodb = '') {
+		parent::__construct();
+
 		// Include original adodb lib
 		if (empty($path_adodb))
 			$path_adodb = 'adodb/adodb.inc.php';
@@ -533,6 +535,99 @@ class Adodb extends Fwolflib {
 
 
 	/**
+	 * Get data from single table using PK
+	 *
+	 * $m_pk, $col, $col_pk support string split by ',' or array, like:
+	 * 1. 'val'
+	 * 2. 'val1, val2'
+	 * 3. array('val1', 'val2')
+	 *
+	 * '*' can be used for $col, means all cols in table, this way can't use
+	 * cache, not recommend.
+	 *
+	 * Notice: $col must indexed by number start from 0.
+	 *
+	 * Also, this function can be used to retrieve data from a table with
+	 * single unique index, by assigning $col_pk to non-PK column.
+	 *
+	 * @param	string	$s_tbl
+	 * @param	mixed	$m_pk			PK value
+	 * @param	mixed	$col			Cols need to retrieve.
+	 * @param	mixed	$col_pk			PK column name, NULL to auto get.
+	 * @return	mixed					Single/array, NULL if error occur.
+	 */
+	public function GetDataByPk ($s_tbl, $m_pk, $col = NULL, $col_pk = NULL) {
+		// Treat PK col
+		if (empty($col_pk)) {
+			$col_pk = $this->GetMetaPrimaryKey($s_tbl);
+		}
+
+		// PK and col name all convert to array
+		if (!is_array($m_pk)) {
+			if (is_string($m_pk))
+				$m_pk = StrToArray($m_pk, ',');
+			else
+				$m_pk = array($m_pk);
+		}
+		if (!is_array($col_pk)) {
+			if (is_string($col_pk))
+				$col_pk = StrToArray($col_pk, ',');
+			else
+				$col_pk = array($col_pk);
+		}
+
+		// $col_pk need to be array same count with $m_pk
+		if (count($m_pk) != count($col_pk)) {
+			$this->Log('PK value and column not match.', 4);
+			return NULL;
+		}
+
+		// Treat col
+		if (empty($col))
+			$col = '*';
+		if ('*' == $col)
+			$col = $this->GetMetaColumnName($s_tbl);
+		if (!is_array($col)) {
+			if (is_string($col))
+				// String split by ',', style 'col AS col_alias' allowed
+				$col = StrToArray($col, ',');
+			else
+				$col = array($col);
+		}
+
+		// $m_pk, $col, $col_pk all converted to array
+
+		// Retrieve from db
+		$ar_sql = array(
+			'SELECT'	=> $col,
+			'FROM'		=> $s_tbl,
+			'LIMIT'		=> 1,
+		);
+		while (!empty($m_pk)) {
+			$s_col_pk = array_shift($col_pk);
+			$ar_sql['WHERE'][] = $s_col_pk . ' = '
+				. $this->QuoteValue($s_tbl, $s_col_pk, array_shift($m_pk));
+			unset($s_col_pk);
+		}
+		$rs = $this->ExecuteGenSql($ar_sql);
+		$ar_rs = array();
+		if (!empty($rs) && !$rs->EOF) {
+			$ar_rs = $rs->GetRowAssoc(false);
+		}
+
+		// Return value
+		if (empty($ar_rs))
+			return NULL;
+		else {
+			if (1 == count($ar_rs))
+				return array_pop($ar_rs);
+			else
+				return $ar_rs;
+		}
+	} // end of func GetDataByPk
+
+
+	/**
 	 * Get table schema
 	 *
 	 * @param	string	$table
@@ -833,19 +928,19 @@ class Adodb extends Fwolflib {
 		$type = $this->aMetaColumn[$table][$column]->type;
 		//var_dump($type);
 		if (in_array($type, array(
-			'bigint',
-			'bit',
-			'decimal',
-			'double',
-			'float',
-			'int',
-			'intn', // Sybase - tinyint
-			'mediumint',
-			'numeric',
-			'numericn',	// Sybase - numeric
-			'real',
-			'smallint',
-			'tinyint',
+				'bigint',
+				'bit',
+				'decimal',
+				'double',
+				'float',
+				'int',
+				'intn', // Sybase - tinyint
+				'mediumint',
+				'numeric',
+				'numericn',	// Sybase - numeric
+				'real',
+				'smallint',
+				'tinyint',
 			)))
 			// Need not quote, output directly
 			return $val;
