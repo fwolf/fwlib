@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/fwolflib.php');
+require_once(dirname(__FILE__) . '/adodb.php');
 require_once(dirname(__FILE__) . '/cache/cache.php');
 require_once(dirname(__FILE__) . '/../func/request.php');
 require_once(dirname(__FILE__) . '/../func/string.php');
@@ -138,6 +139,233 @@ abstract class Module extends Fwolflib {
 		// Use Cache obj default
 		return NULL;
 	} // end of func CacheLifetime
+
+
+	/**
+	 * Compare new data with data from db, get diff array
+	 *
+	 * New/old array are all assoc, index by table column.
+	 * PK column must exists in new array, value can be NULL.
+	 *
+	 * In new array, empty PK means INSERT.
+	 * In old array, empty or not exists PK means DELETE.
+	 *
+	 * Multi table and row supported, new/old array must match.
+	 *
+	 * After modify db according diff, 'flag' should be set,
+	 * 'code, msg' can also used to store db op message.
+	 *
+	 * New/old array structure:
+	 * array(
+	 * 	[tbl] => array(
+	 * 		array(						// Single row can admit this level
+	 * 									// DbDiffRow() use this as param
+	 * 			[col] => [val],
+	 * 			...
+	 * 		),
+	 * 		...
+	 * 	),
+	 * 	...
+	 * )
+	 *
+	 * Result is array, structure:
+	 * array(
+	 * 	code: 0 means success, other means error
+	 * 	msg: Error msg string or array
+	 * 	flag: 0=default, 100=committed, -100=rollbacked
+	 * 	diff = array(
+	 * 		[tbl] = array(
+	 * 			array(					// DbDiffRow() return this array
+	 * 				mode: INSERT | DELETE | UPDATE
+	 *				// PK new/old is same in UPDATE mode
+	 * 				pk: array(
+	 * 					[pk1] = array(
+	 * 						old => [val],
+	 * 						new => [val],
+	 * 					),
+	 * 					...
+	 * 				),
+	 *				// Other cols change
+	 * 				col: array(
+	 * 					[col] = array(
+	 * 						old => [val],
+	 * 						new => [val],
+	 * 					),
+	 * 					...
+	 * 				),
+	 * 			),
+	 * 			...
+	 * 		),
+	 * 		...
+	 * 	)
+	 * )
+	 * @param	array	$ar_new			New data array
+	 * @param	Adodb	$db				Db object, need to be connected,
+	 * 									NULL to use $this->oDb.
+	 * @param	array	$ar_old			Old data array, NULL to read from db
+	 * @return	array
+	 */
+	public function DbDiff (array $ar_new, Adodb &$db = NULL, array $ar_old = NULL) {
+		// Param check
+		if (empty($ar_new))
+			return array(
+				'code'	=> -1,
+				'msg'	=> 'New array empty.',
+			);
+		if (is_null($db))
+			$db = $this->oDb;
+
+		// Loop for table
+		$ar_diff = array();
+		foreach ($ar_new as $tbl => $ar_rows) {
+			// Convert single array to 2-dim array
+			if (!isset($ar_rows[0]))
+				$ar_rows = array($ar_rows);
+			if (!empty($ar_old[$tbl]) && !isset($ar_old[$tbl][0]))
+				$ar_old[$tbl] = array($ar_old[$tbl]);
+
+			$ar_col_pk = $db->GetMetaPrimaryKey($tbl);
+			if (!is_array($ar_col_pk))
+				$ar_col_pk = array($ar_col_pk);
+
+			// Loop for rows
+			foreach ($ar_rows as $i_row => $row) {
+				// Check all PK exist in row data
+				foreach ($ar_col_pk as $s_pk) {
+					if (!isset($row[$s_pk]))
+						return array(
+							'code'	=> -2,
+							'msg'	=> 'Table ' . $tbl . ', PK ' . $s_pk
+								. ' not assigned in new array, index: '
+								. $i_row . '.',
+						);
+				}
+
+				$ar_col = array_keys($row);
+				$ar_val_pk = array_intersect_key($row
+					, array_fill_keys($ar_col_pk, NULL));
+
+				// Got old data array
+				if (!isset($ar_old[$tbl][$i_row])) {
+					// Query from db by PK from new array
+					$rs = $db->GetDataByPk($tbl, $ar_val_pk, $ar_col
+						, $ar_col_pk);
+					if (is_null($rs))
+						$rs = array();
+					if (!is_array($rs)) {
+						// Row only have one column, convert back to array
+						$rs = array($ar_col[0], $rs);
+						$ar_old[$tbl][$i_row] = $rs;
+					}
+				}
+
+				// Do diff for this row
+				$ar = $this->DbDiffRow($row, $ar_old[$tbl][$i_row]
+					, $ar_col_pk);
+				if (!empty($ar))
+					$ar_diff['diff'][$tbl][] = $ar;
+			}
+		}
+
+		$ar_diff['code'] = 0;
+		$ar_diff['msg'] = 'Successful.';
+		$ar_diff['flag'] = 0;
+		return $ar_diff;
+	} // end of func DbDiff
+
+
+	/**
+	 * Compare a row's for DbDiff()
+	 *
+	 * Param and result structure, see DbDiff()
+	 *
+	 * $ar_new MUST contain all PK columns.
+	 *
+	 * @param	array	$ar_new
+	 * @param	array	$ar_old
+	 * @param	array	$ar_pk			NULL to use first col in $ar_new
+	 * @return	array
+	 */
+	public function DbDiffRow (array $ar_new, array $ar_old = NULL
+		, array $ar_pk = NULL) {
+		// Check param
+		if (is_null($ar_pk)) {
+			$ar_pk = array_keys($ar_new);
+			$ar_pk = array($ar_pk[0]);
+		}
+
+		$ar_diff = array();
+
+		// Detect mode: INSERT/UPDATE/DELETE
+		$b_new_null = false;
+		$b_old_null = false;
+		foreach ($ar_pk as $s_pk) {
+			if (is_null($ar_new[$s_pk]))
+				$b_new_null = true;
+			elseif ($b_new_null)
+				// Mixed NULL with non-NULL PK value
+				$this->Log('New array PK ' . $s_pk . ' got value and mixed'
+					. ' with other NULL PK.', 4);
+
+			if (!isset($ar_old[$s_pk]) || is_null($ar_old[$s_pk]))
+				$b_old_null = true;
+			elseif ($b_old_null)
+				// Mixed NULL with non-NULL PK value
+				$this->Log('Old array PK ' . $s_pk . ' got value and mixed'
+					. ' with other NULL PK.', 4);
+		}
+		if (true == $b_new_null && false == $b_old_null) {
+			$ar_diff['mode'] = 'DELETE';
+		}
+		elseif (false == $b_new_null && true == $b_old_null) {
+			$ar_diff['mode'] = 'INSERT';
+		}
+		elseif (false == $b_new_null && false == $b_old_null) {
+			$ar_diff['mode'] = 'UPDATE';
+		}
+		else {
+			// New, old are all NULL PK, should not occur
+			$this->Log('New and old array\'s PK are all NULL, nothing to do.', 4);
+			return array();
+		}
+
+		// PK, include even new same with old
+		foreach ($ar_pk as $s_pk) {
+			$ar_diff['pk'][$s_pk] = array(
+				'new'	=> $ar_new[$s_pk],
+				'old'	=> isset($ar_old[$s_pk]) ? $ar_old[$s_pk] : NULL,
+			);
+			// Remove it in normal column
+			unset($ar_new[$s_pk]);
+			unset($ar_old[$s_pk]);
+		}
+
+		// Other column, skip same value
+		$ar_diff['col'] = array();
+		$ar_col = array();
+		if (!empty($ar_new))
+			$ar_col += array_keys($ar_new);
+		if (!empty($ar_old))
+			$ar_col += array_keys($ar_old);
+		if (!empty($ar_col)) {
+			foreach ($ar_col as $col) {
+				$v_new = isset($ar_new[$col]) ? $ar_new[$col] : NULL;
+				$v_old = isset($ar_old[$col]) ? $ar_old[$col] : NULL;
+
+				if (is_null($v_new) && is_null($v_old))
+					continue;
+				if (!is_null($v_new) && !is_null($v_old) && $v_new == $v_old)
+					continue;
+
+				$ar_diff['col'][$col] = array(
+					'new'	=> $v_new,
+					'old'	=> $v_old,
+				);
+			}
+		}
+
+		return $ar_diff;
+	} // end of func DbDiffRow
 
 
 	/**
