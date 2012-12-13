@@ -154,6 +154,8 @@ abstract class Module extends Fwolflib {
 	 *
 	 * After modify db according diff, 'flag' should be set,
 	 * 'code, msg' can also used to store db op message.
+	 * When db query success, 'code' is count for rows changed,
+	 * when db query fail, 'code' is error no and 'msg' is error msg.
 	 *
 	 * New/old array structure:
 	 * array(
@@ -170,8 +172,8 @@ abstract class Module extends Fwolflib {
 	 *
 	 * Result is array, structure:
 	 * array(
-	 * 	code: 0 means success, other means error
-	 * 	msg: Error msg string or array
+	 * 	code: >= 0 means success, < 0 means error
+	 * 	msg: Error msg
 	 * 	flag: 0=default, 100=committed, -100=rollbacked
 	 * 	diff = array(
 	 * 		[tbl] = array(
@@ -205,7 +207,7 @@ abstract class Module extends Fwolflib {
 	 * @param	array	$ar_old			Old data array, NULL to read from db
 	 * @return	array
 	 */
-	public function DbDiff (array $ar_new, Adodb &$db = NULL, array $ar_old = NULL) {
+	public function DbDiff (array $ar_new, Adodb $db = NULL, array $ar_old = NULL) {
 		// Param check
 		if (empty($ar_new))
 			return array(
@@ -232,7 +234,7 @@ abstract class Module extends Fwolflib {
 			foreach ($ar_rows as $i_row => $row) {
 				// Check all PK exist in row data
 				foreach ($ar_col_pk as $s_pk) {
-					if (!isset($row[$s_pk]))
+					if (!array_key_exists($s_pk, $row))
 						return array(
 							'code'	=> -2,
 							'msg'	=> 'Table ' . $tbl . ', PK ' . $s_pk
@@ -254,9 +256,9 @@ abstract class Module extends Fwolflib {
 						$rs = array();
 					if (!is_array($rs)) {
 						// Row only have one column, convert back to array
-						$rs = array($ar_col[0], $rs);
-						$ar_old[$tbl][$i_row] = $rs;
+						$rs = array($ar_col[0] => $rs);
 					}
+					$ar_old[$tbl][$i_row] = $rs;
 				}
 
 				// Do diff for this row
@@ -275,6 +277,126 @@ abstract class Module extends Fwolflib {
 
 
 	/**
+	 * Execute DbDiff()'s result to modify db
+	 *
+	 * @param	array	$ar_diff		Same with DbDiff()'s result
+	 * @param	Adodb	$db
+	 * @return	int						Rows modified, < 0 when error.
+	 * @see DbDiff()
+	 */
+	public function DbDiffCommit (array &$ar_diff, Adodb $db = NULL) {
+		// Condition check
+		if (empty($ar_diff) || empty($ar_diff['diff']))
+			// No diff data
+			return -2;
+		if (0 != $ar_diff['code'])
+			// Diff op not successful
+			return -3;
+		if (100 == $ar_diff['flag'])
+			// Already committed
+			return -4;
+
+		if (is_null($db))
+			$db = $this->oDb;
+
+		// Generate sql
+		$ar_sql_all = array();
+		foreach ($ar_diff['diff'] as $tbl => $ar_rows) {
+			if (empty($ar_rows))
+				continue;
+			foreach ($ar_rows as $i_row => $row) {
+				$ar_sql = array();
+				switch ($row['mode']) {
+					case 'INSERT':
+						$ar_sql['INSERT'] = $tbl;
+						$ar_col = $row['pk'] + $row['col'];	// Sure not empty
+						foreach ($ar_col as $k => $v)
+							$ar_sql['VALUES'][$k] = $v['new'];
+						break;
+					case 'DELETE':
+						$ar_sql['DELETE'] = $tbl;
+						foreach ($row['pk'] as $k => $v)
+							$ar_sql['WHERE'][] = $k . ' = '
+								. $db->QuoteValue($tbl, $k, $v['old']);
+						// Limit rowcount to 1 for safety
+						$ar_sql['LIMIT'] = 1;
+						break;
+					case 'UPDATE':
+						$ar_sql['UPDATE'] = $tbl;
+						foreach ($row['col'] as $k => $v)
+							$ar_sql['SET'][$k] = $v['new'];
+						foreach ($row['pk'] as $k => $v)
+							$ar_sql['WHERE'][] = $k . ' = '
+								. $db->QuoteValue($tbl, $k, $v['new']);
+						// Limit rowcount to 1 for safety
+						$ar_sql['LIMIT'] = 1;
+						break;
+				}
+
+				if (!empty($ar_sql)) {
+					$ar_sql_all[] = $db->GenSql($ar_sql);
+				}
+			}
+		}
+
+		// Execute sql
+		$i_cnt = 0;
+		if (!empty($ar_sql_all)) {
+			$b_error = false;
+			$db->BeginTrans();
+			while (!$b_error && !empty($ar_sql_all)) {
+				$db->Execute(array_shift($ar_sql_all));
+				if (0 != $db->ErrorNo()) {
+					$b_error = true;
+					$this->Log('DbDiffCommit error ' . $db->ErrorNo()
+						. ' : ' . $db->ErrorMsg());
+				}
+				else
+					$i_cnt ++;
+			}
+
+			if ($b_error) {
+				$ar_diff['code'] = abs($db->ErrorNo()) * -1;
+				$ar_diff['msg'] = $db->ErrorMsg();
+				$db->RollbackTrans();
+				return -1;
+			}
+			else {
+				$db->CommitTrans();
+				// Modify diff info
+				$ar_diff['code'] = $i_cnt;
+				$ar_diff['flag'] = 100;
+				return $i_cnt;
+			}
+		}
+		return $i_cnt;
+	} // end of func DbDiffCommit
+
+
+	/**
+	 * Do DbDiff() and commit diff result
+	 *
+	 * Param and result same with DbDiff()
+	 *
+	 * @param	array	$ar_new
+	 * @param	Adodb	$db
+	 * @param	array	$ar_old
+	 * @return	array
+	 * @see DbDiff()
+	 */
+	public function DbDiffExec (array $ar_new, Adodb $db = NULL, array $ar_old = NULL) {
+		$ar_diff = $this->DbDiff($ar_new, $db, $ar_old);
+		if (0 == $ar_diff['code']) {
+			$i = $this->DbDiffCommit($ar_diff);
+			if (0 > $i)
+				$this->Log('DbDiffExec error: ' . $i, 4);
+		}
+
+		return $ar_diff;
+	} // end of func DbDiffExec
+
+
+	/**
 	 * Compare a row's for DbDiff()
 	 *
 	 * Param and result structure, see DbDiff()
@@ -285,6 +407,7 @@ abstract class Module extends Fwolflib {
 	 * @param	array	$ar_old
 	 * @param	array	$ar_pk			NULL to use first col in $ar_new
 	 * @return	array
+	 * @see DbDiff()
 	 */
 	public function DbDiffRow (array $ar_new, array $ar_old = NULL
 		, array $ar_pk = NULL) {
@@ -363,6 +486,10 @@ abstract class Module extends Fwolflib {
 				);
 			}
 		}
+
+		// Skip UPDATE with no col change
+		if ('UPDATE' == $ar_diff['mode'] && empty($ar_diff['col']))
+			$ar_diff = array();
 
 		return $ar_diff;
 	} // end of func DbDiffRow

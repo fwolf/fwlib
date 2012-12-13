@@ -62,7 +62,8 @@ class TestModule extends UnitTestCase {
 		$this->oModule->oDb->Execute('
 			CREATE TABLE t1 (
 				uuid	CHAR(36) NOT NULL,
-				i		INTEGER NULL DEFAULT 0,
+				i		INTEGER NOT NULL DEFAULT 0,
+				ii		INTEGER NULL DEFAULT 0,
 				s		VARCHAR(20) NULL,
 				d		DATETIME NULL,
 				PRIMARY KEY (uuid, i)
@@ -72,6 +73,7 @@ class TestModule extends UnitTestCase {
 			CREATE TABLE t2 (
 				uuid	CHAR(36) NOT NULL,
 				i		INTEGER NULL DEFAULT 0,
+				ii		INTEGER NULL DEFAULT 0,
 				s		VARCHAR(20) NULL,
 				d		DATETIME NULL,
 				PRIMARY KEY (uuid)
@@ -83,7 +85,7 @@ class TestModule extends UnitTestCase {
 		$uuid = Uuid();
 		$this->oModule->oDb->Execute('
 			INSERT INTO t1
-			VALUES ("' . $uuid . '", 12, "blah"
+			VALUES ("' . $uuid . '", 12, 11, "blah"
 				, "' . date('Y-m-d H:i:s') . '")
 		');
 		$this->assertEqual(12, $this->oModule->oDb->GetDataByPk(
@@ -95,8 +97,9 @@ class TestModule extends UnitTestCase {
 
 		// Write data using DbDiff()
 		$uuid = Uuid();
+		$uuid2 = Uuid();
 
-		// New array has few PK
+		// Error: New array has few PK
 		$ar_new = array(
 			'uuid'	=> $uuid,
 //			'i'		=> mt_rand(0, 100),
@@ -105,22 +108,6 @@ class TestModule extends UnitTestCase {
 		);
 		$ar_diff = $this->oModule->DbDiff(array('t1' => $ar_new));
 		$this->assertEqual(-2, $ar_diff['code']);
-
-		// Normal new array
-		$ar_new = array(
-			'uuid'	=> $uuid,
-			'i'		=> mt_rand(0, 100),
-			's'		=> RandomString(10),
-			'd'		=> date('Y-m-d H:i:s'),
-		);
-		$ar_diff = $this->oModule->DbDiff(array('t1' => $ar_new));
-		$this->assertEqual($ar_diff['diff']['t1'][0]['mode'], 'INSERT');
-		$this->assertEqual(count($ar_diff['diff']['t1'][0]['pk']), 2);
-		$this->assertEqual(count($ar_diff['diff']['t1'][0]['col']), 2);
-		$ar_diff = $this->oModule->DbDiff(array('t2' => $ar_new));
-		$this->assertEqual($ar_diff['diff']['t2'][0]['mode'], 'INSERT');
-		$this->assertEqual(count($ar_diff['diff']['t2'][0]['pk']), 1);
-		$this->assertEqual(count($ar_diff['diff']['t2'][0]['col']), 3);
 
 		// New array has only PK
 		$ar_new = array(
@@ -138,6 +125,83 @@ class TestModule extends UnitTestCase {
 		$this->assertEqual($ar_diff['diff']['t2'][0]['mode'], 'INSERT');
 		$this->assertEqual(count($ar_diff['diff']['t2'][0]['pk']), 1);
 		$this->assertEqual(count($ar_diff['diff']['t2'][0]['col']), 0);
+
+		// Insert data
+		$ar_new = array(
+			'uuid'	=> $uuid,
+			'i'		=> mt_rand(0, 100),
+			's'		=> RandomString(10),
+			'd'		=> date('Y-m-d H:i:s'),
+		);
+		$ar_diff = $this->oModule->DbDiffExec(array('t1' => $ar_new));
+		$this->assertEqual($ar_diff['diff']['t1'][0]['mode'], 'INSERT');
+		$this->assertEqual(count($ar_diff['diff']['t1'][0]['pk']), 2);
+		$this->assertEqual(count($ar_diff['diff']['t1'][0]['col']), 2);
+		$this->assertEqual($ar_diff['code'], 1);
+		$this->assertEqual($ar_diff['flag'], 100);
+		$ar_diff = $this->oModule->DbDiffExec(array('t2' => $ar_new));
+		$this->assertEqual($ar_diff['diff']['t2'][0]['mode'], 'INSERT');
+		$this->assertEqual(count($ar_diff['diff']['t2'][0]['pk']), 1);
+		$this->assertEqual(count($ar_diff['diff']['t2'][0]['col']), 3);
+		$this->assertEqual($ar_diff['code'], 1);
+		$this->assertEqual($ar_diff['flag'], 100);
+
+		// Insert mixed with update, multi table
+		$ar_new2 = array($ar_new, array(
+			'uuid'	=> $uuid2,
+			'i'		=> mt_rand(0, 100),
+			's'		=> RandomString(10),
+			'd'		=> date('Y-m-d H:i:s'),
+		));
+		$ar_new3 = $ar_new2;
+		$ar_new2[0]['s'] = RandomString(10);	// Make a update in t1
+		$ar_diff = $this->oModule->DbDiffExec(array(
+			't1' => $ar_new2,
+			't2' => $ar_new3,
+		));
+		$this->assertEqual($ar_diff['diff']['t1'][0]['mode'], 'UPDATE');
+		$this->assertEqual($ar_diff['diff']['t1'][1]['mode'], 'INSERT');
+		$this->assertEqual($ar_diff['diff']['t2'][0]['mode'], 'INSERT');
+		$this->assertEqual(count($ar_diff['diff']['t1'][0]['pk']), 2);
+		$this->assertEqual(count($ar_diff['diff']['t1'][0]['col']), 1);
+		$this->assertEqual(count($ar_diff['diff']['t2'][0]['pk']), 1);
+		$this->assertEqual(count($ar_diff['diff']['t2'][0]['col']), 3);
+		$this->assertEqual($ar_diff['code'], 3);
+		$this->assertEqual($ar_diff['flag'], 100);
+
+		// Db query fail
+//		$ar_new2[1]['ii'] = 'blah';
+//		$ar_diff = $this->oModule->DbDiffExec(array(
+//			't1' => $ar_new2,
+//			't2' => $ar_new2,
+//		));
+//		$this->assertEqual($ar_diff['diff']['t1'][0]['mode'], 'UPDATE');
+//		$this->assertEqual($ar_diff['diff']['t2'][1]['mode'], 'UPDATE');
+//		// Unknow column in fields list
+//		$this->assertEqual($ar_diff['code'], -1054);
+//		$this->assertEqual($ar_diff['flag'], 0);
+
+		// Delete op
+		// :DEBUG:
+		//$this->oModule->oDb->debug = true;
+		// PK value NULL means delete
+		$ar_new4 = array($ar_new, array(
+			'uuid'	=> NULL,
+			'i'		=> NULL,
+		));
+		$ar_diff = $this->oModule->DbDiffExec(array(
+				't1' => $ar_new4,
+				't2' => $ar_new4,
+			), NULL, array(
+				't1' => $ar_new3,	// Notice: Not same with exists value
+				't2' => $ar_new3,
+		));
+		$this->assertEqual($ar_diff['diff']['t1'][0]['mode'], 'DELETE');
+		$this->assertEqual($ar_diff['diff']['t2'][0]['mode'], 'DELETE');
+		$this->assertEqual($ar_diff['code'], 2);
+		$this->assertEqual($ar_diff['flag'], 100);
+
+		//Ecl('<pre>' . var_export($ar_diff, true) . '</pre>');
 
 
 		// Clean up
