@@ -182,8 +182,6 @@ class TestModule extends UnitTestCase {
 //		$this->assertEqual($ar_diff['flag'], 0);
 
 		// Delete op
-		// :DEBUG:
-		//$this->oModule->oDb->debug = true;
 		// PK value NULL means delete
 		$ar_new4 = array($ar_new, array(
 			'uuid'	=> NULL,
@@ -201,7 +199,96 @@ class TestModule extends UnitTestCase {
 		$this->assertEqual($ar_diff['code'], 2);
 		$this->assertEqual($ar_diff['flag'], 100);
 
-		//Ecl('<pre>' . var_export($ar_diff, true) . '</pre>');
+
+		// Rollback
+		$uuid = Uuid();
+		$ar_new = array(
+			'uuid'	=> $uuid,
+			'i'		=> mt_rand(100, 200),
+			's'		=> 'aaa',
+			'd'		=> date('Y-m-d H:i:s'),
+		);
+		$ar_new2 = array(
+			'uuid'	=> $uuid2,
+			'i'		=> mt_rand(100, 200),
+			's'		=> 'aaa',
+			'd'		=> date('Y-m-d H:i:s'),
+		);
+		// 1. insert
+		$ar_new3 = array($ar_new, $ar_new2);
+		$ar_diff_ins = $this->oModule->DbDiffExec(array(
+				't1' => $ar_new3,
+				't2' => $ar_new3,
+		));
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new['uuid'], $ar_new['i']), 's'));
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new2['uuid'], $ar_new2['i']), 's'));
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new['uuid'], 's'));
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new2['uuid'], 's'));
+		// 2. update 1, delete 1
+		$ar_new4 = $ar_new3;
+		$ar_new4[0]['s'] = 'bbb';
+		$ar_new4[0]['s'] = 'bbb';
+		$ar_new4[1]['uuid'] = NULL;
+		$ar_new4[1]['i'] = NULL;
+		$ar_diff = $this->oModule->DbDiffExec(array(
+				't1' => $ar_new4,
+				't2' => $ar_new4,
+			), NULL, array(
+				't1' => $ar_new3,
+				't2' => $ar_new3,
+		));
+		$this->assertEqual('bbb', $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new['uuid'], $ar_new['i']), 's'));
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new2['uuid'], $ar_new2['i']), 's'));
+		$this->assertEqual('bbb', $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new['uuid'], 's'));
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new2['uuid'], 's'));
+		// 3. rollback update and delete
+		$i = $this->oModule->DbDiffRollback($ar_diff);
+		$this->assertEqual($i, 4);
+		$this->assertEqual($ar_diff['flag'], -100);
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new['uuid'], $ar_new['i']), 's'));
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new2['uuid'], $ar_new2['i']), 's'));
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new['uuid'], 's'));
+		$this->assertEqual('aaa', $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new2['uuid'], 's'));
+		// 4. after rollback, re-commit
+		$i = $this->oModule->DbDiffCommit($ar_diff);
+		$this->assertEqual($i, 4);
+		$this->assertEqual($ar_diff['flag'], 100);
+		$this->assertEqual('bbb', $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new['uuid'], $ar_new['i']), 's'));
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new2['uuid'], $ar_new2['i']), 's'));
+		$this->assertEqual('bbb', $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new['uuid'], 's'));
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new2['uuid'], 's'));
+		// 5. rollback insert done at beginning
+		$i = $this->oModule->DbDiffRollback($ar_diff_ins);
+		$this->assertEqual($i, 2);	// 2 rows is alread deleted previous
+		$this->assertEqual($ar_diff_ins['flag'], -100);
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new['uuid'], $ar_new['i']), 's'));
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t1'
+			, array($ar_new2['uuid'], $ar_new2['i']), 's'));
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new['uuid'], 's'));
+		$this->assertEqual(NULL, $this->oModule->oDb->GetDataByPk('t2'
+			, $ar_new2['uuid'], 's'));
+
+		// :DEBUG:
+		//$this->oModule->oDb->debug = true;
+		///Ecl('<pre>' . var_export($ar_diff, true) . '</pre>');
 
 
 		// Clean up

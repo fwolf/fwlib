@@ -234,6 +234,7 @@ abstract class Module extends Fwolflib {
 			foreach ($ar_rows as $i_row => $row) {
 				// Check all PK exist in row data
 				foreach ($ar_col_pk as $s_pk) {
+					// isset($v) assume $v = NULL is false
 					if (!array_key_exists($s_pk, $row))
 						return array(
 							'code'	=> -2,
@@ -289,8 +290,8 @@ abstract class Module extends Fwolflib {
 		if (empty($ar_diff) || empty($ar_diff['diff']))
 			// No diff data
 			return -2;
-		if (0 != $ar_diff['code'])
-			// Diff op not successful
+		if (0 > $ar_diff['code'])
+			// Previous op not successful
 			return -3;
 		if (100 == $ar_diff['flag'])
 			// Already committed
@@ -352,7 +353,7 @@ abstract class Module extends Fwolflib {
 						. ' : ' . $db->ErrorMsg());
 				}
 				else
-					$i_cnt ++;
+					$i_cnt += $db->Affected_Rows();
 			}
 
 			if ($b_error) {
@@ -394,6 +395,103 @@ abstract class Module extends Fwolflib {
 
 		return $ar_diff;
 	} // end of func DbDiffExec
+
+
+	/**
+	 * Rollback committed DbDiff() result
+	 *
+	 * @param	array	$ar_diff		Same with DbDiff()'s result
+	 * @param	Adodb	$db
+	 * @return	int						Rows modified, < 0 when error.
+	 * @see DbDiff()
+	 */
+	public function DbDiffRollback (array &$ar_diff, Adodb $db = NULL) {
+		// Condition check
+		if (empty($ar_diff) || empty($ar_diff['diff']))
+			// No diff data
+			return -2;
+		if (0 > $ar_diff['code'])
+			// Previous op not successful
+			return -3;
+		if (100 != $ar_diff['flag'])
+			// Not committed
+			return -4;
+
+		if (is_null($db))
+			$db = $this->oDb;
+
+		// Generate sql
+		$ar_sql_all = array();
+		foreach ($ar_diff['diff'] as $tbl => $ar_rows) {
+			if (empty($ar_rows))
+				continue;
+			foreach ($ar_rows as $i_row => $row) {
+				$ar_sql = array();
+				switch ($row['mode']) {
+					case 'INSERT':
+						$ar_sql['DELETE'] = $tbl;
+						foreach ($row['pk'] as $k => $v)
+							$ar_sql['WHERE'][] = $k . ' = '
+								. $db->QuoteValue($tbl, $k, $v['new']);
+						// Limit rowcount to 1 for safety
+						$ar_sql['LIMIT'] = 1;
+						break;
+					case 'DELETE':
+						$ar_sql['INSERT'] = $tbl;
+						$ar_col = $row['pk'] + $row['col'];	// Sure not empty
+						foreach ($ar_col as $k => $v)
+							$ar_sql['VALUES'][$k] = $v['old'];
+						break;
+					case 'UPDATE':
+						$ar_sql['UPDATE'] = $tbl;
+						foreach ($row['col'] as $k => $v)
+							$ar_sql['SET'][$k] = $v['old'];
+						foreach ($row['pk'] as $k => $v)
+							$ar_sql['WHERE'][] = $k . ' = '
+								. $db->QuoteValue($tbl, $k, $v['old']);
+						// Limit rowcount to 1 for safety
+						$ar_sql['LIMIT'] = 1;
+						break;
+				}
+
+				if (!empty($ar_sql)) {
+					$ar_sql_all[] = $db->GenSql($ar_sql);
+				}
+			}
+		}
+
+		// Execute sql
+		$i_cnt = 0;
+		if (!empty($ar_sql_all)) {
+			$b_error = false;
+			$db->BeginTrans();
+			while (!$b_error && !empty($ar_sql_all)) {
+				$db->Execute(array_shift($ar_sql_all));
+				if (0 != $db->ErrorNo()) {
+					$b_error = true;
+					$this->Log('DbDiffRollback error ' . $db->ErrorNo()
+						. ' : ' . $db->ErrorMsg());
+				}
+				else
+					$i_cnt += $db->Affected_Rows();
+			}
+
+			if ($b_error) {
+				$ar_diff['code'] = abs($db->ErrorNo()) * -1;
+				$ar_diff['msg'] = $db->ErrorMsg();
+				$db->RollbackTrans();
+				return -1;
+			}
+			else {
+				$db->CommitTrans();
+				// Modify diff info
+				$ar_diff['code'] = $i_cnt;
+				$ar_diff['flag'] = -100;
+				return $i_cnt;
+			}
+		}
+		return $i_cnt;
+	} // end of func DbDiffRollback
 
 
 	/**
@@ -474,6 +572,17 @@ abstract class Module extends Fwolflib {
 			foreach ($ar_col as $col) {
 				$v_new = isset($ar_new[$col]) ? $ar_new[$col] : NULL;
 				$v_old = isset($ar_old[$col]) ? $ar_old[$col] : NULL;
+
+				// Manual set useless column data to NULL, avoid necessary
+				// column been skipped by equal check later, to keep diff
+				// result include necessary column, they maybe used in
+				// rollback.
+				// Force new value of DELETE mode to NULL
+				if ('DELETE' == $ar_diff['mode'])
+					$v_new = NULL;
+				// Force old value of INSERT mode to NULL
+				if ('INSERT' == $ar_diff['mode'])
+					$v_old = NULL;
 
 				if (is_null($v_new) && is_null($v_old))
 					continue;
