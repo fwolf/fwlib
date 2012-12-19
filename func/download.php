@@ -2,8 +2,8 @@
 /**
  * @package		fwolflib
  * @subpackage	func
- * @copyright	Copyright 2007-2010, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib-func@gmail.com>
+ * @copyright	Copyright 2007-2012, Fwolf
+ * @author		Fwolf <fwolf.aide+fwolflib.func@gmail.com>
  * @since		2007-04-29
  */
 
@@ -15,13 +15,13 @@ require_once(FWOLFLIB . 'func/filesystem.php');
 
 /**
  * Download content as a file
+ *
  * @param	string	$content	Content to download
  * @param	string	$filename	Download file name, send to client, not path on server.
  * @param	string	$mime		Mime type of file
  * @return	boolean
  */
-function Download($content, $filename = '', $mime = 'application/force-download')
-{
+function Download ($content, $filename = '', $mime = 'application/force-download') {
 	list($usec, $sec) = explode(" ", microtime());
 	$usec = substr(strval($usec), 2, 3);
 	$tmpfilename = $sec . $usec;
@@ -59,18 +59,18 @@ function Download($content, $filename = '', $mime = 'application/force-download'
 
 	unlink($tmpfilename);
 	return $result;
-}
+} // end of func Download
 
 
 /**
  * Download a file
+ *
  * @param	string	$filepath	Full path to download file.
  * @param	string	$filename	Download file name, send to client, not path on server.
  * @param	string	$mime		Mime type of file
  * @return	boolean
  */
-function DownloadFile($filepath, $filename = '', $mime = 'application/force-download')
-{
+function DownloadFile ($filepath, $filename = '', $mime = 'application/force-download') {
 	// Check and fix parameters
 	if (!is_file($filepath) || !is_readable($filepath))
 		return false;
@@ -108,8 +108,7 @@ function DownloadFile($filepath, $filename = '', $mime = 'application/force-down
 	// Start buffered download
 	//reset time limit for big files
 	set_time_limit(0);
-	while(!feof($fp) && ($size > $size_downloaded))
-	{
+	while(!feof($fp) && ($size > $size_downloaded)) {
 		print(fread($fp, $size_step));
 		$size_downloaded += $size_step;
 		//flush();   这个是多余的函数,加上会使压缩包下载不完整
@@ -118,6 +117,6 @@ function DownloadFile($filepath, $filename = '', $mime = 'application/force-down
 
 	fclose($fp);
 	//unlink($ft_name);
-	exit;
-} // end of function DownloadFile
+	return true;
+} // end of func DownloadFile
 ?>
