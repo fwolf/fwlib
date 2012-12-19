@@ -121,8 +121,9 @@ abstract class Module extends Fwolflib {
 			}
 		}
 
-		// Default call, which may trigger error
-		$this->Log('Undefined method: ' . $name . '()', 5);
+		// Method not exists, trigger error.
+		//$this->Log('Undefined method: ' . $name . '()', 5);
+		trigger_error('Undefined method: ' . $name . '()', E_USER_ERROR);
 		return NULL;
 	} // end of func __call
 
