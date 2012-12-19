@@ -586,7 +586,8 @@ class Adodb extends Fwolflib {
 		if (empty($col))
 			$col = '*';
 		if ('*' == $col)
-			$col = $this->GetMetaColumnName($s_tbl);
+			// Drop uppercased index
+			$col = array_values($this->GetMetaColumnName($s_tbl));
 		if (!is_array($col)) {
 			if (is_string($col))
 				// String split by ',', style 'col AS col_alias' allowed
