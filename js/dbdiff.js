@@ -177,6 +177,13 @@ function DbDiffShow (o_cfg) {
 	$('#' + s_id + '_close').click(function () {
 		return DbDiffRemove(s_id);
 	});
+
+	/* Press ESC to close */
+	$(window).keydown(function (evt) {
+		if (27 == evt.keyCode) {
+			DbDiffRemove(s_id);
+		}
+	});
 } /* end of func DbDiffShow */
 
 
