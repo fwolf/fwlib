@@ -31,6 +31,21 @@ function DbDiffShow (o_cfg) {
 		o_cfg.show_close_bottom = true;
 	if ('undefined' == typeof(o_cfg.show_bg))
 		o_cfg.show_bg = true;
+	if ('undefined' == typeof(o_cfg.lang))
+		o_cfg.lang = {
+			'close'		: 'Close',
+			'print'		: 'Print',
+			'code'		: 'Code',
+			'message'	: 'Message',
+			'flag'		: 'Flag',
+			'detail'	: 'Diff Detail',
+			'table'		: 'Table',
+			'mode'		: 'Mode',
+			'pk'		: 'PK',
+			'column'	: 'Column',
+			'old'		: 'Old',
+			'new'		: 'New'
+		};
 
 	// Simulate Array.length
 	//alert(Object.keys(ar_cfg).length);
@@ -55,7 +70,7 @@ function DbDiffShow (o_cfg) {
 			<div class=\'db_diff_close\'><a id="' + s_id + '_close"\
 					href="javascript:void(0);"\
 					onclick="return DbDiffRemove(\'' + s_id + '\');">\
-				关闭</a>\
+				' + o_cfg.lang.close + '</a>\
 			</div>\
 	';
 	/* Show close link, top */
@@ -66,20 +81,20 @@ function DbDiffShow (o_cfg) {
 	s_div += '\
 			<table>\
 				<tr>\
-					<th>Code:</th>\
+					<th>' + o_cfg.lang.code + '</th>\
 					<td colspan="2">' + o_dbdiff.code + '</td>\
 				<tr/>\
 				<tr>\
-					<th>Message:</th>\
+					<th>' + o_cfg.lang.message + '</th>\
 					<td colspan="2">' + o_dbdiff.msg + '</td>\
 				<tr/>\
 				<tr>\
-					<th>Flag:</th>\
+					<th>' + o_cfg.lang.flag + '</th>\
 					<td colspan="2">' + o_dbdiff.flag + '</td>\
 				<tr/>\
 				\
 				<tr>\
-					<th colspan="3">Diff Detail</th>\
+					<th colspan="3">' + o_cfg.lang.detail + '</th>\
 				</tr>\
 	';
 	for (var tbl in o_dbdiff.diff) {
@@ -101,16 +116,19 @@ function DbDiffShow (o_cfg) {
 
 			s_div += '\
 				<tr>\
-					<td colspan="3"><strong>Table</strong>: ' + tbl + ', \
-						<strong>Mode</strong>: '
-							+ o_dbdiff.diff[tbl][row].mode + '<br />\
-						<strong>PK</strong>: ' + s_pk + '\
+					<td colspan="3">\
+						<strong>' + o_cfg.lang.table + '</strong>: '
+				+ tbl + ', \
+						<strong>' + o_cfg.lang.mode + '</strong>: '
+				+ o_dbdiff.diff[tbl][row].mode + '<br />\
+						<strong>' + o_cfg.lang.pk + '</strong>: '
+				+ s_pk + '\
 					</td>\
 				</tr>\
 				<tr>\
-					<th>Column</th>\
-					<th>Old</th>\
-					<th>New</th>\
+					<th>' + o_cfg.lang.column + '</th>\
+					<th>' + o_cfg.lang.old + '</th>\
+					<th>' + o_cfg.lang.new + '</th>\
 				</tr>\
 			';
 
