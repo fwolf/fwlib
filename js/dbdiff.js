@@ -19,6 +19,7 @@
  * 	show_bg, boolean
  * 	show_close_top, boolean
  * 	show_close_bottom, boolean
+ * 	show_print, boolean
  * )
  *
  * @param	object	o_cfg
@@ -34,6 +35,8 @@ function DbDiffShow (o_cfg) {
 		o_cfg.show_close_bottom = true;
 	if ('undefined' == typeof(o_cfg.show_bg))
 		o_cfg.show_bg = true;
+	if ('undefined' == typeof(o_cfg.show_print))
+		o_cfg.show_print = true;
 	if ('undefined' == typeof(o_cfg.lang))
 		o_cfg.lang = {
 			'close'		: 'Close',
@@ -71,9 +74,14 @@ function DbDiffShow (o_cfg) {
 	/* Close link */
 	var s_div_close = '\
 			<div class=\'' + o_cfg.id + '_close\'>\
+	';
+	if (o_cfg.show_print)
+		s_div_close += '\
 				<a id="' + s_id + '_print"\
 					href="javascript:void(0);">\
 					' + o_cfg.lang.print + '</a>　　\
+		';
+	s_div_close += '\
 				<a id="' + s_id + '_close"\
 					href="javascript:void(0);"\
 					onclick="return DbDiffRemove(\'' + s_id + '\');">\
