@@ -1,0 +1,29 @@
+/* CSS for print */
+
+@media print {
+	/* Common */
+	#header, #footer, #navigation, #menu {
+		display: none;
+	}
+	#left_sidebar, #right_sidebar, #sidebar_left, #sidebar_right {
+		display: none;
+	}
+	.print_hide {
+		display: none;
+	}
+
+	/* DbDiff */
+	.db_diff_iframe {
+		display: none;
+	}
+	.db_diff_content table {
+		border: 1px black solid;
+		border-collapse: collapse;
+		margin: auto;
+		width: 90%;
+	}
+	 .db_diff_content tr, .db_diff_content th, .db_diff_content td {
+		border: 1px black solid;
+		vertical-align: middle;
+	 }
+}
