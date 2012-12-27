@@ -67,7 +67,11 @@ function DbDiffShow (o_cfg) {
 
 	/* Close link */
 	var s_div_close = '\
-			<div class=\'db_diff_close\'><a id="' + s_id + '_close"\
+			<div class=\'db_diff_close\'>\
+				<a id="' + s_id + '_print"\
+					href="javascript:void(0);">\
+					' + o_cfg.lang.print + '</a>　　\
+				<a id="' + s_id + '_close"\
 					href="javascript:void(0);"\
 					onclick="return DbDiffRemove(\'' + s_id + '\');">\
 				' + o_cfg.lang.close + '</a>\
@@ -184,6 +188,11 @@ function DbDiffShow (o_cfg) {
 			DbDiffRemove(s_id);
 		}
 	});
+
+	/* Print action */
+	$('#' + s_id + '_print').click(function () {
+		PrintArea({id: s_id});
+	});
 } /* end of func DbDiffShow */
 
 
@@ -212,7 +221,7 @@ function DbDiffRemove (s_id) {
 
 /* Css example */
 
-/* Js Alert */
+/* DbDiff */
 /*
 div.db_diff {
 	left: 0px;
