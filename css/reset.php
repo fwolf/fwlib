@@ -5,7 +5,7 @@
  * @package		fwolflib
  * @subpackage	css
  * @copyright	Copyright © 2011, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.js@gmail.com>
+ * @author		Fwolf <fwolf.aide+fwolflib.css@gmail.com>
  * @since		2011-08-25
  */
 

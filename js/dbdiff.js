@@ -16,6 +16,8 @@
  * o_cfg = Object(
  * 	dbdiff, string DbDiff msg, json format
  * 	id, id/class of main div, also is prefix of other inner element
+ * 	print_css_text,
+ * 	print_css_url,
  * 	show_bg, boolean
  * 	show_close_top, boolean
  * 	show_close_bottom, boolean
@@ -29,6 +31,10 @@ function DbDiffShow (o_cfg) {
 	var o_dbdiff = $.parseJSON(o_cfg.dbdiff);
 	if ('undefined' == typeof(o_cfg.id))
 		o_cfg.id = 'db_diff';
+	if ('undefined' == typeof(o_cfg.print_css_text))
+		o_cfg.print_css_text = '';
+	if ('undefined' == typeof(o_cfg.print_css_url))
+		o_cfg.print_css_url = [];
 	if ('undefined' == typeof(o_cfg.show_close_top))
 		o_cfg.show_close_top = true;
 	if ('undefined' == typeof(o_cfg.show_close_bottom))
@@ -65,7 +71,8 @@ function DbDiffShow (o_cfg) {
 	s_div += '\
 		<div id=\'' + s_id + '\' class=\'' + o_cfg.id + '\'>\
 			<iframe style=\'width: 100%; height: 100%;\
-				filter: alpha(opacity=0); opacity: 0;\'>\
+				filter: alpha(opacity=0); opacity: 0;\'\
+				class=\'' + o_cfg.id + '_iframe\'>\
 			</iframe>\
 			\
 			<div class=\'' + o_cfg.id + '_content\'>\
@@ -73,7 +80,7 @@ function DbDiffShow (o_cfg) {
 
 	/* Close link */
 	var s_div_close = '\
-			<div class=\'' + o_cfg.id + '_close\'>\
+			<div class=\'' + o_cfg.id + '_close print_hide\'>\
 	';
 	if (o_cfg.show_print)
 		s_div_close += '\
@@ -202,7 +209,12 @@ function DbDiffShow (o_cfg) {
 
 	/* Print action */
 	$('#' + s_id + '_print').click(function () {
-		PrintArea({id: s_id});
+		PrintArea({
+			id: s_id,
+			css_text: o_cfg.print_css_text,
+			css_url: o_cfg.print_css_url,
+			id_frame: o_cfg.id + '_print_frame'
+		});
 	});
 } /* end of func DbDiffShow */
 

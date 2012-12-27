@@ -27,7 +27,7 @@ function PrintArea (o_cfg) {
 	if ('undefined' == typeof(o_cfg.css_text))
 		o_cfg.css_text = '';
 	if ('undefined' == typeof(o_cfg.css_url))
-		o_cfg.css_url = Array();
+		o_cfg.css_url = [];
 	if ('undefined' == typeof(o_cfg.id_frame))
 		o_cfg.id_frame = 'frame_print';
 
@@ -40,6 +40,27 @@ function PrintArea (o_cfg) {
 
 	/* Prepare css */
 	var s_css = '';
+	if (0 < o_cfg.css_url.length) {
+		if ('string' == typeof(o_cfg.css_url))
+			o_cfg.css_url = [o_cfg.css_url];
+		for (var i in o_cfg.css_url) {
+			s_css += '\
+				<link rel=\'stylesheet\' type=\'text/css\'\
+					media=\'print\'\
+					href=\'' + o_cfg.css_url[i] + '\'\
+				/>\
+			';
+		}
+	}
+	if (0 < o_cfg.css_text.length) {
+		s_css += '\
+			<style type=\'text/css\' media=\'print\'>\
+			/*<![CDATA[*/\
+			' + o_cfg.css_text + '\
+			/*]]>*/\
+			</style>\
+		';
+	}
 
 	/* Write content */
 	window.frames[o_cfg.id_frame].document.body.innerHTML = s_css
