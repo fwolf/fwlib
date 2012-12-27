@@ -15,6 +15,7 @@
  *
  * o_cfg = Object(
  * 	dbdiff, string DbDiff msg, json format
+ * 	id, id/class of main div, also is prefix of other inner element
  * 	show_bg, boolean
  * 	show_close_top, boolean
  * 	show_close_bottom, boolean
@@ -25,6 +26,8 @@
 function DbDiffShow (o_cfg) {
 	// Parse param
 	var o_dbdiff = $.parseJSON(o_cfg.dbdiff);
+	if ('undefined' == typeof(o_cfg.id))
+		o_cfg.id = 'db_diff';
 	if ('undefined' == typeof(o_cfg.show_close_top))
 		o_cfg.show_close_top = true;
 	if ('undefined' == typeof(o_cfg.show_close_bottom))
@@ -53,21 +56,21 @@ function DbDiffShow (o_cfg) {
 	//alert(JSON.stringify(o_cfg, null, 4));
 
 	var s_div = '';
-	var s_id = 'db_diff_' + Math.floor(Math.random() * 1000);
+	var s_id = o_cfg.id + '_' + Math.floor(Math.random() * 1000);
 
 	/* Iframe is hack for IE select overwrite div. */
 	s_div += '\
-		<div id=\'' + s_id + '\' class=\'db_diff\'>\
+		<div id=\'' + s_id + '\' class=\'' + o_cfg.id + '\'>\
 			<iframe style=\'width: 100%; height: 100%;\
 				filter: alpha(opacity=0); opacity: 0;\'>\
 			</iframe>\
 			\
-			<div class=\'db_diff_content\'>\
+			<div class=\'' + o_cfg.id + '_content\'>\
 	';
 
 	/* Close link */
 	var s_div_close = '\
-			<div class=\'db_diff_close\'>\
+			<div class=\'' + o_cfg.id + '_close\'>\
 				<a id="' + s_id + '_print"\
 					href="javascript:void(0);">\
 					' + o_cfg.lang.print + '</a>　　\
@@ -164,10 +167,10 @@ function DbDiffShow (o_cfg) {
 
 	/* Show bg */
 	if (o_cfg.show_bg) {
-		var s_bg = '<div id="' + s_id + '_bg" class="db_diff_bg"></div>';
-		$('body').append(s_bg);
+		$('body').append('<div id="' + s_id + '_bg" class=\''
+			+ o_cfg.id + '_bg\'></div>');
 		/* Adjust */
-	$('#' + s_id + '_bg').height($(document).height() * 1.2);
+		$('#' + s_id + '_bg').height($(document).height() * 1.2);
 	}
 
 	/* Show main div */
@@ -200,19 +203,20 @@ function DbDiffShow (o_cfg) {
  * Remove dbdiff msg
  *
  * @param	string	s_id
+ * @param	string	s_class
  * @return	false
  */
-function DbDiffRemove (s_id) {
+function DbDiffRemove (s_id, s_class) {
 	/* Remove bg first */
-	if ('undefined' == typeof(s_id)) {
-		/* Remove by class */
-		$('.db_diff_bg').remove();
-		$('.db_diff').remove();
-	}
-	else {
+	if ('undefined' == typeof(s_class)) {
 		/* Remove by id */
 		$('#' + s_id + '_bg').remove();
 		$('#' + s_id).remove();
+	}
+	else {
+		/* Remove by class */
+		$('.' + s_class + '_bg').remove();
+		$('.' + s_class).remove();
 	}
 
 	return false;
