@@ -16,12 +16,15 @@
  * o_cfg = Object(
  * 	dbdiff, string DbDiff msg, json format
  * 	id, id/class of main div, also is prefix of other inner element
+ * 	lang, array, customize language
  * 	print_css_text,
  * 	print_css_url,
  * 	show_bg, boolean
  * 	show_close_top, boolean
  * 	show_close_bottom, boolean
  * 	show_print, boolean
+ * 	text_after, html after diff detail table
+ * 	text_before, html before diff detail table
  * )
  *
  * @param	object	o_cfg
@@ -43,6 +46,10 @@ function DbDiffShow (o_cfg) {
 		o_cfg.show_bg = true;
 	if ('undefined' == typeof(o_cfg.show_print))
 		o_cfg.show_print = true;
+	if ('undefined' == typeof(o_cfg.text_after))
+		o_cfg.text_after = '';
+	if ('undefined' == typeof(o_cfg.text_before))
+		o_cfg.text_before = '';
 	if ('undefined' == typeof(o_cfg.lang))
 		o_cfg.lang = {
 			'close'		: 'Close',
@@ -98,6 +105,10 @@ function DbDiffShow (o_cfg) {
 	/* Show close link, top */
 	if (o_cfg.show_close_top)
 		s_div += s_div_close;
+
+	/* Text before */
+	if (0 < o_cfg.text_before.length)
+		s_div += o_cfg.text_before;
 
 	/* Msg detail */
 	s_div += '\
@@ -170,6 +181,10 @@ function DbDiffShow (o_cfg) {
 				</tr>\
 			</table>\
 	';
+
+	/* Text after */
+	if (0 < o_cfg.text_after.length)
+		s_div += o_cfg.text_after;
 
 	/* Show close link, bottom */
 	if (o_cfg.show_close_bottom)
