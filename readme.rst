@@ -546,6 +546,14 @@ Display diff info generate by class Module::DbDiff()
 
 
 
+print-area.js
+--------------------------------------------------
+
+
+Print area in html, exclude other part.
+
+
+
 validate.js
 --------------------------------------------------
 
