@@ -140,7 +140,7 @@ function DbDiffShow (o_cfg) {
 			}
 			else {
 				for (var pk in o_dbdiff.diff[tbl][row].pk)
-					o_pk[pk] = o_dbdiff.diff[tbl][row].pk[pk].new;
+					o_pk[pk] = o_dbdiff.diff[tbl][row].pk[pk]['new'];
 			}
 			var s_pk = '';
 			for (pk in o_pk)
@@ -161,7 +161,7 @@ function DbDiffShow (o_cfg) {
 				<tr>\
 					<th>' + o_cfg.lang.column + '</th>\
 					<th>' + o_cfg.lang.old + '</th>\
-					<th>' + o_cfg.lang.new + '</th>\
+					<th>' + o_cfg.lang['new'] + '</th>\
 				</tr>\
 			';
 
@@ -170,7 +170,7 @@ function DbDiffShow (o_cfg) {
 				<tr>\
 					<td>' + col + '</td>\
 					<td>' + o_dbdiff.diff[tbl][row].col[col].old + '</td>\
-					<td>' + o_dbdiff.diff[tbl][row].col[col].new + '</td>\
+					<td>' + o_dbdiff.diff[tbl][row].col[col]['new'] + '</td>\
 				</tr>\
 				';
 			}
