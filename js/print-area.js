@@ -63,12 +63,19 @@ function PrintArea (o_cfg) {
 	}
 
 	/* Write content */
-	window.frames[o_cfg.id_frame].document.body.innerHTML = s_css
-		+ $('#' + o_cfg.id).html();
+	/* Use document.open/write fix FF need print twice problem. */
+	var o_f = document.frames ? document.frames[o_cfg.id_frame]
+		: document.getElementById(o_cfg.id_frame);
+	var o_fw = o_f.contentWindow || o_f;
+	o_fw.document.open('text/html', 'replace');
+	o_fw.document.write(s_css + $('#' + o_cfg.id).html());
+	o_fw.document.close();
 
 	/* Print */
-	window.frames[o_cfg.id_frame].window.focus();
-	window.frames[o_cfg.id_frame].window.print();
+	$('#' + o_cfg.id_frame).load(function () {
+		o_fw.focus();
+		o_fw.print();
+	});
 } /* end of func DbDiffShow */
 
 
