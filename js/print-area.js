@@ -23,7 +23,7 @@
  * @param	object	o_cfg
  */
 function PrintArea (o_cfg) {
-	// Parse param
+	/* Parse param */
 	if ('undefined' == typeof(o_cfg.css_text))
 		o_cfg.css_text = '';
 	if ('undefined' == typeof(o_cfg.css_url))

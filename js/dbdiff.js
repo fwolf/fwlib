@@ -224,12 +224,18 @@ function DbDiffShow (o_cfg) {
 
 	/* Print action */
 	$('#' + s_id + '_print').click(function () {
+		/* Remove iframe(IE hack) and recover after print */
+		var o_iframe = $('.' + o_cfg.id + '_iframe', '#' + s_id).clone();
+		$('.' + o_cfg.id + '_iframe', '#' + s_id).remove();
+
 		PrintArea({
 			id: s_id,
 			css_text: o_cfg.print_css_text,
 			css_url: o_cfg.print_css_url,
 			id_frame: o_cfg.id + '_print_frame'
 		});
+
+		$('#' + s_id).prepend(o_iframe);
 	});
 } /* end of func DbDiffShow */
 
