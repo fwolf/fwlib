@@ -28,6 +28,7 @@
  * )
  *
  * @param	object	o_cfg
+ * @return	string	s_id
  */
 function DbDiffShow (o_cfg) {
 	// Parse param
@@ -237,6 +238,8 @@ function DbDiffShow (o_cfg) {
 
 		$('#' + s_id).prepend(o_iframe);
 	});
+
+	return s_id;
 } /* end of func DbDiffShow */
 
 
