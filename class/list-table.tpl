@@ -170,7 +170,7 @@
 	$(".{$lt_id}_pager").css("text-align", "right");
 	/* Pager top leave a little margin-bottom to look better */
 	$("#{$lt_id}_pager_top").css("margin-bottom", "0.1em");
-	if ($.browser.msie)
+	if (!$.support.boxModel)
 	{literal}{{/literal}
 		$(".{$lt_id}_pager").css("width", $("#{$lt_id}_div table").attr("clientWidth"));
 		/* Same left margin with table */
