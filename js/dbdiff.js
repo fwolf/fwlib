@@ -117,15 +117,15 @@ function DbDiffShow (o_cfg) {
 				<tr>\
 					<th>' + o_cfg.lang.code + '</th>\
 					<td colspan="2">' + o_dbdiff.code + '</td>\
-				<tr/>\
+				</tr>\
 				<tr>\
 					<th>' + o_cfg.lang.message + '</th>\
 					<td colspan="2">' + o_dbdiff.msg + '</td>\
-				<tr/>\
+				</tr>\
 				<tr>\
 					<th>' + o_cfg.lang.flag + '</th>\
 					<td colspan="2">' + o_dbdiff.flag + '</td>\
-				<tr/>\
+				</tr>\
 				\
 				<tr>\
 					<th colspan="3">' + o_cfg.lang.detail + '</th>\
