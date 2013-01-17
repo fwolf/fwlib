@@ -10,12 +10,12 @@ require_once(FWOLFLIB . 'func/string.php');
  * Using jQuery to operate javascript.
  *
  * Requirement:
- * 	-	jQuery 1.2.6+ (Call scrollTop in JsAlert())
+ * 	-	jQuery
  *
  * Ref: http://code.google.com/p/easyvalidator/
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright © 2011, Fwolf
+ * @copyright	Copyright © 2011-2013, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class@gmail.com>
  * @since		2011-07-21
  */
@@ -284,10 +284,13 @@ class Validator extends Fwolflib {
 				\');
 
 				$(\'#' . $s_id_div . '\').css(\'top\'
-					, ($(window).height() -
-							$(\'#' . $s_id_div . ' fieldset\')
-								.height())
-						/ 2 + $(window).scrollTop() + \'px\');
+					, ((window.innerHeight
+								|| document.documentElement.offsetHeight)
+							- $(\'#' . $s_id_div . ' fieldset\').height())
+						/ 2
+						+ (document.body.scrollTop
+							|| document.documentElement.scrollTop)
+						+ \'px\');
 				$(\'#' . $s_id_div_bg . '\')
 					.height($(document).height() * 1.2);
 			} /* end of func ' . $s_func . ' */

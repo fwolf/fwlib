@@ -15,9 +15,10 @@ require_once(dirname(__FILE__) . '/fwolflib.php');
  * Display text document writing by MarkDown markup language.
  *
  * Need jQuery locate at /js/jquery.js
+ *
  * @package		fwolflib
  * @subpackage	class
- * @copyright	Copyright © 2009, Fwolf
+ * @copyright	Copyright © 2009-2013, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib-class@gmail.com>
  * @since		2009-04-12
  * @version		$Id$

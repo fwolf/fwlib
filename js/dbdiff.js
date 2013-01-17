@@ -212,9 +212,15 @@ function DbDiffShow (o_cfg) {
 	/* Show main div */
 	$('body').append(s_div);
 	/* Position */
-	$('#' + s_id).css('top', $(window).scrollTop()
-		+ ($(window).height() -	$('#' + s_id).height()) / 3
-			+ 'px');
+	/*
+	 * IE 6 enable quirks mode if html start with <xml,
+	 * cause jQuery $(window).height() always return 0.
+	 */
+	$('#' + s_id).css('top',
+		(document.body.scrollTop || document.documentElement.scrollTop)
+		+ ((window.innerHeight || document.documentElement.offsetHeight)
+			- $('#' + s_id).height()) / 3
+		+ 'px');
 
 	/* For IE */
 	$('.' + o_cfg.id + '_close').click(function () {

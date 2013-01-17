@@ -3,7 +3,7 @@
  *
  * @package		fwolflib
  * @subpackage	js
- * @copyright	Copyright © 2011, Fwolf
+ * @copyright	Copyright © 2011-2013, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.js@gmail.com>
  * @since		2011-08-13
  */
@@ -88,9 +88,11 @@ function JsAlert (msg, title, s_id, b_show_close, b_show_bg) {
 
 	$('body').append(s_div);
 	/* Position */
-	$('#' + s_id).css('top', $(window).scrollTop()
-		+ ($(window).height() -	$('#' + s_id).height()) / 3
-			+ 'px');
+	$('#' + s_id).css('top',
+		(document.body.scrollTop || document.documentElement.scrollTop)
+		+ ((window.innerHeight || document.documentElement.offsetHeight)
+			- $('#' + s_id).height()) / 3
+		+ 'px');
 
 	/* For IE */
 	$('#' + s_id + '_close').click(function () {

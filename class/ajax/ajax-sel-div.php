@@ -6,11 +6,11 @@ require_once(dirname(__FILE__) . '/../../fwolflib.php');
  * Ajax class, select div(layer)
  *
  * Requirement:
- * 	-	jQuery 1.2.6+ (Call scrollTop())
+ * 	-	jQuery
  *
  * @package		fwolflib
  * @subpackage	class.ajax
- * @copyright	Copyright © 2011, Fwolf
+ * @copyright	Copyright © 2011-2013, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.class.ajax@gmail.com>
  * @since		2011-08-09
  */
@@ -260,9 +260,12 @@ class AjaxSelDiv extends Fwolflib {
 				' . $this->aCfg['js-click'] . '
 				$(\'#' . $s_id_bg . '\').show();
 				$(\'#' . $s_id_div . '\')
-					.css(\'top\', ($(window).height() -
-						$(\'#' . $s_id_div . '\').height()) / 3
-						+ $(window).scrollTop() + '
+					.css(\'top\', ((window.innerHeight
+								|| document.documentElement.offsetHeight)
+							- $(\'#' . $s_id_div . '\').height())
+						/ 3
+						+ (document.body.scrollTop
+							|| document.documentElement.scrollTop) + '
 						. $this->aCfg['offset-y'] . ' + \'px\')
 					.css(\'left\', $(window).width() / 2
 						- $(\'#' . $s_id_div . '\').width() / 2
