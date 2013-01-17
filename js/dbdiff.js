@@ -20,8 +20,8 @@
  * 	print_css_text,
  * 	print_css_url,
  * 	show_bg, boolean
- * 	show_close_top, boolean
- * 	show_close_bottom, boolean
+ * 	show_action_top, boolean
+ * 	show_action_bottom, boolean
  * 	show_print, boolean
  * 	text_after, html after diff detail table
  * 	text_before, html before diff detail table
@@ -39,10 +39,10 @@ function DbDiffShow (o_cfg) {
 		o_cfg.print_css_text = '';
 	if ('undefined' == typeof(o_cfg.print_css_url))
 		o_cfg.print_css_url = [];
-	if ('undefined' == typeof(o_cfg.show_close_top))
-		o_cfg.show_close_top = true;
-	if ('undefined' == typeof(o_cfg.show_close_bottom))
-		o_cfg.show_close_bottom = true;
+	if ('undefined' == typeof(o_cfg.show_action_top))
+		o_cfg.show_action_top = true;
+	if ('undefined' == typeof(o_cfg.show_action_bottom))
+		o_cfg.show_action_bottom = true;
 	if ('undefined' == typeof(o_cfg.show_bg))
 		o_cfg.show_bg = true;
 	if ('undefined' == typeof(o_cfg.show_print))
@@ -86,26 +86,26 @@ function DbDiffShow (o_cfg) {
 			<div class=\'' + o_cfg.id + '_content\'>\
 	';
 
-	/* Close link */
-	var s_div_close = '\
-			<div class=\'' + o_cfg.id + '_close print_hide\'>\
+	/* Action link */
+	var s_div_action = '\
+			<div class=\'' + o_cfg.id + '_action print_hide\'>\
 	';
 	if (o_cfg.show_print)
-		s_div_close += '\
-				<a id="' + s_id + '_print"\
+		s_div_action += '\
+				<a class="' + o_cfg.id + '_print"\
 					href="javascript:void(0);">\
 					' + o_cfg.lang.print + '</a>　　\
 		';
-	s_div_close += '\
-				<a id="' + s_id + '_close"\
+	s_div_action += '\
+				<a class="' + o_cfg.id + '_close"\
 					href="javascript:void(0);"\
 					onclick="return DbDiffRemove(\'' + s_id + '\');">\
 				' + o_cfg.lang.close + '</a>\
 			</div>\
 	';
-	/* Show close link, top */
-	if (o_cfg.show_close_top)
-		s_div += s_div_close;
+	/* Show action link, top */
+	if (o_cfg.show_action_top)
+		s_div += s_div_action;
 
 	/* Text before */
 	if (0 < o_cfg.text_before.length)
@@ -116,15 +116,18 @@ function DbDiffShow (o_cfg) {
 			<table>\
 				<tr>\
 					<th>' + o_cfg.lang.code + '</th>\
-					<td colspan="2">' + o_dbdiff.code + '</td>\
+					<td colspan="2" class=\'' + o_cfg.id + '_code\'>'
+						+ o_dbdiff.code + '</td>\
 				</tr>\
 				<tr>\
 					<th>' + o_cfg.lang.message + '</th>\
-					<td colspan="2">' + o_dbdiff.msg + '</td>\
+					<td colspan="2" class=\'' + o_cfg.id + '_msg\'>'
+						+ o_dbdiff.msg + '</td>\
 				</tr>\
 				<tr>\
 					<th>' + o_cfg.lang.flag + '</th>\
-					<td colspan="2">' + o_dbdiff.flag + '</td>\
+					<td colspan="2" class=\'' + o_cfg.id + '_flag\'>'
+						+ o_dbdiff.flag + '</td>\
 				</tr>\
 				\
 				<tr>\
@@ -187,9 +190,9 @@ function DbDiffShow (o_cfg) {
 	if (0 < o_cfg.text_after.length)
 		s_div += o_cfg.text_after;
 
-	/* Show close link, bottom */
-	if (o_cfg.show_close_bottom)
-		s_div += s_div_close;
+	/* Show action link, bottom */
+	if (o_cfg.show_action_bottom)
+		s_div += s_div_action;
 
 	s_div += '\
 			</div>\
@@ -212,7 +215,7 @@ function DbDiffShow (o_cfg) {
 			+ 'px');
 
 	/* For IE */
-	$('#' + s_id + '_close').click(function () {
+	$('.' + o_cfg.id + '_close').click(function () {
 		return DbDiffRemove(s_id);
 	});
 
@@ -224,7 +227,7 @@ function DbDiffShow (o_cfg) {
 	});
 
 	/* Print action */
-	$('#' + s_id + '_print').click(function () {
+	$('.' + o_cfg.id + '_print').click(function () {
 		/* Remove iframe(IE hack) and recover after print */
 		var o_iframe = $('.' + o_cfg.id + '_iframe', '#' + s_id).clone();
 		$('.' + o_cfg.id + '_iframe', '#' + s_id).remove();
@@ -310,12 +313,15 @@ div.db_diff table, div.db_diff td, div.db_diff th {
 div.db_diff th {
 	background-color: rgb(208, 220, 255);
 }
-div.db_diff .db_diff_close {
+div.db_diff .db_diff_action {
 	margin: auto;
 	text-align: right;
 	width: 95%;
 }
 div.db_diff strong {
 	font-weight: bold;
+}
+div.db_diff .db_diff_commit, div.db_diff .db_diff_rollback {
+	color: red;
 }
 */
