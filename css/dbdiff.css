@@ -61,6 +61,10 @@ div.db_diff strong {
 div.db_diff .db_diff_commit, div.db_diff .db_diff_rollback {
 	color: red;
 }
+/* Only in IE6, a:visited in default css overwrite other style */
+.db_diff_commit:visited, .db_diff_rollback:visited {
+	    color: red;
+}
 .db_diff_rollbacked {
 	text-decoration: line-through;
 }
