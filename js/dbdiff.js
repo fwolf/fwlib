@@ -1,11 +1,13 @@
 /**
  * Show db diff msg using js/jQuery, with a float div.
  *
+ * See /css/dbdiff.css and /loader/dbdiff.css.php
+ *
  * @package		fwolflib
  * @subpackage	js
  * @copyright	Copyright © 2012, Fwolf
  * @author		Fwolf <fwolf.aide+fwolflib.js@gmail.com>
- * @license		http://www.gnu.org/licenses/lgpl.html LGPL V3
+ * @license		http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since		2012-12-26
  */
 
@@ -268,60 +270,3 @@ function DbDiffRemove (s_id, s_class) {
 
 	return false;
 } /* end of func DbDiffRemove */
-
-
-/* Css example */
-
-/* DbDiff */
-/*
-div.db_diff {
-	left: 0px;
-	position: absolute;
-	text-align: center;
-	top: 200px;
-	width: 99%;
-	z-index: 999;
-}
-div.db_diff_bg {
-	background: #E5E5E5;
-	filter: alpha(opacity=60);
-	height: 100%;
-	left: 0px;
-	opacity: 0.6;
-	position: absolute;
-	top: 0px;
-	width: 100%;
-	z-index: 998;
-}
-div.db_diff_content {
-	background: #FFF;
-	margin: auto;
-	padding-bottom: 0.5em;
-	padding-top: 0.5em;
-	text-align: center;
-	width: 60%;
-}
-div.db_diff table {
-	margin: auto;
-	width: 96%;
-}
-div.db_diff table, div.db_diff td, div.db_diff th {
-	border: 1px solid gray;
-	border-collapse: collapse;
-	vertical-align: middle;
-}
-div.db_diff th {
-	background-color: rgb(208, 220, 255);
-}
-div.db_diff .db_diff_action {
-	margin: auto;
-	text-align: right;
-	width: 95%;
-}
-div.db_diff strong {
-	font-weight: bold;
-}
-div.db_diff .db_diff_commit, div.db_diff .db_diff_rollback {
-	color: red;
-}
-*/
