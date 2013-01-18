@@ -522,11 +522,25 @@ JsAlert (msg, title, s_id, b_show_close, b_show_bg)
 	Show msg using js/jQuery, with a float div.
 
 
+
 common.js
 --------------------------------------------------
 
 
 通用 JS 函数集。
+
+
+GetScrollTop ()
+	Get document scrollTop
+
+GetWindowHeight ()
+	Get window height
+
+ObjLen (obj)
+	Simulate object length
+
+ObjToStr (obj)
+	Convert Object to json string, like Array
 
 
 
