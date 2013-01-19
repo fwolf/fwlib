@@ -25,13 +25,13 @@
 		<form method="get" action="{$lt_url_form}">
 			{$lt_url_form_hidden}
 			<input type="text" name="{$lt_config.page_param}"
-				value="{$lt_config.page_cur}"
-				size="{if (99 < $lt_config.page_max)}<?php
+				value="{$lt_config.page_cur|default: 1}"
+				size="{if (99 < $lt_config.page_max|default: -1)}<?php
 					echo strlen(strval($lt_config.page_max)) - 1;
 					?>{else}1{/if}" />
 			{$lt_config.pager_text_goto2}
 			<input type="submit"
-				value="{$lt_config.pager_text_goto3}" />
+				value="{$lt_config.pager_text_goto3|default: '转'}" />
 		</form>
 	</div>
 	{/if}
@@ -92,13 +92,13 @@
 		<form method="get" action="{$lt_url_form}">
 			{$lt_url_form_hidden}
 			<input type="text" name="{$lt_config.page_param}"
-				value="{$lt_config.page_cur}"
-				size="{if (99 < $lt_config.page_max)}<?php
+				value="{$lt_config.page_cur|default: 1}"
+				size="{if (99 < $lt_config.page_max|default: -1)}<?php
 					echo strlen(strval($lt_config.page_max)) - 1;
 					?>{else}1{/if}" />
 			{$lt_config.pager_text_goto2}
 			<input type="submit"
-				value="{$lt_config.pager_text_goto3}" />
+				value="{$lt_config.pager_text_goto3|default: '转'}" />
 		</form>
 	</div>
 	{/if}
