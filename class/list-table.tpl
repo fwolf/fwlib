@@ -42,7 +42,7 @@
 		{* tr of th cannot add str, use th instead. *}
 		<tr>
 		{foreach from=$lt_title key=k_th item=title}
-			<th {$lt_config.th_add[$k_th]}>
+			<th {$lt_config.th_add[$k_th]|default: ''}>
 				{if 1==$lt_config.orderby}
 					<a href="{if $k_th==$lt_config.orderby_idx}{$lt_url.o_cur}{else}{$lt_url.o_other}{/if}&{$lt_config.orderby_param}_idx={$k_th}">
 						{$title}{$k_th}
@@ -61,9 +61,9 @@
 
 		<tbody>
 		{foreach from=$lt_data item=row key=k_tr}
-		<tr {$lt_config.tr_add[$k_tr]}>
+		<tr {$lt_config.tr_add[$k_tr]|default: ''}>
 			{foreach from=$row item=col key=k_td}
-			<td {$lt_config.td_add[$k_td]}>
+			<td {$lt_config.td_add[$k_td]|default: ''}>
 				{$col}
 			</td>
 			{/foreach}
