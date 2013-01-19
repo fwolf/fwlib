@@ -389,10 +389,10 @@ abstract class View extends Fwolflib {
 	 * @see $aCss, $aJs
 	 */
 	public function GenHeader () {
-		$this->oTpl->assign_by_ref('css', $this->aCss);
+		$this->oTpl->assignByRef('css', $this->aCss);
 
 		$this->aJs = array_unique($this->aJs);
-		$this->oTpl->assign_by_ref('js', $this->aJs);
+		$this->oTpl->assignByRef('js', $this->aJs);
 
 		$this->sOutputHeader = $this->oTpl->fetch($this->aTplFile['header']);
 		return $this->sOutputHeader;
@@ -498,7 +498,7 @@ abstract class View extends Fwolflib {
 	public function SetViewTitle($title)
 	{
 		// Init tpl variables set
-		$this->oTpl->assign_by_ref('view_title', $this->sViewTitle);
+		$this->oTpl->assignByRef('view_title', $this->sViewTitle);
 
 		$this->sViewTitle = $title;
 		$this->sOutputHeader = $this->GenHeader();

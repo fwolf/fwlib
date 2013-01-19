@@ -210,7 +210,7 @@ class ListTable extends Fwolflib {
 
 		// Config will effect SetData, so set it first.
 		$this->SetCfg($conf);
-		$this->oTpl->assign_by_ref('lt_config', $this->aCfg);
+		$this->oTpl->assignByRef('lt_config', $this->aCfg);
 
 		$this->SetData($ard, $art);
 		$this->SetId($id);
@@ -509,8 +509,8 @@ class ListTable extends Fwolflib {
 		// Same number of items maybe index diff, so always do fit.
 		$this->FitDataTitle();
 
-		$this->oTpl->assign_by_ref('lt_data', $this->aData);
-		$this->oTpl->assign_by_ref('lt_title', $this->aTitle);
+		$this->oTpl->assignByRef('lt_data', $this->aData);
+		$this->oTpl->assignByRef('lt_title', $this->aTitle);
 
 		return ;
 		/* obsolete
@@ -547,8 +547,8 @@ class ListTable extends Fwolflib {
 		else
 			// On default, class = id
 			$this->sClass = $this->sId;
-		$this->oTpl->assign_by_ref('lt_id', $this->sId);
-		$this->oTpl->assign_by_ref('lt_class', $this->sClass);
+		$this->oTpl->assignByRef('lt_id', $this->sId);
+		$this->oTpl->assignByRef('lt_class', $this->sClass);
 
 		// Change page_param
 		$this->aCfg['page_param'] = $this->sId . '_p';
@@ -603,7 +603,7 @@ class ListTable extends Fwolflib {
 			, array($this->aCfg['orderby_param'] . '_idx'));;
 		// Restore value of $this->aParam
 		$this->aParam = $ar;
-		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
+		$this->oTpl->assignByRef('lt_url', $this->aUrl);
 	} // end of func SetOrderby
 
 
@@ -675,7 +675,7 @@ class ListTable extends Fwolflib {
 		}
 
 		// Assign url to tpl
-		$this->oTpl->assign_by_ref('lt_url', $this->aUrl);
+		$this->oTpl->assignByRef('lt_url', $this->aUrl);
 		$this->oTpl->assign('lt_url_form', $this->SetParam(array(), $this->aCfg['page_param']));
 
 		// Assign hidden input
