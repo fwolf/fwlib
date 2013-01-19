@@ -13,6 +13,14 @@ Class
 
 
 
+ajax/
+--------------------------------------------------
+
+ajax-sel-div.php::AjaxSelDiv
+	Select data using ajax div.
+
+
+
 benchmark.php::Benchmark
 --------------------------------------------------
 
@@ -149,6 +157,14 @@ Easy send mail using PHPMailer.
 
 
 
+smarty-fl/
+--------------------------------------------------
+
+smarty-fl.php::SmartyFl
+	Extended Smarty class.
+
+
+
 sql_generator.php::SqlGenerator
 --------------------------------------------------
 
@@ -170,14 +186,6 @@ validator.php::Validator
 
 
 Validate form data, include web frontend and php backend.
-
-
-
-ajax/
---------------------------------------------------
-
-ajax-sel-div.php::AjaxSelDiv
-	Select data using ajax div.
 
 
 
