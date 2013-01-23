@@ -730,8 +730,8 @@ abstract class Module extends Fwolflib {
 	 *
 	 * @return	object
 	 */
-	 protected function SetCfgDefault () {
-		 parent::SetCfgDefault();
+	protected function SetCfgDefault () {
+		parent::SetCfgDefault();
 
 		// Db profile
 		$this->aCfg['dbprofile'] = array(
@@ -744,7 +744,7 @@ abstract class Module extends Fwolflib {
 		);
 
 		return $this;
-	 } // end of func SetCfgDefault
+	} // end of func SetCfgDefault
 
 
 } // end of class Module
