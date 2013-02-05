@@ -12,22 +12,31 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 
 /**
- * Get global config setting
- * Multidimensional array style setting, convert to string $cfg by seperate several dimension with dot, eg: dbserver.dbprofile.type .
- * @param	string	$cfg
+ * Get global config setting from global var $config
+ *
+ * String split by '.' means multidimensional array.
+ *
+ * @see		SetCfg()
+ * @param	string	$key
  * @return	mixed
  */
-function GetCfg($cfg) {
+function GetCfg ($key) {
 	global $config;
-	if (false === strpos($cfg, '.')) {
-		return($config[$cfg]);
+	if (false === strpos($key, '.')) {
+		if (isset($config[$key]))
+			return($config[$key]);
+		else
+			return null;
 	} else {
 		// Recoginize the dot
-		$ar = explode('.', $cfg);
+		$ar = explode('.', $key);
 		$c = $config;
 		foreach ($ar as $val) {
 			// Every dimision will go 1 level deeper
-			$c = &$c[$val];
+			if (isset($c[$val]))
+				$c = &$c[$val];
+			else
+				return null;
 		}
 		return($c);
 	}
@@ -67,31 +76,50 @@ function LimitServerId($id, $die = true) {
 
 
 /**
- * Set global config setting
- * Multidimensional array style setting, convert to string $cfg by seperate several dimension with dot, eg: dbserver.dbprofile.type .
- * @param	string	$cfg
- * @param	mixed	$value
+ * Set global config var $config
+ *
+ * Multidimensional array style setting supported,
+ * If $key is string including '.', its converted to array by it recurrently.
+ * eg: system.format.time => $config['system']['format']['time']
+ *
+ * @param	string	$key
+ * @param	mixed	$val
  */
-function SetCfg($cfg, $value) {
+function SetCfg ($key, $val) {
 	global $config;
-	if (false === strpos($cfg, '.')) {
-		$config[$cfg] = $value;
+	if (false === strpos($key, '.')) {
+		$config[$key] = $val;
 	} else {
 		// Recoginize the dot
-		$ar = explode('.', $cfg);
+		$ar = explode('.', $key);
 		$c = &$config;
 		$j = count($ar) - 1;
 		// Every loop will go 1 level sub array
-		for ($i=0; $i<$j; $i++) {
+		for ($i = 0; $i < $j; $i ++) {
 			// 'a.b.c', if b is not set, create it as an empty array
 			if (!isset($c[$ar[$i]]))
 				$c[$ar[$i]] = array();
 			$c = &$c[$ar[$i]];
 		}
 		// Set the value
-		$c[$ar[$i]] = $value;
+		$c[$ar[$i]] = $val;
 	}
 } // end of func SetCfg
+
+
+/**
+ * Set default value of global config var $config
+ *
+ * Same with SetCfg() except: SetCfgDefault() will only change setting
+ * if the config key is not setted before.
+ *
+ * @param	string	$key
+ * @param	mixed	$val
+ */
+function SetCfgDefault ($key, $val) {
+	if (is_null(GetCfg($key)))
+		SetCfg($key, $val);
+} // end of func SetCfgDefault
 
 
 // Debug

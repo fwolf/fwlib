@@ -268,14 +268,17 @@ config.php
 GetCfg and SetCfg function.
 
 
-GetCfg ($cfg)
+GetCfg ($key)
 	Return value of config string $cfg.
 
 LimitServerId ($id)
 	Limit program can only run on prefered server.
 
-SetCfg ($cfg, $value)
-	Set global config by config string $cfg using value $value.
+SetCfg ($key, $val)
+	Set global config with key $key to value $val.
+
+SetCfgDefault ($key, $val)
+Set default value of global config var $config
 
 
 
