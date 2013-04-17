@@ -105,9 +105,9 @@ class Fwolflib {
 	 *
 	 * @return	object
 	 */
-	 public function Init () {
+	public function Init () {
 		return $this;
-	 } // end of func Init
+	} // end of func Init
 
 
 	/**

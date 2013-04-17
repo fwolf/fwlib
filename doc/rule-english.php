@@ -109,6 +109,7 @@ business license, bl		|营业执照
 	bl_rc, capital registered	|注册资金，单位：万元
 	bl_rno					|营业执照注册号
 	bl_sideline				|兼营
+business process, bp		|业务流程
 calculate, calc				|计算，和compute相比，特指用数学方法进行比较复杂、难度较大的精确计算
 category, cat, ctgy			|类别，分类
 certificate, cert			|证书，证明
