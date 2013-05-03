@@ -157,6 +157,14 @@ Easy send mail using PHPMailer.
 
 
 
+rv/
+--------------------------------------------------
+
+rv.php::Rv
+	Return value class.
+
+
+
 smarty-fl/
 --------------------------------------------------
 
