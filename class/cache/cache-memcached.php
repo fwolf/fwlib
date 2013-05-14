@@ -134,6 +134,8 @@ class CacheMemcached extends Cache {
 							== $this->oMemcached->getResultCode(),
 					);
 				}
+				// Convert to string in JSON format
+				$val = '"' . $val . '"';
 			}
 		}
 		else {

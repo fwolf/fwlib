@@ -24,6 +24,8 @@ require_once(FWOLFLIB . 'class/cache/cache.php');
 require_once(FWOLFLIB . 'func/ecl.php');
 require_once(FWOLFLIB . 'func/request.php');
 require_once(FWOLFLIB . 'func/string.php');
+// Test memcached client
+//require_once dirname(__FILE__) . '/../../../memcached-client/memcached.php';
 
 class TestCache extends UnitTestCase {
 
@@ -306,11 +308,11 @@ class TestCache extends UnitTestCase {
 		$this->assertEqual($x, $this->oCh->Get($key));
 
 		// Massive set
-//  		$s = RandomString(2000000, 'a0');
-//  		for ($i = 0; $i < 100; $i++) {
-//  			$this->oCh->Set($i, $s, 3600);
-//  		}
-//  		$this->assertEqual(0, $this->oCh->oMemcached->getResultCode());
+//		$s = RandomString(2000000, 'a0');
+//		for ($i = 0; $i < 100; $i++) {
+//			$this->oCh->Set($i, $s, 3600);
+//		}
+//		$this->assertEqual(0, $this->oCh->oMemcached->getResultCode());
 
 		// Big value exceed max item size
 //		$s = RandomString(3000000, 'a0');
