@@ -45,8 +45,7 @@ function AddslashesRecursive ($srce) {
  * @param	string	$str
  * @return	string
 */
-function HtmlEncode($str)
-{
+function HtmlEncode ($str) {
 	if (empty($str))
 	    return('');
 
@@ -55,11 +54,11 @@ function HtmlEncode($str)
 		'<'		=> '&lt;',
 		'>'		=> '&gt;',
 		chr(9)	=> '　　',
-		chr(13)	=> '<br />',
 		chr(34)	=> '&quot;',
 		'  '	=> '&nbsp; ',
 		' '		=> '&nbsp;',
 		'&nbsp;&nbsp;'	=> '&nbsp; ',
+		chr(13)	=> '<br />',
 	);
 	$ar_search = array_keys($ar);
 	$ar_replace = array_values($ar);
