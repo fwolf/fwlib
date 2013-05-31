@@ -270,5 +270,33 @@ class Cache extends Fwolflib {
 	} // end of func ValEncode
 
 
+	/**
+	 * Get or increase version number
+	 *
+	 * Mostly used in memcached for batch delete items
+	 *
+	 * @param	string	$key
+	 * @param	int		$i_increment
+	 * @param	int		$i_max
+	 * @return	int
+	 */
+	public function Ver ($key, $i_increment = 0, $i_max = 65535) {
+		$i = $this->Get($key);
+		if (empty($i)) {
+			$i = 1;
+			$this->Set($key, $i, 0);
+		}
+
+		if (0 != $i_increment) {
+			$i += $i_increment;
+			if ($i_max < $i)
+				$i = 1;
+			$this->Set($key, $i, 0);
+		}
+
+		return $i;
+	} // end of func Ver
+
+
 } // end of class Cache
 ?>

@@ -241,6 +241,7 @@ project application formalities	|(项目)报建手续
 project manager, pm			|项目经理
 proof of funds, pof			|资金证明
 province, prov, pr			|省
+provincial governing county, pgc	|省直管县
 publication, public, pub	|公示
 purview						|范围
 qualification, qual			|资质，资格
