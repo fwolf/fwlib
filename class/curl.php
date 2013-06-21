@@ -224,10 +224,9 @@ class Curl extends Fwolflib {
 		// If got http error, report.
 		curl_setopt($this->mSh, CURLOPT_FAILONERROR, true);
 
-		// CURLOPT_FOLLOWLOCATION cannot be activated when safe_mode
-		// is enabled or an open_basedir is set.
-		if (('Off' == ini_get('safe_mode'))
-			&& ('' == ini_get('open_basedir')))
+		// CURLOPT_FOLLOWLOCATION cannot set when open_basedir is set.
+		// Also safe_mode, which are DEPRECATED in 5.3.0 and REMOVED in 5.4.0.
+		if ('' == ini_get('open_basedir'))
 			curl_setopt($this->mSh, CURLOPT_FOLLOWLOCATION, true);
 
 		// Return result restead of display it.
