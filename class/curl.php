@@ -216,15 +216,20 @@ class Curl extends Fwolflib {
 	 * Set some common options using curl_setopt
 	 * @access	public
 	 */
-	public function SetoptCommon()
-	{
+	public function SetoptCommon () {
 		$this->SetoptCookie();
 		$this->SetoptUseragent('ff14');
 
 		curl_setopt($this->mSh, CURLOPT_AUTOREFERER, true);
 		// If got http error, report.
 		curl_setopt($this->mSh, CURLOPT_FAILONERROR, true);
-		curl_setopt($this->mSh, CURLOPT_FOLLOWLOCATION, true);
+
+		// CURLOPT_FOLLOWLOCATION cannot be activated when safe_mode
+		// is enabled or an open_basedir is set.
+		if (('Off' == ini_get('safe_mode'))
+			&& ('' == ini_get('open_basedir')))
+			curl_setopt($this->mSh, CURLOPT_FOLLOWLOCATION, true);
+
 		// Return result restead of display it.
 		curl_setopt($this->mSh, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->mSh, CURLOPT_CONNECTTIMEOUT, 300);
