@@ -241,17 +241,22 @@ class Curl extends Fwolflib {
 
 	/**
 	 * Set cookie option
+	 *
 	 * If filename is not given, use default,
 	 * If file is given, use & set it as default.
+	 *
 	 * @param	string	$cookiefile
 	 * @access	public
 	 */
-	public function SetoptCookie($cookiefile = '')
-	{
+	public function SetoptCookie ($cookiefile = '') {
 		if (!empty($cookiefile))
 			$this->mCookiefile = $cookiefile;
-		curl_setopt($this->mSh, CURLOPT_COOKIEFILE, $this->mCookiefile);
-		curl_setopt($this->mSh, CURLOPT_COOKIEJAR, $this->mCookiefile);
+		// /dev/null is useless cookie file, so does empty filename
+		if (!empty($this->mCookiefile)
+			&& ('/dev/null' != $this->mCookiefile)) {
+			curl_setopt($this->mSh, CURLOPT_COOKIEFILE, $this->mCookiefile);
+			curl_setopt($this->mSh, CURLOPT_COOKIEJAR, $this->mCookiefile);
+		}
 	} // end of func SetoptCookie
 
 
