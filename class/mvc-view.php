@@ -415,14 +415,13 @@ abstract class View extends Fwolflib {
 	 * @return string
 	 * @see $sOutput
 	 */
-	public function GetOutput()
-	{
+	public function GetOutput () {
+		if (empty($this->sOutputContent))
+			$this->sOutputContent = $this->GenContent();
 		if (empty($this->sOutputHeader))
 			$this->sOutputHeader = $this->GenHeader();
 		if (empty($this->sOutputMenu))
 			$this->sOutputMenu = $this->GenMenu();
-		if (empty($this->sOutputContent))
-			$this->sOutputContent = $this->GenContent();
 		if (empty($this->sOutputFooter))
 			$this->sOutputFooter = $this->GenFooter();
 		$this->sOutput = $this->sOutputHeader .
