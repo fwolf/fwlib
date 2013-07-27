@@ -40,7 +40,7 @@ if ('config.default.php' == basename(__FILE__)) {
     // Load requirement lib autoload file
     // Fwlib
     if (!isset($cfg['lib.path.fwlib'])) {
-        $cfg['lib.path.fwlib'] = 'fwolflib/';
+        $cfg['lib.path.fwlib'] = 'Fwlib/';
     }
     require $cfg['lib.path.fwlib'] . 'autoload.php';
 }
