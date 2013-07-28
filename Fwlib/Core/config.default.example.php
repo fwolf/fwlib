@@ -22,8 +22,6 @@
  * @since       2013-07-26
  */
 
-namespace Vendor\App;
-
 
 // Init global config array
 if ('config.default.php' == basename(__FILE__)) {
@@ -40,7 +38,7 @@ if ('config.default.php' == basename(__FILE__)) {
     // Load requirement lib autoload file
     // Fwlib
     if (!isset($cfg['lib.path.fwlib'])) {
-        $cfg['lib.path.fwlib'] = 'Fwlib/';
+        $cfg['lib.path.fwlib'] = 'fwlib/';
     }
     require $cfg['lib.path.fwlib'] . 'autoload.php';
 }

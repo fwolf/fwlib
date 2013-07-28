@@ -9,19 +9,17 @@
  * @since       2013-07-27
  */
 
-namespace Fwlib;
-
-require __DIR__ . '/Core/ClassLoader.php';
+require __DIR__ . '/Fwlib/Core/ClassLoader.php';
 
 use \Fwlib\Core\ClassLoader;
 
 $loader = new ClassLoader;
 
+// Add resource lookup path
+$loader->addPrefix('Fwlib', __DIR__ . '/');
+
 // Search include_path at last
 $loader->useIncludePath = true;
-
-// Add resource lookup path
-$loader->addPrefix('Fwlib', __DIR__ . '/../');
 
 // Register autoloader
 $loader->register();
