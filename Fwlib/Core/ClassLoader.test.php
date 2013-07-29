@@ -5,6 +5,6 @@ $loader->addPrefix('Foo1', __DIR__ . '/Foo1.php');
 
 $foo = new Foo1;
 
-use \Fwlib\Core\Foo;
+use Fwlib\Core\Foo;
 
 $foo = new Foo;
