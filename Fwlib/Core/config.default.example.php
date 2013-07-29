@@ -25,36 +25,40 @@
 
 // Init global config array
 if ('config.default.php' == basename(__FILE__)) {
-    $cfg = array();
+    $config = array();
 
 
     // Load user config if exists
     if (file_exists(__DIR__ . '/config.php')) {
         require __DIR__ . '/config.php';
     }
-    $cfgUser = $cfg;
+    $configUser = $config;
 
 
     // Load requirement lib autoload file
     // Fwlib
-    if (!isset($cfg['lib.path.fwlib'])) {
-        $cfg['lib.path.fwlib'] = 'fwlib/';
+    if (!isset($config['lib.path.fwlib'])) {
+        $config['lib.path.fwlib'] = 'fwlib/';
     }
-    require $cfg['lib.path.fwlib'] . 'autoload.php';
+    require $config['lib.path.fwlib'] . 'autoload.php';
 }
 
 
 /***********************************************************
  * Config define area
  *
- * Use $cfgUser to compute value if needed.
+ * Use $configUser to compute value if needed.
  *
  * In config.php, code outside this area can be removed.
  **********************************************************/
 
 
 // Group 1
-$cfg['group.key'] = 'val';
+$config['group.key'] = 'val';
+
+// Config to use in compute later NEED use user config if set
+$config['group.key_for_compute'] = isset($configUser['group.key_for_compute'])
+    ? $configUser['group.key_for_compute'] : 'default val';
 
 
 /***********************************************************
@@ -62,5 +66,9 @@ $cfg['group.key'] = 'val';
  **********************************************************/
 
 
-// Merge config
-$cfg = array_merge($cfg, $cfgUser);
+// Merge user and default config
+if ('config.default.php' == basename(__FILE__)) {
+    $config = array_merge($config, $configUser);
+
+    // Deal with $config with Config class or use as global
+}
