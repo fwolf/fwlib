@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Core;
+namespace Fwlib\Base;
 
 
 /**
@@ -9,12 +9,12 @@ namespace Fwlib\Core;
  *
  *  require 'path/to/ClassLoader.php';
  *
- *  use \Fwlib\Core\ClassLoader;
+ *  use Fwlib\Base\ClassLoader;
  *
  *  $loader = new ClassLoader();
  *
  *  // Subnamespace define should before parent namespace
- *  $loader->addPrefix('Fwlib\Core', 'path/to/another/Fwlib/contain/dir/');
+ *  $loader->addPrefix('Fwlib\\Base', 'path/to/another/Fwlib/contain/dir/');
  *
  *  // Root namespace
  *  $loader->addPrefix('Fwlib', 'path/to/Fwlib/contain/dir/');
@@ -38,7 +38,7 @@ namespace Fwlib\Core;
  * - https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ClassLoader/ClassLoader.php
  *
  * @package     Fwlib
- * @subpackage  Core
+ * @subpackage  Base
  * @copyright   Copyright © 2013, Fwolf
  * @author      Fwolf <fwolf.aide+fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

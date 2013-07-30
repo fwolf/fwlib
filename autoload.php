@@ -9,9 +9,9 @@
  * @since       2013-07-27
  */
 
-require __DIR__ . '/Fwlib/Core/ClassLoader.php';
+require __DIR__ . '/Fwlib/Base/ClassLoader.php';
 
-use \Fwlib\Core\ClassLoader;
+use Fwlib\Base\ClassLoader;
 
 $loader = new ClassLoader;
 
