@@ -17,6 +17,7 @@ class DatetimeUtilTest extends \PHPunit_Framework_TestCase
     {
         $this->assertEquals(DatetimeUtil::cvtSecToStr(12), '12s');
         $this->assertEquals(DatetimeUtil::cvtSecToStr(120), '2i');
+        $this->assertEquals(DatetimeUtil::cvtSecToStr('a'), '');
 
         $i = 65831316;
         $this->assertEquals(
@@ -84,5 +85,16 @@ class DatetimeUtilTest extends \PHPunit_Framework_TestCase
         );
 
         return DateTimeUtil::cvtStrToSec('1m2s');
+    }
+
+
+    public function testCvtTimeFromSybase()
+    {
+        $t1 = date('Y-m-d H:i:s');
+        $t2 = $t1 . ':789';
+        $this->assertEquals(
+            DatetimeUtil::cvtTimeFromSybase($t2),
+            strtotime($t1)
+        );
     }
 }
