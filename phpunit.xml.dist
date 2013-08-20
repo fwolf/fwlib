@@ -46,7 +46,7 @@
   </filter>
 
   <php>
-    <ini name='memory_limit' value='300m'/>
+    <ini name='memory_limit' value='300m' />
   </php>
 
 </phpunit>

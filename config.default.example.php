@@ -14,8 +14,7 @@
  *
  * DO NOT MODIFY 'config.default.php' DIRECTLY.
  *
- * @package     Fwlib
- * @subpackage  Base
+ * @package     Fwlib\Base
  * @copyright   Copyright © 2013, Fwolf
  * @author      Fwolf <fwolf.aide+fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

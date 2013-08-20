@@ -550,8 +550,11 @@ class MailParser extends Fwolflib{
 
 	/**
 	 * Reset all vars, prepare to a new parse process.
+     *
+	 * @param	boolean		$bInit	Re-do init.
 	 */
-	public function Reset() {
+    public function Reset($bInit = false)
+    {
 		//:TODO: reset all data-vars, include $this->mMsg
 		$this->mErrorMsg = '';
 		$this->mErrorNo = 0;
