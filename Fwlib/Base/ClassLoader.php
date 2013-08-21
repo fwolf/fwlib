@@ -37,9 +37,8 @@ namespace Fwlib\Base;
  * - https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
  * - https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ClassLoader/ClassLoader.php
  *
- * @package     Fwlib
- * @subpackage  Base
- * @copyright   Copyright © 2013, Fwolf
+ * @package     Fwlib\Base
+ * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-07-27
