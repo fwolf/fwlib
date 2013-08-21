@@ -29,6 +29,9 @@ class ConfigTest extends \PHPunit_Framework_TestCase
         // Using phpunit/test_helpers
         // @link https://github.com/php-test-helpers/php-test-helpers
         // @link http://thedeveloperworldisyours.com/php/phpunit-tips/
+        if (!extension_loaded('test_helpers')) {
+            return;
+        }
         set_exit_overload(
             function ($output) {
                 ConfigTest::$output = $output;
