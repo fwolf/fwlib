@@ -15,11 +15,14 @@
  * DO NOT MODIFY 'config.default.php' DIRECTLY.
  *
  * @package     Fwlib\Base
- * @copyright   Copyright © 2013, Fwolf
+ * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-07-26
  */
+
+use Fwlib\Config\ConfigGlobal;
+use Fwlib\Util\ArrayUtil;
 
 
 // Init global config array
@@ -56,8 +59,11 @@ if ('config.default.php' == basename(__FILE__)) {
 $config['group.key'] = 'val';
 
 // Config to use in compute later NEED use user config if set
-$config['group.key_for_compute'] = isset($configUser['group.key_for_compute'])
-    ? $configUser['group.key_for_compute'] : 'default val';
+$config['group.key-for-compute'] = ArrayUtil::getIdx(
+    $configUser,
+    'group.key-for-compute',
+    'default value'
+);
 
 
 /***********************************************************
@@ -69,5 +75,7 @@ $config['group.key_for_compute'] = isset($configUser['group.key_for_compute'])
 if ('config.default.php' == basename(__FILE__)) {
     $config = array_merge($config, $configUser);
 
-    // Deal with $config with Config class or use as global
+    // Deal with $config
+    // Or store with ConfigGlobal class
+    ConfigGlobal::load($config);
 }
