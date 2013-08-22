@@ -18,6 +18,7 @@ class Config
 {
     /**
      * Config data array
+     * @var array
      */
     public $config = array();
 
