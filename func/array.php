@@ -17,6 +17,7 @@ require_once(FWOLFLIB . 'func/string.php');
 /**
  * Add value to array by key, if key not exist, init with value.
  *
+ * @deprecated      Use Fwlib\Util\ArrayUtil::increaseByKey()
  * @param	array	&$ar_srce
  * @param	string	$key
  * @param	mixed	$val		Default val if not assigned.
@@ -38,6 +39,7 @@ function ArrayAdd (&$ar_srce, $key, $val = 1) {
 /**
  * Eval string by replace tag with array value by index
  *
+ * @deprecated      Use Fwlib\Util\StringUtil::evalWithTag()
  * @param	string	$s_eval
  * @param	array	$ar		Data array, must have assoc index.
  * @return	mixed
@@ -76,6 +78,7 @@ function ArrayEval ($s_eval, $ar = array()) {
  * and it pos also leave as the before one. So if you can't use this
  * to move item in array forward or backward.
  *
+ * @deprecated      Use Fwlib\Util\ArrayUtil::insert()
  * @param	array	&$ar_srce
  * @param	mixed	$idx		Position idx, append @ end if not found.
  * @param	array	$ar_ins		Array to insert, can have multi item.
@@ -141,6 +144,7 @@ function ArrayInsert (&$ar_srce, $idx, $ar_ins, $i_pos = 1) {
 /**
  * Read value from array.
  *
+ * @deprecated      Use Fwlib\Util\ArrayUtil::getIdx(), getEdx()
  * @param	array	$ar
  * @param	mixed	$key
  * @param	mixed	$val_default
@@ -161,6 +165,7 @@ function ArrayRead($ar, $key, $val_default = null) {
 /**
  * Sort array by one of its 2lv keys, and maintain assoc index.
  *
+ * @deprecated      Use Fwlb\Util\ArrayUtil::sortByLevel2() or array_multisort()
  * @param	array	&$ar_srce	Array to be sort
  * @param	mixed	$key
  * @param	mixed	$b_asc		True = asc/false = desc, or use str.
