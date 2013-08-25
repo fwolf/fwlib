@@ -16,6 +16,7 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
  *
  * String split by '.' means multidimensional array.
  *
+ * @deprecated      Use Fwlib\Config\Config
  * @see		SetCfg()
  * @param	string	$key
  * @return	mixed
@@ -47,6 +48,8 @@ function GetCfg ($key) {
  * Limit program can only run on prefered server, identify by serverid
  * If check failed, die and exit.
  * SetCfg('serverid', 0);
+ *
+ * @deprecated      Use Fwlib\Config\Config
  * @param	mixed	$id		string/int -> on this server, array -> in any of these server
  * @param	boolean	$die	If check false, true -> die(), false -> return false and continue, default is true.
  * @see	SetCfg()
@@ -82,6 +85,7 @@ function LimitServerId($id, $die = true) {
  * If $key is string including '.', its converted to array by it recurrently.
  * eg: system.format.time => $config['system']['format']['time']
  *
+ * @deprecated      Use Fwlib\Config\Config
  * @param	string	$key
  * @param	mixed	$val
  */

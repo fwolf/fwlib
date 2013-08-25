@@ -17,6 +17,7 @@ require_once(FWOLFLIB . 'func/env.php');
  *
  * Log included.
  *
+ * @deprecated  Use classes in Fwlib namespace, see PSR-0/1/2
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright © 2010, Fwolf

@@ -18,6 +18,7 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
  *
  * No week in result.
  *
+ * @deprecated      Use Fwlib\Util\DatetimeUtil::cvtSecToStr()
  * @param	int		$i_sec
  * @param	boolean	$b_simple				If true, use ymdhis instead of word
  * @return	string
@@ -70,6 +71,7 @@ function SecToStr ($i_sec, $b_simple = true) {
  *
  * Solid: 1m = 30d, 1y = 365d
  *
+ * @deprecated      Use Fwlib\Util\DatetimeUtil::cvtStrToSec()
  * @param	string	$str
  * @return	integer
  */
@@ -133,6 +135,8 @@ function StrToSec ($str) {
 
 /**
  * strtotime added remove of ':000' in sybase time(probably because dblib)
+ *
+ * @deprecated      Use Fwlib\Util\DatetimeUtil::cvtTimeFromSybase()
  * @param	string	$time
  * @return	integer
  */
