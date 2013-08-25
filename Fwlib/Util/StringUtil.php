@@ -14,6 +14,33 @@ namespace Fwlib\Util;
 class StringUtil
 {
     /**
+     * Addslashes for any string|array, recursive
+     *
+     * @param   mixed   $srce
+     * @return  mixed
+     */
+    public static function addSlashesRecursive($srce)
+    {
+        if (empty($srce)) {
+            return $srce;
+        }
+
+        if (is_string($srce)) {
+            return addslashes($srce);
+        } elseif (is_array($srce)) {
+            $rs = array();
+            foreach ($srce as $k => $v) {
+                $rs[addslashes($k)] = self::addSlashesRecursive($v);
+            }
+            return $rs;
+        } else {
+            // Other data type, return original
+            return $srce;
+        }
+    }
+
+
+    /**
      * Eval string by replace tag with array value by index
      *
      * @param   string  $str

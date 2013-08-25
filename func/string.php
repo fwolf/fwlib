@@ -16,6 +16,7 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 /**
  * Addslashes for any data, recursive.
  *
+ * @deprecated      Use Fwlib\Util\StringUtil::addSlashesRecursive()
  * @param	mixed	$srce
  * @return	mixed
  */

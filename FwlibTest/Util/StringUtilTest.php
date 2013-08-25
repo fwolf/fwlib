@@ -14,6 +14,31 @@ use Fwlib\Util\StringUtil;
  */
 class StringUtilTest extends \PHPunit_Framework_TestCase
 {
+    public function testAddSlashesRecursive()
+    {
+        $x = '';
+        $y = StringUtil::addSlashesRecursive($x);
+        $z = '';
+        $this->assertEquals($y, $z);
+
+        $x = 'it\'s ok';
+        $y = StringUtil::addSlashesRecursive($x);
+        $z = 'it\\\'s ok';
+        $this->assertEquals($y, $z);
+
+        $x = array('it\'s ok');
+        $y = StringUtil::addSlashesRecursive($x);
+        $z = array('it\\\'s ok');
+        $this->assertEquals(var_export($y, true), var_export($z, true));
+
+        // Object, should return original
+        $x = new StringUtilTest;
+        $z = $x;
+        $y = StringUtil::addSlashesRecursive($x);
+        $this->assertEquals($y, $z);
+    }
+
+
     public function testEvalWithTag()
     {
         $this->assertEquals(null, StringUtil::evalWithTag(''));
