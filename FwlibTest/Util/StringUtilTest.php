@@ -14,7 +14,7 @@ use Fwlib\Util\StringUtil;
  */
 class StringUtilTest extends \PHPunit_Framework_TestCase
 {
-    function testEvalWithTag()
+    public function testEvalWithTag()
     {
         $this->assertEquals(null, StringUtil::evalWithTag(''));
 
@@ -31,5 +31,19 @@ class StringUtilTest extends \PHPunit_Framework_TestCase
 
         $s = 'substr("{a}", 1, 2) == "tr"; return false;';
         $this->assertEquals(false, StringUtil::evalWithTag($s));
+    }
+
+
+    public function testMatchWildcard()
+    {
+        $this->assertEquals(
+            true,
+            StringUtil::matchWildcard('abcd', '*c?')
+        );
+
+        $this->assertEquals(
+            false,
+            StringUtil::matchWildcard('abcd', '?c*')
+        );
     }
 }

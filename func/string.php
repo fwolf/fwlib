@@ -186,6 +186,7 @@ function JsonEncodeUnicode ($val, $option = 0) {
  *
  * Eg: 'abcd' match rule '*c?'
  *
+ * @deprecated      Use Fwlib\Util\StringUtil::matchWildcard()
  * @param	string	$str
  * @param	string	$rule
  * @return	boolean

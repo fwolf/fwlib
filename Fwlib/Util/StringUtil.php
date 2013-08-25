@@ -52,4 +52,31 @@ class StringUtil
 
         return $rs;
     }
+
+
+    /**
+     * Match a string with rule including wildcard
+     *
+     * Eg: 'abcd' match rule '*c?'
+     *
+     * @param   string  $str
+     * @param   string  $rule
+     * @return  boolean
+     */
+    public static function matchWildcard($str, $rule)
+    {
+        // Convert wildcard rule to regex
+        $rule = str_replace('*', '.+', $rule);
+        $rule = str_replace('?', '.{1}', $rule);
+        $rule = '/' . $rule . '/';
+
+        // Must match whole string, same length
+        if ((1 == preg_match($rule, $str, $ar_match))
+            && (strlen($ar_match[0]) == strlen($str))
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
