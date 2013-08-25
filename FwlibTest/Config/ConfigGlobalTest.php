@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Config;
 
+use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Config\ConfigGlobal;
 
 /**
@@ -12,7 +13,7 @@ use Fwlib\Config\ConfigGlobal;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22
  */
-class ConfigGlobalTest extends \PHPunit_Framework_TestCase
+class ConfigGlobalTest extends PHPunitTestCase
 {
     public function testLimitServerId()
     {

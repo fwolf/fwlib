@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Config;
 
+use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Config\Config;
 
 /**
@@ -12,7 +13,7 @@ use Fwlib\Config\Config;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-20
  */
-class ConfigTest extends \PHPunit_Framework_TestCase
+class ConfigTest extends PHPunitTestCase
 {
     private $config = null;
     public static $output = '';

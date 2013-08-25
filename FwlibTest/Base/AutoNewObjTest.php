@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Base;
 
+use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Base\AutoNewObj;
 
 /**
@@ -12,7 +13,7 @@ use Fwlib\Base\AutoNewObj;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22
  */
-class AutoNewObjTest extends \PHPunit_Framework_TestCase
+class AutoNewObjTest extends PHPunitTestCase
 {
     public $dummy;
 

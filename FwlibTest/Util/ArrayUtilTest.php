@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
+use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\ArrayUtil;
 
 /**
@@ -12,7 +13,7 @@ use Fwlib\Util\ArrayUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2010-01-25
  */
-class ArrayUtilTest extends \PHPunit_Framework_TestCase
+class ArrayUtilTest extends PHPunitTestCase
 {
     public function testGetEdx()
     {
@@ -46,15 +47,9 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
 
         $x = array('foo' => 'bar');
         $y = ArrayUtil::filterByWildcard($x, null);
-        $this->assertEquals(
-            var_export($x, true),
-            var_export($y, true)
-        );
+        $this->assertEqualArray($x, $y);
         $y = ArrayUtil::filterByWildcard($x, '|', '|');
-        $this->assertEquals(
-            var_export($x, true),
-            var_export($y, true)
-        );
+        $this->assertEqualArray($x, $y);
 
 
         $rule = 'a*, -*b, -??c, +?d*';
@@ -94,17 +89,14 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
         $x = $ar_srce;
 
         // Empty input
-        $this->assertEquals(
-            var_export($ar_srce, true),
-            var_export(ArrayUtil::insert($x, 'foo', array()), true)
+        $this->assertEqualArray(
+            $ar_srce,
+            ArrayUtil::insert($x, 'foo', array())
         );
 
         // Pos not exists, number indexed
         $x = ArrayUtil::insert($x, 'd', array('d'));
-        $this->assertEquals(
-            var_export($x, true),
-            var_export(array('a', 'b', 'c', 'd'), true)
-        );
+        $this->assertEqualArray($x, array('a', 'b', 'c', 'd'));
 
         // Pos not exists, assoc indexed
         $ar_srce = array(
@@ -120,7 +112,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             0 => 'd',
         );
         $x = ArrayUtil::insert($x, 'd', array('d'));
-        $this->assertEquals(var_export($x, true), var_export($y, true));
+        $this->assertEqualArray($x, $y);
 
         // Assoc indexed, normal
         $ar_srce = array(
@@ -146,7 +138,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             'e' => 5,
         );
         ArrayUtil::insert($x, 'c', $ar_ins, -2);
-        $this->assertEquals(var_export($x, true), var_export($y, true));
+        $this->assertEqualArray($x, $y);
 
         // Insert after a key
         $x = $ar_srce;
@@ -160,7 +152,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             'e' => 5,
         );
         ArrayUtil::insert($x, 'c', $ar_ins, 2);
-        $this->assertEquals(var_export($x, true), var_export($y, true));
+        $this->assertEqualArray($x, $y);
 
         // Replace
         $x = $ar_srce;
@@ -173,7 +165,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             'e' => 5,
         );
         ArrayUtil::insert($x, 'a', $ar_ins, 0);
-        $this->assertEquals(var_export($x, true), var_export($y, true));
+        $this->assertEqualArray($x, $y);
 
         // Replace & not exist = append
         $x = $ar_srce;
@@ -187,7 +179,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             'ins2'  => 'ins2',
         );
         ArrayUtil::insert($x, 'f', $ar_ins, 0);
-        $this->assertEquals(var_export($x, true), var_export($y, true));
+        $this->assertEqualArray($x, $y);
 
         // Insert far before
         $x = $ar_srce;
@@ -201,7 +193,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             'e' => 5,
         );
         ArrayUtil::insert($x, 'a', $ar_ins, -10);
-        $this->assertEquals(var_export($x, true), var_export($y, true));
+        $this->assertEqualArray($x, $y);
 
         // Insert far after
         $x = $ar_srce;
@@ -215,7 +207,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             'ins2'  => 'ins2',
         );
         ArrayUtil::insert($x, 'e', $ar_ins, 10);
-        $this->assertEquals(var_export($x, true), var_export($y, true));
+        $this->assertEqualArray($x, $y);
     }
 
 
@@ -234,7 +226,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
 
         $ar = $x;
         ArrayUtil::sortByLevel2($ar, 'col', 'ASC');
-        $this->assertEquals(var_export($ar, true), var_export($y, true));
+        $this->assertEqualArray($ar, $y);
 
         unset($x['c']['col']);
         $y = array(
@@ -244,7 +236,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
         );
         $ar = $x;
         ArrayUtil::sortByLevel2($ar, 'col', false, 25);
-        $this->assertEquals(var_export($ar, true), var_export($y, true));
+        $this->assertEqualArray($ar, $y);
 
 
         return;
@@ -267,7 +259,6 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             'a' => array('volume' => 67, 'edition' => 2),
             'f' => array('volume' => 67, 'edition' => 7),
         );
-        $y = var_export($y, true);
 
 
         $t1 = microtime(true);
@@ -289,7 +280,7 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
             }
             array_multisort($volume, SORT_DESC, $ar);
         }
-        $this->assertEquals(var_export($ar, true), $y);
+        $this->assertEqualArray($ar, $y);
         $t3 = microtime(true);
         echo 'array_multisort() cost ' . ($t3 - $t2) . ' seconds.' . "\n";
     }

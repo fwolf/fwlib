@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
+use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\StringUtil;
 
 /**
@@ -12,7 +13,7 @@ use Fwlib\Util\StringUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-05-08
  */
-class StringUtilTest extends \PHPunit_Framework_TestCase
+class StringUtilTest extends PHPunitTestCase
 {
     public function testAddSlashesRecursive()
     {
@@ -29,7 +30,7 @@ class StringUtilTest extends \PHPunit_Framework_TestCase
         $x = array('it\'s ok');
         $y = StringUtil::addSlashesRecursive($x);
         $z = array('it\\\'s ok');
-        $this->assertEquals(var_export($y, true), var_export($z, true));
+        $this->assertEqualArray($y, $z);
 
         // Object, should return original
         $x = new StringUtilTest;

@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
+use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\DatetimeUtil;
 
 /**
@@ -12,7 +13,7 @@ use Fwlib\Util\DatetimeUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2012-12-06
  */
-class DatetimeUtilTest extends \PHPunit_Framework_TestCase
+class DatetimeUtilTest extends PHPunitTestCase
 {
     public function testCvtSecToStr()
     {
