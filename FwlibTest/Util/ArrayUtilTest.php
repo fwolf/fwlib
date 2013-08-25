@@ -39,6 +39,35 @@ class ArrayUtilTest extends \PHPunit_Framework_TestCase
     }
 
 
+    public function testFilterByWildcard()
+    {
+        // Empty check
+        $this->assertEquals(array(), ArrayUtil::filterByWildcard(null, null));
+
+        $x = array('foo' => 'bar');
+        $y = ArrayUtil::filterByWildcard($x, null);
+        $this->assertEquals(
+            var_export($x, true),
+            var_export($y, true)
+        );
+        $y = ArrayUtil::filterByWildcard($x, '|', '|');
+        $this->assertEquals(
+            var_export($x, true),
+            var_export($y, true)
+        );
+
+
+        $rule = 'a*, -*b, -??c, +?d*';
+        $arSrce = array(
+            'a' => 'ab',
+            'b' => 'abc',
+            'c' => 'adc',
+        );
+        $ar = ArrayUtil::filterByWildcard($arSrce, $rule);
+        $this->assertEquals($ar, array('c' => 'adc'));
+    }
+
+
     public function testIncreaseByKey()
     {
         $ar = array();
