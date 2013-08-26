@@ -218,4 +218,61 @@ class StringUtil
         }
         return $jsonStr;
     }
+
+
+    /**
+     * Json encode with JSON_UNESCAPED_UNICODE option on
+     *
+     * @codeCoverageIgnore
+     * @param   mixed   $val
+     * @param   int     $option         Other original json_encode option
+     * @return  string
+     */
+    public static function jsonEncodeUnicode($val, $option = 0)
+    {
+        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+            return json_encode($val, $option | JSON_UNESCAPED_UNICODE);
+        } else {
+            $val = json_encode($val, $option);
+            // Double quote '"'(0x22) can't replace back bcs json uses it
+            $val = preg_replace(
+                '/\\\u((?!(0022))[0-9a-f]{4})/ie',
+                "mb_convert_encoding(pack('H4', '\\1'), 'UTF-8', 'UCS-2BE')",
+                $val
+            );
+
+            // Restore JSON_HEX_* option if used
+            $search = array();
+            $replace = array();
+            if ($option & JSON_HEX_TAG) {
+                $search = array_merge($search, array('<', '>'));
+                $replace = array_merge($replace, array('\u003C', '\u003E'));
+            }
+            if ($option & JSON_HEX_APOS) {
+                $search = array_merge($search, array('\''));
+                $replace = array_merge($replace, array('\u0027'));
+            }
+            if ($option & JSON_HEX_QUOT) {
+                $search = array_merge($search, array('\"'));
+                $replace = array_merge($replace, array('\u0022'));
+            }
+            if ($option & JSON_HEX_AMP) {
+                $search = array_merge($search, array('&'));
+                $replace = array_merge($replace, array('\u0026'));
+            }
+            $val = str_replace($search, $replace, $val);
+
+            return $val;
+
+            /*
+             * Another way is use urlencode before json_encode,
+             * and use urldecode after it.
+             * But this way can't deal with array recursive,
+             * or array have chinese char in it.
+             *
+             * mb_convert_encoding('&#37257;&#29233;', 'UTF-8', 'HTML-ENTITIES');
+             * Need convert \uxxxx to &#xxxxx first.
+             */
+        }
+    }
 }

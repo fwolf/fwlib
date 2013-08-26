@@ -156,6 +156,7 @@ function JsonEncodeHex ($val) {
 /**
  * Json encode, simulate JSON_UNESCAPED_UNICODE option is on.
  *
+ * @deprecated      Use Fwlib\Util\StringUtil::jsonEncodeUnicode()
  * @param	mixed	$val
  * @param	int		$option			Other original json_encode option
  * @return	string

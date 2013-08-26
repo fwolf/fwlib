@@ -126,4 +126,41 @@ class StringUtilTest extends PHPunitTestCase
             StringUtil::jsonEncodeHex($x)
         );
     }
+
+
+    public function testJsonEncodeUnicode()
+    {
+        $x = array('<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9");
+
+        $this->assertEquals(
+            '["<foo>","\'bar\'","\"baz\"","&blong&","é"]',
+            StringUtil::jsonEncodeUnicode($x, 0)
+        );
+        $this->assertEquals(
+            '["\u003Cfoo\u003E","\'bar\'","\"baz\"","&blong&","é"]',
+            StringUtil::jsonEncodeUnicode($x, JSON_HEX_TAG)
+        );
+        $this->assertEquals(
+            '["<foo>","\u0027bar\u0027","\"baz\"","&blong&","é"]',
+            StringUtil::jsonEncodeUnicode($x, JSON_HEX_APOS)
+        );
+        $this->assertEquals(
+            '["<foo>","\'bar\'","\u0022baz\u0022","&blong&","é"]',
+            StringUtil::jsonEncodeUnicode($x, JSON_HEX_QUOT)
+        );
+        $this->assertEquals(
+            '["<foo>","\'bar\'","\"baz\"","\u0026blong\u0026","é"]',
+            StringUtil::jsonEncodeUnicode($x, JSON_HEX_AMP)
+        );
+        $this->assertEquals(
+            '["<foo>","\'bar\'","\"baz\"","&blong&","é"]',
+            StringUtil::jsonEncodeUnicode($x)
+        );
+
+        $x = array('foo' => 'é');
+        $this->assertEquals(
+            '{"foo":"é"}',
+            StringUtil::jsonEncodeUnicode($x)
+        );
+    }
 }
