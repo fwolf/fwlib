@@ -99,7 +99,7 @@ function IsGbChar($str = '', $pos = 0) {
 /*
  * Json encode with JSON_HEX_(TAG|AMP|APOS|QUOT) options
  *
- * @deprecated      Use Fwlib\Util\StringUtil::jsonEncodeHex()
+ * @deprecated      Use Fwlib\Util\Json::encodeHex()
  * @param	mixed	$val
  * @return	string
  */
@@ -156,7 +156,7 @@ function JsonEncodeHex ($val) {
 /**
  * Json encode, simulate JSON_UNESCAPED_UNICODE option is on.
  *
- * @deprecated      Use Fwlib\Util\StringUtil::jsonEncodeUnicode()
+ * @deprecated      Use Fwlib\Util\Json::encodeUnicode()
  * @param	mixed	$val
  * @param	int		$option			Other original json_encode option
  * @return	string
