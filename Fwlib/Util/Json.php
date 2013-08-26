@@ -54,6 +54,8 @@ class Json
      *
      * Option JSON_UNESCAPED_UNICODE is NOT included.
      *
+     * For PHP 5.3.0+, this method is useless, should use build-in function.
+     *
      * @codeCoverageIgnore
      *
      * @param   mixed   $val
@@ -106,26 +108,7 @@ class Json
                 $jsonStr = substr($jsonStr, 1);
                 $jsonStr = substr($jsonStr, 0, strlen($jsonStr) - 1);
 
-                $search = array();
-                $replace = array();
-                if ($option & JSON_HEX_TAG) {
-                    $search = array_merge($search, array('<', '>'));
-                    $replace = array_merge($replace, array('\u003C', '\u003E'));
-                }
-                if ($option & JSON_HEX_APOS) {
-                    $search = array_merge($search, array('\''));
-                    $replace = array_merge($replace, array('\u0027'));
-                }
-                if ($option & JSON_HEX_QUOT) {
-                    $search = array_merge($search, array('\"'));
-                    $replace = array_merge($replace, array('\u0022'));
-                }
-                if ($option & JSON_HEX_AMP) {
-                    $search = array_merge($search, array('&'));
-                    $replace = array_merge($replace, array('\u0026'));
-                }
-
-                $jsonStr = str_replace($search, $replace, $jsonStr);
+                $jsonStr = self::replaceByHexOption($jsonStr, $option);
                 $jsonStr = '"' . $jsonStr . '"';
             } else {
                 // Int, floats, bools, null
@@ -159,25 +142,7 @@ class Json
             );
 
             // Restore JSON_HEX_* option if used
-            $search = array();
-            $replace = array();
-            if ($option & JSON_HEX_TAG) {
-                $search = array_merge($search, array('<', '>'));
-                $replace = array_merge($replace, array('\u003C', '\u003E'));
-            }
-            if ($option & JSON_HEX_APOS) {
-                $search = array_merge($search, array('\''));
-                $replace = array_merge($replace, array('\u0027'));
-            }
-            if ($option & JSON_HEX_QUOT) {
-                $search = array_merge($search, array('\"'));
-                $replace = array_merge($replace, array('\u0022'));
-            }
-            if ($option & JSON_HEX_AMP) {
-                $search = array_merge($search, array('&'));
-                $replace = array_merge($replace, array('\u0026'));
-            }
-            $val = str_replace($search, $replace, $val);
+            $val = self::replaceByHexOption($val, $option);
 
             return $val;
 
@@ -191,5 +156,39 @@ class Json
              * Need convert \uxxxx to &#xxxxx first.
              */
         }
+    }
+
+
+    /**
+     * Do replace same as JSON_HEX_* option
+     *
+     * @param   string  $val
+     * @pram    int     $option
+     * @return  string
+     */
+    protected static function replaceByHexOption($val, $option = 0)
+    {
+        $search = array();
+        $replace = array();
+        if ($option & JSON_HEX_TAG) {
+            $search = array_merge($search, array('<', '>'));
+            $replace = array_merge($replace, array('\u003C', '\u003E'));
+        }
+        if ($option & JSON_HEX_APOS) {
+            $search = array_merge($search, array('\''));
+            $replace = array_merge($replace, array('\u0027'));
+        }
+        if ($option & JSON_HEX_QUOT) {
+            $search = array_merge($search, array('\"'));
+            $replace = array_merge($replace, array('\u0022'));
+        }
+        if ($option & JSON_HEX_AMP) {
+            $search = array_merge($search, array('&'));
+            $replace = array_merge($replace, array('\u0026'));
+        }
+
+        $val = str_replace($search, $replace, $val);
+
+        return $val;
     }
 }
