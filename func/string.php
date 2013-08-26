@@ -43,6 +43,8 @@ function AddslashesRecursive ($srce) {
 
 /**
  * 把一个字符串转换为可以用HTML输出的格式
+ *
+ * @deprecated      Use Fwlib\Util\StringUtil::encodeHtml()
  * @param	string	$str
  * @return	string
 */

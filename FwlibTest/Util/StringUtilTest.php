@@ -40,6 +40,14 @@ class StringUtilTest extends PHPunitTestCase
     }
 
 
+    public function testEncodeHtml()
+    {
+        $x = '     ';
+        $y = '&nbsp; &nbsp; &nbsp;';
+        $this->assertEquals($y, StringUtil::encodeHtml($x));
+    }
+
+
     public function testEvalWithTag()
     {
         $this->assertEquals(null, StringUtil::evalWithTag(''));

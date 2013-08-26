@@ -41,6 +41,32 @@ class StringUtil
 
 
     /**
+     * Encode string for html output
+     *
+     * @param   string  $str
+     * @return  string
+    */
+    public static function encodeHtml($str)
+    {
+        $ar = array(
+            '&'     => '&amp;',
+            '<'     => '&lt;',
+            '>'     => '&gt;',
+            chr(9)  => '　　',
+            chr(34) => '&quot;',
+            '  '    => '&nbsp; ',
+            ' '     => '&nbsp;',
+            '&nbsp;&nbsp;'  => '&nbsp; ',
+            chr(13) => '<br />',
+        );
+        $search = array_keys($ar);
+        $replace = array_values($ar);
+
+        return str_replace($search, $replace, $str);
+    }
+
+
+    /**
      * Eval string by replace tag with array value by index
      *
      * @param   string  $str
