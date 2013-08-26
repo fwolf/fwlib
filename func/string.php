@@ -99,6 +99,7 @@ function IsGbChar($str = '', $pos = 0) {
 /*
  * Json encode with JSON_HEX_(TAG|AMP|APOS|QUOT) options
  *
+ * @deprecated      Use Fwlib\Util\StringUtil::jsonEncodeHex()
  * @param	mixed	$val
  * @return	string
  */
