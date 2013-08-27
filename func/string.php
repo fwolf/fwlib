@@ -340,6 +340,8 @@ function RandomString ($len, $mode = 'a0') {
  *
  * @link	http://www.faqs.org/rfcs/rfc2047
  * @link	http://www.php.net/imap_utf8
+ *
+ * @deprecated      Use Fwlib\Util\Rfc2047::decode()
  * @param	string	$str
  * @param	string	$encoding	Encoding of output string.
  * @return	string
@@ -395,6 +397,8 @@ function Rfc2047Decode($str, $encoding = 'utf-8')
  * No break in string(B encoding mode instead of Q, see
  * phpmailer::EncodeHeader, line 1156), because that possible
  * break chinese chars.
+ *
+ * @deprecated      Use Fwlib\Util\Rfc2047::encode()
  * @link	http://www.faqs.org/rfcs/rfc2047
  * @param	string	$str
  * @param	string	$encoding	Encoding of $str
