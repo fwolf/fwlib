@@ -214,6 +214,7 @@ function MatchWildcard ($str, $rule) {
 /**
  * Generate org code according to GB 11714-1997.
  *
+ * @deprecated      Use Fwlib\Mis\OrgCode::gen()
  * @link	http://zh.wikisource.org/zh/GB_11714-1997_全国组织机构代码编制规则
  * @param	string	$code_base	8-digit base code
  * @return	string
