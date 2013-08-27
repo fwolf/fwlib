@@ -268,6 +268,7 @@ function OrgCodeGen ($code_base = '') {
 /**
  * Convert 15-digi pin to 18-digi
  *
+ * @deprecated      Use Fwlib\Mis\CinCode::to18()
  * @param	string	$pin
  * @return	string
  */

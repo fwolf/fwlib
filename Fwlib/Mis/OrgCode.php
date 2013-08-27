@@ -6,7 +6,6 @@ use Fwlib\Util\StringUtil;
 /**
  * Cert org code
  *
- *
  * @package     Fwlib\Mis
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -19,7 +18,7 @@ class OrgCode
     /**
      * Generate org code
      *
-     * @param   string  $codeBase  8-digit base code
+     * @param   string  $codeBase  8-bit base code
      * @return  string
      */
     public static function gen($codeBase = '')
