@@ -132,4 +132,42 @@ class StringUtil
             return false;
         }
     }
+
+
+    /**
+     * Generate random string
+     *
+     * In $mode:
+     *  a means include a-z
+     *  A means include A-Z
+     *  0 means include 0-9
+     *
+     * @param   int     $len
+     * @param   string  $mode
+     * @return  string
+     */
+    public static function random($len, $mode = 'a0')
+    {
+        $str = '';
+        if (preg_match('/[a]/', $mode)) {
+            $str .= 'abcdefghijklmnopqrstuvwxyz';
+        }
+        if (preg_match('/[A]/', $mode)) {
+            $str .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        }
+        if (preg_match('/[0]/', $mode)) {
+            $str .= '0123456789';
+        }
+
+        $result = '';
+        $strLen = strlen($str);
+
+        // Algorithm
+        // 1. rand by str length, faster than 2
+        // 2. rand then mode by str length
+        for($i = 0; $i < $len; $i ++) {
+            $result .= $str[mt_rand(0, $strLen - 1)];
+        }
+        return $result;
+    }
 }

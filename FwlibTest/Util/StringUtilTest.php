@@ -83,4 +83,20 @@ class StringUtilTest extends PHPunitTestCase
             StringUtil::matchWildcard('abcd', '?c*')
         );
     }
+
+
+    public function testRandom()
+    {
+        $x = StringUtil::random(10);
+        $this->assertEquals(10, strlen($x));
+
+        $x = StringUtil::random(10, '0');
+        $this->assertEquals('', preg_replace('/[0-9]/', '', $x));
+
+        $x = StringUtil::random(10, 'a');
+        $this->assertEquals('', preg_replace('/[a-z]/', '', $x));
+
+        $x = StringUtil::random(10, 'A');
+        $this->assertEquals('', preg_replace('/[A-Z]/', '', $x));
+    }
 }

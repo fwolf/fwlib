@@ -304,6 +304,8 @@ function Pin15To18($pin) {
 /**
  * 生成随机字符串
  * a表示包含小写字符，A表示包含大写字符，0表示包含数字
+ *
+ * @deprecated      Use Fwlib\Util\StringUtil::random()
  * @param	int		$len	字符串长度
  * @param	string	$mode	模式
  * @return	string
