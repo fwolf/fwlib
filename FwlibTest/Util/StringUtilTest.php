@@ -35,29 +35,29 @@ class StringUtilTest extends PHPunitTestCase
         $z = array('it\\\'s ok');
         $this->assertEqualArray($y, $z);
 
-		$x = array(
-			"It's 1.",
-			"It's 2."	=> "It's 3.",
-			2012,
-			"It's 4."	=> array(
-				"It's 5."	=> array(
-					"It's 6."	=> "It's 7.",
-				),
-			'end',
-			),
-		);
-		$y = array(
-			"It\\'s 1.",
-			"It\\'s 2."	=> "It\\'s 3.",
-			2012,
-			"It\\'s 4."	=> array(
-				"It\\'s 5."	=> array(
-					"It\\'s 6."	=> "It\\'s 7.",
-				),
-			"end",
-			),
-		);
-		$this->assertEquals($y, StringUtil::addslashesRecursive($x));
+        $x = array(
+            "It's 1.",
+            "It's 2."   => "It's 3.",
+            2012,
+            "It's 4."   => array(
+                "It's 5."   => array(
+                    "It's 6."   => "It's 7.",
+                ),
+            'end',
+            ),
+        );
+        $y = array(
+            "It\\'s 1.",
+            "It\\'s 2." => "It\\'s 3.",
+            2012,
+            "It\\'s 4." => array(
+                "It\\'s 5." => array(
+                    "It\\'s 6." => "It\\'s 7.",
+                ),
+            "end",
+            ),
+        );
+        $this->assertEquals($y, StringUtil::addslashesRecursive($x));
 
         // Object, should return original
         $x = new StringUtilTest;
@@ -107,10 +107,10 @@ class StringUtilTest extends PHPunitTestCase
             StringUtil::matchWildcard('abcd', '?c*')
         );
 
-		$s = 'abcdefg';
-		$this->assertEquals(true, StringUtil::matchWildcard($s, 'a*e?g'));
-		$this->assertEquals(true, StringUtil::matchWildcard($s, '?b*e*'));
-		$this->assertEquals(false, StringUtil::matchWildcard($s, '?b*e?'));
+        $s = 'abcdefg';
+        $this->assertEquals(true, StringUtil::matchWildcard($s, 'a*e?g'));
+        $this->assertEquals(true, StringUtil::matchWildcard($s, '?b*e*'));
+        $this->assertEquals(false, StringUtil::matchWildcard($s, '?b*e?'));
     }
 
 
@@ -127,5 +127,37 @@ class StringUtilTest extends PHPunitTestCase
 
         $x = StringUtil::random(10, 'A');
         $this->assertEquals('', preg_replace('/[A-Z]/', '', $x));
+    }
+
+
+    public function testToArray()
+    {
+        $x = ' blah ';
+        $y = array('blah');
+        $y2 = array(' blah ');
+        $this->assertEquals($y, StringUtil::toArray($x));
+        $this->assertEquals($y2, StringUtil::toArray($x, '|', false));
+
+        $x = 42;
+        $y = array('42');
+        $this->assertEquals($y, StringUtil::toArray($x));
+
+        $x = ', a, b, c  , d  , ';
+        $this->assertEquals(
+            array('a', 'b', 'c', 'd'),
+            StringUtil::toArray($x, ',')
+        );
+        $this->assertEquals(
+            array(',', 'a,', 'b,', 'c', ',', 'd', ','),
+            StringUtil::toArray($x, ' ')
+        );
+        $this->assertEquals(
+            array('', 'a', 'b', 'c',  'd', ''),
+            StringUtil::toArray($x, ',', true, false)
+        );
+        $this->assertEquals(
+            array(' a', ' b', ' c  ',  ' d  ', ' '),
+            StringUtil::toArray($x, ',', false, true)
+        );
     }
 }

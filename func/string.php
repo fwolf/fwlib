@@ -435,6 +435,9 @@ function StrlenGb($str = '')
 
 /**
  * 把一个用字符串2间隔的字符串，用字符串1进行连接
+ *
+ * :THINK: Useless ? Just replace connector with new char.
+ *
  * @param	string	$str	源字符串
  * @param	string	$s1		用于连接的字符串
  * @param	string	$s2		源字符串本身是用什么连接的，如果为空，则使用$s1的值
@@ -474,6 +477,7 @@ function StrReForm( $str, $s1, $s2 = '', $embody = false, $istrim = true )
 /**
  * Convert string to array by splitter
  *
+ * @deprecated      Use Fwlib\Util\StringUtil::toArray()
  * @param	string	$s_srce
  * @param	string	$s_splitter
  * @param	boolean	$b_trim

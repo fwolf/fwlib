@@ -165,9 +165,51 @@ class StringUtil
         // Algorithm
         // 1. rand by str length, faster than 2
         // 2. rand then mode by str length
-        for($i = 0; $i < $len; $i ++) {
+        for ($i = 0; $i < $len; $i ++) {
             $result .= $str[mt_rand(0, $strLen - 1)];
         }
         return $result;
+    }
+
+
+    /**
+     * Convert string to array by splitter
+     *
+     * @param   string  $srce
+     * @param   string  $splitter
+     * @param   boolean $trim
+     * @param   boolean $removeEmpty
+     * @return  array
+     */
+    public static function toArray(
+        $srce,
+        $splitter = ',',
+        $trim = true,
+        $removeEmpty = true
+    ) {
+        if (!is_string($srce)) {
+            $srce = strval($srce);
+        }
+
+        $rs = explode($splitter, $srce);
+
+        if ($trim) {
+            foreach ($rs as &$v) {
+                $v = trim($v);
+            }
+            unset($v);
+        }
+
+        if ($removeEmpty) {
+            foreach ($rs as $k => $v) {
+                if (empty($v)) {
+                    unset($rs[$k]);
+                }
+            }
+            // Re generate array index
+            $rs = array_merge($rs, array());
+        }
+
+        return $rs;
     }
 }
