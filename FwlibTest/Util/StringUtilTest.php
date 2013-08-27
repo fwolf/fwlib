@@ -35,6 +35,30 @@ class StringUtilTest extends PHPunitTestCase
         $z = array('it\\\'s ok');
         $this->assertEqualArray($y, $z);
 
+		$x = array(
+			"It's 1.",
+			"It's 2."	=> "It's 3.",
+			2012,
+			"It's 4."	=> array(
+				"It's 5."	=> array(
+					"It's 6."	=> "It's 7.",
+				),
+			'end',
+			),
+		);
+		$y = array(
+			"It\\'s 1.",
+			"It\\'s 2."	=> "It\\'s 3.",
+			2012,
+			"It\\'s 4."	=> array(
+				"It\\'s 5."	=> array(
+					"It\\'s 6."	=> "It\\'s 7.",
+				),
+			"end",
+			),
+		);
+		$this->assertEquals($y, StringUtil::addslashesRecursive($x));
+
         // Object, should return original
         $x = new StringUtilTest;
         $z = $x;
@@ -82,6 +106,11 @@ class StringUtilTest extends PHPunitTestCase
             false,
             StringUtil::matchWildcard('abcd', '?c*')
         );
+
+		$s = 'abcdefg';
+		$this->assertEquals(true, StringUtil::matchWildcard($s, 'a*e?g'));
+		$this->assertEquals(true, StringUtil::matchWildcard($s, '?b*e*'));
+		$this->assertEquals(false, StringUtil::matchWildcard($s, '?b*e?'));
     }
 
 
