@@ -517,6 +517,7 @@ function StrToArray ($s_srce, $s_splitter = ',', $b_trim = true
 /**
  * Convert ucfirst format to underline_connect format
  *
+ * @deprecated      Use Fwlib\Util\StringUtil::toSnakeCase()
  * If convert fail, return original string.
  * @param	string	$str
  * @return	string
@@ -543,6 +544,8 @@ function StrUcfirst2Underline($str)
  * Convert underline_connect format to ucfirst format
  *
  * If convert fail, return ucfirst($str)
+ *
+ * @deprecated      Use Fwlib\Util\StringUtil::toStudlyCaps()
  * @param	string	$str
  * @param	boolean	$minus	Treat minus sign as splitter also.
  * @return	string

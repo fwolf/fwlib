@@ -212,4 +212,63 @@ class StringUtil
 
         return $rs;
     }
+
+
+    /**
+     * Convert to camelCase
+     *
+     * @param   string  $srce
+     * @return  string
+     */
+    public static function toCamelCase($srce)
+    {
+        return lcfirst(self::toStudlyCaps($srce));
+    }
+
+
+    /**
+     * Convert to snake case
+     *
+     * @param   string  $srce
+     * @param   string  $separator
+     * @param   boolean $ucwords
+     * @return  string
+     */
+    public static function toSnakeCase(
+        $srce,
+        $separator = '_',
+        $ucwords = false
+    ) {
+        // Split to words
+        $s = preg_replace('/([A-Z])/', ' \1', $srce);
+
+        // Remove leading space
+        $s = trim($s);
+
+        // Merge non-words char and replace by space
+        $s = preg_replace('/[ _\-\.]+/', ' ', $s);
+
+        if ($ucwords) {
+            $s = ucwords($s);
+        } else {
+            $s = strtolower($s);
+        }
+
+        // Replace space with separator
+        $s = str_replace(' ', $separator, $s);
+
+        return $s;
+    }
+
+
+    /**
+     * Convert to StudlyCaps
+     *
+     * @param   string  $srce
+     * @return  string
+     */
+    public static function toStudlyCaps($srce)
+    {
+        return self::toSnakeCase($srce, '', true);
+    }
 }

@@ -160,4 +160,58 @@ class StringUtilTest extends PHPunitTestCase
             StringUtil::toArray($x, ',', false, true)
         );
     }
+
+
+    public function testToCamelCase()
+    {
+        $x = 'camelCase';
+        $y = 'camelCase';
+        $this->assertEquals($y, StringUtil::toCamelCase($x));
+
+        $x = 'CamelCase';
+        $this->assertEquals($y, StringUtil::toCamelCase($x));
+
+        $x = 'camel_case';
+        $this->assertEquals($y, StringUtil::toCamelCase($x));
+
+        $x = 'camel .case';
+        $this->assertEquals($y, StringUtil::toCamelCase($x));
+    }
+
+
+    public function testToSnakeCase()
+    {
+        $x = 'snakeCase';
+        $y = 'snake_case';
+        $this->assertEquals($y, StringUtil::toSnakeCase($x));
+
+        $x = 'SnakeCase';
+        $this->assertEquals($y, StringUtil::toSnakeCase($x));
+
+        $x = 'snake_case';
+        $this->assertEquals($y, StringUtil::toSnakeCase($x));
+
+        $x = 'snake .case';
+        $this->assertEquals($y, StringUtil::toSnakeCase($x));
+
+        $y = 'Snake-Case';
+        $this->assertEquals($y, StringUtil::toSnakeCase($x, '-', true));
+    }
+
+
+    public function testToStudlyCaps()
+    {
+        $x = 'studlyCaps';
+        $y = 'StudlyCaps';
+        $this->assertEquals($y, StringUtil::toStudlyCaps($x));
+
+        $x = 'StudlyCaps';
+        $this->assertEquals($y, StringUtil::toStudlyCaps($x));
+
+        $x = 'studly_caps';
+        $this->assertEquals($y, StringUtil::toStudlyCaps($x));
+
+        $x = 'studly .caps';
+        $this->assertEquals($y, StringUtil::toStudlyCaps($x));
+    }
 }
