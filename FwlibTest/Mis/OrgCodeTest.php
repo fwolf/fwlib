@@ -35,4 +35,15 @@ class OrgCodeTest extends PHPunitTestCase
         $x = OrgCode::gen('87654321');
         $this->assertEquals('87654321-0', $x);
     }
+
+
+    public function testValidate()
+    {
+        $this->assertEquals(false, OrgCode::validate('foo'));
+        $this->assertEquals(false, OrgCode::validate('foobarblah'));
+        $this->assertEquals(false, OrgCode::validate('D2143569-1'));
+
+        $this->assertEquals(true, OrgCode::validate('D2143569-X'));
+        $this->assertEquals(false, OrgCode::validate('d2143569-x'));
+    }
 }

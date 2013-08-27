@@ -73,4 +73,28 @@ class OrgCode
             return $codeBase . '-' . strval($j);
         }
     }
+
+
+    /**
+     * Validate org code
+     *
+     * @param   string  $code
+     * @return  boolean
+     */
+    public static function validate($code)
+    {
+        if (10 != strlen($code)) {
+            return false;
+        }
+
+        if ('-' != $code[8]) {
+            return false;
+        }
+
+        if ($code != self::gen(substr($code, 0, 8))) {
+            return false;
+        }
+
+        return true;
+    }
 }
