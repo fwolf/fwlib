@@ -610,13 +610,15 @@ function SubstrGb($str = '', $start = 0, $len = 0)
  * Using mb_strimwidth()
  *
  * Attention: No consider of html complement.
- * @link http://www.fwolf.com/blog/post/133
+ *
+ * @deprecated      Use Fwlib\Util\StringUtil::substrIgnHtml()
  * @param	string	$str	Source string
  * @param	int		$len	Length
  * @param	string	$marker	If str length exceed, cut & fill with this
  * @param	int		$start	Start position
  * @param	string	$encoding	Default is utf-8
  * @return	string
+ * @link http://www.fwolf.com/blog/post/133
  */
 function SubstrIgnHtml($str, $len, $marker = '...', $start = 0, $encoding = 'utf-8') {
 	$i = preg_match_all('/<[^>]*>/i', $str, $ar);

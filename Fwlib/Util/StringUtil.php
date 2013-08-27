@@ -173,6 +173,105 @@ class StringUtil
 
 
     /**
+     * Get substr by display width, and ignore html tag's length
+     *
+     * Using mb_strimwidth()
+     *
+     * Attention: No consider of html complement.
+     *
+     * @param   string  $str    Source string
+     * @param   int     $len    Length
+     * @param   string  $marker If str length exceed, cut & fill with this
+     * @param   int     $start  Start position
+     * @param   string  $encoding   Default is utf-8
+     * @return  string
+     * @link http://www.fwolf.com/blog/post/133
+     */
+    public static function substrIgnHtml(
+        $str,
+        $len,
+        $marker = '...',
+        $start = 0,
+        $encoding = 'utf-8'
+    ) {
+        $i = preg_match_all('/<[^>]*>/i', $str, $ar);
+        if (0 == $i) {
+            // No html in $str
+            $str = htmlspecialchars_decode($str);
+            $str = mb_strimwidth($str, $start, $len, $marker, $encoding);
+            $str = htmlspecialchars($str);
+            return $str;
+        } else {
+            // Have html tags, need split str into parts by html
+            $ar = $ar[0];
+            $arParts = array();
+            for ($i = 0; $i < count($ar); $i ++) {
+                // Find sub str
+                $j = strpos($str, $ar[$i]);
+                // Add to new ar: before, tag
+                if (0 != $j) {
+                    $arParts[] = substr($str, 0, $j);
+                }
+                $arParts[] = $ar[$i];
+                // Trim origin str, so we start from 0 again next loop
+                $str = substr($str, $j + strlen($ar[$i]));
+            }
+            // Tail of $str, which after html tags
+            $arParts[] = $str;
+
+            // Loop to cut needed length
+            $result = '';
+            $length = $len - mb_strwidth($marker, $encoding);
+            $tagDepth = 0;     // In html tag ?
+            $i = 0;
+            while ($i < count($arParts)) {
+                $s = $arParts[$i];
+                $i ++;
+
+                // Is it self-end html tag ?
+                if (0 < preg_match('/\/\s*>/', $s)) {
+                    $result .= $s;
+                } elseif (0 < preg_match('/<\s*\//', $s)) {
+                    // End of html tag ?
+                    // When len exceed, only end tag allowed
+                    if (0 < $tagDepth) {
+                        $result .= $s;
+                        $tagDepth --;
+                    }
+                } elseif (0 < strpos($s, '>')) {
+                    // Begin of html tag ?
+                    // When len exceed, no start tag allowed
+                    if (0 < $length) {
+                        $result .= $s;
+                        $tagDepth ++;
+                    }
+                } else {
+                    // Real string
+                    $s = htmlspecialchars_decode($s);
+                    if (0 == $length) {
+                        // Already got length
+                        continue;
+                    } elseif (mb_strwidth($s, $encoding) < $length) {
+                        // Can add to rs completely
+                        $length -= mb_strwidth($s, $encoding);
+                        $result .= htmlspecialchars($s);
+                    } else {
+                        // Need cut then add to rs
+                        $result .= htmlspecialchars(
+                            mb_strimwidth($s, 0, $length, '', $encoding)
+                        ) . $marker;
+                        $length = 0;
+                    }
+                }
+            }
+
+            return $result;
+        }
+        return '';
+    }
+
+
+    /**
      * Convert string to array by splitter
      *
      * @param   string  $srce

@@ -130,6 +130,25 @@ class StringUtilTest extends PHPunitTestCase
     }
 
 
+
+    public function testSubstrIgnHtml()
+    {
+        $x = '测试12&lt;4测试';
+        $x = StringUtil::substrIgnHtml($x, 11, '...');
+        $y = '测试12&lt;4...';
+        $this->assertEquals($y, $x);
+
+        $x = '测<b><i><br / >试</i></b>&quot;<b>234测试</b>';
+        $x = StringUtil::substrIgnHtml($x, 9, '...');
+        $y = '测<b><i><br / >试</i></b>&quot;<b>2...</b>';
+        $this->assertEquals($y, $x);
+
+        $x = '`reStructuredText 中文示例 <?f=20101113-restructuredtext-example.rst>`_';
+        $y = StringUtil::substrIgnHtml($x, 71, '');
+        $this->assertEquals($y, $x);
+    }
+
+
     public function testToArray()
     {
         $x = ' blah ';
