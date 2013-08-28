@@ -60,6 +60,7 @@ tripledes
 /**
  * Do decrypt
  *
+ * @deprecated      Use Fwlib\Util\McryptSmplIv::decrypt()
  * @param	string	$s_data					Source data.
  * @param	string	$s_key					Secret key.
  * @param	string	$algorithm				Same as mcrypt_module_open().
@@ -76,6 +77,7 @@ function McryptSmplIvDecrypt($s_data, $s_key, $algorithm, $algorithm_directory =
 /**
  * Do encrypt
  *
+ * @deprecated      Use Fwlib\Util\McryptSmplIv::encrypt()
  * @param	string	$s_data					Source data.
  * @param	string	$s_key					Secret key.
  * @param	string	$algorithm				Same as mcrypt_module_open().
@@ -92,6 +94,7 @@ function McryptSmplIvEncrypt($s_data, $s_key, $algorithm, $algorithm_directory =
 /**
  * Real process func McryptSmplIv
  *
+ * @deprecated      Use Fwlib\Util\McryptSmplIv::process()
  * @param	int		$i_action				0=encrypt, else=decrypt.
  * @param	string	$s_data					Source data.
  * @param	string	$s_key					Secret key.

@@ -20,8 +20,8 @@ if (! defined('SIMPLE_TEST')) {
 // }}}
 
 // Require library define file which need test
-require_once('fwolflib/func/crypt.php');
-require_once('fwolflib/func/request.php');
+require_once('fwlib/func/crypt.php');
+require_once('fwlib/func/request.php');
 
 class TestFuncCrypt extends UnitTestCase {
 
