@@ -2,7 +2,7 @@
 namespace FwlibTest\Base;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Base\AutoNewObj;
+use FwlibTest\Base\AutoNewObjDummy;
 
 /**
  * Test for Fwlib\Base\AutoNewObj
@@ -35,7 +35,7 @@ class AutoNewObjTest extends PHPunitTestCase
     /**
      * Non-exist property got null and trigger error
      *
-     * @ expectedException PHPUnit_Framework_Error_Notice
+     * @expectedException PHPUnit_Framework_Error_Notice
      */
     public function testGetNonExistProperty()
     {
@@ -54,39 +54,8 @@ class AutoNewObjTest extends PHPunitTestCase
         // Should not use if you want to know what error message it is.
         //\PHPUnit_Framework_Error_Notice::$enabled = false;
 
-        @$this->assertEquals(null, $this->dummy->bar);
-    }
-}
+        // Final solution: use @codeCoverageIgnore
 
-
-/**
- * Dummy class for test
- */
-class AutoNewObjDummy extends AutoNewObj
-{
-    public $foo;
-
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        // Should call constructor of parent if exists
-        //parent::__construct();
-
-        // Unset for auto new
-        unset($this->foo);
-    }
-
-
-    /**
-     * New foo object
-     *
-     * @return object
-     */
-    protected function newObjFoo()
-    {
-        return new AutoNewObj;
+        $this->assertEquals(null, $this->dummy->bar);
     }
 }

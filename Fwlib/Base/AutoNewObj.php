@@ -30,6 +30,8 @@ class AutoNewObj
             $this->$name = $this->$method();
             return $this->$name;
         } else {
+            // @codeCoverageIgnoreStart
+
             $trace = debug_backtrace();
             trigger_error(
                 'Undefined property via __get(): ' . $name .
@@ -40,6 +42,8 @@ class AutoNewObj
 
             // trigger_error will terminate program run, below will not exec
             return null;
+
+            // @codeCoverageIgnoreEnd
         }
     }
 }
