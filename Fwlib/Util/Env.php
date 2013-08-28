@@ -5,6 +5,8 @@ namespace Fwlib\Util;
 /**
  * Runtime or server environment
  *
+ * @codeCoverageIgnore
+ *
  * @package     Fwlib\Util
  * @copyright   Copyright 2006-2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -15,6 +17,8 @@ class Env
 {
     /*
      * Smart 'echo line', end with \n or <br /> according to run mod
+     *
+     * @codeCoverageIgnore
      *
      * @param   array   $str    Content to echo
      * @param   boolean $noecho Do not print
@@ -33,8 +37,6 @@ class Env
             foreach ($str as $v) {
                 $rs .= self::ecl($v, $noecho);
             }
-            // Add new line
-            $rs .= $lineEnding;
             return $rs;
         }
 
