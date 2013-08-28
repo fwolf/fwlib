@@ -14,6 +14,8 @@ require_once(FWOLFLIB . 'func/env.php');
 
 /*
  * Smarty echo line, end with \n or <br /> according running mod
+ *
+ * @deprecated      Use Fwlib\Util\Env::ecl()
  * @param	string	$str	Content to echo.
  * @param	int		$mode	Running mod, 0 for auto detect, 1 for web browser
  							2 for cli mode.

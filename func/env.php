@@ -15,6 +15,8 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 /**
  * Force page visit through https only
+ *
+ * @deprecated      Use Fwlib\Util\Env::forceHttps()
  */
 function ForceHttps() {
 	if (!isset($_SERVER['HTTPS']) || 'on' != $_SERVER['HTTPS']) {
@@ -28,6 +30,8 @@ function ForceHttps() {
  * Check if this program is running under cli mod, or is viewing in browser.
  *
  * Tested in nix os only
+ *
+ * @deprecated      Use Fwlib\Util\Env::isCli()
  * @return	boolean
  */
 function IsCli() {
@@ -45,6 +49,8 @@ function IsCli() {
 
 /**
  * 判断当前主机是否nix操作系统
+ *
+ * @deprecated      Use Fwlib\Util\Env::isNixOs()
  * @return boolean
  */
 function NixOs()
