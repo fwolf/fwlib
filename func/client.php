@@ -16,6 +16,7 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 /**
  * Convert user ip from hex string
  *
+ * @deprecated      Use Fwlib\Util\Ip::fromHex()
  * @param	string	$hex
  * @return	string
  * @link	http://us.php.net/uniqid
@@ -35,6 +36,7 @@ function ClientIpFromHex($hex) {
 /**
  * Convert user ip to hex string
  *
+ * @deprecated      Use Fwlib\Util\Ip::toHex()
  * @param	string	$ip
  * @return	string
  * @link	http://us.php.net/uniqid
@@ -61,6 +63,8 @@ function ClientIpToHex($ip = "") {
 
 /**
  * 检查客户端的浏览器是NS还是IE
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getBrowserType()
  * @return	string
  */
 function GetBrowserType()
@@ -78,6 +82,7 @@ function GetBrowserType()
 /**
  * Get ip of client
  *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getClientIp()
  * @return	string
  * @link http://roshanbh.com.np/2007/12/getting-real-ip-address-in-php.html
  */
