@@ -16,6 +16,7 @@ require_once(FWOLFLIB . 'func/filesystem.php');
 /**
  * Download content as a file
  *
+ * @deprecated      Use Fwlib\Util\HttpUtil::download()
  * @param	string	$content	Content to download
  * @param	string	$filename	Download file name, send to client, not path on server.
  * @param	string	$mime		Mime type of file
@@ -65,6 +66,7 @@ function Download ($content, $filename = '', $mime = 'application/force-download
 /**
  * Download a file
  *
+ * @deprecated      Use Fwlib\Util\HttpUtil::downloadFile()
  * @param	string	$filepath	Full path to download file.
  * @param	string	$filename	Download file name, send to client, not path on server.
  * @param	string	$mime		Mime type of file

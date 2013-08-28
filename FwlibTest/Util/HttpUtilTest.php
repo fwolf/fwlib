@@ -15,6 +15,14 @@ use Fwlib\Util\HttpUtil;
  */
 class HttpUtilTest extends PHPunitTestCase
 {
+    public function testDownload()
+    {
+        $x = 'Test Fwlib\Util\HttpUtil::download()';
+        $this->expectOutputString($x);
+        HttpUtil::download($x);
+    }
+
+
     public function testGetBrowserType()
     {
         $this->assertEquals('gecko', HttpUtil::getBrowserType(''));

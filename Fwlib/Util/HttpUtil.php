@@ -17,6 +17,103 @@ use Fwlib\Util\ArrayUtil;
 class HttpUtil
 {
     /**
+     * Download content as a file
+     *
+     * @param   string  $content    Content to download
+     * @param   string  $filename   Download file name, send to client, not path on server.
+     * @param   string  $mime       Mime type of file
+     * @return  boolean
+     */
+    public static function download(
+        $content,
+        $filename = '',
+        $mime = 'application/force-download'
+    ) {
+        // Use timestamp as filename if not provide
+        if (empty($filename)) {
+            list($usec, $sec) = explode(' ', microtime());
+            $usec = substr(strval($usec), 2, 3);
+            $filename = $sec . $usec;
+        }
+
+        $filepath = sys_get_temp_dir();
+        if ('/' != substr($filepath, -1)) {
+            $filepath .= '/';
+        }
+
+        // Then got full path of tmp file
+        $tmpfilename = $filepath . $filename;
+
+        file_put_contents($tmpfilename, $content);
+        $result = self::downloadFile($tmpfilename, $filename, $mime);
+
+        unlink($tmpfilename);
+        return $result;
+    }
+
+
+    /**
+     * Download a file
+     *
+     * @param   string  $filepath   Full path to download file.
+     * @param   string  $filename   Download file name, send to client, not path on server.
+     * @param   string  $mime       Mime type of file
+     * @return  boolean
+     */
+    public static function downloadFile(
+        $filepath,
+        $filename = '',
+        $mime = 'application/force-download'
+    ) {
+        // Check and fix parameters
+        if (!is_file($filepath) || !is_readable($filepath)) {
+            return false;
+        }
+
+        // If no client filename given, use original name
+        if (empty($filename)) {
+            $filename = basename($filepath);
+        }
+
+        // Begin writing headers
+        header("Cache-Control:");
+        header("Cache-Control: public");
+
+        //Use the switch-generated Content-Type
+        header("Content-Type: $mime");
+
+        // Treat IE bug with multiple periods/dots in filename
+        // eg: setup.abc.exe becomes setup[1].abc.exe
+        if ('trident' == self::getBrowserType()) {
+            // count is reference (&count) in str_replace, so can't use it.
+            $filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
+        }
+
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+
+        header("Accept-Ranges: bytes");
+
+        // Read temp file & output
+        $size = filesize($filepath);
+        $size_downloaded = 0;   // Avoid infinite loop
+        $size_step = 1024 * 64;  // Control download speed
+
+        $fp = fopen($filepath, 'rb');
+        // Start buffered download
+        // Reset time limit for big files
+        set_time_limit(0);
+        while (!feof($fp) && ($size > $size_downloaded)) {
+            print(fread($fp, $size_step));
+            $size_downloaded += $size_step;
+        }
+
+        fclose($fp);
+
+        return true;
+    }
+
+
+    /**
      * User browser type
      *
      * Type is kernel of browser: gecko/trident/webkit
