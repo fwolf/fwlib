@@ -234,7 +234,7 @@ class ArrayUtil
      *
      * @param   array   &$arSrce    Array to be sort
      * @param   mixed   $key        Sort by this key's value in 2nd-dimension
-     * @param   mixed   $order      True = asc/false = desc, or use str.
+     * @param   mixed   $order      True = ASC/false = DESC, or use str.
      * @param   mixed   $joker      Use when val of key isn't set.
      * @return  array
      */
@@ -249,7 +249,7 @@ class ArrayUtil
             $arVal[$k] = self::getIdx($v, $key, $joker);
         }
 
-        if (true === $order || 'asc' == strtolower($order)) {
+        if (true === $order || 'ASC' == strtoupper($order)) {
             asort($arVal);
         } else {
             arsort($arVal);
@@ -261,7 +261,9 @@ class ArrayUtil
             $rs[$k] = &$arSrce[$k];
         }
 
-        $arSrce = $rs;
+        // Re-order numeric array key
+        $arSrce = array_merge($rs, array());
+
         return $arSrce;
     }
 }
