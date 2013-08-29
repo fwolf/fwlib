@@ -12,6 +12,8 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 /**
  * Convert variant byte size to human readable format string
+ *
+ * @deprecated      Use Fwlib\Util\NumberUtil::toHumanSize()
  * @param	long	$size	Size byte
  * @param	int		$decimal_place	How many decimal place to be returned
  * @return	string
