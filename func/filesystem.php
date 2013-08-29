@@ -13,6 +13,8 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 
 /**
  * Manual get basename instead of using pathinfo()
+ *
+ * @deprecated      Use native basename()
  * @param	string	$filename
  * @return	string
  */
@@ -28,6 +30,8 @@ function BaseName1 ($filename) {
 /**
  * Delete a dir or file completedly
  * 	When del a dir, del all dir and files under it also.
+ *
+ * @deprecated      Use Fwlib\Util\FileSystem::del()
  * @param	string	$name
  */
 function DelFile ($name) {
@@ -60,6 +64,8 @@ function DelFile ($name) {
 /**
  * Manual get dirname instead of using pathinfo()
  * Result didn't include ending '/'
+ *
+ * @deprecated      Use native dirname()
  * @param	string	$filename
  * @return	string
  */
@@ -75,6 +81,8 @@ function DirName1 ($filename) {
 /**
  * Count size of a directory, recursive
  * 	 This func also recursive executed automatic
+ *
+ * @deprecated      Use Fwlib\Util\FileSystem::getDirSize()
  * @param	string	$path
  * @return	long
  */
@@ -100,6 +108,8 @@ function DirSize ($path) {
 
 /**
  * Manual get extension instead of using pathinfo()
+ *
+ * @deprecated      Use Fwlib\Util\FileSystem::getFileExt()
  * @param	string	$filename
  * @return	string
  */
@@ -115,6 +125,8 @@ function FileExt1 ($filename) {
 
 /**
  * Manual get filename instead of using pathinfo()
+ *
+ * @deprecated      Use Fwlib\Util\FileSystem::getFileName()
  * @param	string	$filename
  * @return	string
  */
@@ -134,6 +146,8 @@ function FileName1 ($filename) {
  *		It use stat & count blksize & blocks file used.
  *		11 = blksize, blocksize of filesystem IO *
  *		12 = blocks, number of blocks allocated
+ *
+ * @deprecated      Use Fwlib\Util\FileSystem::getFileSize()
  * @param	string	$file
  * @return	long
  */
@@ -161,6 +175,7 @@ function FileSize1 ($file) {
  *
  * Can use with dir as well as regular file.
  *
+ * @deprecated      Use Fwlib\Util\FileSystem::getNewFile()
  * @param	string	$s_file	Path to dest file.
  * @return	string
  */
@@ -191,8 +206,10 @@ function GetFilenameToWrite ($s_file) {
  * List files and file-information of a directory
  * 	By default, sort files by mtime asc
  *  Returned array is started from 1
- * param	string	$dir
- * return	array
+ *
+ * @deprecated      Use Fwlib\Util\FileSystem::listDir()
+ * @param	string	$dir
+ * @return	array
  */
 function ListDir ($dir) {
 	//List files
