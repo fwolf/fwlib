@@ -114,6 +114,33 @@ class StringUtilTest extends PHPunitTestCase
     }
 
 
+    public function testMatchRegex()
+    {
+        $x = 'The quick brown fox jumps over the lazy dog';
+
+        $y = StringUtil::matchRegex('', $x);
+        $this->assertEquals(null, $y);
+
+        $y = StringUtil::matchRegex('/\w{10}/', $x);
+        $this->assertEquals(null, $y);
+
+        $y = StringUtil::matchRegex('/\so\w{3}\s/', $x);
+        $this->assertEquals(' over ', $y);
+
+        $y = StringUtil::matchRegex('/\s(o\w{3})\s/', $x);
+        $this->assertEquals('over', $y);
+
+        $y = StringUtil::matchRegex('/\w{5}/', $x);
+        $this->assertEqualArray(array('quick', 'brown', 'jumps'), $y);
+
+        $y = StringUtil::matchRegex('/(\w{5})/', $x);
+        $this->assertEqualArray(array('quick', 'brown', 'jumps'), $y);
+
+        $y = StringUtil::matchRegex('/((q\w+) (b\w+))/', $x);
+        $this->assertEqualArray(array('quick brown', 'quick', 'brown'), $y);
+    }
+
+
     public function testRandom()
     {
         $x = StringUtil::random(10);

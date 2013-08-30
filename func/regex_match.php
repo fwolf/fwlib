@@ -15,6 +15,8 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
  * To read content currectly, content parsing is nesessary
  * Return value maybe string or array, use careful and
  *   remind which value you use it for.
+ *
+ * @deprecated      Use Fwlib\Util\StringUtil::matchRegex()
  * @param	string	$preg
  * @param	string	$str
  * @param 	boolean	$csrts	Convert single result to str(array -> str) ?

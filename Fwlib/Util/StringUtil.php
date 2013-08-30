@@ -135,6 +135,52 @@ class StringUtil
 
 
     /**
+     * Match content using preg, return result array or string
+     *
+     * Return value maybe string or array, use with caution.
+     *
+     * @param   string  $preg
+     * @param   string  $str
+     * @param   boolean $simple  Convert single result to str(array -> str) ?
+     * @return  string|array|null
+     */
+    public static function matchRegex($preg, $str = '', $simple = true)
+    {
+        if (empty($preg) || empty($str)) {
+            return null;
+        }
+
+        $i = preg_match_all($preg, $str, $ar, PREG_SET_ORDER);
+        if (0 == $i || false === $i) {
+            // Got none match or Got error
+            return null;
+        } elseif (1 == $i) {
+            // Got 1 match, return as string or array(2 value in 1 match)
+            $ar = $ar[0];
+            if (1 < count($ar)) {
+                array_shift($ar);
+            }
+            if (1 == count($ar) && true == $simple) {
+                $ar = $ar[0];
+            }
+        } else {
+            // Got more than 1 match return array contains string or sub-array
+            foreach ($ar as &$row) {
+                if (1 < count($row)) {
+                    array_shift($row);
+                }
+                if (1 == count($row)) {
+                    $row = $row[0];
+                }
+            }
+            unset($row);
+        }
+
+        return $ar;
+    }
+
+
+    /**
      * Generate random string
      *
      * In $mode:
