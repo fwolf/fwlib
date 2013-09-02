@@ -2,6 +2,7 @@
 namespace Fwlib\Util;
 
 use Fwlib\Util\ArrayUtil;
+use Fwlib\Util\StringUtil;
 
 /**
  * Http util
@@ -18,6 +19,8 @@ class HttpUtil
 {
     /**
      * Download content as a file
+     *
+     * @codeCoverageIgnore
      *
      * @param   string  $content    Content to download
      * @param   string  $filename   Download file name, send to client, not path on server.
@@ -54,6 +57,8 @@ class HttpUtil
 
     /**
      * Download a file
+     *
+     * @codeCoverageIgnore
      *
      * @param   string  $filepath   Full path to download file.
      * @param   string  $filename   Download file name, send to client, not path on server.
@@ -120,6 +125,8 @@ class HttpUtil
      * @link https://en.wikipedia.org/wiki/Web_browser_engine
      * @link http://www.useragentstring.com/pages/Browserlist/
      *
+     * @codeCoverageIgnore
+     *
      * @param   string  $agentStr   Custom agent string
      * @param   string  $default
      * @return  string
@@ -178,5 +185,200 @@ class HttpUtil
         }
 
         return $s;
+    }
+
+
+    /**
+     * Get variant from $_COOKIE
+     *
+     * @codeCoverageIgnore
+     *
+     * @param   string  $var
+     * @param   mixed   $default
+     * @return  mixed
+     */
+    public static function getCookie($var, $default = null)
+    {
+        return self::getRequest($_COOKIE, $var, $default);
+    }
+
+
+    /**
+     * Get variant from $_GET
+     *
+     * @codeCoverageIgnore
+     *
+     * @param   string  $var
+     * @param   mixed   $default
+     * @return  mixed
+     */
+    public static function getGet($var, $default = null)
+    {
+        return self::getRequest($_GET, $var, $default);
+    }
+
+
+    /**
+     * Get variant from $_POST
+     *
+     * @codeCoverageIgnore
+     *
+     * @param   string  $var
+     * @param   mixed   $default
+     * @return  mixed
+     */
+    public static function getPost($var, $default = null)
+    {
+        return self::getRequest($_POST, $var, $default);
+    }
+
+
+    /**
+     * Get variant from $_REQUEST
+     *
+     * @codeCoverageIgnore
+     *
+     * @param   array   $request    $_REQUEST, include $_GET/$_POST etc...
+     * @param   string  $var        Name of variant
+     * @param   mixed   $default    If variant is not given, return this
+     * @return  mixed
+     */
+    public static function getRequest(&$request, $var, $default = null)
+    {
+        if (isset($request[$var])) {
+            $val = $request[$var];
+
+            // Deal with special chars in parameters
+            // magic_quotes_gpc is deprecated from php 5.4.0
+            if (version_compare(PHP_VERSION, '5.4.0', '>=')
+                || !get_magic_quotes_gpc()
+            ) {
+                $val = StringUtil::addSlashesRecursive($val);
+            }
+
+            return $val;
+        } else {
+            return $default;
+        }
+    }
+
+
+    /**
+     * Get self url which user visit
+     *
+     * @codeCoverageIgnore
+     *
+     * @param   boolean $withGetParam   Include get param in url, default yes
+     * @return  string
+     */
+    public static function getSelfUrl($withGetParam = true)
+    {
+        if (empty($_SERVER['HTTP_HOST'])) {
+            return '';
+        }
+
+        $url = self::getUrlPlan() . '://';
+        $url .= $_SERVER['HTTP_HOST'] .
+            (($withGetParam) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME']);
+
+        return $url;
+    }
+
+
+    /**
+     * Get variant from $_SESSION，will also rewrite SESSION to keep it
+     *
+     * @codeCoverageIgnore
+     *
+     * @param   string  $var
+     * @param   mixed   $default
+     * @return  mixed
+     */
+    public static function getSession($var, $default = null)
+    {
+        $_SESSION[$var] = self::getRequest($_SESSION, $var, $default);
+
+        return $_SESSION[$var];
+    }
+
+
+    /**
+     * Get and return modified url param
+     *
+     * If $k is string, then $v is string too and means add $k=$v.
+     * if $k is array, then $v is array to, and k-v/values in $k/$v is
+     * added/removed to/from url param.
+     *
+     * @codeCoverageIgnore
+     *
+     * @param   mixed   $k          Key of url param, or array of k/v to add
+     * @param   mixed   $v          Val of url param, or array of key to remove
+     * @param   boolean $withSelfUrl    If true, return value include self url
+     * @return  string              '?' and '&' included.
+     */
+    public static function getUrlParam(
+        $k = null,
+        $v = null,
+        $withSelfUrl = false
+    ) {
+        $param = StringUtil::addSlashesRecursive($_GET);
+
+        // $k is string
+        if (is_string($k) && !empty($k)) {
+            $param[addslashes($k)] = addslashes($v);
+        } else {
+            // Add
+            if (is_array($k) && !empty($k)) {
+                foreach ($k as $key => $val) {
+                    $param[addslashes($key)] = addslashes($val);
+                }
+            }
+
+            // Remove
+            if (!empty($v)) {
+                foreach ((array)$v as $val) {
+                    unset($param[$val]);
+                }
+            }
+        }
+
+        // Combine param
+        $s = '';
+        foreach ((array)$param as $key => $val) {
+            $s .= '&' . $key . '=' . $val;
+        }
+        if (!empty($s)) {
+            $s{0} = '?';
+        }
+
+        // Add self url
+        if (true == $withSelfUrl) {
+            $s = self::getSelfUrl(false) . $s;
+        }
+
+        return $s;
+    }
+
+
+    /**
+     * Get url plan from url or self
+     *
+     * eg: http://www.google.com/, plan = http
+     *
+     * @param   string  $url    Default: self url
+     * @return  string
+     */
+    public static function getUrlPlan($url = '')
+    {
+        if (empty($url)) {
+            $url = self::getSelfUrl();
+        }
+
+        $i = preg_match('/^(\w+):\/\//', $url, $ar);
+        if (1 == $i) {
+            return $ar[1];
+        } else {
+            return '';
+        }
     }
 }

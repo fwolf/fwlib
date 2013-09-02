@@ -14,6 +14,8 @@ require_once(dirname(__FILE__) . '/string.php');
 
 /**
  * Get variant from $_COOKIE
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getCookie()
  * @param	string	$var		Name of variant
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
@@ -26,6 +28,8 @@ function GetCookie($var, $default='')
 
 /**
  * Get variant from $_GET
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getGet()
  * @param	string	$var		Name of variant
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
@@ -49,6 +53,7 @@ function GetGet ($var, $default='') {
  * if $k is array, then $v is array to,
  * and k-v/values in $k/$v is added/removed to/from url param.
  *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getUrlParam()
  * @param	mixed	$k
  * @param	mixed	$v
  * @param	boolean	$b_with_url	If true, return value include self url.
@@ -96,6 +101,8 @@ function GetParam ($k = '', $v = '', $b_with_url = false) {
 
 /**
  * Get variant from $_POST
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getPost()
  * @param	string	$var		Name of variant
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
@@ -114,6 +121,8 @@ function GetPost ($var, $default='') {
 
 /**
  * Get variant from $_REQUEST
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getRequest()
  * @param	array	$r		Request, $_GET/$_POST etc...
  * @param	string	$var	Name of variant
  * @param	mixed	$default	If variant is not given, return this
@@ -137,6 +146,8 @@ function GetRequest (&$r, $var, $default = null) {
 
 /**
  * Get self url which user visit
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getSelfUrl()
  * @param	boolean	$with_get_param	// Include get param in url, default yes.
  * @return	string
  */
@@ -155,6 +166,8 @@ function GetSelfUrl($with_get_param = true) {
 
 /**
  * Get variant from $_SESSION，will also rewrite SESSION to keep it
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getSession()
  * @param	string	$var		Name of variant
  * @param	mixed	$default	If variant is not given, return this.
  * @return	mixed
@@ -169,6 +182,8 @@ function GetSession($var, $default='') {
  * Get url plan from url or self
  *
  * eg: http://www.google.com/, plan = http
+ *
+ * @deprecated      Use Fwlib\Util\HttpUtil::getUrlPlan()
  * @param	string	$url	Default: self url
  * @return	string
  */
