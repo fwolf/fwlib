@@ -19,6 +19,8 @@ require_once(FWOLFLIB . 'func/env.php');
  * Provide email address (raw input)
  * Returns true if the email address has the email
  * address format and the domain exists.
+ *
+ * @deprecated      Use Fwlib\Util\Validator::email()
  * @link http://www.linuxjournal.com/article/9585
  * @param	string	$email
  * @return	boolean
@@ -92,6 +94,8 @@ function ValidateEmail($email)
 
 /**
  * If a string is valid ip address.
+ *
+ * @deprecated      Use Fwlib\Util\Validator::ipv4()
  * @param	string	$ip
  * @return	boolean
  */
