@@ -34,6 +34,8 @@ require_once(FWOLFLIB . 'func/client.php');
  * Get a uuid
  *
  * User can combine cus and cus2 to sort uuid.
+ *
+ * @deprecated      Use Fwlib\Util\Uuid::gen()
  * @param	string	$s_cus	Custom part in uuid, 4 chars long,
  * 							positioned in 3rd section,
  *							default fill by '0'.
@@ -88,6 +90,8 @@ function Uuid($s_cus = '0000', $s_cus2 = '') {
 
 /**
  * Parse uuid, see what it means
+ *
+ * @deprecated      Use Fwlib\Util\Uuid::parse()
  * @param	string	$uuid
  * @return	array
  * @link	http://us.php.net/uniqid
