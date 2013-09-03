@@ -13,9 +13,22 @@ for ($i = 0; $i < $count; $i ++) {
 }
 $end = microtime(true);
 
-// Compute
-$used = round($end - $start, 4);
+$used = sprintf('%.4f', $end - $start);
 $speed = round($count / $used);
 
-// Output
-Env::ecl("$count UUID generated, cost $used second(s), average $speed/s.");
+Env::ecl("$count UUID generated * 2");
+Env::ecl("Without check digit: cost $used second(s), average $speed/s.");
+
+
+$start = microtime(true);
+for ($i = 0; $i < $count; $i ++) {
+    Uuid::gen('', '', true);
+}
+$end = microtime(true);
+
+$used = sprintf('%.4f', $end - $start);
+$speed = round($count / $used);
+
+Env::ecl("With check digit:    cost $used second(s), average $speed/s.");
+Env::ecl(Uuid::gen(null, null, false));
+Env::ecl(Uuid::gen(null, null, true));

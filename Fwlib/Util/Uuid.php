@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
+use Fwlib\Algorithm\Iso7064;
 use Fwlib\Util\Ip;
 
 /**
@@ -28,6 +29,32 @@ use Fwlib\Util\Ip;
 class Uuid
 {
     /**
+     * Add check digit to an Uuid
+     *
+     * Check digit will replace last byte.
+     *
+     * @param   string  $uuid
+     * @param   boolean $sourceWithHyphen
+     */
+    public static function addCheckDigit($uuid, $sourceWithHyphen = true)
+    {
+        $uuid = Iso7064::encode(
+            substr(str_replace('-', '', $uuid), 0, 31),
+            '1716',
+            true
+        );
+        $uuid = strtolower($uuid);
+        $uuid = substr($uuid, 0, 8) . '-'
+            . substr($uuid, 8, 4) . '-'
+            . substr($uuid, 12, 4) . '-'
+            . substr($uuid, 16, 4) . '-'
+            . substr($uuid, 20);
+
+        return $uuid;
+    }
+
+
+    /**
      * Generate an uuid
      *
      * User can combine cus and cus2 to sort uuid.
@@ -41,11 +68,15 @@ class Uuid
      * and random string if can't get ip.
      * If length <> 8, will fill/cut to 8 with random chars after it.
      *
+     * If $checkDigit is true, use last byte as check digit,
+     * by ISO 7064 Mod 17,16 algorithm.
+     *
      * @param   string  $cus
      * @param   string  $cus2
+     * @param   boolean $checkDigit
      * @return  string
      */
-    public static function gen($cus = '0000', $cus2 = '')
+    public static function gen($cus = '0000', $cus2 = '', $checkDigit = false)
     {
         $ar = explode(' ', microtime());
 
@@ -64,7 +95,7 @@ class Uuid
             $cus2 = substr($cus2, 0, 8);
         }
 
-        return sprintf(
+        $rs = sprintf(
             '%08s-%04s-%04s-%04s-%04s%04x%04x',
 
             // Unixtime, 8 chars from right-side end
@@ -90,6 +121,13 @@ class Uuid
             // Random string, length: 4
             mt_rand(0, 0xffff)
         );
+
+        // Add check digit/byte
+        if ($checkDigit) {
+            $rs = self::addCheckDigit($rs, true);
+        }
+
+        return $rs;
     }
 
 
@@ -115,5 +153,43 @@ class Uuid
             );
         }
         return $ar;
+    }
+
+
+    /**
+     * Verify Uuid
+     *
+     * @param   string  $uuid
+     * @param   boolean $withCheckDigit     Source includes check digit
+     * @return  boolean
+     */
+    public static function verify($uuid, $withCheckDigit = false)
+    {
+        if (36 != strlen($uuid)) {
+            return false;
+        }
+
+        // Hyphen position
+        $uuidClean = substr($uuid, 0, 8)
+            . substr($uuid, 9, 4)
+            . substr($uuid, 14, 4)
+            . substr($uuid, 19, 4)
+            . substr($uuid, 24);
+        if  ($uuidClean != str_replace('-', '', $uuid)) {
+            return false;
+        }
+
+        // AlphaNumeric 0-9 a-f
+        $uuidClean = strtolower($uuidClean);
+        if ('' !== preg_replace('/[0-9a-f]/', '', $uuidClean)) {
+            return false;
+        }
+
+        // Check digit
+        if ($uuid != self::addCheckDigit($uuid)) {
+            return false;
+        }
+
+        return true;
     }
 }

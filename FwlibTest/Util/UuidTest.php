@@ -35,4 +35,26 @@ class UuidTest extends PHPunitTestCase
         $this->assertEquals($ar['custom2'], '8302650a');
         $this->assertEquals($ar['ip'], '131.2.101.10');
     }
+
+
+    public function testVerify()
+    {
+        $x = '';
+        $this->assertFalse(Uuid::verify($x));
+
+        $x = '4822afd9-861b-0000+8302-650a25cda932';
+        $this->assertFalse(Uuid::verify($x));
+
+        $x = '4822afd9-861b-0000-83026-50a25cda932';
+        $this->assertFalse(Uuid::verify($x));
+
+        $x = '4822afd9-861b-0000-8302-650a25cda93U';
+        $this->assertFalse(Uuid::verify($x));
+
+        $x = '4822afd9-861b-0000-8302-650a25cda932';
+        $this->assertFalse(Uuid::verify($x, true));
+
+        $x = Uuid::gen(null, null, true);
+        $this->assertTrue(Uuid::verify($x, true));
+    }
 }
