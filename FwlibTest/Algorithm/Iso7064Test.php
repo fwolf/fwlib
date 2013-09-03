@@ -15,6 +15,25 @@ use Fwlib\Algorithm\Iso7064;
  */
 class Iso7064Test extends PHPunitTestCase
 {
+    public function testEncode112()
+    {
+        $this->assertEquals(
+            '0',
+            Iso7064::encode('0794', '112', false)
+        );
+
+        // Mis\CinCode
+        $this->assertEquals(
+            '4',
+            Iso7064::encode('44052418800101001', '112', false)
+        );
+        $this->assertEquals(
+            'X',
+            Iso7064::encode('11010519491231002', '112', false)
+        );
+    }
+
+
     public function testEncode1716()
     {
         $x = 'D98989898909898';
@@ -69,6 +88,15 @@ class Iso7064Test extends PHPunitTestCase
     public function testVerify()
     {
         $this->assertTrue(Iso7064::verify(null));
+
+        $x = '07940';
+        $this->assertTrue(Iso7064::verify($x, '112'));
+
+        $x = '440524188001010014';
+        $this->assertTrue(Iso7064::verify($x, '112'));
+
+        $x = '11010519491231002X';
+        $this->assertTrue(Iso7064::verify($x, '112'));
 
         $x = 'A12425GABC1234002M';
         $this->assertTrue(Iso7064::verify($x, '3736'));

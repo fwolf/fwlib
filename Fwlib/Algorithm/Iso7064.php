@@ -8,6 +8,7 @@ namespace Fwlib\Algorithm;
  * ISO 7064:1983, ISO 7064:2003
  *
  * Supported Mod:
+ * 11-2
  * 17,16
  * 37,36
  *
@@ -34,6 +35,10 @@ class Iso7064
     public static function encode($srce, $algo = '', $returnFull = false)
     {
         switch ($algo) {
+            case '112':
+                $result = self::encode112($srce, $returnFull);
+                break;
+
             case '1716':
                 $result = self::encode1716($srce, $returnFull);
                 break;
@@ -47,6 +52,46 @@ class Iso7064
         }
 
         return $result;
+    }
+
+
+    /**
+     * Encode with ISO 7064 Mod 11-2
+     *
+     * Input: Numeric
+     * Output: 1 byte AlphaNumeric 0-9 X
+     *
+     * @link http://andrecatita.com/code-snippets/iso-7064-mod-112-php/
+     *
+     * @param   string  $srce
+     * @param   string  $returnFull     Return full value or only check chars
+     * @return  string
+     */
+    public static function encode112($srce, $returnFull = false)
+    {
+        $val = 0;
+        $mod = 11;
+
+        $j = strlen($srce);
+        for ($i = 0; $i < $j; $i ++) {
+            $val += intval($srce{$i});
+
+            $val *= 2;
+        }
+
+        $val = $val % $mod;
+        $val = ($mod + 1 - $val) % 11;
+        if (10 == $val) {
+            $val = 'X';
+        } else {
+            $val = strval($val);
+        }
+
+        if ($returnFull) {
+            return $srce . $val;
+        } else {
+            return $val;
+        }
     }
 
 
@@ -192,6 +237,8 @@ class Iso7064
     public static function verify($srce, $algo = '')
     {
         switch ($algo) {
+            case '112':
+            case '1716':
             case '3736':
                 $s = substr($srce, 0, strlen($srce) - 1);
                 $result = ($srce == self::encode($s, $algo, true));
