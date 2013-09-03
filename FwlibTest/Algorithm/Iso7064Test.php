@@ -15,6 +15,30 @@ use Fwlib\Algorithm\Iso7064;
  */
 class Iso7064Test extends PHPunitTestCase
 {
+    public function testEncode1716()
+    {
+        $x = 'D98989898909898';
+        $this->assertEquals(
+            'B',
+            Iso7064::encode($x, '1716', false)
+        );
+        $this->assertEquals(
+            $x . 'B',
+            Iso7064::encode($x, '1716', true)
+        );
+
+        $this->assertEquals(
+            'A',
+            Iso7064::encode('123A567B8912E01', '1716', false)
+        );
+
+        $this->assertEquals(
+            '0',
+            Iso7064::encode('9', '1716', false)
+        );
+    }
+
+
     public function testEncode3736()
     {
         $this->assertEquals(null, Iso7064::encode(null));

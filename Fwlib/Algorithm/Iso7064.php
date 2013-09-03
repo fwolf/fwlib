@@ -8,6 +8,7 @@ namespace Fwlib\Algorithm;
  * ISO 7064:1983, ISO 7064:2003
  *
  * Supported Mod:
+ * 17,16
  * 37,36
  *
  * @link https://zh.wikipedia.org/wiki/校验码系统
@@ -33,6 +34,10 @@ class Iso7064
     public static function encode($srce, $algo = '', $returnFull = false)
     {
         switch ($algo) {
+            case '1716':
+                $result = self::encode1716($srce, $returnFull);
+                break;
+
             case '3736':
                 $result = self::encode3736($srce, $returnFull);
                 break;
@@ -46,7 +51,81 @@ class Iso7064
 
 
     /**
-     * Encode with ISO 7064 MOD 37,36
+     * Encode with ISO 7064 Mod 17,16
+     *
+     * Not standard in ISO 7064, but used in old ISAN.
+     * New ISAN use Mod 37,36.
+     *
+     * Input: AlphaNumeric
+     * Output: 1 byte AlphaNumeric 0-9 A-F
+     *
+     * @link http://www.pruefziffernberechnung.de/Originaldokumente/wg1n130.pdf
+     * @link http://tools.ietf.org/html/rfc4246
+     * @link https://zh.wikipedia.org/wiki/ISAN
+     *
+     * @param   string  $srce
+     * @param   string  $returnFull     Return full value or only check chars
+     * @return  string
+     */
+    public static function encode1716($srce, $returnFull = false)
+    {
+        static $dict = array(
+            '0' => 0,
+            '1' => 1,
+            '2' => 2,
+            '3' => 3,
+            '4' => 4,
+            '5' => 5,
+            '6' => 6,
+            '7' => 7,
+            '8' => 8,
+            '9' => 9,
+            'A' => 10,
+            'B' => 11,
+            'C' => 12,
+            'D' => 13,
+            'E' => 14,
+            'F' => 15,
+        );
+
+        $mod = 16;
+        $val = 0;
+        $srce = strtoupper($srce);
+
+        $j = strlen($srce);
+        for ($i = 0; $i < $j; $i ++) {
+            $val += $dict[$srce{$i}];
+
+            if ($val > $mod) {
+                $val -= $mod;
+            }
+
+            $val *= 2;
+
+            if ($val > $mod) {
+                $val -= $mod + 1;
+            }
+        }
+
+        $val = $mod + 1 - $val;
+        if ($val == $mod) {
+            $val = 0;
+        }
+
+        $val = array_search($val, $dict);
+
+        if ($returnFull) {
+            return $srce . $val;
+        } else {
+            return $val;
+        }
+    }
+
+
+
+
+    /**
+     * Encode with ISO 7064 Mod 37,36
      *
      * Input: AlphaNumeric
      * Output: 1 byte AlphaNumeric
