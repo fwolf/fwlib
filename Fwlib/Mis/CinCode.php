@@ -1,11 +1,13 @@
 <?php
 namespace Fwlib\Mis;
 
+use Fwlib\Algorithm\Iso7064;
 
 /**
  * Cin code
  *
  * Cin = Citizen identification number
+ * Synonym: Resident Identity number
  *
  * @package     Fwlib\Mis
  * @copyright   Copyright 2013 Fwolf
@@ -102,27 +104,9 @@ class CinCode
 
         $s = substr($cin, 0, 6) . strval($prefix) . substr($cin, 6);
 
-        $n = 0;
-        for ($i = 17; 0 < $i; $i --) {
-            $n += (pow(2, $i) % 11) * intval($s{17 - $i});
-        }
-        $n = $n % 11;
-        switch ($n) {
-            case 0:
-                $sLast = '1';
-                break;
-            case 1:
-                $sLast = '0';
-                break;
-            case 2:
-                $sLast = 'X';
-                break;
-            default:
-                $sLast = strval(12 - $n);
-                break;
-        }
+        $check = Iso7064::encode($s, '112', false);
 
-        return $s . $sLast;
+        return $s . $check;
     }
 
 
