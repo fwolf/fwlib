@@ -69,50 +69,8 @@ class Iso7064
      */
     public static function encode1716($srce, $returnFull = false)
     {
-        static $dict = array(
-            '0' => 0,
-            '1' => 1,
-            '2' => 2,
-            '3' => 3,
-            '4' => 4,
-            '5' => 5,
-            '6' => 6,
-            '7' => 7,
-            '8' => 8,
-            '9' => 9,
-            'A' => 10,
-            'B' => 11,
-            'C' => 12,
-            'D' => 13,
-            'E' => 14,
-            'F' => 15,
-        );
-
-        $mod = 16;
-        $val = 0;
         $srce = strtoupper($srce);
-
-        $j = strlen($srce);
-        for ($i = 0; $i < $j; $i ++) {
-            $val += $dict[$srce{$i}];
-
-            if ($val > $mod) {
-                $val -= $mod;
-            }
-
-            $val *= 2;
-
-            if ($val > $mod) {
-                $val -= $mod + 1;
-            }
-        }
-
-        $val = $mod + 1 - $val;
-        if ($val == $mod) {
-            $val = 0;
-        }
-
-        $val = array_search($val, $dict);
+        $val = self::encodeModN($srce, 16);
 
         if ($returnFull) {
             return $srce . $val;
@@ -135,6 +93,27 @@ class Iso7064
      * @return  string
      */
     public static function encode3736($srce, $returnFull = false)
+    {
+        $srce = strtoupper($srce);
+        $val = self::encodeModN($srce, 36);
+
+
+        if ($returnFull) {
+            return $srce . $val;
+        } else {
+            return $val;
+        }
+    }
+
+
+    /**
+     * Encode by mod N
+     *
+     * @param   string  $srce
+     * @param   int     $mod
+     * @return  string
+     */
+    protected static function encodeModN($srce, $mod)
     {
         static $dict = array(
             '0' => 0,
@@ -175,9 +154,7 @@ class Iso7064
             'Z' => 35,
         );
 
-        $mod = 36;
         $val = 0;
-        $srce = strtoupper($srce);
 
         $j = strlen($srce);
         for ($i = 0; $i < $j; $i ++) {
@@ -201,11 +178,7 @@ class Iso7064
 
         $val = array_search($val, $dict);
 
-        if ($returnFull) {
-            return $srce . $val;
-        } else {
-            return $val;
-        }
+        return $val;
     }
 
 
@@ -230,6 +203,4 @@ class Iso7064
 
         return $result;
     }
-
-
 }
