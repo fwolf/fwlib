@@ -19,10 +19,10 @@ class DatetimeUtil
      * No week in result.
      *
      * @param   int     $sec
-     * @param   boolean $bSimple        If true, use ymdhis instead of word
+     * @param   boolean $simple         If true, use ymdhis instead of word
      * @return  string
      */
-    public static function cvtSecToStr($sec, $bSimple = true)
+    public static function convertSecToStr($sec, $simple = true)
     {
         if (empty($sec) || !is_numeric($sec)) {
             return '';
@@ -47,7 +47,7 @@ class DatetimeUtil
 
             // Reach top level, end loop
             if (-1 == $arDict[$i][1]) {
-                $s = $sec . $arDict[$i][(($bSimple) ? 0
+                $s = $sec . $arDict[$i][(($simple) ? 0
                     : ((1 == $sec) ? 2 : 3))]
                     . ' ' . $s;
                 break;
@@ -55,7 +55,7 @@ class DatetimeUtil
 
             $j = $sec % $arDict[$i][1];
             if (0 != $j) {
-                $s = $j . $arDict[$i][(($bSimple) ? 0
+                $s = $j . $arDict[$i][(($simple) ? 0
                     : ((1 == $sec) ? 2 : 3))]
                     . ' ' . $s;
             }
@@ -76,7 +76,7 @@ class DatetimeUtil
      * @param   string  $str
      * @return  integer
      */
-    public static function cvtStrToSec($str)
+    public static function convertStrToSec($str)
     {
         if (empty($str)) {
             return 0;
@@ -151,7 +151,7 @@ class DatetimeUtil
      * @param   string  $time
      * @return  integer
      */
-    public static function cvtTimeFromSybase($time)
+    public static function convertTimeFromSybase($time)
     {
         if (!empty($time)) {
             // Remove tail add by sybase
