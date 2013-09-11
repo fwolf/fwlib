@@ -66,6 +66,27 @@ $config['group.key-for-compute'] = ArrayUtil::getIdx(
 );
 
 
+/**
+ * Database setting, for db relate test
+ *
+ * Leave host empty to skip this db server.
+ */
+// Mysql db
+$config['dbserver.mysql.type'] = 'mysqli';
+$config['dbserver.mysql.host'] = 'localhost:3306';
+$config['dbserver.mysql.user'] = 'test';
+$config['dbserver.mysql.pass'] = '';
+$config['dbserver.mysql.name'] = 'test';
+$config['dbserver.mysql.lang'] = 'utf8';
+// Sybase db
+$config['dbserver.sybase.type'] = 'sybase_ase';
+$config['dbserver.sybase.host'] = '';
+$config['dbserver.sybase.user'] = 'username';
+$config['dbserver.sybase.pass'] = 'secretpass';
+$config['dbserver.sybase.name'] = 'database_name';
+$config['dbserver.sybase.lang'] = 'cp936';
+
+
 /***********************************************************
  * Config define area end
  **********************************************************/
