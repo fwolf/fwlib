@@ -173,20 +173,19 @@ class ClassLoader
 
         // No match
         if (empty($arFile)) {
-            // Try include_path
-            if ($this->useIncludePath) {
-                return stream_resolve_include_path($filePath);
-            }
-
             return false;
         }
 
 
+        // Check file existence and try include_path
         foreach ($arFile as $file) {
-            if (file_exists($file)) {
+            if (file_exists($file) || ($this->useIncludePath
+                && file_exists(stream_resolve_include_path($file)))
+            ) {
                 return $file;
             }
         }
+
         // All match file not exists
         return false;
     }
