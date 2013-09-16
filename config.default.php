@@ -55,15 +55,16 @@ if ('config.default.php' == basename(__FILE__)) {
  **********************************************************/
 
 
-// Group 1
-$config['group.key'] = 'val';
-
 // Config to use in compute later NEED use user config if set
 $config['group.key-for-compute'] = ArrayUtil::getIdx(
     $configUser,
     'group.key-for-compute',
     'default value'
 );
+
+// External library path, with tailing '/'
+$config['lib.path.adodb'] = 'adodb/';
+$config['lib.path.fwlib'] = 'fwlib/';
 
 
 /**
@@ -85,6 +86,13 @@ $config['dbserver.sybase.user'] = 'username';
 $config['dbserver.sybase.pass'] = 'secretpass';
 $config['dbserver.sybase.name'] = 'database_name';
 $config['dbserver.sybase.lang'] = 'cp936';
+// Default db is mysql
+$config['dbserver.default.type'] = $config['dbserver.mysql.type'];
+$config['dbserver.default.host'] = $config['dbserver.mysql.host'];
+$config['dbserver.default.user'] = $config['dbserver.mysql.user'];
+$config['dbserver.default.pass'] = $config['dbserver.mysql.pass'];
+$config['dbserver.default.name'] = $config['dbserver.mysql.name'];
+$config['dbserver.default.lang'] = $config['dbserver.mysql.lang'];
 
 
 /***********************************************************
@@ -99,4 +107,11 @@ if ('config.default.php' == basename(__FILE__)) {
     // Deal with $config
     // Or store with ConfigGlobal class
     ConfigGlobal::load($config);
+
+    // Autoload for Adodb, which doesn't use PSR standard
+    // Use ADOFetchObj class for faster dummy new object
+    $loader->addPrefix(
+        'ADOFetchObj',
+        $config['lib.path.adodb'] . 'adodb.inc.php'
+    );
 }
