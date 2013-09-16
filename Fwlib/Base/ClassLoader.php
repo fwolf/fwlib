@@ -168,12 +168,10 @@ class ClassLoader
                 $prefix = substr($prefix, 0, intval($pos));
                 $pos = strrpos($prefix, self::$prefixSeparator);
             }
-        }
 
 
-        // No match
-        if (empty($arFile)) {
-            return false;
+            // Filepath start from current path ?
+            $arFile[] = $filePath;
         }
 
 
