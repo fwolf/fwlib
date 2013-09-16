@@ -21,6 +21,7 @@
  * @since       2013-07-26
  */
 
+use Fwlib\Base\ClassLoader;
 use Fwlib\Config\ConfigGlobal;
 use Fwlib\Util\ArrayUtil;
 
@@ -110,7 +111,7 @@ if ('config.default.php' == basename(__FILE__)) {
 
     // Autoload for Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object
-    $loader->addPrefix(
+    ClassLoader::addPrefix(
         'ADOFetchObj',
         $config['lib.path.adodb'] . 'adodb.inc.php'
     );
