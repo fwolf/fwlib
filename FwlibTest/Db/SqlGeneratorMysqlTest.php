@@ -14,21 +14,19 @@ use Fwlib\Util\Json;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-09-09
  */
-class SqlGeneratorTest extends AbstractDbRelateTest
+class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 {
-    protected $sgMysql = null;
-    protected $sgSyb = null;
+    protected $sg = null;
 
     public function __construct()
     {
-        parent::__construct('mysql, sybase');
+        parent::__construct('mysql');
 
         if (!self::$dbMysql->isConnected()) {
             $this->markTestSkipped('Mysql db is not connected');
         }
 
-        $this->sgMysql = new SqlGenerator(self::$dbMysql);
-        //$this->sgSyb = new SqlGenerator(self::$dbSyb);
+        $this->sg = new SqlGenerator(self::$dbMysql);
     }
 
 
@@ -52,19 +50,19 @@ class SqlGeneratorTest extends AbstractDbRelateTest
     public function testEmpty()
     {
         // Error config will got empty result
-        $this->sgMysql->clear();
+        $this->sg->clear();
         $ar = array('foo' => 'bar');
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $this->assertEquals('', $x);
 
-        $x = $this->sgMysql->get(array());
+        $x = $this->sg->get(array());
         $this->assertEquals('', $x);
     }
 
 
     public function testGetDelete()
     {
-        $this->sgMysql->clear();
+        $this->sg->clear();
 
         // Normal delete
         $ar = array(
@@ -74,28 +72,28 @@ class SqlGeneratorTest extends AbstractDbRelateTest
             'LIMIT'     => 1,
             'useless'   => 'blah',
         );
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $y = 'DELETE FROM ' . self::$tblUser
             . ' WHERE (id = 42) ORDER BY credit DESC LIMIT 1';
         $this->assertEquals($y, $x);
 
-        $x = $this->sgMysql->getDelete($ar);
+        $x = $this->sg->getDelete($ar);
         $this->assertEquals($y, $x);
 
-        $x = $this->sgMysql->getInsert($ar);
+        $x = $this->sg->getInsert($ar);
         $this->assertEquals('', $x);
 
 
         // Test clear(), get() will re-generate, so use genDelete()
-        $this->sgMysql->clear('limit');
-        $x = $this->sgMysql->genDelete();
+        $this->sg->clear('limit');
+        $x = $this->sg->genDelete();
         $y = 'DELETE FROM ' . self::$tblUser
             . ' WHERE (id = 42) ORDER BY credit DESC';
         $this->assertEquals($y, $x);
 
         // Then clear all part
-        $this->sgMysql->clear();
-        $x = $this->sgMysql->genDelete();
+        $this->sg->clear();
+        $x = $this->sg->genDelete();
         $y = '';
         $this->assertEquals($y, $x);
     }
@@ -103,14 +101,14 @@ class SqlGeneratorTest extends AbstractDbRelateTest
 
     public function testGetInsert()
     {
-        $this->sgMysql->clear();
+        $this->sg->clear();
 
         // Raw values in config with special char
         $ar = array(
             'INSERT'    => self::$tblUser,
             'VALUES'    => '(credit, title) VALUES ("a\"t\a\'c", 123456)',
         );
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $y = 'INSERT INTO ' . self::$tblUser
             . '(credit, title) VALUES ("a\"t\a\'c", 123456)';
         $this->assertEquals($y, $x);
@@ -124,16 +122,16 @@ class SqlGeneratorTest extends AbstractDbRelateTest
                 'joindate'  => date('Y-m-d H:i:s', strtotime('2013-09-17 15:14:50')),
             ),
         );
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $y = 'INSERT INTO ' . self::$tblUser . '(age, title, joindate) VALUES '
             . '(123456, \'string content\', \'2013-09-17 15:14:50\')';
         $this->assertEquals($y, $x);
 
         // Default INSERT parts
-        $x = $this->sgMysql->genInsert();
+        $x = $this->sg->genInsert();
         $this->assertEquals($y, $x);
 
-        $x = $this->sgMysql->getInsert($ar);
+        $x = $this->sg->getInsert($ar);
         $this->assertEquals($y, $x);
     }
 
@@ -147,7 +145,7 @@ class SqlGeneratorTest extends AbstractDbRelateTest
             ),
             'WHERE' => 'age = 42',
         );
-        $x = $this->sgMysql->getPrepared($ar);
+        $x = $this->sg->getPrepared($ar);
         $y = 'UPDATE ' . self::$tblUser . ' SET credit = ? WHERE (age = 42)';
         $this->assertEquals($y, $x);
     }
@@ -155,7 +153,7 @@ class SqlGeneratorTest extends AbstractDbRelateTest
 
     public function testGetSelect()
     {
-        $this->sgMysql->clear();
+        $this->sg->clear();
 
         $ar = array(
             'SELECT'    => 'title, age, credit',
@@ -166,13 +164,13 @@ class SqlGeneratorTest extends AbstractDbRelateTest
             'ORDRBY'    => 'a.age DESC',
             'LIMIT'     => 3,
         );
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $y = 'SELECT title, age, credit FROM ' . self::$tblUser
             . ' a, ' . self::$tblGroup . ' b WHERE (a.uuidGroup = b.uuid) '
             . 'GROUP BY b.uuid HAVING (a.age > 42) LIMIT 3';
         $this->assertEquals($y, $x);
 
-        $this->sgMysql->clear();
+        $this->sg->clear();
         $ar = array(
             'SELECT'    => array(
                 'title',
@@ -188,24 +186,24 @@ class SqlGeneratorTest extends AbstractDbRelateTest
             ),
             'LIMIT'     => array(1, 3),
         );
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $y = 'SELECT title, b.title AS \'titleGroup\' FROM ' . self::$tblUser
             . ' a, ' . self::$tblGroup . ' b '
             . 'WHERE (a.uuidGroup = b.uuid) AND (1 = 1) LIMIT 1, 3';
         $this->assertEquals($y, $x);
 
         // Default SELECT parts
-        $x = $this->sgMysql->genSelect();
+        $x = $this->sg->genSelect();
         $this->assertEquals($y, $x);
 
-        $x = $this->sgMysql->getSelect($ar);
+        $x = $this->sg->getSelect($ar);
         $this->assertEquals($y, $x);
     }
 
 
     public function testGetUpdate()
     {
-        $this->sgMysql->clear();
+        $this->sg->clear();
 
         // Normal update, SQL clause lowercase
         $ar = array(
@@ -215,13 +213,13 @@ class SqlGeneratorTest extends AbstractDbRelateTest
             'orderby'   => 'title desc',
             'limit'     => 1,
         );
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $y = 'UPDATE ' . self::$tblUser . ' SET age = 42 '
             . 'WHERE (credit > 70) ORDER BY title desc LIMIT 1';
         $this->assertEquals($y, $x);
 
         // Normal update define with array
-        $this->sgMysql->clear();
+        $this->sg->clear();
         $ar = array(
             'update'    => self::$tblUser,
             'set'       => array(
@@ -237,7 +235,7 @@ class SqlGeneratorTest extends AbstractDbRelateTest
                 'joindate asc',
             ),
         );
-        $x = $this->sgMysql->get($ar);
+        $x = $this->sg->get($ar);
         $y = 'UPDATE ' . self::$tblUser . ' SET age = 42, '
             . 'title = \'\\\'Mr. \\\' + title\' '
             . 'WHERE (joindate > \'2013-09-17\') AND (1 = (age % 2)) '
@@ -245,10 +243,10 @@ class SqlGeneratorTest extends AbstractDbRelateTest
         $this->assertEquals($y, $x);
 
         // Default UPDATE parts
-        $x = $this->sgMysql->genUpdate();
+        $x = $this->sg->genUpdate();
         $this->assertEquals($y, $x);
 
-        $x = $this->sgMysql->getUpdate($ar);
+        $x = $this->sg->getUpdate($ar);
         $this->assertEquals($y, $x);
     }
 }
