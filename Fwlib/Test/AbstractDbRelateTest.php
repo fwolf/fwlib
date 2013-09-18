@@ -65,31 +65,50 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     {
         parent::__construct();
 
-        // New db connection, default
-        $dbprofile = ConfigGlobal::get('dbserver.default');
-        if (false !== strpos($profile, 'default') &&
-            !empty($dbprofile['host'])
-        ) {
-            self::$db = new Adodb($dbprofile);
-            self::$db->connect();
+        $this->connectDb($profile);
+    }
+
+
+    /**
+     * Connect to db and assign to $dbXxx
+     *
+     * @param   string   $profile    Db profile, multi splitted by ','
+     */
+    protected function connectDb($profile)
+    {
+        if (empty($profile)) {
+            return;
         }
 
-        // New db connection, mysql
-        $dbprofile = ConfigGlobal::get('dbserver.mysql');
-        if (false !== strpos($profile, 'mysql') &&
-            !empty($dbprofile['host'])
-        ) {
-            self::$dbMysql = new Adodb($dbprofile);
-            self::$dbMysql->connect();
+        $profileKey = array();
+        $varName = array();
+
+        $profileAr = explode(',', $profile);
+        foreach ($profileAr as $type) {
+            $type = trim($type);
+            switch ($type) {
+                case 'default':
+                    $profileKey[] = 'default';
+                    $varName[] = 'db';
+                    break;
+                case 'sybase':
+                    $profileKey[] = 'sybase';
+                    $varName[] = 'dbSyb';
+                    break;
+                default:
+                    $profileKey[] = $type;
+                    $varName[] = 'db' . ucfirst($type);
+            }
         }
 
-        // New db connection, sybase
-        $dbprofile = ConfigGlobal::get('dbserver.sybase');
-        if (false !== strpos($profile, 'sybase') &&
-            !empty($dbprofile['host'])
-        ) {
-            self::$dbSyb = new Adodb($dbprofile);
-            self::$dbSyb->connect();
+        // New db connection
+        foreach ($profileKey as $i => $key) {
+            $dbprofile = ConfigGlobal::get('dbserver.' . $key);
+            if (!empty($dbprofile['host'])) {
+                $name = $varName[$i];
+                self::${$name} = new Adodb($dbprofile);
+                self::${$name}->connect();
+            }
         }
     }
 
