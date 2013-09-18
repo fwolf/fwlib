@@ -95,7 +95,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
 
     /**
-     * @param   Adodb   $db
+     * @param   Fwlib\Bridge\Adodb  $db
      */
     protected static function createTable($db)
     {
@@ -140,7 +140,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
 
     /**
-     * @param   Fwlib\Db\Adodb  $db
+     * @param   Fwlib\Bridge\Adodb  $db
      */
     protected static function dropTable($db)
     {
@@ -156,12 +156,32 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
     public static function setUpBeforeClass()
     {
-        self::createTable(self::$dbMysql);
+        if (!is_null(self::$dbMysql) && self::$dbMysql->isConnected()) {
+            self::createTable(self::$dbMysql);
+        }
+        if (!is_null(self::$dbSyb) && self::$dbSyb->isConnected()) {
+            self::createTable(self::$dbSyb);
+        }
+
+        if (!is_null(self::$db) && self::$db->isConnected() &&
+            !self::$db->checkTblExist(self::$tblUser)) {
+            self::createTable(self::$db);
+        }
     }
 
 
     public static function tearDownAfterClass()
     {
-        self::dropTable(self::$dbMysql);
+        if (!is_null(self::$dbMysql) && self::$dbMysql->isConnected()) {
+            self::dropTable(self::$dbMysql);
+        }
+        if (!is_null(self::$dbSyb) && self::$dbSyb->isConnected()) {
+            self::dropTable(self::$dbSyb);
+        }
+
+        if (!is_null(self::$db) && self::$db->isConnected() &&
+            self::$db->checkTblExist(self::$tblUser)) {
+            self::dropTable(self::$db);
+        }
     }
 }
