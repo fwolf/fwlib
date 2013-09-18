@@ -8,6 +8,8 @@ use Fwlib\Config\ConfigGlobal;
 /**
  * Parent class for db relate tests
  *
+ * @codeCoverageIgnore
+ *
  * @package     FwlibTest\Base
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+FwlibTest@gmail.com>
@@ -19,23 +21,37 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     /**
      * Db connection, default
      *
-     * @var object
+     * @var Fwlib\Bridge\Adodb
      */
     protected static $db = null;
 
     /**
      * Db connection, mysql
      *
-     * @var object
+     * @var Fwlib\Bridge\Adodb
      */
     protected static $dbMysql = null;
 
     /**
      * Db connection, Sybase
      *
-     * @var object
+     * @var Fwlib\Bridge\Adodb
      */
     protected static $dbSyb = null;
+
+    /**
+     * Test table: user
+     *
+     * @var string
+     */
+    protected static $tblUser = 'test_user';
+
+    /**
+     * Test table: group
+     *
+     * @var string
+     */
+    protected static $tblGroup = 'test_group';
 
 
     /**
@@ -75,5 +91,77 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             self::$dbSyb = new Adodb($dbprofile);
             self::$dbSyb->connect();
         }
+    }
+
+
+    /**
+     * @param   Adodb   $db
+     */
+    protected static function createTable($db)
+    {
+        // Try drop table in case last test didn't success
+        self::dropTable($db);
+
+        // Create test table
+        $db->execute(
+            'CREATE TABLE ' . self::$tblUser . '(
+                uuid        CHAR(36)        NULL,
+                age         INTEGER         NOT NULL DEFAULT 0,
+                credit      DECIMAL(6, 2)   NULL,
+                title       VARCHAR(255)    NULL,
+                joindate    DATETIME        NULL,
+                uuidGroup   CHAR(36)        NULL
+            );
+            '
+        );
+
+        if (0 != $db->errorNo()) {
+            self::markTestSkipped(
+                'Create test table user error: ' .
+                $db->errorMsg()
+            );
+        }
+
+        $db->execute(
+            'CREATE TABLE ' . self::$tblGroup . '(
+                uuid        CHAR(36)        NULL,
+                title       CHAR(255)       NULL
+            );
+            '
+        );
+
+        if (0 != $db->errorNo()) {
+            self::markTestSkipped(
+                'Create test table group error: ' .
+                $db->errorMsg()
+            );
+        }
+    }
+
+
+    /**
+     * @param   Fwlib\Db\Adodb  $db
+     */
+    protected static function dropTable($db)
+    {
+        $db->execute(
+            'DROP TABLE ' . self::$tblUser
+        );
+
+        $db->execute(
+            'DROP TABLE ' . self::$tblGroup
+        );
+    }
+
+
+    public static function setUpBeforeClass()
+    {
+        self::createTable(self::$dbMysql);
+    }
+
+
+    public static function tearDownAfterClass()
+    {
+        self::dropTable(self::$dbMysql);
     }
 }
