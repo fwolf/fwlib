@@ -152,6 +152,7 @@ require_once(dirname(__FILE__) . '/fwolflib.php');
  * ?>
  * </code>
  *
+ * @deprecated  Use Fwlib\Db\SqlGenerator
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2003-2008, Fwolf
