@@ -40,6 +40,19 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     protected static $dbSyb = null;
 
     /**
+     * Using db profile
+     *
+     * Available value: default, mysql, sybase
+     *
+     * Multiple value can join with comma.
+     *
+     * Extend and change this value in child class to select which db to use.
+     *
+     * @var string
+     */
+    protected $dbUsing = '';
+
+    /**
      * Test table: user
      *
      * @var string
@@ -56,22 +69,19 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
     /**
      * Constructor
-     *
-     * Call this in SubClass::construct() with param to select db.
-     *
-     * @param   string  $profile    Db profile selected, split by comma
      */
-    public function __construct($profile = 'default')
+    public function __construct()
     {
         parent::__construct();
 
-        $this->connectDb($profile);
+        $this->connectDb($this->dbUsing);
     }
 
 
     /**
-     * Connect to db and assign to $dbXxx
+     * Connect to db and assign to static property $dbXxx
      *
+     * @see $dbUsing
      * @param   string   $profile    Db profile, multi splitted by ','
      */
     protected function connectDb($profile)

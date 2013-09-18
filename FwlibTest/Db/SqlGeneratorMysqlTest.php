@@ -16,13 +16,14 @@ use Fwlib\Util\Json;
  */
 class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 {
+    protected $dbUsing = 'mysql';
     protected $sg = null;
 
     public function __construct()
     {
-        parent::__construct('mysql');
+        parent::__construct();
 
-        if (!self::$dbMysql->isConnected()) {
+        if (is_null(self::$dbMysql) || !self::$dbMysql->isConnected()) {
             $this->markTestSkipped('Mysql db is not connected');
         }
 
