@@ -26,9 +26,9 @@ class AutoNewObjTest extends PHPunitTestCase
 
     public function testAutoNew()
     {
-        $this->assertEquals(false, isset($this->dummy->foo));
+        $this->assertFalse(isset($this->dummy->foo));
         $this->dummy->foo;
-        $this->assertEquals(true, isset($this->dummy->foo));
+        $this->assertTrue(isset($this->dummy->foo));
     }
 
 

@@ -28,6 +28,7 @@ require_once(dirname(__FILE__) . '/../func/string.php');
  * 执行返回的数据还是需要转码的，不过返回数据的种类太多，放在应用中实现更简单一些，这里不自动执行，
  * 只提供一个EncodingConvert方法供用户调用。
  *
+ * @deprecated  Use Fwlib\Bridge\Adodb
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2008-2012, Fwolf

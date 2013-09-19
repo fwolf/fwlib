@@ -141,7 +141,8 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
                 age         INTEGER         NOT NULL DEFAULT 0,
                 credit      DECIMAL(6, 2)   NULL,
                 joindate    DATETIME        NULL,
-                uuidGroup   CHAR(36)        NULL
+                uuidGroup   CHAR(36)        NULL,
+                PRIMARY KEY (uuid)
             );
             '
         );
@@ -156,7 +157,8 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         $db->execute(
             'CREATE TABLE ' . self::$tblGroup . '(
                 uuid        CHAR(36)        NULL,
-                title       CHAR(255)       NULL
+                title       CHAR(255)       NULL,
+                PRIMARY KEY (uuid)
             );
             '
         );
