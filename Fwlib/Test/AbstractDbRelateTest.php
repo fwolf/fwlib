@@ -137,9 +137,9 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         $db->execute(
             'CREATE TABLE ' . self::$tblUser . '(
                 uuid        CHAR(36)        NULL,
+                title       VARCHAR(255)    NULL,
                 age         INTEGER         NOT NULL DEFAULT 0,
                 credit      DECIMAL(6, 2)   NULL,
-                title       VARCHAR(255)    NULL,
                 joindate    DATETIME        NULL,
                 uuidGroup   CHAR(36)        NULL
             );

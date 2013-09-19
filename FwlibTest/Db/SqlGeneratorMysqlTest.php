@@ -140,14 +140,31 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
     public function testGetPrepared()
     {
         $ar = array(
+            'INSERT'    => self::$tblUser,
+            'VALUES'    => array(
+                'uuid'  => self::$dbMysql->param('uuid'),
+                'title' => self::$dbMysql->param('title'),
+                'age'   => self::$dbMysql->param('age'),
+                'uuidGroup' => self::$dbMysql->param('uuidGroup'),
+            ),
+        );
+        $x = $this->sg->getPrepared($ar);
+        $y = 'INSERT INTO ' . self::$tblUser
+            . '(uuid, title, age, uuidGroup) VALUES (?, ?, ?, ?)';
+        $this->assertEquals($y, $x);
+
+        $ar = array(
             'UPDATE'    => self::$tblUser,
             'SET'   => array(
+                'uuid'      => self::$dbMysql->param('uuid'),
+                'title'     => self::$dbMysql->param('title'),
                 'credit'    => self::$dbMysql->param('credit'),
             ),
             'WHERE' => 'age = 42',
         );
         $x = $this->sg->getPrepared($ar);
-        $y = 'UPDATE ' . self::$tblUser . ' SET credit = ? WHERE (age = 42)';
+        $y = 'UPDATE ' . self::$tblUser
+            . ' SET uuid = ?, title = ?, credit = ? WHERE (age = 42)';
         $this->assertEquals($y, $x);
     }
 

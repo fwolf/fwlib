@@ -465,9 +465,10 @@ class SqlGenerator
         }
         // @codeCoverageIgnoreEnd
 
+        // Remove quote
         $sql = preg_replace(
-            "/ {$quote}([\?\:\w\-_]+){$quote}([, ])/i",
-            " $1$2",
+            "/([\s,\(]){$quote}([\?\:\w\-_]+){$quote}([\s,\)])/i",
+            "$1$2$3",
             $sql
         );
 
