@@ -2,6 +2,7 @@
 namespace Fwlib\Bridge;
 
 use Fwlib\Db\SqlGenerator;
+use Fwlib\Util\Env;
 use Fwlib\Util\StringUtil;
 
 /**
@@ -26,8 +27,6 @@ use Fwlib\Util\StringUtil;
  *
  * Encoding convert for query result will NOT automatic done, although we
  * provide a method convertEncodingRs() to do this manually.
- *
- * @codeCoverageIgnore
  *
  * @package     Fwlib\Bridge
  * @copyright   Copyright 2008-2013 Fwolf
@@ -299,14 +298,18 @@ class Adodb
      *
      * If db is mysql, will auto execute 'set names utf8'.
      *
-     * @codeCoverageIgnore
-     *
      * @see $dbProfile
      * @param   $forcenew         Force new connection
      * @return  boolean
      */
     public function connect($forcenew = false)
     {
+        if (!$forcenew && $this->isConnected()) {
+            return true;
+        }
+
+
+        // @codeCoverageIgnoreStart
         // Mysqli doesn't allow port in host, grab it out and set
         if ('mysqli' == strtolower($this->conn->databaseType)) {
             $ar = array();
@@ -317,6 +320,7 @@ class Adodb
                     preg_replace('/:(\d+)$/', '', $this->dbProfile['host']);
             }
         }
+        // @codeCoverageIgnoreEnd
 
 
         try {
@@ -328,17 +332,19 @@ class Adodb
                 $this->dbProfile['host'],
                 $this->dbProfile['user'],
                 $this->dbProfile['pass'],
-                $this->dbProfile['name'],
-                $forcenew
+                $this->dbProfile['name']
             );
 
             // Recover original error display setting
             ini_set('display_errors', $iniDisplayErrors);
 
             if (empty($rs)) {
+                // @codeCoverageIgnoreStart
                 throw new Exception('Db connect fail, please check php errorlog.', -1);
+                // @codeCoverageIgnoreEnd
             }
         } catch (Exception $e) {
+            // @codeCoverageIgnoreStart
             // Log and output error
             $trace = "======== Adodb Connect Error ========\n"
                 . $e->getTrace
@@ -351,8 +357,10 @@ class Adodb
             echo $trace;
 
             return false;
+            // @codeCoverageIgnoreEnd
         }
 
+        // @codeCoverageIgnoreStart
         // Mysql db need to 'set names' after connect
         if ($this->isDbMysql()) {
             $this->conn->Execute(
@@ -361,6 +369,7 @@ class Adodb
                 . '"'
             );
         }
+        // @codeCoverageIgnoreEnd
 
         return true;
     }
@@ -370,8 +379,6 @@ class Adodb
      * Convert encoding from db to sys
      *
      * Mostly used on query result.
-     *
-     * @codeCoverageIgnore
      *
      * @param   mixed   &$rs    (Array of)string, not RecordSet object
      * @return mixed
@@ -403,8 +410,6 @@ class Adodb
      * Convert encoding from sys to db
      *
      * Mostly used on SQL statement.
-     *
-     * @codeCoverageIgnore
      *
      * @param   mixed   &$sql
      * @return  mixed
@@ -529,8 +534,6 @@ class Adodb
     /**
      * Generate SQL then exec it
      *
-     * @codeCoverageIgnore
-     *
      * @deprecated  execute() will auto detect and call genSql()
      * @see genSql()
      * @param   array   $sqlCfg
@@ -589,7 +592,6 @@ class Adodb
      * Find name of timestamp column of a table
      *
      * Timestamp column are various for different db, hard to test.
-     * @codeCoverageIgnore
      *
      * @param   $tbl    Table name
      * @return  string
@@ -601,6 +603,7 @@ class Adodb
             return '';
         }
 
+        // @codeCoverageIgnoreStart
         if ($this->isDbSybase()) {
             // Sybase's timestamp column must be lower cased.
             // If col name is 'timestamp', will auto assign (timestamp) type.
@@ -640,14 +643,20 @@ class Adodb
             }
 
         } else {
+            // Do not trigger error, null means no implemented.
+            return null;
+
             trigger_error(
                 __CLASS__ . '::findColTs() for '
                 . $this->dbProfile['type']
                 . ' not implemented!',
                 E_USER_ERROR
             );
-            exit();
         }
+        // @codeCoverageIgnoreEnd
+
+        // No timestamp found
+        return '';
     }
 
 
@@ -818,6 +827,9 @@ class Adodb
     {
         if (!isset($this->metaColumn[$tbl]) || (true == $forcenew)) {
             $this->metaColumn[$tbl] = $this->conn->MetaColumns($tbl);
+            if (empty($this->metaColumn[$tbl])) {
+                return null;
+            }
 
             // Convert columns to native case
             $colName = $this->getMetaColumnName($tbl);
@@ -997,17 +1009,17 @@ class Adodb
     /**
      * Get delimiter between SQL for various db
      *
-     * @codeCoverageIgnore
-     *
+     * @param   string  $tail   Tail of line for eye candy
      * @return  string
      */
-    public function getSqlDelimiter()
+    public function getSqlDelimiter($tail = "\n")
     {
+        // @codeCoverageIgnoreStart
         if ($this->isDbMysql()) {
-            return ";\n";
+            $delimiter = ';';
 
         } elseif ($this->isDbSybase()) {
-            return "\n";
+            $delimiter = '';
 
         } else {
             trigger_error(
@@ -1015,32 +1027,35 @@ class Adodb
                 . $this->dbProfile['type'] . ' not implement.',
                 E_USER_WARNING
             );
-            return "\n";
+            $delimiter = '';
         }
+        // @codeCoverageIgnoreEnd
+
+        return $delimiter . $tail;
     }
 
 
     /**
      * Get SQL: begin transaction
      *
-     * @codeCoverageIgnore
-     *
      * @return  string
      */
     public function getSqlTransBegin()
     {
+        // @codeCoverageIgnoreStart
         if ($this->isDbMysql()) {
-            return 'START TRANSACTION' . $this->getSqlDelimiter();
+            $header = 'START';
         } else {
-            return 'BEGIN TRANSACTION' . $this->getSqlDelimiter();
+            $header = 'BEGIN';
         }
+        // @codeCoverageIgnoreEnd
+
+        return $header . ' TRANSACTION' . $this->getSqlDelimiter();
     }
 
 
     /**
      * Get SQL: commit transaction
-     *
-     * @codeCoverageIgnore
      *
      * @return  string
      */
@@ -1053,8 +1068,6 @@ class Adodb
     /**
      * Get SQL: rollback transaction
      *
-     * @codeCoverageIgnore
-     *
      * @return  string
      */
     public function getSqlTransRollback()
@@ -1065,8 +1078,6 @@ class Adodb
 
     /**
      * If current db is connected successful
-     *
-     * @codeCoverageIgnore
      *
      * @return  boolean
      */
@@ -1101,18 +1112,20 @@ class Adodb
     /**
      * If timestamp column's value is unique
      *
-     * @codeCoverageIgnore
-     *
      * @return  boolean
      */
     public function isTsUnique()
     {
-        if ($this->isDbSybase()) {
-            return true;
-        } else {
-            // Mysql
-            return false;
+        // Default for: sybase
+        $b = true;
+
+        // @codeCoverageIgnoreStart
+        if ($this->isDbMysql()) {
+            $b = false;
         }
+        // @codeCoverageIgnoreEnd
+
+        return $b;
     }
 
 

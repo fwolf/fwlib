@@ -62,6 +62,70 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
+    public function testConnect()
+    {
+        // Clone doesn't affect property object conn
+        //$conn = clone self::$dbMysql;
+
+        // Check connection is reused
+        $y = self::$dbMysql->_connectionID->thread_id;
+        self::$dbMysql->connect(false);
+        $x = self::$dbMysql->_connectionID->thread_id;
+        $this->assertEquals($y, $x);
+
+        // Force re-connect
+        self::$dbMysql->connect(true);
+        $x = self::$dbMysql->_connectionID->thread_id;
+        $this->assertNotEquals($y, $x);
+    }
+
+
+    public function testConvertEncodingRs()
+    {
+        // Backup original charset
+        $originalCharsetSys = self::$dbMysql->charsetSys;
+        $originalCharsetDb = self::$dbMysql->dbProfile['lang'];
+
+        self::$dbMysql->charsetSys = 'utf-8';
+        self::$dbMysql->dbProfile['lang'] = 'gb2312';
+
+        $x = array(null, '你好');
+        $y = array(null, mb_convert_encoding('你好', 'utf-8', 'gb2312'));
+        $this->assertEquals(
+            $y,
+            self::$dbMysql->convertEncodingRs($x)
+        );
+
+
+        // Recover original charset
+        self::$dbMysql->charsetSys = $originalCharsetSys;
+        self::$dbMysql->dbProfile['lang'] = $originalCharsetDb;
+    }
+
+
+    public function testConvertEncodingSql()
+    {
+        // Backup original charset
+        $originalCharsetSys = self::$dbMysql->charsetSys;
+        $originalCharsetDb = self::$dbMysql->dbProfile['lang'];
+
+        self::$dbMysql->charsetSys = 'utf-8';
+        self::$dbMysql->dbProfile['lang'] = 'gb2312';
+
+        $x = array(null, '你好');
+        $y = array(null, mb_convert_encoding('你好', 'gb2312', 'utf-8'));
+        $this->assertEquals(
+            $y,
+            self::$dbMysql->convertEncodingSql($x)
+        );
+
+
+        // Recover original charset
+        self::$dbMysql->charsetSys = $originalCharsetSys;
+        self::$dbMysql->dbProfile['lang'] = $originalCharsetDb;
+    }
+
+
     public function testCountQuery()
     {
         $db = self::$dbMysql;
@@ -122,6 +186,23 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
+    public function testExecuteGenSql()
+    {
+        if (!method_exists(self::$dbMysql, 'executeGenSql')) {
+            $this->markTestSkipped('Adodb::executeGenSql() not exists.');
+        }
+
+        self::$dbMysql->executeGenSql(
+            array(
+                'SELECT'    => 'uuid',
+                'FROM'      => self::$tblUser,
+                'LIMIT'     => 1
+            )
+        );
+        $this->assertEquals(0, self::$dbMysql->errorNo(0));
+    }
+
+
     /**
      * @expectedException PHPUnit_Framework_Error
      */
@@ -142,6 +223,41 @@ class AdodbMysqlTest extends AbstractDbRelateTest
                 'FROM'      => self::$tblUser,
                 'WHERE'     => 'Error Clause',
             )
+        );
+    }
+
+
+    public function testFindColTs()
+    {
+        $this->assertEquals(
+            '',
+            self::$dbMysql->findColTs(self::$tblUser . '_not_exists')
+        );
+
+        $this->assertEquals(
+            '',
+            self::$dbMysql->findColTs(self::$tblGroup)
+        );
+    }
+
+
+    /**
+     * Test for Mysql db only
+     */
+    public function testForMysqlOnly()
+    {
+        if (!self::$dbMysql->isDbMysql()) {
+            $this->markTestSkipped('Skip mysql only test.');
+        }
+
+        $this->assertEquals(
+            ";\n",
+            self::$dbMysql->getSqlDelimiter()
+        );
+
+        $this->assertEquals(
+            false,
+            self::$dbMysql->isTsUnique()
         );
     }
 
@@ -231,6 +347,23 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     {
         self::$dbMysql->debug = false;
         $this->assertFalse(self::$dbMysql->debug);
+    }
+
+
+    public function testGetSqlTrans()
+    {
+        $this->assertEquals(
+            'TRANSACTION',
+            substr(self::$dbMysql->getSqlTransBegin(), 6, 11)
+        );
+        $this->assertStringStartsWith(
+            'COMMIT',
+            self::$dbMysql->getSqlTransCommit()
+        );
+        $this->assertStringStartsWith(
+            'ROLLBACK',
+            self::$dbMysql->getSqlTransRollback()
+        );
     }
 
 
