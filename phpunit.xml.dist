@@ -16,6 +16,9 @@
   stopOnIncomplete='false'
   stopOnSkipped='false'
   strict='true'
+  timeoutForSmallTests='10'
+  timeoutForMediumTests='30'
+  timeoutForLargeTests='60'
   verbose='false'
 >
 
