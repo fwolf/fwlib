@@ -103,10 +103,19 @@ class Config
      * eg: system.format.time => $this->config['system']['format']['time']
      *
      * @param   string  $key
-     * @param   mixed   $val
+     * @param   mixed   $val    Should not null except $key is array
+     * @return  $this
      */
-    public function set($key, $val)
+    public function set($key, $val = null)
     {
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                $this->set($k, $v);
+            }
+            return $this;
+        }
+
+
         if (false === strpos($key, $this->separator)) {
             $this->config[$key] = $val;
         } else {
@@ -132,5 +141,7 @@ class Config
             // At last level, set the value
             $c[$ar[$j]] = $val;
         }
+
+        return $this;
     }
 }

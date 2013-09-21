@@ -106,5 +106,29 @@ class ConfigTest extends PHPunitTestCase
 
         // Default value
         $this->assertEquals($this->config->get('foo2.bar', 42), 42);
+
+
+        // Set array data
+        $this->config->config = null;
+        $ar = array(
+            'a'     => 1,
+            'b.1'   => 2,
+            'b.2'   => 3,
+            'c.1.1' => 4,
+        );
+        $this->config->set($ar);
+        $y = array(
+            'a' => 1,
+            'b' => array(
+                1   => 2,
+                2   => 3
+            ),
+            'c' => array(
+                1   => array(
+                    1   => 4,
+                ),
+            ),
+        );
+        $this->assertEqualArray($y, $this->config->config);
     }
 }

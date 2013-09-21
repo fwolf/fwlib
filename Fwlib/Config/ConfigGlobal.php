@@ -64,9 +64,7 @@ class ConfigGlobal
     public static function load($configData)
     {
         self::newObjConfig(true);
-        foreach ((array)$configData as $key => $val) {
-            self::$config->set($key, $val);
-        }
+        self::$config->set($configData);
     }
 
 

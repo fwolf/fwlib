@@ -35,6 +35,7 @@
   <groups>
     <exclude>
       <group>benchmark</group>
+      <group>selenium</group>
     </exclude>
   </groups>
 
