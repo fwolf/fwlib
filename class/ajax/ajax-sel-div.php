@@ -8,6 +8,7 @@ require_once(dirname(__FILE__) . '/../../fwolflib.php');
  * Requirement:
  * 	-	jQuery
  *
+ * @deprecated  Use Fwlib\Html\Ajax\SelectDiv
  * @package		fwolflib
  * @subpackage	class.ajax
  * @copyright	Copyright © 2011-2013, Fwolf
