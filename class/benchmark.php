@@ -21,6 +21,7 @@ require_once(dirname(__FILE__) . '/fwolflib.php');
  * http://www.mdsjack.bo.it/index.php?page=kwikemark
  * http://www.phpclasses.org/browse/package/2244.html
  *
+ * @deprecated  Use Fwlib\Test\Benchmark
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2009, Fwolf
