@@ -204,13 +204,13 @@ class SelectBox
 <!--//--><![CDATA[//>
 <!--
 /* Append css define to <head> */
-function () {
+(function () {
   $(\'head\').append(
     \'\
 ' . str_replace("\n", "\\\n", $css) . '\
 \'
   );
-} ();
+}) ();
 //--><!]]>
 </script>
 ';
@@ -326,7 +326,6 @@ function () {
 
         $html .= '</div>
 
-
 ';
 
         if ($replaceIdTag) {
@@ -349,45 +348,45 @@ function () {
     {
         $js = '';
 
-        $js .= '<script type=\'text/javascript\'>
-            <!--//--><![CDATA[//>
-            <!--
-            /* Set bg height and width */
-            $(\'#{bg}\')
-                .css(\'width\', $(document).width())
-                .css(\'height\', $(document).height() * 1.2);
-            $(\'#{bg} iframe\')
-                .css(\'width\', $(document).width())
-                .css(\'height\', $(document).height() * 1.2);
+        $js .= '
+<script type=\'text/javascript\'>
+<!--//--><![CDATA[//>
+<!--
+(function () {
+  /* Set bg height and width */
+  $(\'#{bg}\')
+    .css(\'width\', $(document).width())
+    .css(\'height\', $(document).height() * 1.2);
+  $(\'#{bg} iframe\')
+    .css(\'width\', $(document).width())
+    .css(\'height\', $(document).height() * 1.2);
 
-            /* Set click action */
-            $(\'#{caller}\').click(function () {
+  /* Set click action */
+  $(\'#{caller}\').click(function () {
 ' . $this->config->get('js-call') . '
-                $(\'#{bg}\').show();
-                $(\'#{div}\')
-                    .css(\'top\', ((window.innerHeight
-                                || document.documentElement.offsetHeight)
-                            - $(\'#{div}\').height())
-                        / 3
-                        + (document.body.scrollTop
-                            || document.documentElement.scrollTop) + '
-                        . $this->config->get('offset-y') . ' + \'px\')
-                    .css(\'left\', $(window).width() / 2
-                        - $(\'#{div}\').width() / 2
-                        + ' . $this->config->get('offset-x') . ' + \'px\')
-                    .show();
+    $(\'#{bg}\').show();
+    $(\'#{div}\')
+      .css(\'top\', ((window.innerHeight || document.documentElement.offsetHeight)
+          - $(\'#{div}\').height())
+        / 3
+        + (document.body.scrollTop || document.documentElement.scrollTop)
+        + ' . $this->config->get('offset-y') . ' + \'px\')
+      .css(\'left\', $(window).width() / 2
+        - $(\'#{div}\').width() / 2
+        + ' . $this->config->get('offset-x') . ' + \'px\')
+      .show();
 ';
         // Do query at once when open select div
         if (true == $this->config->get('query-when-open')) {
             $js .= '
-                    $(\'#{id}-submit\').click();
+    $(\'#{id}-submit\').click();
 ';
         }
         $js .= '
-            });
+  });
 
-            /* Set query action */
-            $(\'#{id}-submit\').click(function () {
+  /* Set query action */
+  $(\'#{id}-submit\').click(function () {
 ';
 
         // If do query when user input nothing ?
@@ -397,106 +396,107 @@ function () {
             $if = '(0 < $(\'#{id}-query\').val().length)';
         }
         $js .= '
-                if ' . $if . ' {
+    if ' . $if . ' {
 ';
 
         $js .= '
-                    /* Query begin */
-                    $(\'#{tip}\').hide();
-                    $(\'#{loading}\').show();
-                    $(\'#{empty}\').hide();
-                    $.ajax({
-                        url: $(\'#{id}-url\').val(),
-                        data: {\'' . $this->config->get('query-param') . '\':
-                            $(\'#{id}-query\').val()},
-                        dataType: \'' . $this->config->get('query-datatype') . '\',
-                        success: function(msg){
-                            $(\'#{loading}\').hide();
-                            $(\'.{id}-row\').remove();
-                            if (0 < msg.length) {
-                                /* Got result */
-                                $(msg).each(function(){
-                                    tr = $(\'#{id}-row-tpl\').clone();
-                                    tr.addClass(\'{id}-row\');
+      /* Query begin */
+      $(\'#{tip}\').hide();
+      $(\'#{loading}\').show();
+      $(\'#{empty}\').hide();
+      $.ajax({
+        url: $(\'#{id}-url\').val(),
+        data: {\'' . $this->config->get('query-param') . '\':
+          $(\'#{id}-query\').val()},
+        dataType: \'' . $this->config->get('query-datatype') . '\',
+        success: function(msg) {
+          $(\'#{loading}\').hide();
+          $(\'.{id}-row\').remove();
+          if (0 < msg.length) {
+            /* Got result */
+            $(msg).each(function () {
+              tr = $(\'#{id}-row-tpl\').clone();
+              tr.addClass(\'{id}-row\');
 
-                                    /* Attach onclick event */
-                                    /* Cloning in IE will lost event */
-                                    $(\'a\', tr).last().click(function () {
+              /* Attach onclick event */
+              /* Cloning in IE will lost event */
+              $(\'a\', tr).last().click(function () {
 ' . $this->config->get('js-choose') . '
 ';
         // When select, write selected value
         $list = $this->config->get('list');
         foreach ($this->config->get('writeback') as $k => $v) {
             $js .= '
-                                    $("#' . $v . '").val(
-                                        $(".{id}-col-' . $k . '",
-                                            $(this).parent().parent())
-                                            .' . $list[$k]['get'] . '());
+                $("#' . $v . '").val(
+                  $(".{id}-col-' . $k . '",
+                  $(this).parent().parent())
+                  .' . $list[$k]['get'] . '()
+                );
 ';
         }
 
         $js .= '
-                                        $("#{div}").hide();
-                                        $("#{bg}").hide();
-                                    });
+                $("#{div}").hide();
+                $("#{bg}").hide();
+              });
 ';
 
         // Assign result from ajax json to tr
         foreach ((array)$this->config->get('list') as $k => $v) {
             $js .= '
-                                $(\'.{id}-col-' . $k . '\'
-                                    , tr).' . $v['get']
-                                        . '(this.' . $k . ');
+              $(\'.{id}-col-' . $k . '\', tr).'
+                . $v['get'] . '(this.' . $k . ');
 ';
         }
 
         $js .= '
-                                    /* Row bg-color */
-                                    tr.mouseenter(function () {
-                                        $(this).addClass(\'{tr-hover}\');
-                                    }).mouseleave(function () {
-                                        $(this).removeClass(\'{tr-hover}\');
-                                    });
+              /* Row bg-color */
+              tr.mouseenter(function () {
+                $(this).addClass(\'{tr-hover}\');
+              }).mouseleave(function () {
+                $(this).removeClass(\'{tr-hover}\');
+              });
 
-                                    $(\'#{loading}\')
-                                        .before(tr);
+              $(\'#{loading}\')
+                .before(tr);
 ' . $this->config->get('js-query') . '
-                                    tr.show();
-                                });
-                            }
-                            else {
-                                /* No result */
-                                $(\'#{empty}\').show();
-                            }
-                        }
-                    });
-                }
-                else {
-                    /* Nothing to query */
-                    $(\'#{tip}\').show();
-                    $(\'#{loading}\').hide();
-                    $(\'#{empty}\').hide();
-                }
+              tr.show();
             });
+          }
+          else {
+            /* No result */
+            $(\'#{empty}\').show();
+          }
+        }
+      });
+    }
+    else {
+      /* Nothing to query */
+      $(\'#{tip}\').show();
+      $(\'#{loading}\').hide();
+      $(\'#{empty}\').hide();
+    }
+  });
 ';
 
         // Query when typing
         if (true == $this->config->get('query-typing')) {
             $js .= '
-                $(\'#{id}-query\').keyup(function () {
-                    $(\'#{id}-submit\').click();
-                });
+  $(\'#{id}-query\').keyup(function () {
+    $(\'#{id}-submit\').click();
+  });
 ';
         }
 
         $js .= '
-            /* Link to hide select layer */
-            $(\'#{close-bottom}, #{close-top}\').click(function () {
-                $(this).parent().hide();
-                $(\'#{bg}\').hide();
-            });
-            //--><!]]>
-            </script>
+  /* Link to hide select layer */
+  $(\'#{close-bottom}, #{close-top}\').click(function () {
+    $(this).parent().hide();
+    $(\'#{bg}\').hide();
+  });
+}) ();
+//--><!]]>
+</script>
 
 ';
 

@@ -3,7 +3,7 @@
 <!--//--><![CDATA[//>
 <!--
 /* Append css define to <head> */
-function () {
+(function () {
   $('head').append(
     '\
 <style type="text/css" media="screen, print">\
@@ -93,7 +93,7 @@ function () {
 \
 '
   );
-} ();
+}) ();
 //--><!]]>
 </script>
 
@@ -152,103 +152,104 @@ result will only show first 10 items.</td>
 
 
 <script type='text/javascript'>
-            <!--//--><![CDATA[//>
-            <!--
-            /* Set bg height and width */
-            $('#fwlib-sel-box-1-bg')
-                .css('width', $(document).width())
-                .css('height', $(document).height() * 1.2);
-            $('#fwlib-sel-box-1-bg iframe')
-                .css('width', $(document).width())
-                .css('height', $(document).height() * 1.2);
+<!--//--><![CDATA[//>
+<!--
+(function () {
+  /* Set bg height and width */
+  $('#fwlib-sel-box-1-bg')
+    .css('width', $(document).width())
+    .css('height', $(document).height() * 1.2);
+  $('#fwlib-sel-box-1-bg iframe')
+    .css('width', $(document).width())
+    .css('height', $(document).height() * 1.2);
 
-            /* Set click action */
-            $('#fwlib-sel-box-1-caller').click(function () {
+  /* Set click action */
+  $('#fwlib-sel-box-1-caller').click(function () {
 
-                $('#fwlib-sel-box-1-bg').show();
-                $('#fwlib-sel-box-1-div')
-                    .css('top', ((window.innerHeight
-                                || document.documentElement.offsetHeight)
-                            - $('#fwlib-sel-box-1-div').height())
-                        / 3
-                        + (document.body.scrollTop
-                            || document.documentElement.scrollTop) + 0 + 'px')
-                    .css('left', $(window).width() / 2
-                        - $('#fwlib-sel-box-1-div').width() / 2
-                        + 0 + 'px')
-                    .show();
+    $('#fwlib-sel-box-1-bg').show();
+    $('#fwlib-sel-box-1-div')
+      .css('top', ((window.innerHeight || document.documentElement.offsetHeight)
+          - $('#fwlib-sel-box-1-div').height())
+        / 3
+        + (document.body.scrollTop || document.documentElement.scrollTop)
+        + 0 + 'px')
+      .css('left', $(window).width() / 2
+        - $('#fwlib-sel-box-1-div').width() / 2
+        + 0 + 'px')
+      .show();
 
+  });
+
+  /* Set query action */
+  $('#fwlib-sel-box-1-submit').click(function () {
+
+    if (true) {
+
+      /* Query begin */
+      $('#fwlib-sel-box-1-tip').hide();
+      $('#fwlib-sel-box-1-loading').show();
+      $('#fwlib-sel-box-1-empty').hide();
+      $.ajax({
+        url: $('#fwlib-sel-box-1-url').val(),
+        data: {'s':
+          $('#fwlib-sel-box-1-query').val()},
+        dataType: 'json',
+        success: function(msg) {
+          $('#fwlib-sel-box-1-loading').hide();
+          $('.fwlib-sel-box-1-row').remove();
+          if (0 < msg.length) {
+            /* Got result */
+            $(msg).each(function () {
+              tr = $('#fwlib-sel-box-1-row-tpl').clone();
+              tr.addClass('fwlib-sel-box-1-row');
+
+              /* Attach onclick event */
+              /* Cloning in IE will lost event */
+              $('a', tr).last().click(function () {
+
+
+                $("#fwlib-sel-box-1-div").hide();
+                $("#fwlib-sel-box-1-bg").hide();
+              });
+
+              /* Row bg-color */
+              tr.mouseenter(function () {
+                $(this).addClass('fwlib-sel-box-1-tr-hover');
+              }).mouseleave(function () {
+                $(this).removeClass('fwlib-sel-box-1-tr-hover');
+              });
+
+              $('#fwlib-sel-box-1-loading')
+                .before(tr);
+
+              tr.show();
             });
+          }
+          else {
+            /* No result */
+            $('#fwlib-sel-box-1-empty').show();
+          }
+        }
+      });
+    }
+    else {
+      /* Nothing to query */
+      $('#fwlib-sel-box-1-tip').show();
+      $('#fwlib-sel-box-1-loading').hide();
+      $('#fwlib-sel-box-1-empty').hide();
+    }
+  });
 
-            /* Set query action */
-            $('#fwlib-sel-box-1-submit').click(function () {
+  $('#fwlib-sel-box-1-query').keyup(function () {
+    $('#fwlib-sel-box-1-submit').click();
+  });
 
-                if (true) {
-
-                    /* Query begin */
-                    $('#fwlib-sel-box-1-tip').hide();
-                    $('#fwlib-sel-box-1-loading').show();
-                    $('#fwlib-sel-box-1-empty').hide();
-                    $.ajax({
-                        url: $('#fwlib-sel-box-1-url').val(),
-                        data: {'s':
-                            $('#fwlib-sel-box-1-query').val()},
-                        dataType: 'json',
-                        success: function(msg){
-                            $('#fwlib-sel-box-1-loading').hide();
-                            $('.fwlib-sel-box-1-row').remove();
-                            if (0 < msg.length) {
-                                /* Got result */
-                                $(msg).each(function(){
-                                    tr = $('#fwlib-sel-box-1-row-tpl').clone();
-                                    tr.addClass('fwlib-sel-box-1-row');
-
-                                    /* Attach onclick event */
-                                    /* Cloning in IE will lost event */
-                                    $('a', tr).last().click(function () {
-
-
-                                        $("#fwlib-sel-box-1-div").hide();
-                                        $("#fwlib-sel-box-1-bg").hide();
-                                    });
-
-                                    /* Row bg-color */
-                                    tr.mouseenter(function () {
-                                        $(this).addClass('fwlib-sel-box-1-tr-hover');
-                                    }).mouseleave(function () {
-                                        $(this).removeClass('fwlib-sel-box-1-tr-hover');
-                                    });
-
-                                    $('#fwlib-sel-box-1-loading')
-                                        .before(tr);
-
-                                    tr.show();
-                                });
-                            }
-                            else {
-                                /* No result */
-                                $('#fwlib-sel-box-1-empty').show();
-                            }
-                        }
-                    });
-                }
-                else {
-                    /* Nothing to query */
-                    $('#fwlib-sel-box-1-tip').show();
-                    $('#fwlib-sel-box-1-loading').hide();
-                    $('#fwlib-sel-box-1-empty').hide();
-                }
-            });
-
-                $('#fwlib-sel-box-1-query').keyup(function () {
-                    $('#fwlib-sel-box-1-submit').click();
-                });
-
-            /* Link to hide select layer */
-            $('#fwlib-sel-box-1-close-bottom, #fwlib-sel-box-1-close-top').click(function () {
-                $(this).parent().hide();
-                $('#fwlib-sel-box-1-bg').hide();
-            });
-            //--><!]]>
-            </script>
+  /* Link to hide select layer */
+  $('#fwlib-sel-box-1-close-bottom, #fwlib-sel-box-1-close-top').click(function () {
+    $(this).parent().hide();
+    $('#fwlib-sel-box-1-bg').hide();
+  });
+}) ();
+//--><!]]>
+</script>
 
