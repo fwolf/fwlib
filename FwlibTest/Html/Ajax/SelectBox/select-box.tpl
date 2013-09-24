@@ -3,15 +3,17 @@
 <!--//--><![CDATA[//>
 <!--
 /* Append css define to <head> */
-$('head').append('\
+function () {
+  $('head').append(
+    '\
 <style type="text/css" media="screen, print">\
-            <!--\
-            #fwlib-sel-box-1-empty, #fwlib-sel-box-1-loading, #fwlib-sel-box-1-row-tpl {\
-                display: none;\
-            }\
-            #fwlib-sel-box-1-empty td, #fwlib-sel-box-1-loading td, #fwlib-sel-box-1-tip td, .fwlib-sel-box-1-col-td-choose {\
-                text-align: center;\
-            }\
+<!--\
+#fwlib-sel-box-1-empty, #fwlib-sel-box-1-loading, #fwlib-sel-box-1-row-tpl {\
+  display: none;\
+}\
+#fwlib-sel-box-1-empty td, #fwlib-sel-box-1-loading td, #fwlib-sel-box-1-tip td, .fwlib-sel-box-1-td-choose {\
+  text-align: center;\
+}\
 \
                 #fwlib-sel-box-1-bg {\
 \
@@ -115,13 +117,17 @@ $('head').append('\
             -->\
             </style>\
 \
-');
+'
+  );
+} ();
 //--><!]]>
 </script>
+
 <div id='fwlib-sel-box-1-bg'>
-            <iframe style='position: absolute; z-index: -1;'
-                frameborder='0' src='about:blank'></iframe>
-            </div>
+  <iframe style='position: absolute; z-index: -1;'
+    frameborder='0' src='about:blank'></iframe>
+</div>
+
 <div id='fwlib-sel-box-1-div'>
             <div id='fwlib-sel-box-1-title'>Select</div>
 

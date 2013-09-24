@@ -26,6 +26,17 @@ class SelectBox
      */
     protected $config = null;
 
+    /**
+     * Id map
+     *
+     * {{id name}: id value}
+     *
+     * Used to replace id tag in html.
+     *
+     * @var array()
+     */
+    protected $idMap = array();
+
 
     /**
      * Constructor
@@ -45,6 +56,38 @@ class SelectBox
 
 
     /**
+     * Generate id map
+     */
+    protected function genIdMap()
+    {
+        $this->idMap = array();
+
+        $prefix = $this->config->get('id-prefix') . $this->config->get('id');
+
+        // Main id
+        $this->idMap['{id}'] = $prefix;
+
+        $prefix .= '-';
+
+        // Standalone id
+        foreach (array('caller', 'td-choose') as $v) {
+            $this->idMap['{' . $v . '}'] = $prefix .
+                $this->config->get('id-' . $v);
+        }
+
+        // Other id
+        foreach ($this->config->get('id-other') as $v) {
+            $this->idMap['{' . $v . '}'] = $prefix . $v;
+        }
+
+        // Other class
+        foreach ($this->config->get('class-other') as $v) {
+            $this->idMap['{' . $v . '}'] = $prefix . $v;
+        }
+    }
+
+
+    /**
      * Get html output
      *
      * @return  string
@@ -57,14 +100,17 @@ class SelectBox
         $html = '';
 
         // Html define
-        $html .= $this->getCss();
-        $html .= '<div id=\'' . $this->id('bg') . '\'>
-            <iframe style=\'position: absolute; z-index: -1;\'
-                frameborder=\'0\' src=\'about:blank\'></iframe>
-            </div>' . "\n";
-        $html .= $this->getDiv();
-        $html .= $this->getJs();
+        $html .= $this->getCss(false);
+        $html .= '
+<div id=\'{bg}\'>
+  <iframe style=\'position: absolute; z-index: -1;\'
+    frameborder=\'0\' src=\'about:blank\'></iframe>
+</div>
+' . "\n";
+        $html .= $this->getDiv(false);
+        $html .= $this->getJs(false);
 
+        $html = $this->replaceIdTag($html);
         return $html;
     }
 
@@ -72,28 +118,26 @@ class SelectBox
     /**
      * Get html output, div part
      *
+     * @param   boolean $replaceIdTag
      * @return  string
      */
-    public function getCss()
+    public function getCss($replaceIdTag = true)
     {
         // Css body
         $css = '';
         $css .= '<style type="text/css" media="screen, print">
-            <!--
-            #' . $this->id('empty') . ', #' . $this->id('loading')
-                . ', #' . $this->id('row-tpl') . ' {
-                display: none;
-            }
-            #' . $this->id('empty') . ' td, #' . $this->id('loading')
-                . ' td, #' . $this->id('tip')
-                . ' td, .' . $this->id() . '-col-' . $this->config->get('id-td-choose') . ' {
-                text-align: center;
-            }
+<!--
+#{empty}, #{loading}, #{row-tpl} {
+  display: none;
+}
+#{empty} td, #{loading} td, #{tip} td, .{td-choose} {
+  text-align: center;
+}
 ';
 
         foreach ($this->config->get('id-other') as $k) {
             $css .= '
-                #' . $this->id($k) . ' {
+                #{' . $k . '} {
 ' . $this->config->get('css-' . $k) . '
                 }
 ';
@@ -101,10 +145,10 @@ class SelectBox
 
         // Css using class
         $css .= '
-            .' . $this->id('row') . ' {
+            .{row} {
 ' . $this->config->get('css-datarow') . '
             }
-            .' . $this->id('tr-hover') . ' {
+            .{tr-hover} {
 ' . $this->config->get('css-tr-hover') . '
             }
 ';
@@ -121,12 +165,20 @@ class SelectBox
 <!--//--><![CDATA[//>
 <!--
 /* Append css define to <head> */
-$(\'head\').append(\'\
+function () {
+  $(\'head\').append(
+    \'\
 ' . str_replace("\n", "\\\n", $css) . '\
-\');
+\'
+  );
+} ();
 //--><!]]>
 </script>
 ';
+
+        if ($replaceIdTag) {
+            $js = $this->replaceIdTag($js);
+        }
 
         return $js;
     }
@@ -135,47 +187,45 @@ $(\'head\').append(\'\
     /**
      * Get html output, div part
      *
+     * @param   boolean $replaceIdTag
      * @return  string
      */
-    public function getDiv()
+    public function getDiv($replaceIdTag = true)
     {
         $html = '';
 
-        $html .= '<div id=\'' . $this->id('div') . '\'>
-            <div id=\'' . $this->id('title') . '\'>'
+        $html .= '<div id=\'{div}\'>
+            <div id=\'{title}\'>'
                 . $this->config->get('title') . '</div>
 ';
 
         if (true == $this->config->get('show-close-top')) {
             $html .= '
-                <div id=\'' . $this->id('close-top') . '\'>'
+                <div id=\'{close-top}\'>'
                     . $this->config->get('title-close') . '</div>
 ';
         }
 
         if (true == $this->config->get('query')) {
             $html .= '
-                <div id=\'' . $this->id('clearit') . '\'></div>
+                <div id=\'{clearit}\'></div>
 
                 <label>' . $this->config->get('title-query-input') . '</label>
-                <input type=\'text\' id=\''
-                    . $this->id() . '-query\' size=\''
+                <input type=\'text\' id=\'{id}-query\' size=\''
                         . $this->config->get('query-input-size') . '\' />
-                <input type=\'button\' id=\''
-                    . $this->id() . '-submit\' value=\''
+                <input type=\'button\' id=\'{id}-submit\' value=\''
                         . $this->config->get('title-query-submit') . '\' />
 ';
 
             // Put query url as hidden input, so can edit it when needed
             $html .= '
-                <input type=\'hidden\' id=\''
-                    . $this->id() . '-url\' value=\''
+                <input type=\'hidden\' id=\'{id}-url\' value=\''
                         . $this->config->get('query-url') . '\' />
 ';
         }
 
         $html .= '
-            <table id=\'' . $this->id('table') . '\'>
+            <table id=\'{table}\'>
                 <thead>
                     <tr>
 ';
@@ -190,20 +240,20 @@ $(\'head\').append(\'\
                     </tr>
                 </thead>
                 <tbody>
-                    <tr id=\'' . $this->id('row-tpl') . '\'>
+                    <tr id=\'{row-tpl}\'>
 ';
 
         // Data table rows
         foreach ((array)$this->config->get('title-datarow-col') as $k => $v) {
-            $html .= '<td class=\'' . $this->id() . '-col-'
+            $html .= '<td class=\'{id}-col-'
                 . $k . '\'></td>' . "\n";
         }
-        $html .= '<td class=\'' . $this->id() . '-col-'
+        $html .= '<td class=\'{id}-col-'
             . $this->config->get('id-td-choose') . '\'>' . "\n";
         // Put hidden input here
         foreach ((array)$this->config->get('datarow-col-hidden') as $k) {
-            $html .= '<input type=\'hidden\' class=\''
-                . $this->id() . '-col-' . $k . '\' />' . "\n";
+            $html .= '<input type=\'hidden\' class=\'{id}-col-'
+                . $k . '\' />' . "\n";
         }
 
         // Assign onclick using js, avoid lost event when cloning in IE.
@@ -212,15 +262,15 @@ $(\'head\').append(\'\
                                 >' . $this->config->get('title-choose') . '</a>
                         </td>
                     </tr>
-                    <tr id=\'' . $this->id('loading') . '\'>
+                    <tr id=\'{loading}\'>
                         <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
                             . $this->config->get('text-loading') . '</td>
                     </tr>
-                    <tr id=\'' . $this->id('empty') . '\'>
+                    <tr id=\'{empty}\'>
                         <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
                             . $this->config->get('text-empty') . '</td>
                     </tr>
-                    <tr id=\'' . $this->id('tip') . '\'>
+                    <tr id=\'{tip}\'>
                         <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
                             . $this->config->get('text-tip') . '</td>
                     </tr>
@@ -230,13 +280,18 @@ $(\'head\').append(\'\
 
         if (true == $this->config->get('show-close-bottom')) {
             $html .= '
-                <div id=\'' . $this->id('close-bottom') . '\'>'
+                <div id=\'{close-bottom}\'>'
                     . $this->config->get('title-close') . '</div>
 ';
         }
 
         $html .= '</div>
 ';
+
+        if ($replaceIdTag) {
+            $html = $this->replaceIdTag($html);
+        }
+
         return $html;
     }
 
@@ -244,9 +299,10 @@ $(\'head\').append(\'\
     /**
      * Get html output, js part
      *
+     * @param   boolean $replaceIdTag
      * @return  string
      */
-    public function getJs()
+    public function getJs($replaceIdTag = true)
     {
         $js = '';
 
@@ -254,48 +310,48 @@ $(\'head\').append(\'\
             <!--//--><![CDATA[//>
             <!--
             /* Set bg height and width */
-            $(\'#' . $this->id('bg') . '\')
+            $(\'#{bg}\')
                 .css(\'width\', $(document).width())
                 .css(\'height\', $(document).height() * 1.2);
-            $(\'#' . $this->id('bg') . ' iframe\')
+            $(\'#{bg} iframe\')
                 .css(\'width\', $(document).width())
                 .css(\'height\', $(document).height() * 1.2);
 
             /* Set click action */
-            $(\'#' . $this->id('caller') . '\').click(function () {
+            $(\'#{caller}\').click(function () {
 ' . $this->config->get('js-call') . '
-                $(\'#' . $this->id('bg') . '\').show();
-                $(\'#' . $this->id('div') . '\')
+                $(\'#{bg}\').show();
+                $(\'#{div}\')
                     .css(\'top\', ((window.innerHeight
                                 || document.documentElement.offsetHeight)
-                            - $(\'#' . $this->id('div') . '\').height())
+                            - $(\'#{div}\').height())
                         / 3
                         + (document.body.scrollTop
                             || document.documentElement.scrollTop) + '
                         . $this->config->get('offset-y') . ' + \'px\')
                     .css(\'left\', $(window).width() / 2
-                        - $(\'#' . $this->id('div') . '\').width() / 2
+                        - $(\'#{div}\').width() / 2
                         + ' . $this->config->get('offset-x') . ' + \'px\')
                     .show();
 ';
         // Do query at once when open select div
         if (true == $this->config->get('query-when-open')) {
             $js .= '
-                    $(\'#' . $this->id() . '-submit\').click();
+                    $(\'#{id}-submit\').click();
 ';
         }
         $js .= '
             });
 
             /* Set query action */
-            $(\'#' . $this->id() . '-submit\').click(function () {
+            $(\'#{id}-submit\').click(function () {
 ';
 
         // If do query when user input nothing ?
         if (true == $this->config->get('query-empty')) {
             $if = '(true)';
         } else {
-            $if = '(0 < $(\'#' . $this->id() . '-query\').val().length)';
+            $if = '(0 < $(\'#{id}-query\').val().length)';
         }
         $js .= '
                 if ' . $if . ' {
@@ -303,22 +359,22 @@ $(\'head\').append(\'\
 
         $js .= '
                     /* Query begin */
-                    $(\'#' . $this->id('tip') . '\').hide();
-                    $(\'#' . $this->id('loading') . '\').show();
-                    $(\'#' . $this->id('empty') . '\').hide();
+                    $(\'#{tip}\').hide();
+                    $(\'#{loading}\').show();
+                    $(\'#{empty}\').hide();
                     $.ajax({
-                        url: $(\'#' . $this->id() . '-url\').val(),
+                        url: $(\'#{id}-url\').val(),
                         data: {\'' . $this->config->get('query-param') . '\':
-                            $(\'#' . $this->id() . '-query\').val()},
+                            $(\'#{id}-query\').val()},
                         dataType: \'' . $this->config->get('query-datatype') . '\',
                         success: function(msg){
-                            $(\'#' . $this->id('loading') . '\').hide();
-                            $(\'.' . $this->id() . '-row\').remove();
+                            $(\'#{loading}\').hide();
+                            $(\'.{id}-row\').remove();
                             if (0 < msg.length) {
                                 /* Got result */
                                 $(msg).each(function(){
-                                    tr = $(\'#' . $this->id() . '-row-tpl\').clone();
-                                    tr.addClass(\'' . $this->id() . '-row\');
+                                    tr = $(\'#{id}-row-tpl\').clone();
+                                    tr.addClass(\'{id}-row\');
 
                                     /* Attach onclick event */
                                     /* Cloning in IE will lost event */
@@ -330,23 +386,22 @@ $(\'head\').append(\'\
         foreach ($this->config->get('writeback') as $k => $v) {
             $js .= '
                                     $("#' . $v . '").val(
-                                        $(".' . $this->id()
-                                            . '-col-' . $k . '",
+                                        $(".{id}-col-' . $k . '",
                                             $(this).parent().parent())
                                             .' . $list[$k]['get'] . '());
 ';
         }
 
         $js .= '
-                                        $("#' . $this->id('div') . '").hide();
-                                        $("#' . $this->id('bg') . '").hide();
+                                        $("#{div}").hide();
+                                        $("#{bg}").hide();
                                     });
 ';
 
         // Assign result from ajax json to tr
         foreach ((array)$this->config->get('list') as $k => $v) {
             $js .= '
-                                $(\'.' . $this->id() . '-col-' . $k . '\'
+                                $(\'.{id}-col-' . $k . '\'
                                     , tr).' . $v['get']
                                         . '(this.' . $k . ');
 ';
@@ -355,14 +410,12 @@ $(\'head\').append(\'\
         $js .= '
                                     /* Row bg-color */
                                     tr.mouseenter(function () {
-                                        $(this).addClass(\''
-                                            . $this->id('tr-hover') . '\');
+                                        $(this).addClass(\'{tr-hover}\');
                                     }).mouseleave(function () {
-                                        $(this).removeClass(\''
-                                            . $this->id('tr-hover') . '\');
+                                        $(this).removeClass(\'{tr-hover}\');
                                     });
 
-                                    $(\'#' . $this->id('loading') . '\')
+                                    $(\'#{loading}\')
                                         .before(tr);
 ' . $this->config->get('js-query') . '
                                     tr.show();
@@ -370,16 +423,16 @@ $(\'head\').append(\'\
                             }
                             else {
                                 /* No result */
-                                $(\'#' . $this->id('empty') . '\').show();
+                                $(\'#{empty}\').show();
                             }
                         }
                     });
                 }
                 else {
                     /* Nothing to query */
-                    $(\'#' . $this->id('tip') . '\').show();
-                    $(\'#' . $this->id('loading') . '\').hide();
-                    $(\'#' . $this->id('empty') . '\').hide();
+                    $(\'#{tip}\').show();
+                    $(\'#{loading}\').hide();
+                    $(\'#{empty}\').hide();
                 }
             });
 ';
@@ -387,23 +440,26 @@ $(\'head\').append(\'\
         // Query when typing
         if (true == $this->config->get('query-typing')) {
             $js .= '
-                $(\'#' . $this->id() . '-query\').keyup(function () {
-                    $(\'#' . $this->id() . '-submit\').click();
+                $(\'#{id}-query\').keyup(function () {
+                    $(\'#{id}-submit\').click();
                 });
 ';
         }
 
         $js .= '
             /* Link to hide select layer */
-            $(\'#' . $this->id('close-bottom') . ', #'
-                . $this->id('close-top') . '\').click(function () {
+            $(\'#{close-bottom}, #{close-top}\').click(function () {
                 $(this).parent().hide();
-                $(\'#' . $this->id('bg') . '\').hide();
+                $(\'#{bg}\').hide();
             });
             //--><!]]>
             </script>
 
 ';
+
+        if ($replaceIdTag) {
+            $js = $this->replaceIdTag($js);
+        }
 
         return $js;
     }
@@ -419,6 +475,8 @@ $(\'head\').append(\'\
      * Value of all id except main will pretend by id-prefix and main id, so
      * it is safe to use multiple SelectBox in same page with different main
      * id.
+     *
+     * :THINK: This method is not used now, remove ?
      *
      * @param   string  $key
      */
@@ -444,6 +502,9 @@ $(\'head\').append(\'\
      */
     public function init()
     {
+        // Generate id map
+        $this->genIdMap();
+
         // Generate config for other id/class
         foreach ($this->config->get('id-other') as $k) {
             $this->config->set('id-' . $k, $k);
@@ -482,6 +543,24 @@ $(\'head\').append(\'\
             )
         );
         $this->config->set('datarow-col-cnt', count($this->config->get('title-datarow-col')) + 1);
+    }
+
+
+    /**
+     * Replace {id} tag in result html
+     *
+     * This will make html template a little pretty.
+     *
+     * @param   string  $html
+     * @return  string
+     */
+    protected function replaceIdTag($html)
+    {
+        return str_replace(
+            array_keys($this->idMap),
+            $this->idMap,
+            $html
+        );
     }
 
 
