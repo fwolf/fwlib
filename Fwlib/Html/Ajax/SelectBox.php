@@ -233,94 +233,100 @@ function () {
     {
         $html = '';
 
-        $html .= '<div id=\'{div}\'>
-            <div id=\'{title}\'>{title-box}</div>
+        $html .= '
+<div id=\'{div}\'>
+  <div id=\'{title}\'>{title-box}</div>
 ';
 
         if (true == $this->config->get('show-close-top')) {
             $html .= '
-                <div id=\'{close-top}\'>{title-close}</div>
+  <div id=\'{close-top}\'>{title-close}</div>
 ';
         }
 
         if (true == $this->config->get('query')) {
             $html .= '
-                <div id=\'{clearit}\'></div>
+  <div id=\'{clearit}\'></div>
 
-                <label>{title-query-input}</label>
-                <input type=\'text\' id=\'{id}-query\' size=\''
-                        . $this->config->get('query-input-size') . '\' />
-                <input type=\'button\' id=\'{id}-submit\' value=\'{title-query-submit}\' />
+  <label>{title-query-input}</label>
+  <input type=\'text\' id=\'{id}-query\' size=\''
+                . $this->config->get('query-input-size') . '\' />
+  <input type=\'button\' id=\'{id}-submit\' value=\'{title-query-submit}\' />
 ';
 
             // Put query url as hidden input, so can edit it when needed
             $html .= '
-                <input type=\'hidden\' id=\'{id}-url\' value=\''
-                        . $this->config->get('query-url') . '\' />
+  <input type=\'hidden\' id=\'{id}-url\' value=\''
+                . $this->config->get('query-url') . '\' />
 ';
         }
 
         $html .= '
-            <table id=\'{table}\'>
-                <thead>
-                    <tr>
+  <table id=\'{table}\'>
+    <thead>
+      <tr>
 ';
 
         // Data table title
         foreach ((array)$this->config->get('title-datarow-col') as $k => $v) {
-            $html .= '<th>' . $v . '</th>' . "\n";
+            $html .= '        <th>' . $v . '</th>' . "\n";
         }
-        $html .= '<th>{title-choose}</th>' . "\n";
+        $html .= '        <th>{title-choose}</th>' . "\n";
 
         $html .= '
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id=\'{row-tpl}\'>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id=\'{row-tpl}\'>
 ';
 
         // Data table rows
         foreach ((array)$this->config->get('title-datarow-col') as $k => $v) {
-            $html .= '<td class=\'{id}-col-'
+            $html .= '        <td class=\'{id}-col-'
                 . $k . '\'></td>' . "\n";
         }
-        $html .= '<td class=\'{id}-col-'
+        $html .= '        <td class=\'{id}-col-'
             . $this->config->get('id-td-choose') . '\'>' . "\n";
         // Put hidden input here
         foreach ((array)$this->config->get('datarow-col-hidden') as $k) {
-            $html .= '<input type=\'hidden\' class=\'{id}-col-'
+            $html .= '          <input type=\'hidden\' class=\'{id}-col-'
                 . $k . '\' />' . "\n";
         }
 
         // Assign onclick using js, avoid lost event when cloning in IE.
         $html .= '
-                            <a href=\'javascript:void(0);\'
-                                >{title-choose}</a>
-                        </td>
-                    </tr>
-                    <tr id=\'{loading}\'>
-                        <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
-                            . $this->config->get('text-loading') . '</td>
-                    </tr>
-                    <tr id=\'{empty}\'>
-                        <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
-                            . $this->config->get('text-empty') . '</td>
-                    </tr>
-                    <tr id=\'{tip}\'>
-                        <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
-                            . $this->config->get('text-tip') . '</td>
-                    </tr>
-                </tbody>
-            </table>
+          <a href=\'javascript:void(0);\'
+            >{title-choose}</a>
+        </td>
+      </tr>
+
+      <tr id=\'{loading}\'>
+        <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
+            . $this->config->get('text-loading') . '</td>
+      </tr>
+
+      <tr id=\'{empty}\'>
+        <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
+            . $this->config->get('text-empty') . '</td>
+      </tr>
+
+      <tr id=\'{tip}\'>
+        <td colspan=\'' . $this->config->get('datarow-col-cnt') . '\'>'
+            . $this->config->get('text-tip') . '</td>
+      </tr>
+    </tbody>
+  </table>
 ';
 
         if (true == $this->config->get('show-close-bottom')) {
             $html .= '
-                <div id=\'{close-bottom}\'>{title-close}</div>
+  <div id=\'{close-bottom}\'>{title-close}</div>
 ';
         }
 
         $html .= '</div>
+
+
 ';
 
         if ($replaceIdTag) {

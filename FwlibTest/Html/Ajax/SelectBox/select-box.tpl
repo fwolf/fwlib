@@ -102,49 +102,55 @@ function () {
     frameborder='0' src='about:blank'></iframe>
 </div>
 
+
 <div id='fwlib-sel-box-1-div'>
-            <div id='fwlib-sel-box-1-title'>Select</div>
+  <div id='fwlib-sel-box-1-title'>Select</div>
 
-                <div id='fwlib-sel-box-1-close-top'>Close</div>
+  <div id='fwlib-sel-box-1-close-top'>Close</div>
 
-                <div id='fwlib-sel-box-1-clearit'></div>
+  <div id='fwlib-sel-box-1-clearit'></div>
 
-                <label>Title:</label>
-                <input type='text' id='fwlib-sel-box-1-query' size='30' />
-                <input type='button' id='fwlib-sel-box-1-submit' value='Search' />
+  <label>Title:</label>
+  <input type='text' id='fwlib-sel-box-1-query' size='30' />
+  <input type='button' id='fwlib-sel-box-1-submit' value='Search' />
 
-                <input type='hidden' id='fwlib-sel-box-1-url' value='' />
+  <input type='hidden' id='fwlib-sel-box-1-url' value='' />
 
-            <table id='fwlib-sel-box-1-table'>
-                <thead>
-                    <tr>
-<th>Choose</th>
+  <table id='fwlib-sel-box-1-table'>
+    <thead>
+      <tr>
+        <th>Choose</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id='fwlib-sel-box-1-row-tpl'>
-<td class='fwlib-sel-box-1-col-td-choose'>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id='fwlib-sel-box-1-row-tpl'>
+        <td class='fwlib-sel-box-1-col-td-choose'>
 
-                            <a href='javascript:void(0);'
-                                >Choose</a>
-                        </td>
-                    </tr>
-                    <tr id='fwlib-sel-box-1-loading'>
-                        <td colspan='1'>Searching, please stand by ...</td>
-                    </tr>
-                    <tr id='fwlib-sel-box-1-empty'>
-                        <td colspan='1'>No result found, please change search keywords.</td>
-                    </tr>
-                    <tr id='fwlib-sel-box-1-tip'>
-                        <td colspan='1'>Please input sequential part of title to search,
+          <a href='javascript:void(0);'
+            >Choose</a>
+        </td>
+      </tr>
+
+      <tr id='fwlib-sel-box-1-loading'>
+        <td colspan='1'>Searching, please stand by ...</td>
+      </tr>
+
+      <tr id='fwlib-sel-box-1-empty'>
+        <td colspan='1'>No result found, please change search keywords.</td>
+      </tr>
+
+      <tr id='fwlib-sel-box-1-tip'>
+        <td colspan='1'>Please input sequential part of title to search,
 result will only show first 10 items.</td>
-                    </tr>
-                </tbody>
-            </table>
+      </tr>
+    </tbody>
+  </table>
 
-                <div id='fwlib-sel-box-1-close-bottom'>Close</div>
+  <div id='fwlib-sel-box-1-close-bottom'>Close</div>
 </div>
+
+
 <script type='text/javascript'>
             <!--//--><![CDATA[//>
             <!--
