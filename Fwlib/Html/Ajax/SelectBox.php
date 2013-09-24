@@ -182,25 +182,19 @@ class SelectBox
 
         foreach ($this->config->get('id-other') as $k) {
             $css .= '
-                #{' . $k . '} {
-' . $this->config->get('css-' . $k) . '
-                }
+#{' . $k . '} {' . $this->config->get('css-' . $k) . '}
 ';
         }
 
         // Css using class
         $css .= '
-            .{row} {
-' . $this->config->get('css-datarow') . '
-            }
-            .{tr-hover} {
-' . $this->config->get('css-tr-hover') . '
-            }
+.{row} {' . $this->config->get('css-datarow') . '}
+.{tr-hover} {' . $this->config->get('css-tr-hover') . '}
 ';
 
         $css .= $this->config->get('css-add') . '
-            -->
-            </style>
+-->
+</style>
 ';
 
 
@@ -732,59 +726,59 @@ result will only show first {pagesize} items.',
                 // CSS
 
                 'css-bg' => '
-            background: #E5E5E5;
-            display: none;
-            filter: alpha(opacity=60);
-            left: 0px;
-            opacity: 0.6;
-            position: absolute;
-            top: 0px;
-            z-index: 998;
+  background: #E5E5E5;
+  display: none;
+  filter: alpha(opacity=60);
+  left: 0px;
+  opacity: 0.6;
+  position: absolute;
+  top: 0px;
+  z-index: 998;
 ',
                 'css-close-bottom' => '
-            cursor: pointer;
-            margin-top: 0.5em;
-            text-align: right;
-            width: 100%;
+  cursor: pointer;
+  margin-top: 0.5em;
+  text-align: right;
+  width: 100%;
 ',
                 'css-close-top' => '
-            cursor: pointer;
-            float: right;
+  cursor: pointer;
+  float: right;
 ',
                 'css-div' => '
-            background-color: #FFF;
-            border: 1px solid #999;
-            display: none;
-            padding: 0.7em;
-            position: absolute;
-            text-align: center;
-            width: 700px;
-            z-index: 999;
+  background-color: #FFF;
+  border: 1px solid #999;
+  display: none;
+  padding: 0.7em;
+  position: absolute;
+  text-align: center;
+  width: 700px;
+  z-index: 999;
 ',
                 'css-table' => '
-            border: 1px solid;
-            border-collapse: collapse;
-            border-spacing: 0;
-            float: none;
-            line-height: 1.2em;
-            text-align: center;
-            vertical-align: baseline;
-            width: 100%;
+  border: 1px solid;
+  border-collapse: collapse;
+  border-spacing: 0;
+  float: none;
+  line-height: 1.2em;
+  text-align: center;
+  vertical-align: baseline;
+  width: 100%;
 ',
                 'css-title' => '
-            float: left;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 0.7em;
-            padding-left: 2em;
-            text-align: center;
-            width: 90%;
+  float: left;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 0.7em;
+  padding-left: 2em;
+  text-align: center;
+  width: 90%;
 ',
                 'css-tr-hover' => '
-            background-color: #e3e3de;
+  background-color: #e3e3de;
 ',
                 'css-clearit' => '
-            clear: both;
+  clear: both;
 ',
                 'css-empty' => '',
                 'css-loading' => '',

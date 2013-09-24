@@ -15,107 +15,81 @@ function () {
   text-align: center;\
 }\
 \
-                #fwlib-sel-box-1-bg {\
+#fwlib-sel-box-1-bg {\
+  background: #E5E5E5;\
+  display: none;\
+  filter: alpha(opacity=60);\
+  left: 0px;\
+  opacity: 0.6;\
+  position: absolute;\
+  top: 0px;\
+  z-index: 998;\
+}\
 \
-            background: #E5E5E5;\
-            display: none;\
-            filter: alpha(opacity=60);\
-            left: 0px;\
-            opacity: 0.6;\
-            position: absolute;\
-            top: 0px;\
-            z-index: 998;\
+#fwlib-sel-box-1-close-bottom {\
+  cursor: pointer;\
+  margin-top: 0.5em;\
+  text-align: right;\
+  width: 100%;\
+}\
 \
-                }\
+#fwlib-sel-box-1-close-top {\
+  cursor: pointer;\
+  float: right;\
+}\
 \
-                #fwlib-sel-box-1-close-bottom {\
+#fwlib-sel-box-1-div {\
+  background-color: #FFF;\
+  border: 1px solid #999;\
+  display: none;\
+  padding: 0.7em;\
+  position: absolute;\
+  text-align: center;\
+  width: 700px;\
+  z-index: 999;\
+}\
 \
-            cursor: pointer;\
-            margin-top: 0.5em;\
-            text-align: right;\
-            width: 100%;\
+#fwlib-sel-box-1-table {\
+  border: 1px solid;\
+  border-collapse: collapse;\
+  border-spacing: 0;\
+  float: none;\
+  line-height: 1.2em;\
+  text-align: center;\
+  vertical-align: baseline;\
+  width: 100%;\
+}\
 \
-                }\
+#fwlib-sel-box-1-title {\
+  float: left;\
+  font-size: 1.2em;\
+  font-weight: bold;\
+  margin-bottom: 0.7em;\
+  padding-left: 2em;\
+  text-align: center;\
+  width: 90%;\
+}\
 \
-                #fwlib-sel-box-1-close-top {\
+#fwlib-sel-box-1-clearit {\
+  clear: both;\
+}\
 \
-            cursor: pointer;\
-            float: right;\
+#fwlib-sel-box-1-empty {}\
 \
-                }\
+#fwlib-sel-box-1-loading {}\
 \
-                #fwlib-sel-box-1-div {\
+#fwlib-sel-box-1-tip {}\
 \
-            background-color: #FFF;\
-            border: 1px solid #999;\
-            display: none;\
-            padding: 0.7em;\
-            position: absolute;\
-            text-align: center;\
-            width: 700px;\
-            z-index: 999;\
+#fwlib-sel-box-1-row-tpl {}\
 \
-                }\
-\
-                #fwlib-sel-box-1-table {\
-\
-            border: 1px solid;\
-            border-collapse: collapse;\
-            border-spacing: 0;\
-            float: none;\
-            line-height: 1.2em;\
-            text-align: center;\
-            vertical-align: baseline;\
-            width: 100%;\
-\
-                }\
-\
-                #fwlib-sel-box-1-title {\
-\
-            float: left;\
-            font-size: 1.2em;\
-            font-weight: bold;\
-            margin-bottom: 0.7em;\
-            padding-left: 2em;\
-            text-align: center;\
-            width: 90%;\
-\
-                }\
-\
-                #fwlib-sel-box-1-clearit {\
-\
-            clear: both;\
-\
-                }\
-\
-                #fwlib-sel-box-1-empty {\
-\
-                }\
-\
-                #fwlib-sel-box-1-loading {\
-\
-                }\
-\
-                #fwlib-sel-box-1-tip {\
-\
-                }\
-\
-                #fwlib-sel-box-1-row-tpl {\
-\
-                }\
-\
-            .fwlib-sel-box-1-row {\
-\
-            }\
-            .fwlib-sel-box-1-tr-hover {\
-\
-            background-color: #e3e3de;\
-\
-            }\
+.fwlib-sel-box-1-row {}\
+.fwlib-sel-box-1-tr-hover {\
+  background-color: #e3e3de;\
+}\
 \
 \
-            -->\
-            </style>\
+-->\
+</style>\
 \
 '
   );
