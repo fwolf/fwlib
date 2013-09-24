@@ -33,9 +33,18 @@ class SelectBox
      *
      * Used to replace id tag in html.
      *
-     * @var array()
+     * @var array
      */
     protected $idMap = array();
+
+    /**
+     * Text map
+     *
+     * {{title/text}: content}
+     *
+     * @var array
+     */
+    protected $textMap = array();
 
 
     /**
@@ -83,6 +92,42 @@ class SelectBox
         // Other class
         foreach ($this->config->get('class-other') as $v) {
             $this->idMap['{' . $v . '}'] = $prefix . $v;
+        }
+    }
+
+
+    /**
+     * Generate text map
+     */
+    protected function genTextMap()
+    {
+        // Join tips, merge pagesize in.
+        $this->config->set(
+            'text-tip',
+            str_replace(
+                '{pagesize}',
+                $this->config->get('query-pagesize'),
+                $this->config->get('text-tip')
+            )
+        );
+
+
+        $this->textMap = array();
+
+        // Title, {title} is used in $idMap
+        $this->textMap['{title-box}'] = $this->config->get('title');
+
+        $prefix = 'title-';
+        foreach (array('close', 'query-input', 'query-submit', 'choose') as $v) {
+            $v = $prefix . $v;
+            $this->textMap['{' . $v . '}'] = $this->config->get($v);
+        }
+
+        // Text
+        $prefix = 'text-';
+        foreach (array('loading', 'empty', 'tip') as $v) {
+            $v = $prefix . $v;
+            $this->textMap['{' . $v . '}'] = $this->config->get($v);
         }
     }
 
@@ -195,14 +240,12 @@ function () {
         $html = '';
 
         $html .= '<div id=\'{div}\'>
-            <div id=\'{title}\'>'
-                . $this->config->get('title') . '</div>
+            <div id=\'{title}\'>{title-box}</div>
 ';
 
         if (true == $this->config->get('show-close-top')) {
             $html .= '
-                <div id=\'{close-top}\'>'
-                    . $this->config->get('title-close') . '</div>
+                <div id=\'{close-top}\'>{title-close}</div>
 ';
         }
 
@@ -210,11 +253,10 @@ function () {
             $html .= '
                 <div id=\'{clearit}\'></div>
 
-                <label>' . $this->config->get('title-query-input') . '</label>
+                <label>{title-query-input}</label>
                 <input type=\'text\' id=\'{id}-query\' size=\''
                         . $this->config->get('query-input-size') . '\' />
-                <input type=\'button\' id=\'{id}-submit\' value=\''
-                        . $this->config->get('title-query-submit') . '\' />
+                <input type=\'button\' id=\'{id}-submit\' value=\'{title-query-submit}\' />
 ';
 
             // Put query url as hidden input, so can edit it when needed
@@ -234,7 +276,7 @@ function () {
         foreach ((array)$this->config->get('title-datarow-col') as $k => $v) {
             $html .= '<th>' . $v . '</th>' . "\n";
         }
-        $html .= '<th>' . $this->config->get('title-choose') . '</th>' . "\n";
+        $html .= '<th>{title-choose}</th>' . "\n";
 
         $html .= '
                     </tr>
@@ -259,7 +301,7 @@ function () {
         // Assign onclick using js, avoid lost event when cloning in IE.
         $html .= '
                             <a href=\'javascript:void(0);\'
-                                >' . $this->config->get('title-choose') . '</a>
+                                >{title-choose}</a>
                         </td>
                     </tr>
                     <tr id=\'{loading}\'>
@@ -280,8 +322,7 @@ function () {
 
         if (true == $this->config->get('show-close-bottom')) {
             $html .= '
-                <div id=\'{close-bottom}\'>'
-                    . $this->config->get('title-close') . '</div>
+                <div id=\'{close-bottom}\'>{title-close}</div>
 ';
         }
 
@@ -291,6 +332,8 @@ function () {
         if ($replaceIdTag) {
             $html = $this->replaceIdTag($html);
         }
+
+        $html = $this->replaceTextTag($html);
 
         return $html;
     }
@@ -502,8 +545,9 @@ function () {
      */
     public function init()
     {
-        // Generate id map
+        // Generate map
         $this->genIdMap();
+        $this->genTextMap();
 
         // Generate config for other id/class
         foreach ($this->config->get('id-other') as $k) {
@@ -533,15 +577,6 @@ function () {
             );
         }
 
-        // Join tips, merge pagesize in.
-        $this->config->set(
-            'text-tip',
-            str_replace(
-                '{pagesize}',
-                $this->config->get('query-pagesize'),
-                $this->config->get('text-tip')
-            )
-        );
         $this->config->set('datarow-col-cnt', count($this->config->get('title-datarow-col')) + 1);
     }
 
@@ -559,6 +594,22 @@ function () {
         return str_replace(
             array_keys($this->idMap),
             $this->idMap,
+            $html
+        );
+    }
+
+
+    /**
+     * Replace {title/text} tag in result html
+     *
+     * @param   string  $html
+     * @return  string
+     */
+    protected function replaceTextTag($html)
+    {
+        return str_replace(
+            array_keys($this->textMap),
+            $this->textMap,
             $html
         );
     }
