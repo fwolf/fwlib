@@ -1,8 +1,9 @@
+
 <script type='text/javascript'>
-            <!--//--><![CDATA[//>
-            <!--
-            /* Append css define to <head> */
-            $('head').append('\
+<!--//--><![CDATA[//>
+<!--
+/* Append css define to <head> */
+$('head').append('\
 <style type="text/css" media="screen, print">\
             <!--\
             #fwlib-sel-box-1-empty, #fwlib-sel-box-1-loading, #fwlib-sel-box-1-row-tpl {\
@@ -114,9 +115,9 @@
             -->\
             </style>\
 \
-            ');
-            //--><!]]>
-            </script>
+');
+//--><!]]>
+</script>
 <div id='fwlib-sel-box-1-bg'>
             <iframe style='position: absolute; z-index: -1;'
                 frameborder='0' src='about:blank'></iframe>

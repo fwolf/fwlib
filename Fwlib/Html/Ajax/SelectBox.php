@@ -91,12 +91,13 @@ class SelectBox
             }
 ';
 
-        foreach ($this->config->get('id-other') as $k)
+        foreach ($this->config->get('id-other') as $k) {
             $css .= '
                 #' . $this->id($k) . ' {
 ' . $this->config->get('css-' . $k) . '
                 }
 ';
+        }
 
         // Css using class
         $css .= '
@@ -115,16 +116,16 @@ class SelectBox
 
 
         // Append css using js
-        $js = '';
-        $js .= '<script type=\'text/javascript\'>
-            <!--//--><![CDATA[//>
-            <!--
-            /* Append css define to <head> */
-            $(\'head\').append(\'\
+        $js = '
+<script type=\'text/javascript\'>
+<!--//--><![CDATA[//>
+<!--
+/* Append css define to <head> */
+$(\'head\').append(\'\
 ' . str_replace("\n", "\\\n", $css) . '\
-            \');
-            //--><!]]>
-            </script>
+\');
+//--><!]]>
+</script>
 ';
 
         return $js;
@@ -145,11 +146,12 @@ class SelectBox
                 . $this->config->get('title') . '</div>
 ';
 
-        if (true == $this->config->get('show-close-top'))
+        if (true == $this->config->get('show-close-top')) {
             $html .= '
                 <div id=\'' . $this->id('close-top') . '\'>'
                     . $this->config->get('title-close') . '</div>
 ';
+        }
 
         if (true == $this->config->get('query')) {
             $html .= '
@@ -226,11 +228,12 @@ class SelectBox
             </table>
 ';
 
-        if (true == $this->config->get('show-close-bottom'))
+        if (true == $this->config->get('show-close-bottom')) {
             $html .= '
                 <div id=\'' . $this->id('close-bottom') . '\'>'
                     . $this->config->get('title-close') . '</div>
 ';
+        }
 
         $html .= '</div>
 ';
@@ -275,12 +278,13 @@ class SelectBox
                         + ' . $this->config->get('offset-x') . ' + \'px\')
                     .show();
 ';
-            // Do query at once when open select div
-            if (true == $this->config->get('query-when-open'))
-                $js .= '
+        // Do query at once when open select div
+        if (true == $this->config->get('query-when-open')) {
+            $js .= '
                     $(\'#' . $this->id() . '-submit\').click();
 ';
-            $js .= '
+        }
+        $js .= '
             });
 
             /* Set query action */
@@ -381,12 +385,13 @@ class SelectBox
 ';
 
         // Query when typing
-        if (true == $this->config->get('query-typing'))
+        if (true == $this->config->get('query-typing')) {
             $js .= '
                 $(\'#' . $this->id() . '-query\').keyup(function () {
                     $(\'#' . $this->id() . '-submit\').click();
                 });
 ';
+        }
 
         $js .= '
             /* Link to hide select layer */
@@ -450,22 +455,31 @@ class SelectBox
         // Join select list cols and hidden
         $this->config->set('list', array());
         foreach ((array)$this->config->get('title-datarow-col') as $k => $v) {
-            $this->config->set('list.' . $k, array(
-                'title' => $v,
-                'get'   => 'text',  // jQuery method to read content
-            ));
+            $this->config->set(
+                'list.' . $k,
+                array(
+                    'title' => $v,
+                    'get'   => 'text',  // jQuery method to read content
+                )
+            );
         }
         foreach ((array)$this->config->get('datarow-col-hidden') as $k) {
-            $this->config->set('list.' . $k, array(
-                'get'   => 'val',   // jQuery method to read content
-            ));
+            $this->config->set(
+                'list.' . $k,
+                array(
+                    'get'   => 'val',   // jQuery method to read content
+                )
+            );
         }
 
         // Join tips, merge pagesize in.
         $this->config->set(
             'text-tip',
-            str_replace('{pagesize}' , $this->config->get('query-pagesize')
-            , $this->config->get('text-tip'))
+            str_replace(
+                '{pagesize}',
+                $this->config->get('query-pagesize'),
+                $this->config->get('text-tip')
+            )
         );
         $this->config->set('datarow-col-cnt', count($this->config->get('title-datarow-col')) + 1);
     }
