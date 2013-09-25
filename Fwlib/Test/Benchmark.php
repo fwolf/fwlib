@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Test;
 
+use Fwlib\Util\Env;
+use Fwlib\Util\EscapeColor;
 
 /**
  * Benchmark tool for program execute time
@@ -11,8 +13,6 @@ namespace Fwlib\Test;
  * http://pear.php.net/package/Benchmark
  * http://www.mdsjack.bo.it/index.php?page=kwikemark
  * http://www.phpclasses.org/browse/package/2244.html
- *
- * :TODO: Output in cli mode with escape color.
  *
  * @codeCoverageIgnore
  *
@@ -80,7 +80,11 @@ class Benchmark
      */
     public function display($options = '')
     {
-        echo $this->result($options);
+        if (Env::isCli()) {
+            echo $this->resultCli($options);
+        } else {
+            echo $this->resultWeb($options);
+        }
     }
 
 
@@ -220,18 +224,112 @@ EOF;
 
 
     /**
-     * Get html result
+     * Get result for cli output
      *
      * @param   string  $options
      * @return  string
      */
-    public function result($options = '')
+    public function resultCli($options = '')
+    {
+        $widthPct = 6;
+        $widthDur = 10.3;
+        $spaceDesc = '    ';
+        $hr = str_repeat('-', 50);
+
+        // Stop last group if it's not stopped
+        if (!isset($this->group[$this->groupId]['timeEnd'])
+            && isset($this->group[$this->groupId]['timeStart'])
+        ) {
+            $this->stop();
+        }
+
+        $output = '';
+
+        if (0 <= $this->groupId) {
+            foreach ($this->group as $groupId => $ar_group) {
+                $this->formatColor($groupId);
+
+                $output .= EscapeColor::paint($ar_group['desc'], 'bold') .
+                    PHP_EOL;
+
+                $output .= sprintf('%' . $widthPct . 's', '%')
+                    . sprintf('%' . $widthDur . 's', 'Dur Time')
+                    . $spaceDesc
+                    . 'Mark Description'
+                    . PHP_EOL;
+                $output .= $hr . PHP_EOL;
+
+                // Markers
+                if (0 < count($this->mark[$groupId])) {
+                    foreach ($this->mark[$groupId] as $markId => $ar_mark) {
+                        $time = $ar_mark['dur'];
+
+                        // Format time before add bg color
+                        $time = sprintf('%' . $widthDur . 'f', $time);
+
+                        // Space need not color
+                        $space = str_repeat(
+                            ' ',
+                            strlen($time) - strlen(trim($time))
+                        );
+                        $time = trim($time);
+
+                        // Add bg color
+                        if (!empty($ar_mark['color'])) {
+                            $time = EscapeColor::paint(
+                                $time,
+                                '',
+                                '',
+                                $ar_mark['color']
+                            );
+                        }
+
+                        $time = $space . $time;
+
+                        $output .= sprintf('%' . $widthPct . 's', $ar_mark['pct'])
+                            . $time
+                            . $spaceDesc
+                            . $ar_mark['desc']
+                            . PHP_EOL;
+                    }
+                }
+
+                // Stop has already set marker
+
+                $output .= $hr . PHP_EOL;
+
+                // Total
+                $time = sprintf('%' . $widthDur . 'f', $ar_group['dur']);
+                $output .= EscapeColor::paint('Total:', 'bold') . $time .
+                    's' . PHP_EOL . PHP_EOL;
+
+            }
+
+            // Memory usage
+            if (function_exists('memory_get_usage')) {
+                $memory = number_format(memory_get_usage());
+                $output .= EscapeColor::paint('Memory Usage: ', 'bold') .
+                    $memory . ' bytes' . PHP_EOL;
+            }
+        }
+
+        return $output;
+    }
+
+
+    /**
+     * Get result for web output
+     *
+     * @param   string  $options
+     * @return  string
+     */
+    public function resultWeb($options = '')
     {
         // Stop last group if it's not stopped
         if (!isset($this->group[$this->groupId]['timeEnd'])
             && isset($this->group[$this->groupId]['timeStart'])
         ) {
-            $this->Stop();
+            $this->stop();
         }
 
         $html = '';
@@ -257,11 +355,11 @@ EOF;
 
 EOF;
             $html .= "<div id='fl-bm'>\n";
-            foreach ($this->group as $i_group => $ar_group) {
-                $this->FormatColor($i_group);
+            foreach ($this->group as $groupId => $ar_group) {
+                $this->formatColor($groupId);
 
                 // Stop will create mark, so no 0=mark
-                $html .= "\t<table id='fl-bm-g{$i_group}'>\n";
+                $html .= "\t<table id='fl-bm-g{$groupId}'>\n";
                 $html .= "\t\t<caption>{$ar_group['desc']}</caption>\n";
 
                 // Th
@@ -277,10 +375,10 @@ EOF;
 
 EOF;
                 // Markers
-                if (0 < count($this->mark[$i_group])) {
+                if (0 < count($this->mark[$groupId])) {
                     $html .= "<tbody>\n";
-                    foreach ($this->mark[$i_group] as $i_mark => $ar_mark) {
-                        $time = $this->FormatTime($ar_mark['dur']);
+                    foreach ($this->mark[$groupId] as $markId => $ar_mark) {
+                        $time = $this->formatTime($ar_mark['dur']);
                         // Bg color
                         if (!empty($ar_mark['color'])) {
                             $color = ' style="background-color: ' . $ar_mark['color'] . ';"';
@@ -303,7 +401,7 @@ EOF;
                 // Stop has already set marker
 
                 // Total
-                $time = $this->FormatTime($ar_group['dur']);
+                $time = $this->formatTime($ar_group['dur']);
                 $html .= <<<EOF
 
 <tr class="total">

@@ -11,10 +11,10 @@ $bm = new Benchmark('autostart');
 $bm->start('Test Group');
 
 usleep(rand(100, 500));
-$bm->mark('Mark1');
+$bm->mark('Mark #0');
 
 usleep(500);
-$bm->mark('Mark2 lightblue', 'lightblue');
+$bm->mark('Mark #1 cyan', 'cyan');
 
 for ($i=1; $i<10; $i++) {
     usleep(rand(1, 1000));
