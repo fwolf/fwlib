@@ -1,14 +1,15 @@
 <?php
 namespace FwlibTest\Base;
 
-use Fwlib\Base\AutoNewObj;
+use Fwlib\Base\AbstractAutoNewObj;
+use Fwlib\Base\Rv;
 
 /**
  * Dummy class for test
  */
-class AutoNewObjDummy extends AutoNewObj
+class AbstractAutoNewObjDummy extends AbstractAutoNewObj
 {
-    public $foo;
+    public $rv;
 
 
     /**
@@ -20,17 +21,17 @@ class AutoNewObjDummy extends AutoNewObj
         //parent::__construct();
 
         // Unset for auto new
-        unset($this->foo);
+        unset($this->rv);
     }
 
 
     /**
-     * New foo object
+     * New rv object
      *
-     * @return object
+     * @return Fwlib\Base\Rv
      */
-    protected function newObjFoo()
+    protected function newObjRv()
     {
-        return new AutoNewObj;
+        return new Rv;
     }
 }

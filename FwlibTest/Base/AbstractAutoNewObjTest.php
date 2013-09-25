@@ -2,10 +2,10 @@
 namespace FwlibTest\Base;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use FwlibTest\Base\AutoNewObjDummy;
+use FwlibTest\Base\AbstractAutoNewObjDummy;
 
 /**
- * Test for Fwlib\Base\AutoNewObj
+ * Test for Fwlib\Base\AbstractAutoNewObj
  *
  * @package     FwlibTest\Base
  * @copyright   Copyright 2013 Fwolf
@@ -13,22 +13,22 @@ use FwlibTest\Base\AutoNewObjDummy;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22
  */
-class AutoNewObjTest extends PHPunitTestCase
+class AbstractAutoNewObjTest extends PHPunitTestCase
 {
     public $dummy;
 
 
     public function __construct()
     {
-        $this->dummy = new AutoNewObjDummy;
+        $this->dummy = new AbstractAutoNewObjDummy;
     }
 
 
     public function testAutoNew()
     {
-        $this->assertFalse(isset($this->dummy->foo));
-        $this->dummy->foo;
-        $this->assertTrue(isset($this->dummy->foo));
+        $this->assertFalse(isset($this->dummy->rv));
+        $this->dummy->rv;
+        $this->assertTrue(isset($this->dummy->rv));
     }
 
 
@@ -56,6 +56,6 @@ class AutoNewObjTest extends PHPunitTestCase
 
         // Final solution: use @codeCoverageIgnore
 
-        $this->assertEquals(null, $this->dummy->bar);
+        $this->assertEquals(null, $this->dummy->foo);
     }
 }

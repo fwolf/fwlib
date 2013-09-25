@@ -13,7 +13,7 @@ namespace Fwlib\Base;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22
  */
-class AutoNewObj
+abstract class AbstractAutoNewObj
 {
     /**
      * Auto new property obj if not set and corresponding newObjFoo() exists
