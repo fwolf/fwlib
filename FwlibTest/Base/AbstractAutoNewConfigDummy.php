@@ -7,7 +7,7 @@ use Fwlib\Base\Rv;
 /**
  * Dummy class for test
  */
-class AbstractAutoNewObjDummy extends AbstractAutoNewObj
+class AbstractAutoNewConfigDummy extends AbstractAutoNewObj
 {
     public $rv;
 

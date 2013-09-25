@@ -2,7 +2,7 @@
 namespace FwlibTest\Base;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use FwlibTest\Base\AbstractAutoNewObjDummy;
+use FwlibTest\Base\AbstractAutoNewConfigDummy;
 
 /**
  * Test for Fwlib\Base\AbstractAutoNewObj
@@ -20,7 +20,7 @@ class AbstractAutoNewObjTest extends PHPunitTestCase
 
     public function __construct()
     {
-        $this->dummy = new AbstractAutoNewObjDummy;
+        $this->dummy = new AbstractAutoNewConfigDummy;
     }
 
 
