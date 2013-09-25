@@ -36,6 +36,13 @@ class Cache extends AbstractAutoNewConfig
     protected $cacheData = array();
 
     /**
+     * Error msg
+     *
+     * @var string
+     */
+    public $errorMsg = '';
+
+    /**
      * Log for get() op's key and success flag
      *
      * [{key: string, success: boolean}]

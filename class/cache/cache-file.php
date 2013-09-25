@@ -6,6 +6,7 @@ require_once(FWOLFLIB . 'func/filesystem.php');
 /**
  * Key - value cache system, data store in file.
  *
+ * @deprecated  Use Fwlib\Cache\CacheFile
  * @package		fwolflib
  * @subpackage	class.cache
  * @copyright	Copyright 2010-2012, Fwolf

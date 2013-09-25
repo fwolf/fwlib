@@ -28,13 +28,9 @@ class CacheTest extends PHPunitTestCase
     }
 
 
-    public function testCreate()
-    {
-        $ch = Cache::create('');
-        $this->assertInstanceOf('Fwlib\Cache\Cache', $ch);
-    }
-
-
+    /**
+     * get(), set(), del() etc
+     */
     public function testCache()
     {
         $key = 'key';
@@ -73,6 +69,13 @@ class CacheTest extends PHPunitTestCase
         $this->assertInstanceOf('stdClass', $y->config->config);
         // Convert stdClass back to array
         $this->assertEqualArray($x->config->config, (array)$y->config->config);
+    }
+
+
+    public function testCreate()
+    {
+        $ch = Cache::create('');
+        $this->assertInstanceOf('Fwlib\Cache\Cache', $ch);
     }
 
 
