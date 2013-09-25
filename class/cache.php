@@ -25,6 +25,7 @@ require_once(FWOLFLIB . 'func/filesystem.php');
  * -	CacheSet()
  * -	CacheDel()
  *
+ * @deprecated  use Fwlib\Cache\Cache
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2010-2011, Fwolf

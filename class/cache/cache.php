@@ -16,6 +16,7 @@ require_once(dirname(__FILE__) . '/../../func/string.php');
  * -	Get(), read cache data
  * -	Del(), delete cache data
  *
+ * @deprecated  Use Fwlib\Cache\Cache
  * @package		fwolflib
  * @subpackage	class.cache
  * @copyright	Copyright 2012, Fwolf
