@@ -96,6 +96,18 @@ $config['dbserver.default.name'] = $config['dbserver.mysql.name'];
 $config['dbserver.default.lang'] = $config['dbserver.mysql.lang'];
 
 
+/**
+ * Memcached
+ */
+$config['memcached.server'] = array(
+    array(
+        'host'      => '127.0.0.1',
+        'port'      => 11211,
+        'weight'    => 100,
+    ),
+);
+
+
 /***********************************************************
  * Config define area end
  **********************************************************/

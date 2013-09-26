@@ -5,6 +5,7 @@ require_once(dirname(__FILE__) . '/cache.php');
 /**
  * Key - value cache system, data store in memcached.
  *
+ * @deprecated  Use Fwlib\Cache\CacheMemcached
  * @package		fwolflib
  * @subpackage	class.cache
  * @copyright	Copyright 2012, Fwolf
