@@ -77,13 +77,20 @@ class Benchmark
      * Display benchmark result
      *
      * @param   string  $options
+     * @param   boolean $return     Return result instead echo
      */
-    public function display($options = '')
+    public function display($options = '', $return = false)
     {
         if (Env::isCli()) {
-            echo $this->resultCli($options);
+            $result = $this->resultCli($options);
         } else {
-            echo $this->resultWeb($options);
+            $result = $this->resultWeb($options);
+        }
+
+        if ($return) {
+            return $result;
+        } else {
+            echo $result;
         }
     }
 
@@ -196,6 +203,7 @@ EOF;
      *
      * @param   string  $desc   Marker description
      * @param   string  $color  Specific color like '#FF0000' or 'red'
+     * @return  float           Dur of this mark
      */
     public function mark($desc = '', $color = '')
     {
@@ -220,6 +228,8 @@ EOF;
         }
 
         $this->markId ++;
+
+        return $ar['dur'];
     }
 
 
