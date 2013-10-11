@@ -14,6 +14,7 @@ require_once('adodb/adodb.inc.php');
 * Data backup tool, result is sql format.
 * Test under sybase 11.92 ok.
 *
+* @deprecated   Use Fwlib\Db\DbDataExport
 * @package    fwolflib
 * @copyright  Copyright 2006, Fwolf
 * @author     Fwolf <fwolf.aide@gmail.com>
