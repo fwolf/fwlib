@@ -15,6 +15,28 @@ use Fwlib\Config\ConfigGlobal;
  */
 class ConfigGlobalTest extends PHPunitTestCase
 {
+    /**
+     * Backup config in ConfigGlobal and recover after test
+     *
+     * For other testcase use ConfigGlobal to work properly.
+     *
+     * @var array
+     */
+    protected static $configBackup = null;
+
+
+    public static function setUpBeforeClass()
+    {
+        self::$configBackup = ConfigGlobal::$config;
+    }
+
+
+    public static function tearDownAfterClass()
+    {
+        ConfigGlobal::$config = self::$configBackup;
+    }
+
+
     public function testLimitServerId()
     {
         ConfigGlobal::load(array());
