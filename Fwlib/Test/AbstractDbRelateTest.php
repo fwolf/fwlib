@@ -120,10 +120,10 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
         // New db connection
         foreach ($profileKey as $i => $key) {
-            $dbprofile = ConfigGlobal::get('dbserver.' . $key);
-            if (!empty($dbprofile['host'])) {
-                $name = $varName[$i];
-                if (is_null(self::${$name})) {
+            $name = $varName[$i];
+            if (is_null(self::${$name})) {
+                $dbprofile = ConfigGlobal::get('dbserver.' . $key);
+                if (!empty($dbprofile['host'])) {
                     self::${$name} = new Adodb($dbprofile);
                     self::${$name}->connect();
                 }
