@@ -53,6 +53,13 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     protected $dbUsing = '';
 
     /**
+     * Test table: group
+     *
+     * @var string
+     */
+    protected static $tblGroup = 'test_group';
+
+    /**
      * Test table: user
      *
      * @var string
@@ -60,11 +67,11 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     protected static $tblUser = 'test_user';
 
     /**
-     * Test table: group
+     * Test table: user_group
      *
      * @var string
      */
-    protected static $tblGroup = 'test_group';
+    protected static $tblUserGroup = 'test_user_group';
 
 
     /**
@@ -135,13 +142,28 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
         // Create test table
         $db->execute(
+            'CREATE TABLE ' . self::$tblGroup . '(
+                uuid        CHAR(36)        NOT NULL,
+                title       CHAR(255)       NULL,
+                PRIMARY KEY (uuid)
+            );
+            '
+        );
+
+        if (0 != $db->errorNo()) {
+            self::markTestSkipped(
+                'Create test table group error: ' .
+                $db->errorMsg()
+            );
+        }
+
+        $db->execute(
             'CREATE TABLE ' . self::$tblUser . '(
-                uuid        CHAR(36)        NULL,
+                uuid        CHAR(36)        NOT NULL,
                 title       VARCHAR(255)    NULL,
                 age         INTEGER         NOT NULL DEFAULT 0,
                 credit      DECIMAL(6, 2)   NULL,
                 joindate    DATETIME        NULL,
-                uuidGroup   CHAR(36)        NULL,
                 PRIMARY KEY (uuid)
             );
             '
@@ -155,9 +177,10 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         $db->execute(
-            'CREATE TABLE ' . self::$tblGroup . '(
-                uuid        CHAR(36)        NULL,
-                title       CHAR(255)       NULL,
+            'CREATE TABLE ' . self::$tblUserGroup . '(
+                uuid        CHAR(36)        NOT NULL,
+                uuidUser    CHAR(36)        NOT NULL,
+                uuidGroup   CHAR(36)        NOT NULL,
                 PRIMARY KEY (uuid)
             );
             '
@@ -165,7 +188,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
         if (0 != $db->errorNo()) {
             self::markTestSkipped(
-                'Create test table group error: ' .
+                'Create test table user_group error: ' .
                 $db->errorMsg()
             );
         }
@@ -178,11 +201,15 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     protected static function dropTable($db)
     {
         $db->execute(
-            'DROP TABLE ' . self::$tblUser
+            'DROP TABLE ' . self::$tblUserGroup
         );
 
         $db->execute(
             'DROP TABLE ' . self::$tblGroup
+        );
+
+        $db->execute(
+            'DROP TABLE ' . self::$tblUser
         );
     }
 

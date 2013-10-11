@@ -288,12 +288,11 @@ class AdodbMysqlTest extends AbstractDbRelateTest
                 'uuid'  => self::$dbMysql->param('uuid'),
                 'title' => self::$dbMysql->param('title'),
                 'age'   => self::$dbMysql->param('age'),
-                'uuidGroup' => self::$dbMysql->param('uuidGroup'),
             ),
         );
         $x = self::$dbMysql->genSqlPrepared($ar);
         $y = 'INSERT INTO ' . self::$tblUser
-            . '(uuid, title, age, uuidGroup) VALUES (?, ?, ?, ?)';
+            . '(uuid, title, age) VALUES (?, ?, ?)';
         $this->assertEquals($y, $x);
     }
 
