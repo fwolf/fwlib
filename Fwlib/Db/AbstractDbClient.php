@@ -25,7 +25,7 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
     /**
      * Db profile
      *
-     * {host, user, pass, name, type}
+     * {host, user, pass, name, type, lang}
      *
      * @var array
      */

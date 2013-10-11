@@ -214,8 +214,38 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     }
 
 
+    public function setUp()
+    {
+        // Check db configure
+        $ar = explode(',', $this->dbUsing);
+        foreach ((array)$ar as $key) {
+            $key = trim($key);
+            $profile = ConfigGlobal::get('dbserver.' . $key);
+            if (empty($profile['host'])) {
+                $this->markTestSkipped(
+                    'Dbserver ' . $key . ' is not configured.'
+                );
+            }
+            // Check db connection
+            $db = self::$db;    // Will always got value.
+            switch ($key) {
+                case 'mysql':
+                    $db = self::$dbMysql;
+                    break;
+                case 'sybase':
+                    $db = self::$dbSyb;
+                    break;
+            }
+            if (is_null($db) || !$db->isConnected()) {
+                $this->markTestSkipped('Db ' . $key . ' can\'t connect.');
+            }
+        }
+    }
+
+
     public static function setUpBeforeClass()
     {
+        // Create test table
         if (!is_null(self::$dbMysql) && self::$dbMysql->isConnected()) {
             self::createTable(self::$dbMysql);
         }

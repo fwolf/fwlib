@@ -20,16 +20,6 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     protected $dbUsing = 'mysql';
 
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        if (is_null(self::$dbMysql) || !self::$dbMysql->isConnected()) {
-            $this->markTestSkipped('Mysql db is not connected');
-        }
-    }
-
-
     public function testCall()
     {
         $ar = self::$dbMysql->GetAll('SELECT 1 AS a');

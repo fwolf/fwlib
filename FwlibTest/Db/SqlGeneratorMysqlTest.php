@@ -23,10 +23,6 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
     {
         parent::__construct();
 
-        if (is_null(self::$dbMysql) || !self::$dbMysql->isConnected()) {
-            $this->markTestSkipped('Mysql db is not connected');
-        }
-
         $this->sg = new SqlGenerator(self::$dbMysql);
     }
 

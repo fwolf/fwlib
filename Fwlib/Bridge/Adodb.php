@@ -56,6 +56,8 @@ class Adodb
     /**
      * Db profile
      *
+     * {host, user, pass, name, type, lang}
+     *
      * @var array
      */
     public $dbProfile = null;
@@ -340,15 +342,15 @@ class Adodb
 
             if (empty($rs)) {
                 // @codeCoverageIgnoreStart
-                throw new Exception('Db connect fail, please check php errorlog.', -1);
+                throw new \Exception($this->conn->ErrorMsg(), -1);
                 // @codeCoverageIgnoreEnd
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // @codeCoverageIgnoreStart
             // Log and output error
             $trace = "======== Adodb Connect Error ========\n"
-                . $e->getTrace
-                . $this->conn->ErrorMsg() . "\n";
+                //. $e->getTraceAsString() . "\n"
+                . $e->getMessage() . "\n";
             error_log($trace);
 
             if (!Env::isCli()) {
@@ -986,7 +988,7 @@ class Adodb
     public function getRowCount($tbl, $cond = '')
     {
         $sqlCfg = array(
-            'SELECT'    => array('c' => 'count(1)'),
+            'SELECT'    => array('c' => 'COUNT(1)'),
             'FROM'      => $tbl,
         );
         $rs = $this->executePrepare(

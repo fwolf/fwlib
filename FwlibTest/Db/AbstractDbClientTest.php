@@ -20,18 +20,25 @@ class AbstractDbClientTest extends PHPunitTestCase
     {
         $dbProfile = ConfigGlobal::get('dbserver.default');
 
+        // Invalid dbProfile
+        $o = new AbstractDbClientDummy('foo');
+        $this->assertFalse(isset($o->db));
+
+        if (empty($dbProfile['host'])) {
+            $this->markTestSkipped();
+        }
         $o = new AbstractDbClientDummy();
         $this->assertFalse(isset($o->db));
         $o->setDbProfile($dbProfile, false);
         $this->assertFalse(isset($o->db));
+        // Need db profile valid
         $o->db;
         $this->assertTrue(isset($o->db));
 
-        $o = new AbstractDbClientDummy('foo');
-        $this->assertFalse(isset($o->db));
-
+        // Need db profile valid
         $o = new AbstractDbClientDummy($dbProfile);
         $this->assertTrue(isset($o->db));
+
 
         // Note: Db connect fail not tested, because mysqli_real_connect()
         // will directly print error msg.
