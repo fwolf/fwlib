@@ -16,14 +16,14 @@ use Fwlib\Util\Json;
  */
 class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 {
-    protected $dbUsing = 'mysql';
+    protected static $dbUsing = 'mysql';
     protected $sg = null;
 
-    public function __construct()
+    public function setUp()
     {
-        parent::__construct();
-
-        $this->sg = new SqlGenerator(self::$dbMysql);
+        if (is_null($this->sg)) {
+            $this->sg = new SqlGenerator(self::$dbMysql);
+        }
     }
 
 

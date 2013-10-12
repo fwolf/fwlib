@@ -17,7 +17,7 @@ use Fwlib\Util\Uuid;
  */
 class AdodbMysqlTest extends AbstractDbRelateTest
 {
-    protected $dbUsing = 'mysql';
+    protected static $dbUsing = 'mysql';
 
 
     public function testCall()

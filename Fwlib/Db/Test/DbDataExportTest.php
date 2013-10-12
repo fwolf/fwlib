@@ -20,7 +20,7 @@ use Fwlib\Util\Uuid;
 class DbDataExportTest extends AbstractDbRelateTest
 {
     protected static $dbe = null;
-    protected $dbUsing = 'default';
+    protected static $dbUsing = 'default';
     protected static $delimiter = '';
     protected static $exportPath = '';
     protected static $insertCount = 23;

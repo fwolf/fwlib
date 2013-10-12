@@ -50,7 +50,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
      *
      * @var string
      */
-    protected $dbUsing = '';
+    protected static $dbUsing = '';
 
     /**
      * Test table: group
@@ -75,23 +75,12 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->connectDb($this->dbUsing);
-    }
-
-
-    /**
      * Connect to db and assign to static property $dbXxx
      *
      * @see $dbUsing
      * @param   string   $profile    Db profile, multi splitted by ','
      */
-    protected function connectDb($profile)
+    protected static function connectDb($profile)
     {
         if (empty($profile)) {
             return;
@@ -121,11 +110,21 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         // New db connection
         foreach ($profileKey as $i => $key) {
             $name = $varName[$i];
-            if (is_null(self::${$name})) {
+            $db = &self::${$name};
+            if (is_null($db)) {
                 $dbprofile = ConfigGlobal::get('dbserver.' . $key);
                 if (!empty($dbprofile['host'])) {
-                    self::${$name} = new Adodb($dbprofile);
-                    self::${$name}->connect();
+                    $db = new Adodb($dbprofile);
+                    $db->connect();
+
+                    if (is_null($db) || !$db->isConnected()) {
+                        self::markTestSkipped('Db ' . $key . ' can\'t connect.');
+                    }
+
+                } else {
+                    self::markTestSkipped(
+                        'Dbserver ' . $key . ' is not configured.'
+                    );
                 }
             }
         }
@@ -214,37 +213,10 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     }
 
 
-    public function setUp()
-    {
-        // Check db configure
-        $ar = explode(',', $this->dbUsing);
-        foreach ((array)$ar as $key) {
-            $key = trim($key);
-            $profile = ConfigGlobal::get('dbserver.' . $key);
-            if (empty($profile['host'])) {
-                $this->markTestSkipped(
-                    'Dbserver ' . $key . ' is not configured.'
-                );
-            }
-            // Check db connection
-            $db = self::$db;    // Will always got value.
-            switch ($key) {
-                case 'mysql':
-                    $db = self::$dbMysql;
-                    break;
-                case 'sybase':
-                    $db = self::$dbSyb;
-                    break;
-            }
-            if (is_null($db) || !$db->isConnected()) {
-                $this->markTestSkipped('Db ' . $key . ' can\'t connect.');
-            }
-        }
-    }
-
-
     public static function setUpBeforeClass()
     {
+        self::connectDb(static::$dbUsing);
+
         // Create test table
         if (!is_null(self::$dbMysql) && self::$dbMysql->isConnected()) {
             self::createTable(self::$dbMysql);
