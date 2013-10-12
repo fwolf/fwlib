@@ -38,13 +38,13 @@ class Adodb
 {
 
     /**
-     * System charset
+     * OS charset
      *
-     * In common, this is your php script/operation system charset.
+     * In common, this is your php script oroperation system charset.
      *
      * @var string
      */
-    public $charsetSys = 'utf8';
+    public $charsetOs = 'utf8';
 
     /**
      * Real ADOdb connection object
@@ -387,7 +387,7 @@ class Adodb
      */
     public function convertEncodingRs(&$rs)
     {
-        if (empty($rs) || $this->charsetSys == $this->dbProfile['lang']) {
+        if (empty($rs) || $this->charsetOs == $this->dbProfile['lang']) {
             return $rs;
         }
 
@@ -399,7 +399,7 @@ class Adodb
         } elseif (is_string($rs)) {
             $rs = mb_convert_encoding(
                 $rs,
-                $this->charsetSys,
+                $this->charsetOs,
                 $this->dbProfile['lang']
             );
         }
@@ -418,7 +418,7 @@ class Adodb
      */
     public function convertEncodingSql(&$sql)
     {
-        if (empty($sql) || $this->charsetSys == $this->dbProfile['lang']) {
+        if (empty($sql) || $this->charsetOs == $this->dbProfile['lang']) {
             return $sql;
         }
 
@@ -431,7 +431,7 @@ class Adodb
             $sql = mb_convert_encoding(
                 $sql,
                 $this->dbProfile['lang'],
-                $this->charsetSys
+                $this->charsetOs
             );
         }
 
@@ -1212,6 +1212,19 @@ class Adodb
             $val = stripslashes($val);
             return $this->conn->qstr($val, false);
         }
+    }
+
+
+    /**
+     * Set OS charset
+     *
+     * For charset convert.
+     *
+     * @param   string  $charset
+     */
+    public function setCharsetOs($charset)
+    {
+        $this->charsetOs = $charset;
     }
 
 

@@ -73,10 +73,10 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testConvertEncodingRs()
     {
         // Backup original charset
-        $originalCharsetSys = self::$dbMysql->charsetSys;
+        $originalCharsetOs = self::$dbMysql->charsetOs;
         $originalCharsetDb = self::$dbMysql->dbProfile['lang'];
 
-        self::$dbMysql->charsetSys = 'utf-8';
+        self::$dbMysql->setCharsetOs('utf-8');
         self::$dbMysql->dbProfile['lang'] = 'gb2312';
 
         $x = array(null, '你好');
@@ -88,7 +88,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
         // Recover original charset
-        self::$dbMysql->charsetSys = $originalCharsetSys;
+        self::$dbMysql->setCharsetOs($originalCharsetOs);
         self::$dbMysql->dbProfile['lang'] = $originalCharsetDb;
     }
 
@@ -96,10 +96,10 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testConvertEncodingSql()
     {
         // Backup original charset
-        $originalCharsetSys = self::$dbMysql->charsetSys;
+        $originalCharsetOs = self::$dbMysql->charsetOs;
         $originalCharsetDb = self::$dbMysql->dbProfile['lang'];
 
-        self::$dbMysql->charsetSys = 'utf-8';
+        self::$dbMysql->setCharsetOs('utf-8');
         self::$dbMysql->dbProfile['lang'] = 'gb2312';
 
         $x = array(null, '你好');
@@ -111,7 +111,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
         // Recover original charset
-        self::$dbMysql->charsetSys = $originalCharsetSys;
+        self::$dbMysql->setCharsetOs($originalCharsetOs);
         self::$dbMysql->dbProfile['lang'] = $originalCharsetDb;
     }
 
