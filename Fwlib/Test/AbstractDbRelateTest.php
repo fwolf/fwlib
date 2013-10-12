@@ -10,9 +10,9 @@ use Fwlib\Config\ConfigGlobal;
  *
  * @codeCoverageIgnore
  *
- * @package     FwlibTest\Base
+ * @package     Fwlib\Base
  * @copyright   Copyright 2013 Fwolf
- * @author      Fwolf <fwolf.aide+FwlibTest@gmail.com>
+ * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-09-11
  */

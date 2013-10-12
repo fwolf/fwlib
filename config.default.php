@@ -124,9 +124,6 @@ if ('config.default.php' == basename(__FILE__)) {
 
     // Add other library to ClassLoader
 
-    // Some testcase use dummy
-    ClassLoader::addPrefix('FwlibTest', __DIR__ . '/');
-
     // Autoload for Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object
     ClassLoader::addPrefix(
