@@ -38,7 +38,7 @@ class DbDataExportTest extends AbstractDbRelateTest
     }
 
 
-    public function newObjDbe()
+    public function setUp()
     {
         if (is_null(self::$dbe)) {
             self::$dbe = new DbDataExport(self::$db->dbProfile);
@@ -54,7 +54,7 @@ class DbDataExportTest extends AbstractDbRelateTest
     {
         parent::setUpBeforeClass();
 
-        // Create temp dir for exported file
+        // Generate temp dir name for exported file
         self::$exportPath = tempnam(sys_get_temp_dir(), 'DbDataExportTest-');
         // Unlink tmpfile, will create as dir later
         unlink(self::$exportPath);
@@ -82,8 +82,6 @@ class DbDataExportTest extends AbstractDbRelateTest
 
     public function testExport()
     {
-        $this->newObjDbe();
-
         self::$dbe->setTableExclude(self::$tblGroup);
 
         //self::$dbe->verbose = true;
@@ -132,8 +130,6 @@ class DbDataExportTest extends AbstractDbRelateTest
 
     public function testExportWithGroupby()
     {
-        $this->newObjDbe();
-
         self::$dbe->setTableInclude(array(self::$tblUser));
         self::$dbe->setTableGroupby(self::$tblUser, 'uuid');
 
@@ -179,8 +175,6 @@ class DbDataExportTest extends AbstractDbRelateTest
 
     public function testExportWithSplitFile()
     {
-        $this->newObjDbe();
-
         self::$dbe->setTableInclude(self::$tblUser);
         self::$dbe->setTableGroupby(self::$tblUser, '');
         self::$dbe->maxRowPerFile = 10;
@@ -213,8 +207,6 @@ class DbDataExportTest extends AbstractDbRelateTest
 
     public function testSetExportPath()
     {
-        $this->newObjDbe();
-
         // $exportPath is set and exists, assign same value again will direct
         // return true.
         $this->assertTrue(self::$dbe->setExportPath(self::$exportPath));
