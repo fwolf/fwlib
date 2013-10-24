@@ -45,9 +45,9 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
     public function testCheckTblExist()
     {
-        $this->assertTrue(self::$dbMysql->checkTblExist(self::$tblUser));
+        $this->assertTrue(self::$dbMysql->checkTableExist(self::$tableUser));
         $this->assertFalse(
-            self::$dbMysql->checkTblExist(self::$tblUser . '_not_exists')
+            self::$dbMysql->checkTableExist(self::$tableUser . '_not_exists')
         );
     }
 
@@ -137,11 +137,11 @@ class AdodbMysqlTest extends AbstractDbRelateTest
      */
     public function testDelRow()
     {
-        $i = self::$dbMysql->delRow(self::$tblUser, '');
+        $i = self::$dbMysql->delRow(self::$tableUser, '');
         $this->assertEquals(-1, $i);
 
         $i = self::$dbMysql->delRow(
-            self::$tblUser,
+            self::$tableUser,
             'WHERE FALSE'
         );
         $this->assertEquals(0, $i);
@@ -149,7 +149,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         // When use executePrepare(), error was detected and rollback, so
         // return 0 instead of -1, throw exception.
         self::$dbMysql->delRow(
-            self::$tblUser,
+            self::$tableUser,
             'WHERE ERROR_CLAUSE'
         );
     }
@@ -168,7 +168,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->execute(
             array(
                 'SELECT'    => 'uuid',
-                'FROM'      => self::$tblUser,
+                'FROM'      => self::$tableUser,
                 'LIMIT'     => 1
             )
         );
@@ -185,7 +185,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->executeGenSql(
             array(
                 'SELECT'    => 'uuid',
-                'FROM'      => self::$tblUser,
+                'FROM'      => self::$tableUser,
                 'LIMIT'     => 1
             )
         );
@@ -201,7 +201,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->executePrepare(
             array(
                 'SELECT'    => 'uuid',
-                'FROM'      => self::$tblUser,
+                'FROM'      => self::$tableUser,
                 'LIMIT'     => 1
             )
         );
@@ -210,7 +210,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->executePrepare(
             array(
                 'SELECT'    => 'uuid',
-                'FROM'      => self::$tblUser,
+                'FROM'      => self::$tableUser,
                 'WHERE'     => 'Error Clause',
             )
         );
@@ -221,12 +221,12 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     {
         $this->assertEquals(
             '',
-            self::$dbMysql->findColTs(self::$tblUser . '_not_exists')
+            self::$dbMysql->findColumnTs(self::$tableUser . '_not_exists')
         );
 
         $this->assertEquals(
             '',
-            self::$dbMysql->findColTs(self::$tblGroup)
+            self::$dbMysql->findColumnTs(self::$tableGroup)
         );
     }
 
@@ -259,10 +259,10 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         $ar = array(
             'SELECT'    => 'title',
-            'FROM'      => self::$tblUser,
+            'FROM'      => self::$tableUser,
         );
         $x = self::$dbMysql->genSql($ar);
-        $y = 'SELECT title FROM ' . self::$tblUser;
+        $y = 'SELECT title FROM ' . self::$tableUser;
         $this->assertEquals($y, $x);
     }
 
@@ -273,7 +273,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $this->assertEquals('', $x);
 
         $ar = array(
-            'INSERT'    => self::$tblUser,
+            'INSERT'    => self::$tableUser,
             'VALUES'    => array(
                 'uuid'  => self::$dbMysql->param('uuid'),
                 'title' => self::$dbMysql->param('title'),
@@ -281,7 +281,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
             ),
         );
         $x = self::$dbMysql->genSqlPrepared($ar);
-        $y = 'INSERT INTO ' . self::$tblUser
+        $y = 'INSERT INTO ' . self::$tableUser
             . '(uuid, title, age) VALUES (?, ?, ?)';
         $this->assertEquals($y, $x);
     }
@@ -301,22 +301,22 @@ class AdodbMysqlTest extends AbstractDbRelateTest
             'title' => 'Title',
             'age'   => 42,
         );
-        self::$dbMysql->write(self::$tblUser, $ar);
+        self::$dbMysql->write(self::$tableUser, $ar);
 
 
         // * col
-        $data = self::$dbMysql->getByPk(self::$tblUser, $uuid);
+        $data = self::$dbMysql->getByPk(self::$tableUser, $uuid);
         $this->assertEquals('Title', $data['title']);
         $this->assertEquals(42, $data['age']);
 
         // Not exists data
-        $data = self::$dbMysql->getByPk(self::$tblUser, $uuid . 'foo');
+        $data = self::$dbMysql->getByPk(self::$tableUser, $uuid . 'foo');
         $this->assertEquals(null, $data);
 
         // More PK value than column, throw exception
         $this->assertEquals(
             null,
-            self::$dbMysql->getByPk(self::$tblUser, array(1, 2), 'title')
+            self::$dbMysql->getByPk(self::$tableUser, array(1, 2), 'title')
         );
     }
 
@@ -327,7 +327,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         $this->assertEquals(
             null,
-            self::$dbMysql->getMetaPrimaryKey(self::$tblUser . '_not_exists')
+            self::$dbMysql->getMetaPrimaryKey(self::$tableUser . '_not_exists')
         );
     }
 
@@ -368,7 +368,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $col = 'not_exists';
         $this->assertEquals(
             '\'' . $col . '\'',
-            self::$dbMysql->quoteValue(self::$tblUser, $col, $col)
+            self::$dbMysql->quoteValue(self::$tableUser, $col, $col)
         );
     }
 
@@ -386,32 +386,32 @@ class AdodbMysqlTest extends AbstractDbRelateTest
             'title' => 'Title',
             'age'   => 42,
         );
-        self::$dbMysql->write(self::$tblUser, $ar);
+        self::$dbMysql->write(self::$tableUser, $ar);
         $this->assertEquals(
             'Title',
-            self::$dbMysql->getByPk(self::$tblUser, $uuid, 'title')
+            self::$dbMysql->getByPk(self::$tableUser, $uuid, 'title')
         );
 
         // Auto UPDATE
         $ar['age'] = 24;
-        self::$dbMysql->write(self::$tblUser, $ar);
+        self::$dbMysql->write(self::$tableUser, $ar);
         $this->assertEquals(
             24,
-            self::$dbMysql->getByPk(self::$tblUser, $uuid, 'age')
+            self::$dbMysql->getByPk(self::$tableUser, $uuid, 'age')
         );
 
         // Write without PK, will fail
         unset($ar['uuid']);
         $this->assertEquals(
             -1,
-            self::$dbMysql->write(self::$tblUser, $ar)
+            self::$dbMysql->write(self::$tableUser, $ar)
         );
 
         // For INSERT, will fail and throw exception
         $ar['uuid'] = $uuid;
         $this->assertEquals(
             -1,
-            self::$dbMysql->write(self::$tblUser, $ar, 'I')
+            self::$dbMysql->write(self::$tableUser, $ar, 'I')
         );
     }
 }

@@ -57,21 +57,21 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
      *
      * @var string
      */
-    protected static $tblGroup = 'test_group';
+    protected static $tableGroup = 'test_group';
 
     /**
      * Test table: user
      *
      * @var string
      */
-    protected static $tblUser = 'test_user';
+    protected static $tableUser = 'test_user';
 
     /**
      * Test table: user_group
      *
      * @var string
      */
-    protected static $tblUserGroup = 'test_user_group';
+    protected static $tableUserGroup = 'test_user_group';
 
 
     /**
@@ -141,7 +141,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
         // Create test table
         $db->execute(
-            'CREATE TABLE ' . self::$tblGroup . '(
+            'CREATE TABLE ' . self::$tableGroup . '(
                 uuid        CHAR(36)        NOT NULL,
                 title       CHAR(255)       NULL,
                 PRIMARY KEY (uuid)
@@ -157,7 +157,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         $db->execute(
-            'CREATE TABLE ' . self::$tblUser . '(
+            'CREATE TABLE ' . self::$tableUser . '(
                 uuid        CHAR(36)        NOT NULL,
                 title       VARCHAR(255)    NULL,
                 age         INTEGER         NOT NULL DEFAULT 0,
@@ -176,7 +176,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         $db->execute(
-            'CREATE TABLE ' . self::$tblUserGroup . '(
+            'CREATE TABLE ' . self::$tableUserGroup . '(
                 uuid        CHAR(36)        NOT NULL,
                 uuidUser    CHAR(36)        NOT NULL,
                 uuidGroup   CHAR(36)        NOT NULL,
@@ -200,15 +200,15 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
     protected static function dropTable($db)
     {
         $db->execute(
-            'DROP TABLE ' . self::$tblUserGroup
+            'DROP TABLE ' . self::$tableUserGroup
         );
 
         $db->execute(
-            'DROP TABLE ' . self::$tblGroup
+            'DROP TABLE ' . self::$tableGroup
         );
 
         $db->execute(
-            'DROP TABLE ' . self::$tblUser
+            'DROP TABLE ' . self::$tableUser
         );
     }
 
@@ -226,7 +226,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         if (!is_null(self::$db) && self::$db->isConnected() &&
-            !self::$db->checkTblExist(self::$tblUser)) {
+            !self::$db->checkTableExist(self::$tableUser)) {
             self::createTable(self::$db);
         }
     }
@@ -242,7 +242,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         if (!is_null(self::$db) && self::$db->isConnected() &&
-            self::$db->checkTblExist(self::$tblUser)) {
+            self::$db->checkTableExist(self::$tableUser)) {
             self::dropTable(self::$db);
         }
     }

@@ -266,28 +266,28 @@ class Adodb
     /**
      * Check if a table exists in db ?
      *
-     * @param   string  $tbl
+     * @param   string  $table
      * @return  boolean
      */
-    public function checkTblExist($tbl)
+    public function checkTableExist($table)
     {
-        $tbl = addslashes($tbl);
+        $table = addslashes($table);
 
         // @codeCoverageIgnoreStart
         if ($this->isDbSybase()) {
             $sql = 'SELECT count(1) AS c FROM sysobjects WHERE name = "'
-                . $tbl . '" AND type = "U"';
+                . $table . '" AND type = "U"';
             $rs = $this->execute($sql);
             return (0 != $rs->fields['c']);
 
-        } elseif ($this->IsDbMysql()) {
-            $sql = "SHOW TABLES LIKE '$tbl'";
+        } elseif ($this->isDbMysql()) {
+            $sql = "SHOW TABLES LIKE '$table'";
             $rs = $this->execute($sql);
             return (0 != $rs->RowCount());
 
         } else {
             // :THINK: Better method ?
-            $sql = "SELECT 1 FROM $tbl";
+            $sql = "SELECT 1 FROM $table";
             $rs = $this->execute($sql);
             return (0 == $this->conn->ErrorNo());
         }
@@ -460,11 +460,11 @@ class Adodb
      * 0 not found,
      * N > 0 number of deleted rows.
      *
-     * @param   string  $tbl
+     * @param   string  $table
      * @param   string  $cond   Condition, can be where, having etc, raw sql string, not null.
      * @return  int
      */
-    public function delRow($tbl, $cond)
+    public function delRow($table, $cond)
     {
         $cond = trim($cond);
         if (empty($cond)) {
@@ -472,7 +472,7 @@ class Adodb
         }
 
         $this->executePrepare(
-            $this->sqlGenerator->get(array('DELETE' => $tbl))
+            $this->sqlGenerator->get(array('DELETE' => $table))
             . ' ' . $cond
         );
 
@@ -595,12 +595,12 @@ class Adodb
      *
      * Timestamp column are various for different db, hard to test.
      *
-     * @param   $tbl    Table name
+     * @param   $table
      * @return  string
      */
-    public function findColTs($tbl)
+    public function findColumnTs($table)
     {
-        $arCol = $this->getMetaColumn($tbl);
+        $arCol = $this->getMetaColumn($table);
         if (empty($arCol)) {
             return '';
         }
@@ -622,7 +622,7 @@ class Adodb
                         'b' => 'systypes'
                     ),
                     'WHERE' => array(
-                        "a.id = object_id('$tbl')",
+                        "a.id = object_id('$table')",
                         'a.type = b.type',
                         'a.usertype = b.usertype',
                         // Without below line, can retrieve sybase's col info
@@ -649,7 +649,7 @@ class Adodb
             return null;
 
             trigger_error(
-                __CLASS__ . '::findColTs() for '
+                __CLASS__ . '::findColumnTs() for '
                 . $this->dbProfile['type']
                 . ' not implemented!',
                 E_USER_ERROR
@@ -722,17 +722,17 @@ class Adodb
      * other condition by assign $pkCol to non-PK column, but it SHOULD ONLY
      * use on unique index or maximum 1 record exists.
      *
-     * @param   string  $tbl
+     * @param   string  $table
      * @param   mixed   $pkVal
      * @param   mixed   $col            Cols need to retrieve
      * @param   mixed   $pkCol          PK column name, null to auto get
      * @return  mixed                   Single/array, null if error occur
      */
-    public function getByPk ($tbl, $pkVal, $col = null, $pkCol = null)
+    public function getByPk ($table, $pkVal, $col = null, $pkCol = null)
     {
         // Treat PK col
         if (empty($pkCol)) {
-            $pkCol = $this->getMetaPrimaryKey($tbl);
+            $pkCol = $this->getMetaPrimaryKey($table);
         }
 
         // Convert PK value and col name to array
@@ -769,7 +769,7 @@ class Adodb
         }
         if ('*' == $col) {
             // Drop uppercased index
-            $col = array_values($this->getMetaColumnName($tbl));
+            $col = array_values($this->getMetaColumnName($table));
         }
         if (!is_array($col)) {
             if (is_string($col)) {
@@ -787,13 +787,13 @@ class Adodb
         // Retrieve from db
         $sqlCfg = array(
             'SELECT'    => $col,
-            'FROM'      => $tbl,
+            'FROM'      => $table,
             'LIMIT'     => 1,
         );
         while (!empty($pkVal)) {
             $pkName = array_shift($pkCol);
             $sqlCfg['WHERE'][] = $pkName . ' = '
-                . $this->quoteValue($tbl, $pkName, array_shift($pkVal));
+                . $this->quoteValue($table, $pkName, array_shift($pkVal));
             unset($pkName);
         }
         $rs = $this->execute($sqlCfg);
@@ -821,39 +821,39 @@ class Adodb
      * Get table schema
      *
      * @see $metaColumn
-     * @param   string  $tbl
+     * @param   string  $table
      * @param   boolean $forcenew   Force to retrieve instead of read from cache
      * @return  array
      */
-    public function getMetaColumn($tbl, $forcenew = false)
+    public function getMetaColumn($table, $forcenew = false)
     {
-        if (!isset($this->metaColumn[$tbl]) || (true == $forcenew)) {
-            $this->metaColumn[$tbl] = $this->conn->MetaColumns($tbl);
-            if (empty($this->metaColumn[$tbl])) {
+        if (!isset($this->metaColumn[$table]) || (true == $forcenew)) {
+            $this->metaColumn[$table] = $this->conn->MetaColumns($table);
+            if (empty($this->metaColumn[$table])) {
                 return null;
             }
 
             // Convert columns to native case
-            $colName = $this->getMetaColumnName($tbl);
+            $colName = $this->getMetaColumnName($table);
             // $colName = array(COLUMN => column), $c is UPPER CASED
             $art = array();
-            foreach ($this->metaColumn[$tbl] as $c => $ar) {
+            foreach ($this->metaColumn[$table] as $c => $ar) {
                 $art[$colName[strtoupper($c)]] = $ar;
             }
-            $this->metaColumn[$tbl] = $art;
+            $this->metaColumn[$table] = $art;
 
             // @codeCoverageIgnoreStart
             // Fix sybase display timestamp column as varbinary
             if ($this->isDbSybase()) {
-                $s = $this->findColTs($tbl);
+                $s = $this->findColumnTs($table);
                 if (!empty($s)) {
-                    $this->metaColumn[$tbl][$s]->type = 'timestamp';
+                    $this->metaColumn[$table][$s]->type = 'timestamp';
                 }
             }
             // @codeCoverageIgnoreEnd
         }
 
-        return $this->metaColumn[$tbl];
+        return $this->metaColumn[$table];
     }
 
 
@@ -861,16 +861,16 @@ class Adodb
      * Get table column name
      *
      * @see $metaColumnName
-     * @param   string  $tbl
+     * @param   string  $table
      * @param   boolean $forcenew   Force to retrieve instead of read from cache
      * @return  array
      */
-    public function getMetaColumnName($tbl, $forcenew = false)
+    public function getMetaColumnName($table, $forcenew = false)
     {
-        if (!isset($this->metaColumnName[$tbl]) || (true == $forcenew)) {
-            $this->metaColumnName[$tbl] = $this->conn->MetaColumnNames($tbl);
+        if (!isset($this->metaColumnName[$table]) || (true == $forcenew)) {
+            $this->metaColumnName[$table] = $this->conn->MetaColumnNames($table);
         }
-        return $this->metaColumnName[$tbl];
+        return $this->metaColumnName[$table];
     }
 
 
@@ -879,16 +879,16 @@ class Adodb
      *
      * Return single string value or array for multi column primary key.
      *
-     * @param   string  $tbl
+     * @param   string  $table
      * @param   boolean $forcenew   Force to retrieve instead of read from cache
      * @return  mixed
      * @see $metaPrimaryKey
      */
-    public function getMetaPrimaryKey($tbl, $forcenew = false)
+    public function getMetaPrimaryKey($table, $forcenew = false)
     {
-        if (!isset($this->metaPrimaryKey[$tbl]) || (true == $forcenew)) {
+        if (!isset($this->metaPrimaryKey[$table]) || (true == $forcenew)) {
             // Find using ADOdb first
-            $ar = $this->conn->MetaPrimaryKeys($tbl);
+            $ar = $this->conn->MetaPrimaryKeys($table);
 
             // @codeCoverageIgnoreStart
             if (false == $ar || empty($ar)) {
@@ -915,14 +915,14 @@ class Adodb
                         array(
                             'SELECT' => array(
                                 'name', 'keycnt',
-                                'k1' => "index_col('$tbl', indid, 1)",
-                                'k2' => "index_col('$tbl', indid, 2)",
-                                'k3' => "index_col('$tbl', indid, 3)",
+                                'k1' => "index_col('$table', indid, 1)",
+                                'k2' => "index_col('$table', indid, 2)",
+                                'k3' => "index_col('$table', indid, 3)",
                             ),
                             'FROM'  => 'sysindexes',
                             'WHERE' => array(
                                 'status & 2048 = 2048 ',
-                                "id = object_id('$tbl')",
+                                "id = object_id('$table')",
                             )
                         )
                     );
@@ -945,7 +945,7 @@ class Adodb
 
             // Convert columns to native case
             if (!empty($ar)) {
-                $colName = $this->GetMetaColumnName($tbl);
+                $colName = $this->GetMetaColumnName($table);
                 // $colName = array(COLUMN => column), $c is UPPER CASED
                 $art = array();
                 foreach ($ar as $idx => $col) {
@@ -961,12 +961,12 @@ class Adodb
 
             // Set to cache
             if (!empty($ar)) {
-                $this->metaPrimaryKey[$tbl] = $ar;
+                $this->metaPrimaryKey[$table] = $ar;
             }
         }
 
-        if (isset($this->metaPrimaryKey[$tbl])) {
-            return $this->metaPrimaryKey[$tbl];
+        if (isset($this->metaPrimaryKey[$table])) {
+            return $this->metaPrimaryKey[$table];
 
         } else {
             return null;
@@ -981,15 +981,15 @@ class Adodb
      * -1: error,
      * N >= 0: number of rows.
      *
-     * @param   string  $tbl
+     * @param   string  $table
      * @param   string  $cond   Condition, raw sql, can be WHERE, HAVING etc
      * @return  int
      */
-    public function getRowCount($tbl, $cond = '')
+    public function getRowCount($table, $cond = '')
     {
         $sqlCfg = array(
             'SELECT'    => array('c' => 'COUNT(1)'),
-            'FROM'      => $tbl,
+            'FROM'      => $table,
         );
         $rs = $this->executePrepare(
             $this->sqlGenerator->get($sqlCfg)
@@ -1157,17 +1157,17 @@ class Adodb
     /**
      * Smart quote string in sql, by check columns type
      *
-     * @param   string  $tbl
+     * @param   string  $table
      * @param   string  $col
      * @param   mixed   $val
      * @return  string
      */
-    public function quoteValue($tbl, $col, $val)
+    public function quoteValue($table, $col, $val)
     {
-        $this->getMetaColumn($tbl);
-        if (!isset($this->metaColumn[$tbl][$col]->type)) {
+        $this->getMetaColumn($table);
+        if (!isset($this->metaColumn[$table][$col]->type)) {
             trigger_error(
-                "Column to quote not exists($tbl.$col).",
+                "Column to quote not exists($table.$col).",
                 E_USER_WARNING
             );
 
@@ -1178,7 +1178,7 @@ class Adodb
             // @codeCoverageIgnoreEnd
         }
 
-        $type = $this->metaColumn[$tbl][$col]->type;
+        $type = $this->metaColumn[$table][$col]->type;
         if (in_array(
             $type,
             array(
@@ -1251,15 +1251,15 @@ class Adodb
      * Even data to write exists in db and same, it will still do write
      * operation, and been counted in return value.
      *
-     * @param   string  $tbl    Table to write to
+     * @param   string  $table
      * @param   array   $data   Row(s) data
      * @param   string  $mode   Write mode
      * @return  int
      */
-    public function write($tbl, $data, $mode = 'A')
+    public function write($table, $data, $mode = 'A')
     {
         // Find primary key column first
-        $arPk = $this->getMetaPrimaryKey($tbl);
+        $arPk = $this->getMetaPrimaryKey($table);
 
         // Convert single row data to multi row mode
         if (!isset($data[0])) {
@@ -1291,11 +1291,11 @@ class Adodb
             $where = ' WHERE ';
             foreach ($arPk as $key) {
                 $where .= " $key = "
-                    . $this->quoteValue($tbl, $key, $data[0][$key])
+                    . $this->quoteValue($table, $key, $data[0][$key])
                     . ' AND ';
             }
             $where = substr($where, 0, strlen($where) - 5);
-            if (0 < $this->getRowCount($tbl, $where)) {
+            if (0 < $this->getRowCount($table, $where)) {
                 $mode = 'U';
             } else {
                 $mode = 'I';
@@ -1305,7 +1305,7 @@ class Adodb
         // Prepare sql
         if ('U' == $mode) {
             $sqlCfg = array(
-                'UPDATE' => $tbl,
+                'UPDATE' => $table,
                 'LIMIT' => 1,
                 );
             // Primary key cannot change, so exclude them from SET clause,
@@ -1328,7 +1328,7 @@ class Adodb
                 $arVal[$key] = $this->conn->Param($key);
             }
             $sqlCfg = array(
-                'INSERT' => $tbl,
+                'INSERT' => $table,
                 'VALUES' => $arVal,
             );
         }

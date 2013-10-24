@@ -62,7 +62,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         // Insert data for export
         for ($i = 0; $i < self::$insertCount; $i ++) {
             self::$db->write(
-                self::$tblUser,
+                self::$tableUser,
                 array(
                     'uuid'  => Uuid::gen(),
                 )
@@ -82,25 +82,25 @@ class DbDataExportTest extends AbstractDbRelateTest
 
     public function testExport()
     {
-        self::$dbe->setTableExclude(self::$tblGroup);
+        self::$dbe->setTableExclude(self::$tableGroup);
 
         //self::$dbe->verbose = true;
         self::$dbe->export();
         $s = file_get_contents(
-            self::$exportPath . '/' . self::$tblUser . '.sql'
+            self::$exportPath . '/' . self::$tableUser . '.sql'
         );
         $ar = explode("\n", $s);
         //var_dump($ar);
         //echo $s;
 
         $this->assertFalse(
-            file_exists(self::$exportPath . '/' .  self::$tblGroup . '.sql')
+            file_exists(self::$exportPath . '/' .  self::$tableGroup . '.sql')
         );
 
 
         $i = 0;
 
-        $y = 'TRUNCATE TABLE ' . self::$tblUser . self::$delimiter;
+        $y = 'TRUNCATE TABLE ' . self::$tableUser . self::$delimiter;
         $this->assertEquals($y, $ar[$i++]);
 
         // Skip 'INSERT' line
@@ -123,20 +123,20 @@ class DbDataExportTest extends AbstractDbRelateTest
 
         // Clean
         FileSystem::del(
-            self::$exportPath . DIRECTORY_SEPARATOR . self::$tblUser . '.sql'
+            self::$exportPath . DIRECTORY_SEPARATOR . self::$tableUser . '.sql'
         );
     }
 
 
     public function testExportWithGroupby()
     {
-        self::$dbe->setTableInclude(array(self::$tblUser));
-        self::$dbe->setTableGroupby(self::$tblUser, 'uuid');
+        self::$dbe->setTableInclude(array(self::$tableUser));
+        self::$dbe->setTableGroupby(self::$tableUser, 'uuid');
 
         //self::$dbe->verbose = true;
         self::$dbe->export();
         $s = file_get_contents(
-            self::$exportPath . '/' . self::$tblUser . '.sql'
+            self::$exportPath . '/' . self::$tableUser . '.sql'
         );
         $ar = explode("\n", $s);
         //var_dump($ar);
@@ -145,7 +145,7 @@ class DbDataExportTest extends AbstractDbRelateTest
 
         $i = 0;
 
-        $y = 'TRUNCATE TABLE ' . self::$tblUser . self::$delimiter;
+        $y = 'TRUNCATE TABLE ' . self::$tableUser . self::$delimiter;
         $this->assertEquals($y, $ar[$i++]);
 
         // Skip 'INSERT' line
@@ -168,22 +168,22 @@ class DbDataExportTest extends AbstractDbRelateTest
 
         // Clean
         FileSystem::del(
-            self::$exportPath . DIRECTORY_SEPARATOR . self::$tblUser . '.sql'
+            self::$exportPath . DIRECTORY_SEPARATOR . self::$tableUser . '.sql'
         );
     }
 
 
     public function testExportWithSplitFile()
     {
-        self::$dbe->setTableInclude(self::$tblUser);
-        self::$dbe->setTableGroupby(self::$tblUser, '');
+        self::$dbe->setTableInclude(self::$tableUser);
+        self::$dbe->setTableGroupby(self::$tableUser, '');
         self::$dbe->maxRowPerFile = 10;
 
         //self::$dbe->verbose = true;
         self::$dbe->export();
         //system('ls -l ' . self::$exportPath);
         $s = file_get_contents(
-            self::$exportPath . '/' . self::$tblUser . '.2.sql'
+            self::$exportPath . '/' . self::$tableUser . '.2.sql'
         );
         $ar = explode("\n", $s);
         //var_dump($ar);
