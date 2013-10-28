@@ -205,7 +205,7 @@ function ArraySort (&$ar_srce, $key, $b_asc = true, $joker = '') {
  *
  * Rules example: a*, -*b, -??c, +?d*
  *
- * @deprecated      Use Fwlib\Util\ArrayUtil::filterByWildcard()
+ * @deprecated      Use Fwlib\Util\ArrayUtil::searchByWildcard()
  * @param	array	$ar_srce	Source data.
  * @param	string	$rules		Wildcard rule string.
  * @return	array

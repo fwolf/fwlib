@@ -40,29 +40,6 @@ class ArrayUtilTest extends PHPunitTestCase
     }
 
 
-    public function testFilterByWildcard()
-    {
-        // Empty check
-        $this->assertEquals(array(), ArrayUtil::filterByWildcard(null, null));
-
-        $x = array('foo' => 'bar');
-        $y = ArrayUtil::filterByWildcard($x, null);
-        $this->assertEqualArray($x, $y);
-        $y = ArrayUtil::filterByWildcard($x, '|', '|');
-        $this->assertEqualArray($x, $y);
-
-
-        $rule = 'a*, -*b, -??c, +?d*';
-        $arSrce = array(
-            'a' => 'ab',
-            'b' => 'abc',
-            'c' => 'adc',
-        );
-        $ar = ArrayUtil::filterByWildcard($arSrce, $rule);
-        $this->assertEquals($ar, array('c' => 'adc'));
-    }
-
-
     public function testIncreaseByKey()
     {
         $ar = array();
@@ -208,6 +185,29 @@ class ArrayUtilTest extends PHPunitTestCase
         );
         ArrayUtil::insert($x, 'e', $ar_ins, 10);
         $this->assertEqualArray($x, $y);
+    }
+
+
+    public function testSearchByWildcard()
+    {
+        // Empty check
+        $this->assertEquals(array(), ArrayUtil::searchByWildcard(null, null));
+
+        $x = array('foo' => 'bar');
+        $y = ArrayUtil::searchByWildcard($x, null);
+        $this->assertEqualArray($x, $y);
+        $y = ArrayUtil::searchByWildcard($x, '|', '|');
+        $this->assertEqualArray($x, $y);
+
+
+        $rule = 'a*, -*b, -??c, +?d*';
+        $arSrce = array(
+            'a' => 'ab',
+            'b' => 'abc',
+            'c' => 'adc',
+        );
+        $ar = ArrayUtil::searchByWildcard($arSrce, $rule);
+        $this->assertEquals($ar, array('c' => 'adc'));
     }
 
 

@@ -51,82 +51,6 @@ class ArrayUtil
 
 
     /**
-     * Filter an array by wildcard rules
-     *
-     * Wildcard rules is a string include many part joined by ',',
-     * each part can include * and ?, head by '+'(default) or '-',
-     * they means find elements suit the rules in source array,
-     * and add_to/remove_from result array.
-     *
-     * Parts operate sequence is by occur position in rules string.
-     *
-     * Rules example: a*, -*b, -??c, +?d*
-     *
-     * @param   array   $arSrce     Source data.
-     * @param   string  $rules      Wildcard rule string.
-     * @param   string  $delimiter  Default ','
-     * @return  array
-     */
-    public static function filterByWildcard($arSrce, $rules, $delimiter = ',')
-    {
-        $arResult = array();
-
-        // Check empty input
-        if (empty($arSrce)) {
-            return $arResult;
-        }
-        if (empty($rules)) {
-            return $arSrce;
-        }
-
-        // Read rules
-        $arRule = explode($delimiter, $rules);
-
-        // Use rules
-        foreach ($arRule as $rule) {
-            $rule = trim($rule);
-
-            // Empty rule means 'all'
-            if (empty($rule)) {
-                $rule = '*';
-            }
-
-            // + or - ?
-            if ('+' == $rule[0]) {
-                $op = '+';
-                $rule = substr($rule, 1);
-            } elseif ('-' == $rule[0]) {
-                $op = '-';
-                $rule = substr($rule, 1);
-            } else {
-                $op = '+';
-            }
-
-            // Loop srce ar
-            foreach ($arSrce as $k => $srce) {
-                if (true == StringUtil::matchWildcard($srce, $rule)) {
-                    // Got element to +/-
-                    $i = array_search($srce, $arResult);
-                    if ('+' == $op) {
-                        // Add to ar if not in it.
-                        if (false === $i) {
-                            $arResult = array_merge($arResult, array($k => $srce));
-                        }
-                    } else {
-                        // Remove from ar if exists.
-                        if (false !== $i) {
-                            unset($arResult[$i]);
-                        }
-                    }
-                }
-            }
-        }
-
-        return $arResult;
-    }
-
-
-    /**
      * Add value to array by key
      *
      * If key is unset, set with the value.
@@ -226,6 +150,82 @@ class ArrayUtil
         // Final result
         $srce = $rs;
         return $srce;
+    }
+
+
+    /**
+     * Search item in an array by wildcard rules
+     *
+     * Wildcard rules is a string include many part joined by ',',
+     * each part can include * and ?, head by '+'(default) or '-',
+     * they means find elements suit the rules in source array,
+     * and add_to/remove_from result array.
+     *
+     * Parts operate sequence is by occur position in rules string.
+     *
+     * Rules example: a*, -*b, -??c, +?d*
+     *
+     * @param   array   $arSrce     Source data.
+     * @param   string  $rules      Wildcard rule string.
+     * @param   string  $delimiter  Default ','
+     * @return  array
+     */
+    public static function searchByWildcard($arSrce, $rules, $delimiter = ',')
+    {
+        $arResult = array();
+
+        // Check empty input
+        if (empty($arSrce)) {
+            return $arResult;
+        }
+        if (empty($rules)) {
+            return $arSrce;
+        }
+
+        // Read rules
+        $arRule = explode($delimiter, $rules);
+
+        // Use rules
+        foreach ($arRule as $rule) {
+            $rule = trim($rule);
+
+            // Empty rule means 'all'
+            if (empty($rule)) {
+                $rule = '*';
+            }
+
+            // + or - ?
+            if ('+' == $rule[0]) {
+                $op = '+';
+                $rule = substr($rule, 1);
+            } elseif ('-' == $rule[0]) {
+                $op = '-';
+                $rule = substr($rule, 1);
+            } else {
+                $op = '+';
+            }
+
+            // Loop srce ar
+            foreach ($arSrce as $k => $srce) {
+                if (true == StringUtil::matchWildcard($srce, $rule)) {
+                    // Got element to +/-
+                    $i = array_search($srce, $arResult);
+                    if ('+' == $op) {
+                        // Add to ar if not in it.
+                        if (false === $i) {
+                            $arResult = array_merge($arResult, array($k => $srce));
+                        }
+                    } else {
+                        // Remove from ar if exists.
+                        if (false !== $i) {
+                            unset($arResult[$i]);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $arResult;
     }
 
 
