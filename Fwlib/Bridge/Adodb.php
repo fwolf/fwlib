@@ -366,8 +366,8 @@ class Adodb
         // Mysql db need to 'set names' after connect
         if ($this->isDbMysql()) {
             $this->conn->Execute(
-                'set names "'
-                . str_replace('utf-8', 'utf8', $this->dbProfile['lang'])
+                'SET NAMES "'
+                . str_replace('UTF-8', 'UTF8', strtoupper($this->dbProfile['lang']))
                 . '"'
             );
         }
@@ -834,7 +834,7 @@ class Adodb
             }
 
             // Convert columns to native case
-            $colName = $this->getMetaColumnName($table);
+            $colName = $this->getMetaColumnName($table, $forcenew);
             // $colName = array(COLUMN => column), $c is UPPER CASED
             $art = array();
             foreach ($this->metaColumn[$table] as $c => $ar) {
