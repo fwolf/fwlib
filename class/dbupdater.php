@@ -28,6 +28,7 @@ require_once(FWOLFLIB . 'func/env.php');
  * Additional tools do similar task:
  * http://xml2ddl.berlios.de/
  *
+ * @deprecated  Use Fwlib\Db\SyncDbSchema
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2006-2009, Fwolf
