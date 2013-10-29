@@ -38,13 +38,16 @@ class Adodb
 {
 
     /**
-     * OS charset
+     * PHP script charset
      *
-     * In common, this is your php script oroperation system charset.
+     * Used to compare with db charset.
+     *
+     * This is charset of PHP script. Operation system has their default
+     * charset, but text editor can specify other charset too.
      *
      * @var string
      */
-    public $charsetOs = 'utf8';
+    public $charsetPhp = 'UTF-8';
 
     /**
      * Real ADOdb connection object
@@ -355,7 +358,7 @@ class Adodb
      */
     public function convertEncodingRs(&$rs)
     {
-        if (empty($rs) || $this->charsetOs == $this->dbProfile['lang']) {
+        if (empty($rs) || $this->charsetPhp == $this->dbProfile['lang']) {
             return $rs;
         }
 
@@ -367,7 +370,7 @@ class Adodb
         } elseif (is_string($rs)) {
             $rs = mb_convert_encoding(
                 $rs,
-                $this->charsetOs,
+                $this->charsetPhp,
                 $this->dbProfile['lang']
             );
         }
@@ -386,7 +389,7 @@ class Adodb
      */
     public function convertEncodingSql(&$sql)
     {
-        if (empty($sql) || $this->charsetOs == $this->dbProfile['lang']) {
+        if (empty($sql) || $this->charsetPhp == $this->dbProfile['lang']) {
             return $sql;
         }
 
@@ -399,7 +402,7 @@ class Adodb
             $sql = mb_convert_encoding(
                 $sql,
                 $this->dbProfile['lang'],
-                $this->charsetOs
+                $this->charsetPhp
             );
         }
 
@@ -1216,15 +1219,14 @@ class Adodb
 
 
     /**
-     * Set OS charset
-     *
-     * For charset convert.
+     * Set PHP script file charset
      *
      * @param   string  $charset
+     * @see $charsetPhp
      */
-    public function setCharsetOs($charset)
+    public function setCharsetPhp($charset)
     {
-        $this->charsetOs = $charset;
+        $this->charsetPhp = $charset;
     }
 
 

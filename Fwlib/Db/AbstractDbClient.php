@@ -92,6 +92,17 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
 
 
     /**
+     * Set PHP script file charset
+     *
+     * @param   string  $charset
+     */
+    public function setCharsetPhp($charset)
+    {
+        $this->db->setCharsetPhp($charset);
+    }
+
+
+    /**
      * Set db profile
      *
      * Notice: Db profile is NOT checked or validated.

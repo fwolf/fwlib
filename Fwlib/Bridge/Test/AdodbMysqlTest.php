@@ -64,14 +64,14 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testConvertEncodingRs()
     {
         // Backup original charset
-        $originalCharsetOs = self::$dbMysql->charsetOs;
+        $originalCharsetPhp = self::$dbMysql->charsetPhp;
         $originalCharsetDb = self::$dbMysql->dbProfile['lang'];
 
-        self::$dbMysql->setCharsetOs('utf-8');
-        self::$dbMysql->dbProfile['lang'] = 'gb2312';
+        self::$dbMysql->setCharsetPhp('UTF-8');
+        self::$dbMysql->dbProfile['lang'] = 'GB2312';
 
         $x = array(null, '你好');
-        $y = array(null, mb_convert_encoding('你好', 'utf-8', 'gb2312'));
+        $y = array(null, mb_convert_encoding('你好', 'UTF-8', 'GB2312'));
         $this->assertEquals(
             $y,
             self::$dbMysql->convertEncodingRs($x)
@@ -79,7 +79,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
         // Recover original charset
-        self::$dbMysql->setCharsetOs($originalCharsetOs);
+        self::$dbMysql->setCharsetPhp($originalCharsetPhp);
         self::$dbMysql->dbProfile['lang'] = $originalCharsetDb;
     }
 
@@ -87,14 +87,14 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testConvertEncodingSql()
     {
         // Backup original charset
-        $originalCharsetOs = self::$dbMysql->charsetOs;
+        $originalCharsetPhp = self::$dbMysql->charsetPhp;
         $originalCharsetDb = self::$dbMysql->dbProfile['lang'];
 
-        self::$dbMysql->setCharsetOs('utf-8');
-        self::$dbMysql->dbProfile['lang'] = 'gb2312';
+        self::$dbMysql->setCharsetPhp('UTF-8');
+        self::$dbMysql->dbProfile['lang'] = 'GB2312';
 
         $x = array(null, '你好');
-        $y = array(null, mb_convert_encoding('你好', 'gb2312', 'utf-8'));
+        $y = array(null, mb_convert_encoding('你好', 'GB2312', 'UTF-8'));
         $this->assertEquals(
             $y,
             self::$dbMysql->convertEncodingSql($x)
@@ -102,7 +102,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
         // Recover original charset
-        self::$dbMysql->setCharsetOs($originalCharsetOs);
+        self::$dbMysql->setCharsetPhp($originalCharsetPhp);
         self::$dbMysql->dbProfile['lang'] = $originalCharsetDb;
     }
 
