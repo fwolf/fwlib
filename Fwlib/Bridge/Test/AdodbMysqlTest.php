@@ -43,15 +43,6 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
-    public function testCheckTblExist()
-    {
-        $this->assertTrue(self::$dbMysql->checkTableExist(self::$tableUser));
-        $this->assertFalse(
-            self::$dbMysql->checkTableExist(self::$tableUser . '_not_exists')
-        );
-    }
-
-
     public function testConnect()
     {
         // Clone doesn't affect property object conn
@@ -352,6 +343,15 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $this->assertStringStartsWith(
             'ROLLBACK',
             self::$dbMysql->getSqlTransRollback()
+        );
+    }
+
+
+    public function testIsTblExist()
+    {
+        $this->assertTrue(self::$dbMysql->isTableExist(self::$tableUser));
+        $this->assertFalse(
+            self::$dbMysql->isTableExist(self::$tableUser . '_not_exists')
         );
     }
 

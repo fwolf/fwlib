@@ -264,38 +264,6 @@ class Adodb
 
 
     /**
-     * Check if a table exists in db ?
-     *
-     * @param   string  $table
-     * @return  boolean
-     */
-    public function checkTableExist($table)
-    {
-        $table = addslashes($table);
-
-        // @codeCoverageIgnoreStart
-        if ($this->isDbSybase()) {
-            $sql = 'SELECT count(1) AS c FROM sysobjects WHERE name = "'
-                . $table . '" AND type = "U"';
-            $rs = $this->execute($sql);
-            return (0 != $rs->fields['c']);
-
-        } elseif ($this->isDbMysql()) {
-            $sql = "SHOW TABLES LIKE '$table'";
-            $rs = $this->execute($sql);
-            return (0 != $rs->RowCount());
-
-        } else {
-            // :THINK: Better method ?
-            $sql = "SELECT 1 FROM $table";
-            $rs = $this->execute($sql);
-            return (0 == $this->conn->ErrorNo());
-        }
-        // @codeCoverageIgnoreEnd
-    }
-
-
-    /**
      * Connect to db
      *
      * If db is mysql, will auto execute 'set names utf8'.
@@ -1108,6 +1076,38 @@ class Adodb
     public function isDbSybase()
     {
         return ('sybase' == substr($this->dbProfile['type'], 0, 6));
+    }
+
+
+    /**
+     * If a table exists in db ?
+     *
+     * @param   string  $table
+     * @return  boolean
+     */
+    public function isTableExist($table)
+    {
+        $table = addslashes($table);
+
+        // @codeCoverageIgnoreStart
+        if ($this->isDbSybase()) {
+            $sql = 'SELECT count(1) AS c FROM sysobjects WHERE name = "'
+                . $table . '" AND type = "U"';
+            $rs = $this->execute($sql);
+            return (0 != $rs->fields['c']);
+
+        } elseif ($this->isDbMysql()) {
+            $sql = "SHOW TABLES LIKE '$table'";
+            $rs = $this->execute($sql);
+            return (0 != $rs->RowCount());
+
+        } else {
+            // :THINK: Better method ?
+            $sql = "SELECT 1 FROM $table";
+            $rs = $this->execute($sql);
+            return (0 == $this->conn->ErrorNo());
+        }
+        // @codeCoverageIgnoreEnd
     }
 
 

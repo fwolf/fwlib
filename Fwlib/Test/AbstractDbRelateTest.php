@@ -226,7 +226,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         if (!is_null(self::$db) && self::$db->isConnected() &&
-            !self::$db->checkTableExist(self::$tableUser)) {
+            !self::$db->isTableExist(self::$tableUser)) {
             self::createTable(self::$db);
         }
     }
@@ -242,7 +242,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         if (!is_null(self::$db) && self::$db->isConnected() &&
-            self::$db->checkTableExist(self::$tableUser)) {
+            self::$db->isTableExist(self::$tableUser)) {
             self::dropTable(self::$db);
         }
     }
