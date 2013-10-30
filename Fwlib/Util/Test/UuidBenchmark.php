@@ -32,3 +32,6 @@ echo $rs;
 
 Env::ecl('Without check digit: ' . Uuid::gen(null, null, false));
 Env::ecl('With    check digit: ' . Uuid::gen(null, null, true));
+
+Env::ecl('Without check digit: ' . Uuid::genWithSeparator(null, null, false));
+Env::ecl('With    check digit: ' . Uuid::genWithSeparator(null, null, true));

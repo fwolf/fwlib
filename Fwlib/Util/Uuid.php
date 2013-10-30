@@ -8,8 +8,10 @@ use Fwlib\Util\Ip;
  * UUID generator
  *
  * UUID format:
+ *
  * [timeLow]-[timeMid]-[custom1]-[custom2](part1/2)
  *  -[custom2](part2/2)[random1][random2]
+ *
  * timeLow: 8 chars, seconds in microtime, hex format.
  * timeMid: 4 chars, micro-second in microtime, plus 10000, hex format.
  * custom1: 4 chars, user defined, '0000' if empty, hex format suggested.
@@ -17,6 +19,9 @@ use Fwlib\Util\Ip;
  *          and random hex string if user ip cannot get, hex format too.
  * random1: 4 chars, random string, hex format.
  * random2: 4 chars, random string, hex format.
+ *
+ * Separator '-' is optional and default off. Length of UUID is 32 bytes, and
+ * 36 bytes with separator.
  *
  * @link        http://us.php.net/uniqid
  *
@@ -33,36 +38,78 @@ class Uuid
      *
      * Check digit will replace last byte.
      *
+     * Origin separator will kept.
+     *
      * @param   string  $uuid
-     * @param   boolean $sourceWithHyphen
      */
-    public static function addCheckDigit($uuid, $sourceWithHyphen = true)
+    public static function addCheckDigit($uuid)
     {
+        if (36 == strlen($uuid)) {
+            $separator = $uuid{8};
+            $uuid = self::delSeparator($uuid);
+        }
+
         $uuid = Iso7064::encode(
-            substr(str_replace('-', '', $uuid), 0, 31),
+            substr($uuid, 0, 31),
             '1716',
             true
         );
         $uuid = strtolower($uuid);
-        $uuid = substr($uuid, 0, 8) . '-'
-            . substr($uuid, 8, 4) . '-'
-            . substr($uuid, 12, 4) . '-'
-            . substr($uuid, 16, 4) . '-'
-            . substr($uuid, 20);
+
+        if (isset($separator)) {
+            $uuid = self::addSeparator($uuid, $separator);
+        }
 
         return $uuid;
     }
 
 
     /**
-     * Generate an uuid
+     * Add separator to UUID, extend it to 36 digit
      *
-     * User can combine cus and cus2 to sort uuid.
+     * Please make SURE send in UUID's length is 32.
      *
-     * $cus is custom part 1 in uuid, 4 chars long,
+     * @param   string  $uuid
+     * @param   string  $separator
+     * @return  string
+     */
+    protected static function addSeparator($uuid, $separator)
+    {
+        return substr($uuid, 0, 8) . $separator .
+            substr($uuid, 8, 4) . $separator .
+            substr($uuid, 12, 4) . $separator .
+            substr($uuid, 16, 4) . $separator .
+            substr($uuid, 20);
+    }
+
+
+    /**
+     * Del separator in UUID, shink it to 32 digit
+     *
+     * Please make SURE send in UUID's length is 36.
+     *
+     * @param   string  $uuid
+     * @return  string
+     */
+    protected static function delSeparator($uuid)
+    {
+        return substr($uuid, 0, 8) .
+            substr($uuid, 9, 4) .
+            substr($uuid, 14, 4) .
+            substr($uuid, 19, 4) .
+            substr($uuid, 24);
+    }
+
+
+    /**
+     * Generate an UUID
+     *
+     * User can combine cus and cus2 to sort UUID.
+     *
+     * $cus is custom part 1 in UUID, 4 chars long,
      * positioned in 3rd section, default fill by '0'.
      *
-     * $cus2 is custom part 2 in uuid, 8 chars long,
+     * $cus2 is custom part 2 in UUID, 8 chars long,
      * positioned in 4th section and start of 5th section.
      * If empty given, user client user ip(hex) to fill,
      * and random string if can't get ip.
@@ -96,7 +143,8 @@ class Uuid
         }
 
         $rs = sprintf(
-            '%08s-%04s-%04s-%04s-%04s%04x%04x',
+            //'%08s-%04s-%04s-%04s-%04s%04x%04x',
+            '%08s%04s%04s%04s%04s%04x%04x',
 
             // Unixtime, 8 chars from right-side end
             // 2030-12-31 = 1924876800(dec) = 72bb4a00(hex)
@@ -132,6 +180,30 @@ class Uuid
 
 
     /**
+     * Generate an uuid split by separator
+     *
+     * Don't use 0-9,a-z,A-Z as separator !
+     *
+     * @param   string  $cus
+     * @param   string  $cus2
+     * @param   boolean $checkDigit
+     * @param   string  $separator
+     * @return  string
+     */
+    public static function genWithSeparator(
+        $cus = '0000',
+        $cus2 = '',
+        $checkDigit = false,
+        $separator = '-'
+    ) {
+        return self::addSeparator(
+            self::gen($cus, $cus2, $checkDigit),
+            $separator
+        );
+    }
+
+
+    /**
      * Parse uuid, see what it means
      *
      * @param   string  $uuid
@@ -139,20 +211,27 @@ class Uuid
      */
     public static function parse($uuid)
     {
-        $ar = array();
-        $u = explode('-', $uuid);
-        if (is_array($u) && (5 == count($u))) {
-            $ar = array(
-                'timeLow' => hexdec($u[0]),
-                'timeMid' => hexdec($u[1]),
-                'custom1' => $u[2],
-                'custom2' => $u[3] . substr($u[4], 0, 4),
-                'ip'      => Ip::fromHex($u[3] . substr($u[4], 0, 4)),
-                'random1' => substr($u[4], 4, 4),
-                'random2' => substr($u[4], 8)
-            );
+        if (36 == strlen($uuid)) {
+            $uuid = self::delSeparator($uuid);
         }
-        return $ar;
+
+        if (32 == strlen($uuid)) {
+            $timeLow = hexdec(substr($uuid, 0, 8));
+            $timeMid = hexdec(substr($uuid, 8, 4));
+            $custom2 = substr($uuid, 16, 8);
+            return array(
+                'timeLow' => $timeLow,
+                'timeMid' => $timeMid,
+                'time'    => date('Y-m-d H:i:s', $timeLow),
+                'custom1' => substr($uuid, 12, 4),
+                'custom2' => $custom2,
+                'ip'      => Ip::fromHex($custom2),
+                'random1' => substr($uuid, 24, 4),
+                'random2' => substr($uuid, 28, 4)
+            );
+        } else {
+            return null;
+        }
     }
 
 
@@ -165,28 +244,29 @@ class Uuid
      */
     public static function verify($uuid, $withCheckDigit = false)
     {
-        if (36 != strlen($uuid)) {
-            return false;
+        if (36 == strlen($uuid)) {
+            $separator = $uuid{8};
+            $uuidOrigin = $uuid;
+            $uuid = self::delSeparator($uuid);
+
+            // Separator must same and position right
+            if ($uuidOrigin != self::addSeparator($uuid, $separator)) {
+                return false;
+            }
         }
 
-        // Hyphen position
-        $uuidClean = substr($uuid, 0, 8)
-            . substr($uuid, 9, 4)
-            . substr($uuid, 14, 4)
-            . substr($uuid, 19, 4)
-            . substr($uuid, 24);
-        if  ($uuidClean != str_replace('-', '', $uuid)) {
+        if (32 != strlen($uuid)) {
             return false;
         }
 
         // AlphaNumeric 0-9 a-f
-        $uuidClean = strtolower($uuidClean);
-        if ('' !== preg_replace('/[0-9a-f]/', '', $uuidClean)) {
+        $uuid = strtolower($uuid);
+        if ('' !== preg_replace('/[0-9a-f]/', '', $uuid)) {
             return false;
         }
 
         // Check digit
-        if ($uuid != self::addCheckDigit($uuid)) {
+        if ($withCheckDigit && ($uuid != self::addCheckDigit($uuid))) {
             return false;
         }
 

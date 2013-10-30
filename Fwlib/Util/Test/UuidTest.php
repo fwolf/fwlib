@@ -15,6 +15,13 @@ use Fwlib\Util\Uuid;
  */
 class UuidTest extends PHPunitTestCase
 {
+    public function testAddCheckDigit()
+    {
+        $y = Uuid::genWithSeparator(null, null, true, '-');
+        $this->assertEquals($y, Uuid::addCheckDigit($y));
+    }
+
+
     public function testParse()
     {
         // Generate and parse data back
@@ -34,6 +41,14 @@ class UuidTest extends PHPunitTestCase
         $this->assertEquals($ar['custom1'], '0000');
         $this->assertEquals($ar['custom2'], '8302650a');
         $this->assertEquals($ar['ip'], '131.2.101.10');
+        $ar = Uuid::parse('4822afd9861b00008302650a25cda932');
+        $this->assertEquals($ar['timeLow'], 1210232793);
+        $this->assertEquals($ar['timeMid'], 34331);
+        $this->assertEquals($ar['custom1'], '0000');
+        $this->assertEquals($ar['custom2'], '8302650a');
+        $this->assertEquals($ar['ip'], '131.2.101.10');
+
+        $this->assertNull(Uuid::parse(null));
     }
 
 
