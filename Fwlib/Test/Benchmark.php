@@ -311,7 +311,7 @@ EOF;
                 // Total
                 $time = sprintf('%' . $widthDur . 'f', $ar_group['dur']);
                 $output .= EscapeColor::paint('Total:', 'bold') . $time .
-                    's' . PHP_EOL . PHP_EOL;
+                    'ms' . PHP_EOL . PHP_EOL;
 
             }
 
