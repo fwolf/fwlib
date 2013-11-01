@@ -142,20 +142,19 @@ class NumberUtil
         }
 
 
-        // Convert using BC Math or GMP
-        // @codeCoverageIgnoreStart
-        if (extension_loaded('gmp')) {
-            $number = ltrim($number, '0');
+        $number = ltrim($number, '0');  // GMP treat leading 0 different.
 
-            // In 5.3.2, base was extended to 2~62
-            if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
-                return self::baseConvertGmpSimple($number, $fromBase, $toBase);
-            } else {
-                return self::baseConvertGmp($number, $fromBase, $toBase);
-            }
+        // Convert using BC Math or GMP, sort by benchmarked speed
+        // @codeCoverageIgnoreStart
+        if (extension_loaded('gmp') && version_compare(PHP_VERSION, '5.3.2', '>=')) {
+            // In PHP 5.3.2, base was extended to 2~62
+            return self::baseConvertGmpSimple($number, $fromBase, $toBase);
 
         } elseif (extension_loaded('bcmath')) {
             return self::baseConvertBcmath($number, $fromBase, $toBase);
+
+        } elseif (extension_loaded('gmp')) {
+            return self::baseConvertGmp($number, $fromBase, $toBase);
 
         } else {
             throw new \Exception('Number too large and BC Math or GMP not loaded.');
