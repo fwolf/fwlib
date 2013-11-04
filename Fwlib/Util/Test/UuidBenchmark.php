@@ -4,6 +4,8 @@ require __DIR__ . '/../../../autoload.php';
 use Fwlib\Test\Benchmark;
 use Fwlib\Util\Env;
 use Fwlib\Util\Uuid;
+use Fwlib\Util\UuidBase36;
+use Fwlib\Util\UuidBase62;
 
 // Speed test for Uuid generate
 $count = 10000;
@@ -12,26 +14,41 @@ $bm = new Benchmark();
 $bm->start('Gen ' . $count . ' UUID');
 $speed = 0;
 
-for ($i = 0; $i < $count; $i ++) {
-    Uuid::gen();
-}
-$usedTime = $bm->mark('Without check digit: average {speed1}/s');
-$speed1 = round($count / $usedTime * 1000);
 
-for ($i = 0; $i < $count; $i ++) {
-    Uuid::gen('', '', true);
+$arSpeed = array();
+foreach (array('Uuid', 'UuidBase36', 'UuidBase62') as $k => $v) {
+    $class = 'Fwlib\Util\\' . $v;
+    $v = str_pad($v, 10, ' ', STR_PAD_RIGHT);
+
+    for ($i = 0; $i < $count; $i ++) {
+        $class::gen();
+    }
+    $usedTime = $bm->mark("$v without check digit: average speed{$k}wt/s");
+    $arSpeed["speed{$k}wt"] = round($count / $usedTime * 1000);
+
+    for ($i = 0; $i < $count; $i ++) {
+        $class::gen('', '', true);
+    }
+    $usedTime = $bm->mark("$v with    check digit: average speed{$k}wo/s");
+    $arSpeed["speed{$k}wo"] = round($count / $usedTime * 1000);
+
 }
-$usedTime = $bm->mark('With check digit: average {speed2}/s');
-$speed2 = round($count / $usedTime * 1000);
 
 // Replace {speed} in result
 $rs = $bm->display(null, true);
-$rs = str_replace(array('{speed1}', '{speed2}'), array($speed1, $speed2), $rs);
+$rs = str_replace(array_keys($arSpeed), $arSpeed, $rs);
 
 echo $rs;
 
-Env::ecl('Without check digit: ' . Uuid::gen(null, null, false));
-Env::ecl('With    check digit: ' . Uuid::gen(null, null, true));
 
-Env::ecl('Without check digit: ' . Uuid::genWithSeparator(null, null, false));
-Env::ecl('With    check digit: ' . Uuid::genWithSeparator(null, null, true));
+Env::ecl('Uuid       without check digit: ' . Uuid::gen(null, null, false));
+Env::ecl('Uuid       with    check digit: ' . Uuid::gen(null, null, true));
+
+Env::ecl('Uuid       without check digit: ' . Uuid::genWithSeparator(null, null, false));
+Env::ecl('Uuid       with    check digit: ' . Uuid::genWithSeparator(null, null, true));
+
+Env::ecl('UuidBase36 without check digit: ' . UuidBase36::gen(null, null, false));
+Env::ecl('UuidBase36 with    check digit: ' . UuidBase36::gen(null, null, true));
+
+Env::ecl('UuidBase62 without check digit: ' . UuidBase62::gen(null, null, false));
+Env::ecl('UuidBase62 with    check digit: ' . UuidBase62::gen(null, null, true));
