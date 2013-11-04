@@ -101,7 +101,7 @@ class Iso7064
      * Not standard in ISO 7064, but used in old ISAN.
      * New ISAN use Mod 37,36.
      *
-     * Input: AlphaNumeric
+     * Input: AlphaNumeric 0-9 A-F
      * Output: 1 byte AlphaNumeric 0-9 A-F
      *
      * @link http://www.pruefziffernberechnung.de/Originaldokumente/wg1n130.pdf
