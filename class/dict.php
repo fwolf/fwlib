@@ -14,6 +14,7 @@ require_once(dirname(__FILE__) . '/fwolflib.php');
 /**
  * Manipulate dict data, eg db code-name table.
  *
+ * @deprecated  Use Fwlib\Db\CodeDictionary
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2011, Fwolf
