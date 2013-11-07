@@ -21,6 +21,7 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
      */
     public $db = null;
 
+
     /**
      * Constructor
      *

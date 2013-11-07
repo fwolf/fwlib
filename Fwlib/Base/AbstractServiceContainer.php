@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Base;
 
+use Fwlib\Base\AbstractSingleton;
 
 /**
  * Service Container
@@ -14,7 +15,6 @@ namespace Fwlib\Base;
  * ServiceContainer can inject to object when construct with getInstance(),
  * easy for test or inherit parent container class, so only one container
  * instance is need, so use Singleton pattern.
- * @link http://www.phptherightway.com/pages/Design-Patterns.html
  *
  * @codeCoverageIgnore
  *
@@ -24,7 +24,7 @@ namespace Fwlib\Base;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-11-07
  */
-class ServiceContainer
+abstract class AbstractServiceContainer extends AbstractSingleton
 {
     /**
      * Array to store service
@@ -32,30 +32,6 @@ class ServiceContainer
      * @var array
      */
     protected $service = array();
-
-
-    /**
-     * Prevent clone method
-     */
-    private function __clone()
-    {
-    }
-
-
-    /**
-     * Prevent 'new' operator
-     */
-    protected function __construct()
-    {
-    }
-
-
-    /**
-     * Prevent unserialize method
-     */
-    private function __wakeup()
-    {
-    }
 
 
     /**
@@ -79,23 +55,6 @@ class ServiceContainer
 
             return $this->service[$name];
         }
-    }
-
-
-    /**
-     * Get instance of ServiceContainer itself
-     *
-     * @return  object
-     */
-    public static function getInstance()
-    {
-        static $container = null;
-
-        if (is_null($container)) {
-            $container = new static();
-        }
-
-        return $container;
     }
 
 

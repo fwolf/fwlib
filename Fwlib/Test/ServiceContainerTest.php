@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Test;
 
-use Fwlib\Base\ServiceContainer;
+use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Config\ConfigGlobal;
 
@@ -14,7 +14,7 @@ use Fwlib\Config\ConfigGlobal;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-11-07
  */
-class ServiceContainerTest extends ServiceContainer
+class ServiceContainerTest extends AbstractServiceContainer
 {
     /**
      * New Adodb service object
