@@ -22,6 +22,9 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
     public function testCall()
     {
+        $fetchMode = self::$dbMysql->fetchMode;
+        self::$dbMysql->SetFetchMode(3);    // Both
+
         $ar = self::$dbMysql->GetAll('SELECT 1 AS a');
         $y = array(array('1', 'a' => '1'));
         $this->assertEqualArray($y, $ar);
@@ -29,6 +32,8 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $ar = self::$dbMysql->CacheGetAll(1, 'SELECT 1 AS a');
         $y = array(array('1', 'a' => '1'));
         $this->assertEqualArray($y, $ar);
+
+        self::$dbMysql->SetFetchMode($fetchMode);
     }
 
 

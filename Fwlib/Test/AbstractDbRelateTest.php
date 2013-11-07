@@ -4,6 +4,7 @@ namespace Fwlib\Test;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Config\ConfigGlobal;
+use Fwlib\Test\ServiceContainerTest;
 
 /**
  * Parent class for db relate tests
@@ -78,7 +79,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
      * Connect to db and assign to static property $dbXxx
      *
      * @see $dbUsing
-     * @param   string   $profile    Db profile, multi splitted by ','
+     * @param   string   $profile    Using db profile, multi splitted by ','
      */
     protected static function connectDb($profile)
     {
@@ -86,45 +87,33 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             return;
         }
 
-        $profileKey = array();
-        $varName = array();
+        $dbName = array();
 
         $profileAr = explode(',', $profile);
         foreach ($profileAr as $type) {
             $type = trim($type);
             switch ($type) {
                 case 'default':
-                    $profileKey[] = 'default';
-                    $varName[] = 'db';
+                    $dbName[] = 'db';
                     break;
                 case 'sybase':
-                    $profileKey[] = 'sybase';
-                    $varName[] = 'dbSyb';
+                    $dbName[] = 'dbSyb';
                     break;
                 default:
-                    $profileKey[] = $type;
-                    $varName[] = 'db' . ucfirst($type);
+                    $dbName[] = 'db' . ucfirst($type);
             }
         }
 
-        // New db connection
-        foreach ($profileKey as $i => $key) {
-            $name = $varName[$i];
+        // Get db connection from ServiceContainer
+        $sc = ServiceContainerTest::getInstance();
+        foreach ($dbName as $name) {
             $db = &self::${$name};
+
             if (is_null($db)) {
-                $dbprofile = ConfigGlobal::get('dbserver.' . $key);
-                if (!empty($dbprofile['host'])) {
-                    $db = new Adodb($dbprofile);
-                    $db->connect();
+                $db = $sc->get($name);
 
-                    if (is_null($db) || !$db->isConnected()) {
-                        self::markTestSkipped('Db ' . $key . ' can\'t connect.');
-                    }
-
-                } else {
-                    self::markTestSkipped(
-                        'Dbserver ' . $key . ' is not configured.'
-                    );
+                if (is_null($db) || !$db->isConnected()) {
+                    self::markTestSkipped("Db $name can't connect.");
                 }
             }
         }
