@@ -27,11 +27,12 @@ class AbstractDbClientTest extends PHPunitTestCase
         if (empty($dbProfile['host'])) {
             $this->markTestSkipped();
         }
+
+        // Use dbProfile and connect when use
         $o = new AbstractDbClientDummy();
         $this->assertFalse(isset($o->db));
         $o->setDbProfile($dbProfile, false);
         $this->assertFalse(isset($o->db));
-        // Need db profile valid
         $o->db;
         $this->assertTrue(isset($o->db));
 
@@ -39,6 +40,9 @@ class AbstractDbClientTest extends PHPunitTestCase
         $o = new AbstractDbClientDummy($dbProfile);
         $this->assertTrue(isset($o->db));
 
+        // For code coverage
+        $o->setCharsetPhp('UTF-8');
+        $this->assertEquals('UTF-8', $o->db->charsetPhp);
 
         // Note: Db connect fail not tested, because mysqli_real_connect()
         // will directly print error msg.
