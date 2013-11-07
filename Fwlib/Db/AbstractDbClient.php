@@ -2,7 +2,6 @@
 namespace Fwlib\Db;
 
 use Fwlib\Base\AbstractAutoNewObj;
-use Fwlib\Bridge\Adodb;
 
 /**
  * Db client class with property $db
@@ -23,60 +22,16 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
     public $db = null;
 
     /**
-     * Db profile
-     *
-     * {host, user, pass, name, type, lang}
-     *
-     * @var array
-     */
-    public $dbProfile = array();
-
-
-    /**
      * Constructor
      *
-     * @param   array   $dbProfile
+     * @param   object  $serviceContainer
      */
-    public function __construct($dbProfile = null)
+    public function __construct($serviceContainer = null)
     {
         // Unset for auto new
         unset($this->db);
 
-        if (!empty($dbProfile)) {
-            $this->setDbProfile($dbProfile);
-        }
-    }
-
-
-    /**
-     * Create database connection
-     *
-     * $fetchMode:
-     * 0 ADODB_FETCH_DEFAULT
-     * 1 ADODB_FETCH_NUM
-     * 2 ADODB_FETCH_ASSOC (default)
-     * 3 ADODB_FETCH_BOTH
-     *
-     * @param   array   $dbProfile
-     * @param   int     $fetchMode
-     * @return  Fwlib\Bridge\Adodb
-     */
-    protected function connectDb($dbProfile, $fetchMode = 2)
-    {
-        $conn = new Adodb($dbProfile);
-
-        if ($conn->connect()) {
-            // Connect successful, set fetch mode
-            $conn->SetFetchMode($fetchMode);
-
-            return $conn;
-
-        } else {
-            // Connect fail
-            // @codeCoverageIgnoreStart
-            return null;
-            // @codeCoverageIgnoreEnd
-        }
+        $this->serviceContainer = $serviceContainer;
     }
 
 
@@ -87,45 +42,6 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
      */
     protected function newObjDb()
     {
-        return $this->connectDb($this->dbProfile);
-    }
-
-
-    /**
-     * Set PHP script file charset
-     *
-     * @param   string  $charset
-     */
-    public function setCharsetPhp($charset)
-    {
-        $this->db->setCharsetPhp($charset);
-    }
-
-
-    /**
-     * Set db profile
-     *
-     * Notice: Db profile is NOT checked or validated.
-     *
-     * @param   array   $dbProfile
-     * @param   boolean $connect    Connect to db after profile set.
-     * @return  boolean
-     */
-    public function setDbProfile($dbProfile, $connect = true)
-    {
-        if (!empty($dbProfile) && is_array($dbProfile)) {
-            $this->dbProfile = $dbProfile;
-
-            if ($connect) {
-                $this->db = $this->connectDb($this->dbProfile);
-
-                return !is_null($this->db);
-            } else {
-                return true;
-            }
-
-        } else {
-            return false;
-        }
+        return $this->serviceContainer->get('Db');
     }
 }

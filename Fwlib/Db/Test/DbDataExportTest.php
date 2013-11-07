@@ -5,6 +5,7 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Config\ConfigGlobal;
 use Fwlib\Db\DbDataExport;
 use Fwlib\Test\AbstractDbRelateTest;
+use Fwlib\Test\ServiceContainerTest;
 use Fwlib\Util\FileSystem;
 use Fwlib\Util\Uuid;
 
@@ -41,7 +42,7 @@ class DbDataExportTest extends AbstractDbRelateTest
     public function setUp()
     {
         if (is_null(self::$dbe)) {
-            self::$dbe = new DbDataExport(self::$db->dbProfile);
+            self::$dbe = new DbDataExport(ServiceContainerTest::getInstance());
 
             self::$delimiter = self::$dbe->db->getSqlDelimiter('');
 

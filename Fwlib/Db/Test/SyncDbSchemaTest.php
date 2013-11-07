@@ -3,6 +3,7 @@ namespace Fwlib\Db\Test;
 
 use Fwlib\Db\SyncDbSchema;
 use Fwlib\Test\AbstractDbRelateTest;
+use Fwlib\Test\ServiceContainerTest;
 
 /**
  * Test for Fwlib\Db\SyncDbSchema
@@ -39,7 +40,10 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
             '/Log table \w+ doesn\'t exists, create it, done\./'
         );
 
-        self::$sds = new SyncDbSchema(self::$db->dbProfile, self::$logTable);
+        self::$sds = new SyncDbSchema(
+            ServiceContainerTest::getInstance(),
+            self::$logTable
+        );
 
         $this->assertEquals(self::$logTable, self::$sds->logTable);
         $this->assertTrue(self::$db->isTableExist(self::$logTable));
@@ -51,7 +55,10 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
     public function testConstruct2()
     {
         $this->expectOutputRegex('/Log table \w+ already exists\./');
-        $sds = new SyncDbSchema(self::$db->dbProfile, self::$logTable);
+        $sds = new SyncDbSchema(
+            ServiceContainerTest::getInstance(),
+            self::$logTable
+        );
         unset($sds);
     }
 

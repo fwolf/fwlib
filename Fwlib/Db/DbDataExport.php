@@ -109,25 +109,6 @@ class DbDataExport extends AbstractDbClient
 
 
     /**
-     * Create database connection
-     *
-     * @param   array   $dbProfile
-     * @param   int     $fetchMode
-     * @return  Fwlib\Bridge\Adodb
-     */
-    protected function connectDb($dbProfile, $fetchMode = 2)
-    {
-        $conn = parent::connectDb($dbProfile, $fetchMode);
-
-        if (!is_null($conn)) {
-            $this->lineEnding = $conn->getSqlDelimiter();
-        }
-
-        return $conn;
-    }
-
-
-    /**
      * Convert groupby rules to where sql clauses
      *
      * Export by groupby will make it hard to control rows number in a file,
@@ -208,9 +189,9 @@ class DbDataExport extends AbstractDbClient
         file_put_contents($logFile, '');
 
         $dbProfile = array(
-            $this->dbProfile['type'],
-            $this->dbProfile['host'],
-            $this->dbProfile['name'],
+            $this->db->dbProfile['type'],
+            $this->db->dbProfile['host'],
+            $this->db->dbProfile['name'],
         );
         $this->log('Export for db ' . implode(':', $dbProfile) . ', ', false);
 
@@ -420,7 +401,24 @@ class DbDataExport extends AbstractDbClient
     {
         $need = array('mssql', 'sybase', 'sybase_ase');
 
-        return in_array($this->dbProfile['type'], $need);
+        return in_array($this->db->dbProfile['type'], $need);
+    }
+
+
+    /**
+     * New Db object
+     *
+     * @return  Fwlib\Bridge\Adodb
+     */
+    protected function newObjDb()
+    {
+        $conn = parent::newObjDb();
+
+        if (!is_null($conn)) {
+            $this->lineEnding = $conn->getSqlDelimiter();
+        }
+
+        return $conn;
     }
 
 
