@@ -156,7 +156,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function testSetWithEmptyRowInData()
     {
-        $this->dict->set(array(null, array('foo', 'bar')));
+        $this->dict->set(array(array(null), array('foo', 'bar')));
     }
 
 
