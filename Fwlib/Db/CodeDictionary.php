@@ -33,7 +33,7 @@ class CodeDictionary extends AbstractAutoNewConfig
 
         $this->init();
 
-        $column = $this->getConfig('column');
+        $column = $this->config['column'];
         if (empty($column)) {
             // @codeCoverageIgnoreStart
             throw new \Exception('Dict col not defined.');
@@ -90,7 +90,7 @@ class CodeDictionary extends AbstractAutoNewConfig
      */
     protected function getColumn($col = '')
     {
-        $colAll = $this->getConfig('column');
+        $colAll = $this->config['column'];
         $arCol = array();
 
         if ('*' == $col) {
@@ -98,7 +98,7 @@ class CodeDictionary extends AbstractAutoNewConfig
 
         } elseif (empty($col)) {
             // Assign first col not pk
-            $colWithoutPk = array_diff($colAll, (array)$this->getConfig('pk'));
+            $colWithoutPk = array_diff($colAll, (array)$this->config['pk']);
             $arCol = array(array_shift($colWithoutPk));
 
         } else {
@@ -167,7 +167,7 @@ class CodeDictionary extends AbstractAutoNewConfig
             return null;
             // @codeCoverageIgnoreEnd
         }
-        $table = $this->getConfig('table');
+        $table = $this->config['table'];
         if (empty($table)) {
             trigger_error('Dict table not set.', E_USER_WARNING);
             // @codeCoverageIgnoreStart
@@ -198,8 +198,8 @@ class CodeDictionary extends AbstractAutoNewConfig
 
         // Data
         // INSERT INTO table (col1, col2) VALUES (val1, val2)[DELIMITER]
-        $dictTable = $this->getConfig('table');
-        $colList = $this->getConfig('column');
+        $dictTable = $this->config['table'];
+        $colList = $this->config['column'];
         foreach ((array)$this->dict as $k => $row) {
             $valList = array();
             foreach ($row as $key => $val) {
@@ -227,7 +227,7 @@ class CodeDictionary extends AbstractAutoNewConfig
      */
     public function getSqlTruncate($db)
     {
-        $sql = 'TRUNCATE TABLE ' . $this->getConfig('table')
+        $sql = 'TRUNCATE TABLE ' . $this->config['table']
             . $db->getSqlDelimiter();
 
         if (!$db->isDbSybase()) {
@@ -284,9 +284,9 @@ class CodeDictionary extends AbstractAutoNewConfig
         $col = $this->getColumn($col);
 
         $colWithDelimiter = array();
-        $delimiterLeft = $this->getConfig('delimiter-left');
-        $delimiterRight = $this->getConfig('delimiter-right');
-        foreach ($this->getConfig('column') as $v) {
+        $delimiterLeft = $this->config['delimiter-left'];
+        $delimiterRight = $this->config['delimiter-right'];
+        foreach ($this->config['column'] as $v) {
             $colWithDelimiter[] = $delimiterLeft . $v . $delimiterRight;
         }
 
@@ -320,7 +320,7 @@ class CodeDictionary extends AbstractAutoNewConfig
             return $this;
             // @codeCoverageIgnoreEnd
         }
-        $column = $this->getConfig('column');
+        $column = $this->config['column'];
         if (empty($column)) {
             trigger_error('Dict column not defined.', E_USER_WARNING);
             // @codeCoverageIgnoreStart
@@ -334,7 +334,7 @@ class CodeDictionary extends AbstractAutoNewConfig
         }
 
 
-        $pk = $this->getConfig('pk');
+        $pk = $this->config['pk'];
         foreach ($data as $row) {
             $ar = array();
             foreach ($column as $col) {

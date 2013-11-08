@@ -14,7 +14,7 @@ use Fwlib\Util\ArrayUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-20
  */
-class Config
+class Config implements \ArrayAccess
 {
     /**
      * Config data array
@@ -91,6 +91,53 @@ class Config
             // Check fail
             return (true == $exit) ? exit($msg) : false;
         }
+    }
+
+
+    /**
+     * Whether a offset exists
+     *
+     * @param   string  $offset
+     * @return  boolean
+     */
+    public function offsetExists($offset)
+    {
+        return !is_null($this->get($offset, null));
+    }
+
+
+    /**
+     * Offset to retrieve
+     *
+     * @param   string  $offset
+     * @return  mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+
+    /**
+     * Offset to set
+     *
+     * @param   string  $offset
+     * @param   mixed   $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->set($offset, $value);
+    }
+
+
+    /**
+     * Offset to unset
+     *
+     * @param   string  $offset
+     */
+    public function offsetUnset($offset)
+    {
+        $this->set($offset, null);
     }
 
 

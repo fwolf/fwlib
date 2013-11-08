@@ -87,10 +87,17 @@ class ConfigTest extends PHPunitTestCase
         // Single value
         $this->config->set('foo', 'bar');
         $this->assertEquals($this->config->get('foo'), 'bar');
+        $this->assertFalse(isset($this->config['foo2']));
+        $this->config['foo2'] = 'bar2';
+        $this->assertEquals('bar2', $this->config['foo2']);
+        unset($this->config['foo2']);
+        $this->assertFalse(isset($this->config['foo2']));
 
         // Value with separator turns to array
         $this->config->set('foo1.bar', 42);
         $this->assertEquals($this->config->get('foo1'), array('bar' => 42));
+        $this->config['foo3.bar'] = 'bar3';
+        $this->assertEquals('bar3', $this->config['foo3.bar']);
 
         // Value with empty middle level
         $this->config->set('a.b.c', 42);
@@ -105,7 +112,7 @@ class ConfigTest extends PHPunitTestCase
         );
 
         // Default value
-        $this->assertEquals($this->config->get('foo2.bar', 42), 42);
+        $this->assertEquals(42, $this->config->get('notExists.bar', 42));
 
 
         // Set array data
