@@ -109,6 +109,21 @@ class DbDataExport extends AbstractDbClient
 
 
     /**
+     * Constructor
+     *
+     * @param   object  $db
+     */
+    public function __construct($db = null)
+    {
+        parent::__construct($db);
+
+        if (isset($this->db) && !is_null($this->db)) {
+            $this->lineEnding = $this->db->getSqlDelimiter();
+        }
+    }
+
+
+    /**
      * Convert groupby rules to where sql clauses
      *
      * Export by groupby will make it hard to control rows number in a file,

@@ -42,7 +42,7 @@ class DbDataExportTest extends AbstractDbRelateTest
     public function setUp()
     {
         if (is_null(self::$dbe)) {
-            self::$dbe = new DbDataExport(ServiceContainerTest::getInstance());
+            self::$dbe = new DbDataExport(self::$db);
 
             self::$delimiter = self::$dbe->db->getSqlDelimiter('');
 
@@ -78,6 +78,16 @@ class DbDataExportTest extends AbstractDbRelateTest
 
         // Remove export path
         FileSystem::del(self::$exportPath);
+    }
+
+
+    public function testConstructWithServiceContainer()
+    {
+        $dbe = new DbDataExport();
+        $dbe->setServiceContainer(ServiceContainerTest::getInstance());
+        $this->assertFalse(isset($dbe->db));
+        $dbe->db;
+        $this->assertTrue(isset($dbe->db));
     }
 
 

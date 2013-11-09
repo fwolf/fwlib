@@ -3,6 +3,7 @@ namespace Fwlib\Base\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Base\Test\AbstractAutoNewConfigDummy;
+use Fwlib\Test\ServiceContainerTest;
 
 /**
  * Test for Fwlib\Base\AbstractAutoNewObj
@@ -29,6 +30,25 @@ class AbstractAutoNewObjTest extends PHPunitTestCase
         $this->assertFalse(isset($this->dummy->rv));
         $this->dummy->rv;
         $this->assertTrue(isset($this->dummy->rv));
+    }
+
+
+    /**
+     * @expectedException           Exception
+     * @expectedExceptionMessage    Need valid ServiceContainer.
+     */
+    public function testCheckServiceContainer()
+    {
+        $this->dummy->setServiceContainer(
+            ServiceContainerTest::getInstance()
+        );
+        $this->assertTrue($this->dummy->checkServiceContainer());
+
+        $this->dummy->setServiceContainer(null);
+        $this->assertFalse($this->dummy->checkServiceContainer(false));
+
+        // Trigger exception
+        $this->dummy->checkServiceContainer(true);
     }
 
 

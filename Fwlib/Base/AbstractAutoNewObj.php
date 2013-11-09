@@ -16,6 +16,14 @@ namespace Fwlib\Base;
 abstract class AbstractAutoNewObj
 {
     /**
+     * ServiceContainer to new object
+     *
+     * @var object
+     */
+    public $serviceContainer = null;
+
+
+    /**
      * Auto new property obj if not set and corresponding newObjFoo() exists
      *
      * @param   string  $name
@@ -45,5 +53,36 @@ abstract class AbstractAutoNewObj
 
             // @codeCoverageIgnoreEnd
         }
+    }
+
+
+    /**
+     * Check if ServiceContainer instance is valid
+     *
+     * @param   boolean $throwExceptionWhenFail
+     * @return  boolean
+     */
+    public function checkServiceContainer($throwExceptionWhenFail = true)
+    {
+        if (is_null($this->serviceContainer)) {
+            if ($throwExceptionWhenFail) {
+                throw new \Exception('Need valid ServiceContainer.');
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+
+    /**
+     * Set ServiceContainer instance
+     *
+     * @param   object  $serviceContainer
+     */
+    public function setServiceContainer($serviceContainer)
+    {
+        $this->serviceContainer = $serviceContainer;
     }
 }

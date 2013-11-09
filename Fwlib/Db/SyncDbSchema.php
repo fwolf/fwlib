@@ -65,12 +65,12 @@ class SyncDbSchema extends AbstractDbClient
     /**
      * Constructor
      *
-     * @param   object  $serviceContainer
+     * @param   object  $db
      * @param   string  $logTable
      */
-    public function __construct($serviceContainer = null, $logTable = null)
+    public function __construct($db = null, $logTable = null)
     {
-        parent::__construct($serviceContainer);
+        parent::__construct($db);
 
         if (!empty($logTable)) {
             $this->logTable = $logTable;

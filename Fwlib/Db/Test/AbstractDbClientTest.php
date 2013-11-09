@@ -17,17 +17,24 @@ use Fwlib\Test\ServiceContainerTest as ServiceContainerTest;
  */
 class AbstractDbClientTest extends PHPunitTestCase
 {
-    public function testSetDbProfile()
+    public function testNewDb()
     {
         $dbProfile = ConfigGlobal::get('dbserver.default');
         if (empty($dbProfile['host'])) {
             $this->markTestSkipped();
         }
 
-        // Use dbProfile and connect when use
-        $o = new AbstractDbClientDummy(ServiceContainerTest::getInstance());
+        $sc = ServiceContainerTest::getInstance();
+
+        // With ServiceContainer
+        $o = new AbstractDbClientDummy();
+        $o->setServiceContainer($sc);
         $this->assertFalse(isset($o->db));
         $o->db;
+        $this->assertTrue(isset($o->db));
+
+        // With Dependency Inject
+        $o = new AbstractDbClientDummy($sc->get('Db'));
         $this->assertTrue(isset($o->db));
     }
 }

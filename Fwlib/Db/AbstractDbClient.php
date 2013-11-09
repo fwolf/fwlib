@@ -25,14 +25,15 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
     /**
      * Constructor
      *
-     * @param   object  $serviceContainer
+     * @param   object  $db
      */
-    public function __construct($serviceContainer = null)
+    public function __construct($db = null)
     {
         // Unset for auto new
         unset($this->db);
-
-        $this->serviceContainer = $serviceContainer;
+        if (!is_null($db)) {
+            $this->db = $db;
+        }
     }
 
 
@@ -43,6 +44,8 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
      */
     protected function newObjDb()
     {
+        $this->checkServiceContainer();
+
         return $this->serviceContainer->get('Db');
     }
 }
