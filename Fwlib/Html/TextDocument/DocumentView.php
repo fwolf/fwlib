@@ -21,11 +21,13 @@ use Fwlib\Util\StringUtil;
  *  - showFileSize  Default: false
  *  - rawView       Allow view of un-converted raw text, default: false
  *  - timeFormat    Default: 'Y-m-d H:i:s'
+ *  - titleTail     Tail string of html title
  *
  * Supported text format:
  *  - Markdown
  *  - Restructuredtext
  *  - Txt(as Markdown)
+ *  - Unknown(print raw)
  *
  * @package     Fwlib\Html\TextDocument
  * @copyright   Copyright 2013 Fwolf
@@ -48,6 +50,15 @@ class DocumentView extends AbstractAutoNewConfig
      * @var Fwlib\Html\TextDocument\Restructuredtext
      */
     public $restructuredtext = null;
+
+    /**
+     * Html title
+     *
+     * Generate when display.
+     *
+     * @var string
+     */
+    public $title = '';
 
     /**
      * UnknownMarkup converter
@@ -109,7 +120,16 @@ class DocumentView extends AbstractAutoNewConfig
     {
         $type = $this->getDocumentType($file);
         $converter = $this->getDocumentConverter($type);
-        $html = $converter->convert($file);
+
+        $this->title = $converter->getTitle($file) .
+            " - {$this->config['titleTail']}";
+
+        $view = HttpUtil::getGet($this->config['paramRaw']);
+        if ('raw' == $view) {
+            $html = $converter->convertRaw($file);
+        } else {
+            $html = $converter->convert($file);
+        }
 
         if (!$returnOnly) {
             echo $html;
@@ -127,6 +147,8 @@ class DocumentView extends AbstractAutoNewConfig
      */
     public function displayIndex($arFile, $returnOnly = false)
     {
+        $this->title = $this->config['titleTail'];
+
         $html = "<div class='{$this->config['className']}'>
   <table>
     <thead>
@@ -368,6 +390,7 @@ class DocumentView extends AbstractAutoNewConfig
                 'recursive'     => true,
                 'showFileSize'  => false,
                 'timeFormat'    => 'Y-m-d H:i:s',
+                'titleTail'     => 'Document of Fwlib',
             )
         );
     }

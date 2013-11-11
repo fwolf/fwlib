@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Html\TextDocument;
 
+use Fwlib\Util\StringUtil;
 
 /**
  * Markup text converter to html
@@ -45,6 +46,29 @@ abstract class AbstractTextConverter
                 E_USER_ERROR
             );
         }
+    }
+
+
+    /**
+     * Convert string or file as raw format(<pre>)
+     *
+     * @param   string  $source     String or filename to convert
+     * @return  string
+     */
+    public function convertRaw($source)
+    {
+        if ($this->isFile($source)) {
+            try {
+                $source = file_get_contents($source);
+            } catch (Exception $e) {
+                trigger_error(
+                    "File $filename read fail: {$e->getMessage()}",
+                    E_USER_ERROR
+                );
+            }
+        }
+
+        return "<pre>\n" . StringUtil::encodeHtml($source) . "\n</pre>\n";
     }
 
 

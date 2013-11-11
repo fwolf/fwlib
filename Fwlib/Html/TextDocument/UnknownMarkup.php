@@ -22,7 +22,7 @@ class UnknownMarkup extends AbstractTextConverter
      */
     public function convertString($str)
     {
-        return "<pre>\n" . $str . "</pre>\n";
+        return $this->convertRaw($str);
     }
 
 
