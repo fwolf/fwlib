@@ -123,6 +123,8 @@ if ('config.default.php' == basename(__FILE__)) {
 
 
     // Add other library to ClassLoader
+    // Markdown
+    ClassLoader::addPrefix('Michelf', 'markdown/');
 
     // Autoload for Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object

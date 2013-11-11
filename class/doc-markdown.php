@@ -16,6 +16,7 @@ require_once(dirname(__FILE__) . '/fwolflib.php');
  *
  * Need jQuery locate at /js/jquery.js
  *
+ * @deprecated  Use Fwlib\Html\TextDocument\Markdown
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright © 2009-2013, Fwolf
