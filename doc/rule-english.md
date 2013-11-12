@@ -1,25 +1,4 @@
-<?php
-/**
- * English Words Common Used in Develop
- *
- * @package		fwolflib
- * @subpackage	doc
- * @copyright	Copyright 2009, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.doc@gmail.com>
- * @since		2009-05-04
- * @version		$Id$
- */
-
-$ar_info = array();
-$ar_info['title'] 		= 'English Words Common Used in Develop';
-$ar_info['author']		= 'Fwolf';
-$ar_info['authormail'] 	= 'fwolf.aide+fwolflib.doc@gmail.com';
-$ar_info['keywords']	= 'doc, rules, english, abbr';
-$ar_info['description']	= '常用英文及缩写。';
-
-$ar_body = array();
-$ar_body[] = '
-<div class="single_line" markdown="1">
+# 常用英文及缩写
 
 ## 命名词库
 
@@ -370,7 +349,3 @@ text				|content
 time				|
 timestamp			|lasttime
 value				|val, intvalue, strvalue, datevalue
-
-</div>
-';
-?>

@@ -1,24 +1,4 @@
-<?php
-/**
- * 文件格式规范
- *
- * @package		fwolflib
- * @subpackage	doc
- * @copyright	Copyright 2009, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.doc@gmail.com>
- * @since		2009-05-04
- * @version		$Id$
- */
-
-$ar_info = array();
-$ar_info['title'] 		= '文件格式规范';
-$ar_info['author']		= 'rxl';
-$ar_info['authormail'] 	= 'gj3rxl@gmail.com';
-$ar_info['keywords']	= 'work, file, format, doc, rules';
-$ar_info['description']	= '对文件结构如何组织、如何命名、使用什么格式做出约定。';
-
-$ar_body = array();
-$ar_body[] = '
+# 文件结构和命名规范
 
 本文中用`$PROJ`表示项目根目录。
 
@@ -150,6 +130,3 @@ Cache目录的结构说明，此目录在项目源码目录之外。
 注意中间以`*`开头的行行首是要留一个空格的，即竖向的`*`是对齐的。
 
 而在函数、变量的注释中，可以用TAB来缩进，因为注释的内容变化比较大，不像上面那样内容和格式比较固定。
-';
-
-?>

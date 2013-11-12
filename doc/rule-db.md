@@ -1,24 +1,5 @@
-<?php
-/**
- * Db design rules
- *
- * @package		fwolflib
- * @subpackage	doc
- * @copyright	Copyright 2009, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.doc@gmail.com>
- * @since		2009-04-20
- * @version		$Id$
- */
+# 数据库设计规范
 
-$ar_info = array();
-$ar_info['title'] 		= 'Database design rules';
-$ar_info['author']		= 'Fwolf';
-$ar_info['authormail'] 	= 'fwolf.aide+fwolflib.doc@gmail.com';
-$ar_info['keywords']	= 'doc, rules, db, database';
-$ar_info['description']	= '数据库的设计规范';
-
-$ar_body = array();
-$ar_body[] = '
 ## 语法规则
 
 ### 命名规则
@@ -64,7 +45,7 @@ $ar_body[] = '
 * DECIMAL/NUMERIC，将数字以字符串形式保存的，他的值的每一位 (包括小数点) 占一个字节的存储空间，
 因此这种类型耗费空间比较大。但是它的一个突出的优点是小数的位数固定，在运算中不会“失真”，比较精确，
 所以比较适合用于“价格”、“金额”这样对精度要求不高但准确度要求非常高的字段。
-	
+
 ##### 字符型字段的容量计算(Mysql)
 
 * CHAR，限制最多255，一般用在长度固定的情况。
@@ -170,42 +151,42 @@ $ar_body[] = '
 	action			add				aggregate		all				alter
 	after			and				as				asc				avg
 	avg_row_length	auto_increment
-	
+
 	between			bigint			bit				binary			blob
 	bool			both			by
-	
+
 	cascade			case			char			character		change
 	check			checksum		column			columns			comment
 	constraint		create			cross			current_date	current_time
 	current_timestamp
-	
+
 	data			database		databases		date			datetime
 	day				day_hour		day_minute		day_second		dayofmonth
 	dayofweek		dayofyear		dec				decimal			default
 	delayed			delay_key_write	delete			desc			describe
 	distinct		distinctrow		double			drop
-	
+
 	end				else			escape			escaped			enclosed
 	enum			explain			exists
-	
+
 	fields			file			first			float			float4
 	float8			flush			foreign			from			for
 	full			function
-	
+
 	global			grant			grants			group
-	
+
 	having			heap			high_priority	hour			hour_minute
 	hour_second		hosts
-	
+
 	identified		ignore			in				index			infile
 	inner			insert			insert_id		int				integer
 	interval		int1			int2			int3			int4
 	int8			into			if				is				isam
 
 	join
-	
+
 	key				keys			kill
-	
+
 	last_insert_id	leading			left			length			like
 	lines			limit			load			local			lock
 	logs			long			longblob		longtext		low_priority
@@ -213,7 +194,7 @@ $ar_body[] = '
 	max				max_rows		match			mediumblob		mediumtext
 	mediumint		middleint		min_rows		minute			minute_second
 	modify			month			monthname		myisam
-	
+
 	natural			numeric			no				not				null
 
 	on				optimize		option			optionally		or
@@ -228,7 +209,7 @@ $ar_body[] = '
 
 	second			select			set				show			shutdown
 	smallint		soname			sql_big_tables	sql_big_selects	sql_low_priority_updates
-	sql_log_off		sql_log_update	sql_select_limit				sql_small_result	
+	sql_log_off		sql_log_update	sql_select_limit				sql_small_result
 	sql_big_result	sql_warnings	straight_join	starting		status
 	string
 
@@ -238,15 +219,11 @@ $ar_body[] = '
 
 	use				using			unique			unlock			unsigned
 	update			usage
-	
+
 	values			varchar			variables		varying			varbinary
 
 	with			write			when			where
 
 	year			year_month
-	
+
 	zerofill		zone
-
-';
-
-?>

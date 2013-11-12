@@ -1,23 +1,5 @@
-<?php
-/**
- * PHP编码规范
- *
- * @package		fwolflib
- * @subpackage	doc
- * @copyright	Copyright 2009, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.doc@gmail.com>
- * @since		2009-05-04
- * @version		$Id$
- */
+# PHP编码规范
 
-$ar_info = array();
-$ar_info['title'] 		= 'PHP编码规范';
-$ar_info['author']		= 'Knight';
-$ar_info['authormail'] 	= 'knight0450@gmail.com';
-$ar_info['keywords']	= 'work, PHP, doc, rules';
-$ar_info['description']	= '';
-
-$ar_body[] = '
 ## 命名规范
 
 ### 类、类方法命名
@@ -189,6 +171,3 @@ Greay的`Files -> Strip trailing spaces and tabs`选项能实现此功能。
 一旦 require_once 包含了一个文件，include_once不会再重复包含相同的文件，反之亦然。
 
 常量定义与包含文件放在程序块的头部，单次输出使用require_once()，多次输出使用require();
-';
-
-?>

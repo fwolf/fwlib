@@ -1,24 +1,5 @@
-<?php
-/**
- * 通用命名规则
- *
- * @package		fwolflib
- * @subpackage	doc
- * @copyright	Copyright 2009, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.doc@gmail.com>
- * @since		2009-05-04
- * @version		$Id$
- */
+# 通用命名规则
 
-$ar_info = array();
-$ar_info['title'] 		= '通用命名规则';
-$ar_info['author']		= 'Fwolf';
-$ar_info['authormail'] 	= 'fwolf.aide+fwolflib.doc@gmail.com';
-$ar_info['keywords']	= 'doc, rules, naming';
-$ar_info['description']	= '';
-
-$ar_body = array();
-$ar_body[] = '
 ## 基本规则
 
 ### 适用场合
@@ -100,7 +81,3 @@ ControlerProj。
 * 项目根目录下的Controler基类不在任何一个子系统中，所以固定类名称为`IdxRoot`。
 * Module类的扩展类名称格式为`ModuleFunc`，其中`Func`为类的功能功能。
 * View类的扩展类名称格式为`ViewFunc`，其中`Func`为类的功能描述。
-
-';
-
-?>
