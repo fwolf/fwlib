@@ -38,6 +38,14 @@ use Fwlib\Util\StringUtil;
 class DocumentView extends AbstractAutoNewConfig
 {
     /**
+     * Current document type
+     * Index for index page, Unknown for unknown type.
+     *
+     * @var string
+     */
+    public $currentDocumentType = 'Index';
+
+    /**
      * Markdown converter
      *
      * @var Fwlib\Html\TextDocument\Markdown
@@ -119,10 +127,10 @@ class DocumentView extends AbstractAutoNewConfig
     public function displayFile($file, $returnOnly = false)
     {
         $type = $this->getDocumentType($file);
+        $this->currentDocumentType = $type;
         $converter = $this->getDocumentConverter($type);
 
-        $this->title = $converter->getTitle($file) .
-            " - {$this->config['titleTail']}";
+        $this->title = $converter->getTitle($file);
 
         $view = HttpUtil::getGet($this->config['paramRaw']);
         if ('raw' == $view) {
@@ -130,6 +138,8 @@ class DocumentView extends AbstractAutoNewConfig
         } else {
             $html = $converter->convert($file);
         }
+
+        $html = "<div class='{$this->config['className']}'>\n\n$html\n</div>\n";
 
         if (!$returnOnly) {
             echo $html;
@@ -147,6 +157,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     public function displayIndex($arFile, $returnOnly = false)
     {
+        $this->currentDocumentType = 'Index';
         $this->title = $this->config['titleTail'];
 
         $html = "<div class='{$this->config['className']}'>
@@ -154,13 +165,13 @@ class DocumentView extends AbstractAutoNewConfig
     <thead>
       <tr>";
 
-        foreach (array('FileName', 'Title', 'Last Modified') as $v) {
+        foreach (array('File Name', 'Title', 'Last Modified') as $v) {
             $html .= "
         <th>$v</th>";
         }
         if ($this->config['showFileSize']) {
             $html .= "
-        <th>FileSize</th>";
+        <th>File Size</th>";
         }
 
         $html .= "
@@ -179,24 +190,24 @@ class DocumentView extends AbstractAutoNewConfig
             $link = "?{$this->config['paramFile']}=" . addslashes($filename);
             $title = $this->getDocumentTitle($filename);
             $time = date($this->config['timeFormat'], $file['mtime']);
-            $size = NumberUtil::toHumanSize($file['size']);
+            $size = strtolower(NumberUtil::toHumanSize($file['size']));
 
             if ($this->config['rawView']) {
                 $linkRaw = $link . '&' . $this->config['paramRaw'] . '=raw';
                 $html .= "
-        <td><a href='$linkRaw'>$filename</a></td>";
+        <td class='document-filename'><a href='$linkRaw'>$filename</a></td>";
             } else {
                 $html .= "
-        <td>$filename</td>";
+        <td class='document-filename'>$filename</td>";
             }
 
             $html .= "
-        <td><a href='$link'>$title</a></td>
-        <td>$time</td>";
+        <td class='document-title'><a href='$link'>$title</a></td>
+        <td class='document-mtime'>$time</td>";
 
             if ($this->config['showFileSize']) {
                 $html .= "
-        <td>$size</td>";
+        <td class='document-size'>$size</td>";
             }
 
             $html .= "
@@ -382,7 +393,7 @@ class DocumentView extends AbstractAutoNewConfig
     {
         $this->setConfig(
             array(
-                'className'     => 'documentView',
+                'className'     => 'document-view',
                 'exclude'       => array('^\.*'),
                 'paramFile'     => 'f',
                 'paramRaw'      => 'view',
@@ -390,7 +401,7 @@ class DocumentView extends AbstractAutoNewConfig
                 'recursive'     => true,
                 'showFileSize'  => false,
                 'timeFormat'    => 'Y-m-d H:i:s',
-                'titleTail'     => 'Document of Fwlib',
+                'titleTail'     => 'Document in Fwlib',
             )
         );
     }

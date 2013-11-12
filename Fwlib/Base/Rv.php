@@ -33,7 +33,7 @@ class Rv
 
 
     /**
-     * constructor
+     * Constructor
      *
      * @param   int     $code
      * @param   string  $msg
