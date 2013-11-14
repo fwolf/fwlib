@@ -26,6 +26,8 @@ body {
 
 .document-view {
   text-align: left;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 .document-view ol {
   list-style-type: decimal;
