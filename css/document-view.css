@@ -18,7 +18,8 @@ body {
 .document-view pre {
   background-color: #CCCCCC;
   margin-right: 2em;
-  padding: 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
   text-align: left;
 }
 
@@ -31,6 +32,9 @@ body {
 }
 .document-view ul {
   list-style-type: square;
+}
+.document-view li p {
+  text-indent: 0;
 }
 .document-view table {
   margin: auto;

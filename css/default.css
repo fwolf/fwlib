@@ -77,10 +77,15 @@ h4, h5, h6 {
 	line-height: 2em;
 	margin-left: 1.364em;
 }
-p, td, th, li {
+td, th, li {
 	font-size: 1em;
 	line-height: 2em;
 	margin-left: 3em;
+}
+p {
+  font-size: 1em;
+  line-height: 2em;
+  text-indent: 2em;
 }
 pre {
 	margin-left: 2em;
