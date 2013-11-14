@@ -8,6 +8,7 @@ use Fwlib\Html\TextDocument\UnknownMarkup;
 
 $dv = new DocumentView(
     array(
+        'className' => 'document-view article',
         'dir'       => __DIR__ . '/',
         'exclude'   => array('^\.*', 'index.php'),
         'rawView'   => true,
