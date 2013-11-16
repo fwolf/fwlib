@@ -3,7 +3,7 @@ require __DIR__ . '/../config.default.php';
 
 use Fwlib\Html\TextDocument\DocumentView;
 use Fwlib\Html\TextDocument\Markdown;
-//use Fwlib\Html\TextDocument\Restructuredtext;
+use Fwlib\Html\TextDocument\Restructuredtext;
 use Fwlib\Html\TextDocument\UnknownMarkup;
 
 $dv = new DocumentView(
@@ -16,7 +16,9 @@ $dv = new DocumentView(
     )
 );
 $dv->markdown = new Markdown;
-//$dv->restructuredtext = new Restructuredtext;
+$dv->restructuredtext = new Restructuredtext;
+// Disable css from rst2html
+$dv->restructuredtext->cmdOption[] = 'stylesheet=""';
 $dv->unknownMarkup = new UnknownMarkup;
 $html = $dv->display(true);
 $title = $dv->title;

@@ -6,6 +6,8 @@ use Fwlib\Html\TextDocument\AbstractTextConverter;
 /**
  * Text converter for Unknown markup
  *
+ * @codeCoverageIgnore
+ *
  * @package     Fwlib\Html\TextDocument
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>

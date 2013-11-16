@@ -7,6 +7,8 @@ use Michelf\MarkdownExtra;
 /**
  * Text converter for Markdown
  *
+ * @codeCoverageIgnore
+ *
  * @package     Fwlib\Html\TextDocument
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>

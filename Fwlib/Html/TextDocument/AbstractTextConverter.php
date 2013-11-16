@@ -6,6 +6,8 @@ use Fwlib\Util\StringUtil;
 /**
  * Markup text converter to html
  *
+ * @codeCoverageIgnore
+ *
  * @package     Fwlib\Html\TextDocument
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>

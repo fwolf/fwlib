@@ -29,6 +29,8 @@ use Fwlib\Util\StringUtil;
  *  - Txt(as Markdown)
  *  - Unknown(print raw)
  *
+ * @codeCoverageIgnore
+ *
  * @package     Fwlib\Html\TextDocument
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -139,7 +141,8 @@ class DocumentView extends AbstractAutoNewConfig
             $html = $converter->convert($file);
         }
 
-        $html = "<div class='{$this->config['className']}'>\n\n$html\n</div>\n";
+        $html = "<article class='{$this->config['className']}'>\n\n$html
+</article>\n";
 
         if (!$returnOnly) {
             echo $html;

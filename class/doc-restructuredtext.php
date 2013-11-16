@@ -22,6 +22,7 @@ require_once(FWOLFLIB . 'func/array.php');
  *
  * :TODO: Highlight: http://softwaremaniacs.org/soft/highlight/en/
  *
+ * @deprecated  Use Fwlib\Html\TextDocument\Restructuredtext
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright © 2010, Fwolf
