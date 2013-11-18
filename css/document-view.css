@@ -39,6 +39,9 @@ body {
   text-indent: 0;
 }
 .document-view table {
+  margin-left: 2em;
+}
+.document-view table.index {
   margin: auto;
 }
 /* Table is single line and printable */

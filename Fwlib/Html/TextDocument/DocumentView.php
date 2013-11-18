@@ -164,7 +164,7 @@ class DocumentView extends AbstractAutoNewConfig
         $this->title = $this->config['titleTail'];
 
         $html = "<div class='{$this->config['className']}'>
-  <table>
+  <table class='index'>
     <thead>
       <tr>";
 
