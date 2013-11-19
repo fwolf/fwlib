@@ -4,6 +4,7 @@
 /**
  * Extended Smarty class
  *
+ * @deprecated  Use Fwlib\Bridge\Smarty
  * @package		fwolflib
  * @subpackage	class.smarty-fl
  * @copyright	Copyright 2013, Fwolf

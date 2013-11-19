@@ -125,6 +125,8 @@ if ('config.default.php' == basename(__FILE__)) {
     // Add other library to ClassLoader
     // Markdown
     ClassLoader::addPrefix('Michelf', 'markdown/');
+    // Smarty 3.1.x
+    ClassLoader::addPrefix('Smarty', 'smarty/Smarty.class.php');
 
     // Autoload for Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object
