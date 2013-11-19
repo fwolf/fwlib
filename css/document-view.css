@@ -17,10 +17,24 @@ body {
 /* Show source code */
 .document-view pre {
   background-color: #CCCCCC;
+  font-family:
+    'Bitstream Vera Sans Mono',
+    'DejaVu Sans Mono',
+    Menlo,
+    Monaco,
+    Consolas,
+    'Courier New',
+    'Droid Sans Mono',
+    Inconsolata,                                /* 中英文等宽 */
+    'Source Sans Pro',
+    'WenQuanYi Zen Hei Mono', '文泉驿等宽正黑', /* 中英文等宽 */
+    Simsun, '宋体',                             /* 中英文不等宽 */
+    monospace;
   margin-right: 2em;
   padding-left: 0.5em;
   padding-right: 0.5em;
   text-align: left;
+  white-space: pre;
 }
 
 

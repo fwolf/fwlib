@@ -30,13 +30,20 @@ body {
 	background-color: rgb(204, 232, 207);
 	text-align: center;
 	/* font-size:0.83em; */	/* 基本上等于9px */
-	/* font-size:0.84em;
-	line-height: 1.5em;
-	font-family: Arial, Helvetica, sans-serif;*/
+	/* font-size:0.84em; */
+	/* line-height: 1.5em; */
+  font-family:
+    Helvetica,
+    Tahoma,
+    Arial,
+    STXihei, '华文细黑',
+    'Microsoft YaHei', '微软雅黑',
+    Simsun, '宋体',
+    'WenQuanYi Micro Hei Mono', '文泉驿等宽微米黑',
+    Heiti, '黑体',
+    sans-serif;
 }
 body, p, td, th, li {
-	font-family: Arial, Helvetica, San-serif, "宋体";
-/*	font-family: "宋体", verdana, helvetica, sans-serif;*/
 	font-size: 0.875em;
 	line-height: 1.5em;
 	color: #000000;
