@@ -270,6 +270,7 @@ class HttpUtil
      *
      * @param   boolean $withGetParam   Include get param in url, default yes
      * @return  string
+     * @link http://stackoverflow.com/a/8891890/1759745
      */
     public static function getSelfUrl($withGetParam = true)
     {
@@ -277,7 +278,14 @@ class HttpUtil
             return '';
         }
 
-        $url = self::getUrlPlan() . '://';
+        if (!empty($_SERVER['HTTPS']) && 'on' == $_SERVER['HTTPS']) {
+            $ssl = true;
+        } else {
+            $ssl = false;
+        }
+        $url = ($ssl) ? 'https' : 'http';
+        $url .= '://';
+
         $url .= $_SERVER['HTTP_HOST'] .
             (($withGetParam) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME']);
 
@@ -376,7 +384,7 @@ class HttpUtil
 
         $i = preg_match('/^(\w+):\/\//', $url, $ar);
         if (1 == $i) {
-            return $ar[1];
+            return strtolower($ar[1]);
         } else {
             return '';
         }
