@@ -57,15 +57,16 @@ if ('config.default.php' == basename(__FILE__)) {
 
 
 // Config to use in compute later NEED use user config if set
-$config['group.key-for-compute'] = ArrayUtil::getIdx(
+$config['group.keyForCompute'] = ArrayUtil::getIdx(
     $configUser,
-    'group.key-for-compute',
+    'group.keyForCompute',
     'default value'
 );
 
 // External library path, with tailing '/'
 $config['lib.path.adodb'] = 'adodb/';
 $config['lib.path.fwlib'] = 'fwlib/';
+$config['lib.path.smarty'] = 'smarty/';
 
 
 /**
@@ -108,6 +109,13 @@ $config['memcached.server'] = array(
 );
 
 
+/**
+ * Smarty
+ */
+$config['smarty.cacheDir'] = '/tmp/';
+$config['smarty.compileDir'] = '/tmp/';
+
+
 /***********************************************************
  * Config define area end
  **********************************************************/
@@ -126,7 +134,10 @@ if ('config.default.php' == basename(__FILE__)) {
     // Markdown
     ClassLoader::addPrefix('Michelf', 'markdown/');
     // Smarty 3.1.x
-    ClassLoader::addPrefix('Smarty', 'smarty/Smarty.class.php');
+    ClassLoader::addPrefix(
+        'Smarty',
+        $config['lib.path.smarty'] . 'Smarty.class.php'
+    );
 
     // Autoload for Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object
