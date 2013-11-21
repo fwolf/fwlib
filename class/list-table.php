@@ -39,6 +39,7 @@ require_once(FWOLFLIB . 'func/request.php');
  * $s = $this->oLt->GetHtml();
  * </code>
  *
+ * @deprecated  Use Fwlib\Html\ListTable
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2003-2011, Fwolf

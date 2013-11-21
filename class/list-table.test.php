@@ -19,10 +19,10 @@ if (! defined('SIMPLE_TEST')) {
 // }}}
 
 // Require library define file which need test
-require_once('fwolflib/class/list-table.php');
-require_once('fwolflib/func/ecl.php');
-require_once('fwolflib/func/request.php');
-require_once('fwolflib/func/string.php');
+require_once('fwlib/class/list-table.php');
+require_once('fwlib/func/ecl.php');
+require_once('fwlib/func/request.php');
+require_once('fwlib/func/string.php');
 require_once('smarty/Smarty.class.php');
 
 class TestListTable extends UnitTestCase {
