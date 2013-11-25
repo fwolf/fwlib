@@ -11,7 +11,10 @@ $tpl->compile_dir = ConfigGlobal::get('smarty.compileDir');
 $tpl->template_dir = __DIR__ . '/../';
 $tpl->cache_dir = ConfigGlobal::get('smarty.cacheDir');
 
-$listTable = new ListTable($tpl);
+$config = array(
+    'pageSize' => 3,
+);
+$listTable = new ListTable($tpl, $config);
 
 
 // Prepare dummy data
@@ -30,26 +33,17 @@ for ($j = 0; $j < $rows; $j++) {
 
 
 // Show list table
-$config = array(
-    'page_size' => 3,
-);
-$listTable->setConfig($config);
-
 $listTable->setData($data, $title);
-//$listTable->setId('');
-$listTable->setPager();
 
 $html1 = $listTable->getHtml();
 
 
 // Another table in same page
-$listTable->setId('lt1');
+$listTable->setId(2);
 // Data is trimmed, need re-make
 $listTable->setData($data, $title);
 // set sort
 $listTable->setOrderby(0, 'asc');
-// MUST refresh pager
-$listTable->setPager();
 
 $html2 = $listTable->getHtml();
 ?>
@@ -68,22 +62,19 @@ $html2 = $listTable->getHtml();
   <style type='text/css' media='all'>
   /*<![CDATA[*/
   /* Write CSS below */
-  .fl_lt, .fl_lt_lt1 {
+  .ListTable {
     border: 0px solid red;
     margin: auto;
     width: 70%;
   }
-  .fl_lt form, .fl_lt_lt1 form {
+  .ListTable form {
     display: inline-block;
   }
-  .fl_lt_pager, .fl_lt_lt1_pager {
-    text-align: right;
-  }
-  .fl_lt table, .fl_lt_lt1 table {
+  .ListTable table {
     margin: auto;
     width: 100%;
   }
-  .fl_lt table, .fl_lt td, .fl_lt th {
+  .ListTable table, .ListTable td, .ListTable th {
     border: 1px solid black;
     border-collapse: collapse;
   }
@@ -102,7 +93,7 @@ $html2 = $listTable->getHtml();
 <body>
 
 <?php
-echo "<h2>Common Style</h2>\n";
+echo "<h2>Common style</h2>\n";
 echo $html1;
 
 echo "<hr />\n";
@@ -134,16 +125,16 @@ $listTable::getSqlInfo()
   // then td width is assigned + fixed_for_left,
   // content width exceed limit will auto wrap,
   // but overflow content can also been seen.
-  $(".fl_lt table").css("table-layout", "fixed");
+  $(".ListTable table").css("table-layout", "fixed");
   // * include th & td here
-  $(".fl_lt tr > *:nth-child(2)").css("background-color", "green");
-  $(".fl_lt tr > *:nth-child(2)").css("width", "6em");
-  //$(".fl_lt tr > *:nth-child(2)").css("width", "3em");
+  $(".ListTable tr > *:nth-child(2)").css("background-color", "green");
+  $(".ListTable tr > *:nth-child(2)").css("width", "9em");
+  //$(".ListTable tr > *:nth-child(2)").css("width", "3em");
 
   // If "table-layout: fixed;" is not assigned,
   // width limit will work, but overflow content
   // may make width raise.
-  $(".fl_lt_lt1 tr > *:nth-child(2)").css("width", "30%");
+  $("#ListTable-2 tr > *:nth-child(2)").css("width", "30%");
 
   //--><!]]>
   </script>
