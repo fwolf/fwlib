@@ -46,7 +46,6 @@
         <directory>./Fwlib/*/*/Test/</directory>
         <!-- Implement of PSR-0 is already test of ClassLoader -->
         <file>./Fwlib/Base/ClassLoader.php</file>
-        <file>./Fwlib/Bridge/PHPUnitTestCase.php</file>
       </exclude>
     </whitelist>
   </filter>
