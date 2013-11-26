@@ -2,6 +2,7 @@
 namespace Fwlib\Bridge\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
+use Fwlib\Bridge\Test\PHPUnitTestCaseDummy;
 
 /**
  * Test for Fwlib\Bridge\PHPUnitTestCase
@@ -27,5 +28,23 @@ class PHPUnitTestCaseTest extends PHPunitTestCase
         $x = array(1);
         $y = array(1);
         $this->assertEqualArray($x, $y);
+    }
+
+
+    public function testReflection()
+    {
+        $dummy = new PHPUnitTestCaseDummy;
+
+        $this->assertEquals(
+            42,
+            $this->reflectionGet($dummy, 'privateProperty')
+        );
+
+        $i = $this->reflectionCall(
+            $dummy,
+            'protectedMethod',
+            array(4, 2)
+        );
+        $this->assertEquals(42, $i);
     }
 }

@@ -32,4 +32,34 @@ abstract class PHPUnitTestCase extends \PHPunit_Framework_TestCase
             $ignoreCase
         );
     }
+
+
+    /**
+     * Call private or protected method for test using reflection
+     *
+     * @param   mixed   $class
+     * @param   mixed   $name
+     * @param   array   $args
+     */
+    protected function reflectionCall($class, $name, $args)
+    {
+        $ref = new \ReflectionMethod($class, $name);
+        $ref->setAccessible(true);
+        return $ref->invokeArgs($class, (array)$args);
+    }
+
+
+    /**
+     * Get private or protected property for test using reflection
+     *
+     * @param   mixed   $class
+     * @param   string  $name
+     * @return  mixed
+     */
+    protected function reflectionGet($class, $name)
+    {
+        $ref = new \ReflectionProperty($class, $name);
+        $ref->setAccessible(true);
+        return $ref->getValue($class);
+    }
 }
