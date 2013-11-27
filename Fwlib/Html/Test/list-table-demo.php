@@ -12,23 +12,69 @@ $tpl->template_dir = __DIR__ . '/../';
 $tpl->cache_dir = ConfigGlobal::get('smarty.cacheDir');
 
 $config = array(
-    'pageSize' => 3,
+    'pageSize'  => 3,
+    'tdAdd'     => array(
+        'title'     => 'nowrap="nowrap"',
+        'joindate'  => 'nowrap="nowrap"',
+    ),
 );
 $listTable = new ListTable($tpl, $config);
 
 
-// Prepare dummy data
-$title = array();
-$data = array();
-$cols = 6;
-$rows = 50;
-for ($i = 0; $i < $cols; $i++) {
-    $title[$i] = 'Head ' . $i;
+// Use person from phpcredits() as fake name
+ob_start();
+phpcredits();
+$credits = ob_get_contents();
+ob_end_clean();
+
+$name = array();
+// Part1, name take a full row(3: PHP Group, Language design, QA)
+preg_match_all('/<tr><td class="e">([^<]+)<\/td><\/tr>/', $credits, $ar);
+foreach ($ar[1] as $v) {
+    $name = array_merge($name, explode(',', $v));
 }
+// Part1, name take right column of output table
+// 1 special line is excluded, which is describe end with '. '
+preg_match_all('/<td class="v">([^<\(]+\w {0,2})<\/td>/', $credits, $ar);
+foreach ($ar[1] as $v) {
+    $name = array_merge($name, explode(',', $v));
+}
+
+// Cleanup
+$name = array_map('trim', $name);
+$name = array_unique($name);
+// Reorder index
+$name = array_merge($name, array());
+$nameCount = count($name);
+
+
+// Prepare dummy data
+$title = array(
+    'uuid'     => 'UUID',
+    'title'    => 'Name',
+    'age'      => 'Age',
+    'credit'   => 'Money',
+    'joindate' => 'Join Date',
+);
+$data = array();
+$rows = $nameCount;
+// Casual algorithm, but solid result
+$seed = 42;
 for ($j = 0; $j < $rows; $j++) {
-    for ($i = 0; $i < $cols; $i++) {
-        $data[$j][$i] = "Row $j Col $i";
-    }
+    $seed = round((100 + $seed) / 100);
+    $seed = 101 + $seed * ($j + 2);
+    $data[$j] = array(
+        'uuid'  => $j,
+        'title' => $name[$j],
+        'age'   => $seed % 40 + 20,
+        'credit'    => $seed,
+        'joindate'  => date(
+            'Y-m-d H:i:s',
+            strtotime(
+                '-' . ($seed % 30) . ' days -' . ($seed % 12) . ' hours'
+            )
+        )
+    );
 }
 
 
@@ -46,8 +92,8 @@ $listTable->setData($data, $title);
 $listTable->setConfig(
     'orderbyColumn',
     array(
-        array(2, 'DESC'),
-        array(3, 'ASC'),
+        array('age', 'DESC'),
+        array('credit', 'ASC'),
     )
 );
 // Set current sort order
@@ -133,8 +179,8 @@ $listTable::getSqlConfig()
   // but overflow content can also been seen.
   $(".ListTable table").css("table-layout", "fixed");
   // * include th & td here
-  $(".ListTable tr > *:nth-child(2)").css("background-color", "green");
-  $(".ListTable tr > *:nth-child(2)").css("width", "9em");
+  $(".ListTable tr > td:nth-child(2)").css("background-color", "green");
+  $(".ListTable tr > *:nth-child(2)").css("width", "20em");
   //$(".ListTable tr > *:nth-child(2)").css("width", "3em");
 
   // If "table-layout: fixed;" is not assigned,
