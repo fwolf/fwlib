@@ -105,11 +105,8 @@ echo $html2;
 echo "<hr />\n";
 
 echo '<pre>
-$listTable::getSqlInfoFromUrl()
-' . var_export($listTable->getSqlInfoFromUrl(), true) . '
-
-$listTable::getSqlInfo()
-' . var_export($listTable->getSqlInfo(), true) . '
+$listTable::getSqlConfig()
+' . var_export($listTable->getSqlConfig(), true) . '
 </pre>
 ';
 ?>

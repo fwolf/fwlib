@@ -327,14 +327,19 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
-     * Get info about some plistTitle of query sql
-     * what can directly use in SqlGenerator, eg: limit, orderby
+     * Get config for generate SQL
+     *
+     * The result will use as config in SqlGenerator, include:
+     * - LIMIT
+     * - ORDERBY
      *
      * @return  array
-     * @see SqlGenerator
+     * @see Fwlib\Db\SqlGenerator
      */
-    public function getSqlInfo()
+    public function getSqlConfig()
     {
+        $this->readRequest();
+
         $ar = array();
 
         $ar['LIMIT'] = $this->config['pageSize'] * ($this->info['page'] - 1)
@@ -351,44 +356,19 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
-     * Get info about some plistTitle of query sql from url $_REQUEST
-     * what can directly use in SqlGenerator, eg: limit, orderby
-     *
-     * :TODO: Check and merge to readRequest()
-     *
-     * @return  array
-     * @see SqlGenerator
-     */
-    public function getSqlInfoFromUrl()
-    {
-        $ar = array();
-
-        // Limit
-        //$this->setPage();   // :TODO: Necessary ?
-        $page = $this->info['page'];
-        $ar['LIMIT'] = ($page - 1) * $this->config['pageSize']
-            . ', ' . $this->config['pageSize'];
-
-        // Orderby
-        $s = $this->config['paramOrderby'];
-        $s_idx = HttpUtil::getRequest($_REQUEST, $s);
-        if (0 < strlen($s_idx)) {
-            // Orderby enabled
-            $s_dir = HttpUtil::getRequest($_REQUEST, $s . 'Dir', 'ASC');
-            $ar['ORDERBY'] = $s_idx . ' ' . $s_dir;
-        }
-
-        return $ar;
-    }
-
-
-    /**
      * Read http param and parse
      *
+     * $param   boolean $forcenew
      * @return  $this
      */
-    protected function readRequest()
+    protected function readRequest($forcenew = false)
     {
+        // Avoid duplicate
+        if (!empty($this->url['base']) && !$forcenew) {
+            return;
+        }
+
+
         $this->param = &$_GET;
         if (!get_magic_quotes_gpc()) {
             array_walk($this->param, 'addslashes');
