@@ -672,9 +672,10 @@ class ListTable extends AbstractAutoNewConfig
         );
 
         // Other column orderby will clear diretion
+        // Added paramPage is dummy, to keep url start with '?', fit tpl later
         $this->url['obOther'] = $this->genUrl(
-            null,
-            array($ob, "{$ob}Dir", $this->config['paramPage'])
+            array($this->config['paramPage'] => 1),
+            array($ob, "{$ob}Dir")
         );
     }
 
