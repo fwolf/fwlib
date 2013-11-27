@@ -57,8 +57,16 @@
     <tr>
   {foreach from=$listTableTitle key=keyTh item=title}
       <th {$listTableConfig.thAdd[$keyTh]|default: ''}>
-    {if (0 < strlen($listTableConfig.orderby))}
-        <a href='{if $keyTh==$listTableConfig.orderby}{$listTableUrl.obCur}{else}{$listTableUrl.obReverse}{/if}&amp;{$listTableConfig.paramOrderby}={$keyTh}'>
+    {if (!empty($listTableInfo.orderbyColumn) &&
+        isset($listTableInfo.orderbyColumn[$keyTh]))}
+        <a href='{strip}
+      {if $keyTh==$listTableConfig.orderby}
+          {$listTableUrl.obCur}
+      {else}
+          {$listTableUrl.obOther}
+      {/if}
+          &amp;{$listTableConfig.paramOrderby}={$keyTh}
+        {/strip}'>
           {$title}
       {if $keyTh==$listTableConfig.orderby}{$listTableConfig.orderbyText}{/if}
         </a>

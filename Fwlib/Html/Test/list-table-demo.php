@@ -42,8 +42,17 @@ $html1 = $listTable->getHtml();
 $listTable->setId(2);
 // Data is trimmed, need re-make
 $listTable->setData($data, $title);
-// set sort
-$listTable->setOrderby(0, 'asc');
+// Set sort able column
+$listTable->setConfig(
+    'orderbyColumn',
+    array(
+        array(2, 'DESC'),
+        array(3, 'ASC'),
+    )
+);
+// Set current sort order
+//$listTable->setOrderby(2, 'ASC');
+//$listTable->setOrderby(2);
 
 $html2 = $listTable->getHtml();
 ?>

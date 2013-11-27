@@ -54,6 +54,8 @@ class ListTable extends AbstractAutoNewConfig
         'id'            => 'ListTable-1',
         // Id prefix for non-root elements
         'idPrefix'      => 'ListTable-1-',
+        // Orderby enabled column and default direction
+        'orderbyColumn' => array(),
         // Current page number
         'page'          => 1,
         // Max page number
@@ -107,8 +109,8 @@ class ListTable extends AbstractAutoNewConfig
      * {
      *  base      : Original page url
      *  form      : Page jump form target url
-     *  obCur     : Current orderby link (modified)
-     *  obReverse : Reverse order orderby link (modified)
+     *  obCur     : Link on current orderby head, to reverse order
+     *  obOther   : Link on in-active orderby head(their default dir add in tpl)
      *  pageFirst : First page link
      *  pageLast  : Last page link
      *  pageNext  : Next page link
@@ -121,7 +123,7 @@ class ListTable extends AbstractAutoNewConfig
         'base'      => '',
         'form'      => '',
         'obCur'     => '',
-        'obReverse' => '',
+        'obOther'   => '',
         'pageFirst' => '',
         'pageLast'  => '',
         'pageNext'  => '',
@@ -319,7 +321,7 @@ class ListTable extends AbstractAutoNewConfig
      */
     public function getHtml()
     {
-        $this->readRequest();
+        $this->readRequest(true);
         $this->setPager();
 
         return $this->tpl->fetch($this->config['tpl']);
@@ -338,7 +340,7 @@ class ListTable extends AbstractAutoNewConfig
      */
     public function getSqlConfig()
     {
-        $this->readRequest();
+        $this->readRequest(false);
 
         $ar = array();
 
@@ -387,18 +389,19 @@ class ListTable extends AbstractAutoNewConfig
         $page = ArrayUtil::getIdx($this->param, $this->config['paramPage'], 1);
         $this->setPage($page);
 
+
+        // Always treat orderby
+        $orderby = '';
+        $dir = '';
         if (isset($this->param[$this->config['paramOrderby']])) {
-            // Orderby is enabled
+            $orderby = $this->param[$this->config['paramOrderby']];
             $dir = ArrayUtil::getIdx(
                 $this->param,
                 $this->config['paramOrderby'] . 'Dir',
-                'ASC'
-            );
-            $this->setOrderby(
-                $this->param[$this->config['paramOrderby']],
-                $dir
+                ''
             );
         }
+        $this->setOrderby($orderby, $dir);
 
         return $this;
     }
@@ -452,7 +455,11 @@ class ListTable extends AbstractAutoNewConfig
                 //'fit_empty'         => '&nbsp;',
 
 
-                // Which column to orderby, empty to disable orderby feature
+                // Enable orderby on those column, empty to disable orderby
+                // Format: {[column, direction],}
+                // First [] is default, and default direction is ASC.
+                'orderbyColumn'     => array(),
+                // Which column to orderby,
                 'orderby'           => '',
                 // Orderby direction, ASC or DESC
                 'orderbyDir'        => 'ASC',
@@ -621,9 +628,27 @@ class ListTable extends AbstractAutoNewConfig
      * @param   mixed   $key
      * @param   string  $dir    ASC/DESC
      */
-    public function setOrderby($key, $dir = 'ASC')
+    public function setOrderby($key = null, $dir = null)
     {
+        // Parse orderby config
+        $orderbyColumn = array();
+        foreach ((array)$this->config['orderbyColumn'] as $v) {
+            $orderbyColumn[$v[0]] = array(
+                $v[0],
+                (isset($v[1])) ? $v[1] : 'ASC',
+            );
+        }
+        $this->info['orderbyColumn'] = $orderbyColumn;
+
+
+        // Check orderby param, if fail, use config default
+        if (!isset($orderbyColumn[$key])) {
+            list($key, $dir) = current($orderbyColumn);
+        } elseif (empty($dir)) {
+            $dir = $orderbyColumn[$key][1];
+        }
         $this->config['orderby'] = $key;
+
 
         $dir = strtoupper($dir);
         if ('ASC' == $dir) {
@@ -636,18 +661,20 @@ class ListTable extends AbstractAutoNewConfig
             $this->config['orderbyText'] = $this->config['orderbyTextDesc'];
         }
 
+
         // Url param
         $ob = $this->config['paramOrderby'];
+        // Change orderby will clear page param
         // Orderby index is appended in template by each th, remove here
         $this->url['obCur'] = $this->genUrl(
             array("{$ob}Dir" => $dirReverse),
-            array($ob)
+            array($ob, $this->config['paramPage'])
         );
 
-        // Reverse orderby will clear page param
-        $this->url['obReverse'] = $this->genUrl(
-            array("{$ob}Dir" => $dir),
-            array($ob, $this->config['paramPage'])
+        // Other column orderby will clear diretion
+        $this->url['obOther'] = $this->genUrl(
+            null,
+            array($ob, "{$ob}Dir", $this->config['paramPage'])
         );
     }
 
