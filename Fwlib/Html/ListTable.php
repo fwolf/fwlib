@@ -154,19 +154,99 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
+     * Fit each row in data with given keys
+     *
+     * If row index is not in given keys, it will be dropped.
+     * If given keys is not in row index, it will be created with value
+     * $this->config['fitEmpty'].
+     *
+     * @param   array   $key
+     */
+    protected function fitData(array $key)
+    {
+        // Do search on first row for speed
+        $keyAdd = array();
+        $keyDel = array();
+        reset($this->listData);
+        $row = current($this->listData);
+
+        // Drop key not in key list
+        foreach ((array)$row as $k => $v) {
+            if (!in_array($k, $key)) {
+                $keyDel[] = $k;
+            }
+        }
+        // Add key not exists
+        foreach ($key as $k) {
+            if (!isset($row[$k])) {
+                $keyAdd[] = $k;
+            }
+        }
+
+
+        if (empty($keyAdd) && empty($keyDel)) {
+            return;
+        }
+
+
+        $fitEmpty = $this->config['fitEmpty'];
+        foreach ($this->listData as &$row) {
+            foreach ((array)$keyDel as $k) {
+                unset($row[$k]);
+            }
+
+            foreach ((array)$keyAdd as $k) {
+                $row[$k] = $fitEmpty;
+            }
+        }
+        unset($row);
+    }
+
+
+    /**
+     * Fit title with given keys
+     *
+     * Drop title value not in given keys, and create new if given keys is not
+     * exists in title array.
+     *
+     * @param   array   $key
+     */
+    protected function fitTitle(array $key)
+    {
+        // Title index not in key list
+        foreach ($this->listTitle as $k => $v) {
+            if (!in_array($k, $key)) {
+                unset($this->listTitle[$k]);
+            }
+        }
+
+        // Key not exist in title
+        foreach ($key as $k) {
+            if (!isset($this->listTitle[$k])) {
+                // Title value is same as key
+                $this->listTitle[$k] = $k;
+            }
+        }
+    }
+
+
+    /**
      * Fit data and title if their key are different
      *
-     * Notice: data have multi row(2 dim), title have only 1 row(1 dim).
+     * Notice: data have multi row(2 dim), and 2nd dimention must use assoc
+     * index. Title have only 1 row(1 dim), integer or assoc indexed.
      *
      * @see $config['fitMode']
      */
-    protected function fitDataWithTitle()
+    protected function fitTitleWithData()
     {
         if (empty($this->listData) || empty($this->listTitle)) {
             return;
         }
 
-        // Will compare by array keys, for data, use it's first/current row
+        // Will compare by array keys
+        // For data, will use it's first/current row,
+        // For title, will use original value if hasn't assoc index
         $keyOfData = array_keys(current($this->listData));
         $keyOfTitle = array_keys($this->listTitle);
 
@@ -175,133 +255,27 @@ class ListTable extends AbstractAutoNewConfig
         }
 
 
-        // Store result
-        $ar_title = array();
-        $ar_data = array();
-
         switch ($this->config['fitMode']) {
-            case $this::FIT_TO_TITLE:
-                // Int index and string are difference
-                // In common, we check only title's index type
-                // Int index, can only fit by index position
-                if (0 === $keyOfTitle[0]) {
-                    $ar_title = &$this->listTitle;
-                    foreach ($keyOfTitle as $k => $v) {
-                        foreach ($this->listData as $idx => $row) {
-                            if (isset($row[$keyOfData[$k]])) {
-                                $ar_data[$idx][$keyOfData[$k]] = &$row[$keyOfData[$k]];
-                            } else {
-                                $ar_data[$idx][$keyOfData[$k]] = $this->config['fitEmpty'];
-                            }
-                        }
-                    }
-                } else {
-                    $ar_title = &$this->listTitle;
-                    foreach ($keyOfTitle as $k => $v) {
-                        foreach ($this->listData as $idx => $row) {
-                            if (isset($row[$v])) {
-                                $ar_data[$idx][$v] = &$row[$v];
-                            } else {
-                                $ar_data[$idx][$v] = $this->config['fitEmpty'];
-                            }
-                        }
-                    }
-                }
+            case self::FIT_TO_TITLE:
+                $ar = $keyOfTitle;
                 break;
 
-            case $this::FIT_TO_DATA:
-                // Int index, can only fit by index position
-                if (0 === $keyOfTitle[0]) {
-                    $ar_data = &$this->listData;
-                    foreach ($keyOfData as $k => $v) {
-                        if (isset($keyOfTitle[$k])) {
-                            $ar_title[$k] = &$this->listTitle[$k];
-                        } else {
-                            // Use data's index name
-                            $ar_title[$k] = $v;
-                        }
-                    }
-                } else {
-                    $ar_data = &$this->listData;
-                    foreach ($keyOfData as $k => $v) {
-                        if (isset($this->listTitle[$v])) {
-                            $ar_title[$v] = &$this->listTitle[$v];
-                        } else {
-                            $ar_title[$v] = $v;
-                        }
-                    }
-                }
+            case self::FIT_TO_DATA:
+                $ar = $keyOfData;
                 break;
 
-            case $this::FIT_INSECTION:
-                // Cut title first, then fit to title
-                // Cut title:
-                $ar_title = &$this->listTitle;
-                if (0 === $keyOfTitle[0]) {
-                    // Int indexed
-                    // Remove title if title has more items than data
-                    for ($i = count($keyOfData); $i < count($keyOfTitle); $i++) {
-                        unset($ar_title[$i]);
-                    }
-                } else {
-                    // String indexed
-                    // Remove item in title which not in data
-                    foreach ($keyOfTitle as $k => $v) {
-                        if (!in_array($v, $keyOfData)) {
-                            unset($ar_title[$v]);
-                        }
-                    }
-                }
-                // Then use function itself to fit data to cutted title
-                $this->config['fitMode'] = 0;
-                $this->fitDataWithTitle();
-                $this->config['fitMode'] = 2;
-                $ar_data = &$this->listData;
-                $ar_title = &$this->listTitle;
+            case self::FIT_INSECTION:
+                $ar = array_intersect($keyOfTitle, $keyOfData);
                 break;
 
-            case $this::FIT_UNION:
-                // Fill title first, then fit to title
-                // Fill title:
-                if (0 === $keyOfTitle[0]) {
-                    // Add as append
-                    $ar_title = &$this->listTitle;
-                    // Int indexed
-                    // Add title if title has fewer items than data
-                    for ($i = count($keyOfTitle); $i < count($keyOfData); $i++) {
-                        // Can only use field name in data
-                        $ar_title[$i] = $keyOfData[$i];
-                    }
-                } else {
-                    // Add as insert
-                    // need to merge keys first to keep order
-                    $keys_merge = array_merge($keyOfTitle, $keyOfData);
-                    foreach ($keys_merge as $k => $v) {
-                        if (in_array($v, $keyOfTitle)) {
-                            $ar_title[$v] = $this->listTitle[$v];
-                        } else {
-                            // Title items is fewer, need to fill
-                            // These infact is keys from data,
-                            // because of merge, so we can use $v directly
-                            $ar_title[$v] = $v;
-                        }
-                    }
-                }
-                $this->listTitle = &$ar_title;
-                // Then use function itself to fit data to cutted title
-                $this->config['fitMode'] = 0;
-                $this->fitDataWithTitle();
-                $this->config['fitMode'] = 2;
-                $ar_data = &$this->listData;
-                $ar_title = &$this->listTitle;
+            case self::FIT_UNION:
+                $ar = array_unique(array_merge($keyOfTitle, $keyOfData));
                 break;
             default:
         }
 
-
-        // Data write back
-        $this->listData = &$ar_data;
-        $this->listTitle = &$ar_title;
+        $this->fitTitle($ar);
+        $this->fitData($ar);
     }
 
 
@@ -489,7 +463,7 @@ class ListTable extends AbstractAutoNewConfig
 
 
                 // Data and title fit mode, default FIT_TO_TITLE
-                'fitMode'           => $this::FIT_TO_TITLE,
+                'fitMode'           => self::FIT_TO_TITLE,
 
                 // If a value in data is empty, display with this value.
                 // Not for title, which will use field name.
@@ -606,7 +580,7 @@ class ListTable extends AbstractAutoNewConfig
         }
 
         // Same number of items maybe index diff, so always do fit.
-        $this->fitDataWithTitle();
+        $this->fitTitleWithData();
 
         $this->tpl->assignByRef("{$this->tplVarPrefix}Data", $this->listData);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Title", $this->listTitle);
