@@ -197,7 +197,10 @@ $listTable->setId(3)
 ->setTitle($title)
 
 // Set db query, and set data format closure function
-->setDbQuery($db, $config, function (&$row) {
+->setDbQuery($db, $config)
+
+// Format list data
+->formatData(function (&$row) {
     $row['credit'] = number_format(round($row['credit']));
 });
 
