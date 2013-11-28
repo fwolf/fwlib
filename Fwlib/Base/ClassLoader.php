@@ -199,13 +199,21 @@ class ClassLoader
      */
     public static function loadClass($className)
     {
+        // Both \ and _ are supported, will convert to inner separator
+        $className = str_replace(
+            array('\\', '_'),
+            self::$prefixSeparator,
+            $className
+        );
+
+
         $pos = strrpos($className, self::$prefixSeparator);
         if (false !== $pos) {
-            // Start with namespace\
+            // With namespace
             $prefix = substr($className, 0, $pos);
             $fileName = substr($className, $pos + 1);
         } else {
-            // No namespace
+            // Without namespace
             $prefix = $className;
             $fileName = '';
         }
