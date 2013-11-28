@@ -583,11 +583,15 @@ class ListTable extends AbstractAutoNewConfig
      * Will query total rows and list data by set db connection and config,
      * will overwrite exists $listData.
      *
+     * Closure function $formatData must have 1 param and define as reference,
+     * eg: function (&row) {}.
+     *
      * @param   Fwlib\Bridge\Adodb  $db
-     * @param   array   $config
+     * @param   array       $config
+     * @param   callback    $formatData
      * @return  $this
      */
-    public function setDbQuery($db, $config)
+    public function setDbQuery($db, $config, $formatData = null)
     {
         // Get totalRows
         $this->info['totalRows'] = $db->executeGenSql(
@@ -602,6 +606,13 @@ class ListTable extends AbstractAutoNewConfig
         $this->listData = $rs->GetArray();
 
         $this->fitTitleWithData();
+
+        if (!is_null($formatData)) {
+            foreach ($this->listData as &$row) {
+                $formatData($row);
+            }
+            unset($row);
+        }
 
         return $this;
     }

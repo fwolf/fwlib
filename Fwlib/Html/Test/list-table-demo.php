@@ -196,8 +196,10 @@ $listTable->setId(3)
 // Title still need manual set
 ->setTitle($title)
 
-// Set db query
-->setDbQuery($db, $config);
+// Set db query, and set data format closure function
+->setDbQuery($db, $config, function (&$row) {
+    $row['credit'] = number_format(round($row['credit']));
+});
 
 $html3 = $listTable->getHtml();
 $bm->mark('List3 generated');
