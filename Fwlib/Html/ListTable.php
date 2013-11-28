@@ -578,6 +578,36 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
+     * Set db query
+     *
+     * Will query total rows and list data by set db connection and config,
+     * will overwrite exists $listData.
+     *
+     * @param   Fwlib\Bridge\Adodb  $db
+     * @param   array   $config
+     * @return  $this
+     */
+    public function setDbQuery($db, $config)
+    {
+        // Get totalRows
+        $this->info['totalRows'] = $db->executeGenSql(
+            array_merge($config, array('SELECT' => 'COUNT(1) AS c'))
+        )
+        ->fields['c'];
+
+        // Query data
+        $rs = $db->executeGenSql(
+            array_merge($config, $this->getSqlConfig(true))
+        );
+        $this->listData = $rs->GetArray();
+
+        $this->fitTitleWithData();
+
+        return $this;
+    }
+
+
+    /**
      * Set id and class of list table
      *
      * Id and class should not have space or other special chars not allowed
@@ -789,6 +819,25 @@ class ListTable extends AbstractAutoNewConfig
             }
             $this->tpl->assign("{$this->tplVarPrefix}PagerHidden", $s);
         }
+
+        return $this;
+    }
+
+
+    /**
+     * Set ListTable title
+     *
+     * Usually used together with setDbQuery(), which need not set listData
+     * from outside(use setData() method).
+     *
+     * In common this method should call before setDbQuery().
+     *
+     * @param   array   $title
+     * @return  $this
+     */
+    public function setTitle($title)
+    {
+        $this->listTitle = $title;
 
         return $this;
     }

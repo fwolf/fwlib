@@ -11,8 +11,8 @@ use Fwlib\Test\ServiceContainerTest;
 /***************************************
  * Prepare benchmark
  **************************************/
-$bm = new Benchmark;
-$bm->start();
+$bm = new Benchmark();
+$bm->start('ListTable Benchmark');
 
 
 /***************************************
@@ -74,6 +74,7 @@ foreach ($ar[1] as $v) {
 // Clean fake name array
 $name = array_map('trim', $name);
 $name = array_unique($name);
+
 // Reorder index
 $name = array_merge($name, array());
 $nameCount = count($name);
@@ -171,6 +172,38 @@ $bm->mark('List2 generated');
 
 
 /***************************************
+ * Show list table 3, Use inner db query
+ **************************************/
+$config = array(
+    'SELECT'    => array(
+        'uuid', 'title', 'age', 'credit', 'joindate',
+    ),
+    'FROM'      => $tableUser,
+    'WHERE'     => array(
+        'age > 30',
+    ),
+);
+
+$listTable->setId(3)
+->setConfig(
+    'orderbyColumn',
+    array(
+        array('age', 'ASC'),
+        array('credit', 'DESC'),
+    )
+)
+
+// Title still need manual set
+->setTitle($title)
+
+// Set db query
+->setDbQuery($db, $config);
+
+$html3 = $listTable->getHtml();
+$bm->mark('List3 generated');
+
+
+/***************************************
  * Cleanup test db
  **************************************/
 $ref = new \ReflectionMethod('Fwlib\Test\AbstractDbRelateTest', 'dropTable');
@@ -237,11 +270,20 @@ echo $html2;
 
 echo "<hr />\n";
 
+
+echo "<h2>Use inner db query</h2>\n";
+echo $html3;
+
+
+echo "<hr />\n";
+
+/*
 echo '<pre>
 $listTable::getSqlConfig()
 ' . var_export($listTable->getSqlConfig(), true) . '
 </pre>
 ';
+ */
 
 
 $bm->display();
