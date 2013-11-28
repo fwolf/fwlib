@@ -150,7 +150,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
                 uuid        CHAR(36)        NOT NULL,
                 title       VARCHAR(255)    NULL,
                 age         INTEGER         NOT NULL DEFAULT 0,
-                credit      DECIMAL(6, 2)   NULL,
+                credit      DECIMAL(10, 2)  NULL,
                 joindate    DATETIME        NULL,
                 PRIMARY KEY (uuid)
             );

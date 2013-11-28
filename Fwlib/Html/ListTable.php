@@ -152,6 +152,9 @@ class ListTable extends AbstractAutoNewConfig
         $this->tpl->assignByRef("{$this->tplVarPrefix}Config", $this->config);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Info", $this->info);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Url", $this->url);
+
+        $this->tpl->assignByRef("{$this->tplVarPrefix}Data", $this->listData);
+        $this->tpl->assignByRef("{$this->tplVarPrefix}Title", $this->listTitle);
     }
 
 
@@ -335,12 +338,16 @@ class ListTable extends AbstractAutoNewConfig
      * - LIMIT
      * - ORDERBY
      *
+     * When there are multiple list on single page, second list must set
+     * $forcenew to true.
+     *
+     * @param   boolean $forcenew
      * @return  array
      * @see Fwlib\Db\SqlGenerator
      */
-    public function getSqlConfig()
+    public function getSqlConfig($forcenew = false)
     {
-        $this->readRequest(false);
+        $this->readRequest($forcenew);
 
         $ar = array();
 
@@ -555,10 +562,7 @@ class ListTable extends AbstractAutoNewConfig
     public function setData($listData, $listTitle = null, $updateTotalRows = false)
     {
         $this->listData = $listData;
-        if ($updateTotalRows) {
-            $this->info['totalRows'] = count($listData);
-        } elseif (-1 == $this->info['totalRows']) {
-            // Count total rows from data
+        if ($updateTotalRows || (-1 == $this->info['totalRows'])) {
             $this->info['totalRows'] = count($listData);
         }
 
@@ -568,9 +572,6 @@ class ListTable extends AbstractAutoNewConfig
 
         // Same number of items maybe index diff, so always do fit.
         $this->fitTitleWithData();
-
-        $this->tpl->assignByRef("{$this->tplVarPrefix}Data", $this->listData);
-        $this->tpl->assignByRef("{$this->tplVarPrefix}Title", $this->listTitle);
 
         return $this;
     }
@@ -721,23 +722,15 @@ class ListTable extends AbstractAutoNewConfig
      *
      * Will execute even pager above/below are both disabled.
      *
-     * @param   int     $totalRows
-     * @param   int     $page       Current page number.
      * @return  $this
      * @see     $config
      */
-    protected function setPager($totalRows = null, $page = null)
+    protected function setPager()
     {
-        if (is_null($totalRows)) {
-            $totalRows = $this->info['totalRows'];
-        }
-        if (is_null($page)) {
-            $page = $this->info['page'];
-        }
-
-        // Some param needed
-        $pageSize = $this->config['pageSize'];
-        $pageMax = $this->info['pageMax'];
+        $page      = $this->info['page'];
+        $pageMax   = $this->info['pageMax'];
+        $pageSize  = $this->config['pageSize'];
+        $totalRows = $this->info['totalRows'];
 
 
         // If data rows exceeds pageSize, trim it
@@ -796,6 +789,20 @@ class ListTable extends AbstractAutoNewConfig
             }
             $this->tpl->assign("{$this->tplVarPrefix}PagerHidden", $s);
         }
+
+        return $this;
+    }
+
+
+    /**
+     * Set totalRows
+     *
+     * @param   int     $totalRows
+     * @return  $this
+     */
+    public function setTotalRows($totalRows)
+    {
+        $this->info['totalRows'] = $totalRows;
 
         return $this;
     }

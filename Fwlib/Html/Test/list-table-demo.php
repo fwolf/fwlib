@@ -4,8 +4,20 @@ require __DIR__ . '/../../../config.default.php';
 use Fwlib\Bridge\Smarty;
 use Fwlib\Config\ConfigGlobal;
 use Fwlib\Html\ListTable;
+use Fwlib\Test\AbstractDbRelateTest;    // Use $tableUser
+use Fwlib\Test\Benchmark;
+use Fwlib\Test\ServiceContainerTest;
 
-// Prepare object
+/***************************************
+ * Prepare benchmark
+ **************************************/
+$bm = new Benchmark;
+$bm->start();
+
+
+/***************************************
+ * Prepare ListTable instance
+ **************************************/
 $tpl = new Smarty;
 $tpl->compile_dir = ConfigGlobal::get('smarty.compileDir');
 $tpl->template_dir = __DIR__ . '/../';
@@ -19,9 +31,28 @@ $config = array(
     ),
 );
 $listTable = new ListTable($tpl, $config);
+$bm->mark('ListTable object prepared');
 
 
-// Use person from phpcredits() as fake name
+/***************************************
+ * Prepare db and test table
+ **************************************/
+$db = ServiceContainerTest::getInstance()->get('db');
+
+$ref = new \ReflectionProperty('Fwlib\Test\AbstractDbRelateTest', 'tableUser');
+$ref->setAccessible(true);
+$tableUser = $ref->getValue('Fwlib\Test\AbstractDbRelateTest');
+
+$ref = new \ReflectionMethod('Fwlib\Test\AbstractDbRelateTest', 'createTable');
+$ref->setAccessible(true);
+$ref->invokeArgs(null, array($db));
+
+$bm->mark('Db prepared and test table created');
+
+
+/***************************************
+ * Use person from phpcredits() as fake name
+ **************************************/
 ob_start();
 phpcredits();
 $credits = ob_get_contents();
@@ -33,22 +64,26 @@ preg_match_all('/<tr><td class="e">([^<]+)<\/td><\/tr>/', $credits, $ar);
 foreach ($ar[1] as $v) {
     $name = array_merge($name, explode(',', $v));
 }
-// Part1, name take right column of output table
+// Part2, name take right column of output table
 // 1 special line is excluded, which is describe end with '. '
 preg_match_all('/<td class="v">([^<\(]+\w {0,2})<\/td>/', $credits, $ar);
 foreach ($ar[1] as $v) {
     $name = array_merge($name, explode(',', $v));
 }
 
-// Cleanup
+// Clean fake name array
 $name = array_map('trim', $name);
 $name = array_unique($name);
 // Reorder index
 $name = array_merge($name, array());
 $nameCount = count($name);
 
+$bm->mark('Fake name grabbed');
 
-// Prepare dummy data
+
+/***************************************
+ * Prepare dummy data, write to db
+ **************************************/
 $title = array(
     'uuid'     => 'UUID',
     'title'    => 'Name',
@@ -77,17 +112,25 @@ for ($j = 0; $j < $rows; $j++) {
     );
 }
 
+// Write data to db
+$db->write($tableUser, $data);
+$bm->mark('Fake data written to db');
 
-// Show list table
-$listTable->setData($data, $title);
+
+
+/***************************************
+ * Show list table 1
+ **************************************/
+$listTable->setData($data, $title, true);
 
 $html1 = $listTable->getHtml();
+$bm->mark('List1 generated');
 
 
-// Another table in same page
+/***************************************
+ * Show list table 2, with query data from db
+ **************************************/
 $listTable->setId(2);
-// Data is trimmed, need re-make
-$listTable->setData($data, $title);
 // Set sort able column
 $listTable->setConfig(
     'orderbyColumn',
@@ -100,7 +143,41 @@ $listTable->setConfig(
 //$listTable->setOrderby(2, 'ASC');
 //$listTable->setOrderby(2);
 
+// Query data from db
+$config = array(
+    'SELECT'    => array(
+        'uuid', 'title', 'age', 'credit', 'joindate',
+    ),
+    'FROM'      => $tableUser,
+    'WHERE'     => array(
+        'age > 30',
+    ),
+);
+
+// Updata totalRows
+$listTable->setTotalRows(
+    $db->executeGenSql(
+        array_merge($config, array('SELECT' => 'COUNT(1) as c'))
+    )->fields['c']
+);
+
+// Fetch real data and set
+$config = array_merge($config, $listTable->getSqlConfig(true));
+$rs = $db->executeGenSql($config);
+$listTable->setData($rs->GetArray(), $title);
+
 $html2 = $listTable->getHtml();
+$bm->mark('List2 generated');
+
+
+/***************************************
+ * Cleanup test db
+ **************************************/
+$ref = new \ReflectionMethod('Fwlib\Test\AbstractDbRelateTest', 'dropTable');
+$ref->setAccessible(true);
+$ref->invokeArgs(null, array($db));
+
+$bm->mark('Cleanup, test table dropped');
 ?>
 
 <!DOCTYPE HTML>
@@ -148,12 +225,13 @@ $html2 = $listTable->getHtml();
 <body>
 
 <?php
-echo "<h2>Common style</h2>\n";
+echo "<h2>Simple list</h2>\n";
 echo $html1;
 
 echo "<hr />\n";
 
-echo "<h2>With header sort</h2>\n";
+
+echo "<h2>Query data from db</h2>\n";
 echo $html2;
 
 
@@ -164,6 +242,9 @@ $listTable::getSqlConfig()
 ' . var_export($listTable->getSqlConfig(), true) . '
 </pre>
 ';
+
+
+$bm->display();
 ?>
 
 
