@@ -188,17 +188,23 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
      */
     protected static function dropTable($db)
     {
-        $db->execute(
-            'DROP TABLE ' . self::$tableUserGroup
-        );
+        if ($db->isTableExist(self::$tableUserGroup)) {
+            $db->execute(
+                'DROP TABLE ' . self::$tableUserGroup
+            );
+        }
 
-        $db->execute(
-            'DROP TABLE ' . self::$tableGroup
-        );
+        if ($db->isTableExist(self::$tableGroup)) {
+            $db->execute(
+                'DROP TABLE ' . self::$tableGroup
+            );
+        }
 
-        $db->execute(
-            'DROP TABLE ' . self::$tableUser
-        );
+        if ($db->isTableExist(self::$tableUser)) {
+            $db->execute(
+                'DROP TABLE ' . self::$tableUser
+            );
+        }
     }
 
 
