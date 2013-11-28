@@ -63,9 +63,10 @@ $config['group.keyForCompute'] = ArrayUtil::getIdx(
     'default value'
 );
 
-// External library path, with tailing '/'
+// External library path, local dir end with tailing '/'
 $config['lib.path.adodb'] = 'adodb/';
 $config['lib.path.fwlib'] = 'fwlib/';
+$config['lib.path.jquery'] = '/js/jquery.js';
 $config['lib.path.PHPUnit'] = '/usr/share/php/';
 $config['lib.path.smarty'] = 'smarty/';
 

@@ -255,7 +255,8 @@ $bm->mark('Cleanup, test table dropped');
   </style>
 
 
-<script type="text/javascript" src="/js/jquery.js">
+<script type="text/javascript"
+  src="<?php echo ConfigGlobal::get('lib.path.jquery'); ?>">
 </script>
 
 
