@@ -11,7 +11,7 @@ namespace Fwlib\Bridge;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-25
  */
-abstract class PHPUnitTestCase extends \PHPunit_Framework_TestCase
+abstract class PHPUnitTestCase extends \PHPUnit_Framework_TestCase
 {
     public function assertEqualArray(
         $expected,

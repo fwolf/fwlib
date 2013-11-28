@@ -66,6 +66,7 @@ $config['group.keyForCompute'] = ArrayUtil::getIdx(
 // External library path, with tailing '/'
 $config['lib.path.adodb'] = 'adodb/';
 $config['lib.path.fwlib'] = 'fwlib/';
+$config['lib.path.PHPUnit'] = '/usr/share/php/';
 $config['lib.path.smarty'] = 'smarty/';
 
 
@@ -138,6 +139,13 @@ if ('config.default.php' == basename(__FILE__)) {
         'Smarty',
         $config['lib.path.smarty'] . 'Smarty.class.php'
     );
+    // PHPUnit, some demo use it
+    if (!class_exists('PHPUnit_Framework_TestCase', false)) {
+        ClassLoader::addPrefix(
+            'PHPUnit',
+            $config['lib.path.PHPUnit']
+        );
+    }
 
     // Autoload for Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object
