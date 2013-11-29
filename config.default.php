@@ -67,7 +67,7 @@ $config['group.keyForCompute'] = ArrayUtil::getIdx(
 $config['lib.path.adodb'] = 'adodb/';
 $config['lib.path.fwlib'] = 'fwlib/';
 $config['lib.path.jquery'] = '/js/jquery.js';
-$config['lib.path.PHPUnit'] = '/usr/share/php/';
+$config['lib.path.phpunit'] = '/usr/share/php/';
 $config['lib.path.smarty'] = 'smarty/';
 
 
@@ -132,26 +132,29 @@ if ('config.default.php' == basename(__FILE__)) {
     ConfigGlobal::load($config);
 
 
-    // Add other library to ClassLoader
-    // Markdown
-    ClassLoader::addPrefix('Michelf', 'markdown/');
-    // Smarty 3.1.x
-    ClassLoader::addPrefix(
-        'Smarty',
-        $config['lib.path.smarty'] . 'Smarty.class.php'
-    );
-    // PHPUnit, some demo use it
-    if (!class_exists('PHPUnit_Framework_TestCase', false)) {
-        ClassLoader::addPrefix(
-            'PHPUnit',
-            $config['lib.path.PHPUnit']
-        );
-    }
+    // Autoload register of external library
 
-    // Autoload for Adodb, which doesn't use PSR standard
+    // Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object
     ClassLoader::addPrefix(
         'ADOFetchObj',
         $config['lib.path.adodb'] . 'adodb.inc.php'
+    );
+
+    // Markdown
+    ClassLoader::addPrefix('Michelf', 'markdown/');
+
+    // PHPUnit, some demo use it, only need when not exec by phpunit command
+    if (!class_exists('PHPUnit_Framework_TestCase', false)) {
+        ClassLoader::addPrefix(
+            'PHPUnit',
+            $config['lib.path.phpunit']
+        );
+    }
+
+    // Smarty 3.1.x
+    ClassLoader::addPrefix(
+        'Smarty',
+        $config['lib.path.smarty'] . 'Smarty.class.php'
     );
 }
