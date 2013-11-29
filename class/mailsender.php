@@ -28,6 +28,8 @@ require_once("phpmailer/class.phpmailer.php");
  * $m->SetAttach($mail_attach);
  * $m->Send();
  * </code>
+ *
+ * @deprecated  Use Fwlib\Bridge\PHPMailer
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2007-2008, Fwolf

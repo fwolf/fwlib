@@ -67,6 +67,7 @@ $config['group.keyForCompute'] = ArrayUtil::getIdx(
 $config['lib.path.adodb'] = 'adodb/';
 $config['lib.path.fwlib'] = 'fwlib/';
 $config['lib.path.jquery'] = '/js/jquery.js';
+$config['lib.path.phpmailer'] = 'phpmailer/';
 $config['lib.path.phpunit'] = '/usr/share/php/';
 $config['lib.path.smarty'] = 'smarty/';
 
@@ -151,6 +152,9 @@ if ('config.default.php' == basename(__FILE__)) {
             $config['lib.path.phpunit']
         );
     }
+
+    // PHPMailer, use its own autoloader
+    require $config['lib.path.phpmailer'] . 'PHPMailerAutoload.php';
 
     // Smarty 3.1.x
     ClassLoader::addPrefix(
