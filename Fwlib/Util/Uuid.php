@@ -106,8 +106,9 @@ class Uuid
      *
      * User can combine cus and cus2 to sort UUID.
      *
-     * $cus is custom part 1 in UUID, 4 chars long,
-     * positioned in 3rd section, default fill by '0'.
+     * $cus is custom part 1 in UUID, 4 chars long, positioned in 3rd section,
+     * leave empty will fill by '0'. In product envionment, $cus should start
+     * from '0010', '0000'~'0009' is reserved for develop/test.
      *
      * $cus2 is custom part 2 in UUID, 8 chars long,
      * positioned in 4th section and start of 5th section.
@@ -123,7 +124,7 @@ class Uuid
      * @param   boolean $checkDigit
      * @return  string
      */
-    public static function gen($cus = '0000', $cus2 = '', $checkDigit = false)
+    public static function gen($cus = '0010', $cus2 = '', $checkDigit = false)
     {
         $ar = explode(' ', microtime());
 

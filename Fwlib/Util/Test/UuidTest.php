@@ -25,8 +25,9 @@ class UuidTest extends PHPunitTestCase
     public function testParse()
     {
         // Generate and parse data back
+        // '0010' is from default value
         $ar = Uuid::parse(Uuid::gen());
-        $this->assertEquals($ar['custom1'], '0000');
+        $this->assertEquals('0010', $ar['custom1']);
 
         // Custom field
         $ar = Uuid::parse(Uuid::gen('1'));

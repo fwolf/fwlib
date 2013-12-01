@@ -41,14 +41,14 @@ $rs = str_replace(array_keys($arSpeed), $arSpeed, $rs);
 echo $rs;
 
 
-Env::ecl('Uuid       without check digit: ' . Uuid::gen(null, null, false));
-Env::ecl('Uuid       with    check digit: ' . Uuid::gen(null, null, true));
+Env::ecl('Uuid       without check digit: ' . Uuid::gen('10', null, false));
+Env::ecl('Uuid       with    check digit: ' . Uuid::gen('10', null, true));
 
-Env::ecl('Uuid       without check digit: ' . Uuid::genWithSeparator(null, null, false));
-Env::ecl('Uuid       with    check digit: ' . Uuid::genWithSeparator(null, null, true));
+Env::ecl('Uuid       without check digit: ' . Uuid::genWithSeparator('10', null, false));
+Env::ecl('Uuid       with    check digit: ' . Uuid::genWithSeparator('10', null, true));
 
-Env::ecl('UuidBase36 without check digit: ' . UuidBase36::gen(null, null, false));
-Env::ecl('UuidBase36 with    check digit: ' . UuidBase36::gen(null, null, true));
+Env::ecl('UuidBase36 without check digit: ' . UuidBase36::gen('10', null, false));
+Env::ecl('UuidBase36 with    check digit: ' . UuidBase36::gen('10', null, true));
 
-Env::ecl('UuidBase62 without check digit: ' . UuidBase62::gen(null, null, false));
-Env::ecl('UuidBase62 with    check digit: ' . UuidBase62::gen(null, null, true));
+Env::ecl('UuidBase62 without check digit: ' . UuidBase62::gen('10', null, false));
+Env::ecl('UuidBase62 with    check digit: ' . UuidBase62::gen('10', null, true));

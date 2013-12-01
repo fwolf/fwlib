@@ -26,7 +26,7 @@ class UuidBase36Test extends PHPunitTestCase
     {
         // Group
         $ar = UuidBase36::parse(UuidBase36::gen());
-        $this->assertEquals('a0', $ar['group']);
+        $this->assertEquals('10', $ar['group']);
         $ar = UuidBase36::parse(UuidBase36::gen('1'));
         $this->assertEquals('01', $ar['group']);
 

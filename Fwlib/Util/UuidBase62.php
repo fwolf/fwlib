@@ -94,14 +94,15 @@ class UuidBase62
      * If $checkDigit is true, use last byte as check digit,
      * by ISO 7064 Mod 17,16 algorithm.
      *
-     * By default, $group start from a0, 00-9Z is reversed.
+     * In product envionment, $group should start from a0, 00-09 is reserved
+     * for develop/test.
      *
      * @param   string  $group
      * @param   string  $custom
      * @param   boolean $checkDigit
      * @return  string
      */
-    public static function gen($group = 'a0', $custom = '', $checkDigit = false)
+    public static function gen($group = '10', $custom = '', $checkDigit = false)
     {
         list($usec, $sec) = explode(' ', microtime());
 
