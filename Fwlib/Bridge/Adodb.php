@@ -946,6 +946,22 @@ class Adodb
 
 
     /**
+     * Get string describe of profile
+     *
+     * Usually used for identify db source.
+     *
+     * @param   string  $separator
+     * @return  string
+     */
+    public function getProfileString($separator = '-')
+    {
+        return $this->profile['type'] . $separator .
+            $this->profile['host'] . $separator .
+            $this->profile['name'];
+    }
+
+
+    /**
      * Get rows count by condition user given
      *
      * Return value:

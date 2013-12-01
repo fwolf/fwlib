@@ -203,12 +203,8 @@ class DbDataExport extends AbstractDbClient
         $logFile = $this->exportPath . '/'  . $this->logFile;
         file_put_contents($logFile, '');
 
-        $profile = array(
-            $this->db->profile['type'],
-            $this->db->profile['host'],
-            $this->db->profile['name'],
-        );
-        $this->log('Export for db ' . implode(':', $profile) . ', ', false);
+        $profileString = $this->db->getProfileString(':');
+        $this->log("Export for db $profileString, ", false);
 
         $this->getTable();
         $this->log('Total ' . count($this->table) . ' tables.');
