@@ -17,6 +17,7 @@ require_once(FWOLFLIB . 'func/uuid.php');
  *
  * Using gammu daemon to send sms.
  *
+ * @deprecated  Use Fwlib\Net\Sms\SmsSender
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright © 2010, Fwolf
