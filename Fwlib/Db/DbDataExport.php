@@ -203,12 +203,12 @@ class DbDataExport extends AbstractDbClient
         $logFile = $this->exportPath . '/'  . $this->logFile;
         file_put_contents($logFile, '');
 
-        $dbProfile = array(
-            $this->db->dbProfile['type'],
-            $this->db->dbProfile['host'],
-            $this->db->dbProfile['name'],
+        $profile = array(
+            $this->db->profile['type'],
+            $this->db->profile['host'],
+            $this->db->profile['name'],
         );
-        $this->log('Export for db ' . implode(':', $dbProfile) . ', ', false);
+        $this->log('Export for db ' . implode(':', $profile) . ', ', false);
 
         $this->getTable();
         $this->log('Total ' . count($this->table) . ' tables.');
@@ -416,7 +416,7 @@ class DbDataExport extends AbstractDbClient
     {
         $need = array('mssql', 'sybase', 'sybase_ase');
 
-        return in_array($this->db->dbProfile['type'], $need);
+        return in_array($this->db->profile['type'], $need);
     }
 
 

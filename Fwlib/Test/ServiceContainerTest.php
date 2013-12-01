@@ -27,11 +27,11 @@ class ServiceContainerTest extends AbstractServiceContainer
      * 2 ADODB_FETCH_ASSOC (default)
      * 3 ADODB_FETCH_BOTH
      *
-     * @param   string   $dbProfile
+     * @param   string   $profile
      */
-    protected function connectDb($dbProfile)
+    protected function connectDb($profile)
     {
-        $conn = new Adodb($dbProfile);
+        $conn = new Adodb($profile);
 
         if ($conn->connect()) {
             // Connect successful, set fetch mode
@@ -55,9 +55,9 @@ class ServiceContainerTest extends AbstractServiceContainer
      */
     protected function newDb()
     {
-        $dbProfile = ConfigGlobal::get('dbserver.default');
+        $profile = ConfigGlobal::get('dbserver.default');
 
-        return $this->connectDb($dbProfile);
+        return $this->connectDb($profile);
     }
 
 
@@ -68,9 +68,9 @@ class ServiceContainerTest extends AbstractServiceContainer
      */
     protected function newDbMysql()
     {
-        $dbProfile = ConfigGlobal::get('dbserver.mysql');
+        $profile = ConfigGlobal::get('dbserver.mysql');
 
-        return $this->connectDb($dbProfile);
+        return $this->connectDb($profile);
     }
 
 
@@ -81,8 +81,8 @@ class ServiceContainerTest extends AbstractServiceContainer
      */
     protected function newDbSyb()
     {
-        $dbProfile = ConfigGlobal::get('dbserver.sybase');
+        $profile = ConfigGlobal::get('dbserver.sybase');
 
-        return $this->connectDb($dbProfile);
+        return $this->connectDb($profile);
     }
 }

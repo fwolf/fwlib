@@ -57,15 +57,6 @@ class Adodb
     protected $conn = null;
 
     /**
-     * Db profile
-     *
-     * {host, user, pass, name, type, lang}
-     *
-     * @var array
-     */
-    public $dbProfile = null;
-
-    /**
      * Table schema
      *
      * {
@@ -118,6 +109,15 @@ class Adodb
     public $metaPrimaryKey = array();
 
     /**
+     * Db profile
+     *
+     * {host, user, pass, name, type, lang}
+     *
+     * @var array
+     */
+    public $profile = null;
+
+    /**
      * Total query count
      *
      * @var int
@@ -142,10 +142,10 @@ class Adodb
      *
      * if $pathAdodb is empty, should load ADOdb through ClassLoader.
      *
-     * @var param   array   $dbProfile
+     * @var param   array   $profile
      * @var param   string  $pathAdodb      Include path of original ADOdb
      */
-    public function __construct($dbProfile, $pathAdodb = '')
+    public function __construct($profile, $pathAdodb = '')
     {
         // Unset for auto new
         unset($this->sqlGenerator);
@@ -160,8 +160,8 @@ class Adodb
         // Trigger AutoLoader for ADOdb
         new \ADOFetchObj;
 
-        $this->dbProfile = $dbProfile;
-        $this->conn = ADONewConnection($dbProfile['type']);
+        $this->profile = $profile;
+        $this->conn = ADONewConnection($profile['type']);
     }
 
 
@@ -271,7 +271,7 @@ class Adodb
      *
      * If db is mysql, will auto execute 'set names utf8'.
      *
-     * @see $dbProfile
+     * @see $profile
      * @param   $forcenew         Force new connection
      * @return  boolean
      */
@@ -286,11 +286,11 @@ class Adodb
         // Mysqli doesn't allow port in host, grab it out and set
         if ('mysqli' == strtolower($this->conn->databaseType)) {
             $ar = array();
-            $i = preg_match('/:(\d+)$/', $this->dbProfile['host'], $ar);
+            $i = preg_match('/:(\d+)$/', $this->profile['host'], $ar);
             if (0 < $i) {
                 $this->conn->port = $ar[1];
-                $this->dbProfile['host'] =
-                    preg_replace('/:(\d+)$/', '', $this->dbProfile['host']);
+                $this->profile['host'] =
+                    preg_replace('/:(\d+)$/', '', $this->profile['host']);
             }
         }
         // @codeCoverageIgnoreEnd
@@ -302,10 +302,10 @@ class Adodb
             ini_set('display_errors', '0');
 
             $rs = $this->conn->Connect(
-                $this->dbProfile['host'],
-                $this->dbProfile['user'],
-                $this->dbProfile['pass'],
-                $this->dbProfile['name']
+                $this->profile['host'],
+                $this->profile['user'],
+                $this->profile['pass'],
+                $this->profile['name']
             );
 
             // Recover original error display setting
@@ -338,7 +338,7 @@ class Adodb
         if ($this->isDbMysql()) {
             $this->conn->Execute(
                 'SET NAMES "'
-                . str_replace('UTF-8', 'UTF8', strtoupper($this->dbProfile['lang']))
+                . str_replace('UTF-8', 'UTF8', strtoupper($this->profile['lang']))
                 . '"'
             );
         }
@@ -358,7 +358,7 @@ class Adodb
      */
     public function convertEncodingRs(&$rs)
     {
-        if (empty($rs) || $this->charsetPhp == $this->dbProfile['lang']) {
+        if (empty($rs) || $this->charsetPhp == $this->profile['lang']) {
             return $rs;
         }
 
@@ -371,7 +371,7 @@ class Adodb
             $rs = mb_convert_encoding(
                 $rs,
                 $this->charsetPhp,
-                $this->dbProfile['lang']
+                $this->profile['lang']
             );
         }
 
@@ -389,7 +389,7 @@ class Adodb
      */
     public function convertEncodingSql(&$sql)
     {
-        if (empty($sql) || $this->charsetPhp == $this->dbProfile['lang']) {
+        if (empty($sql) || $this->charsetPhp == $this->profile['lang']) {
             return $sql;
         }
 
@@ -401,7 +401,7 @@ class Adodb
         } elseif (is_string($sql)) {
             $sql = mb_convert_encoding(
                 $sql,
-                $this->dbProfile['lang'],
+                $this->profile['lang'],
                 $this->charsetPhp
             );
         }
@@ -621,7 +621,7 @@ class Adodb
 
             trigger_error(
                 __CLASS__ . '::findColumnTs() for '
-                . $this->dbProfile['type']
+                . $this->profile['type']
                 . ' not implemented!',
                 E_USER_ERROR
             );
@@ -997,7 +997,7 @@ class Adodb
         } else {
             trigger_error(
                 __CLASS__ . '::getSqlDelimiter() for db type '
-                . $this->dbProfile['type'] . ' not implement.',
+                . $this->profile['type'] . ' not implement.',
                 E_USER_WARNING
             );
             $delimiter = '';
@@ -1078,7 +1078,7 @@ class Adodb
      */
     public function isDbSybase()
     {
-        return ('sybase' == substr($this->dbProfile['type'], 0, 6));
+        return ('sybase' == substr($this->profile['type'], 0, 6));
     }
 
 

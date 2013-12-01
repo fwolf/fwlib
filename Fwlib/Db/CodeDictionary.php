@@ -183,7 +183,7 @@ class CodeDictionary extends AbstractAutoNewConfig
         // @codeCoverageIgnoreStart
         if ($db->isDbMysql()) {
             $sql .= 'SET NAMES \''
-                . str_replace('UTF-8', 'UTF8', strtoupper($db->dbProfile['lang']))
+                . str_replace('UTF-8', 'UTF8', strtoupper($db->profile['lang']))
                 . '\'' . $db->getSqlDelimiter();
         }
         // @codeCoverageIgnoreEnd
