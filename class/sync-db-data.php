@@ -21,6 +21,7 @@ require_once(FWOLFLIB . 'func/uuid.php');
  * At now, only from 1 to another,
  * cannot do two-side sync yet.
  *
+ * @deprecated  Use Fwlib\Db\SyncDbData
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright 2008, Fwolf
