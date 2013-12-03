@@ -243,7 +243,7 @@ class Curl
         // Parse param, convert array to string
         if (is_array($param)) {
             $s = '';
-            foreach ($param as $key =>$val) {
+            foreach ($param as $key => $val) {
                 $s .= urlencode($key) . '=' . urlencode($val) . '&';
             }
             $param = $s;

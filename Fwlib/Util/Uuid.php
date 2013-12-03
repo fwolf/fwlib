@@ -104,37 +104,45 @@ class Uuid
     /**
      * Generate an UUID
      *
-     * User can combine cus and cus2 to sort UUID.
+     * User can combine custom1 and custom2 to sort UUID.
      *
-     * $cus is custom part 1 in UUID, 4 chars long, positioned in 3rd section,
-     * leave empty will fill by '0'. In product envionment, $cus should start
+     * $custom is custom part 1 in UUID, 4 chars long, positioned in 3rd section,
+     * leave empty will fill by '0'. In product envionment, $custom should start
      * from '0010', '0000'~'0009' is reserved for develop/test.
      *
-     * $cus2 is custom part 2 in UUID, 8 chars long,
-     * positioned in 4th section and start of 5th section.
-     * If empty given, user client user ip(hex) to fill,
-     * and random string if can't get ip.
-     * If length <> 8, will fill/cut to 8 with random chars after it.
+     * $custom2 is custom part 2 in UUID, 8 chars long, positioned in 4th
+     * section and start of 5th section.  If empty given, user client user
+     * ip(hex) to fill, and random string if can't get ip.  If length <> 8,
+     * will fill/cut to 8 with random chars after it.
      *
-     * If $checkDigit is true, use last byte as check digit,
-     * by ISO 7064 Mod 17,16 algorithm.
+     * If $checkDigit is true, use last byte as check digit, by ISO 7064 Mod
+     * 17,16 algorithm.
      *
-     * @param   string  $cus
-     * @param   string  $cus2
+     * @param   string  $custom1
+     * @param   string  $custom2
      * @param   boolean $checkDigit
      * @return  string
      */
-    public static function gen($cus = '0010', $cus2 = '', $checkDigit = false)
+    public static function gen($custom1 = '0010', $custom2 = '', $checkDigit = false)
     {
         $ar = explode(' ', microtime());
 
-        // Prepare custom part 1
-        $cus = strval($cus);
-        if (4 != strlen($cus)) {
-            $cus = substr('0000' . $cus, -4);
+        // timeLow: 8 chars from right-side end of current timestamp
+        // 2030-12-31 = 1924876800(dec) = 72bb4a00(hex)
+        $timeLow = substr(str_repeat('0', 8) . base_convert($ar[1], 10, 16), -8);
+
+        // timeMid: 4 chars from left-side start of current microsecond, to
+        // make value lower than 65534(length 4) limit, * 100000 and div by
+        // 2(max 50000)
+        $timeMid = substr(base_convert(round($ar[0] * 100000 / 2), 10, 16), 0, 4);
+
+        // custom1: 4 chars
+        $custom1 = strval($custom1);
+        if (4 != strlen($custom1)) {
+            $custom1 = substr('0000' . $custom1, -4);
         }
 
-        // Prepare custom part 2
+        // custom2: 4 chars, split to 2 parts
         if (empty($cus2)) {
             $cus2 = Ip::toHex();
         }
@@ -142,33 +150,26 @@ class Uuid
             $cus2 .= sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
             $cus2 = substr($cus2, 0, 8);
         }
+        $custom2p1 = substr($custom2, 0, 4);
+        $custom2p2 = substr($custom2, -4);
+
+        // Random1: 4chars
+        $random1 = mt_rand(0, 0xFFFF);
+
+        // Random2: 4chars
+        $random2 = mt_rand(0, 0xFFFF);
+
 
         $rs = sprintf(
             //'%08s-%04s-%04s-%04s-%04s%04x%04x',
             '%08s%04s%04s%04s%04s%04x%04x',
-
-            // Unixtime, 8 chars from right-side end
-            // 2030-12-31 = 1924876800(dec) = 72bb4a00(hex)
-            substr(str_repeat('0', 8) . base_convert($ar[1], 10, 16), -8),
-
-            // Microtime, 4chars from left-side start
-            // to exceed 65534(length 4) limit, * 100000 and div by 2(max 50000)
-            substr(base_convert(round($ar[0] * 100000 / 2), 10, 16), 0, 4),
-
-            // Custom part 1, default 4 chars
-            $cus,
-
-            // Custom part2-part1, length: 4
-            substr($cus2, 0, 4),
-
-            // Custom part2-part2, length: 4, used in 5th section
-            substr($cus2, -4),
-
-            // Random string, length: 4
-            mt_rand(0, 0xffff),
-
-            // Random string, length: 4
-            mt_rand(0, 0xffff)
+            $timeLow,
+            $timeMid,
+            $custom1,
+            $custom2p1,
+            $custom2p2,
+            $random1,
+            $random2
         );
 
         // Add check digit/byte

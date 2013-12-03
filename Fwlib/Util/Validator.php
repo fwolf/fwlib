@@ -53,14 +53,16 @@ class Validator
         } elseif (preg_match('/\\.\\./', $domain)) {
             // domain part has two consecutive dots
             $valid = false;
-        } elseif (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
-            str_replace("\\\\", "", $local))
-        ) {
+        } elseif (!preg_match(
+            '/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
+            str_replace("\\\\", "", $local)
+        )) {
             // character not valid in local part unless
             // local part is quoted
-            if (!preg_match('/^"(\\\\"|[^"])+"$/',
-                str_replace("\\\\", "", $local))
-            ) {
+            if (!preg_match(
+                '/^"(\\\\"|[^"])+"$/',
+                str_replace("\\\\", "", $local)
+            )) {
                 $valid = false;
             }
         }
@@ -90,10 +92,10 @@ class Validator
      */
     public static function ipv4($ip)
     {
-         if (!strcmp(long2ip(sprintf("%u", ip2long($ip))), $ip)) {
+        if (!strcmp(long2ip(sprintf("%u", ip2long($ip))), $ip)) {
             return true;
-         } else {
+        } else {
             return false;
-         }
+        }
     }
 }

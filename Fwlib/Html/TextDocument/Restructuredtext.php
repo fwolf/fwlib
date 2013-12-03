@@ -129,7 +129,7 @@ class Restructuredtext extends AbstractTextConverter
             }
             $i = strrpos($html, '</body>');
             if (!(false === $i)) {
-                $html = substr($html, 0, $i );
+                $html = substr($html, 0, $i);
             }
         }
 

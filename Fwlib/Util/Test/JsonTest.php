@@ -107,9 +107,9 @@ class JsonTest extends PHPunitTestCase
             Json::encodeUnicode($x)
         );
 
-		$x = array('中文', array('中' => '文'));
-		$y = '["中文",{"中":"文"}]';
-		$this->assertEquals($y, Json::encodeUnicode($x));
-		$this->assertEqualArray($x, json_decode($y, true));
+        $x = array('中文', array('中' => '文'));
+        $y = '["中文",{"中":"文"}]';
+        $this->assertEquals($y, Json::encodeUnicode($x));
+        $this->assertEqualArray($x, json_decode($y, true));
     }
 }
