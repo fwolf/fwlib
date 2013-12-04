@@ -75,7 +75,8 @@ class AbstractConstraint implements ConstraintInterface
 
         // Set fail message with a unique key, so if a messageKey is set
         // multiple times, there will only be one message return.
-        $messageKey = str_replace('\\', '::', __CLASS__) . '::' . $messageKey;
+        $messageKey = str_replace('\\', '::', get_class($this)) .
+            '::' . $messageKey;
         if (isset($this->message[$messageKey])) {
             return;
         }
