@@ -18,7 +18,7 @@ class Ipv4 extends AbstractConstraint
      * {@inheritdoc}
      */
     public $messageTemplate = array(
-        'default'   => 'Invalid ipv4 address'
+        'default'   => 'The input should be valid ipv4 address'
     );
 
     /**
