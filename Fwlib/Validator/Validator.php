@@ -28,6 +28,8 @@ class Validator
      * @var array
      */
     protected $constraintMap = array(
+        'email'     => 'Fwlib\Validator\Constraint\Email',
+        'ipv4'      => 'Fwlib\Validator\Constraint\Ipv4',
         'length'    => 'Fwlib\Validator\Constraint\Length',
         'notEmpty'  => 'Fwlib\Validator\Constraint\NotEmpty',
     );

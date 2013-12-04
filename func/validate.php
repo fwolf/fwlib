@@ -20,7 +20,7 @@ require_once(FWOLFLIB . 'func/env.php');
  * Returns true if the email address has the email
  * address format and the domain exists.
  *
- * @deprecated      Use Fwlib\Util\Validator::email()
+ * @deprecated      Use Fwlib\Validator\Constraint\Email
  * @link http://www.linuxjournal.com/article/9585
  * @param	string	$email
  * @return	boolean
