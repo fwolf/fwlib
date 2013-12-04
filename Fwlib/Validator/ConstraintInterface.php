@@ -26,14 +26,9 @@ interface ConstraintInterface
      *
      * Validate pass/success will return true, otherwise return false.
      *
-     * $ruleData data part in rule string after 'constraintName:', is needed
-     * data for some constraint, eg: an 'equal' constraint need a value to
-     * compare with, the rule string is like 'length: 42', the 42 is
-     * $ruleData.
-     *
      * @param   mixed   $value
-     * @param   string  $ruleData
+     * @param   string  $constraintData
      * @return  boolean
      */
-    public function validate($value, $ruleData = null);
+    public function validate($value, $constraintData = null);
 }

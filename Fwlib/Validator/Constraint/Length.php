@@ -25,21 +25,21 @@ class Length extends AbstractConstraint
     /**
      * {@inheritdoc}
      *
-     * $ruleData format:
+     * $constraintData format:
      * - minLength
      * - minLength, maxLength
      * - minLength to maxLength
      *
      * If need not check minLength, set it to 0.
      */
-    public function validate($value, $ruleData = null)
+    public function validate($value, $constraintData = null)
     {
-        parent::validate($value, $ruleData);
+        parent::validate($value, $constraintData);
 
 
         // Get min and max
-        $ruleData = str_ireplace('to', ',', $ruleData);
-        $ar = explode(',', $ruleData);
+        $constraintData = str_ireplace('to', ',', $constraintData);
+        $ar = explode(',', $constraintData);
 
         $min = intval(array_shift($ar));
         $this->messageVariable['min'] = $min;

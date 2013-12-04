@@ -37,7 +37,7 @@ class AbstractConstraint implements ConstraintInterface
     /**
      * Variable used in message template
      *
-     * These variables come from value for validate and ruleData, should be
+     * These variables come from value for validate and constraintData, should be
      * set in validate().
      *
      * @var array
@@ -102,12 +102,12 @@ class AbstractConstraint implements ConstraintInterface
     /**
      * {@inheritdoc}
      */
-    public function validate($value, $ruleData = null)
+    public function validate($value, $constraintData = null)
     {
         // Clear previous message
         $this->message = array();
 
-        // Assign message vairable, maybe more regards on ruleData.
+        // Assign message vairable, maybe assign more in inherit class
         $this->messageVariable['value'] = $value;
 
         // Other validate treatment in inherit class

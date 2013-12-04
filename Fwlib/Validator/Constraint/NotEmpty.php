@@ -24,9 +24,9 @@ class NotEmpty extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public function validate($value, $ruleData = null)
+    public function validate($value, $constraintData = null)
     {
-        parent::validate($value, $ruleData);
+        parent::validate($value, $constraintData);
 
         if (empty($value)) {
             $this->setMessage('default');
