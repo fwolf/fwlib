@@ -19,7 +19,7 @@
 
 
 
-文件命名规则
+通用文件命名规则
 ==================================================
 
 
@@ -28,6 +28,33 @@
 -   语言或框架对文件名有约定的，从其约定。
 
 具备相似功能的文件，尽可能采用一致的命名方法，比如相同的前缀。
+
+
+
+Javascript 文件命名示例
+==================================================
+
+
+-   class.js
+-   class-name.js
+-   class-name.plugin-1.2.min.js
+-   function.js
+-   function-name.js
+-   function.extended-1.2.js
+
+Link:
+
+-   `What is the javascript filename naming convention?
+    <http://stackoverflow.com/questions/7273316>`_
+
+-   `Google JavaScript Style Guide
+    <http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml>`_
+
+-   `Principles of Writing Consistent, Idiomatic JavaScript
+    <https://github.com/rwaldron/idiomatic.js/>`_
+
+-   `JavaScript Style Guides And Beautifiers
+    <http://addyosmani.com/blog/javascript-style-guides-and-beautifiers/>`_
 
 
 
