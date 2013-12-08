@@ -3,9 +3,11 @@ namespace Fwlib\Base;
 
 
 /**
- * Auto new property obj using magic function __get
+ * Auto new property instance using magic function __get
  *
  * Should change to use trait after upgrade to PHP 5.4.
+ *
+ * Auto new can also be skipped by call setInstance() method.
  *
  * @package     Fwlib\Base
  * @copyright   Copyright 2013 Fwolf
@@ -13,10 +15,10 @@ namespace Fwlib\Base;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22
  */
-abstract class AbstractAutoNewObj
+abstract class AbstractAutoNewInstance
 {
     /**
-     * ServiceContainer to new object
+     * ServiceContainer to new instance
      *
      * @var object
      */
@@ -24,19 +26,27 @@ abstract class AbstractAutoNewObj
 
 
     /**
-     * Auto new property obj if not set and corresponding newObjFoo() exists
+     * Auto new property instance if not set
+     *
+     * Need corresponding method newInstanceFoo() defined.
      *
      * @param   string  $name
      * @return  object
      */
     public function __get($name)
     {
-        $method = 'newObj' . ucfirst($name);
+        $method = 'newInstance' . ucfirst($name);
+        // For backward compative
+        $methodOld = 'newObj' . ucfirst($name);
 
         if (method_exists($this, $method)) {
-            // NewObjFoo method exists, call it
             $this->$name = $this->$method();
             return $this->$name;
+
+        } elseif (method_exists($this, $methodOld)) {
+            $this->$name = $this->$methodOld();
+            return $this->$name;
+
         } else {
             // @codeCoverageIgnoreStart
 
@@ -73,6 +83,30 @@ abstract class AbstractAutoNewObj
         } else {
             return true;
         }
+    }
+
+
+    /**
+     * Set a property instance
+     *
+     * A bit like dependence injection.
+     *
+     * @param   mixed   $instance
+     * @param   string  $className  Empty to auto-detect
+     * @return  $this
+     */
+    public function setInstance($instance, $className = null)
+    {
+        if (empty($className)) {
+            $className = get_class($instance);
+            $className = implode('', array_slice(explode('\\', $className), -1));
+        }
+
+        $className = lcfirst($className);
+
+        $this->$className = $instance;
+
+        return $this;
     }
 
 

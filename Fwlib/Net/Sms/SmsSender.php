@@ -79,11 +79,11 @@ class SmsSender extends AbstractAutoNewConfig
 
 
     /**
-     * New SMS logger object
+     * New SMS logger
      *
      * @return  Fwlib\Net\Sms\SmsLogger
      */
-    protected function newObjSmsLogger()
+    protected function newInstanceSmsLogger()
     {
         // One-time use object, not using ServiceContainer
         return new SmsLogger($this->serviceContainer->get('Db'));

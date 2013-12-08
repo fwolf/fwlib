@@ -12,9 +12,11 @@ use Fwlib\Base\AbstractSingleton;
  * Use Dependency Injection on constructor is good but not conveniency, create
  * Factory for each class need inject is also complicate, so ServiceContainer
  * can be substitution. If dependent object is not passed in when construct,
- * using these object will trigger newObjXxx() method in AbstractAutoNewObj
- * class, here we can use ServiceContainer to provide real object instance,
- * the only work needed is do setServiceContainer() once.
+ * using these object will trigger newInstanceXxx() method in
+ * AbstractAutoNewInstance class, here we can use ServiceContainer to provide
+ * real object instance, the only work needed is do setServiceContainer()
+ * once. Another similar way is doing outside of the class, create instance by
+ * ServiceContainer or other, then use setInstance() method to inject.
  *
  * In short, if Dependency Injection is skipped, get ServiceContainer instance
  * and assign use setter, you will got worked dependent object automatic,

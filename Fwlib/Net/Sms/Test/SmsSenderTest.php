@@ -105,10 +105,10 @@ class SmsSenderTest extends PHPunitTestCase
 
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('newObjSmsLogger', 'sendUsingGammuSmsdInject')
+            array('newInstanceSmsLogger', 'sendUsingGammuSmsdInject')
         );
         $smsSender->expects($this->once())
-            ->method('newObjSmsLogger')
+            ->method('newInstanceSmsLogger')
             ->will($this->returnValue($smsLogger));
         $smsSender->expects($this->once())
             ->method('sendUsingGammuSmsdInject')
@@ -149,13 +149,13 @@ class SmsSenderTest extends PHPunitTestCase
 
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('getPathOfGammuSmsdInject', 'newObjSmsLogger')
+            array('getPathOfGammuSmsdInject', 'newInstanceSmsLogger')
         );
         $smsSender->expects($this->once())
             ->method('getPathOfGammuSmsdInject')
             ->will($this->returnValue('dummy'));
         $smsSender->expects($this->once())
-            ->method('newObjSmsLogger')
+            ->method('newInstanceSmsLogger')
             ->will($this->returnValue($smsLogger));
 
         // Fake exec() result

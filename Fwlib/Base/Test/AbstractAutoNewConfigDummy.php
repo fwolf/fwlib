@@ -9,7 +9,8 @@ use Fwlib\Base\Rv;
  */
 class AbstractAutoNewConfigDummy extends AbstractAutoNewConfig
 {
-    public $rv;
+    public $abstractAutoNewConfigDummy = null;
+    public $rv = null;
 
 
     /**
@@ -19,21 +20,35 @@ class AbstractAutoNewConfigDummy extends AbstractAutoNewConfig
      */
     public function __construct($config = array())
     {
+        // Unset for auto new
+        unset($this->abstractAutoNewConfigDummy);
+        unset($this->rv);
+
         // Should call constructor of parent if exists
         parent::__construct($config);
-
-        // Unset for auto new
-        unset($this->rv);
     }
 
 
     /**
-     * New rv object
+     * New rv property
      *
      * @return Fwlib\Base\Rv
      */
-    protected function newObjRv()
+    protected function newInstanceRv()
     {
         return new Rv;
+    }
+
+
+    /**
+     * New self instance
+     *
+     * For test AbstractAutoNewInstance compative with newObjXxx().
+     *
+     * @return  Fwlib\Base\Test\AbstractAutoNewConfigDummy
+     */
+    protected function newObjAbstractAutoNewConfigDummy()
+    {
+        return $this;
     }
 }

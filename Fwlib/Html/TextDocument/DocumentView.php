@@ -351,11 +351,11 @@ class DocumentView extends AbstractAutoNewConfig
 
 
     /**
-     * New Markdown object
+     * New Markdown property
      *
      * @return  Fwlib\Html\TextDocument\Markdown
      */
-    protected function newObjMarkdown()
+    protected function newInstanceMarkdown()
     {
         $this->checkServiceContainer();
 
@@ -364,11 +364,11 @@ class DocumentView extends AbstractAutoNewConfig
 
 
     /**
-     * New Restructuredtext object
+     * New Restructuredtext property
      *
      * @return  Fwlib\Html\TextDocument\Restructuredtext
      */
-    protected function newObjRestructuredtext()
+    protected function newInstanceRestructuredtext()
     {
         $this->checkServiceContainer();
 
@@ -377,11 +377,11 @@ class DocumentView extends AbstractAutoNewConfig
 
 
     /**
-     * New UnknownMarkup object
+     * New UnknownMarkup property
      *
      * @return  Fwlib\Html\TextDocument\UnknownMarkup
      */
-    protected function newObjUnknownMarkup()
+    protected function newInstanceUnknownMarkup()
     {
         $this->checkServiceContainer();
 

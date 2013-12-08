@@ -2,11 +2,12 @@
 namespace Fwlib\Base\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
+use Fwlib\Base\Rv;
 use Fwlib\Base\Test\AbstractAutoNewConfigDummy;
 use Fwlib\Test\ServiceContainerTest;
 
 /**
- * Test for Fwlib\Base\AbstractAutoNewObj
+ * Test for Fwlib\Base\AbstractAutoNewInstance
  *
  * @package     Fwlib\Base\Test
  * @copyright   Copyright 2013 Fwolf
@@ -14,7 +15,7 @@ use Fwlib\Test\ServiceContainerTest;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22
  */
-class AbstractAutoNewObjTest extends PHPunitTestCase
+class AbstractAutoNewInstanceTest extends PHPunitTestCase
 {
     public $dummy;
 
@@ -30,6 +31,10 @@ class AbstractAutoNewObjTest extends PHPunitTestCase
         $this->assertFalse(isset($this->dummy->rv));
         $this->dummy->rv;
         $this->assertTrue(isset($this->dummy->rv));
+
+        $this->assertFalse(isset($this->dummy->abstractAutoNewConfigDummy));
+        $this->dummy->abstractAutoNewConfigDummy;
+        $this->assertTrue(isset($this->dummy->abstractAutoNewConfigDummy));
     }
 
 
@@ -77,5 +82,20 @@ class AbstractAutoNewObjTest extends PHPunitTestCase
         // Final solution: use @codeCoverageIgnore
 
         $this->assertEquals(null, $this->dummy->foo);
+    }
+
+
+    public function testSetInstance()
+    {
+        $dummy = new AbstractAutoNewConfigDummy;
+
+        $this->assertFalse(isset($dummy->rv));
+        $dummy->setInstance(new Rv);
+        $this->assertTrue(isset($dummy->rv));
+
+        $this->assertFalse(isset($dummy->abstractAutoNewConfigDummy));
+        // Set classname different with object is allowed
+        $dummy->setInstance(new Rv, 'AbstractAutoNewConfigDummy');
+        $this->assertTrue(isset($dummy->abstractAutoNewConfigDummy));
     }
 }

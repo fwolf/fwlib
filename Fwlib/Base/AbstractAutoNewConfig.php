@@ -1,11 +1,11 @@
 <?php
 namespace Fwlib\Base;
 
-use Fwlib\Base\AbstractAutoNewObj;
+use Fwlib\Base\AbstractAutoNewInstance;
 use Fwlib\Config\Config;
 
 /**
- * Base class for auto new $config object
+ * Base class for auto new $config property
  *
  * @package     Fwlib\Base
  * @copyright   Copyright 2013 Fwolf
@@ -13,7 +13,7 @@ use Fwlib\Config\Config;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-09-25
  */
-abstract class AbstractAutoNewConfig extends AbstractAutoNewObj
+abstract class AbstractAutoNewConfig extends AbstractAutoNewInstance
 {
     /**
      * Config object
@@ -46,7 +46,7 @@ abstract class AbstractAutoNewConfig extends AbstractAutoNewObj
      *
      * @return Fwlib\Config\Config
      */
-    protected function newObjConfig()
+    protected function newInstanceConfig()
     {
         return new Config;
     }

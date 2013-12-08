@@ -203,11 +203,11 @@ class CacheMemcached extends Cache
 
 
     /**
-     * New memcached object
+     * New memcached property
      *
      * @return  object
      */
-    public function newObjMemcached()
+    public function newInstanceMemcached()
     {
         $arSvr = $this->config->get('cache-memcached-server');
 

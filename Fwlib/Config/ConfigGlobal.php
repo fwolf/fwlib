@@ -34,7 +34,7 @@ class ConfigGlobal
      */
     public static function get($key, $default = null)
     {
-        self::newObjConfig();
+        self::newInstanceConfig();
         return self::$config->get($key, $default);
     }
 
@@ -49,7 +49,7 @@ class ConfigGlobal
      */
     public static function limitServerId($id, $exit = true, $key = 'server.id')
     {
-        self::newObjConfig();
+        self::newInstanceConfig();
         return self::$config->limitServerId($id, $exit, $key);
     }
 
@@ -63,7 +63,7 @@ class ConfigGlobal
      */
     public static function load($configData)
     {
-        self::newObjConfig(true);
+        self::newInstanceConfig(true);
         self::$config->set($configData);
     }
 
@@ -74,7 +74,7 @@ class ConfigGlobal
      * @param   boolean $forcenew
      * @return  object
      */
-    protected static function newObjConfig($forcenew = false)
+    protected static function newInstanceConfig($forcenew = false)
     {
         if (is_null(self::$config) || $forcenew) {
             self::$config = new Config;
@@ -90,7 +90,7 @@ class ConfigGlobal
      */
     public static function set($key, $val)
     {
-        self::newObjConfig();
+        self::newInstanceConfig();
         self::$config->set($key, $val);
     }
 }

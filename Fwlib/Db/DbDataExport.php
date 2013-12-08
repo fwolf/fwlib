@@ -421,9 +421,9 @@ class DbDataExport extends AbstractDbClient
      *
      * @return  Fwlib\Bridge\Adodb
      */
-    protected function newObjDb()
+    protected function newInstanceDb()
     {
-        $conn = parent::newObjDb();
+        $conn = parent::newInstanceDb();
 
         if (!is_null($conn)) {
             $this->lineEnding = $conn->getSqlDelimiter();

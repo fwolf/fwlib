@@ -237,7 +237,7 @@ class Adodb
     public function __get($name)
     {
         if ('sqlGenerator' == $name) {
-            $this->sqlGenerator = $this->newObjSqlGenerator();
+            $this->sqlGenerator = $this->newInstanceSqlGenerator();
             return $this->sqlGenerator;
         } else {
             return $this->conn->$name;
@@ -256,8 +256,8 @@ class Adodb
         // For object need auto new in this class instead of $this->conn, need
         // check in __get() and __set() both. If only treat in __get(), the
         // assign will happen, but assign to $this->conn->property, next time
-        // when it's used, will trigger __get() again, and do useless newObj()
-        // again.
+        // when it's used, will trigger __get() again, and do useless
+        // newInstance() again.
         if ('sqlGenerator' == $name) {
             $this->$name = $val;
         } else {
@@ -1151,11 +1151,11 @@ class Adodb
 
 
     /**
-     * New SqlGenerator object
+     * New SqlGenerator property
      *
      * @return  Fwlib\Db\SqlGenerator
      */
-    protected function newObjSqlGenerator()
+    protected function newInstanceSqlGenerator()
     {
         return new SqlGenerator($this);
     }

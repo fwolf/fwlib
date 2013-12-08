@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Db;
 
-use Fwlib\Base\AbstractAutoNewObj;
+use Fwlib\Base\AbstractAutoNewInstance;
 
 /**
  * Db client class with property $db
@@ -12,7 +12,7 @@ use Fwlib\Base\AbstractAutoNewObj;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-10-08
  */
-abstract class AbstractDbClient extends AbstractAutoNewObj
+abstract class AbstractDbClient extends AbstractAutoNewInstance
 {
     /**
      * Db connection object
@@ -42,7 +42,7 @@ abstract class AbstractDbClient extends AbstractAutoNewObj
      *
      * @return  Fwlib\Bridge\Adodb
      */
-    protected function newObjDb()
+    protected function newInstanceDb()
     {
         $this->checkServiceContainer();
 
