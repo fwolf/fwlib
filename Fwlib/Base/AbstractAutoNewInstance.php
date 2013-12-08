@@ -36,19 +36,26 @@ abstract class AbstractAutoNewInstance
     public function __get($name)
     {
         $method = 'newInstance' . ucfirst($name);
-        // For backward compative
+        // For backward compatible
         $methodOld = 'newObj' . ucfirst($name);
 
+        // @codeCoverageIgnoreStart
         if (method_exists($this, $method)) {
             $this->$name = $this->$method();
             return $this->$name;
 
         } elseif (method_exists($this, $methodOld)) {
+            $trace = debug_backtrace();
+            trigger_error(
+                "$methodOld() should be replaced by $method() " .
+                "in {$trace[0]['file']} on line {$trace[0]['line']}",
+                E_USER_NOTICE
+            );
+
             $this->$name = $this->$methodOld();
             return $this->$name;
 
         } else {
-            // @codeCoverageIgnoreStart
 
             $trace = debug_backtrace();
             trigger_error(
@@ -61,8 +68,8 @@ abstract class AbstractAutoNewInstance
             // trigger_error will terminate program run, below will not exec
             return null;
 
-            // @codeCoverageIgnoreEnd
         }
+        // @codeCoverageIgnoreEnd
     }
 
 

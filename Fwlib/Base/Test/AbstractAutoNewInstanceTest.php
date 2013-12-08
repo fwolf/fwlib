@@ -32,9 +32,11 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
         $this->dummy->rv;
         $this->assertTrue(isset($this->dummy->rv));
 
+        /*
         $this->assertFalse(isset($this->dummy->abstractAutoNewConfigDummy));
         $this->dummy->abstractAutoNewConfigDummy;
         $this->assertTrue(isset($this->dummy->abstractAutoNewConfigDummy));
+         */
     }
 
 
