@@ -11,7 +11,7 @@ namespace Fwlib\Base;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-05-03
  */
-class Rv
+class ReturnValue
 {
 
     /**
@@ -19,16 +19,16 @@ class Rv
      *
      * array(
      *  code,       // Normally 0=no error, c>0=info, c<0=error occur
-     *  msg,
+     *  message,
      *  data,
      * )
      *
      * @var array
      */
     public $info = array(
-        'code'  => 0,
-        'msg'   => null,
-        'data'  => null,
+        'code'    => 0,
+        'message' => null,
+        'data'    => null,
     );
 
 
@@ -36,15 +36,15 @@ class Rv
      * Constructor
      *
      * @param   int     $code
-     * @param   string  $msg
+     * @param   string  $message
      * @param   mixed   $data
      */
-    public function __construct($code = 0, $msg = null, $data = null)
+    public function __construct($code = 0, $message = null, $data = null)
     {
         $this->info = array(
-            'code'  => $code,
-            'msg'   => $msg,
-            'data'  => $data,
+            'code'    => $code,
+            'message' => $message,
+            'data'    => $data,
         );
     }
 
@@ -87,13 +87,13 @@ class Rv
 
 
     /**
-     * Get error msg
+     * Get error message
      *
      * @return  string
      */
-    public function errorMsg()
+    public function errorMessage()
     {
-        return $this->info['msg'];
+        return $this->info['message'];
     }
 
 
@@ -104,7 +104,7 @@ class Rv
      *
      * @return  int
      */
-    public function errorNo()
+    public function errorCode()
     {
         return $this->info['code'];
     }
@@ -140,14 +140,14 @@ class Rv
 
 
     /**
-     * Get/set msg
+     * Get/set message
      *
-     * @param   string  $msg
+     * @param   string  $message
      * @param   boolean $forceNull      Force do value assign even is null
      * @return  string
      */
-    public function msg($msg = null, $forceNull = false)
+    public function message($message = null, $forceNull = false)
     {
-        return $this->getSetInfo('msg', $msg, $forceNull);
+        return $this->getSetInfo('message', $message, $forceNull);
     }
 }

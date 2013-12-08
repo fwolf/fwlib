@@ -2,7 +2,7 @@
 namespace Fwlib\Base\Test;
 
 use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Base\Rv;
+use Fwlib\Base\ReturnValue;
 
 /**
  * Dummy class for test
@@ -10,7 +10,7 @@ use Fwlib\Base\Rv;
 class AbstractAutoNewConfigDummy extends AbstractAutoNewConfig
 {
     public $abstractAutoNewConfigDummy = null;
-    public $rv = null;
+    public $returnValue = null;
 
 
     /**
@@ -22,7 +22,7 @@ class AbstractAutoNewConfigDummy extends AbstractAutoNewConfig
     {
         // Unset for auto new
         unset($this->abstractAutoNewConfigDummy);
-        unset($this->rv);
+        unset($this->returnValue);
 
         // Should call constructor of parent if exists
         parent::__construct($config);
@@ -30,13 +30,13 @@ class AbstractAutoNewConfigDummy extends AbstractAutoNewConfig
 
 
     /**
-     * New rv property
+     * New returnValue property
      *
-     * @return Fwlib\Base\Rv
+     * @return Fwlib\Base\ReturnValue
      */
-    protected function newInstanceRv()
+    protected function newInstanceReturnValue()
     {
-        return new Rv;
+        return new ReturnValue;
     }
 
 

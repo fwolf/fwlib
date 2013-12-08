@@ -2,7 +2,7 @@
 namespace Fwlib\Base\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Base\Rv;
+use Fwlib\Base\ReturnValue;
 use Fwlib\Base\Test\AbstractAutoNewConfigDummy;
 use Fwlib\Test\ServiceContainerTest;
 
@@ -28,9 +28,9 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
 
     public function testAutoNew()
     {
-        $this->assertFalse(isset($this->dummy->rv));
-        $this->dummy->rv;
-        $this->assertTrue(isset($this->dummy->rv));
+        $this->assertFalse(isset($this->dummy->returnValue));
+        $this->dummy->returnValue;
+        $this->assertTrue(isset($this->dummy->returnValue));
 
         /*
         $this->assertFalse(isset($this->dummy->abstractAutoNewConfigDummy));
@@ -91,13 +91,13 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
     {
         $dummy = new AbstractAutoNewConfigDummy;
 
-        $this->assertFalse(isset($dummy->rv));
-        $dummy->setInstance(new Rv);
-        $this->assertTrue(isset($dummy->rv));
+        $this->assertFalse(isset($dummy->returnValue));
+        $dummy->setInstance(new ReturnValue);
+        $this->assertTrue(isset($dummy->returnValue));
 
         $this->assertFalse(isset($dummy->abstractAutoNewConfigDummy));
         // Set classname different with object is allowed
-        $dummy->setInstance(new Rv, 'AbstractAutoNewConfigDummy');
+        $dummy->setInstance(new ReturnValue, 'AbstractAutoNewConfigDummy');
         $this->assertTrue(isset($dummy->abstractAutoNewConfigDummy));
     }
 }

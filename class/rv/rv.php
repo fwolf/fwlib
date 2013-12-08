@@ -5,7 +5,7 @@ require_once(dirname(__FILE__) . '/../fwolflib.php');
 /**
  * Return value class
  *
- * @deprecated  Use Fwlib\Base\Rv
+ * @deprecated  Use Fwlib\Base\ReturnValue
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright © 2013, Fwolf

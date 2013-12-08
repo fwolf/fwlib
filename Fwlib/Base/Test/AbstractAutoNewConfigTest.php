@@ -26,9 +26,9 @@ class AbstractAutoNewConfigTest extends PHPunitTestCase
 
     public function testAutoNew()
     {
-        $this->assertFalse(isset($this->dummy->rv));
-        $this->dummy->rv;
-        $this->assertTrue(isset($this->dummy->rv));
+        $this->assertFalse(isset($this->dummy->returnValue));
+        $this->dummy->returnValue;
+        $this->assertTrue(isset($this->dummy->returnValue));
     }
 
 
