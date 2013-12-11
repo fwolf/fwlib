@@ -32,6 +32,7 @@ class Validator
         'ipv4'      => 'Fwlib\Validator\Constraint\Ipv4',
         'length'    => 'Fwlib\Validator\Constraint\Length',
         'notEmpty'  => 'Fwlib\Validator\Constraint\NotEmpty',
+        'required'  => 'Fwlib\Validator\Constraint\Required',
     );
 
     /**
