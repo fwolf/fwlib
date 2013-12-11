@@ -33,6 +33,7 @@ class Validator
         'length'    => 'Fwlib\Validator\Constraint\Length',
         'notEmpty'  => 'Fwlib\Validator\Constraint\NotEmpty',
         'required'  => 'Fwlib\Validator\Constraint\Required',
+        'regex'     => 'Fwlib\Validator\Constraint\Regex',
     );
 
     /**
