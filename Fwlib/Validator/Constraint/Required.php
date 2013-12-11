@@ -8,6 +8,8 @@ use Fwlib\Validator\AbstractConstraint;
  *
  * Check by value length after converted to string, so 0 is valid.
  *
+ * Array is always valid.
+ *
  * @package     Fwlib\Validator\Constraint
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -21,7 +23,6 @@ class Required extends AbstractConstraint
      */
     public $messageTemplate = array(
         'default'   => 'The input is required',
-        'array'     => 'Array is not suit for constraint Required',
     );
 
     /**
@@ -32,8 +33,7 @@ class Required extends AbstractConstraint
         parent::validate($value, $constraintData);
 
         if (is_array($value)) {
-            $this->setMessage('array');
-            return false;
+            return true;
         }
 
         $value = trim((string)$value);
