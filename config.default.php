@@ -25,7 +25,6 @@ use Fwlib\Base\ClassLoader;
 use Fwlib\Config\ConfigGlobal;
 use Fwlib\Util\ArrayUtil;
 
-
 // Init global config array
 if ('config.default.php' == basename(__FILE__)) {
     $config = array();
@@ -143,13 +142,13 @@ if ('config.default.php' == basename(__FILE__)) {
     );
 
     // Markdown
-    ClassLoader::addPrefix('Michelf', 'markdown/');
+    ClassLoader::addPrefix('Michelf', 'markdown/Michelf/');
 
     // PHPUnit, some demo use it, only need when not exec by phpunit command
     if (!class_exists('PHPUnit_Framework_TestCase', false)) {
         ClassLoader::addPrefix(
             'PHPUnit',
-            $config['lib.path.phpunit']
+            $config['lib.path.phpunit'] . 'PHPUnit/'
         );
     }
 

@@ -2,14 +2,14 @@
 // Run with php, not phpunit
 
 use Fwlib\Base\ClassLoader;
+use Fwlib\Util\DatetimeUtil;
 
 require __DIR__ . '/../../../autoload.php';
 
+new \Fwlib\Base\ReturnValue;
 
-ClassLoader::addPrefix('Fwlib\\Util', __DIR__ . '/../../../');
 
-use Fwlib\Util\DatetimeUtil;
-
+ClassLoader::addPrefix('Fwlib\\Util', __DIR__ . '/../../../Fwlib/Util/');
 new DatetimeUtil;
 
 

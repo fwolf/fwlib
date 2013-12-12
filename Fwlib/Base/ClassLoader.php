@@ -11,11 +11,11 @@ namespace Fwlib\Base;
  *
  *  use Fwlib\Base\ClassLoader;
  *
- *  // Subnamespace define should before parent namespace
- *  ClassLoader::addPrefix('Fwlib\\Base', 'path/to/another/Fwlib/contain/dir/');
- *
  *  // Root namespace
- *  ClassLoader::addPrefix('Fwlib', 'path/to/Fwlib/contain/dir/');
+ *  ClassLoader::addPrefix('Fwlib', 'path/to/fwlib/contain/dir/Fwlib/');
+ *
+ *  // Subnamespace define can be after parent namespace
+ *  ClassLoader::addPrefix('Fwlib\\Base', 'path/to/another/fwlib/contain/dir/Fwlib/Base/');
  *
  *  // Standalone class(not implement PSR-0) use full path
  *  ClassLoader::addPrefix('FooClass', 'path/to/FooClass.php');
@@ -130,6 +130,7 @@ class ClassLoader
             } else {
                 return false;
             }
+
         } else {
             // Replace \ in perfix to /
             // Replace _ in ClassName to /
@@ -158,7 +159,18 @@ class ClassLoader
                             $path .= DIRECTORY_SEPARATOR;
                         }
 
-                        $arFile[] = $path . $filePath;
+                        // Replace leading matched part in path with prefix path
+                        $prefixPath = str_replace(
+                            self::$prefixSeparator,
+                            DIRECTORY_SEPARATOR,
+                            $prefix
+                        ) . DIRECTORY_SEPARATOR;
+                        $prefixPath = preg_quote($prefixPath, '/');
+                        $arFile[] = preg_replace(
+                            "/^$prefixPath/",
+                            $path,
+                            $filePath
+                        );
                     }
 
                     break;

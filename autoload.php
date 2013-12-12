@@ -14,7 +14,7 @@ require __DIR__ . '/Fwlib/Base/ClassLoader.php';
 use Fwlib\Base\ClassLoader;
 
 // Add resource lookup path
-ClassLoader::addPrefix('Fwlib', __DIR__ . '/');
+ClassLoader::addPrefix('Fwlib', __DIR__ . '/Fwlib/');
 
 // Search include_path at last
 ClassLoader::$useIncludePath = true;
