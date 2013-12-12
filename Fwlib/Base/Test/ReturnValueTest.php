@@ -3,6 +3,7 @@ namespace Fwlib\Base\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Base\ReturnValue;
+use Fwlib\Util\Json;
 
 /**
  * Test for Fwlib\Base\ReturnValue
@@ -15,7 +16,7 @@ use Fwlib\Base\ReturnValue;
  */
 class ReturnValueTest extends PHPunitTestCase
 {
-    public function testReturnValueDefault()
+    public function testCommon()
     {
         $rv = new ReturnValue();
 
@@ -35,5 +36,36 @@ class ReturnValueTest extends PHPunitTestCase
         $this->assertEquals('foobar', $rv->data());
 
         $this->assertEquals(3, count($rv->getInfo()));
+    }
+
+
+    public function testJsonMode()
+    {
+        $info = array(
+            'code'  => 42,
+            'message'   => 'foo',
+        );
+
+        $y = $info;
+        $y['data'] = null;
+
+        $rv = new ReturnValue(Json::encodeUnicode($info));
+        $this->assertEqualArray($y, $rv->getInfo());
+        $this->assertEqualArray($y, Json::decode($rv->getJson(), true));
+    }
+
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage string to load have no
+     */
+    public function testJsonModeWithInvalidStringToLoad()
+    {
+        $info = array(
+            'code'  => 42,
+            'data'  => 'bar',
+        );
+
+        $rv = new ReturnValue(Json::encodeUnicode($info));
     }
 }

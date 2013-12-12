@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Base;
 
+use Fwlib\Util\ArrayUtil;
+use Fwlib\Util\Json;
 
 /**
  * Return value object
@@ -35,17 +37,24 @@ class ReturnValue
     /**
      * Constructor
      *
-     * @param   int     $code
+     * $code can be int, or a json encoded string.
+     *
+     * @param   mixed   $code
      * @param   string  $message
      * @param   mixed   $data
      */
     public function __construct($code = 0, $message = null, $data = null)
     {
-        $this->info = array(
-            'code'    => $code,
-            'message' => $message,
-            'data'    => $data,
-        );
+        if (is_int($code)) {
+            $this->info = array(
+                'code'    => $code,
+                'message' => $message,
+                'data'    => $data,
+            );
+
+        } else {
+            $this->loadJson($code);
+        }
     }
 
 
@@ -122,6 +131,17 @@ class ReturnValue
 
 
     /**
+     * Get json encoded info string
+     *
+     * @return  string
+     */
+    public function getJson()
+    {
+        return Json::encodeUnicode($this->info);
+    }
+
+
+    /**
      * Get/set info array
      *
      * @param   string  $idx            Should be one of code/msg/data, but no check
@@ -136,6 +156,34 @@ class ReturnValue
         }
 
         return $this->info[$idx];
+    }
+
+
+    /**
+     * Load info from json encoded string
+     *
+     * Input json string MUST include code and message, data can be optional.
+     *
+     * @param   string  $json
+     * @return  $this
+     */
+    public function loadJson($json)
+    {
+        $ar = Json::decode($json, true);
+
+        foreach (array('code', 'message') as $v) {
+            if (!isset($ar[$v])) {
+                throw new \Exception("Json string to load have no $v info");
+            }
+        }
+
+        $this->info = array(
+            'code'    => $ar['code'],
+            'message' => $ar['message'],
+            'data'    => ArrayUtil::getIdx($ar, 'data', null),
+        );
+
+        return $this;
     }
 
 
