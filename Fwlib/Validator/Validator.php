@@ -34,6 +34,7 @@ class Validator
         'notEmpty'  => 'Fwlib\Validator\Constraint\NotEmpty',
         'required'  => 'Fwlib\Validator\Constraint\Required',
         'regex'     => 'Fwlib\Validator\Constraint\Regex',
+        'url'       => 'Fwlib\Validator\Constraint\Url',
     );
 
     /**
