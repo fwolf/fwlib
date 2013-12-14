@@ -13,6 +13,8 @@ require_once(FWOLFLIB . 'func/string.php');
  * 	-	jQuery
  *
  * Ref: http://code.google.com/p/easyvalidator/
+ *
+ * @deprecated  Use Fwlib\Html\FormValidator
  * @package		fwolflib
  * @subpackage	class
  * @copyright	Copyright © 2011-2013, Fwolf

@@ -131,7 +131,7 @@ class Validator
                 );
             }
 
-            $constraint = $this->getConstraint(strtolower($constraintName));
+            $constraint = $this->getConstraint($constraintName);
 
             if (!$constraint->validate($value, $constraintData)) {
                 $valid = false;
