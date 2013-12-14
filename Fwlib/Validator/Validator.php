@@ -51,7 +51,7 @@ class Validator
      * @param   string  $name
      * @return  Fwlib\Validator\ConstraintInterface
      */
-    protected function getConstraint($name)
+    public function getConstraint($name)
     {
         if (!isset($this->constraintMap[$name])) {
             throw new \Exception("Constraint $name not registed");
@@ -131,7 +131,7 @@ class Validator
                 );
             }
 
-            $constraint = $this->getConstraint($constraintName);
+            $constraint = $this->getConstraint(strtolower($constraintName));
 
             if (!$constraint->validate($value, $constraintData)) {
                 $valid = false;
