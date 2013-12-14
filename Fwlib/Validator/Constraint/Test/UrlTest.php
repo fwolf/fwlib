@@ -87,5 +87,18 @@ class UrlTest extends PHPunitTestCase
         );
         $this->assertFalse($constraint->validate($value, $url));
         $this->assertEqualArray($failMessage, $constraint->getMessage());
+
+
+        // Url fixup
+        $url = '?a=check';
+        // Fake self url: http://dummy/?m=origin
+        $_SERVER['HTTP_HOST'] = 'dummy/';
+        $_SERVER['REQUEST_URI'] = '?m=origin';
+
+        $constraint->validate($value, $url);
+        $this->assertEquals(
+            'http://dummy/?m=origin&a=check',
+            self::$url
+        );
     }
 }

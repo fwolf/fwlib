@@ -4,6 +4,7 @@ namespace Fwlib\Validator\Constraint;
 use Fwlib\Base\ReturnValue;
 use Fwlib\Validator\AbstractConstraint;
 use Fwlib\Util\ArrayUtil;
+use Fwlib\Util\HttpUtil;
 
 /**
  * Constraint Url
@@ -135,6 +136,30 @@ class Url extends AbstractConstraint
 
 
     /**
+     * Get full url for given relative url string
+     *
+     * @param   string  $url
+     * @return  string
+     */
+    protected function getFullUrl($url)
+    {
+        if ('HTTP' == strtoupper(substr($url, 0, 4))) {
+            return $url;
+        }
+
+
+        $selfUrl = HttpUtil::getSelfUrl(true);
+        if (false !== strpos($selfUrl, '?')) {
+            $url{0} = '&';
+        } else {
+            $url{0} = '?';
+        }
+
+        return $selfUrl . $url;
+    }
+
+
+    /**
      * New Curl object
      *
      * @return  Fwlib\Net\Curl
@@ -165,6 +190,12 @@ class Url extends AbstractConstraint
         if (empty($url)) {
             $this->setMessage('urlEmpty');
             return false;
+        }
+
+        // Url must start from 'HTTP', can't use relative '?a=b' style, which
+        // works well in js ajax, is common used.
+        if ('HTTP' != strtoupper(substr($url, 0, 4))) {
+            $url = $this->getFullUrl($url);
         }
 
         if (empty($ar)) {
