@@ -43,7 +43,7 @@ class ReturnValue
      * @param   string  $message
      * @param   mixed   $data
      */
-    public function __construct($code = 0, $message = null, $data = null)
+    public function __construct($code = 0, $message = '', $data = null)
     {
         if (is_int($code)) {
             $this->info = array(

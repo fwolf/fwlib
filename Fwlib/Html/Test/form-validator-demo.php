@@ -29,6 +29,8 @@ if ('checkAge' == $action) {
     $age = trim($userAge);
 
     // Age must be positive, between 0~200
+    // Assign message when new ReturnValue instance is not needed, but keep
+    // return additional information is good for debug.
     if (is_numeric($age) && 0 <= $age && 200 >= $age) {
         $rv = new ReturnValue(0, 'success');
     } else {
