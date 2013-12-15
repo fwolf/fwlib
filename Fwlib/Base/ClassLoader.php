@@ -11,20 +11,22 @@ namespace Fwlib\Base;
  *
  *  use Fwlib\Base\ClassLoader;
  *
+ *  $classLoader = ClassLoader::getInstance();
+ *
  *  // Root namespace
- *  ClassLoader::addPrefix('Fwlib', 'path/to/fwlib/contain/dir/Fwlib/');
+ *  $classLoader->addPrefix('Fwlib', 'path/to/dir/contain/fwlib/Fwlib/');
  *
  *  // Subnamespace define can be after parent namespace
- *  ClassLoader::addPrefix('Fwlib\\Base', 'path/to/another/fwlib/contain/dir/Fwlib/Base/');
+ *  $classLoader->addPrefix('Fwlib\\Base', 'path/to/another/dir/contain/fwlib/Fwlib/Base/');
  *
  *  // Standalone class(not implement PSR-0) use full path
- *  ClassLoader::addPrefix('FooClass', 'path/to/FooClass.php');
+ *  $classLoader->addPrefix('FooClass', 'path/to/FooClass.php');
  *
  *  // Search include_path at last
- *  ClassLoader::$useIncludePath = true;
+ *  $classLoader->useIncludePath = true;
  *
  *  // Register autoloader
- *  ClassLoader::register();
+ *  $classLoader->register();
  *
  * Path can be array, ClassLoader will try each path in it.
  *
@@ -34,6 +36,10 @@ namespace Fwlib\Base;
  * - https://wiki.php.net/rfc/splclassloader
  * - https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
  * - https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ClassLoader/ClassLoader.php
+ *
+ * This class can use Singleton pattern, but its used before autoloader is
+ * registered , require AbstractSingleton class need hardcoded relative path.
+ * To keep things simple, copy need method here.
  *
  * @package     Fwlib\Base
  * @copyright   Copyright 2013 Fwolf
@@ -47,7 +53,7 @@ class ClassLoader
      * Extension of class file to load
      * @var string
      */
-    public static $fileExtension = '.php';
+    public $fileExtension = '.php';
 
     /**
      * Namespace - path array
@@ -58,32 +64,32 @@ class ClassLoader
      *
      * @var array
      */
-    public static $prefix = array();
+    public $prefix = array();
 
     /**
      * Namespace separator, default '\'
+     *
      * @var string
      */
-    public static $prefixSeparator = '\\';
+    public $prefixSeparator = '\\';
 
     /**
      * Look for file in include_path as last try
+     *
      * @var boolean
      */
-    public static $useIncludePath = false;
+    public $useIncludePath = false;
 
 
     /**
      * Constructor
      *
-     * Useless for static class now.
-     *
-     * @param   mixed   $prefix         Prefix or array of prefix-path
-     * @param   string  $path
+     * @param   string|array    $prefix     Prefix or array of prefix-path
+     * @param   string|array    $path
      */
     public function __construct($prefix = null, $path = null)
     {
-        if (!empty($prefix)) {
+        if (!empty($prefix) && !empty($path)) {
             $this->addPrefix($prefix, $path);
         }
     }
@@ -92,20 +98,21 @@ class ClassLoader
     /**
      * Add new prefix
      *
-     * @param   mixed   $prefix         Prefix or array of prefix-path
-     * @param   string  $path
-     * @return  self
+     * @param   string|array    $prefix     Prefix or array of prefix-path
+     * @param   string|array    $path
+     * @return  $this
      */
-    public static function addPrefix($prefix, $path = null)
+    public function addPrefix($prefix, $path = null)
     {
         if (is_array($prefix)) {
-            // Array of prefix-path
-            self::$prefix = array_merge(self::$prefix, $prefix);
+            // $prefix is array of prefix-path
+            $this->prefix = array_merge($this->prefix, $prefix);
+
         } else {
-            self::$prefix[$prefix] = $path;
+            $this->prefix[$prefix] = $path;
         }
 
-        return __CLASS__;
+        return $this;
     }
 
 
@@ -114,9 +121,9 @@ class ClassLoader
      *
      * @param   string  $prefix
      * @param   string  $fileName       Without namespace
-     * @return  mixed                   Exists file path or false
+     * @return  mixed                   Valid file path or false
      */
-    public static function findFile($prefix, $fileName)
+    public function findFile($prefix, $fileName)
     {
         // Each prefix may have multiple path, so dest file is array
         $arFile = array();
@@ -125,8 +132,8 @@ class ClassLoader
         // Match possible filepath
         if (empty($fileName)) {
             // Standalone class
-            if (isset(self::$prefix[$prefix])) {
-                $arFile = (array)self::$prefix[$prefix];
+            if (isset($this->prefix[$prefix])) {
+                $arFile = (array)$this->prefix[$prefix];
             } else {
                 return false;
             }
@@ -136,24 +143,24 @@ class ClassLoader
             // Replace _ in ClassName to /
             // Add file extension
             $filePath = str_replace(
-                self::$prefixSeparator,
+                $this->prefixSeparator,
                 DIRECTORY_SEPARATOR,
                 $prefix
             ) . DIRECTORY_SEPARATOR . str_replace(
                 '_',
                 DIRECTORY_SEPARATOR,
                 $fileName
-            ) . self::$fileExtension;
+            ) . $this->fileExtension;
 
 
             // Match prefix by layer
             $found = false;
-            $pos = strrpos($prefix, self::$prefixSeparator);
+            $pos = strrpos($prefix, $this->prefixSeparator);
             while (!$found && (0 < strlen($prefix))) {
-                if (isset(self::$prefix[$prefix])) {
+                if (isset($this->prefix[$prefix])) {
                     $found = true;
 
-                    foreach ((array)self::$prefix[$prefix] as $path) {
+                    foreach ((array)$this->prefix[$prefix] as $path) {
                         // Add tailing / to path
                         if (DIRECTORY_SEPARATOR != substr($path, -1)) {
                             $path .= DIRECTORY_SEPARATOR;
@@ -161,7 +168,7 @@ class ClassLoader
 
                         // Replace leading matched part in path with prefix path
                         $prefixPath = str_replace(
-                            self::$prefixSeparator,
+                            $this->prefixSeparator,
                             DIRECTORY_SEPARATOR,
                             $prefix
                         ) . DIRECTORY_SEPARATOR;
@@ -178,7 +185,7 @@ class ClassLoader
 
                 // Goto upper layer namespace
                 $prefix = substr($prefix, 0, intval($pos));
-                $pos = strrpos($prefix, self::$prefixSeparator);
+                $pos = strrpos($prefix, $this->prefixSeparator);
             }
 
 
@@ -189,7 +196,7 @@ class ClassLoader
 
         // Check file existence and try include_path
         foreach ($arFile as $file) {
-            if (file_exists($file) || (self::$useIncludePath
+            if (file_exists($file) || ($this->useIncludePath
                 && file_exists(stream_resolve_include_path($file)))
             ) {
                 return $file;
@@ -202,24 +209,41 @@ class ClassLoader
 
 
     /**
+     * Get instance of Singleton itself
+     *
+     * @return  object
+     */
+    public static function getInstance()
+    {
+        static $instance = null;
+
+        if (is_null($instance)) {
+            $instance = new static();
+        }
+
+        return $instance;
+    }
+
+
+    /**
      * Load given class or interface
      *
-     * Will auto trigger after register to spl_autoload
+     * Will auto trigger after register to spl_autoload.
      *
-     * @param   string  $className      With qualified namespace
+     * @param   string  $className      With full qualified namespace
      * @return  boolean                 Return false when load file not exists
      */
-    public static function loadClass($className)
+    public function loadClass($className)
     {
         // Both \ and _ are supported, will convert to inner separator
         $className = str_replace(
             array('\\', '_'),
-            self::$prefixSeparator,
+            $this->prefixSeparator,
             $className
         );
 
 
-        $pos = strrpos($className, self::$prefixSeparator);
+        $pos = strrpos($className, $this->prefixSeparator);
         if (false !== $pos) {
             // With namespace
             $prefix = substr($className, 0, $pos);
@@ -231,7 +255,7 @@ class ClassLoader
         }
 
 
-        $file = self::findFile($prefix, $fileName);
+        $file = $this->findFile($prefix, $fileName);
         if (false === $file) {
             return false;
         } else {
@@ -244,23 +268,25 @@ class ClassLoader
      * Register using spl_autoload_register
      *
      * @param   boolean $prepend
-     * @return  self
+     * @return  $this
      */
-    public static function register($prepend = false)
+    public function register($prepend = false)
     {
-        spl_autoload_register(array(__CLASS__, 'loadClass'), true, $prepend);
-        return __CLASS__;
+        spl_autoload_register(array($this, 'loadClass'), true, $prepend);
+
+        return $this;
     }
 
 
     /**
      * Unregister using spl_autoload_unregister
      *
-     * @return  self
+     * @return  $this
      */
-    public static function unregister()
+    public function unregister()
     {
-        spl_autoload_unregister(array(__CLASS__, 'loadClass'));
-        return __CLASS__;
+        spl_autoload_unregister(array($this, 'loadClass'));
+
+        return $this;
     }
 }

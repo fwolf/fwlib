@@ -13,11 +13,13 @@ require __DIR__ . '/Fwlib/Base/ClassLoader.php';
 
 use Fwlib\Base\ClassLoader;
 
+$classLoader = ClassLoader::getInstance();
+
 // Add resource lookup path
-ClassLoader::addPrefix('Fwlib', __DIR__ . '/Fwlib/');
+$classLoader->addPrefix('Fwlib', __DIR__ . '/Fwlib/');
 
 // Search include_path at last
-ClassLoader::$useIncludePath = true;
+$classLoader->useIncludePath = true;
 
 // Register autoloader
-ClassLoader::register();
+$classLoader->register();

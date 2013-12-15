@@ -4,9 +4,9 @@
  *
  * Usage:
  *  1. Copy to a new file named 'config.php'
- *  2. (Optional)Remove code outside of 'Config define area'
+ *  2. Remove code outside of 'Config define area' (Optional)
  *  3. Change defines
- *  4. (Optional)Remove defines no change needed
+ *  4. Remove defines no change needed (Suggested)
  *
  * For defines which need compute to get final result:
  *  1. Remove from 'config.php', use compute job in 'config.default.php'
@@ -133,20 +133,21 @@ if ('config.default.php' == basename(__FILE__)) {
 
 
     // Autoload register of external library
+    $classLoader = ClassLoader::getInstance();
 
     // Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class for faster dummy new object
-    ClassLoader::addPrefix(
+    $classLoader->addPrefix(
         'ADOFetchObj',
         $config['lib.path.adodb'] . 'adodb.inc.php'
     );
 
     // Markdown
-    ClassLoader::addPrefix('Michelf', 'markdown/Michelf/');
+    $classLoader->addPrefix('Michelf', 'markdown/Michelf/');
 
     // PHPUnit, some demo use it, only need when not exec by phpunit command
     if (!class_exists('PHPUnit_Framework_TestCase', false)) {
-        ClassLoader::addPrefix(
+        $classLoader->addPrefix(
             'PHPUnit',
             $config['lib.path.phpunit'] . 'PHPUnit/'
         );
@@ -156,7 +157,7 @@ if ('config.default.php' == basename(__FILE__)) {
     require $config['lib.path.phpmailer'] . 'PHPMailerAutoload.php';
 
     // Smarty 3.1.x
-    ClassLoader::addPrefix(
+    $classLoader->addPrefix(
         'Smarty',
         $config['lib.path.smarty'] . 'Smarty.class.php'
     );

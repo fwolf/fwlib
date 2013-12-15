@@ -8,10 +8,13 @@ require __DIR__ . '/../../../autoload.php';
 
 new \Fwlib\Base\ReturnValue;
 
+// $classLoader already exists(define in autoload.php), define it again here
+// will make code easier to understand.
+$classLoader = ClassLoader::getInstance();
 
-ClassLoader::addPrefix('Fwlib\\Util', __DIR__ . '/../../../Fwlib/Util/');
+$classLoader->addPrefix('Fwlib\\Util', __DIR__ . '/../../../Fwlib/Util/');
 new DatetimeUtil;
 
 
-ClassLoader::addPrefix('Rv', __DIR__ . '/../../../class/rv/rv.php');
+$classLoader->addPrefix('Rv', __DIR__ . '/../../../class/rv/rv.php');
 new Rv;
