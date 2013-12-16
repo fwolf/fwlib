@@ -24,7 +24,7 @@ class Env
      * @param   boolean $noecho Do not print
      * @return  string
      */
-    public static function ecl($str, $noecho = false)
+    public static function ecl($str = '', $noecho = false)
     {
         if (self::isCli()) {
             $lineEnding = "\n";
