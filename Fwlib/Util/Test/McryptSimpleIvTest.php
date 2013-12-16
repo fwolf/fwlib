@@ -2,10 +2,10 @@
 namespace Fwlib\Util\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Util\McryptSmplIv;
+use Fwlib\Util\McryptSimpleIv;
 
 /**
- * Test for Fwlib\Util\McryptSmplIv
+ * Test for Fwlib\Util\McryptSimpleIv
  *
  * @requires    extension mcrypt
  *
@@ -15,21 +15,21 @@ use Fwlib\Util\McryptSmplIv;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2009-10-22
  */
-class McryptSmplIvTest extends PHPunitTestCase
+class McryptSimpleIvTest extends PHPunitTestCase
 {
-    public function testMcryptSmplIv()
+    public function testMcryptSimpleIv()
     {
         $key = 'blahblahblah';
         $data = '加密的东东';
         $algo = 'xtea';
 
-        $encrypted = McryptSmplIv::encrypt($data, $key, $algo);
+        $encrypted = McryptSimpleIv::encrypt($data, $key, $algo);
         $this->assertEquals(
             '8vAJEMIdSmH3udoxZ3va',
             base64_encode($encrypted)
         );
 
-        $decrypted = McryptSmplIv::decrypt($encrypted, $key, $algo);
+        $decrypted = McryptSimpleIv::decrypt($encrypted, $key, $algo);
         $this->assertEquals($data, $decrypted);
     }
 }

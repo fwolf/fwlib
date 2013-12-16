@@ -5,8 +5,8 @@ namespace Fwlib\Util;
 /**
  * Simple mcrypt
  *
- * Use part of secret key as IV, so need assign it from outside,
- * or save it to use when decrypt.
+ * IV(initialization vector) is computed from secret key, so the decrypt
+ * operate need same secret key.
  *
  * Get mcrypt supported algorithms:
  * $algorithms = mcrypt_list_algorithms("/usr/local/lib/libmcrypt");
@@ -43,7 +43,7 @@ namespace Fwlib\Util;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2009-10-22
  */
-class McryptSmplIv
+class McryptSimpleIv
 {
     /**
      * Check if mcrypt extension is loaded
