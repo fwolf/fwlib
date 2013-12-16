@@ -3,7 +3,7 @@ namespace Fwlib\Cache\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
-use Fwlib\Config\ConfigGlobal;
+use Fwlib\Config\GlobalConfig;
 
 /**
  * Test for Fwlib\Cache\CacheMemcached
@@ -37,7 +37,7 @@ class CacheMemcachedTest extends PHPunitTestCase
     public function testCache()
     {
         // This should be a valid server
-        $ms = ConfigGlobal::get('memcached.server');
+        $ms = GlobalConfig::getInstance()->get('memcached.server');
 
 
         // Memcache server recognize by array position, not assoc key
@@ -166,7 +166,7 @@ class CacheMemcachedTest extends PHPunitTestCase
     public function tesSetConfigServer()
     {
         // This should be a valid server
-        $ms = ConfigGlobal::get('memcached.server');
+        $ms = GlobalConfig::getInstance()->get('memcached.server');
 
         // Multi server, one of them is dead
         $x = array(

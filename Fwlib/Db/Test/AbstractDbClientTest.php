@@ -2,7 +2,7 @@
 namespace Fwlib\Db\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Config\ConfigGlobal;
+use Fwlib\Config\GlobalConfig;
 use Fwlib\Db\Test\AbstractDbClientDummy;
 use Fwlib\Test\ServiceContainerTest as ServiceContainerTest;
 
@@ -19,7 +19,7 @@ class AbstractDbClientTest extends PHPunitTestCase
 {
     public function testNewDb()
     {
-        $dbProfile = ConfigGlobal::get('dbserver.default');
+        $dbProfile = GlobalConfig::getInstance()->get('dbserver.default');
         if (empty($dbProfile['host'])) {
             $this->markTestSkipped();
         }

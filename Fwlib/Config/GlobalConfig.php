@@ -1,23 +1,24 @@
 <?php
-namespace Fwlib\Base;
+namespace Fwlib\Config;
 
+use Fwlib\Config\Config;
 
 /**
- * Singleton class template
+ * Config class for store global setting
  *
- * Should change to trait after PHP 5.4.0.
- *
- * @link http://www.phptherightway.com/pages/Design-Patterns.html
+ * This is a Singleton class, should getInstance() then use, it will return a
+ * special instance to store global config. These config data should be set at
+ * beginning(eg: config.default.php), then they are readable anywhere.
  *
  * @codeCoverageIgnore
  *
- * @package     Fwlib\Base
+ * @package     Fwlib\Config
  * @copyright   Copyright 2013 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
+ * @author      Fwolf <fwolf.aide+Fwlib.Config@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-11-07
+ * @since       2013-08-22
  */
-abstract class AbstractSingleton
+class GlobalConfig extends Config
 {
     /**
      * Prevent clone method

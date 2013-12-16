@@ -95,6 +95,22 @@ class Config implements \ArrayAccess
 
 
     /**
+     * Reset all config and set new
+     *
+     * @param   array   $configData
+     * @return  $this
+     */
+    public function load($configData)
+    {
+        $this->config = array();
+
+        $this->set($configData);
+
+        return $this;
+    }
+
+
+    /**
      * Whether a offset exists
      *
      * @param   string  $offset
@@ -144,12 +160,15 @@ class Config implements \ArrayAccess
     /**
      * Set config value
      *
-     * Multi-dimensional array style setting supported,
-     * If $key include separator, will converte to array by it recurrently.
+     * Multi-dimensional array style setting supported, if $key include
+     * separator, will converte to array by it recurrently.
      *
      * eg: system.format.time => $this->config['system']['format']['time']
      *
-     * @param   string  $key
+     * If $key is array, it should be indexed by config key, and $val param is
+     * ignored.
+     *
+     * @param   string|array    $key
      * @param   mixed   $val    Should not null except $key is array
      * @return  $this
      */
@@ -159,6 +178,7 @@ class Config implements \ArrayAccess
             foreach ($key as $k => $v) {
                 $this->set($k, $v);
             }
+
             return $this;
         }
 

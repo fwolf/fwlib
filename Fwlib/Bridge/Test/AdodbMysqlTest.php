@@ -2,7 +2,7 @@
 namespace Fwlib\Bridge\Test;
 
 use Fwlib\Bridge\Adodb;
-use Fwlib\Config\ConfigGlobal;
+use Fwlib\Config\GlobalConfig;
 use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Util\Uuid;
 
@@ -39,7 +39,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
     public function testConstruct()
     {
-        $db = new Adodb(ConfigGlobal::get('dbserver.mysql'));
+        $db = new Adodb(GlobalConfig::getInstance()->get('dbserver.mysql'));
 
         $this->assertFalse(isset($db->sqlGenerator));
         // Will auto create SqlGenerator when access

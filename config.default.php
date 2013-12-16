@@ -22,7 +22,7 @@
  */
 
 use Fwlib\Base\ClassLoader;
-use Fwlib\Config\ConfigGlobal;
+use Fwlib\Config\GlobalConfig;
 use Fwlib\Util\ArrayUtil;
 
 // Init global config array
@@ -42,7 +42,7 @@ if ('config.default.php' == basename(__FILE__)) {
     if (file_exists(__DIR__ . '/config.php')) {
         require __DIR__ . '/config.php';
     }
-    $configUser = $config;
+    $userConfig = $config;
 
 
     // Load requirement lib autoload file
@@ -57,7 +57,7 @@ if ('config.default.php' == basename(__FILE__)) {
 /***********************************************************
  * Config define area
  *
- * Use $configUser to compute value if needed.
+ * Use $userConfig to compute value if needed.
  *
  * In config.php, code outside this area can be removed.
  **********************************************************/
@@ -65,7 +65,7 @@ if ('config.default.php' == basename(__FILE__)) {
 
 // Config to use in compute later NEED use user config if set
 $config['group.keyForCompute'] = ArrayUtil::getIdx(
-    $configUser,
+    $userConfig,
     'group.keyForCompute',
     'default value'
 );
@@ -133,11 +133,11 @@ $config['smarty.compileDir'] = '/tmp/';
 
 // Merge user and default config
 if ('config.default.php' == basename(__FILE__)) {
-    $config = array_merge($config, $configUser);
+    $config = array_merge($config, $userConfig);
 
     // Deal with $config
-    // Or store with ConfigGlobal class
-    ConfigGlobal::load($config);
+    // Or store with GlobalConfig class
+    GlobalConfig::getInstance()->load($config);
 
 
     // Autoload register of external library
