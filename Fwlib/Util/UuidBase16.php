@@ -123,8 +123,11 @@ class UuidBase16
      * @param   boolean $checkDigit
      * @return  string
      */
-    public static function gen($custom1 = '0010', $custom2 = '', $checkDigit = false)
-    {
+    public static function generate(
+        $custom1 = '0010',
+        $custom2 = '',
+        $checkDigit = false
+    ) {
         $ar = explode(' ', microtime());
 
         // timeLow: 8 chars from right-side end of current timestamp
@@ -192,14 +195,14 @@ class UuidBase16
      * @param   string  $separator
      * @return  string
      */
-    public static function genWithSeparator(
+    public static function generateWithSeparator(
         $cus = '0000',
         $cus2 = '',
         $checkDigit = false,
         $separator = '-'
     ) {
         return self::addSeparator(
-            self::gen($cus, $cus2, $checkDigit),
+            self::generate($cus, $cus2, $checkDigit),
             $separator
         );
     }

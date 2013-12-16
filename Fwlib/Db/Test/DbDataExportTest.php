@@ -65,7 +65,7 @@ class DbDataExportTest extends AbstractDbRelateTest
             self::$db->write(
                 self::$tableUser,
                 array(
-                    'uuid'  => UuidBase16::gen(),
+                    'uuid'  => UuidBase16::generate(),
                 )
             );
         }

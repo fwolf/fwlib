@@ -17,7 +17,7 @@ class UuidBase36Test extends PHPunitTestCase
 {
     public function testAddCheckDigit()
     {
-        $y = UuidBase36::gen(null, null, true);
+        $y = UuidBase36::generate(null, null, true);
         $this->assertEquals($y, UuidBase36::addCheckDigit($y));
     }
 
@@ -25,13 +25,13 @@ class UuidBase36Test extends PHPunitTestCase
     public function testParse()
     {
         // Group
-        $ar = UuidBase36::parse(UuidBase36::gen());
+        $ar = UuidBase36::parse(UuidBase36::generate());
         $this->assertEquals('10', $ar['group']);
-        $ar = UuidBase36::parse(UuidBase36::gen('1'));
+        $ar = UuidBase36::parse(UuidBase36::generate('1'));
         $this->assertEquals('01', $ar['group']);
 
         // Custom
-        $ar = UuidBase36::parse(UuidBase36::gen('', '000'));
+        $ar = UuidBase36::parse(UuidBase36::generate('', '000'));
         $this->assertEquals('000', substr($ar['custom'], -3));
 
         // Parae data
@@ -60,7 +60,7 @@ class UuidBase36Test extends PHPunitTestCase
         $x = 'mvqwzsaypm00sa2t8f0i9ookx';
         $this->assertFalse(UuidBase36::verify($x, true));
 
-        $x = UuidBase36::gen(null, null, true);
+        $x = UuidBase36::generate(null, null, true);
         $this->assertTrue(UuidBase36::verify($x, true));
     }
 }

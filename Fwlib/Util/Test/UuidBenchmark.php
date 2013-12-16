@@ -21,13 +21,13 @@ foreach (array('UuidBase16', 'UuidBase36', 'UuidBase62') as $k => $v) {
     $v = str_pad($v, 10, ' ', STR_PAD_RIGHT);
 
     for ($i = 0; $i < $count; $i ++) {
-        $class::gen();
+        $class::generate();
     }
     $usedTime = $bm->mark("$v without check digit: average speed{$k}wt/s");
     $arSpeed["speed{$k}wt"] = round($count / $usedTime * 1000);
 
     for ($i = 0; $i < $count; $i ++) {
-        $class::gen('', '', true);
+        $class::generate('', '', true);
     }
     $usedTime = $bm->mark("$v with    check digit: average speed{$k}wo/s");
     $arSpeed["speed{$k}wo"] = round($count / $usedTime * 1000);
@@ -41,14 +41,14 @@ $rs = str_replace(array_keys($arSpeed), $arSpeed, $rs);
 echo $rs;
 
 
-Env::ecl('UuidBase16 without check digit: ' . UuidBase16::gen('10', null, false));
-Env::ecl('UuidBase16 with    check digit: ' . UuidBase16::gen('10', null, true));
+Env::ecl('UuidBase16 without check digit: ' . UuidBase16::generate('10', null, false));
+Env::ecl('UuidBase16 with    check digit: ' . UuidBase16::generate('10', null, true));
 
-Env::ecl('UuidBase16 without check digit: ' . UuidBase16::genWithSeparator('10', null, false));
-Env::ecl('UuidBase16 with    check digit: ' . UuidBase16::genWithSeparator('10', null, true));
+Env::ecl('UuidBase16 without check digit: ' . UuidBase16::generateWithSeparator('10', null, false));
+Env::ecl('UuidBase16 with    check digit: ' . UuidBase16::generateWithSeparator('10', null, true));
 
-Env::ecl('UuidBase36 without check digit: ' . UuidBase36::gen('10', null, false));
-Env::ecl('UuidBase36 with    check digit: ' . UuidBase36::gen('10', null, true));
+Env::ecl('UuidBase36 without check digit: ' . UuidBase36::generate('10', null, false));
+Env::ecl('UuidBase36 with    check digit: ' . UuidBase36::generate('10', null, true));
 
-Env::ecl('UuidBase62 without check digit: ' . UuidBase62::gen('10', null, false));
-Env::ecl('UuidBase62 with    check digit: ' . UuidBase62::gen('10', null, true));
+Env::ecl('UuidBase62 without check digit: ' . UuidBase62::generate('10', null, false));
+Env::ecl('UuidBase62 with    check digit: ' . UuidBase62::generate('10', null, true));

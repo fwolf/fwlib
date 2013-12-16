@@ -17,7 +17,7 @@ class UuidBase16Test extends PHPunitTestCase
 {
     public function testAddCheckDigit()
     {
-        $y = UuidBase16::genWithSeparator(null, null, true, '-');
+        $y = UuidBase16::generateWithSeparator(null, null, true, '-');
         $this->assertEquals($y, UuidBase16::addCheckDigit($y));
     }
 
@@ -26,13 +26,13 @@ class UuidBase16Test extends PHPunitTestCase
     {
         // Generate and parse data back
         // '0010' is from default value
-        $ar = UuidBase16::parse(UuidBase16::gen());
+        $ar = UuidBase16::parse(UuidBase16::generate());
         $this->assertEquals('0010', $ar['custom1']);
 
         // Custom field
-        $ar = UuidBase16::parse(UuidBase16::gen('1'));
+        $ar = UuidBase16::parse(UuidBase16::generate('1'));
         $this->assertEquals($ar['custom1'], '0001');
-        $ar = UuidBase16::parse(UuidBase16::gen('0001', '1312.101'));
+        $ar = UuidBase16::parse(UuidBase16::generate('0001', '1312.101'));
         $this->assertEquals($ar['custom2'], '1312.101');
 
         // Parae data
@@ -70,7 +70,7 @@ class UuidBase16Test extends PHPunitTestCase
         $x = '4822afd9-861b-0000-8302-650a25cda932';
         $this->assertFalse(UuidBase16::verify($x, true));
 
-        $x = UuidBase16::gen(null, null, true);
+        $x = UuidBase16::generate(null, null, true);
         $this->assertTrue(UuidBase16::verify($x, true));
     }
 }

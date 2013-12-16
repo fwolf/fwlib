@@ -291,7 +291,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         // Normal getByPk() tested with write()
 
         // Prepare data
-        $uuid = UuidBase16::gen();
+        $uuid = UuidBase16::generate();
         $ar = array(
             'uuid'  => $uuid,
             'title' => 'Title',
@@ -383,7 +383,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
      */
     public function testWrite()
     {
-        $uuid = UuidBase16::gen();
+        $uuid = UuidBase16::generate();
 
         // Auto INSERT
         $ar = array(

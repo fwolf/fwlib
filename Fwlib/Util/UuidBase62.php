@@ -102,8 +102,11 @@ class UuidBase62
      * @param   boolean $checkDigit
      * @return  string
      */
-    public static function gen($group = '10', $custom = '', $checkDigit = false)
-    {
+    public static function generate(
+        $group = '10',
+        $custom = '',
+        $checkDigit = false
+    ) {
         list($usec, $sec) = explode(' ', microtime());
 
         // Seconds from now(Nov 2013) will fill length 6

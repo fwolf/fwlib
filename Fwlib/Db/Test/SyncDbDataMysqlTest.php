@@ -131,7 +131,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         $data = array();
         for ($i = 0; $i < $this->totalRows; $i ++) {
             $data[] = array(
-                'uuid'  => UuidBase36::gen(),
+                'uuid'  => UuidBase36::generate(),
                 'title' => "Title - $i",
                 'age'   => $i + 20,
                 'credit'    => $i * 100,
