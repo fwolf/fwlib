@@ -5,7 +5,7 @@ use Fwlib\Algorithm\Iso7064;
 use Fwlib\Util\Ip;
 
 /**
- * UUID generator
+ * UUID generator using hex(0-9a-f)
  *
  * UUID format:
  *
@@ -31,7 +31,7 @@ use Fwlib\Util\Ip;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-05-08
  */
-class Uuid
+class UuidBase16
 {
     /**
      * Add check digit to an Uuid

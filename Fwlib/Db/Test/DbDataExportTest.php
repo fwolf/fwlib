@@ -7,7 +7,7 @@ use Fwlib\Db\DbDataExport;
 use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Test\ServiceContainerTest;
 use Fwlib\Util\FileSystem;
-use Fwlib\Util\Uuid;
+use Fwlib\Util\UuidBase16;
 
 /**
  * Test for Fwlib\Db\DbDataExport
@@ -65,7 +65,7 @@ class DbDataExportTest extends AbstractDbRelateTest
             self::$db->write(
                 self::$tableUser,
                 array(
-                    'uuid'  => Uuid::gen(),
+                    'uuid'  => UuidBase16::gen(),
                 )
             );
         }

@@ -4,7 +4,7 @@ namespace Fwlib\Bridge\Test;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Config\GlobalConfig;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Util\Uuid;
+use Fwlib\Util\UuidBase16;
 
 /**
  * Test for Fwlib\Bridge\Adodb
@@ -291,7 +291,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         // Normal getByPk() tested with write()
 
         // Prepare data
-        $uuid = Uuid::gen();
+        $uuid = UuidBase16::gen();
         $ar = array(
             'uuid'  => $uuid,
             'title' => 'Title',
@@ -383,7 +383,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
      */
     public function testWrite()
     {
-        $uuid = Uuid::gen();
+        $uuid = UuidBase16::gen();
 
         // Auto INSERT
         $ar = array(
