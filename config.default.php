@@ -3,16 +3,12 @@
  * Configure file
  *
  * Usage:
- *  1. Copy to a new file named 'config.php'
- *  2. Remove code outside of 'Config define area' (Optional)
- *  3. Change defines
- *  4. Remove defines no change needed (Suggested)
+ *  1. Create a new php file named 'config.php'
+ *  2. Write config in it, like assignment in 'Config define area'
+ *  3. Require 'config.default.php' in php bootstrap file
  *
- * For defines which need compute to get final result:
- *  1. Remove from 'config.php', use compute job in 'config.default.php'
- *  2. Do compute in 'config.php'
- *
- * DO NOT MODIFY 'config.default.php' DIRECTLY.
+ * This file contains default config, user config in 'config.php' will
+ * overwrite default config value.
  *
  * @package     Fwlib\Base
  * @copyright   Copyright 2013 Fwolf
@@ -23,18 +19,17 @@
 
 use Fwlib\Base\ClassLoader;
 use Fwlib\Config\GlobalConfig;
-use Fwlib\Util\ArrayUtil;
 
-// Init global config array
 if ('config.default.php' == basename(__FILE__)) {
-    // Record running start time, usefull for count total process time cost
-    // As of PHP 5.4.0, $_SERVER['REQUEST_TIME_FLOAT'] is build-in.
+    // Record running start time, usefull for count total process time cost,
+    // as of PHP 5.4.0, $_SERVER['REQUEST_TIME_FLOAT'] is build-in.
     if (0 > version_compare(PHP_VERSION, '5.4.0')) {
         list($msec, $sec) = explode(' ', microtime(false));
         $_SERVER['REQUEST_TIME_FLOAT'] = $sec . substr($msec, 1);
     }
 
 
+    // Init config data array
     $config = array();
 
 
@@ -43,40 +38,30 @@ if ('config.default.php' == basename(__FILE__)) {
         require __DIR__ . '/config.php';
     }
     $userConfig = $config;
-
-
-    // Load requirement lib autoload file
-    // Fwlib
-    if (!isset($config['lib.path.fwlib'])) {
-        $config['lib.path.fwlib'] = 'fwlib/';
-    }
-    require $config['lib.path.fwlib'] . 'autoload.php';
 }
 
 
 /***********************************************************
  * Config define area
  *
- * Use $userConfig to compute value if needed.
- *
  * In config.php, code outside this area can be removed.
  **********************************************************/
 
+/**
+ * For configure need to use in later compute, need check and try to load user
+ * config, see example below.
+ */
+$config['group.keyForCompute'] = isset($userConfig['group.keyForCompute'])
+    ? $userConfig['group.keyForCompute']
+    : 'default value';
 
-// Config to use in compute later NEED use user config if set
-$config['group.keyForCompute'] = ArrayUtil::getIdx(
-    $userConfig,
-    'group.keyForCompute',
-    'default value'
-);
-
-// External library path, local dir end with tailing '/'
-$config['lib.path.adodb'] = 'adodb/';
-$config['lib.path.fwlib'] = 'fwlib/';
-$config['lib.path.jquery'] = '/js/jquery.js';
-$config['lib.path.phpmailer'] = 'phpmailer/';
-$config['lib.path.phpunit'] = '/usr/share/php/';
-$config['lib.path.smarty'] = 'smarty/';
+/**
+ * Assignment need compute with other config value should define in this file
+ * rather than user config. But if the compute and assign job is done in user
+ * config, it should still leave a default assign in this file, as a fallback
+ * for user fogot to do so, or to make code more readable. These assigned
+ * value will be overwriten by user config at end by array_merge().
+ */
 
 
 /**
@@ -108,6 +93,19 @@ $config['dbserver.default.lang'] = $config['dbserver.mysql.lang'];
 
 
 /**
+ * External library path
+ *
+ * Dir path in local file system should end with tailing '/'.
+ */
+$config['lib.path.adodb'] = 'adodb/';
+$config['lib.path.fwlib'] = 'fwlib/';
+$config['lib.path.jquery'] = '/js/jquery.js';
+$config['lib.path.phpmailer'] = 'phpmailer/';
+$config['lib.path.phpunit'] = '/usr/share/php/';
+$config['lib.path.smarty'] = 'smarty/';
+
+
+/**
  * Memcached
  */
 $config['memcached.server'] = array(
@@ -131,20 +129,24 @@ $config['smarty.compileDir'] = '/tmp/';
  **********************************************************/
 
 
-// Merge user and default config
 if ('config.default.php' == basename(__FILE__)) {
+    // Overwrite default config with user config
     $config = array_merge($config, $userConfig);
 
-    // Deal with $config
-    // Or store with GlobalConfig class
+    // Include autoloader of Fwlib, need before other library
+    require $config['lib.path.fwlib'] . 'autoload.php';
+
+    // Deal with config, store in GlobalConfig instance
     GlobalConfig::getInstance()->load($config);
 
 
-    // Autoload register of external library
-    $classLoader = ClassLoader::getInstance();
+    // Register autoload of other external library, $classLoader is declared
+    // in autoload.php of Fwlib, can use below.
+
 
     // Adodb, which doesn't use PSR standard
-    // Use ADOFetchObj class for faster dummy new object
+    // Use ADOFetchObj class as dummy, new it will trigger include of
+    // adodb.inc.php, all needed function in it is useable.
     $classLoader->addPrefix(
         'ADOFetchObj',
         $config['lib.path.adodb'] . 'adodb.inc.php'
