@@ -27,6 +27,14 @@ use Fwlib\Util\ArrayUtil;
 
 // Init global config array
 if ('config.default.php' == basename(__FILE__)) {
+    // Record running start time, usefull for count total process time cost
+    // As of PHP 5.4.0, $_SERVER['REQUEST_TIME_FLOAT'] is build-in.
+    if (0 > version_compare(PHP_VERSION, '5.4.0')) {
+        list($msec, $sec) = explode(' ', microtime(false));
+        $_SERVER['REQUEST_TIME_FLOAT'] = $sec . substr($msec, 1);
+    }
+
+
     $config = array();
 
 
