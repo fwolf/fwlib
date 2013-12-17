@@ -37,10 +37,14 @@ abstract class AbstractSingleton
 
     /**
      * Prevent unserialize method
+     *
+     * Removed because this prevent mock for test.
      */
+    /*
     private function __wakeup()
     {
     }
+    */
 
 
     /**
