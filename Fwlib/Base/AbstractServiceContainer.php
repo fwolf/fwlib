@@ -31,8 +31,6 @@ use Fwlib\Base\AbstractSingleton;
  * Dependency Injection: create dependent object and pass to constructor. If
  * necessary, assign ServiceContainer instance here for later usage.
  *
- * @codeCoverageIgnore
- *
  * @package     Fwlib\Base
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -42,18 +40,28 @@ use Fwlib\Base\AbstractSingleton;
 abstract class AbstractServiceContainer extends AbstractSingleton
 {
     /**
-     * Array to store service
+     * Class name for call Class::getInstance()
      *
      * @var array
      */
-    protected $service = array();
+    protected $serviceClass = array();
+
+    /**
+     * Service instance
+     *
+     * @var array
+     */
+    protected $serviceInstance = array();
 
 
     /**
      * Get service by name
      *
      * When $forcenew is true, it will ignore exists service and create a new
-     * one-time use service object, which will not be stored in container.
+     * one-time use service object, which will not be stored in instance
+     * array.
+     *
+     * $forcenew doesn't affect child class of Fwlib\Base\AbstractSingleton.
      *
      * @param   string  $name
      * @param   boolean $forcenew
@@ -63,30 +71,89 @@ abstract class AbstractServiceContainer extends AbstractSingleton
     {
         if ($forcenew) {
             return $this->newService($name);
+
         } else {
-            if (!isset($this->service[$name])) {
-                $this->service[$name] = $this->newService($name);
+            if (!isset($this->serviceInstance[$name])) {
+                $this->serviceInstance[$name] = $this->newService($name);
             }
 
-            return $this->service[$name];
+            return $this->serviceInstance[$name];
         }
     }
 
 
     /**
-     * New service object by name
+     * New service instance by name
      *
      * @param   string  $name
      * @return  object
      */
     protected function newService($name)
     {
-        $method = 'new' . $name;
+        $method = 'new' . ucfirst($name);
 
         if (method_exists($this, $method)) {
             return $this->$method();
+
+        } elseif (isset($this->serviceClass[$name])) {
+            $className = $this->serviceClass[$name];
+            return $className::getInstance();
+
         } else {
-            throw new \Exception("Instance method for $name is not defined.");
+            throw new \Exception("Invalid service '$name'.");
         }
+    }
+
+
+    /**
+     * Register service class or instance
+     *
+     * @param   string  $name
+     * @param   string|object   $service
+     * @return  $this
+     */
+    public function register($name, $service)
+    {
+        if (is_string($service)) {
+            return $this->registerClass($name, $service);
+        } else {
+            return $this->registerInstance($name, $service);
+        }
+    }
+
+
+    /**
+     * Register service class
+     *
+     * For class implement Fwlib\Base\AbstractSingleton or similar, can be
+     * instanced simplely by find class name in serviceClass array and call
+     * its getInstance() method, avoid define of newServiceXxx() method.
+     *
+     * @param   string  $name
+     * @param   string  $className  Full qualified name without leading '\'
+     * @return  $this
+     */
+    public function registerClass($name, $className)
+    {
+        $this->serviceClass[$name] = $className;
+
+        return $this;
+    }
+
+
+    /**
+     * Register service instance
+     *
+     * Registered instance can directly use without newServiceXxx() method.
+     *
+     * @param   string  $name
+     * @param   object  $instance
+     * @return  $this
+     */
+    public function registerInstance($name, $instance)
+    {
+        $this->serviceInstance[$name] = $instance;
+
+        return $this;
     }
 }
