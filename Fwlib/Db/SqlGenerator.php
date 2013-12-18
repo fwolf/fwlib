@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Db;
 
-use Fwlib\Util\ArrayUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * SQL Generator
@@ -120,6 +120,8 @@ class SqlGenerator
      */
     public function genDelete($part = null)
     {
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
             $ar = &$part;
@@ -130,7 +132,7 @@ class SqlGenerator
 
         $sql = '';
         foreach ($ar as $v) {
-            $sql .= ArrayUtil::getIdx($this->sqlPart, strtoupper($v), '');
+            $sql .= $arrayUtil->getIdx($this->sqlPart, strtoupper($v), '');
         }
 
         return $sql;
@@ -145,6 +147,8 @@ class SqlGenerator
      */
     public function genInsert($part = array())
     {
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
             $ar = &$part;
@@ -155,7 +159,7 @@ class SqlGenerator
 
         $sql = '';
         foreach ($ar as $v) {
-            $sql .= ArrayUtil::getIdx($this->sqlPart, strtoupper($v), '');
+            $sql .= $arrayUtil->getIdx($this->sqlPart, strtoupper($v), '');
         }
 
         return $sql;
@@ -170,6 +174,8 @@ class SqlGenerator
      */
     public function genSelect($part = array())
     {
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
             $ar = &$part;
@@ -183,7 +189,7 @@ class SqlGenerator
 
         $sql = '';
         foreach ($ar as $v) {
-            $sql .= ArrayUtil::getIdx($this->sqlPart, strtoupper($v), '');
+            $sql .= $arrayUtil->getIdx($this->sqlPart, strtoupper($v), '');
         }
 
         return $sql;
@@ -351,6 +357,8 @@ class SqlGenerator
      */
     public function genUpdate($part = array())
     {
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
             $ar = &$part;
@@ -361,7 +369,7 @@ class SqlGenerator
 
         $sql = '';
         foreach ($ar as $v) {
-            $sql .= ArrayUtil::getIdx($this->sqlPart, strtoupper($v), '');
+            $sql .= $arrayUtil->getIdx($this->sqlPart, strtoupper($v), '');
         }
 
         return $sql;

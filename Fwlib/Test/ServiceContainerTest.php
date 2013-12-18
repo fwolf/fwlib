@@ -3,7 +3,6 @@ namespace Fwlib\Test;
 
 use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Bridge\Adodb;
-use Fwlib\Config\GlobalConfig;
 
 /**
  * Service Container for testcase
@@ -18,6 +17,18 @@ use Fwlib\Config\GlobalConfig;
  */
 class ServiceContainerTest extends AbstractServiceContainer
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @var array
+     */
+    protected $serviceClass = array(
+        'GlobalConfig'  => 'Fwlib\Config\GlobalConfig',
+        'Util'          => 'Fwlib\Util\UtilContainer',
+        'UtilContainer' => 'Fwlib\Util\UtilContainer',
+    );
+
+
     /**
      * New db instance and do connect
      *
@@ -84,16 +95,5 @@ class ServiceContainerTest extends AbstractServiceContainer
         $profile = $this->get('GlobalConfig')->get('dbserver.sybase');
 
         return $this->connectDb($profile);
-    }
-
-
-    /**
-     * Get GlobalConfig instance
-     *
-     * @return  Fwlib\Config\GlobalConfig
-     */
-    protected function newGlobalConfig()
-    {
-        return GlobalConfig::getInstance();
     }
 }

@@ -1,8 +1,8 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\ArrayUtil;
 use Fwlib\Util\StringUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Http util
@@ -133,9 +133,11 @@ class HttpUtil
      */
     public static function getBrowserType($agentStr = null, $default = 'gecko')
     {
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+
         // @codeCoverageIgnoreStart
         if (is_null($agentStr)) {
-            $agentStr = ArrayUtil::getIdx($_SERVER, 'HTTP_USER_AGENT');
+            $agentStr = $arrayUtil->getIdx($_SERVER, 'HTTP_USER_AGENT');
         }
         // @codeCoverageIgnoreEnd
 

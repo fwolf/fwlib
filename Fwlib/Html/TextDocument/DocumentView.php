@@ -2,11 +2,11 @@
 namespace Fwlib\Html\TextDocument;
 
 use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Util\ArrayUtil;
 use Fwlib\Util\FileSystem;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\StringUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Viewer of text document
@@ -316,7 +316,8 @@ class DocumentView extends AbstractAutoNewConfig
 
         $ext = FileSystem::getFileExt($filename);
 
-        return ArrayUtil::getIdx($ar, $ext, 'Unknown');
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        return $arrayUtil->getIdx($ar, $ext, 'Unknown');
     }
 
 
@@ -430,6 +431,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function sortFile($arFile)
     {
-        return ArrayUtil::sortByLevel2($arFile, 'name', 'ASC');
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        return $arrayUtil->sortByLevel2($arFile, 'name', 'ASC');
     }
 }

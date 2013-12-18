@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\ArrayUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * FileSystem util
@@ -242,7 +242,8 @@ class FileSystem
 
         // Sort result
         if (!empty($sortby)) {
-            ArrayUtil::sortByLevel2($arFiles, $sortby, $order);
+            $arrayUtil = UtilContainer::getInstance()->get('Array');
+            $arrayUtil->sortByLevel2($arFiles, $sortby, $order);
         }
 
         return $arFiles;

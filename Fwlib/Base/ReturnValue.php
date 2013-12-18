@@ -1,8 +1,8 @@
 <?php
 namespace Fwlib\Base;
 
-use Fwlib\Util\ArrayUtil;
 use Fwlib\Util\Json;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Return value object
@@ -177,10 +177,11 @@ class ReturnValue
             }
         }
 
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
         $this->info = array(
             'code'    => $ar['code'],
             'message' => $ar['message'],
-            'data'    => ArrayUtil::getIdx($ar, 'data', null),
+            'data'    => $arrayUtil->getIdx($ar, 'data', null),
         );
 
         return $this;

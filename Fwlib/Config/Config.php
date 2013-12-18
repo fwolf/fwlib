@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Config;
 
-use Fwlib\Util\ArrayUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Config class
@@ -41,7 +41,9 @@ class Config implements \ArrayAccess
     public function get($key, $default = null)
     {
         if (false === strpos($key, $this->separator)) {
-            return ArrayUtil::getIdx($this->config, $key, $default);
+            $arrayUtil = UtilContainer::getInstance()->get('Array');
+            return $arrayUtil->getIdx($this->config, $key, $default);
+
         } else {
             // Recoginize separator
             $ar = explode($this->separator, $key);

@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
+use Fwlib\Base\AbstractSingleton;
 
 /**
  * Array util
@@ -11,7 +12,7 @@ namespace Fwlib\Util;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2010-01-25
  */
-class ArrayUtil
+class ArrayUtil extends AbstractSingleton
 {
     /**
      * Return default if array key is not set or empty
@@ -22,7 +23,7 @@ class ArrayUtil
      * @param   mixed   $default
      * @return  mixed
      */
-    public static function getEdx($ar, $key, $default = null)
+    public function getEdx($ar, $key, $default = null)
     {
         if (isset($ar[$key]) && !empty($ar[$key])) {
             return $ar[$key];
@@ -40,7 +41,7 @@ class ArrayUtil
      * @param   mixed   $default
      * @return  mixed
      */
-    public static function getIdx($ar, $key, $default = null)
+    public function getIdx($ar, $key, $default = null)
     {
         if (isset($ar[$key])) {
             return $ar[$key];
@@ -59,7 +60,7 @@ class ArrayUtil
      * @param   mixed   $key
      * @param   mixed   $val        Value to increase of set
      */
-    public static function increaseByKey(&$arSrce, $key, $val = 1)
+    public function increaseByKey(&$arSrce, $key, $val = 1)
     {
         if (isset($arSrce[$key])) {
             // Force type of result value by param $val
@@ -94,7 +95,7 @@ class ArrayUtil
      *        -2   -1  0  1   2         Insert position by $mode
      * @return  array
      */
-    public static function insert(&$srce, $idx, $ins, $mode = 1)
+    public function insert(&$srce, $idx, $ins, $mode = 1)
     {
         if (empty($ins)) {
             return $srce;
@@ -170,7 +171,7 @@ class ArrayUtil
      * @param   string  $delimiter  Default ','
      * @return  array
      */
-    public static function searchByWildcard($arSrce, $rules, $delimiter = ',')
+    public function searchByWildcard($arSrce, $rules, $delimiter = ',')
     {
         $arResult = array();
 
@@ -238,7 +239,7 @@ class ArrayUtil
      * @param   mixed   $joker      Use when val of key isn't set.
      * @return  array
      */
-    public static function sortByLevel2(
+    public function sortByLevel2(
         &$arSrce,
         $key,
         $order = true,

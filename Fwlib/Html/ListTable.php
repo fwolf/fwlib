@@ -2,8 +2,8 @@
 namespace Fwlib\Html;
 
 use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Util\ArrayUtil;
 use Fwlib\Util\HttpUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Html generator: list table
@@ -392,6 +392,8 @@ class ListTable extends AbstractAutoNewConfig
      */
     protected function readRequest($forcenew = false)
     {
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+
         // Avoid duplicate
         if (!empty($this->url['base']) && !$forcenew) {
             return;
@@ -413,7 +415,7 @@ class ListTable extends AbstractAutoNewConfig
 
         $this->url['base'] = HttpUtil::getSelfUrl(false);
 
-        $page = ArrayUtil::getIdx($this->param, $this->config['paramPage'], 1);
+        $page = $arrayUtil->getIdx($this->param, $this->config['paramPage'], 1);
         $this->setPage($page);
 
 
@@ -422,7 +424,7 @@ class ListTable extends AbstractAutoNewConfig
         $dir = '';
         if (isset($this->param[$this->config['paramOrderby']])) {
             $orderby = $this->param[$this->config['paramOrderby']];
-            $dir = ArrayUtil::getIdx(
+            $dir = $arrayUtil->getIdx(
                 $this->param,
                 $this->config['paramOrderby'] . 'Dir',
                 ''
@@ -739,8 +741,10 @@ class ListTable extends AbstractAutoNewConfig
      */
     protected function setPage($page = null)
     {
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
+
         if (is_null($page)) {
-            $page = ArrayUtil::getIdx(
+            $page = $arrayUtil->getIdx(
                 $this->param,
                 $this->config['paramPage'],
                 1

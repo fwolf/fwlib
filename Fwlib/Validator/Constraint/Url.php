@@ -3,8 +3,8 @@ namespace Fwlib\Validator\Constraint;
 
 use Fwlib\Base\ReturnValue;
 use Fwlib\Validator\AbstractConstraint;
-use Fwlib\Util\ArrayUtil;
 use Fwlib\Util\HttpUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Constraint Url
@@ -212,7 +212,8 @@ class Url extends AbstractConstraint
                     continue;
                 }
 
-                $postData[$v] = ArrayUtil::getIdx($value, $v, null);
+                $arrayUtil = UtilContainer::getInstance()->get('Array');
+                $postData[$v] = $arrayUtil->getIdx($value, $v, null);
             }
         }
 

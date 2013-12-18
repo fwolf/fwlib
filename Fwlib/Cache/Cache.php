@@ -4,8 +4,8 @@ namespace Fwlib\Cache;
 use Fwlib\Base\AbstractAutoNewConfig;
 use Fwlib\Cache\CacheFile;
 use Fwlib\Cache\CacheMemcached;
-use Fwlib\Util\ArrayUtil;
 use Fwlib\Util\Json;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Base class for k-v cache system
@@ -213,8 +213,9 @@ class Cache extends AbstractAutoNewConfig
         $key = $this->key($key);
 
         // Ignored lifetime
+        $arrayUtil = UtilContainer::getInstance()->get('Array');
         $val = $this->decodeVal(
-            ArrayUtil::getIdx($this->cacheData, $key, null),
+            $arrayUtil->getIdx($this->cacheData, $key, null),
             0
         );
 
