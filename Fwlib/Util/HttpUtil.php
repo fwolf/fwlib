@@ -1,8 +1,8 @@
 <?php
 namespace Fwlib\Util;
 
+use Fwlib\Util\AbstractUtilAware;
 use Fwlib\Util\StringUtil;
-use Fwlib\Util\UtilContainer;
 
 /**
  * Http util
@@ -15,7 +15,7 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2006-07-03
  */
-class HttpUtil
+class HttpUtil extends AbstractUtilAware
 {
     /**
      * Download content as a file
@@ -133,6 +133,8 @@ class HttpUtil
      */
     public static function getBrowserType($agentStr = null, $default = 'gecko')
     {
+        // :TODO:
+        //$arrayUtil = $this->utilContainer->get('Array');
         $arrayUtil = UtilContainer::getInstance()->get('Array');
 
         // @codeCoverageIgnoreStart

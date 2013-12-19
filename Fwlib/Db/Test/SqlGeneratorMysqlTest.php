@@ -4,6 +4,7 @@ namespace Fwlib\Db\Test;
 use Fwlib\Db\SqlGenerator;
 use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Util\Json;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Db\SqlGenerator
@@ -46,6 +47,8 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 
     public function testEmpty()
     {
+        $this->sg->setUtilContainer(UtilContainer::getInstance());
+
         // Error config will got empty result
         $this->sg->clear();
         $ar = array('foo' => 'bar');

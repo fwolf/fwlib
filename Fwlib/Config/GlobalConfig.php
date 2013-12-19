@@ -30,10 +30,13 @@ class GlobalConfig extends Config
 
     /**
      * Prevent 'new' operator
+     * Disabled because conflict with parent class.
      */
+    /*
     protected function __construct()
     {
     }
+    */
 
 
     /**

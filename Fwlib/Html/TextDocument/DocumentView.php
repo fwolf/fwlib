@@ -6,7 +6,6 @@ use Fwlib\Util\FileSystem;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\StringUtil;
-use Fwlib\Util\UtilContainer;
 
 /**
  * Viewer of text document
@@ -89,6 +88,8 @@ class DocumentView extends AbstractAutoNewConfig
         unset($this->markdown);
         unset($this->restructuredtext);
         unset($this->unknownMarkup);
+
+        $this->setUtilContainer();
 
         parent::__construct($config);
     }
@@ -316,7 +317,7 @@ class DocumentView extends AbstractAutoNewConfig
 
         $ext = FileSystem::getFileExt($filename);
 
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
         return $arrayUtil->getIdx($ar, $ext, 'Unknown');
     }
 
@@ -431,7 +432,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function sortFile($arFile)
     {
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
         return $arrayUtil->sortByLevel2($arFile, 'name', 'ASC');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Db;
 
+use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -35,7 +36,7 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2003-08-25
  */
-class SqlGenerator
+class SqlGenerator implements UtilAwareInterface
 {
     /**
      * Db connection
@@ -58,6 +59,11 @@ class SqlGenerator
      */
     protected $sqlPart = array();
 
+    /**
+     * @var UtilContainer
+     */
+    protected $utilContainer = null;
+
 
     /**
      * Constructor
@@ -69,6 +75,8 @@ class SqlGenerator
         if (!empty($db)) {
             $this->db = &$db;
         }
+
+        $this->setUtilContainer();
     }
 
 
@@ -120,7 +128,7 @@ class SqlGenerator
      */
     public function genDelete($part = null)
     {
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -147,7 +155,7 @@ class SqlGenerator
      */
     public function genInsert($part = array())
     {
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -174,7 +182,7 @@ class SqlGenerator
      */
     public function genSelect($part = array())
     {
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -357,7 +365,7 @@ class SqlGenerator
      */
     public function genUpdate($part = array())
     {
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -762,5 +770,23 @@ class SqlGenerator
             . $this->genSqlArray($param, ') AND (') . ')';
 
         return $this->sqlPart['WHERE'];
+    }
+
+
+    /**
+     * Setter of UtilContainer
+     *
+     * @param   UtilContainer   $utilContainer
+     * @return  ReturnValue
+     */
+    public function setUtilContainer(UtilContainer $utilContainer = null)
+    {
+        if (is_null($utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        } else {
+            $this->utilContainer = $utilContainer;
+        }
+
+        return $this;
     }
 }

@@ -2,7 +2,7 @@
 require __DIR__ . '/../../../config.default.php';
 
 use Fwlib\Bridge\Smarty;
-use Fwlib\Config\ConfigGlobal;
+use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\ListTable;
 use Fwlib\Test\AbstractDbRelateTest;    // Use $tableUser
 use Fwlib\Test\Benchmark;
@@ -18,10 +18,11 @@ $bm->start('ListTable Benchmark');
 /***************************************
  * Prepare ListTable instance
  **************************************/
+$globalConfig = GlobalConfig::getInstance();
 $tpl = new Smarty;
-$tpl->compile_dir = ConfigGlobal::get('smarty.compileDir');
+$tpl->compile_dir = $globalConfig->get('smarty.compileDir');
 $tpl->template_dir = __DIR__ . '/../';
-$tpl->cache_dir = ConfigGlobal::get('smarty.cacheDir');
+$tpl->cache_dir = $globalConfig->get('smarty.cacheDir');
 
 $config = array(
     'pageSize'  => 3,
@@ -256,7 +257,7 @@ $bm->mark('Cleanup, test table dropped');
 
 
   <script type="text/javascript"
-    src="<?php echo ConfigGlobal::get('lib.path.jquery'); ?>">
+    src="<?php echo $globalConfig->get('lib.path.jquery'); ?>">
   </script>
 
 

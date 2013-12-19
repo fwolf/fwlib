@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Config;
 
+use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -14,19 +15,35 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-20
  */
-class Config implements \ArrayAccess
+class Config implements \ArrayAccess, UtilAwareInterface
 {
     /**
      * Config data array
+     *
      * @var array
      */
     public $config = array();
 
     /**
      * Separator for config key
+     *
      * @var string
      */
     public $separator = '.';
+
+    /**
+     * @var UtilContainer
+     */
+    protected $utilContainer = null;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->setUtilContainer();
+    }
 
 
     /**
@@ -41,7 +58,7 @@ class Config implements \ArrayAccess
     public function get($key, $default = null)
     {
         if (false === strpos($key, $this->separator)) {
-            $arrayUtil = UtilContainer::getInstance()->get('Array');
+            $arrayUtil = $this->utilContainer->get('Array');
             return $arrayUtil->getIdx($this->config, $key, $default);
 
         } else {
@@ -100,13 +117,15 @@ class Config implements \ArrayAccess
      * Reset all config and set new
      *
      * @param   array   $configData
-     * @return  $this
+     * @return  Config
      */
     public function load($configData)
     {
         $this->config = array();
 
-        $this->set($configData);
+        if (!is_null($configData)) {
+            $this->set($configData);
+        }
 
         return $this;
     }
@@ -209,6 +228,24 @@ class Config implements \ArrayAccess
 
             // At last level, set the value
             $c[$ar[$j]] = $val;
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of UtilContainer instance
+     *
+     * @param   UtilContainer   $utilContainer
+     * @return  AbstractAutoNewInstance
+     */
+    public function setUtilContainer(UtilContainer $utilContainer = null)
+    {
+        if (is_null($utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        } else {
+            $this->utilContainer = $utilContainer;
         }
 
         return $this;

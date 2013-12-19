@@ -3,7 +3,6 @@ namespace Fwlib\Html;
 
 use Fwlib\Base\AbstractAutoNewConfig;
 use Fwlib\Util\HttpUtil;
-use Fwlib\Util\UtilContainer;
 
 /**
  * Html generator: list table
@@ -148,6 +147,8 @@ class ListTable extends AbstractAutoNewConfig
 
         // Config will effect setData, so set it first.
         $this->setConfig($config);
+
+        $this->setUtilContainer();
 
         $this->tpl->assignByRef("{$this->tplVarPrefix}Config", $this->config);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Info", $this->info);
@@ -392,7 +393,7 @@ class ListTable extends AbstractAutoNewConfig
      */
     protected function readRequest($forcenew = false)
     {
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
 
         // Avoid duplicate
         if (!empty($this->url['base']) && !$forcenew) {
@@ -741,7 +742,7 @@ class ListTable extends AbstractAutoNewConfig
      */
     protected function setPage($page = null)
     {
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
 
         if (is_null($page)) {
             $page = $arrayUtil->getIdx(

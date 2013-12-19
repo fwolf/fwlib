@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * FileSystem util
@@ -12,7 +12,7 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2006-10-07
  */
-class FileSystem
+class FileSystem extends AbstractUtilAware
 {
     /**
      * Delete a dir or file recursive
@@ -242,6 +242,8 @@ class FileSystem
 
         // Sort result
         if (!empty($sortby)) {
+            // :TODO: Change back after change FileSystem to non-static
+            //$arrayUtil = $this->utilContainer->get('Array');
             $arrayUtil = UtilContainer::getInstance()->get('Array');
             $arrayUtil->sortByLevel2($arFiles, $sortby, $order);
         }

@@ -64,11 +64,24 @@ class Cache extends AbstractAutoNewConfig
 
 
     /**
+     * {@inheritdoc}
+     *
+     * @param   array   $config
+     */
+    public function __construct($config = array())
+    {
+        parent::__construct($config);
+
+        $this->setUtilContainer();
+    }
+
+
+    /**
      * Factory create method
      *
      * @param   string  $type           Cache type
      * @param   array   $config
-     * @return  object
+     * @return  Cache
      */
     public static function create($type = '', $config = array())
     {
@@ -213,7 +226,7 @@ class Cache extends AbstractAutoNewConfig
         $key = $this->key($key);
 
         // Ignored lifetime
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
         $val = $this->decodeVal(
             $arrayUtil->getIdx($this->cacheData, $key, null),
             0

@@ -95,9 +95,17 @@ abstract class AbstractServiceContainer extends AbstractSingleton
         if (method_exists($this, $method)) {
             return $this->$method();
 
+
         } elseif (isset($this->serviceClass[$name])) {
             $className = $this->serviceClass[$name];
-            return $className::getInstance();
+
+            // Singleton or similar class's instantiate diffs
+            if (method_exists($className, 'getInstance')) {
+                return $className::getInstance();
+            } else {
+                return new $className;
+            }
+
 
         } else {
             throw new \Exception("Invalid service '$name'.");

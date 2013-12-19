@@ -2,7 +2,7 @@
 namespace Fwlib\Base;
 
 use Fwlib\Util\Json;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * Return value object
@@ -13,7 +13,7 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-05-03
  */
-class ReturnValue
+class ReturnValue extends AbstractUtilAware
 {
 
     /**
@@ -45,6 +45,8 @@ class ReturnValue
      */
     public function __construct($code = 0, $message = '', $data = null)
     {
+        $this->setUtilContainer();
+
         if (is_int($code)) {
             $this->info = array(
                 'code'    => $code,
@@ -165,7 +167,7 @@ class ReturnValue
      * Input json string MUST include code and message, data can be optional.
      *
      * @param   string  $json
-     * @return  $this
+     * @return  ReturnValue
      */
     public function loadJson($json)
     {
@@ -177,7 +179,7 @@ class ReturnValue
             }
         }
 
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
         $this->info = array(
             'code'    => $ar['code'],
             'message' => $ar['message'],

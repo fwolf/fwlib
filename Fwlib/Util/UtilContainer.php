@@ -23,4 +23,24 @@ class UtilContainer extends AbstractServiceContainer
         'Array'     => 'Fwlib\Util\ArrayUtil',
         'ArrayUtil' => 'Fwlib\Util\ArrayUtil',
     );
+
+
+    /**
+     * {@inheritdoc}
+     *
+     * Inject self to Util instance.
+     *
+     * @param   string  $name
+     * @return  AbstractUtil
+     */
+    protected function newService($name)
+    {
+        $service = parent::newService($name);
+
+        if (method_exists($service, 'setUtilContainer')) {
+            $service->setUtilContainer($this);
+        }
+
+        return $service;
+    }
 }

@@ -1,6 +1,9 @@
 <?php
 namespace Fwlib\Base;
 
+use Fwlib\Base\AbstractServiceContainer;
+use Fwlib\Util\UtilAwareInterface;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Auto new property instance using magic function __get
@@ -15,14 +18,19 @@ namespace Fwlib\Base;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22
  */
-abstract class AbstractAutoNewInstance
+abstract class AbstractAutoNewInstance implements UtilAwareInterface
 {
     /**
      * ServiceContainer to new instance
      *
-     * @var object
+     * @var AbstractServiceContainer
      */
     public $serviceContainer = null;
+
+    /**
+     * @var UtilContainer
+     */
+    protected $utilContainer = null;
 
 
     /**
@@ -100,7 +108,7 @@ abstract class AbstractAutoNewInstance
      *
      * @param   mixed   $instance
      * @param   string  $className  Empty to auto-detect
-     * @return  $this
+     * @return  AbstractAutoNewInstance
      */
     public function setInstance($instance, $className = null)
     {
@@ -118,12 +126,33 @@ abstract class AbstractAutoNewInstance
 
 
     /**
-     * Set ServiceContainer instance
+     * Setter of ServiceContainer instance
      *
-     * @param   object  $serviceContainer
+     * @param   AbstractServiceContainer    $serviceContainer
+     * @return  AbstractAutoNewInstance
      */
     public function setServiceContainer($serviceContainer)
     {
         $this->serviceContainer = $serviceContainer;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of UtilContainer instance
+     *
+     * @param   UtilContainer   $utilContainer
+     * @return  AbstractAutoNewInstance
+     */
+    public function setUtilContainer(UtilContainer $utilContainer = null)
+    {
+        if (is_null($utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        } else {
+            $this->utilContainer = $utilContainer;
+        }
+
+        return $this;
     }
 }

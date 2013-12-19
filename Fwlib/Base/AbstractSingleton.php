@@ -7,6 +7,10 @@ namespace Fwlib\Base;
  *
  * Should change to trait after PHP 5.4.0.
  *
+ * Use only when class REALLY NEED to be singleton, that is say, if class is
+ * not singleton, may cause error or waste mass resource. Follow this
+ * principle to reduce class inheritance hierarchies.
+ *
  * @link http://www.phptherightway.com/pages/Design-Patterns.html
  *
  * @codeCoverageIgnore

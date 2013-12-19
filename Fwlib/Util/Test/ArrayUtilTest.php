@@ -2,6 +2,7 @@
 namespace Fwlib\Util\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
+use Fwlib\Util\ArrayUtil;
 
 /**
  * Test for Fwlib\Util\ArrayUtil
@@ -14,85 +15,73 @@ use Fwlib\Bridge\PHPUnitTestCase;
  */
 class ArrayUtilTest extends PHPunitTestCase
 {
-    protected function buildMock()
-    {
-        $arrayUtil = $this->getMockBuilder(
-            'Fwlib\Util\ArrayUtil'
-        )
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
+    protected $arrayUtil;
 
-        return $arrayUtil;
+
+    public function __construct()
+    {
+        $this->arrayUtil = new ArrayUtil;
     }
 
 
     public function testGetEdx()
     {
-        $arrayUtil = $this->buildMock();
-
         $ar = array('foo' => '', 'foo1' => 42);
 
-        $this->assertEquals('', $arrayUtil->getIdx($ar, 'foo'));
-        $this->assertEquals(null, $arrayUtil->getEdx($ar, 'foo'));
+        $this->assertEquals('', $this->arrayUtil->getIdx($ar, 'foo'));
+        $this->assertEquals(null, $this->arrayUtil->getEdx($ar, 'foo'));
 
         // With default value
-        $this->assertEquals('bar', $arrayUtil->getEdx($ar, 'foo', 'bar'));
-        $this->assertEquals(42, $arrayUtil->getEdx($ar, 'foo1', 'bar'));
+        $this->assertEquals('bar', $this->arrayUtil->getEdx($ar, 'foo', 'bar'));
+        $this->assertEquals(42, $this->arrayUtil->getEdx($ar, 'foo1', 'bar'));
     }
 
 
     public function testGetIdx()
     {
-        $arrayUtil = $this->buildMock();
-
         $ar = array('foo' => 'bar');
 
-        $this->assertEquals('bar', $arrayUtil->getIdx($ar, 'foo'));
-        $this->assertEquals(null, $arrayUtil->getIdx($ar, 'foo1'));
+        $this->assertEquals('bar', $this->arrayUtil->getIdx($ar, 'foo'));
+        $this->assertEquals(null, $this->arrayUtil->getIdx($ar, 'foo1'));
 
         // With default value
-        $this->assertEquals('bar', $arrayUtil->getIdx($ar, 'foo1', 'bar'));
+        $this->assertEquals('bar', $this->arrayUtil->getIdx($ar, 'foo1', 'bar'));
     }
 
 
     public function testIncreaseByKey()
     {
-        $arrayUtil = $this->buildMock();
-
         $ar = array();
-        $arrayUtil->increaseByKey($ar, 'a', 3);
-        $arrayUtil->increaseByKey($ar, 'a', 4);
+        $this->arrayUtil->increaseByKey($ar, 'a', 3);
+        $this->arrayUtil->increaseByKey($ar, 'a', 4);
         $this->assertEquals($ar['a'], 7);
-        $arrayUtil->increaseByKey($ar, 'a');
+        $this->arrayUtil->increaseByKey($ar, 'a');
         $this->assertEquals($ar['a'], 8);
 
-        $arrayUtil->increaseByKey($ar, 'b', 3);
-        $arrayUtil->increaseByKey($ar, 'b', '4');
+        $this->arrayUtil->increaseByKey($ar, 'b', 3);
+        $this->arrayUtil->increaseByKey($ar, 'b', '4');
         $this->assertEquals($ar['b'], '34');
 
-        $arrayUtil->increaseByKey($ar, 42, 2);
+        $this->arrayUtil->increaseByKey($ar, 42, 2);
         $this->assertEquals($ar[42], 2);
-        $arrayUtil->increaseByKey($ar, 42, 2);
+        $this->arrayUtil->increaseByKey($ar, 42, 2);
         $this->assertEquals($ar[42], 4);
     }
 
 
     public function testInsert()
     {
-        $arrayUtil = $this->buildMock();
-
         $ar_srce = array('a', 'b', 'c');
         $x = $ar_srce;
 
         // Empty input
         $this->assertEqualArray(
             $ar_srce,
-            $arrayUtil->insert($x, 'foo', array())
+            $this->arrayUtil->insert($x, 'foo', array())
         );
 
         // Pos not exists, number indexed
-        $x = $arrayUtil->insert($x, 'd', array('d'));
+        $x = $this->arrayUtil->insert($x, 'd', array('d'));
         $this->assertEqualArray($x, array('a', 'b', 'c', 'd'));
 
         // Pos not exists, assoc indexed
@@ -108,7 +97,7 @@ class ArrayUtilTest extends PHPunitTestCase
             'c' => 3,
             0 => 'd',
         );
-        $x = $arrayUtil->insert($x, 'd', array('d'));
+        $x = $this->arrayUtil->insert($x, 'd', array('d'));
         $this->assertEqualArray($x, $y);
 
         // Assoc indexed, normal
@@ -134,7 +123,7 @@ class ArrayUtilTest extends PHPunitTestCase
             'd' => 4,
             'e' => 5,
         );
-        $arrayUtil->insert($x, 'c', $ar_ins, -2);
+        $this->arrayUtil->insert($x, 'c', $ar_ins, -2);
         $this->assertEqualArray($x, $y);
 
         // Insert after a key
@@ -148,7 +137,7 @@ class ArrayUtilTest extends PHPunitTestCase
             'ins2'  => 'ins2',
             'e' => 5,
         );
-        $arrayUtil->insert($x, 'c', $ar_ins, 2);
+        $this->arrayUtil->insert($x, 'c', $ar_ins, 2);
         $this->assertEqualArray($x, $y);
 
         // Replace
@@ -161,7 +150,7 @@ class ArrayUtilTest extends PHPunitTestCase
             'd' => 4,
             'e' => 5,
         );
-        $arrayUtil->insert($x, 'a', $ar_ins, 0);
+        $this->arrayUtil->insert($x, 'a', $ar_ins, 0);
         $this->assertEqualArray($x, $y);
 
         // Replace & not exist = append
@@ -175,7 +164,7 @@ class ArrayUtilTest extends PHPunitTestCase
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
         );
-        $arrayUtil->insert($x, 'f', $ar_ins, 0);
+        $this->arrayUtil->insert($x, 'f', $ar_ins, 0);
         $this->assertEqualArray($x, $y);
 
         // Insert far before
@@ -189,7 +178,7 @@ class ArrayUtilTest extends PHPunitTestCase
             'd' => 4,
             'e' => 5,
         );
-        $arrayUtil->insert($x, 'a', $ar_ins, -10);
+        $this->arrayUtil->insert($x, 'a', $ar_ins, -10);
         $this->assertEqualArray($x, $y);
 
         // Insert far after
@@ -203,22 +192,20 @@ class ArrayUtilTest extends PHPunitTestCase
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
         );
-        $arrayUtil->insert($x, 'e', $ar_ins, 10);
+        $this->arrayUtil->insert($x, 'e', $ar_ins, 10);
         $this->assertEqualArray($x, $y);
     }
 
 
     public function testSearchByWildcard()
     {
-        $arrayUtil = $this->buildMock();
-
         // Empty check
-        $this->assertEquals(array(), $arrayUtil->searchByWildcard(null, null));
+        $this->assertEquals(array(), $this->arrayUtil->searchByWildcard(null, null));
 
         $x = array('foo' => 'bar');
-        $y = $arrayUtil->searchByWildcard($x, null);
+        $y = $this->arrayUtil->searchByWildcard($x, null);
         $this->assertEqualArray($x, $y);
-        $y = $arrayUtil->searchByWildcard($x, '|', '|');
+        $y = $this->arrayUtil->searchByWildcard($x, '|', '|');
         $this->assertEqualArray($x, $y);
 
 
@@ -228,15 +215,13 @@ class ArrayUtilTest extends PHPunitTestCase
             'b' => 'abc',
             'c' => 'adc',
         );
-        $ar = $arrayUtil->searchByWildcard($arSrce, $rule);
+        $ar = $this->arrayUtil->searchByWildcard($arSrce, $rule);
         $this->assertEquals($ar, array('c' => 'adc'));
     }
 
 
     public function testSortByLevel2()
     {
-        $arrayUtil = $this->buildMock();
-
         $x = array(
             'a' => array('col' => 20),
             'b' => array('col' => 30),
@@ -249,7 +234,7 @@ class ArrayUtilTest extends PHPunitTestCase
         );
 
         $ar = $x;
-        $arrayUtil->sortByLevel2($ar, 'col', 'ASC');
+        $this->arrayUtil->sortByLevel2($ar, 'col', 'ASC');
         $this->assertEqualArray($ar, $y);
 
         unset($x['c']['col']);
@@ -259,7 +244,7 @@ class ArrayUtilTest extends PHPunitTestCase
             'a' => array('col' => 20),
         );
         $ar = $x;
-        $arrayUtil->sortByLevel2($ar, 'col', false, 25);
+        $this->arrayUtil->sortByLevel2($ar, 'col', false, 25);
         $this->assertEqualArray($ar, $y);
 
 
@@ -291,7 +276,7 @@ class ArrayUtilTest extends PHPunitTestCase
 
         for ($i = 0; $i < $j; $i ++) {
             $ar = $x;
-            $arrayUtil->sortByLevel2($ar, 'volume', 'DESC');
+            $this->arrayUtil->sortByLevel2($ar, 'volume', 'DESC');
         }
         $t2 = microtime(true);
         echo 'sortByLevel2()    cost ' . ($t2 - $t1) . ' seconds.' . "\n";

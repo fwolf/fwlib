@@ -3,6 +3,7 @@ namespace Fwlib\Config\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Config\Config;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Config\Config
@@ -15,18 +16,13 @@ use Fwlib\Config\Config;
  */
 class ConfigTest extends PHPunitTestCase
 {
-    private $config = null;
     public static $output = '';
-
-
-    public function __construct()
-    {
-        $this->config = new Config();
-    }
 
 
     public function testLimitServerId()
     {
+        $config = new Config;
+
         // Using phpunit/test_helpers
         // @link https://github.com/php-test-helpers/php-test-helpers
         // @link http://thedeveloperworldisyours.com/php/phpunit-tips/
@@ -41,27 +37,27 @@ class ConfigTest extends PHPunitTestCase
         );
 
 
-        $serverIdBackup = $this->config->get('server.id');
-        unset($this->config->config['server']['id']);
+        $serverIdBackup = $config->get('server.id');
+        unset($config->config['server']['id']);
 
 
         // Test exit with msg
-        $this->config->limitServerId(1);
+        $config->limitServerId(1);
         $this->assertEquals(
             self::$output,
             'Server id not set.'
         );
 
-        $this->config->set('server.id', 2);
-        $this->assertEquals(true, $this->config->limitServerId(2));
+        $config->set('server.id', 2);
+        $this->assertEquals(true, $config->limitServerId(2));
 
-        $this->config->limitServerId(1);
+        $config->limitServerId(1);
         $this->assertEquals(
             self::$output,
             'This program can only run on server 1.'
         );
 
-        $this->config->limitServerId(array(1, 3));
+        $config->limitServerId(array(1, 3));
         $this->assertEquals(
             self::$output,
             'This program can only run on these servers: 1, 3.'
@@ -74,36 +70,39 @@ class ConfigTest extends PHPunitTestCase
         // Fail, but not exit
         $this->assertEquals(
             false,
-            $this->config->limitServerId(array(1, 3), false)
+            $config->limitServerId(array(1, 3), false)
         );
 
 
-        $this->config->set('server.id', $serverIdBackup);
+        $config->set('server.id', $serverIdBackup);
     }
 
 
     public function testSetGet()
     {
+        $config = new Config;
+        $config->setUtilContainer(UtilContainer::getInstance());
+
         // Single value
-        $this->config->set('foo', 'bar');
-        $this->assertEquals($this->config->get('foo'), 'bar');
-        $this->assertFalse(isset($this->config['foo2']));
-        $this->config['foo2'] = 'bar2';
-        $this->assertEquals('bar2', $this->config['foo2']);
-        unset($this->config['foo2']);
-        $this->assertFalse(isset($this->config['foo2']));
+        $config->set('foo', 'bar');
+        $this->assertEquals($config->get('foo'), 'bar');
+        $this->assertFalse(isset($config['foo2']));
+        $config['foo2'] = 'bar2';
+        $this->assertEquals('bar2', $config['foo2']);
+        unset($config['foo2']);
+        $this->assertFalse(isset($config['foo2']));
 
         // Value with separator turns to array
-        $this->config->set('foo1.bar', 42);
-        $this->assertEquals($this->config->get('foo1'), array('bar' => 42));
-        $this->config['foo3.bar'] = 'bar3';
-        $this->assertEquals('bar3', $this->config['foo3.bar']);
+        $config->set('foo1.bar', 42);
+        $this->assertEquals($config->get('foo1'), array('bar' => 42));
+        $config['foo3.bar'] = 'bar3';
+        $this->assertEquals('bar3', $config['foo3.bar']);
 
         // Value with empty middle level
-        $this->config->set('a.b.c', 42);
-        $this->assertEquals($this->config->get('a.b.c', 43), 42);
+        $config->set('a.b.c', 42);
+        $this->assertEquals($config->get('a.b.c', 43), 42);
         $this->assertEquals(
-            $this->config->get('a'),
+            $config->get('a'),
             array(
                 'b' => array(
                     'c' => 42,
@@ -112,18 +111,18 @@ class ConfigTest extends PHPunitTestCase
         );
 
         // Default value
-        $this->assertEquals(42, $this->config->get('notExists.bar', 42));
+        $this->assertEquals(42, $config->get('notExists.bar', 42));
 
 
         // Set array data
-        $this->config->config = null;
         $ar = array(
             'a'     => 1,
             'b.1'   => 2,
             'b.2'   => 3,
             'c.1.1' => 4,
         );
-        $this->config->set($ar);
+        // load() will reset all previous set data.
+        $config->load($ar);
         $y = array(
             'a' => 1,
             'b' => array(
@@ -136,6 +135,6 @@ class ConfigTest extends PHPunitTestCase
                 ),
             ),
         );
-        $this->assertEqualArray($y, $this->config->config);
+        $this->assertEqualArray($y, $config->config);
     }
 }

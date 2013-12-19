@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Base\AbstractSingleton;
 
 /**
  * Array util
@@ -12,7 +11,7 @@ use Fwlib\Base\AbstractSingleton;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2010-01-25
  */
-class ArrayUtil extends AbstractSingleton
+class ArrayUtil
 {
     /**
      * Return default if array key is not set or empty

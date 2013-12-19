@@ -10,16 +10,26 @@
  *
  * Result:
  *
- * 1. Get UtilContainer instance then use it to get util instance is much
- * slower, more than 3 times slower.
+ * 1. Get UtilContainer instance then use it to get util instance is about 2
+ * times slower.
  *
- * 2. If initial a variable stores util instance, method call through '->' is
- * a bit faster than through '::', no more than 1% faster.
+ * 2. If initial a variable to stores util instance, method call through '->'
+ * is about 1% faster than through '::'.
  *
- * So, avoid duplicate getInstance() and get(), store util in local variable
- * to use or use in loop is fine. Additional, as util instance it not 'hard'
- * dependence compare with other object dependence, so I think define class
- * property for util instance is too much.
+ * So, operate around UtilContainer is slow, should store its instance local
+ * for reuse. Consider dependence injection, UtilContainer can inject to its
+ * client, and use it to get util instance for usage, this have some speed
+ * cost, but helpful for test or extend. For speedup util usage in loop, store
+ * instance in local variable.
+ *
+ * Util class are helper class, their client class have dependence on it, but
+ * this is different with other object dependence, util class can be replaced
+ * by other ways, like function with namespace, like replace with copied
+ * private method, so I'm not treat util class as normal dependenct inject (in
+ * constructor), just declare a protected property $utilContainer and public
+ * setter setUtilContainer(), then invoke setter in constructor is enough.
+ *
+ * @see Fwlib\Util\AbstractUtilAware
  */
 
 use Fwlib\Test\Benchmark;
@@ -42,26 +52,27 @@ $loopCount = 10000;
 $bench->start("Test loop $loopCount times");
 
 
-// Using static call
+// Use static call
 for ($i = 0; $i < $loopCount; $i ++) {
     ArrayUtil::getIdx(array(), 'foo', 'bar');
 }
 $bench->mark('ArrayUtil::getIdx()');
 
 
-// Get instance each loop
+// Use UtilContainer instance
+$utilContainer = UtilContainer::getInstance();
 for ($i = 0; $i < $loopCount; $i ++) {
-    $arrayUtil = UtilContainer::getInstance()->get('Array');
+    $utilContainer->get('Array')->getIdx(array(), 'foo', 'bar');
+}
+$bench->mark('$utilContainer->get(\'Array\')->getIdx()');
+
+
+// Use util instance
+$arrayUtil = $utilContainer->get('Array');
+for ($i = 0; $i < $loopCount; $i ++) {
     $arrayUtil->getIdx(array(), 'foo', 'bar');
 }
 $bench->mark('$arrayUtil->getIdx()');
-
-
-// Store instance in local variable
-for ($i = 0; $i < $loopCount; $i ++) {
-    $arrayUtil->getIdx(array(), 'foo', 'bar');
-}
-$bench->mark('$arrayUtil->getIdx() without getInstance()');
 
 
 $bench->display();

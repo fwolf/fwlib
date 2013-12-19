@@ -4,6 +4,7 @@ namespace Fwlib\Base\Test;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Base\ReturnValue;
 use Fwlib\Util\Json;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Base\ReturnValue
@@ -49,7 +50,10 @@ class ReturnValueTest extends PHPunitTestCase
         $y = $info;
         $y['data'] = null;
 
-        $rv = new ReturnValue(Json::encodeUnicode($info));
+        $rv = new ReturnValue();
+        $rv->setUtilContainer(UtilContainer::getInstance())
+            ->loadJson(Json::encodeUnicode($info));
+
         $this->assertEqualArray($y, $rv->getInfo());
         $this->assertEqualArray($y, Json::decode($rv->getJson(), true));
     }
