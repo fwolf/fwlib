@@ -37,30 +37,30 @@ class UuidBase36 extends UuidBase62
     /**
      * Number base
      */
-    protected static $base = 36;
+    protected $base = 36;
 
     /**
      * UUID length
      */
-    protected static $length = 25;
+    protected $length = 25;
 
     /**
      * Length of custom part
      */
-    protected static $lengthCustom = 7;
+    protected $lengthCustom = 7;
 
     /**
      * Length of group part
      */
-    protected static $lengthGroup = 2;
+    protected $lengthGroup = 2;
 
     /**
      * Length of random part
      */
-    protected static $lengthRandom = 6;
+    protected $lengthRandom = 6;
 
     /**
      * Mode when call StringUtil::random()
      */
-    protected static $randomMode = 'a0';
+    protected $randomMode = 'a0';
 }

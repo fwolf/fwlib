@@ -42,32 +42,32 @@ class UuidBase62 extends AbstractUtilAware
     /**
      * Number base
      */
-    protected static $base = 62;
+    protected $base = 62;
 
     /**
      * UUID length
      */
-    protected static $length = 24;
+    protected $length = 24;
 
     /**
      * Length of custom part
      */
-    protected static $lengthCustom = 6;
+    protected $lengthCustom = 6;
 
     /**
      * Length of group part
      */
-    protected static $lengthGroup = 2;
+    protected $lengthGroup = 2;
 
     /**
      * Length of random part
      */
-    protected static $lengthRandom = 6;
+    protected $lengthRandom = 6;
 
     /**
      * Mode when call StringUtil::random()
      */
-    protected static $randomMode = 'aA0';
+    protected $randomMode = 'aA0';
 
 
     /**
@@ -77,9 +77,9 @@ class UuidBase62 extends AbstractUtilAware
      *
      * @param   string  $uuid
      */
-    public static function addCheckDigit($uuid)
+    public function addCheckDigit($uuid)
     {
-        $uuid = substr($uuid, 0, static::$length - 1);
+        $uuid = substr($uuid, 0, $this->length - 1);
         $uuid .= strtolower(Iso7064::encode($uuid, '3736', false));
 
         return $uuid;
@@ -100,7 +100,7 @@ class UuidBase62 extends AbstractUtilAware
      * @param   boolean $checkDigit
      * @return  string
      */
-    public static function generate(
+    public function generate(
         $group = '10',
         $custom = '',
         $checkDigit = false
@@ -112,16 +112,16 @@ class UuidBase62 extends AbstractUtilAware
         $stringUtil = $this->utilContainer->get('StringUtil');
 
         // Seconds from now(Nov 2013) will fill length 6
-        $uuid = $numberUtil->baseConvert($sec, 10, static::$base);
+        $uuid = $numberUtil->baseConvert($sec, 10, $this->base);
         // Microsends will fill to length 4
-        $usec = $numberUtil->baseConvert(round($usec * 1000000), 10, static::$base);
+        $usec = $numberUtil->baseConvert(round($usec * 1000000), 10, $this->base);
         $uuid .= str_pad($usec, 4, '0', STR_PAD_LEFT);
 
 
-        if (empty($group) || static::$lengthGroup > strlen($group)) {
-            $group = str_pad((string)$group, static::$lengthGroup, '0', STR_PAD_LEFT);
+        if (empty($group) || $this->lengthGroup > strlen($group)) {
+            $group = str_pad((string)$group, $this->lengthGroup, '0', STR_PAD_LEFT);
         } else {
-            $group = substr($group, -1 * static::$lengthGroup);
+            $group = substr($group, -1 * $this->lengthGroup);
         }
         $uuid .= $group;
 
@@ -130,23 +130,23 @@ class UuidBase62 extends AbstractUtilAware
             $custom = $numberUtil->baseConvert(
                 sprintf('%u', ip2long($httpUtil->getClientIp())),
                 10,
-                static::$base
+                $this->base
             );
         }
-        if (static::$lengthCustom != strlen($custom)) {
+        if ($this->lengthCustom != strlen($custom)) {
             $custom = $stringUtil->random(
-                static::$lengthCustom,
-                static::$randomMode
+                $this->lengthCustom,
+                $this->randomMode
             ) . (string)$custom;
-            $custom = substr($custom, -1 * static::$lengthCustom);
+            $custom = substr($custom, -1 * $this->lengthCustom);
         }
         $uuid .= $custom;
 
-        $uuid .= $stringUtil->random(static::$lengthRandom, static::$randomMode);
+        $uuid .= $stringUtil->random($this->lengthRandom, $this->randomMode);
 
 
         if ($checkDigit) {
-            $uuid = self::addCheckDigit($uuid, true);
+            $uuid = $this->addCheckDigit($uuid, true);
         }
 
         return $uuid;
@@ -159,23 +159,23 @@ class UuidBase62 extends AbstractUtilAware
      * @param   string  $uuid
      * @return  array
      */
-    public static function parse($uuid)
+    public function parse($uuid)
     {
         $numberUtil = $this->utilContainer->get('NumberUtil');
 
-        if (static::$length == strlen($uuid)) {
-            $sec = $numberUtil->baseConvert(substr($uuid, 0, 6), static::$base, 10);
-            $usec = $numberUtil->baseConvert(substr($uuid, 6, 4), static::$base, 10);
-            $custom = substr($uuid, 10 + static::$lengthGroup, static::$lengthCustom);
-            $random = substr($uuid, -1 * static::$lengthRandom);
+        if ($this->length == strlen($uuid)) {
+            $sec = $numberUtil->baseConvert(substr($uuid, 0, 6), $this->base, 10);
+            $usec = $numberUtil->baseConvert(substr($uuid, 6, 4), $this->base, 10);
+            $custom = substr($uuid, 10 + $this->lengthGroup, $this->lengthCustom);
+            $random = substr($uuid, -1 * $this->lengthRandom);
             return array(
                 'second' => $sec,
                 'microsecond' => $usec,
                 'time'    => date('Y-m-d H:i:s', $sec),
-                'group' => substr($uuid, 10, static::$lengthGroup),
+                'group' => substr($uuid, 10, $this->lengthGroup),
                 'custom' => $custom,
                 'ip'      => long2ip(
-                    $numberUtil->baseConvert($custom, static::$base, 10)
+                    $numberUtil->baseConvert($custom, $this->base, 10)
                 ),
                 'random'  => $random,
             );
@@ -192,9 +192,9 @@ class UuidBase62 extends AbstractUtilAware
      * @param   boolean $withCheckDigit     Source includes check digit
      * @return  boolean
      */
-    public static function verify($uuid, $withCheckDigit = false)
+    public function verify($uuid, $withCheckDigit = false)
     {
-        if (static::$length != strlen($uuid)) {
+        if ($this->length != strlen($uuid)) {
             return false;
         }
 
@@ -202,14 +202,14 @@ class UuidBase62 extends AbstractUtilAware
         $chars = str_replace(
             array('0', 'a', 'A'),
             array('0-9', 'a-z', 'A-Z'),
-            static::$randomMode
+            $this->randomMode
         );
         if ('' !== preg_replace("/[$chars]/", '', $uuid)) {
             return false;
         }
 
         // Check digit
-        if ($withCheckDigit && ($uuid != self::addCheckDigit($uuid))) {
+        if ($withCheckDigit && ($uuid != $this->addCheckDigit($uuid))) {
             return false;
         }
 

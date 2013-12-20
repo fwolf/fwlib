@@ -3,6 +3,7 @@ namespace Fwlib\Util\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\UuidBase36;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Util\UuidBase36
@@ -15,52 +16,64 @@ use Fwlib\Util\UuidBase36;
  */
 class UuidBase36Test extends PHPunitTestCase
 {
+    protected $utilContainer;
+    protected $uuid;
+
+
+    public function __construct()
+    {
+        $this->utilContainer = UtilContainer::getInstance();
+        $this->uuid = new UuidBase36;
+        $this->uuid->setUtilContainer($this->utilContainer);
+    }
+
+
     public function testAddCheckDigit()
     {
-        $y = UuidBase36::generate(null, null, true);
-        $this->assertEquals($y, UuidBase36::addCheckDigit($y));
+        $y = $this->uuid->generate(null, null, true);
+        $this->assertEquals($y, $this->uuid->addCheckDigit($y));
     }
 
 
     public function testParse()
     {
         // Group
-        $ar = UuidBase36::parse(UuidBase36::generate());
+        $ar = $this->uuid->parse($this->uuid->generate());
         $this->assertEquals('10', $ar['group']);
-        $ar = UuidBase36::parse(UuidBase36::generate('1'));
+        $ar = $this->uuid->parse($this->uuid->generate('1'));
         $this->assertEquals('01', $ar['group']);
 
         // Custom
-        $ar = UuidBase36::parse(UuidBase36::generate('', '000'));
+        $ar = $this->uuid->parse($this->uuid->generate('', '000'));
         $this->assertEquals('000', substr($ar['custom'], -3));
 
         // Parae data
-        $ar = UuidBase36::parse('mvqtti07x4a01a93alw6tz9qp');
+        $ar = $this->uuid->parse('mvqtti07x4a01a93alw6tz9qp');
         $this->assertEquals(1383575670, $ar['second']);
         $this->assertEquals(10264, $ar['microsecond']);
         $this->assertEquals('a0', $ar['group']);
         $this->assertEquals('1a93alw', $ar['custom']);
         $this->assertEquals('166.178.121.116', $ar['ip']);
 
-        $this->assertNull(UuidBase36::parse(null));
+        $this->assertNull($this->uuid->parse(null));
     }
 
 
     public function testVerify()
     {
         $x = '';
-        $this->assertFalse(UuidBase36::verify($x));
+        $this->assertFalse($this->uuid->verify($x));
 
         $x = 'mvqwzsaypm00sa2t8f0i9ooky';
-        $this->assertTrue(UuidBase36::verify($x, true));
+        $this->assertTrue($this->uuid->verify($x, true));
 
         $x = 'mvqwzsaypm00sa2t8f0i9ook+';
-        $this->assertFalse(UuidBase36::verify($x));
+        $this->assertFalse($this->uuid->verify($x));
 
         $x = 'mvqwzsaypm00sa2t8f0i9ookx';
-        $this->assertFalse(UuidBase36::verify($x, true));
+        $this->assertFalse($this->uuid->verify($x, true));
 
-        $x = UuidBase36::generate(null, null, true);
-        $this->assertTrue(UuidBase36::verify($x, true));
+        $x = $this->uuid->generate(null, null, true);
+        $this->assertTrue($this->uuid->verify($x, true));
     }
 }

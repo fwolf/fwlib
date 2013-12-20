@@ -40,6 +40,8 @@ class UtilContainer extends AbstractServiceContainer
         'String'            => 'Fwlib\Util\String',
         'StringUtil'        => 'Fwlib\Util\StringUtil',
         'UuidBase16'        => 'Fwlib\Util\UuidBase16',
+        'UuidBase36'        => 'Fwlib\Util\UuidBase36',
+        'UuidBase62'        => 'Fwlib\Util\UuidBase62',
     );
 
 
