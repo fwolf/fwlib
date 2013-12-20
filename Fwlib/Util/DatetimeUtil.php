@@ -22,7 +22,7 @@ class DatetimeUtil
      * @param   boolean $simple         If true, use ymdhis instead of word
      * @return  string
      */
-    public static function convertSecToStr($sec, $simple = true)
+    public function convertSecToStr($sec, $simple = true)
     {
         if (empty($sec) || !is_numeric($sec)) {
             return '';
@@ -76,7 +76,7 @@ class DatetimeUtil
      * @param   string  $str
      * @return  integer
      */
-    public static function convertStrToSec($str)
+    public function convertStrToSec($str)
     {
         if (empty($str)) {
             return 0;
@@ -151,7 +151,7 @@ class DatetimeUtil
      * @param   string  $time
      * @return  integer
      */
-    public static function convertTimeFromSybase($time)
+    public function convertTimeFromSybase($time)
     {
         if (!empty($time)) {
             // Remove tail add by sybase
