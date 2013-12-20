@@ -3,7 +3,6 @@ namespace Fwlib\Util;
 
 use Fwlib\Algorithm\Iso7064;
 use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\NumberUtil;
 use Fwlib\Util\StringUtil;
 
 /**
@@ -109,10 +108,12 @@ class UuidBase62 extends AbstractUtilAware
     ) {
         list($usec, $sec) = explode(' ', microtime());
 
+        $numberUtil = $this->utilContainer->get('NumberUtil');
+
         // Seconds from now(Nov 2013) will fill length 6
-        $uuid = NumberUtil::baseConvert($sec, 10, static::$base);
+        $uuid = $numberUtil->baseConvert($sec, 10, static::$base);
         // Microsends will fill to length 4
-        $usec = NumberUtil::baseConvert(round($usec * 1000000), 10, static::$base);
+        $usec = $numberUtil->baseConvert(round($usec * 1000000), 10, static::$base);
         $uuid .= str_pad($usec, 4, '0', STR_PAD_LEFT);
 
 
@@ -126,7 +127,7 @@ class UuidBase62 extends AbstractUtilAware
 
         $httpUtil = $this->utilContainer->get('HttpUtil');
         if (empty($custom)) {
-            $custom = NumberUtil::baseConvert(
+            $custom = $numberUtil->baseConvert(
                 sprintf('%u', ip2long($httpUtil->getClientIp())),
                 10,
                 static::$base
@@ -160,9 +161,11 @@ class UuidBase62 extends AbstractUtilAware
      */
     public static function parse($uuid)
     {
+        $numberUtil = $this->utilContainer->get('NumberUtil');
+
         if (static::$length == strlen($uuid)) {
-            $sec = NumberUtil::baseConvert(substr($uuid, 0, 6), static::$base, 10);
-            $usec = NumberUtil::baseConvert(substr($uuid, 6, 4), static::$base, 10);
+            $sec = $numberUtil->baseConvert(substr($uuid, 0, 6), static::$base, 10);
+            $usec = $numberUtil->baseConvert(substr($uuid, 6, 4), static::$base, 10);
             $custom = substr($uuid, 10 + static::$lengthGroup, static::$lengthCustom);
             $random = substr($uuid, -1 * static::$lengthRandom);
             return array(
@@ -172,7 +175,7 @@ class UuidBase62 extends AbstractUtilAware
                 'group' => substr($uuid, 10, static::$lengthGroup),
                 'custom' => $custom,
                 'ip'      => long2ip(
-                    NumberUtil::baseConvert($custom, static::$base, 10)
+                    $numberUtil->baseConvert($custom, static::$base, 10)
                 ),
                 'random'  => $random,
             );

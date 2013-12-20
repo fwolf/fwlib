@@ -165,6 +165,8 @@ class DocumentView extends AbstractAutoNewConfig
         $this->currentDocumentType = 'Index';
         $this->title = $this->config['titleTail'];
 
+        $numberUtil = $this->utilContainer->get('NumberUtil');
+
         $html = "<div class='{$this->config['className']}'>
   <table class='index'>
     <thead>
@@ -195,7 +197,7 @@ class DocumentView extends AbstractAutoNewConfig
             $link = "?{$this->config['paramFile']}=" . addslashes($filename);
             $title = $this->getDocumentTitle($filename);
             $time = date($this->config['timeFormat'], $file['mtime']);
-            $size = strtolower(NumberUtil::toHumanSize($file['size']));
+            $size = strtolower($numberUtil->toHumanSize($file['size']));
 
             if ($this->config['rawView']) {
                 $linkRaw = $link . '&' . $this->config['paramRaw'] . '=raw';

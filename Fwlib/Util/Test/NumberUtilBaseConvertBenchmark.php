@@ -2,13 +2,15 @@
 require __DIR__ . '/../../../autoload.php';
 
 use Fwlib\Test\Benchmark;
-use Fwlib\Util\Env;
 use Fwlib\Util\NumberUtil;
+use Fwlib\Util\UtilContainer;
 
 // Test duplicate times
 $count = 10000;
 
 $bm = new Benchmark();
+$bm->setUtilContainer(UtilContainer::getInstance());
+
 $bm->start("Compute $count times");
 
 
@@ -27,49 +29,46 @@ for ($i = 0; $i < $count; $i ++) {
 $bm->mark('Base 10 to base 36');
 
 
+$numberUtil = new NumberUtil;
+
+
 if (extension_loaded('bcmath')) {
-    $ref = new \ReflectionMethod('Fwlib\Util\NumberUtil', 'baseConvertBcmath');
-    $ref->setAccessible(true);
     $bm->mark('baseConvertBcmath()');
 
     for ($i = 0; $i < $count; $i ++) {
-        $y = $ref->invokeArgs(null, array($x, 16, 62));
+        $y = $numberUtil->baseConvertBcmath($x, 16, 62);
     }
     $bm->mark('Base 16 to base 62');
     for ($i = 0; $i < $count; $i ++) {
-        $ref->invokeArgs(null, array($y, 62, 16));
+        $numberUtil->baseConvertBcmath($y, 62, 16);
     }
     $bm->mark('Base 62 to base 16');
 }
 
 
 if (extension_loaded('gmp')) {
-    $ref = new \ReflectionMethod('Fwlib\Util\NumberUtil', 'baseConvertGmp');
-    $ref->setAccessible(true);
     $bm->mark('baseConvertGmp()');
 
     for ($i = 0; $i < $count; $i ++) {
-        $y = $ref->invokeArgs(null, array($x, 16, 62));
+        $y = $numberUtil->baseConvertGmp($x, 16, 62);
     }
     $bm->mark('Base 16 to base 62');
     for ($i = 0; $i < $count; $i ++) {
-        $ref->invokeArgs(null, array($y, 62, 16));
+        $numberUtil->baseConvertGmp($y, 62, 16);
     }
     $bm->mark('Base 62 to base 16');
 }
 
 
 if (extension_loaded('gmp') && version_compare(PHP_VERSION, '5.3.2', '>=')) {
-    $ref = new \ReflectionMethod('Fwlib\Util\NumberUtil', 'baseConvertGmpSimple');
-    $ref->setAccessible(true);
     $bm->mark('baseConvertGmpSimple()');
 
     for ($i = 0; $i < $count; $i ++) {
-        $y = $ref->invokeArgs(null, array($x, 16, 62));
+        $y = $numberUtil->baseConvertGmpSimple($x, 16, 62);
     }
     $bm->mark('Base 16 to base 62');
     for ($i = 0; $i < $count; $i ++) {
-        $ref->invokeArgs(null, array($y, 62, 16));
+        $numberUtil->baseConvertGmpSimple($y, 62, 16);
     }
     $bm->mark('Base 62 to base 16');
 }

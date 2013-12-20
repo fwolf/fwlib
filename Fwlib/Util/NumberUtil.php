@@ -13,7 +13,7 @@ namespace Fwlib\Util;
  */
 class NumberUtil
 {
-    public static $baseConvertMap = array(
+    public $baseConvertMap = array(
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -21,7 +21,7 @@ class NumberUtil
         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
     );
 
-    public static $baseConvertMapReverse = array(
+    public $baseConvertMapReverse = array(
         '0' => 0,   '1' => 1,   '2' => 2,   '3' => 3,   '4' => 4,
         '5' => 5,   '6' => 6,   '7' => 7,   '8' => 8,   '9' => 9,
         'a' => 10,  'b' => 11,  'c' => 12,  'd' => 13,  'e' => 14,
@@ -48,7 +48,7 @@ class NumberUtil
      *
      * @link https://gist.github.com/fwolf/7250392
      */
-    public static $baseConvertSafeLength = array(
+    public $baseConvertSafeLength = array(
         2  => 46,   //  2^46 = 70368744177664
         3  => 29,   //  3^29 = 68630377364883
         4  => 23,   //  4^23 = 70368744177664
@@ -121,7 +121,7 @@ class NumberUtil
      * @param   int     $toBase
      * @return  string
      */
-    public static function baseConvert($number, $fromBase, $toBase)
+    public function baseConvert($number, $fromBase, $toBase)
     {
         if (2 > $fromBase || 2 > $toBase || 62 < $fromBase || 62 < $toBase) {
             throw new \InvalidArgumentException('Base must between 2 and 62.');
@@ -136,7 +136,7 @@ class NumberUtil
 
         // Simple convert use build-in base_convert()
         if (36 >= $fromBase && 36 >= $toBase &&
-            strlen($number) <= self::$baseConvertSafeLength[$fromBase]
+            strlen($number) <= $this->baseConvertSafeLength[$fromBase]
         ) {
             return strtolower(base_convert($number, $fromBase, $toBase));
         }
@@ -148,13 +148,13 @@ class NumberUtil
         // @codeCoverageIgnoreStart
         if (extension_loaded('gmp') && version_compare(PHP_VERSION, '5.3.2', '>=')) {
             // In PHP 5.3.2, base was extended to 2~62
-            return self::baseConvertGmpSimple($number, $fromBase, $toBase);
+            return $this->baseConvertGmpSimple($number, $fromBase, $toBase);
 
         } elseif (extension_loaded('bcmath')) {
-            return self::baseConvertBcmath($number, $fromBase, $toBase);
+            return $this->baseConvertBcmath($number, $fromBase, $toBase);
 
         } elseif (extension_loaded('gmp')) {
-            return self::baseConvertGmp($number, $fromBase, $toBase);
+            return $this->baseConvertGmp($number, $fromBase, $toBase);
 
         } else {
             throw new \Exception('Number too large and BC Math or GMP not loaded.');
@@ -168,7 +168,7 @@ class NumberUtil
      *
      * @requires extension bcmath
      */
-    protected static function baseConvertBcmath($number, $fromBase, $toBase)
+    public function baseConvertBcmath($number, $fromBase, $toBase)
     {
         if (empty($number)) {
             return '0';
@@ -181,7 +181,7 @@ class NumberUtil
         } else {
             $base10 = 0;
             for ($i = 0, $j = strlen($number); $i < $j; $i ++) {
-                $n = self::$baseConvertMapReverse[$number{$i}];
+                $n = $this->baseConvertMapReverse[$number{$i}];
                 $base10 = bcadd($n, bcmul($base10, $fromBase));
             }
         }
@@ -192,7 +192,7 @@ class NumberUtil
             $baseN = '';
             while (0 < bccomp($base10, '0', 0)) {
                 $r = intval(bcmod($base10, $toBase));
-                $baseN = self::$baseConvertMap[$r] . $baseN;
+                $baseN = $this->baseConvertMap[$r] . $baseN;
                 $base10 = bcdiv($base10, $toBase, 0);
             }
             return $baseN;
@@ -207,7 +207,7 @@ class NumberUtil
      *
      * @requires extension gmp
      */
-    protected static function baseConvertGmp($number, $fromBase, $toBase)
+    public function baseConvertGmp($number, $fromBase, $toBase)
     {
         if (empty($number)) {
             return '0';
@@ -221,7 +221,7 @@ class NumberUtil
         } else {
             $base10 = gmp_init('0');
             for ($i = 0, $j = strlen($number); $i < $j; $i ++) {
-                $n = self::$baseConvertMapReverse[$number{$i}];
+                $n = $this->baseConvertMapReverse[$number{$i}];
                 $base10 = gmp_add("$n", gmp_mul($base10, "$fromBase"));
             }
         }
@@ -233,7 +233,7 @@ class NumberUtil
             while (0 < gmp_cmp($base10, '0')) {
                 list($base10, $r) = gmp_div_qr($base10, "$toBase");
                 $r = intval(gmp_strval($r));
-                $baseN = self::$baseConvertMap[$r] . $baseN;
+                $baseN = $this->baseConvertMap[$r] . $baseN;
             }
             return $baseN;
         }
@@ -248,7 +248,7 @@ class NumberUtil
      * @requires extension gmp
      * @requires PHP 5.3.2
      */
-    protected static function baseConvertGmpSimple($number, $fromBase, $toBase)
+    public function baseConvertGmpSimple($number, $fromBase, $toBase)
     {
         if (empty($number)) {
             return '0';
@@ -283,7 +283,7 @@ class NumberUtil
      * @param   int     $step       Compute by 1024 or 1000 ?
      * @return  string
      */
-    public static function toHumanSize($size, $precision = 1, $step = 1024)
+    public function toHumanSize($size, $precision = 1, $step = 1024)
     {
         $ranks = array('B', 'K', 'M', 'G', 'T', 'P');
         // Total 6 levels, loop from 0 to 5 just fit $ranks index

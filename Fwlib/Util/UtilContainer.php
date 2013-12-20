@@ -33,6 +33,8 @@ class UtilContainer extends AbstractServiceContainer
         'HttpUtil'          => 'Fwlib\Util\HttpUtil',
         'Json'              => 'Fwlib\Util\Json',
         'McryptSimpleIv'    => 'Fwlib\Util\McryptSimpleIv',
+        'Number'            => 'Fwlib\Util\NumberUtil',
+        'NumberUtil'        => 'Fwlib\Util\NumberUtil',
     );
 
 

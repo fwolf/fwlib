@@ -15,57 +15,60 @@ use Fwlib\Util\NumberUtil;
  */
 class NumberUtilTest extends PHPunitTestCase
 {
+    protected $numberUtil;
+
+
+    public function __construct()
+    {
+        $this->numberUtil = new NumberUtil;
+    }
+
+
     public function testBaseConvert()
     {
         // Use build-in base_convert()
-        $this->assertEquals('z', NumberUtil::baseConvert(35, 10, 36));
+        $this->assertEquals('z', $this->numberUtil->baseConvert(35, 10, 36));
 
 
-        $this->assertEquals('0', NumberUtil::baseConvert(0, 10, 62));
-        $this->assertEquals('0', NumberUtil::baseConvert(0, 62, 10));
+        $this->assertEquals('0', $this->numberUtil->baseConvert(0, 10, 62));
+        $this->assertEquals('0', $this->numberUtil->baseConvert(0, 62, 10));
 
-        $this->assertEquals('f', NumberUtil::baseConvert(15, 10, 62));
-        $this->assertEquals('15', NumberUtil::baseConvert('f', 62, 10));
+        $this->assertEquals('f', $this->numberUtil->baseConvert(15, 10, 62));
+        $this->assertEquals('15', $this->numberUtil->baseConvert('f', 62, 10));
 
 
         $x = 'abcdef00001234567890';
         $y = '3o47re02jzqisvio';
         $z = '43tpyVgFkHFsZO';
 
-        $ref = new \ReflectionMethod('Fwlib\Util\NumberUtil', 'baseConvertBcmath');
-        $ref->setAccessible(true);
-        $this->assertEquals('0', $ref->invokeArgs(null, array(null, 10, 62)));
+        $this->assertEquals('0', $this->numberUtil->baseConvertBcmath(null, 10, 62));
         if (extension_loaded('bcmath')) {
-            $this->assertEquals('Z', $ref->invokeArgs(null, array(61, 10, 62)));
-            $this->assertEquals('61', $ref->invokeArgs(null, array('Z', 62, 10)));
+            $this->assertEquals('Z', $this->numberUtil->baseConvertBcmath(61, 10, 62));
+            $this->assertEquals('61', $this->numberUtil->baseConvertBcmath('Z', 62, 10));
 
-            $this->assertEquals($y, $ref->invokeArgs(null, array($x, 16, 36)));
-            $this->assertEquals($x, $ref->invokeArgs(null, array($y, 36, 16)));
-            $this->assertEquals($x, $ref->invokeArgs(null, array($z, 62, 16)));
+            $this->assertEquals($y, $this->numberUtil->baseConvertBcmath($x, 16, 36));
+            $this->assertEquals($x, $this->numberUtil->baseConvertBcmath($y, 36, 16));
+            $this->assertEquals($x, $this->numberUtil->baseConvertBcmath($z, 62, 16));
         }
 
-        $ref = new \ReflectionMethod('Fwlib\Util\NumberUtil', 'baseConvertGmp');
-        $ref->setAccessible(true);
-        $this->assertEquals('0', $ref->invokeArgs(null, array(null, 10, 62)));
+        $this->assertEquals('0', $this->numberUtil->baseConvertGmp(null, 10, 62));
         if (extension_loaded('gmp')) {
-            $this->assertEquals('Z', $ref->invokeArgs(null, array(61, 10, 62)));
-            $this->assertEquals('61', $ref->invokeArgs(null, array('Z', 62, 10)));
+            $this->assertEquals('Z', $this->numberUtil->baseConvertGmp(61, 10, 62));
+            $this->assertEquals('61', $this->numberUtil->baseConvertGmp('Z', 62, 10));
 
-            $this->assertEquals($y, $ref->invokeArgs(null, array($x, 16, 36)));
-            $this->assertEquals($x, $ref->invokeArgs(null, array($y, 36, 16)));
-            $this->assertEquals($x, $ref->invokeArgs(null, array($z, 62, 16)));
+            $this->assertEquals($y, $this->numberUtil->baseConvertGmp($x, 16, 36));
+            $this->assertEquals($x, $this->numberUtil->baseConvertGmp($y, 36, 16));
+            $this->assertEquals($x, $this->numberUtil->baseConvertGmp($z, 62, 16));
         }
 
-        $ref = new \ReflectionMethod('Fwlib\Util\NumberUtil', 'baseConvertGmpSimple');
-        $ref->setAccessible(true);
-        $this->assertEquals('0', $ref->invokeArgs(null, array(null, 10, 62)));
+        $this->assertEquals('0', $this->numberUtil->baseConvertGmpSimple(null, 10, 62));
         if (extension_loaded('gmp') && version_compare(PHP_VERSION, '5.3.2', '>=')) {
-            $this->assertEquals('Z', $ref->invokeArgs(null, array(61, 10, 62)));
-            $this->assertEquals('61', $ref->invokeArgs(null, array('Z', 62, 10)));
+            $this->assertEquals('Z', $this->numberUtil->baseConvertGmpSimple(61, 10, 62));
+            $this->assertEquals('61', $this->numberUtil->baseConvertGmpSimple('Z', 62, 10));
 
-            $this->assertEquals($y, $ref->invokeArgs(null, array($x, 16, 36)));
-            $this->assertEquals($x, $ref->invokeArgs(null, array($y, 36, 16)));
-            $this->assertEquals($x, $ref->invokeArgs(null, array($z, 62, 16)));
+            $this->assertEquals($y, $this->numberUtil->baseConvertGmpSimple($x, 16, 36));
+            $this->assertEquals($x, $this->numberUtil->baseConvertGmpSimple($y, 36, 16));
+            $this->assertEquals($x, $this->numberUtil->baseConvertGmpSimple($z, 62, 16));
         }
     }
 
@@ -75,31 +78,31 @@ class NumberUtilTest extends PHPunitTestCase
      */
     public function testBaseConvertInvalidArgument()
     {
-        NumberUtil::baseConvert(0, 1, 100);
+        $this->numberUtil->baseConvert(0, 1, 100);
     }
 
 
     public function testToHumanSize()
     {
-        $this->assertEquals('100B', NumberUtil::toHumanSize(100));
-        $this->assertEquals('1K', NumberUtil::toHumanSize(1001, 1, 1000));
-        $this->assertEquals('1.001K', NumberUtil::toHumanSize(1001, 3, 1000));
+        $this->assertEquals('100B', $this->numberUtil->toHumanSize(100));
+        $this->assertEquals('1K', $this->numberUtil->toHumanSize(1001, 1, 1000));
+        $this->assertEquals('1.001K', $this->numberUtil->toHumanSize(1001, 3, 1000));
         $this->assertEquals(
             '52G',
-            NumberUtil::toHumanSize(52000000000, 0, 1000)
+            $this->numberUtil->toHumanSize(52000000000, 0, 1000)
         );
         // With round
         $this->assertEquals(
             '48.43G',
-            NumberUtil::toHumanSize(52000000000, 2, 1024)
+            $this->numberUtil->toHumanSize(52000000000, 2, 1024)
         );
         $this->assertEquals(
             '46.185P',
-            NumberUtil::toHumanSize(52000000000000000, 3, 1024)
+            $this->numberUtil->toHumanSize(52000000000000000, 3, 1024)
         );
         $this->assertEquals(
             '52000P',
-            NumberUtil::toHumanSize(52000000000000000000, 0, 1000)
+            $this->numberUtil->toHumanSize(52000000000000000000, 0, 1000)
         );
     }
 }
