@@ -3,7 +3,7 @@ namespace Fwlib\Net\Sms\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Net\Sms\SmsLogger;
-use Fwlib\Util\StringUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Net\Sms\SmsLogger
@@ -17,6 +17,7 @@ use Fwlib\Util\StringUtil;
 class SmsLoggerTest extends PHPunitTestCase
 {
     private $smsLogger = null;
+    protected $utilContainer;
 
 
     public function __construct()
@@ -26,6 +27,8 @@ class SmsLoggerTest extends PHPunitTestCase
             ->getMock();
 
         $this->smsLogger = new SmsLogger($db);
+
+        $this->utilContainer = UtilContainer::getInstance();
     }
 
 
@@ -45,16 +48,18 @@ class SmsLoggerTest extends PHPunitTestCase
 
     public function testCountPart()
     {
+        $stringUtil = $this->utilContainer->get('StringUtil');
+
         $x = '';
         $this->assertEquals(0, $this->smsLogger->countPart($x));
 
-        $x = StringUtil::random(140);
+        $x = $stringUtil->random(140);
         $this->assertEquals(1, $this->smsLogger->countPart($x));
 
-        $x = StringUtil::random(150);
+        $x = $stringUtil->random(150);
         $this->assertEquals(2, $this->smsLogger->countPart($x));
 
-        $x = '中' . StringUtil::random(137);
+        $x = '中' . $stringUtil->random(137);
         $this->assertEquals(2, $this->smsLogger->countPart($x));
     }
 

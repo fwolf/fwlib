@@ -244,9 +244,11 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function excludeFile($arFile)
     {
+        $stringUtil = $this->utilContainer->get('StringUtil');
+
         foreach ($arFile as $k => $v) {
             foreach ((array)$this->config['exclude'] as $rule) {
-                if (StringUtil::matchWildcard($v['name'], $rule)) {
+                if ($stringUtil->matchWildcard($v['name'], $rule)) {
                     unset($arFile[$k]);
                     break;
                 }

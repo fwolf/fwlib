@@ -19,7 +19,7 @@ class StringUtil
      * @param   mixed   $srce
      * @return  mixed
      */
-    public static function addSlashesRecursive($srce)
+    public function addSlashesRecursive($srce)
     {
         if (empty($srce)) {
             return $srce;
@@ -30,7 +30,7 @@ class StringUtil
         } elseif (is_array($srce)) {
             $rs = array();
             foreach ($srce as $k => $v) {
-                $rs[addslashes($k)] = self::addSlashesRecursive($v);
+                $rs[addslashes($k)] = $this->addSlashesRecursive($v);
             }
             return $rs;
         } else {
@@ -46,7 +46,7 @@ class StringUtil
      * @param   string  $str
      * @return  string
     */
-    public static function encodeHtml($str)
+    public function encodeHtml($str)
     {
         $ar = array(
             '&'     => '&amp;',
@@ -75,7 +75,7 @@ class StringUtil
      * @param   string  $delimiterRight Default '}'
      * @return  mixed
      */
-    public static function evalWithTag(
+    public function evalWithTag(
         $str,
         $ar = array(),
         $delimiterLeft = '{',
@@ -116,7 +116,7 @@ class StringUtil
      * @param   string  $rule
      * @return  boolean
      */
-    public static function matchWildcard($str, $rule)
+    public function matchWildcard($str, $rule)
     {
         // Convert wildcard rule to regex
         $rule = str_replace('*', '.+', $rule);
@@ -144,7 +144,7 @@ class StringUtil
      * @param   boolean $simple  Convert single result to str(array -> str) ?
      * @return  string|array|null
      */
-    public static function matchRegex($preg, $str = '', $simple = true)
+    public function matchRegex($preg, $str = '', $simple = true)
     {
         if (empty($preg) || empty($str)) {
             return null;
@@ -192,7 +192,7 @@ class StringUtil
      * @param   string  $mode
      * @return  string
      */
-    public static function random($len, $mode = 'a0')
+    public function random($len, $mode = 'a0')
     {
         $str = '';
         if (preg_match('/[a]/', $mode)) {
@@ -233,7 +233,7 @@ class StringUtil
      * @return  string
      * @link http://www.fwolf.com/blog/post/133
      */
-    public static function substrIgnHtml(
+    public function substrIgnoreHtml(
         $str,
         $len,
         $marker = '...',
@@ -326,7 +326,7 @@ class StringUtil
      * @param   boolean $removeEmpty
      * @return  array
      */
-    public static function toArray(
+    public function toArray(
         $srce,
         $splitter = ',',
         $trim = true,
@@ -365,9 +365,9 @@ class StringUtil
      * @param   string  $srce
      * @return  string
      */
-    public static function toCamelCase($srce)
+    public function toCamelCase($srce)
     {
-        return lcfirst(self::toStudlyCaps($srce));
+        return lcfirst($this->toStudlyCaps($srce));
     }
 
 
@@ -379,7 +379,7 @@ class StringUtil
      * @param   boolean $ucwords
      * @return  string
      */
-    public static function toSnakeCase(
+    public function toSnakeCase(
         $srce,
         $separator = '_',
         $ucwords = false
@@ -412,8 +412,8 @@ class StringUtil
      * @param   string  $srce
      * @return  string
      */
-    public static function toStudlyCaps($srce)
+    public function toStudlyCaps($srce)
     {
-        return self::toSnakeCase($srce, '', true);
+        return $this->toSnakeCase($srce, '', true);
     }
 }

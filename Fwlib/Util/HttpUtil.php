@@ -2,7 +2,6 @@
 namespace Fwlib\Util;
 
 use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\StringUtil;
 
 /**
  * Http util
@@ -255,7 +254,8 @@ class HttpUtil extends AbstractUtilAware
             if (version_compare(PHP_VERSION, '5.4.0', '>=')
                 || !get_magic_quotes_gpc()
             ) {
-                $val = StringUtil::addSlashesRecursive($val);
+                $val = $this->utilContainer->get('StringUtil')
+                    ->addSlashesRecursive($val);
             }
 
             return $val;
@@ -331,7 +331,8 @@ class HttpUtil extends AbstractUtilAware
         $v = null,
         $withSelfUrl = false
     ) {
-        $param = StringUtil::addSlashesRecursive($_GET);
+        $param = $this->utilContainer->get('StringUtil')
+            ->addSlashesRecursive($_GET);
 
         // $k is string
         if (is_string($k) && !empty($k)) {

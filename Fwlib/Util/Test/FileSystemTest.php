@@ -3,7 +3,7 @@ namespace Fwlib\Util\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\FileSystem;
-use Fwlib\Util\StringUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Util\FileSystem
@@ -17,12 +17,14 @@ use Fwlib\Util\StringUtil;
 class FileSystemTest extends PHPunitTestCase
 {
     protected $fileSystem;
+    protected $utilContainer;
 
 
     public function __construct()
     {
+        $this->utilContainer = UtilContainer::getInstance();
         $this->fileSystem = new FileSystem;
-        $this->fileSystem->setUtilContainer();
+        $this->fileSystem->setUtilContainer($this->utilContainer);
     }
 
 
@@ -123,7 +125,7 @@ class FileSystemTest extends PHPunitTestCase
     {
         // Prepare a filename
         $name = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
-        $name .= StringUtil::random(8);
+        $name .= $this->utilContainer->get('StringUtil')->random(8);
         $ext = 'ext';
         $file = $name . '.' . $ext;
 

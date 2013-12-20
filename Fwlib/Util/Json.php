@@ -70,7 +70,7 @@ class Json
 
         // Check json extension
         if (!extension_loaded('json')) {
-            error_log('StringUtil::jsonEncodeHex(): json extension is not loaded.');
+            error_log('Json::encodeHex(): json extension is not loaded.');
             return null;
         }
 

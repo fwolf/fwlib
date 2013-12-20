@@ -3,7 +3,6 @@ namespace Fwlib\Util;
 
 use Fwlib\Algorithm\Iso7064;
 use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\StringUtil;
 
 /**
  * UUID generator using base-62 character (0-9a-zA-Z)
@@ -109,6 +108,8 @@ class UuidBase62 extends AbstractUtilAware
         list($usec, $sec) = explode(' ', microtime());
 
         $numberUtil = $this->utilContainer->get('NumberUtil');
+        $httpUtil = $this->utilContainer->get('HttpUtil');
+        $stringUtil = $this->utilContainer->get('StringUtil');
 
         // Seconds from now(Nov 2013) will fill length 6
         $uuid = $numberUtil->baseConvert($sec, 10, static::$base);
@@ -125,7 +126,6 @@ class UuidBase62 extends AbstractUtilAware
         $uuid .= $group;
 
 
-        $httpUtil = $this->utilContainer->get('HttpUtil');
         if (empty($custom)) {
             $custom = $numberUtil->baseConvert(
                 sprintf('%u', ip2long($httpUtil->getClientIp())),
@@ -134,7 +134,7 @@ class UuidBase62 extends AbstractUtilAware
             );
         }
         if (static::$lengthCustom != strlen($custom)) {
-            $custom = StringUtil::random(
+            $custom = $stringUtil->random(
                 static::$lengthCustom,
                 static::$randomMode
             ) . (string)$custom;
@@ -142,7 +142,7 @@ class UuidBase62 extends AbstractUtilAware
         }
         $uuid .= $custom;
 
-        $uuid .= StringUtil::random(static::$lengthRandom, static::$randomMode);
+        $uuid .= $stringUtil->random(static::$lengthRandom, static::$randomMode);
 
 
         if ($checkDigit) {

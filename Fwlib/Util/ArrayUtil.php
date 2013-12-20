@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * Array util
@@ -11,7 +12,7 @@ namespace Fwlib\Util;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2010-01-25
  */
-class ArrayUtil
+class ArrayUtil extends AbstractUtilAware
 {
     /**
      * Return default if array key is not set or empty
@@ -206,8 +207,9 @@ class ArrayUtil
             }
 
             // Loop srce ar
+            $stringUtil = $this->utilContainer->get('StringUtil');
             foreach ($arSrce as $k => $srce) {
-                if (true == StringUtil::matchWildcard($srce, $rule)) {
+                if (true == $stringUtil->matchWildcard($srce, $rule)) {
                     // Got element to +/-
                     $i = array_search($srce, $arResult);
                     if ('+' == $op) {

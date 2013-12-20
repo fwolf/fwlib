@@ -3,7 +3,6 @@ namespace Fwlib\Db;
 
 use Fwlib\Bridge\Adodb;
 use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\StringUtil;
 use Fwlib\Util\UuidBase36;
 
 /**
@@ -482,8 +481,9 @@ class SyncDbData extends AbstractUtilAware
         // should return array of PK for rows to delete in dest db. If PK in
         // dest table has multiple column, the PK value is array of these
         // columns, and the order of these column should same as db schema.
-        $compareFunc = 'compareData' . StringUtil::toStudlyCaps($tableSrce)
-            . 'To' . StringUtil::toStudlyCaps($tableDest);
+        $stringUtil = $this->utilContainer->get('StringUtil');
+        $compareFunc = 'compareData' . $stringUtil->toStudlyCaps($tableSrce)
+            . 'To' . $stringUtil->toStudlyCaps($tableDest);
 
         if (!method_exists($this, $compareFunc)) {
             $message = "Compare method needed: $tableSrce to $tableDest.";
@@ -672,11 +672,12 @@ class SyncDbData extends AbstractUtilAware
 
 
             $rowsSynced = 0;
+            $stringUtil = $this->utilContainer->get('StringUtil');
             foreach ((array)$tableDest as $table) {
 
                 // Call data convert method
-                $convertFunc = 'convertData' . StringUtil::toStudlyCaps($tableSrce)
-                    . 'To' . StringUtil::toStudlyCaps($table);
+                $convertFunc = 'convertData' . $stringUtil->toStudlyCaps($tableSrce)
+                    . 'To' . $stringUtil->toStudlyCaps($table);
 
                 $dataDest = array();
                 if (method_exists($this, $convertFunc)) {

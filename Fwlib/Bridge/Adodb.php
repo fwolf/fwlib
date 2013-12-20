@@ -325,7 +325,8 @@ class Adodb extends AbstractUtilAware
             error_log($trace);
 
             if (!$this->utilContainer->get('Env')->isCli()) {
-                $trace = StringUtil::encodeHtml($trace);
+                $trace = $this->utilContainer->get('StringUtil')
+                    ->encodeHtml($trace);
             }
             echo $trace;
 
@@ -701,6 +702,8 @@ class Adodb extends AbstractUtilAware
      */
     public function getByPk ($table, $pkVal, $col = null, $pkCol = null)
     {
+        $stringUtil = $this->utilContainer->get('StringUtil');
+
         // Treat PK col
         if (empty($pkCol)) {
             $pkCol = $this->getMetaPrimaryKey($table);
@@ -709,7 +712,7 @@ class Adodb extends AbstractUtilAware
         // Convert PK value and col name to array
         if (!is_array($pkVal)) {
             if (is_string($pkVal)) {
-                $pkVal = StringUtil::toArray($pkVal, ',');
+                $pkVal = $stringUtil->toArray($pkVal, ',');
             } else {
                 // @codeCoverageIgnoreStart
                 $pkVal = array($pkVal);
@@ -718,7 +721,7 @@ class Adodb extends AbstractUtilAware
         }
         if (!is_array($pkCol)) {
             if (is_string($pkCol)) {
-                $pkCol = StringUtil::toArray($pkCol, ',');
+                $pkCol = $stringUtil->toArray($pkCol, ',');
             } else {
                 // @codeCoverageIgnoreStart
                 $pkCol = array($pkCol);
@@ -744,7 +747,7 @@ class Adodb extends AbstractUtilAware
         }
         if (!is_array($col)) {
             if (is_string($col)) {
-                $col = StringUtil::toArray($col, ',');
+                $col = $stringUtil->toArray($col, ',');
             } else {
                 // Column is not array nor string? is int? should not happen
                 // @codeCoverageIgnoreStart

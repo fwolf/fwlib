@@ -36,6 +36,8 @@ class UtilContainer extends AbstractServiceContainer
         'Number'            => 'Fwlib\Util\NumberUtil',
         'NumberUtil'        => 'Fwlib\Util\NumberUtil',
         'Rfc2047'           => 'Fwlib\Util\Rfc2047',
+        'String'            => 'Fwlib\Util\String',
+        'StringUtil'        => 'Fwlib\Util\StringUtil',
     );
 
 

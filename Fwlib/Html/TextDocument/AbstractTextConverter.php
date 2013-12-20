@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Html\TextDocument;
 
-use Fwlib\Util\StringUtil;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * Markup text converter to html
@@ -14,7 +14,7 @@ use Fwlib\Util\StringUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-11-11
  */
-abstract class AbstractTextConverter
+abstract class AbstractTextConverter extends AbstractUtilAware
 {
     /**
      * Convert string or file to html
@@ -70,7 +70,8 @@ abstract class AbstractTextConverter
             }
         }
 
-        return "<pre>\n" . StringUtil::encodeHtml($source) . "\n</pre>\n";
+        $stringUtil = $this->utilContainer->get('StringUtil');
+        return "<pre>\n" . $stringUtil->encodeHtml($source) . "\n</pre>\n";
     }
 
 

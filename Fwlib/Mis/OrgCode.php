@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Mis;
 
-use Fwlib\Util\StringUtil;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * Cert org code
@@ -13,7 +13,7 @@ use Fwlib\Util\StringUtil;
  * @since       2013-08-27
  * @link    http://zh.wikisource.org/zh/GB_11714-1997_全国组织机构代码编制规则
  */
-class OrgCode
+class OrgCode extends AbstractUtilAware
 {
     /**
      * Generate org code
@@ -27,7 +27,7 @@ class OrgCode
 
         if (empty($codeBase)) {
             // Gen random if empty
-            $codeBase = StringUtil::random(8, '0A');
+            $codeBase = $this->utilContainer->get('StringUtil')->random(8, '0A');
         } elseif (8 != strlen($codeBase)) {
             // Length check
             return '';

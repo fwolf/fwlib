@@ -3,8 +3,8 @@ namespace Fwlib\Db\Test;
 
 use Fwlib\Db\SyncDbData;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Util\StringUtil;
 use Fwlib\Util\UuidBase36;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Db\SyncDbData
@@ -23,6 +23,8 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
 
     public static $dbUsing = 'mysql';
     public static $tableUserDest = 'test_user_dest';
+
+    protected $utilContainer;
 
     /**
      * Rows of initial test data
@@ -43,6 +45,8 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         parent::setUpBeforeClass();
 
         self::removeDestTable();
+
+        self::$utilContainer = UtilContainer::getInstance();
     }
 
 
@@ -149,13 +153,15 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $tableUser => array($tableUserDest, $tableNotExist),
         );
 
+        $stringUtil = $this->utilContainer->get('StringUtil');
+
         // Mock instance with 2 additional convert method
         $convertForNotExist = 'convertData' .
-            StringUtil::toStudlyCaps($tableUser) .
-            'To' . StringUtil::toStudlyCaps($tableNotExist);
+            $stringUtil->toStudlyCaps($tableUser) .
+            'To' . $stringUtil->toStudlyCaps($tableNotExist);
         $convertForUserDest = 'convertData' .
-            StringUtil::toStudlyCaps($tableUser) .
-            'To' . StringUtil::toStudlyCaps($tableUserDest);
+            $stringUtil->toStudlyCaps($tableUser) .
+            'To' . $stringUtil->toStudlyCaps($tableUserDest);
         $sdd = $this->getMock(
             'Fwlib\Db\SyncDbData',
             array($convertForNotExist)
@@ -235,10 +241,12 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $tableUser => array($tableUserDest, $tableUserDest),
         );
 
+        $stringUtil = $this->utilContainer->get('StringUtil');
+
         // Mock instance with 2 additional convert method
         $compareForUserDest = 'compareData' .
-            StringUtil::toStudlyCaps($tableUser) .
-            'To' . StringUtil::toStudlyCaps($tableUserDest);
+            $stringUtil->toStudlyCaps($tableUser) .
+            'To' . $stringUtil->toStudlyCaps($tableUserDest);
         $sdd = $this->getMock(
             'Fwlib\Db\SyncDbData',
             array($compareForUserDest)
