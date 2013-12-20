@@ -26,7 +26,7 @@ class Rfc2047
      * @param   string  $encoding
      * @return  string
      */
-    public static function decode($str, $encoding = 'utf-8')
+    public function decode($str, $encoding = 'utf-8')
     {
         // Find string encoding
         $ar = array();
@@ -74,7 +74,7 @@ class Rfc2047
      * @param   string  $encoding
      * @return  string
      */
-    public static function encode($str, $encoding = 'utf-8')
+    public function encode($str, $encoding = 'utf-8')
     {
         return "=?" . $encoding . "?B?" . base64_encode($str) . "?=";
     }

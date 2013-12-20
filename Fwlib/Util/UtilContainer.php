@@ -35,6 +35,7 @@ class UtilContainer extends AbstractServiceContainer
         'McryptSimpleIv'    => 'Fwlib\Util\McryptSimpleIv',
         'Number'            => 'Fwlib\Util\NumberUtil',
         'NumberUtil'        => 'Fwlib\Util\NumberUtil',
+        'Rfc2047'           => 'Fwlib\Util\Rfc2047',
     );
 
 
