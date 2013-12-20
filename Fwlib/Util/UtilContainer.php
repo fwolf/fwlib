@@ -31,6 +31,7 @@ class UtilContainer extends AbstractServiceContainer
         'FileSystem'        => 'Fwlib\Util\FileSystem',
         'Http'              => 'Fwlib\Util\HttpUtil',
         'HttpUtil'          => 'Fwlib\Util\HttpUtil',
+        'Ip'                => 'Fwlib\Util\Ip',
         'Json'              => 'Fwlib\Util\Json',
         'McryptSimpleIv'    => 'Fwlib\Util\McryptSimpleIv',
         'Number'            => 'Fwlib\Util\NumberUtil',
@@ -38,6 +39,7 @@ class UtilContainer extends AbstractServiceContainer
         'Rfc2047'           => 'Fwlib\Util\Rfc2047',
         'String'            => 'Fwlib\Util\String',
         'StringUtil'        => 'Fwlib\Util\StringUtil',
+        'UuidBase16'        => 'Fwlib\Util\UuidBase16',
     );
 
 

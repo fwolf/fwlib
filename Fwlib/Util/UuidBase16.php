@@ -42,11 +42,11 @@ class UuidBase16 extends AbstractUtilAware
      *
      * @param   string  $uuid
      */
-    public static function addCheckDigit($uuid)
+    public function addCheckDigit($uuid)
     {
         if (36 == strlen($uuid)) {
             $separator = $uuid{8};
-            $uuid = self::delSeparator($uuid);
+            $uuid = $this->delSeparator($uuid);
         }
 
         $uuid = Iso7064::encode(
@@ -57,7 +57,7 @@ class UuidBase16 extends AbstractUtilAware
         $uuid = strtolower($uuid);
 
         if (isset($separator)) {
-            $uuid = self::addSeparator($uuid, $separator);
+            $uuid = $this->addSeparator($uuid, $separator);
         }
 
         return $uuid;
@@ -73,7 +73,7 @@ class UuidBase16 extends AbstractUtilAware
      * @param   string  $separator
      * @return  string
      */
-    protected static function addSeparator($uuid, $separator)
+    protected function addSeparator($uuid, $separator)
     {
         return substr($uuid, 0, 8) . $separator .
             substr($uuid, 8, 4) . $separator .
@@ -91,7 +91,7 @@ class UuidBase16 extends AbstractUtilAware
      * @param   string  $uuid
      * @return  string
      */
-    protected static function delSeparator($uuid)
+    protected function delSeparator($uuid)
     {
         return substr($uuid, 0, 8) .
             substr($uuid, 9, 4) .
@@ -123,7 +123,7 @@ class UuidBase16 extends AbstractUtilAware
      * @param   boolean $checkDigit
      * @return  string
      */
-    public static function generate(
+    public function generate(
         $custom1 = '0010',
         $custom2 = '',
         $checkDigit = false
@@ -177,7 +177,7 @@ class UuidBase16 extends AbstractUtilAware
 
         // Add check digit/byte
         if ($checkDigit) {
-            $rs = self::addCheckDigit($rs, true);
+            $rs = $this->addCheckDigit($rs, true);
         }
 
         return $rs;
@@ -195,14 +195,14 @@ class UuidBase16 extends AbstractUtilAware
      * @param   string  $separator
      * @return  string
      */
-    public static function generateWithSeparator(
+    public function generateWithSeparator(
         $cus = '0000',
         $cus2 = '',
         $checkDigit = false,
         $separator = '-'
     ) {
-        return self::addSeparator(
-            self::generate($cus, $cus2, $checkDigit),
+        return $this->addSeparator(
+            $this->generate($cus, $cus2, $checkDigit),
             $separator
         );
     }
@@ -214,10 +214,10 @@ class UuidBase16 extends AbstractUtilAware
      * @param   string  $uuid
      * @return  array
      */
-    public static function parse($uuid)
+    public function parse($uuid)
     {
         if (36 == strlen($uuid)) {
-            $uuid = self::delSeparator($uuid);
+            $uuid = $this->delSeparator($uuid);
         }
 
         if (32 == strlen($uuid)) {
@@ -247,15 +247,15 @@ class UuidBase16 extends AbstractUtilAware
      * @param   boolean $withCheckDigit     Source includes check digit
      * @return  boolean
      */
-    public static function verify($uuid, $withCheckDigit = false)
+    public function verify($uuid, $withCheckDigit = false)
     {
         if (36 == strlen($uuid)) {
             $separator = $uuid{8};
             $uuidOrigin = $uuid;
-            $uuid = self::delSeparator($uuid);
+            $uuid = $this->delSeparator($uuid);
 
             // Separator must same and position right
-            if ($uuidOrigin != self::addSeparator($uuid, $separator)) {
+            if ($uuidOrigin != $this->addSeparator($uuid, $separator)) {
                 return false;
             }
         }
@@ -271,7 +271,7 @@ class UuidBase16 extends AbstractUtilAware
         }
 
         // Check digit
-        if ($withCheckDigit && ($uuid != self::addCheckDigit($uuid))) {
+        if ($withCheckDigit && ($uuid != $this->addCheckDigit($uuid))) {
             return false;
         }
 
