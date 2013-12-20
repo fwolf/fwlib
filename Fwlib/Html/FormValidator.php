@@ -2,7 +2,6 @@
 namespace Fwlib\Html;
 
 use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Util\Json;
 
 /**
  * Validator for form
@@ -148,7 +147,7 @@ class FormValidator extends AbstractAutoNewConfig
         $class = $this->config['class'];
         $id = $this->config['id'];
         $formSelector = $this->config['formSelector'];
-        $rule = Json::encodeUnicode($this->rule);
+        $rule = $this->utilContainer->get('Json')->encodeUnicode($this->rule);
         $checkOnSubmit = ($this->config['checkOnSubmit'])
             ? 'enableCheckOnSubmit()'
             : 'disableCheckOnSubmit()';

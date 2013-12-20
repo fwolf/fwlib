@@ -26,7 +26,7 @@ class Json
      * @param   int     $option
      * @return  mixed
      */
-    public static function decode($json, $assoc = false, $depth = 512, $option = 0)
+    public function decode($json, $assoc = false, $depth = 512, $option = 0)
     {
         if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
             return json_decode($json, $assoc, $depth, $option);
@@ -43,7 +43,7 @@ class Json
      * @param   int     $option
      * @return  string
      */
-    public static function encode($val, $option = 0)
+    public function encode($val, $option = 0)
     {
         return json_encode($val, $option);
     }
@@ -62,7 +62,7 @@ class Json
      * @param   int      $option     Use if only some of HEX option needed
      * @return  string
      */
-    public static function encodeHex($val, $option = null)
+    public function encodeHex($val, $option = null)
     {
         if (is_null($option)) {
             $option = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP;
@@ -90,15 +90,15 @@ class Json
                 if ($isList) {
                     $art = array();
                     foreach ($val as $v) {
-                        $art[] = self::jsonEncodeHex($v, $option);
+                        $art[] = $this->jsonEncodeHex($v, $option);
                     }
                     $jsonStr = '[' . implode(',', $art) . ']';
                 } else {
                     $art = array();
                     foreach ($val as $k => $v) {
-                        $art[] = self::jsonEncodeHex($k, $option)
+                        $art[] = $this->jsonEncodeHex($k, $option)
                             . ':'
-                            . self::jsonEncodeHex($v, $option);
+                            . $this->jsonEncodeHex($v, $option);
                     }
                     $jsonStr = '{' . implode(',', $art) . '}';
                 }
@@ -108,7 +108,7 @@ class Json
                 $jsonStr = substr($jsonStr, 1);
                 $jsonStr = substr($jsonStr, 0, strlen($jsonStr) - 1);
 
-                $jsonStr = self::replaceByHexOption($jsonStr, $option);
+                $jsonStr = $this->replaceByHexOption($jsonStr, $option);
                 $jsonStr = '"' . $jsonStr . '"';
             } else {
                 // Int, floats, bools, null
@@ -128,7 +128,7 @@ class Json
      * @param   int     $option         Other original json_encode option
      * @return  string
      */
-    public static function encodeUnicode($val, $option = 0)
+    public function encodeUnicode($val, $option = 0)
     {
         if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
             return json_encode($val, $option | JSON_UNESCAPED_UNICODE);
@@ -142,7 +142,7 @@ class Json
             );
 
             // Restore JSON_HEX_* option if used
-            $val = self::replaceByHexOption($val, $option);
+            $val = $this->replaceByHexOption($val, $option);
 
             return $val;
 
@@ -166,7 +166,7 @@ class Json
      * @pram    int     $option
      * @return  string
      */
-    protected static function replaceByHexOption($val, $option = 0)
+    protected function replaceByHexOption($val, $option = 0)
     {
         $search = array();
         $replace = array();

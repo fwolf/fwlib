@@ -3,7 +3,6 @@ namespace Fwlib\Db\Test;
 
 use Fwlib\Db\SqlGenerator;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Util\Json;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -38,9 +37,11 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
         $prop->setAccessible(true);
         $db = $prop->getValue($sg);
 
+        $json = UtilContainer::getInstance()->get('Json');
+
         $this->assertJsonStringEqualsJsonString(
-            Json::encode(self::$dbMysql),
-            Json::encode($db)
+            $json->encode(self::$dbMysql),
+            $json->encode($db)
         );
     }
 

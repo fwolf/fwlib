@@ -31,6 +31,7 @@ class UtilContainer extends AbstractServiceContainer
         'FileSystem'    => 'Fwlib\Util\FileSystem',
         'Http'          => 'Fwlib\Util\HttpUtil',
         'HttpUtil'      => 'Fwlib\Util\HttpUtil',
+        'Json'          => 'Fwlib\Util\Json',
     );
 
 

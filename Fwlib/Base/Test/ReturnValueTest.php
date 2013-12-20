@@ -3,7 +3,6 @@ namespace Fwlib\Base\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Base\ReturnValue;
-use Fwlib\Util\Json;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -17,6 +16,17 @@ use Fwlib\Util\UtilContainer;
  */
 class ReturnValueTest extends PHPunitTestCase
 {
+    protected $utilContainer;
+    protected $json;
+
+
+    public function __construct()
+    {
+        $this->utilContainer = UtilContainer::getInstance();
+        $this->json = $this->utilContainer->get('Json');
+    }
+
+
     public function testCommon()
     {
         $rv = new ReturnValue();
@@ -51,11 +61,11 @@ class ReturnValueTest extends PHPunitTestCase
         $y['data'] = null;
 
         $rv = new ReturnValue();
-        $rv->setUtilContainer(UtilContainer::getInstance())
-            ->loadJson(Json::encodeUnicode($info));
+        $rv->setUtilContainer($this->utilContainer)
+            ->loadJson($this->json->encodeUnicode($info));
 
         $this->assertEqualArray($y, $rv->getInfo());
-        $this->assertEqualArray($y, Json::decode($rv->getJson(), true));
+        $this->assertEqualArray($y, $this->json->decode($rv->getJson(), true));
     }
 
 
@@ -70,6 +80,6 @@ class ReturnValueTest extends PHPunitTestCase
             'data'  => 'bar',
         );
 
-        $rv = new ReturnValue(Json::encodeUnicode($info));
+        $rv = new ReturnValue($this->json->encodeUnicode($info));
     }
 }

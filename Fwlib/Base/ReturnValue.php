@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Base;
 
-use Fwlib\Util\Json;
 use Fwlib\Util\AbstractUtilAware;
 
 /**
@@ -139,7 +138,7 @@ class ReturnValue extends AbstractUtilAware
      */
     public function getJson()
     {
-        return Json::encodeUnicode($this->info);
+        return $this->utilContainer->get('Json')->encodeUnicode($this->info);
     }
 
 
@@ -171,7 +170,7 @@ class ReturnValue extends AbstractUtilAware
      */
     public function loadJson($json)
     {
-        $ar = Json::decode($json, true);
+        $ar = $this->utilContainer->get('Json')->decode($json, true);
 
         foreach (array('code', 'message') as $v) {
             if (!isset($ar[$v])) {

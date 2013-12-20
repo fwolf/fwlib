@@ -4,7 +4,6 @@ namespace Fwlib\Cache;
 use Fwlib\Base\AbstractAutoNewConfig;
 use Fwlib\Cache\CacheFile;
 use Fwlib\Cache\CacheMemcached;
-use Fwlib\Util\Json;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -158,7 +157,7 @@ class Cache extends AbstractAutoNewConfig
         if (1 == $this->config->get('cache-store-method')
             || 2 == $this->config->get('cache-store-method')
         ) {
-            return Json::encodeUnicode($val);
+            return $this->utilContainer->get('Json')->encodeUnicode($val);
 
         } else {
             // Raw
