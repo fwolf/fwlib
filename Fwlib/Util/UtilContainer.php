@@ -17,12 +17,16 @@ class UtilContainer extends AbstractServiceContainer
     /**
      * {@inheritdoc}
      *
+     * Short key without Util suffix is alias for easy use.
+     *
      * @var array
      */
     protected $serviceClass = array(
         'Array'     => 'Fwlib\Util\ArrayUtil',
         'ArrayUtil' => 'Fwlib\Util\ArrayUtil',
         'FileSystem'    => 'Fwlib\Util\FileSystem',
+        'Http'      => 'Fwlib\Util\HttpUtil',
+        'HttpUtil'  => 'Fwlib\Util\HttpUtil',
     );
 
 

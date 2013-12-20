@@ -27,7 +27,7 @@ class HttpUtil extends AbstractUtilAware
      * @param   string  $mime       Mime type of file
      * @return  boolean
      */
-    public static function download(
+    public function download(
         $content,
         $filename = '',
         $mime = 'application/force-download'
@@ -48,7 +48,7 @@ class HttpUtil extends AbstractUtilAware
         $tmpfilename = $filepath . $filename;
 
         file_put_contents($tmpfilename, $content);
-        $result = self::downloadFile($tmpfilename, $filename, $mime);
+        $result = $this->downloadFile($tmpfilename, $filename, $mime);
 
         unlink($tmpfilename);
         return $result;
@@ -65,7 +65,7 @@ class HttpUtil extends AbstractUtilAware
      * @param   string  $mime       Mime type of file
      * @return  boolean
      */
-    public static function downloadFile(
+    public function downloadFile(
         $filepath,
         $filename = '',
         $mime = 'application/force-download'
@@ -89,7 +89,7 @@ class HttpUtil extends AbstractUtilAware
 
         // Treat IE bug with multiple periods/dots in filename
         // eg: setup.abc.exe becomes setup[1].abc.exe
-        if ('trident' == self::getBrowserType()) {
+        if ('trident' == $this->getBrowserType()) {
             // count is reference (&count) in str_replace, so can't use it.
             $filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
         }
@@ -131,11 +131,9 @@ class HttpUtil extends AbstractUtilAware
      * @param   string  $default
      * @return  string
      */
-    public static function getBrowserType($agentStr = null, $default = 'gecko')
+    public function getBrowserType($agentStr = null, $default = 'gecko')
     {
-        // :TODO:
-        //$arrayUtil = $this->utilContainer->get('Array');
-        $arrayUtil = UtilContainer::getInstance()->get('Array');
+        $arrayUtil = $this->utilContainer->get('Array');
 
         // @codeCoverageIgnoreStart
         if (is_null($agentStr)) {
@@ -171,7 +169,7 @@ class HttpUtil extends AbstractUtilAware
      * @return  string
      * @link http://roshanbh.com.np/2007/12/getting-real-ip-address-in-php.html
      */
-    public static function getClientIp()
+    public function getClientIp()
     {
         $s = '';
 
@@ -201,9 +199,9 @@ class HttpUtil extends AbstractUtilAware
      * @param   mixed   $default
      * @return  mixed
      */
-    public static function getCookie($var, $default = null)
+    public function getCookie($var, $default = null)
     {
-        return self::getRequest($_COOKIE, $var, $default);
+        return $this->getRequest($_COOKIE, $var, $default);
     }
 
 
@@ -216,9 +214,9 @@ class HttpUtil extends AbstractUtilAware
      * @param   mixed   $default
      * @return  mixed
      */
-    public static function getGet($var, $default = null)
+    public function getGet($var, $default = null)
     {
-        return self::getRequest($_GET, $var, $default);
+        return $this->getRequest($_GET, $var, $default);
     }
 
 
@@ -231,9 +229,9 @@ class HttpUtil extends AbstractUtilAware
      * @param   mixed   $default
      * @return  mixed
      */
-    public static function getPost($var, $default = null)
+    public function getPost($var, $default = null)
     {
-        return self::getRequest($_POST, $var, $default);
+        return $this->getRequest($_POST, $var, $default);
     }
 
 
@@ -247,7 +245,7 @@ class HttpUtil extends AbstractUtilAware
      * @param   mixed   $default    If variant is not given, return this
      * @return  mixed
      */
-    public static function getRequest(&$request, $var, $default = null)
+    public function getRequest(&$request, $var, $default = null)
     {
         if (isset($request[$var])) {
             $val = $request[$var];
@@ -276,7 +274,7 @@ class HttpUtil extends AbstractUtilAware
      * @return  string
      * @link http://stackoverflow.com/a/8891890/1759745
      */
-    public static function getSelfUrl($withGetParam = true)
+    public function getSelfUrl($withGetParam = true)
     {
         if (empty($_SERVER['HTTP_HOST'])) {
             return '';
@@ -306,9 +304,9 @@ class HttpUtil extends AbstractUtilAware
      * @param   mixed   $default
      * @return  mixed
      */
-    public static function getSession($var, $default = null)
+    public function getSession($var, $default = null)
     {
-        $_SESSION[$var] = self::getRequest($_SESSION, $var, $default);
+        $_SESSION[$var] = $this->getRequest($_SESSION, $var, $default);
 
         return $_SESSION[$var];
     }
@@ -328,7 +326,7 @@ class HttpUtil extends AbstractUtilAware
      * @param   boolean $withSelfUrl    If true, return value include self url
      * @return  string              '?' and '&' included.
      */
-    public static function getUrlParam(
+    public function getUrlParam(
         $k = null,
         $v = null,
         $withSelfUrl = false
@@ -365,7 +363,7 @@ class HttpUtil extends AbstractUtilAware
 
         // Add self url
         if (true == $withSelfUrl) {
-            $s = self::getSelfUrl(false) . $s;
+            $s = $this->getSelfUrl(false) . $s;
         }
 
         return $s;
@@ -380,10 +378,10 @@ class HttpUtil extends AbstractUtilAware
      * @param   string  $url    Default: self url
      * @return  string
      */
-    public static function getUrlPlan($url = '')
+    public function getUrlPlan($url = '')
     {
         if (empty($url)) {
-            $url = self::getSelfUrl();
+            $url = $this->getSelfUrl();
         }
 
         $i = preg_match('/^(\w+):\/\//', $url, $ar);

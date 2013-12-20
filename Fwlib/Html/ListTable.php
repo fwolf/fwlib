@@ -414,7 +414,8 @@ class ListTable extends AbstractAutoNewConfig
         $_SERVER['SCRIPT_NAME'] = str_replace($ar, '/', $_SERVER['SCRIPT_NAME']);
         */
 
-        $this->url['base'] = HttpUtil::getSelfUrl(false);
+        $httpUtil = $this->utilContainer->get('HttpUtil');
+        $this->url['base'] = $httpUtil->getSelfUrl(false);
 
         $page = $arrayUtil->getIdx($this->param, $this->config['paramPage'], 1);
         $this->setPage($page);

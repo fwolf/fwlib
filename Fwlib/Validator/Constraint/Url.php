@@ -3,7 +3,7 @@ namespace Fwlib\Validator\Constraint;
 
 use Fwlib\Base\ReturnValue;
 use Fwlib\Validator\AbstractConstraint;
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -34,7 +34,7 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-12-12
  */
-class Url extends AbstractConstraint
+class Url extends AbstractConstraint implements UtilAwareInterface
 {
     /***************
      * Copy from Fwlib\Base\AbstractAutoNewInstance, can change to trait after
@@ -42,6 +42,7 @@ class Url extends AbstractConstraint
      ***************/
 
     public $serviceContainer = null;
+    protected $utilContainer = null;
 
     // Removed newObjXxx(), useless here
     public function __get($name)
@@ -102,6 +103,17 @@ class Url extends AbstractConstraint
         $this->serviceContainer = $serviceContainer;
     }
 
+    public function setUtilContainer(UtilContainer $utilContainer = null)
+    {
+        if (is_null($utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        } else {
+            $this->utilContainer = $utilContainer;
+        }
+
+        return $this;
+    }
+
     /***************
      * End of copied part
      ***************/
@@ -148,7 +160,8 @@ class Url extends AbstractConstraint
         }
 
 
-        $selfUrl = HttpUtil::getSelfUrl(true);
+        $httpUtil = $this->utilContainer->get('HttpUtil');
+        $selfUrl = $httpUtil->getSelfUrl(true);
         if (false !== strpos($selfUrl, '?')) {
             $url{0} = '&';
         } else {

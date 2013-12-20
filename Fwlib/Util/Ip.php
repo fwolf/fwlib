@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * Ip util
@@ -12,7 +12,7 @@ use Fwlib\Util\HttpUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2006-07-03
  */
-class Ip
+class Ip extends AbstractUtilAware
 {
     /**
      * Convert ip from hex string
@@ -49,7 +49,7 @@ class Ip
 
         // @codeCoverageIgnoreStart
         if (empty($ip)) {
-            $ip = HttpUtil::getClientIp();
+            $ip = $this->utilContainer->get('HttpUtil')->getClientIp();
         }
         // @codeCoverageIgnoreEnd
 

@@ -33,6 +33,7 @@ class UrlTest extends PHPunitTestCase
 
         $constraint = new Url();
         $constraint->setInstance($curl, 'Curl');
+        $constraint->setUtilContainer();
 
         $url = 'http://dummy/';
 

@@ -2,7 +2,7 @@
 namespace Fwlib\Util;
 
 use Fwlib\Algorithm\Iso7064;
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\AbstractUtilAware;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\StringUtil;
 
@@ -39,7 +39,7 @@ use Fwlib\Util\StringUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-10-31
  */
-class UuidBase62
+class UuidBase62 extends AbstractUtilAware
 {
     /**
      * Number base
@@ -124,9 +124,10 @@ class UuidBase62
         $uuid .= $group;
 
 
+        $httpUtil = $this->utilContainer->get('HttpUtil');
         if (empty($custom)) {
             $custom = NumberUtil::baseConvert(
-                sprintf('%u', ip2long(HttpUtil::getClientIp())),
+                sprintf('%u', ip2long($httpUtil->getClientIp())),
                 10,
                 static::$base
             );

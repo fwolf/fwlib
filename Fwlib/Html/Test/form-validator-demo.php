@@ -2,19 +2,22 @@
 require __DIR__ . '/../../../config.default.php';
 
 use Fwlib\Base\ReturnValue;
-use Fwlib\Config\ConfigGlobal;
+use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\FormValidator;
 use Fwlib\Net\Curl;
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Validator;
 
 /***************************************
  * Read post data
  **************************************/
-$userTitle = HttpUtil::getPost('userTitle');
-$userAge = HttpUtil::getPost('userAge');
-$remark = HttpUtil::getPost('remark');
-if (1 == HttpUtil::getPost('frontendCheck')) {
+$utilContainer = UtilContainer::getInstance();
+$httpUtil = $utilContainer->get('HttpUtil');
+
+$userTitle = $httpUtil->getPost('userTitle');
+$userAge = $httpUtil->getPost('userAge');
+$remark = $httpUtil->getPost('remark');
+if (1 == $httpUtil->getPost('frontendCheck')) {
     $frontendCheck = 'checked="checked"';
 } else {
     $frontendCheck = '';
@@ -24,7 +27,7 @@ if (1 == HttpUtil::getPost('frontendCheck')) {
 /***************************************
  * Treat ajax post
  **************************************/
-$action = HttpUtil::getGet('a');
+$action = $httpUtil->getGet('a');
 if ('checkAge' == $action) {
     $age = trim($userAge);
 
@@ -181,7 +184,7 @@ if (!empty($_POST)) {
 
 
   <script type="text/javascript"
-    src="<?php echo ConfigGlobal::get('lib.path.jquery'); ?>">
+    src="<?php echo GlobalConfig::getInstance()->get('lib.path.jquery'); ?>">
   </script>
 
   <script type="text/javascript"

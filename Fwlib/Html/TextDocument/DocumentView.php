@@ -108,7 +108,8 @@ class DocumentView extends AbstractAutoNewConfig
         }
 
         $html = '';
-        $file = HttpUtil::getGet($this->config['paramFile']);
+        $file = $this->utilContainer->get('HttpUtil')
+            ->getGet($this->config['paramFile']);
         if (empty($file)) {
             $html = $this->displayIndex($arFile, $returnOnly);
         } else {
@@ -134,7 +135,8 @@ class DocumentView extends AbstractAutoNewConfig
 
         $this->title = $converter->getTitle($file);
 
-        $view = HttpUtil::getGet($this->config['paramRaw']);
+        $view = $this->utilContainer->get('HttpUtil')
+            ->getGet($this->config['paramRaw']);
         if ('raw' == $view) {
             $html = $converter->convertRaw($file);
         } else {
