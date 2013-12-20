@@ -10,17 +10,18 @@
  */
 
 use Fwlib\Net\Curl;
-use Fwlib\Util\Env;
+use Fwlib\Util\UtilContainer;
 
 require_once __DIR__ . '/../../../config.default.php';
 
 $ch = new Curl;
+$env = UtilContainer::getInstance()->get('Env');
 
 
 // HTTP, Baidu
 $html = $ch->get('http://www.baidu.com/');
-Env::ecl('Baidu HTTP get: ' . $ch->getLastCode());
-Env::ecl('Title: ' . $ch->match('/<title>(.*?)<\/title>/', $html));
+$env->ecl('Baidu HTTP get: ' . $ch->getLastCode());
+$env->ecl('Title: ' . $ch->match('/<title>(.*?)<\/title>/', $html));
 
 
 // HTTPS, Alipay
@@ -28,8 +29,8 @@ $html = $ch->post('http://www.alipay.com/');
 $charset = $ch->match('<meta charset="(.*?)">', $html);
 $title = $ch->match('/<title>(.*?)<\/title>/', $html);
 $title = mb_convert_encoding($title, 'utf-8', $charset);
-Env::ecl('Alipay HTTPS get: ' . $ch->getLastCode());
-Env::ecl('Title: ' . $title);
+$env->ecl('Alipay HTTPS get: ' . $ch->getLastCode());
+$env->ecl('Title: ' . $title);
 
 
 unset($ch);

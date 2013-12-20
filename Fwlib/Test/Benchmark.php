@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Test;
 
-use Fwlib\Util\Env;
+use Fwlib\Util\AbstractUtilAware;
 use Fwlib\Util\EscapeColor;
 
 /**
@@ -22,7 +22,7 @@ use Fwlib\Util\EscapeColor;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2009-11-17
  */
-class Benchmark
+class Benchmark extends AbstractUtilAware
 {
     /**
      * Define color for groups, from fast to slow
@@ -81,7 +81,7 @@ class Benchmark
      */
     public function display($options = '', $return = false)
     {
-        if (Env::isCli()) {
+        if ($this->utilContainer->get('Env')->isCli()) {
             $result = $this->resultCli($options);
         } else {
             $result = $this->resultWeb($options);

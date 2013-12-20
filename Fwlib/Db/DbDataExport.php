@@ -2,7 +2,6 @@
 namespace Fwlib\Db;
 
 use Fwlib\Db\AbstractDbClient;
-use Fwlib\Util\Env;
 
 /**
  * Db data backup tool, result is pure SQL
@@ -389,7 +388,7 @@ class DbDataExport extends AbstractDbClient
     public function log($msg = '', $newline = true)
     {
         if ($newline) {
-            $msg = Env::ecl($msg, true);
+            $msg = $this->utilContainer->get('Env')->ecl($msg, true);
         }
 
         $logFile = $this->exportPath . '/'  . $this->logFile;
@@ -468,7 +467,7 @@ class DbDataExport extends AbstractDbClient
 
         // Check and create
         if (file_exists($path) && !is_dir($path)) {
-            Env::ecl('Export target path is a file.');
+            $this->utilContainer->get('Env')->ecl('Export target path is a file.');
             return false;
         } elseif (!file_exists($path)) {
             return mkdir($path, 0700, true);

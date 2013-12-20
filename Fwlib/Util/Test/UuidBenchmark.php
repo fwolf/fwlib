@@ -2,7 +2,7 @@
 require __DIR__ . '/../../../autoload.php';
 
 use Fwlib\Test\Benchmark;
-use Fwlib\Util\Env;
+use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UuidBase16;
 use Fwlib\Util\UuidBase36;
 use Fwlib\Util\UuidBase62;
@@ -41,14 +41,15 @@ $rs = str_replace(array_keys($arSpeed), $arSpeed, $rs);
 echo $rs;
 
 
-Env::ecl('UuidBase16 without check digit: ' . UuidBase16::generate('10', null, false));
-Env::ecl('UuidBase16 with    check digit: ' . UuidBase16::generate('10', null, true));
+$env = UtilContainer::getInstance()->get('Env');
+$env->ecl('UuidBase16 without check digit: ' . UuidBase16::generate('10', null, false));
+$env->ecl('UuidBase16 with    check digit: ' . UuidBase16::generate('10', null, true));
 
-Env::ecl('UuidBase16 without check digit: ' . UuidBase16::generateWithSeparator('10', null, false));
-Env::ecl('UuidBase16 with    check digit: ' . UuidBase16::generateWithSeparator('10', null, true));
+$env->ecl('UuidBase16 without check digit: ' . UuidBase16::generateWithSeparator('10', null, false));
+$env->ecl('UuidBase16 with    check digit: ' . UuidBase16::generateWithSeparator('10', null, true));
 
-Env::ecl('UuidBase36 without check digit: ' . UuidBase36::generate('10', null, false));
-Env::ecl('UuidBase36 with    check digit: ' . UuidBase36::generate('10', null, true));
+$env->ecl('UuidBase36 without check digit: ' . UuidBase36::generate('10', null, false));
+$env->ecl('UuidBase36 with    check digit: ' . UuidBase36::generate('10', null, true));
 
-Env::ecl('UuidBase62 without check digit: ' . UuidBase62::generate('10', null, false));
-Env::ecl('UuidBase62 with    check digit: ' . UuidBase62::generate('10', null, true));
+$env->ecl('UuidBase62 without check digit: ' . UuidBase62::generate('10', null, false));
+$env->ecl('UuidBase62 with    check digit: ' . UuidBase62::generate('10', null, true));

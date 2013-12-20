@@ -2,7 +2,7 @@
 namespace Fwlib\Bridge;
 
 use Fwlib\Db\SqlGenerator;
-use Fwlib\Util\Env;
+use Fwlib\Util\AbstractUtilAware;
 use Fwlib\Util\StringUtil;
 
 /**
@@ -34,7 +34,7 @@ use Fwlib\Util\StringUtil;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-04-08
  */
-class Adodb
+class Adodb extends AbstractUtilAware
 {
 
     /**
@@ -324,7 +324,7 @@ class Adodb
                 . $e->getMessage() . "\n";
             error_log($trace);
 
-            if (!Env::isCli()) {
+            if (!$this->utilContainer->get('Env')->isCli()) {
                 $trace = StringUtil::encodeHtml($trace);
             }
             echo $trace;

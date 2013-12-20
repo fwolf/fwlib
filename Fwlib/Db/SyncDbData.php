@@ -2,7 +2,7 @@
 namespace Fwlib\Db;
 
 use Fwlib\Bridge\Adodb;
-use Fwlib\Util\Env;
+use Fwlib\Util\AbstractUtilAware;
 use Fwlib\Util\StringUtil;
 use Fwlib\Util\UuidBase36;
 
@@ -39,7 +39,7 @@ use Fwlib\Util\UuidBase36;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-05-20
  */
-class SyncDbData
+class SyncDbData extends AbstractUtilAware
 {
     /**
      * Number of rows have processed
@@ -302,7 +302,7 @@ class SyncDbData
 
         // @codeCoverageIgnoreStart
         if ($this->verbose) {
-            Env::ecl($msg);
+            $this->utilContainer->get('Env')->ecl($msg);
         }
         // @codeCoverageIgnoreEnd
     }

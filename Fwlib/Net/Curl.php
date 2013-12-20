@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Net;
 
-use Fwlib\Util\Env;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * Helper class to use curl efficiency
@@ -16,7 +16,7 @@ use Fwlib\Util\Env;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2007-03-14
  */
-class Curl
+class Curl extends AbstractUtilAware
 {
     /**
      * File to save cookie
@@ -170,7 +170,7 @@ class Curl
 
         if (empty($this->logFile)) {
             // Print
-            Env::ecl($msg);
+            $this->utilContainer->get('Env')->ecl($msg);
 
         } elseif (is_writable($this->logFile)) {
             // Write to log file

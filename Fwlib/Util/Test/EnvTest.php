@@ -15,18 +15,26 @@ use Fwlib\Util\Env;
  */
 class EnvTest extends PHPunitTestCase
 {
+    protected $env;
+
+    public function __construct()
+    {
+        $this->env = new Env;
+    }
+
+
     public function testEcl()
     {
         $x = '';
         $y = "\n";
-        $this->assertEquals($y, strip_tags(Env::ecl($x, true)));
+        $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
 
         $x = array('foo', 'bar');
         $y = "foo\nbar\n";
-        $this->assertEquals($y, strip_tags(Env::ecl($x, true)));
+        $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
 
         $x = " 	foo\r\nbar\n";
         $y = "foo\n\nbar\n";
-        $this->assertEquals($y, strip_tags(Env::ecl($x, true)));
+        $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
     }
 }

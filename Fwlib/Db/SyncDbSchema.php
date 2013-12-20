@@ -76,6 +76,8 @@ class SyncDbSchema extends AbstractDbClient
             $this->logTable = $logTable;
         }
 
+        $this->setUtilContainer();
+
         $this->checkLogTable();
     }
 
@@ -286,7 +288,7 @@ CREATE TABLE $table (
     public function log($msg = '', $newline = true)
     {
         if ($newline) {
-            $msg = Env::ecl($msg, true);
+            $msg = $this->utilContainer->get('Env')->ecl($msg, true);
         }
 
         echo $msg;

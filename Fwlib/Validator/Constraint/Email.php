@@ -2,7 +2,8 @@
 namespace Fwlib\Validator\Constraint;
 
 use Fwlib\Validator\AbstractConstraint;
-use Fwlib\Util\Env;
+use Fwlib\Util\UtilAwareInterface;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Constraint Email
@@ -13,7 +14,7 @@ use Fwlib\Util\Env;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-12-04
  */
-class Email extends AbstractConstraint
+class Email extends AbstractConstraint implements UtilAwareInterface
 {
     /**
      * Check email domain through dns
@@ -28,6 +29,39 @@ class Email extends AbstractConstraint
     public $messageTemplate = array(
         'default'   => 'The input should be valid email address'
     );
+
+    /**
+     * @var UtilContainer
+     */
+    protected $utilContainer = null;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->setUtilContainer();
+    }
+
+
+    /**
+     * Setter of UtilContainer instance
+     *
+     * @param   UtilContainer   $utilContainer
+     * @return  AbstractAutoNewInstance
+     */
+    public function setUtilContainer(UtilContainer $utilContainer = null)
+    {
+        if (is_null($utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        } else {
+            $this->utilContainer = $utilContainer;
+        }
+
+        return $this;
+    }
+
 
     /**
      * {@inheritdoc}
@@ -89,7 +123,8 @@ class Email extends AbstractConstraint
 
         // Some network provider will return fake A record if a dns query
         // return fail, usually disp some ads, so we only check MX record.
-        if ($valid && $this->dnsCheck && Env::isNixOs() &&
+        if ($valid && $this->dnsCheck &&
+            $this->utilContainer->get('Env')->isNixOs() &&
             !checkdnsrr($domain, 'MX')
         ) {
             $valid = false;

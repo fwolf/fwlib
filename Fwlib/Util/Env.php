@@ -24,9 +24,9 @@ class Env
      * @param   boolean $noecho Do not print
      * @return  string
      */
-    public static function ecl($str = '', $noecho = false)
+    public function ecl($str = '', $noecho = false)
     {
-        if (self::isCli()) {
+        if ($this->isCli()) {
             $lineEnding = "\n";
         } else {
             $lineEnding = "<br />\n";
@@ -35,7 +35,7 @@ class Env
         if (is_array($str)) {
             $rs = '';
             foreach ($str as $v) {
-                $rs .= self::ecl($v, $noecho);
+                $rs .= $this->ecl($v, $noecho);
             }
             return $rs;
         }
@@ -59,7 +59,7 @@ class Env
      *
      * @codeCoverageIgnore
      */
-    public static function forceHttps()
+    public function forceHttps()
     {
         if (!isset($_SERVER['HTTPS']) || 'on' != $_SERVER['HTTPS']) {
             $s = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -75,7 +75,7 @@ class Env
      *
      * @return  boolean
      */
-    public static function isCli()
+    public function isCli()
     {
         return 'cli' == PHP_SAPI;
     }
@@ -88,7 +88,7 @@ class Env
      *
      * @return boolean
      */
-    public static function isNixOs()
+    public function isNixOs()
     {
         return 'Windows' != PHP_OS;
     }

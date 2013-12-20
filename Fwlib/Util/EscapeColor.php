@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
+use Fwlib\Util\AbstractUtilAware;
 use Fwlib\Util\Env;
 
 /**
@@ -17,7 +18,7 @@ use Fwlib\Util\Env;
  * @since       2006-07-17
  * @link http://linuxgazette.net/issue65/padala.html
  */
-class EscapeColor
+class EscapeColor extends AbstractUtilAware
 {
     /**
      * Dict: attr
@@ -156,7 +157,7 @@ class EscapeColor
         }
         $output .= "---------------------------------------------------------------------\n";
 
-        $output = Env::ecl($output, true);
+        $output = $this->utilContainer->get('Env')->ecl($output, true);
         if (!$export) {
             echo $output;
         }

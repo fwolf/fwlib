@@ -26,6 +26,7 @@ class UtilContainer extends AbstractServiceContainer
         'ArrayUtil' => 'Fwlib\Util\ArrayUtil',
         'Datetime'  => 'Fwlib\Util\DatetimeUtil',
         'DatetimeUtil'  => 'Fwlib\Util\DatetimeUtil',
+        'Env'       => 'Fwlib\Util\Env',
         'FileSystem'    => 'Fwlib\Util\FileSystem',
         'Http'      => 'Fwlib\Util\HttpUtil',
         'HttpUtil'  => 'Fwlib\Util\HttpUtil',
