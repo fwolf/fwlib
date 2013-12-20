@@ -16,12 +16,22 @@ use Fwlib\Util\StringUtil;
  */
 class FileSystemTest extends PHPunitTestCase
 {
+    protected $fileSystem;
+
+
+    public function __construct()
+    {
+        $this->fileSystem = new FileSystem;
+        $this->fileSystem->setUtilContainer();
+    }
+
+
     public function testDel()
     {
         // Dir
         $dir = sys_get_temp_dir() . '/test.Fwlib.Util.FileSystem/';
         if (file_exists($dir)) {
-            FileSystem::del($dir);
+            $this->fileSystem->del($dir);
         }
         mkdir($dir);
         // File
@@ -41,19 +51,19 @@ class FileSystemTest extends PHPunitTestCase
 
         // Test dir/file size
         file_put_contents($foo1, 'blah');
-        $this->assertEquals(4, FileSystem::getFileSize($foo1));
+        $this->assertEquals(4, $this->fileSystem->getFileSize($foo1));
         $this->assertEquals(
             4,
-            FileSystem::getFileSize($dir . 'dir/hardlink-to-foo1')
+            $this->fileSystem->getFileSize($dir . 'dir/hardlink-to-foo1')
         );
-        $this->assertTrue(FileSystem::getDirSize($foo1, true) > 4);
+        $this->assertTrue($this->fileSystem->getDirSize($foo1, true) > 4);
         $this->assertTrue(
-            FileSystem::getDirSize($dir) < FileSystem::getDirSize($dir, true)
+            $this->fileSystem->getDirSize($dir) < $this->fileSystem->getDirSize($dir, true)
         );
 
 
         // Test del
-        FileSystem::del($dir);
+        $this->fileSystem->del($dir);
         $this->assertFileNotExists($dir);
     }
 
@@ -61,55 +71,55 @@ class FileSystemTest extends PHPunitTestCase
     public function testGetDirName()
     {
         $x = 'a/';
-        $this->assertEquals('./', FileSystem::getDirName($x));
+        $this->assertEquals('./', $this->fileSystem->getDirName($x));
 
         $x = 'a/b/c/d';
-        $this->assertEquals('a/b/c/', FileSystem::getDirName($x));
+        $this->assertEquals('a/b/c/', $this->fileSystem->getDirName($x));
 
         $x = null;
-        $this->assertEquals('./', FileSystem::getDirName($x));
+        $this->assertEquals('./', $this->fileSystem->getDirName($x));
         $x = '';
-        $this->assertEquals('./', FileSystem::getDirName($x));
+        $this->assertEquals('./', $this->fileSystem->getDirName($x));
         $x = '42';
-        $this->assertEquals('./', FileSystem::getDirName($x));
+        $this->assertEquals('./', $this->fileSystem->getDirName($x));
     }
 
 
     public function testGetFileExt()
     {
         $x = 'a.txt';
-        $this->assertEquals('txt', FileSystem::getFileExt($x));
+        $this->assertEquals('txt', $this->fileSystem->getFileExt($x));
 
         $x = 'a.b.c.d.txt';
-        $this->assertEquals('txt', FileSystem::getFileExt($x));
+        $this->assertEquals('txt', $this->fileSystem->getFileExt($x));
 
         $x = null;
-        $this->assertEquals('', FileSystem::getFileExt($x));
+        $this->assertEquals('', $this->fileSystem->getFileExt($x));
         $x = '';
-        $this->assertEquals('', FileSystem::getFileExt($x));
+        $this->assertEquals('', $this->fileSystem->getFileExt($x));
         $x = '42';
-        $this->assertEquals('', FileSystem::getFileExt($x));
+        $this->assertEquals('', $this->fileSystem->getFileExt($x));
     }
 
 
     public function testGetFileName()
     {
         $x = 'a.txt';
-        $this->assertEquals('a', FileSystem::getFileName($x));
+        $this->assertEquals('a', $this->fileSystem->getFileName($x));
 
         $x = 'a.b.c.d.txt';
-        $this->assertEquals('a.b.c.d', FileSystem::getFileName($x));
+        $this->assertEquals('a.b.c.d', $this->fileSystem->getFileName($x));
 
         $x = null;
-        $this->assertEquals('', FileSystem::getFileName($x));
+        $this->assertEquals('', $this->fileSystem->getFileName($x));
         $x = '';
-        $this->assertEquals('', FileSystem::getFileName($x));
+        $this->assertEquals('', $this->fileSystem->getFileName($x));
         $x = '42';
-        $this->assertEquals('42', FileSystem::getFileName($x));
+        $this->assertEquals('42', $this->fileSystem->getFileName($x));
     }
 
 
-    public function testGetNewFile()
+    public function testGetFileNameForNew()
     {
         // Prepare a filename
         $name = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
@@ -118,17 +128,17 @@ class FileSystemTest extends PHPunitTestCase
         $file = $name . '.' . $ext;
 
         // Call 1
-        $s1 = FileSystem::getNewFile($file);
+        $s1 = $this->fileSystem->getFileNameForNew($file);
         $this->assertEquals($name . '.' . $ext, $s1);
         touch($s1);
 
         // Call 2
-        $s2 = FileSystem::getNewFile($file);
+        $s2 = $this->fileSystem->getFileNameForNew($file);
         $this->assertEquals($name . '-1.' . $ext, $s2);
         mkdir($s2);
 
         // Call 3
-        $s3 = FileSystem::getNewFile($file);
+        $s3 = $this->fileSystem->getFileNameForNew($file);
         $this->assertEquals($name . '-2.' . $ext, $s3);
 
         // Cleanup
@@ -140,10 +150,10 @@ class FileSystemTest extends PHPunitTestCase
     public function testListDir()
     {
         $this->assertTrue(
-            0 == count(FileSystem::listDir('not-exists-dir', 'mtime', 'asc'))
+            0 == count($this->fileSystem->listDir('not-exists-dir', 'mtime', 'asc'))
         );
         $this->assertTrue(
-            1 <= count(FileSystem::listDir('./', 'mtime', 'asc'))
+            1 <= count($this->fileSystem->listDir('./', 'mtime', 'asc'))
         );
     }
 }

@@ -21,7 +21,7 @@ class FileSystem extends AbstractUtilAware
      *
      * @param   string  $name
      */
-    public static function del($name)
+    public function del($name)
     {
         // Lost link file will got nothing using realpath, basename, dirname
         // So trans in full path as $name all the time.
@@ -34,7 +34,7 @@ class FileSystem extends AbstractUtilAware
                 if (('.' == $file) || ('..' == $file)) {
                     continue;
                 }
-                self::del($name . '/' . $file);
+                $this->del($name . DIRECTORY_SEPARATOR . $file);
             }
             rmdir($name);
         } else {
@@ -46,13 +46,13 @@ class FileSystem extends AbstractUtilAware
     /**
      * Get dir name WITH ending slash
      *
-     * In PHP, 'd/' means a dir under upper dir 'd',
-     * but this method will return 'd/' for 'd/' instead.
+     * In PHP, 'd/' means a dir under upper dir 'd', but this method will
+     * return 'd/' instead.
      *
      * @param   string  $path
      * @return  string
      */
-    public static function getDirName($path)
+    public function getDirName($path)
     {
         if (empty($path)) {
             return '.' . DIRECTORY_SEPARATOR;
@@ -74,10 +74,10 @@ class FileSystem extends AbstractUtilAware
      * @param   boolean $blksize
      * @return  long
      */
-    public static function getDirSize($path, $blksize = false)
+    public function getDirSize($path, $blksize = false)
     {
         if (is_file($path)) {
-            return self::getFileSize($path, $blksize);
+            return $this->getFileSize($path, $blksize);
         }
 
         // Dir
@@ -91,9 +91,9 @@ class FileSystem extends AbstractUtilAware
             if (('.' != $file) && ('..' != $file)) {
                 $fullpath = $path . $file;
                 if (is_dir($fullpath)) {
-                    $i += self::getDirSize($fullpath, $blksize);
+                    $i += $this->getDirSize($fullpath, $blksize);
                 } else {
-                    $i += self::getFileSize($fullpath, $blksize);
+                    $i += $this->getFileSize($fullpath, $blksize);
                 }
             }
         }
@@ -107,7 +107,7 @@ class FileSystem extends AbstractUtilAware
      * @param   string  $filename
      * @return  string
      */
-    public static function getFileExt($filename)
+    public function getFileExt($filename)
     {
         return pathinfo($filename, PATHINFO_EXTENSION);
     }
@@ -119,9 +119,48 @@ class FileSystem extends AbstractUtilAware
      * @param   string  $filename
      * @return  string
      */
-    public static function getFileName($filename)
+    public function getFileName($filename)
     {
         return pathinfo($filename, PATHINFO_FILENAME);
+    }
+
+
+    /**
+     * Get a filename to write as new, skip exists file
+     *
+     * If file with same name exists, will add -1, -2, -nnn at end of filename
+     * before extention, until get a filename not exists.
+     *
+     * Will also remove special chars in filename.
+     *
+     * Can use with dir as well as regular file.
+     *
+     * @param   string  $file   Path to dest file
+     * @return  string
+     */
+    public function getFileNameForNew($file)
+    {
+        $file = trim($file);
+
+        // Remove special chars in filename
+        $file = str_replace(
+            array('?', '&', ';', '=', ':', "\\"),
+            '-',
+            $file
+        );
+
+        $dir  = $this->getDirName($file);
+        $name = $this->getFileName($file);
+        $ext  = $this->getFileExt($file);
+
+        // Auto skip exists file, no overwrite.(-1, -2...-9, -10, -11.ext)
+        $i = 1;
+        while (file_exists($file)) {
+            $file = $dir . $name . '-' . strval($i ++) .
+                (empty($ext) ? '' : ('.' . $ext));
+        }
+
+        return $file;
     }
 
 
@@ -138,7 +177,7 @@ class FileSystem extends AbstractUtilAware
      * @param   boolean $blksize    Get blksize instead of native filesize
      * @return  long
      */
-    public static function getFileSize($file, $blksize = false)
+    public function getFileSize($file, $blksize = false)
     {
         if (is_link($file)) {
             $stat = lstat($file);
@@ -156,46 +195,6 @@ class FileSystem extends AbstractUtilAware
 
 
     /**
-     * Get a filename to write as new, skip exists file
-     *
-     * Before write, there is a filename, but if file exists,
-     * need plus -1, -2, -nnn at end of filename before extention.
-     * This func will do this job and return suitable filename.
-     *
-     * Will also remove special chars in filename.
-     *
-     * Can use with dir as well as regular file.
-     *
-     * @param   string  $file   Path to dest file
-     * @return  string
-     */
-    public static function getNewFile($file)
-    {
-        $file = trim($file);
-
-        // Remove special chars in filename
-        $file = str_replace(
-            array('?', '&', ';', '=', ':', "\\"),
-            '-',
-            $file
-        );
-
-        $dir  = self::getDirName($file);
-        $name = self::getFileName($file);
-        $ext  = self::getFileExt($file);
-
-        // Auto skip exists file, no overwrite.(-1, -2...-9, -10, -11.ext)
-        $i = 1;
-        while (file_exists($file)) {
-            $file = $dir . $name . '-' . strval($i ++) .
-                (empty($ext) ? '' : ('.' . $ext));
-        }
-
-        return $file;
-    }
-
-
-    /**
      * List file with information of a directory
      *
      * @param   string  $dir
@@ -203,7 +202,7 @@ class FileSystem extends AbstractUtilAware
      * @param   string  $order      Sort order: ASC, DESC
      * @return  array
      */
-    public static function listDir($dir = './', $sortby = '', $order = 'ASC')
+    public function listDir($dir = './', $sortby = '', $order = 'ASC')
     {
         // List files
         $dir = realpath($dir);
@@ -226,9 +225,9 @@ class FileSystem extends AbstractUtilAware
                 $fullpath = $dir . $file;
 
                 if (is_dir($fullpath)) {
-                    $size = self::getDirSize($fullpath);
+                    $size = $this->getDirSize($fullpath);
                 } else {
-                    $size = self::getFileSize($fullpath);
+                    $size = $this->getFileSize($fullpath);
                 }
 
                 $arFiles[] = array(
@@ -242,9 +241,7 @@ class FileSystem extends AbstractUtilAware
 
         // Sort result
         if (!empty($sortby)) {
-            // :TODO: Change back after change FileSystem to non-static
-            //$arrayUtil = $this->utilContainer->get('Array');
-            $arrayUtil = UtilContainer::getInstance()->get('Array');
+            $arrayUtil = $this->utilContainer->get('Array');
             $arrayUtil->sortByLevel2($arFiles, $sortby, $order);
         }
 

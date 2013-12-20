@@ -2,11 +2,10 @@
 namespace Fwlib\Db\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Config\ConfigGlobal;
 use Fwlib\Db\DbDataExport;
 use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Test\ServiceContainerTest;
-use Fwlib\Util\FileSystem;
+use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UuidBase16;
 
 /**
@@ -25,6 +24,7 @@ class DbDataExportTest extends AbstractDbRelateTest
     protected static $delimiter = '';
     protected static $exportPath = '';
     protected static $insertCount = 23;
+    protected static $utilContainer = null;
 
 
     /**
@@ -55,6 +55,8 @@ class DbDataExportTest extends AbstractDbRelateTest
     {
         parent::setUpBeforeClass();
 
+        self::$utilContainer = UtilContainer::getInstance();
+
         // Generate temp dir name for exported file
         self::$exportPath = tempnam(sys_get_temp_dir(), 'DbDataExportTest-');
         // Unlink tmpfile, will create as dir later
@@ -77,7 +79,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         parent::tearDownAfterClass();
 
         // Remove export path
-        FileSystem::del(self::$exportPath);
+        self::$utilContainer->get('FileSystem')->del(self::$exportPath);
     }
 
 
@@ -133,7 +135,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         $this->assertEquals($y, $ar[$i++]);
 
         // Clean
-        FileSystem::del(
+        self::$utilContainer->get('FileSystem')->del(
             self::$exportPath . DIRECTORY_SEPARATOR . self::$tableUser . '.sql'
         );
     }
@@ -178,7 +180,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         $this->assertEquals($y, $ar[$i++]);
 
         // Clean
-        FileSystem::del(
+        self::$utilContainer->get('FileSystem')->del(
             self::$exportPath . DIRECTORY_SEPARATOR . self::$tableUser . '.sql'
         );
     }

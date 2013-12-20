@@ -3,7 +3,7 @@ namespace Fwlib\Cache\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
-use Fwlib\Util\FileSystem;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Cache\CacheFile
@@ -18,6 +18,9 @@ use Fwlib\Util\FileSystem;
  */
 class CacheFileTest extends PHPunitTestCase
 {
+    protected $utilContainer = null;
+
+
     /**
      * Cache object
      *
@@ -28,6 +31,7 @@ class CacheFileTest extends PHPunitTestCase
     public function __construct()
     {
         $this->ch = Cache::create('file');
+        $this->utilContainer = UtilContainer::getInstance();
     }
 
 
@@ -42,9 +46,10 @@ class CacheFileTest extends PHPunitTestCase
         $x = $this->ch->getFilePath($key);
 
         // Clean test dir
-        $y = FileSystem::getDirName($x);
+        $fileSystem = $this->utilContainer->get('FileSystem');
+        $y = $fileSystem->getDirName($x);
         if (file_exists($y)) {
-            FileSystem::del($y);
+            $fileSystem->del($y);
         }
 
         // Cache set

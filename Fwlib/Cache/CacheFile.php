@@ -2,7 +2,6 @@
 namespace Fwlib\Cache;
 
 use Fwlib\Cache\Cache;
-use Fwlib\Util\FileSystem;
 
 /**
  * Key-value cache system, data store in file
@@ -303,7 +302,7 @@ class CacheFile extends Cache
         $cache = $this->encodeVal($val);
 
         // Create each level dir if not exists
-        $dir = FileSystem::getDirName($file);
+        $dir = $this->utilContainer->get('FileSystem')->getDirName($file);
         if (!file_exists($dir)) {
             mkdir($dir, 0755, true);
         }

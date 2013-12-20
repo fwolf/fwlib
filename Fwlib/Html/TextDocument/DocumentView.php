@@ -2,7 +2,6 @@
 namespace Fwlib\Html\TextDocument;
 
 use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Util\FileSystem;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\StringUtil;
@@ -315,7 +314,7 @@ class DocumentView extends AbstractAutoNewConfig
             'txt'      => 'Markdown',
         );
 
-        $ext = FileSystem::getFileExt($filename);
+        $ext = $this->utilContainer->get('FileSystem')->getFileExt($filename);
 
         $arrayUtil = $this->utilContainer->get('Array');
         return $arrayUtil->getIdx($ar, $ext, 'Unknown');
@@ -332,8 +331,9 @@ class DocumentView extends AbstractAutoNewConfig
         $arFile = array();
 
         $arDir = (array)$this->config['dir'];
+        $fileSystem = $this->utilContainer->get('FileSystem');
         foreach ($arDir as $dir) {
-            foreach (FileSystem::listDir($dir) as $file) {
+            foreach ($fileSystem->listDir($dir) as $file) {
                 $fullpath = $dir . $file['name'];
 
                 if (is_dir($fullpath) && $this->config['recursive']) {

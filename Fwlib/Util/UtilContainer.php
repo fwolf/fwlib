@@ -22,6 +22,7 @@ class UtilContainer extends AbstractServiceContainer
     protected $serviceClass = array(
         'Array'     => 'Fwlib\Util\ArrayUtil',
         'ArrayUtil' => 'Fwlib\Util\ArrayUtil',
+        'FileSystem'    => 'Fwlib\Util\FileSystem',
     );
 
 
