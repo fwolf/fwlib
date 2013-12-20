@@ -19,17 +19,19 @@ class McryptSimpleIvTest extends PHPunitTestCase
 {
     public function testMcryptSimpleIv()
     {
+        $mcryptSimpleIv = new McryptSimpleIv;
+
         $key = 'blahblahblah';
         $data = '加密的东东';
         $algo = 'xtea';
 
-        $encrypted = McryptSimpleIv::encrypt($data, $key, $algo);
+        $encrypted = $mcryptSimpleIv->encrypt($data, $key, $algo);
         $this->assertEquals(
             '8vAJEMIdSmH3udoxZ3va',
             base64_encode($encrypted)
         );
 
-        $decrypted = McryptSimpleIv::decrypt($encrypted, $key, $algo);
+        $decrypted = $mcryptSimpleIv->decrypt($encrypted, $key, $algo);
         $this->assertEquals($data, $decrypted);
     }
 }

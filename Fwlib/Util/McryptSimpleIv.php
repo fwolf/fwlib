@@ -51,7 +51,7 @@ class McryptSimpleIv
      * @param   boolean $exit
      * @return  boolean
      */
-    public static function checkExtension($exit = false)
+    public function checkExtension($exit = false)
     {
         if (!extension_loaded('mcrypt')) {
             // @codeCoverageIgnoreStart
@@ -87,7 +87,7 @@ class McryptSimpleIv
      * @param   string  $modeDirectory          Same as mcrypt_module_open()
      * @return  string
     */
-    public static function decrypt(
+    public function decrypt(
         $srce,
         $key,
         $algorithm,
@@ -118,7 +118,7 @@ class McryptSimpleIv
      * @param   string  $modeDirectory          Same as mcrypt_module_open()
      * @return  string
     */
-    public static function encrypt(
+    public function encrypt(
         $srce,
         $key,
         $algorithm,
@@ -150,7 +150,7 @@ class McryptSimpleIv
      * @param   string  $modeDirectory          Same as mcrypt_module_open()
      * @return  string
     */
-    public static function process(
+    public function process(
         $action,
         $srce,
         $key,
