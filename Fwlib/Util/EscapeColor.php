@@ -2,7 +2,6 @@
 namespace Fwlib\Util;
 
 use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\Env;
 
 /**
  * Escape color for bash shell
@@ -23,7 +22,7 @@ class EscapeColor extends AbstractUtilAware
     /**
      * Dict: attr
      */
-    protected static $dictAttr = array(
+    protected $dictAttr = array(
         'reset'     => 0,    // Reset All Attributes (return to normal mode)
         'bright'    => 1,    // Bright (Usually turns on BOLD)
         'bold'      => 1,    // Bright (Usually turns on BOLD)
@@ -38,7 +37,7 @@ class EscapeColor extends AbstractUtilAware
     /**
      * Dict: bg color
      */
-    protected static $dictBg = array(
+    protected $dictBg = array(
         'black'     => 40,
         'red'       => 41,
         'green'     => 42,
@@ -52,7 +51,7 @@ class EscapeColor extends AbstractUtilAware
     /**
      * Dict: fg color
      */
-    protected static $dictFg = array(
+    protected $dictFg = array(
         'black'     => 30,
         'red'       => 31,
         'green'     => 32,
@@ -66,12 +65,12 @@ class EscapeColor extends AbstractUtilAware
     /**
      * Set false to disable color paint
      */
-    public static $enabled = true;
+    public $enabled = true;
 
     /**
      * Escape char to declare begin of escaped color
      */
-    public static $esc = "\x1b[";   // Or \033[
+    public $esc = "\x1b[";   // Or \033[
 
 
     /**
@@ -85,32 +84,32 @@ class EscapeColor extends AbstractUtilAware
      * @param   int|string  $bg     Background color
      * @return  string
      */
-    public static function paint($str, $attr = '', $fg = '', $bg = '')
+    public function paint($str, $attr = '', $fg = '', $bg = '')
     {
-        if (!self::$enabled) {
+        if (!$this->enabled) {
             return $str;
         }
 
 
         $ar = array();
 
-        if (isset(self::$dictAttr[$attr])) {
+        if (isset($this->dictAttr[$attr])) {
             $attr = strtolower($attr);
-            $ar[] = self::$dictAttr[$attr];
+            $ar[] = $this->dictAttr[$attr];
         } elseif (is_int($attr)) {
             $ar[] = $attr;
         }
 
-        if (isset(self::$dictFg[$fg])) {
+        if (isset($this->dictFg[$fg])) {
             $fg = strtolower($fg);
-            $ar[] = self::$dictFg[$fg];
+            $ar[] = $this->dictFg[$fg];
         } elseif (is_int($fg)) {
             $ar[] = $fg;
         }
 
-        if (isset(self::$dictBg[$bg])) {
+        if (isset($this->dictBg[$bg])) {
             $bg = strtolower($bg);
-            $ar[] = self::$dictBg[$bg];
+            $ar[] = $this->dictBg[$bg];
         } elseif (is_int($bg)) {
             $ar[] = $bg;
         }
@@ -118,8 +117,8 @@ class EscapeColor extends AbstractUtilAware
         if (empty($ar)) {
             return $str;
         } else {
-            return self::$esc . implode(';', $ar) . 'm'
-                . $str . self::$esc . '0m';
+            return $this->esc . implode(';', $ar) . 'm'
+                . $str . $this->esc . '0m';
         }
 
         return $s_esc . $s_attr . $s_fg . $s_bg . 'm' . $str . $s_esc . '0m';
@@ -133,7 +132,7 @@ class EscapeColor extends AbstractUtilAware
      *
      * @param   boolean $export
      */
-    public static function printTable($export = false)
+    public function printTable($export = false)
     {
         $output = '';
         $output .= "Table for 16-color terminal escape sequences.\n";
@@ -144,12 +143,12 @@ class EscapeColor extends AbstractUtilAware
         for ($bg = 40; $bg <= 47; $bg ++) {
             // bold = bright
             for ($bold = 0; $bold <= 1; $bold ++) {
-                $output .= self::paint("ESC[{$bg}m   | ", $bold);
+                $output .= $this->paint("ESC[{$bg}m   | ", $bold);
                 for ($fg = 30; $fg <= 37; $fg ++) {
                     if (0 == $bold) {
-                        $output .= self::paint(" [{$fg}m  ", $bold, $fg, $bg);
+                        $output .= $this->paint(" [{$fg}m  ", $bold, $fg, $bg);
                     } else {
-                        $output .= self::paint(" [$bold;{$fg}m", $bold, $fg, $bg);
+                        $output .= $this->paint(" [$bold;{$fg}m", $bold, $fg, $bg);
                     }
                 }
                 $output .= "\n";
@@ -175,7 +174,7 @@ class EscapeColor extends AbstractUtilAware
      * @param   string  $in     String to be convert
      * @return  string
      */
-    public static function toHtml($in)
+    public function toHtml($in)
     {
         // attr:
         // 0 - reset
@@ -213,7 +212,7 @@ class EscapeColor extends AbstractUtilAware
         // fg colors:
         $key = array();
         $replace = array();
-        foreach (self::$dictFg as $k => $v) {
+        foreach ($this->dictFg as $k => $v) {
             $key[] = "/\x1b\[{$v};?(\d{0,2};?)m/";
             $replace[] = "<span style=\"color: $k;\">\x1b[\\1m";
         }

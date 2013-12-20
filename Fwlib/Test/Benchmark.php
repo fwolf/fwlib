@@ -2,7 +2,6 @@
 namespace Fwlib\Test;
 
 use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\EscapeColor;
 
 /**
  * Benchmark tool for program execute time
@@ -255,11 +254,12 @@ EOF;
 
         $output = '';
 
+        $escapeColor = $this->utilContainer->get('EscapeColor');
         if (0 <= $this->groupId) {
             foreach ($this->group as $groupId => $ar_group) {
                 $this->formatColor($groupId);
 
-                $output .= EscapeColor::paint($ar_group['desc'], 'bold') .
+                $output .= $escapeColor->paint($ar_group['desc'], 'bold') .
                     PHP_EOL;
 
                 $output .= sprintf('%' . $widthPct . 's', '%')
@@ -286,7 +286,7 @@ EOF;
 
                         // Add bg color
                         if (!empty($ar_mark['color'])) {
-                            $time = EscapeColor::paint(
+                            $time = $escapeColor->paint(
                                 $time,
                                 '',
                                 '',
@@ -310,7 +310,7 @@ EOF;
 
                 // Total
                 $time = sprintf('%' . $widthDur . 'f', $ar_group['dur']);
-                $output .= EscapeColor::paint('Total:', 'bold') . $time .
+                $output .= $escapeColor->paint('Total:', 'bold') . $time .
                     'ms' . PHP_EOL . PHP_EOL;
 
             }
@@ -318,7 +318,7 @@ EOF;
             // Memory usage
             if (function_exists('memory_get_usage')) {
                 $memory = number_format(memory_get_usage());
-                $output .= EscapeColor::paint('Memory Usage: ', 'bold') .
+                $output .= $escapeColor->paint('Memory Usage: ', 'bold') .
                     $memory . ' bytes' . PHP_EOL;
             }
         }

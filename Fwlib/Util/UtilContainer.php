@@ -22,14 +22,15 @@ class UtilContainer extends AbstractServiceContainer
      * @var array
      */
     protected $serviceClass = array(
-        'Array'     => 'Fwlib\Util\ArrayUtil',
-        'ArrayUtil' => 'Fwlib\Util\ArrayUtil',
-        'Datetime'  => 'Fwlib\Util\DatetimeUtil',
+        'Array'         => 'Fwlib\Util\ArrayUtil',
+        'ArrayUtil'     => 'Fwlib\Util\ArrayUtil',
+        'Datetime'      => 'Fwlib\Util\DatetimeUtil',
         'DatetimeUtil'  => 'Fwlib\Util\DatetimeUtil',
-        'Env'       => 'Fwlib\Util\Env',
+        'Env'           => 'Fwlib\Util\Env',
+        'EscapeColor'   => 'Fwlib\Util\EscapeColor',
         'FileSystem'    => 'Fwlib\Util\FileSystem',
-        'Http'      => 'Fwlib\Util\HttpUtil',
-        'HttpUtil'  => 'Fwlib\Util\HttpUtil',
+        'Http'          => 'Fwlib\Util\HttpUtil',
+        'HttpUtil'      => 'Fwlib\Util\HttpUtil',
     );
 
 

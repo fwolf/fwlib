@@ -15,48 +15,57 @@ use Fwlib\Util\EscapeColor;
  */
 class EscapeColorTest extends PHPunitTestCase
 {
+    protected $escapeColor;
+
+    public function __construct()
+    {
+        $this->escapeColor = new EscapeColor;
+        $this->escapeColor->setUtilContainer();
+    }
+
+
     public function testPaint()
     {
         $x = 'foo';
         $this->assertEquals(
             17,
-            strlen(EscapeColor::paint($x, 'bright', 'blue', 'yellow'))
+            strlen($this->escapeColor->paint($x, 'bright', 'blue', 'yellow'))
         );
         $this->assertEquals(
             17,
-            strlen(EscapeColor::paint($x, 1, 34, 43))
+            strlen($this->escapeColor->paint($x, 1, 34, 43))
         );
         $this->assertEquals(
             3,
-            strlen(EscapeColor::paint($x, 'a', 'b', 'c'))
+            strlen($this->escapeColor->paint($x, 'a', 'b', 'c'))
         );
 
-        EscapeColor::$enabled = false;
+        $this->escapeColor->enabled = false;
         $this->assertEquals(
             3,
-            strlen(EscapeColor::paint($x, 'bright', 'blue', 'yellow'))
+            strlen($this->escapeColor->paint($x, 'bright', 'blue', 'yellow'))
         );
-        EscapeColor::$enabled = true;
+        $this->escapeColor->enabled = true;
     }
 
 
     public function testPrintTable()
     {
-        $x = EscapeColor::printTable(true);
+        $x = $this->escapeColor->printTable(true);
         $this->assertEquals(true, 0 < strlen($x));
 
         $this->expectOutputRegex('/.+/');
-        EscapeColor::printTable();
+        $this->escapeColor->printTable();
     }
 
 
     public function testToHtml()
     {
         $x = 'foo';
-        $y = EscapeColor::paint($x, 'bright', 'blue', 'white');
+        $y = $this->escapeColor->paint($x, 'bright', 'blue', 'white');
         $this->assertEquals(
             '<span style="font-weight: bold; color: blue;">foo</span>',
-            EscapeColor::toHtml($y)
+            $this->escapeColor->toHtml($y)
         );
     }
 }
