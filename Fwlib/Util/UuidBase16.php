@@ -2,7 +2,7 @@
 namespace Fwlib\Util;
 
 use Fwlib\Algorithm\Iso7064;
-use Fwlib\Util\Ip;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * UUID generator using hex(0-9a-f)
@@ -31,7 +31,7 @@ use Fwlib\Util\Ip;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-05-08
  */
-class UuidBase16
+class UuidBase16 extends AbstractUtilAware
 {
     /**
      * Add check digit to an Uuid
@@ -147,7 +147,7 @@ class UuidBase16
 
         // custom2: 4 chars, split to 2 parts
         if (empty($cus2)) {
-            $cus2 = Ip::toHex();
+            $cus2 = $this->utilContainer->get('Ip')->toHex();
         }
         if (8 != strlen($cus2)) {
             $cus2 .= sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
@@ -230,7 +230,7 @@ class UuidBase16
                 'time'    => date('Y-m-d H:i:s', $timeLow),
                 'custom1' => substr($uuid, 12, 4),
                 'custom2' => $custom2,
-                'ip'      => Ip::fromHex($custom2),
+                'ip'      => $this->utilContainer->get('Ip')->fromHex($custom2),
                 'random1' => substr($uuid, 24, 4),
                 'random2' => substr($uuid, 28, 4)
             );

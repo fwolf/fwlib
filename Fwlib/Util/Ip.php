@@ -22,7 +22,7 @@ class Ip extends AbstractUtilAware
      * @param   string  $hex
      * @return  string
      */
-    public static function fromHex($hex)
+    public function fromHex($hex)
     {
         $ip = '';
         if (8 == strlen($hex)) {
@@ -43,7 +43,7 @@ class Ip extends AbstractUtilAware
      * @param   string  $ip
      * @return  string
      */
-    public static function toHex($ip = '')
+    public function toHex($ip = '')
     {
         $hex = '';
 

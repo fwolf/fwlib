@@ -15,30 +15,38 @@ use Fwlib\Util\Ip;
  */
 class IpTest extends PHPunitTestCase
 {
+    protected $ip;
+
+    public function __construct()
+    {
+        $this->ip = new Ip;
+    }
+
+
     public function testToFromHex()
     {
         // Default value
-        $this->assertEquals(Ip::toHex('131.2.101.10'), '8302650a');
-        $this->assertEquals(Ip::fromHex('8302650a'), '131.2.101.10');
+        $this->assertEquals($this->ip->toHex('131.2.101.10'), '8302650a');
+        $this->assertEquals($this->ip->fromHex('8302650a'), '131.2.101.10');
 
         // Loopback address
-        $this->assertEquals(Ip::toHex('127.0.0.1'), '7f000001');
-        $this->assertEquals(Ip::fromHex('7f000001'), '127.0.0.1');
+        $this->assertEquals($this->ip->toHex('127.0.0.1'), '7f000001');
+        $this->assertEquals($this->ip->fromHex('7f000001'), '127.0.0.1');
 
         // Error format in ip2long()
-        $this->assertEquals(Ip::toHex('127.00.00.01'), '');
+        $this->assertEquals($this->ip->toHex('127.00.00.01'), '');
 
         // Mask address
-        $this->assertEquals(Ip::toHex('255.255.255.255'), 'ffffffff');
-        $this->assertEquals(Ip::fromHex('ffffffff'), '255.255.255.255');
+        $this->assertEquals($this->ip->toHex('255.255.255.255'), 'ffffffff');
+        $this->assertEquals($this->ip->fromHex('ffffffff'), '255.255.255.255');
 
         // Normal address
-        $this->assertEquals(Ip::toHex('202.99.160.68'), 'ca63a044');
-        $this->assertEquals(Ip::fromHex('ca63a044'), '202.99.160.68');
+        $this->assertEquals($this->ip->toHex('202.99.160.68'), 'ca63a044');
+        $this->assertEquals($this->ip->fromHex('ca63a044'), '202.99.160.68');
 
         // Error parameters handel
-        $this->assertEquals(Ip::toHex('ABCD'), '');
-        $this->assertEquals(Ip::fromHex('ABCD'), '');
-        $this->assertEquals(Ip::toHex('1.2.3'), '');
+        $this->assertEquals($this->ip->toHex('ABCD'), '');
+        $this->assertEquals($this->ip->fromHex('ABCD'), '');
+        $this->assertEquals($this->ip->toHex('1.2.3'), '');
     }
 }
