@@ -32,19 +32,19 @@ class Iso7064
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public static function encode($srce, $algo = '', $returnFull = false)
+    public function encode($srce, $algo = '', $returnFull = false)
     {
         switch ($algo) {
             case '112':
-                $result = self::encode112($srce, $returnFull);
+                $result = $this->encode112($srce, $returnFull);
                 break;
 
             case '1716':
-                $result = self::encode1716($srce, $returnFull);
+                $result = $this->encode1716($srce, $returnFull);
                 break;
 
             case '3736':
-                $result = self::encode3736($srce, $returnFull);
+                $result = $this->encode3736($srce, $returnFull);
                 break;
 
             default:
@@ -67,7 +67,7 @@ class Iso7064
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public static function encode112($srce, $returnFull = false)
+    public function encode112($srce, $returnFull = false)
     {
         $val = 0;
         $mod = 11;
@@ -112,10 +112,10 @@ class Iso7064
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public static function encode1716($srce, $returnFull = false)
+    public function encode1716($srce, $returnFull = false)
     {
         $srce = strtoupper($srce);
-        $val = self::encodeModN($srce, 16);
+        $val = $this->encodeModN($srce, 16);
 
         if ($returnFull) {
             return $srce . $val;
@@ -137,10 +137,10 @@ class Iso7064
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public static function encode3736($srce, $returnFull = false)
+    public function encode3736($srce, $returnFull = false)
     {
         $srce = strtoupper($srce);
-        $val = self::encodeModN($srce, 36);
+        $val = $this->encodeModN($srce, 36);
 
 
         if ($returnFull) {
@@ -158,7 +158,7 @@ class Iso7064
      * @param   int     $mod
      * @return  string
      */
-    protected static function encodeModN($srce, $mod)
+    protected function encodeModN($srce, $mod)
     {
         static $dict = array(
             '0' => 0,
@@ -234,14 +234,14 @@ class Iso7064
      * @param   string  $algo
      * @return  string
      */
-    public static function verify($srce, $algo = '')
+    public function verify($srce, $algo = '')
     {
         switch ($algo) {
             case '112':
             case '1716':
             case '3736':
                 $s = substr($srce, 0, strlen($srce) - 1);
-                $result = ($srce == self::encode($s, $algo, true));
+                $result = ($srce == $this->encode($s, $algo, true));
                 break;
 
             default:

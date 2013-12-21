@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Util\Code;
 
-use Fwlib\Util\Algorithm\Iso7064;
+use Fwlib\Util\AbstractUtilAware;
 
 /**
  * Cin code
@@ -16,7 +16,7 @@ use Fwlib\Util\Algorithm\Iso7064;
  * @since       2013-08-27
  * @link    https://zh.wikisource.org/wiki/GB_11643-1999_公民身份号码
  */
-class CinCode
+class CinCode extends AbstractUtilAware
 {
     /**
      * Generate pin code
@@ -104,7 +104,7 @@ class CinCode
 
         $s = substr($cin, 0, 6) . strval($prefix) . substr($cin, 6);
 
-        $check = Iso7064::encode($s, '112', false);
+        $check = $this->utilContainer->get('Iso7064')->encode($s, '112', false);
 
         return $s . $check;
     }

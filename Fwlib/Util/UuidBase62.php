@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Algorithm\Iso7064;
 use Fwlib\Util\AbstractUtilAware;
 
 /**
@@ -80,7 +79,9 @@ class UuidBase62 extends AbstractUtilAware
     public function addCheckDigit($uuid)
     {
         $uuid = substr($uuid, 0, $this->length - 1);
-        $uuid .= strtolower(Iso7064::encode($uuid, '3736', false));
+        $uuid .= strtolower(
+            $this->utilContainer->get('Iso7064')->encode($uuid, '3736', false)
+        );
 
         return $uuid;
     }

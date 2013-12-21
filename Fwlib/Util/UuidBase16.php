@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Algorithm\Iso7064;
 use Fwlib\Util\AbstractUtilAware;
 
 /**
@@ -49,7 +48,7 @@ class UuidBase16 extends AbstractUtilAware
             $uuid = $this->delSeparator($uuid);
         }
 
-        $uuid = Iso7064::encode(
+        $uuid = $this->utilContainer->get('Iso7064')->encode(
             substr($uuid, 0, 31),
             '1716',
             true
