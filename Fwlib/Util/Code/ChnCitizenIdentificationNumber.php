@@ -4,9 +4,9 @@ namespace Fwlib\Util\Code;
 use Fwlib\Util\AbstractUtilAware;
 
 /**
- * Cin code
+ * China citizen identification number
  *
- * Cin = Citizen identification number
+ * Abbr: Cin, CinCode
  * Synonym: Resident Identity number
  *
  * @package     Fwlib\Util\Code
@@ -16,14 +16,14 @@ use Fwlib\Util\AbstractUtilAware;
  * @since       2013-08-27
  * @link    https://zh.wikisource.org/wiki/GB_11643-1999_公民身份号码
  */
-class CinCode extends AbstractUtilAware
+class ChnCitizenIdentificationNumber extends AbstractUtilAware
 {
     /**
      * Generate pin code
      *
      * @return  string
      */
-    public function gen()
+    public function generate()
     {
         $cin = '';
 
