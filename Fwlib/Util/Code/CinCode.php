@@ -1,7 +1,7 @@
 <?php
-namespace Fwlib\Mis;
+namespace Fwlib\Util\Code;
 
-use Fwlib\Algorithm\Iso7064;
+use Fwlib\Util\Algorithm\Iso7064;
 
 /**
  * Cin code
@@ -9,7 +9,7 @@ use Fwlib\Algorithm\Iso7064;
  * Cin = Citizen identification number
  * Synonym: Resident Identity number
  *
- * @package     Fwlib\Mis
+ * @package     Fwlib\Util\Code
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

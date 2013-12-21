@@ -1,13 +1,13 @@
 <?php
-namespace Fwlib\Mis\Test;
+namespace Fwlib\Util\Code\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Mis\CinCode;
+use Fwlib\Util\Code\CinCode;
 
 /**
- * Test for Fwlib\Mis\CinCode
+ * Test for Fwlib\Util\Code\CinCode
  *
- * @package     Fwlib\Mis\Test
+ * @package     Fwlib\Util\Code\Test
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

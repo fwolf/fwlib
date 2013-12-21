@@ -1,13 +1,13 @@
 <?php
-namespace Fwlib\Mis\Test;
+namespace Fwlib\Util\Code\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Mis\OrgCode;
+use Fwlib\Util\Code\OrgCode;
 
 /**
- * Test for Fwlib\Mis\OrgCode
+ * Test for Fwlib\Util\Code\OrgCode
  *
- * @package     Fwlib\Mis\Test
+ * @package     Fwlib\Util\Code\Test
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
