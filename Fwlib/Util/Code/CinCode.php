@@ -23,7 +23,7 @@ class CinCode extends AbstractUtilAware
      *
      * @return  string
      */
-    public static function gen()
+    public function gen()
     {
         $cin = '';
 
@@ -66,7 +66,7 @@ class CinCode extends AbstractUtilAware
 
 
         // Compute for currect pin
-        $cin = self::to18(substr($cin, 0, 6) . substr($cin, 8), 19);
+        $cin = $this->to18(substr($cin, 0, 6) . substr($cin, 8), 19);
 
         return $cin;
     }
@@ -78,7 +78,7 @@ class CinCode extends AbstractUtilAware
      * @param   string  $cin
      * @return  string
      */
-    public static function to15($cin)
+    public function to15($cin)
     {
         if (18 != strlen($cin)) {
             return $cin;
@@ -95,7 +95,7 @@ class CinCode extends AbstractUtilAware
      * @param   int     $prefix
      * @return  string
      */
-    public static function to18($cin, $prefix = 19)
+    public function to18($cin, $prefix = 19)
     {
         if (15 != strlen($cin)) {
             // Error, which value should I return ?
@@ -116,13 +116,13 @@ class CinCode extends AbstractUtilAware
      * @param   string  $cin
      * @return  boolean
      */
-    public static function validate($cin)
+    public function validate($cin)
     {
         if (18 != strlen($cin)) {
             return false;
         }
 
         $prefix = substr($cin, 6, 2);
-        return ($cin == self::to18(self::to15($cin), $prefix));
+        return ($cin == $this->to18($this->to15($cin), $prefix));
     }
 }

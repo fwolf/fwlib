@@ -3,6 +3,7 @@ namespace Fwlib\Util\Code\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\Code\CinCode;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Util\Code\CinCode
@@ -15,9 +16,21 @@ use Fwlib\Util\Code\CinCode;
  */
 class CinCodeTest extends PHPunitTestCase
 {
+    protected $cinCode;
+    protected $utilContainer;
+
+
+    public function __construct()
+    {
+        $this->utilContainer = UtilContainer::getInstance();
+        $this->cinCode = new CinCode;
+        $this->cinCode->setUtilContainer($this->utilContainer);
+    }
+
+
     public function testGen()
     {
-        $x = CinCode::gen();
+        $x = $this->cinCode->gen();
         $this->assertEquals(true, preg_match('/[0-9]{17}[0-9X]/', $x));
     }
 
@@ -26,33 +39,33 @@ class CinCodeTest extends PHPunitTestCase
     {
         $x = '110105491231002';
         $y = '11010519491231002X';
-        $this->assertEquals($y, CinCode::to18($x));
-        $this->assertEquals($x, CinCode::to15($y));
+        $this->assertEquals($y, $this->cinCode->to18($x));
+        $this->assertEquals($x, $this->cinCode->to15($y));
 
         $x = '440524800101001';
         $y = '440524188001010014';
-        $this->assertEquals($x, CinCode::to15($y));
+        $this->assertEquals($x, $this->cinCode->to15($y));
 
         // Invalid input string length
         $x = 'foo';
-        $this->assertEquals('foo', CinCode::to15($x));
-        $this->assertEquals('foo', CinCode::to18($x));
+        $this->assertEquals('foo', $this->cinCode->to15($x));
+        $this->assertEquals('foo', $this->cinCode->to18($x));
     }
 
 
     public function testValidate()
     {
         // Data on @link
-        $this->assertEquals(true, CinCode::validate('11010519491231002X'));
-        $this->assertEquals(true, CinCode::validate('440524188001010014'));
+        $this->assertEquals(true, $this->cinCode->validate('11010519491231002X'));
+        $this->assertEquals(true, $this->cinCode->validate('440524188001010014'));
 
         // Fake data
-        $this->assertTrue(CinCode::validate('421029199004091521'));
-        $this->assertTrue(CinCode::validate('820701197812060930'));
+        $this->assertTrue($this->cinCode->validate('421029199004091521'));
+        $this->assertTrue($this->cinCode->validate('820701197812060930'));
 
-        $this->assertEquals(false, CinCode::validate('110105194912310024'));
-        $this->assertEquals(false, CinCode::validate('44052418800101001X'));
+        $this->assertEquals(false, $this->cinCode->validate('110105194912310024'));
+        $this->assertEquals(false, $this->cinCode->validate('44052418800101001X'));
 
-        $this->assertFalse(CinCode::validate('440524800101001'));
+        $this->assertFalse($this->cinCode->validate('440524800101001'));
     }
 }
