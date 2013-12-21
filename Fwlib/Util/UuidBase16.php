@@ -48,7 +48,7 @@ class UuidBase16 extends AbstractUtilAware
             $uuid = $this->delSeparator($uuid);
         }
 
-        $uuid = $this->utilContainer->get('Iso7064')->encode(
+        $uuid = $this->getUtil('Iso7064')->encode(
             substr($uuid, 0, 31),
             '1716',
             true
@@ -146,7 +146,7 @@ class UuidBase16 extends AbstractUtilAware
 
         // custom2: 4 chars, split to 2 parts
         if (empty($cus2)) {
-            $cus2 = $this->utilContainer->get('Ip')->toHex();
+            $cus2 = $this->getUtil('Ip')->toHex();
         }
         if (8 != strlen($cus2)) {
             $cus2 .= sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
@@ -229,7 +229,7 @@ class UuidBase16 extends AbstractUtilAware
                 'time'    => date('Y-m-d H:i:s', $timeLow),
                 'custom1' => substr($uuid, 12, 4),
                 'custom2' => $custom2,
-                'ip'      => $this->utilContainer->get('Ip')->fromHex($custom2),
+                'ip'      => $this->getUtil('Ip')->fromHex($custom2),
                 'random1' => substr($uuid, 24, 4),
                 'random2' => substr($uuid, 28, 4)
             );

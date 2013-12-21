@@ -38,15 +38,6 @@ class Config implements \ArrayAccess, UtilAwareInterface
 
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->setUtilContainer();
-    }
-
-
-    /**
      * Get config value
      *
      * String with separator store as multi-dimensional array.
@@ -58,7 +49,7 @@ class Config implements \ArrayAccess, UtilAwareInterface
     public function get($key, $default = null)
     {
         if (false === strpos($key, $this->separator)) {
-            $arrayUtil = $this->utilContainer->get('Array');
+            $arrayUtil = $this->getUtil('Array');
             return $arrayUtil->getIdx($this->config, $key, $default);
 
         } else {
@@ -77,6 +68,24 @@ class Config implements \ArrayAccess, UtilAwareInterface
             }
             return($c);
         }
+    }
+
+
+    /**
+     * Get util instance
+     *
+     * Same with Fwlib\Util\AbstractUtilAware::getUtil()
+     *
+     * @param   string  $name
+     * @return  object  Util instance
+     */
+    protected function getUtil($name)
+    {
+        if (is_null($this->utilContainer)) {
+            $this->setUtilContainer(null);
+        }
+
+        return $this->utilContainer->get($name);
     }
 
 

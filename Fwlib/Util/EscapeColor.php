@@ -156,7 +156,7 @@ class EscapeColor extends AbstractUtilAware
         }
         $output .= "---------------------------------------------------------------------\n";
 
-        $output = $this->utilContainer->get('Env')->ecl($output, true);
+        $output = $this->getUtil('Env')->ecl($output, true);
         if (!$export) {
             echo $output;
         }

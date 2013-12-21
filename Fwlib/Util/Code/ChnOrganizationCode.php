@@ -27,7 +27,7 @@ class ChnOrganizationCode extends AbstractUtilAware
 
         if (empty($codeBase)) {
             // Gen random if empty
-            $codeBase = $this->utilContainer->get('StringUtil')->random(8, '0A');
+            $codeBase = $this->getUtil('StringUtil')->random(8, '0A');
 
         } elseif (8 != strlen($codeBase)) {
             // Length check

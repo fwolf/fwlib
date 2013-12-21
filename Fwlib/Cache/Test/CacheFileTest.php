@@ -18,15 +18,15 @@ use Fwlib\Util\UtilContainer;
  */
 class CacheFileTest extends PHPunitTestCase
 {
-    protected $utilContainer = null;
-
-
     /**
      * Cache object
      *
      * @var Fwlib\Cache\CacheFile
      */
     protected $ch = null;
+
+    protected $utilContainer = null;
+
 
     public function __construct()
     {

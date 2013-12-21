@@ -104,7 +104,7 @@ class ChnCitizenIdentificationNumber extends AbstractUtilAware
 
         $s = substr($cin, 0, 6) . strval($prefix) . substr($cin, 6);
 
-        $check = $this->utilContainer->get('Iso7064')->encode($s, '112', false);
+        $check = $this->getUtil('Iso7064')->encode($s, '112', false);
 
         return $s . $check;
     }

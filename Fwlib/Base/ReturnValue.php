@@ -44,8 +44,6 @@ class ReturnValue extends AbstractUtilAware
      */
     public function __construct($code = 0, $message = '', $data = null)
     {
-        $this->setUtilContainer();
-
         if (is_int($code)) {
             $this->info = array(
                 'code'    => $code,
@@ -138,7 +136,7 @@ class ReturnValue extends AbstractUtilAware
      */
     public function getJson()
     {
-        return $this->utilContainer->get('Json')->encodeUnicode($this->info);
+        return $this->getUtil('Json')->encodeUnicode($this->info);
     }
 
 
@@ -170,7 +168,7 @@ class ReturnValue extends AbstractUtilAware
      */
     public function loadJson($json)
     {
-        $ar = $this->utilContainer->get('Json')->decode($json, true);
+        $ar = $this->getUtil('Json')->decode($json, true);
 
         foreach (array('code', 'message') as $v) {
             if (!isset($ar[$v])) {
@@ -178,7 +176,7 @@ class ReturnValue extends AbstractUtilAware
             }
         }
 
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
         $this->info = array(
             'code'    => $ar['code'],
             'message' => $ar['message'],

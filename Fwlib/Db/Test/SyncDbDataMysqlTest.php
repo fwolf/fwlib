@@ -24,12 +24,18 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
     public static $dbUsing = 'mysql';
     public static $tableUserDest = 'test_user_dest';
 
-    protected $utilContainer;
+    protected static $utilContainer;
 
     /**
      * Rows of initial test data
      */
     private $totalRows = 16;
+
+
+    protected static function generateUuid()
+    {
+        return self::$utilContainer->get('UuidBase36')->generate();
+    }
 
 
     private static function removeDestTable()
@@ -135,7 +141,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         $data = array();
         for ($i = 0; $i < $this->totalRows; $i ++) {
             $data[] = array(
-                'uuid'  => UuidBase36::generate(),
+                'uuid'  => self::generateUuid(),
                 'title' => "Title - $i",
                 'age'   => $i + 20,
                 'credit'    => $i * 100,
@@ -153,7 +159,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $tableUser => array($tableUserDest, $tableNotExist),
         );
 
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $stringUtil = self::$utilContainer->get('StringUtil');
 
         // Mock instance with 2 additional convert method
         $convertForNotExist = 'convertData' .
@@ -241,7 +247,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $tableUser => array($tableUserDest, $tableUserDest),
         );
 
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $stringUtil = self::$utilContainer->get('StringUtil');
 
         // Mock instance with 2 additional convert method
         $compareForUserDest = 'compareData' .

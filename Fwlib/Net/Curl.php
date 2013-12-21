@@ -170,7 +170,7 @@ class Curl extends AbstractUtilAware
 
         if (empty($this->logFile)) {
             // Print
-            $this->utilContainer->get('Env')->ecl($msg);
+            $this->getUtil('Env')->ecl($msg);
 
         } elseif (is_writable($this->logFile)) {
             // Write to log file

@@ -63,19 +63,6 @@ class Cache extends AbstractAutoNewConfig
 
 
     /**
-     * {@inheritdoc}
-     *
-     * @param   array   $config
-     */
-    public function __construct($config = array())
-    {
-        parent::__construct($config);
-
-        $this->setUtilContainer();
-    }
-
-
-    /**
      * Factory create method
      *
      * @param   string  $type           Cache type
@@ -157,7 +144,7 @@ class Cache extends AbstractAutoNewConfig
         if (1 == $this->config->get('cache-store-method')
             || 2 == $this->config->get('cache-store-method')
         ) {
-            return $this->utilContainer->get('Json')->encodeUnicode($val);
+            return $this->getUtil('Json')->encodeUnicode($val);
 
         } else {
             // Raw
@@ -225,7 +212,7 @@ class Cache extends AbstractAutoNewConfig
         $key = $this->key($key);
 
         // Ignored lifetime
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
         $val = $this->decodeVal(
             $arrayUtil->getIdx($this->cacheData, $key, null),
             0

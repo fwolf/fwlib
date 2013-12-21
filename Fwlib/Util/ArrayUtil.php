@@ -207,7 +207,7 @@ class ArrayUtil extends AbstractUtilAware
             }
 
             // Loop srce ar
-            $stringUtil = $this->utilContainer->get('StringUtil');
+            $stringUtil = $this->getUtil('StringUtil');
             foreach ($arSrce as $k => $srce) {
                 if (true == $stringUtil->matchWildcard($srce, $rule)) {
                     // Got element to +/-

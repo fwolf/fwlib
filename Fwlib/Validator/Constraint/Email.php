@@ -37,11 +37,20 @@ class Email extends AbstractConstraint implements UtilAwareInterface
 
 
     /**
-     * Constructor
+     * Get util instance
+     *
+     * Same with Fwlib\Util\AbstractUtilAware::getUtil()
+     *
+     * @param   string  $name
+     * @return  object  Util instance
      */
-    public function __construct()
+    protected function getUtil($name)
     {
-        $this->setUtilContainer();
+        if (is_null($this->utilContainer)) {
+            $this->setUtilContainer(null);
+        }
+
+        return $this->utilContainer->get($name);
     }
 
 
@@ -124,7 +133,7 @@ class Email extends AbstractConstraint implements UtilAwareInterface
         // Some network provider will return fake A record if a dns query
         // return fail, usually disp some ads, so we only check MX record.
         if ($valid && $this->dnsCheck &&
-            $this->utilContainer->get('Env')->isNixOs() &&
+            $this->getUtil('Env')->isNixOs() &&
             !checkdnsrr($domain, 'MX')
         ) {
             $valid = false;

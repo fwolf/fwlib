@@ -5,6 +5,7 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Base\ReturnValue;
 use Fwlib\Base\Test\AbstractAutoNewConfigDummy;
 use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Base\AbstractAutoNewInstance
@@ -99,5 +100,19 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
         // Set classname different with object is allowed
         $dummy->setInstance(new ReturnValue, 'AbstractAutoNewConfigDummy');
         $this->assertTrue(isset($dummy->abstractAutoNewConfigDummy));
+    }
+
+
+    public function testSetUtilContainer()
+    {
+        $datetimeUtil =
+            $this->reflectionCall($this->dummy, 'getUtil', array('Datetime'));
+        $this->assertInstanceOf('Fwlib\Util\DatetimeUtil', $datetimeUtil);
+
+        $this->dummy->setUtilContainer(UtilContainer::getInstance());
+
+        $datetimeUtil =
+            $this->reflectionCall($this->dummy, 'getUtil', array('Datetime'));
+        $this->assertInstanceOf('Fwlib\Util\DatetimeUtil', $datetimeUtil);
     }
 }

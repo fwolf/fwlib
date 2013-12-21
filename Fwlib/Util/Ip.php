@@ -49,7 +49,7 @@ class Ip extends AbstractUtilAware
 
         // @codeCoverageIgnoreStart
         if (empty($ip)) {
-            $ip = $this->utilContainer->get('HttpUtil')->getClientIp();
+            $ip = $this->getUtil('HttpUtil')->getClientIp();
         }
         // @codeCoverageIgnoreEnd
 

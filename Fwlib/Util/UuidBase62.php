@@ -80,7 +80,7 @@ class UuidBase62 extends AbstractUtilAware
     {
         $uuid = substr($uuid, 0, $this->length - 1);
         $uuid .= strtolower(
-            $this->utilContainer->get('Iso7064')->encode($uuid, '3736', false)
+            $this->getUtil('Iso7064')->encode($uuid, '3736', false)
         );
 
         return $uuid;
@@ -108,9 +108,9 @@ class UuidBase62 extends AbstractUtilAware
     ) {
         list($usec, $sec) = explode(' ', microtime());
 
-        $numberUtil = $this->utilContainer->get('NumberUtil');
-        $httpUtil = $this->utilContainer->get('HttpUtil');
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $numberUtil = $this->getUtil('NumberUtil');
+        $httpUtil = $this->getUtil('HttpUtil');
+        $stringUtil = $this->getUtil('StringUtil');
 
         // Seconds from now(Nov 2013) will fill length 6
         $uuid = $numberUtil->baseConvert($sec, 10, $this->base);
@@ -162,7 +162,7 @@ class UuidBase62 extends AbstractUtilAware
      */
     public function parse($uuid)
     {
-        $numberUtil = $this->utilContainer->get('NumberUtil');
+        $numberUtil = $this->getUtil('NumberUtil');
 
         if ($this->length == strlen($uuid)) {
             $sec = $numberUtil->baseConvert(substr($uuid, 0, 6), $this->base, 10);

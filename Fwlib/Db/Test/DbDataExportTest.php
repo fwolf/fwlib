@@ -62,7 +62,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         unlink(self::$exportPath);
 
         // Insert data for export
-        $uuidUtil = $this->utilContainer->get('UuidBase16');
+        $uuidUtil = self::$utilContainer->get('UuidBase16');
         for ($i = 0; $i < self::$insertCount; $i ++) {
             self::$db->write(
                 self::$tableUser,

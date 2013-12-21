@@ -22,6 +22,24 @@ class AbstractUtilAware implements UtilAwareInterface
 
 
     /**
+     * Get util instance
+     *
+     * Same with Fwlib\Base\AbstractAutoNewInstance::getUtil()
+     *
+     * @param   string  $name
+     * @return  object  Util instance
+     */
+    protected function getUtil($name)
+    {
+        if (is_null($this->utilContainer)) {
+            $this->setUtilContainer(null);
+        }
+
+        return $this->utilContainer->get($name);
+    }
+
+
+    /**
      * {@inheritdoc}
      *
      * @param   UtilContainer   $utilContainer

@@ -302,7 +302,7 @@ class CacheFile extends Cache
         $cache = $this->encodeVal($val);
 
         // Create each level dir if not exists
-        $dir = $this->utilContainer->get('FileSystem')->getDirName($file);
+        $dir = $this->getUtil('FileSystem')->getDirName($file);
         if (!file_exists($dir)) {
             mkdir($dir, 0755, true);
         }

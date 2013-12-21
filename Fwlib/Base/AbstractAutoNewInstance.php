@@ -102,6 +102,24 @@ abstract class AbstractAutoNewInstance implements UtilAwareInterface
 
 
     /**
+     * Get util instance
+     *
+     * Same with Fwlib\Util\AbstractUtilAware::getUtil()
+     *
+     * @param   string  $name
+     * @return  object  Util instance
+     */
+    protected function getUtil($name)
+    {
+        if (is_null($this->utilContainer)) {
+            $this->setUtilContainer(null);
+        }
+
+        return $this->utilContainer->get($name);
+    }
+
+
+    /**
      * Set a property instance
      *
      * A bit like dependence injection.

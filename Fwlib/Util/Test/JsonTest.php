@@ -73,7 +73,7 @@ class JsonTest extends PHPunitTestCase
 
         $x = new StringUtilTest;
         $this->assertEquals(
-            '{"dummyForTestJsonEncodeHex":42}',
+            '{"dummyForTestJsonEncodeHex":42,"stringUtil":{}}',
             $this->json->encodeHex($x)
         );
     }

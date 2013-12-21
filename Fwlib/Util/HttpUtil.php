@@ -132,7 +132,7 @@ class HttpUtil extends AbstractUtilAware
      */
     public function getBrowserType($agentStr = null, $default = 'gecko')
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
 
         // @codeCoverageIgnoreStart
         if (is_null($agentStr)) {
@@ -254,8 +254,7 @@ class HttpUtil extends AbstractUtilAware
             if (version_compare(PHP_VERSION, '5.4.0', '>=')
                 || !get_magic_quotes_gpc()
             ) {
-                $val = $this->utilContainer->get('StringUtil')
-                    ->addSlashesRecursive($val);
+                $val = $this->getUtil('StringUtil')->addSlashesRecursive($val);
             }
 
             return $val;
@@ -331,8 +330,7 @@ class HttpUtil extends AbstractUtilAware
         $v = null,
         $withSelfUrl = false
     ) {
-        $param = $this->utilContainer->get('StringUtil')
-            ->addSlashesRecursive($_GET);
+        $param = $this->getUtil('StringUtil')->addSlashesRecursive($_GET);
 
         // $k is string
         if (is_string($k) && !empty($k)) {

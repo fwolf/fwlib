@@ -84,6 +84,15 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         }
     }
 
+    protected function getUtil($name)
+    {
+        if (is_null($this->utilContainer)) {
+            $this->setUtilContainer(null);
+        }
+
+        return $this->utilContainer->get($name);
+    }
+
     public function setInstance($instance, $className = null)
     {
         if (empty($className)) {
@@ -160,7 +169,7 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         }
 
 
-        $httpUtil = $this->utilContainer->get('HttpUtil');
+        $httpUtil = $this->getUtil('HttpUtil');
         $selfUrl = $httpUtil->getSelfUrl(true);
         if (false !== strpos($selfUrl, '?')) {
             $url{0} = '&';

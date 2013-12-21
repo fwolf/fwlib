@@ -241,7 +241,7 @@ class FileSystem extends AbstractUtilAware
 
         // Sort result
         if (!empty($sortby)) {
-            $arrayUtil = $this->utilContainer->get('Array');
+            $arrayUtil = $this->getUtil('Array');
             $arrayUtil->sortByLevel2($arFiles, $sortby, $order);
         }
 

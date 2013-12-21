@@ -80,7 +80,7 @@ class Benchmark extends AbstractUtilAware
      */
     public function display($options = '', $return = false)
     {
-        if ($this->utilContainer->get('Env')->isCli()) {
+        if ($this->getUtil('Env')->isCli()) {
             $result = $this->resultCli($options);
         } else {
             $result = $this->resultWeb($options);
@@ -254,7 +254,7 @@ EOF;
 
         $output = '';
 
-        $escapeColor = $this->utilContainer->get('EscapeColor');
+        $escapeColor = $this->getUtil('EscapeColor');
         if (0 <= $this->groupId) {
             foreach ($this->group as $groupId => $ar_group) {
                 $this->formatColor($groupId);

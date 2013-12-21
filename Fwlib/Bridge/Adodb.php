@@ -324,9 +324,8 @@ class Adodb extends AbstractUtilAware
                 . $e->getMessage() . "\n";
             error_log($trace);
 
-            if (!$this->utilContainer->get('Env')->isCli()) {
-                $trace = $this->utilContainer->get('StringUtil')
-                    ->encodeHtml($trace);
+            if (!$this->getUtil('Env')->isCli()) {
+                $trace = $this->getUtil('StringUtil')->encodeHtml($trace);
             }
             echo $trace;
 
@@ -702,7 +701,7 @@ class Adodb extends AbstractUtilAware
      */
     public function getByPk ($table, $pkVal, $col = null, $pkCol = null)
     {
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $stringUtil = $this->getUtil('StringUtil');
 
         // Treat PK col
         if (empty($pkCol)) {

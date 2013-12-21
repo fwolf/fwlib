@@ -4,6 +4,7 @@ namespace Fwlib\Bridge\Test;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Config\GlobalConfig;
 use Fwlib\Test\AbstractDbRelateTest;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Bridge\Adodb
@@ -17,6 +18,19 @@ use Fwlib\Test\AbstractDbRelateTest;
 class AdodbMysqlTest extends AbstractDbRelateTest
 {
     protected static $dbUsing = 'mysql';
+    protected $utilContainer;
+
+
+    public function __construct()
+    {
+        $this->utilContainer = UtilContainer::getInstance();
+    }
+
+
+    public function generateUuid()
+    {
+        return $this->utilContainer->get('UuidBase16')->generate();
+    }
 
 
     public function testCall()
@@ -290,7 +304,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         // Normal getByPk() tested with write()
 
         // Prepare data
-        $uuid = $this->utilContainer->get('UuidBase16')->generate();
+        $uuid = $this->generateUuid();
         $ar = array(
             'uuid'  => $uuid,
             'title' => 'Title',
@@ -382,7 +396,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
      */
     public function testWrite()
     {
-        $uuid = $this->utilContainer->get('UuidBase16')->generate();
+        $uuid = $this->generateUuid();
 
         // Auto INSERT
         $ar = array(

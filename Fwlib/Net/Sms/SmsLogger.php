@@ -126,6 +126,6 @@ class SmsLogger extends AbstractDbClient
      */
     protected function generateUuid()
     {
-        return UuidBase36::generate();
+        return $this->getUtil('UuidBase36')->generate();
     }
 }

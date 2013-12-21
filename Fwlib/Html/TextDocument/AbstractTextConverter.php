@@ -70,7 +70,7 @@ abstract class AbstractTextConverter extends AbstractUtilAware
             }
         }
 
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $stringUtil = $this->getUtil('StringUtil');
         return "<pre>\n" . $stringUtil->encodeHtml($source) . "\n</pre>\n";
     }
 

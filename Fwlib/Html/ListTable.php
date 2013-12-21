@@ -148,8 +148,6 @@ class ListTable extends AbstractAutoNewConfig
         // Config will effect setData, so set it first.
         $this->setConfig($config);
 
-        $this->setUtilContainer();
-
         $this->tpl->assignByRef("{$this->tplVarPrefix}Config", $this->config);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Info", $this->info);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Url", $this->url);
@@ -393,7 +391,7 @@ class ListTable extends AbstractAutoNewConfig
      */
     protected function readRequest($forcenew = false)
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
 
         // Avoid duplicate
         if (!empty($this->url['base']) && !$forcenew) {
@@ -414,7 +412,7 @@ class ListTable extends AbstractAutoNewConfig
         $_SERVER['SCRIPT_NAME'] = str_replace($ar, '/', $_SERVER['SCRIPT_NAME']);
         */
 
-        $httpUtil = $this->utilContainer->get('HttpUtil');
+        $httpUtil = $this->getUtil('HttpUtil');
         $this->url['base'] = $httpUtil->getSelfUrl(false);
 
         $page = $arrayUtil->getIdx($this->param, $this->config['paramPage'], 1);
@@ -743,7 +741,7 @@ class ListTable extends AbstractAutoNewConfig
      */
     protected function setPage($page = null)
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
 
         if (is_null($page)) {
             $page = $arrayUtil->getIdx(

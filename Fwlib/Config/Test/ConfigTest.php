@@ -81,7 +81,6 @@ class ConfigTest extends PHPunitTestCase
     public function testSetGet()
     {
         $config = new Config;
-        $config->setUtilContainer(UtilContainer::getInstance());
 
         // Single value
         $config->set('foo', 'bar');
@@ -91,6 +90,8 @@ class ConfigTest extends PHPunitTestCase
         $this->assertEquals('bar2', $config['foo2']);
         unset($config['foo2']);
         $this->assertFalse(isset($config['foo2']));
+
+        $config->setUtilContainer(UtilContainer::getInstance());
 
         // Value with separator turns to array
         $config->set('foo1.bar', 42);

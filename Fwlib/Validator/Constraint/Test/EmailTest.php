@@ -3,6 +3,7 @@ namespace Fwlib\Validator\Constraint\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Email;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Test for Fwlib\Validator\Constraint\Email
@@ -59,6 +60,9 @@ class EmailTest extends PHPunitTestCase
         $x = 'dummy@mail.com';
         self::$checkdnsrr = false;
         $this->assertFalse($constraint->validate($x));
+
+        // For coverage
+        $constraint->setUtilContainer(UtilContainer::getInstance());
 
         self::$checkdnsrr = true;
         $this->assertTrue($constraint->validate($x));

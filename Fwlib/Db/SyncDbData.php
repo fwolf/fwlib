@@ -242,7 +242,7 @@ class SyncDbData extends AbstractUtilAware
      */
     protected function generateUuid()
     {
-        return UuidBase36::generate();
+        return $this->getUtil('UuidBase36')->generate();
     }
 
 
@@ -301,7 +301,7 @@ class SyncDbData extends AbstractUtilAware
 
         // @codeCoverageIgnoreStart
         if ($this->verbose) {
-            $this->utilContainer->get('Env')->ecl($msg);
+            $this->getUtil('Env')->ecl($msg);
         }
         // @codeCoverageIgnoreEnd
     }
@@ -481,7 +481,7 @@ class SyncDbData extends AbstractUtilAware
         // should return array of PK for rows to delete in dest db. If PK in
         // dest table has multiple column, the PK value is array of these
         // columns, and the order of these column should same as db schema.
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $stringUtil = $this->getUtil('StringUtil');
         $compareFunc = 'compareData' . $stringUtil->toStudlyCaps($tableSrce)
             . 'To' . $stringUtil->toStudlyCaps($tableDest);
 
@@ -672,7 +672,7 @@ class SyncDbData extends AbstractUtilAware
 
 
             $rowsSynced = 0;
-            $stringUtil = $this->utilContainer->get('StringUtil');
+            $stringUtil = $this->getUtil('StringUtil');
             foreach ((array)$tableDest as $table) {
 
                 // Call data convert method

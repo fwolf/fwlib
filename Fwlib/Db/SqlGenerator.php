@@ -75,8 +75,6 @@ class SqlGenerator implements UtilAwareInterface
         if (!empty($db)) {
             $this->db = &$db;
         }
-
-        $this->setUtilContainer();
     }
 
 
@@ -128,7 +126,7 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genDelete($part = null)
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -155,7 +153,7 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genInsert($part = array())
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -182,7 +180,7 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genSelect($part = array())
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -365,7 +363,7 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genUpdate($part = array())
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
 
         if (!empty($part) && is_array($part)) {
             // Using prefered parts in $part only
@@ -513,6 +511,24 @@ class SqlGenerator implements UtilAwareInterface
     public function getUpdate($config = array())
     {
         return $this->get($config, 'UPDATE');
+    }
+
+
+    /**
+     * Get util instance
+     *
+     * Same with Fwlib\Util\AbstractUtilAware::getUtil()
+     *
+     * @param   string  $name
+     * @return  object  Util instance
+     */
+    protected function getUtil($name)
+    {
+        if (is_null($this->utilContainer)) {
+            $this->setUtilContainer(null);
+        }
+
+        return $this->utilContainer->get($name);
     }
 
 

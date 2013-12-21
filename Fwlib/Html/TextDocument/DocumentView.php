@@ -88,8 +88,6 @@ class DocumentView extends AbstractAutoNewConfig
         unset($this->restructuredtext);
         unset($this->unknownMarkup);
 
-        $this->setUtilContainer();
-
         parent::__construct($config);
     }
 
@@ -108,7 +106,7 @@ class DocumentView extends AbstractAutoNewConfig
         }
 
         $html = '';
-        $file = $this->utilContainer->get('HttpUtil')
+        $file = $this->getUtil('HttpUtil')
             ->getGet($this->config['paramFile']);
         if (empty($file)) {
             $html = $this->displayIndex($arFile, $returnOnly);
@@ -135,7 +133,7 @@ class DocumentView extends AbstractAutoNewConfig
 
         $this->title = $converter->getTitle($file);
 
-        $view = $this->utilContainer->get('HttpUtil')
+        $view = $this->getUtil('HttpUtil')
             ->getGet($this->config['paramRaw']);
         if ('raw' == $view) {
             $html = $converter->convertRaw($file);
@@ -165,7 +163,7 @@ class DocumentView extends AbstractAutoNewConfig
         $this->currentDocumentType = 'Index';
         $this->title = $this->config['titleTail'];
 
-        $numberUtil = $this->utilContainer->get('NumberUtil');
+        $numberUtil = $this->getUtil('NumberUtil');
 
         $html = "<div class='{$this->config['className']}'>
   <table class='index'>
@@ -244,7 +242,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function excludeFile($arFile)
     {
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $stringUtil = $this->getUtil('StringUtil');
 
         foreach ($arFile as $k => $v) {
             foreach ((array)$this->config['exclude'] as $rule) {
@@ -320,9 +318,9 @@ class DocumentView extends AbstractAutoNewConfig
             'txt'      => 'Markdown',
         );
 
-        $ext = $this->utilContainer->get('FileSystem')->getFileExt($filename);
+        $ext = $this->getUtil('FileSystem')->getFileExt($filename);
 
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
         return $arrayUtil->getIdx($ar, $ext, 'Unknown');
     }
 
@@ -337,7 +335,7 @@ class DocumentView extends AbstractAutoNewConfig
         $arFile = array();
 
         $arDir = (array)$this->config['dir'];
-        $fileSystem = $this->utilContainer->get('FileSystem');
+        $fileSystem = $this->getUtil('FileSystem');
         foreach ($arDir as $dir) {
             foreach ($fileSystem->listDir($dir) as $file) {
                 $fullpath = $dir . $file['name'];
@@ -438,7 +436,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function sortFile($arFile)
     {
-        $arrayUtil = $this->utilContainer->get('Array');
+        $arrayUtil = $this->getUtil('Array');
         return $arrayUtil->sortByLevel2($arFile, 'name', 'ASC');
     }
 }
