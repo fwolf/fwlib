@@ -2,6 +2,7 @@
 namespace Fwlib\Util\Code\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
+use Fwlib\Util\UtilContainer;
 use Fwlib\Util\Code\OrgCode;
 
 /**
@@ -15,35 +16,47 @@ use Fwlib\Util\Code\OrgCode;
  */
 class OrgCodeTest extends PHPunitTestCase
 {
+    protected $orgCode;
+    protected $utilContainer;
+
+
+    public function __construct()
+    {
+        $this->utilContainer = UtilContainer::getInstance();
+        $this->orgCode = new OrgCode;
+        $this->orgCode->setUtilContainer($this->utilContainer);
+    }
+
+
     public function testGen()
     {
-        $x = OrgCode::gen('not meet length 8');
+        $x = $this->orgCode->gen('not meet length 8');
         $this->assertEquals('', $x);
 
-        $x = OrgCode::gen('Out  0aA');
+        $x = $this->orgCode->gen('Out  0aA');
         $this->assertEquals('', $x);
 
-        $x = OrgCode::gen();
+        $x = $this->orgCode->gen();
         $this->assertEquals(true, preg_match('/[0-9A-Z]{8}-[0-9X]/', $x));
 
-        $x = OrgCode::gen('D2143569');
+        $x = $this->orgCode->gen('D2143569');
         $this->assertEquals('D2143569-X', $x);
 
-        $x = OrgCode::gen('12345678');
+        $x = $this->orgCode->gen('12345678');
         $this->assertEquals('12345678-8', $x);
 
-        $x = OrgCode::gen('87654321');
+        $x = $this->orgCode->gen('87654321');
         $this->assertEquals('87654321-0', $x);
     }
 
 
     public function testValidate()
     {
-        $this->assertEquals(false, OrgCode::validate('foo'));
-        $this->assertEquals(false, OrgCode::validate('foobarblah'));
-        $this->assertEquals(false, OrgCode::validate('D2143569-1'));
+        $this->assertEquals(false, $this->orgCode->validate('foo'));
+        $this->assertEquals(false, $this->orgCode->validate('foobarblah'));
+        $this->assertEquals(false, $this->orgCode->validate('D2143569-1'));
 
-        $this->assertEquals(true, OrgCode::validate('D2143569-X'));
-        $this->assertEquals(false, OrgCode::validate('d2143569-x'));
+        $this->assertEquals(true, $this->orgCode->validate('D2143569-X'));
+        $this->assertEquals(false, $this->orgCode->validate('d2143569-x'));
     }
 }

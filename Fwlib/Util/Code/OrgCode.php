@@ -21,7 +21,7 @@ class OrgCode extends AbstractUtilAware
      * @param   string  $codeBase  8-bit base code
      * @return  string
      */
-    public static function gen($codeBase = '')
+    public function gen($codeBase = '')
     {
         $codeBase = strtoupper($codeBase);
 
@@ -80,7 +80,7 @@ class OrgCode extends AbstractUtilAware
      * @param   string  $code
      * @return  boolean
      */
-    public static function validate($code)
+    public function validate($code)
     {
         if (10 != strlen($code)) {
             return false;
