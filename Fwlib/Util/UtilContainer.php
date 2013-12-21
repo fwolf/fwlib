@@ -44,6 +44,9 @@ class UtilContainer extends AbstractServiceContainer
         'UuidBase62'        => 'Fwlib\Util\UuidBase62',
 
         'Iso7064'           => 'Fwlib\Util\Algorithm\Iso7064',
+
+        'ChnOrgCode'            => 'Fwlib\Util\Code\ChnOrgCode',
+        'ChnOrganizationCode'   => 'Fwlib\Util\Code\ChnOrgCode',
     );
 
 
