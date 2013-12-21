@@ -1,13 +1,13 @@
 <?php
-namespace Fwlib\Algorithm\Test;
+namespace Fwlib\Util\Algorithm\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Algorithm\Iso7064;
+use Fwlib\Util\Algorithm\Iso7064;
 
 /**
- * Test for Fwlib\Algorithm\Iso7064
+ * Test for Fwlib\Util\Algorithm\Iso7064
  *
- * @package     Fwlib\Algorithm\Test
+ * @package     Fwlib\Util\Algorithm\Test
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
