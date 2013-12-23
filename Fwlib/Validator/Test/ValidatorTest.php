@@ -2,6 +2,7 @@
 namespace Fwlib\Validator\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
+use Fwlib\Validator\ConstraintContainer;
 use Fwlib\Validator\Validator;
 
 /**
@@ -15,30 +16,20 @@ use Fwlib\Validator\Validator;
  */
 class ValidatorTest extends PHPunitTestCase
 {
-    private $validator;
+    protected $constraintContainer;
+    protected $validator;
 
 
     public function __construct()
     {
-        $this->validator = new Validator();
-    }
-
-
-    public function testRegisterConstraint()
-    {
-        $this->validator->registerConstraint('newConstraint', 'ClassName');
-
-        $this->assertTrue(
-            array_key_exists(
-                'newConstraint',
-                $this->reflectionGet($this->validator, 'constraintMap')
-            )
-        );
+        $this->constraintContainer = ConstraintContainer::getInstance();
     }
 
 
     public function testValidate()
     {
+        $this->validator = new Validator($this->constraintContainer);
+
         $rule = array(
             'notEmpty',
             'length: 3',
@@ -58,10 +49,13 @@ class ValidatorTest extends PHPunitTestCase
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage not registed
+     * @expectedExceptionMessage Invalid service
      */
     public function testValidateWithNotRegistedConstraint()
     {
+        $this->validator = new Validator();
+        $this->validator->setConstraintContainer($this->constraintContainer);
+
         $rule = array(
             'notRegisted',
         );

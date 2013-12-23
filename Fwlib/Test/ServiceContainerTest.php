@@ -5,7 +5,7 @@ use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Bridge\Adodb;
 
 /**
- * Service Container for testcase
+ * Service Container example, also for testcase
  *
  * @codeCoverageIgnore
  *

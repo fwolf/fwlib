@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Validator;
 
+use Fwlib\Base\AbstractServiceContainer;
+use Fwlib\Validator\ConstraintContainer;
 
 /**
  * Validate data and got fail message
@@ -14,28 +16,9 @@ namespace Fwlib\Validator;
 class Validator
 {
     /**
-     * Constraint instances
-     *
-     * Instance are stored here for reuse.
-     *
-     * @var array
+     * @var ConstraintContainer
      */
-    protected $constraintInstance = array();
-
-    /**
-     * Map of constraint to its implemet class name
-     *
-     * @var array
-     */
-    protected $constraintMap = array(
-        'email'     => 'Fwlib\Validator\Constraint\Email',
-        'ipv4'      => 'Fwlib\Validator\Constraint\Ipv4',
-        'length'    => 'Fwlib\Validator\Constraint\Length',
-        'notEmpty'  => 'Fwlib\Validator\Constraint\NotEmpty',
-        'required'  => 'Fwlib\Validator\Constraint\Required',
-        'regex'     => 'Fwlib\Validator\Constraint\Regex',
-        'url'       => 'Fwlib\Validator\Constraint\Url',
-    );
+    protected $constraintContainer = null;
 
     /**
      * Validate fail message
@@ -46,26 +29,30 @@ class Validator
 
 
     /**
+     * Constructor
+     *
+     * @param   ConstraintContainer $constraintContainer
+     */
+    public function __construct(
+        ConstraintContainer $constraintContainer = null
+    ) {
+        $this->constraintContainer = $constraintContainer;
+    }
+
+
+    /**
      * Get constraint instance
      *
      * @param   string  $name
      * @return  Fwlib\Validator\ConstraintInterface
      */
-    public function getConstraint($name)
+    protected function getConstraint($name)
     {
-        if (!isset($this->constraintMap[$name])) {
-            throw new \Exception("Constraint $name not registed");
+        if (is_null($this->constraintContainer)) {
+            $this->setConstraintContainer(null);
         }
 
-        if (isset($this->constraintInstance[$name])) {
-            return $this->constraintInstance[$name];
-
-        } else {
-            $class = $this->constraintMap[$name];
-            $instance = new $class;
-            $this->constraintInstance[$name] = $instance;
-            return $instance;
-        }
+        return $this->constraintContainer->get($name);
     }
 
 
@@ -83,14 +70,20 @@ class Validator
 
 
     /**
-     * Register a new constraint
+     * Set constraint container instance
      *
-     * @param   string  $constraintName
-     * @param   string  $className
+     * @param   ConstraintContainer $constraintContainer
+     * @return  Validator
      */
-    public function registerConstraint($constraintName, $className)
+    public function setConstraintContainer($constraintContainer = null)
     {
-        $this->constraintMap[$constraintName] = $className;
+        if (is_null($constraintContainer)) {
+            $this->constraintContainer = ConstraintContainer::getInstance();
+        } else {
+            $this->ConstraintContainer = $constraintContainer;
+        }
+
+        return $this;
     }
 
 
@@ -131,7 +124,7 @@ class Validator
                 );
             }
 
-            $constraint = $this->getConstraint($constraintName);
+            $constraint = $this->getConstraint(ucfirst($constraintName));
 
             if (!$constraint->validate($value, $constraintData)) {
                 $valid = false;

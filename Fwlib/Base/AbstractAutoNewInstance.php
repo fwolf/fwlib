@@ -136,7 +136,7 @@ abstract class AbstractAutoNewInstance implements UtilAwareInterface
     /**
      * Set a property instance
      *
-     * A bit like dependence injection.
+     * Keep for backward compatible, should use ServiceContainer::register().
      *
      * @param   mixed   $instance
      * @param   string  $className  Empty to auto-detect

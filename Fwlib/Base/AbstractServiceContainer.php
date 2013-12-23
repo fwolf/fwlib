@@ -90,10 +90,11 @@ abstract class AbstractServiceContainer extends AbstractSingleton
      */
     protected function newService($name)
     {
-        $method = 'new' . ucfirst($name);
+        $service = null;
 
+        $method = 'new' . ucfirst($name);
         if (method_exists($this, $method)) {
-            return $this->$method();
+            $service = $this->$method();
 
 
         } elseif (isset($this->serviceClass[$name])) {
@@ -101,15 +102,22 @@ abstract class AbstractServiceContainer extends AbstractSingleton
 
             // Singleton or similar class's instantiate diffs
             if (method_exists($className, 'getInstance')) {
-                return $className::getInstance();
+                $service = $className::getInstance();
             } else {
-                return new $className;
+                $service = new $className;
             }
 
 
         } else {
             throw new \Exception("Invalid service '$name'.");
         }
+
+
+        if (method_exists($service, 'setServiceContainer')) {
+            $service->setServiceContainer($this);
+        }
+
+        return $service;
     }
 
 
