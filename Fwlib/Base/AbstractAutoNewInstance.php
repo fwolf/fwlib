@@ -102,6 +102,20 @@ abstract class AbstractAutoNewInstance implements UtilAwareInterface
 
 
     /**
+     * Get service instance
+     *
+     * @param   string  $name
+     * @return  object  Service instance
+     */
+    protected function getService($name)
+    {
+        $this->checkServiceContainer(true);
+
+        return $this->serviceContainer->get($name);
+    }
+
+
+    /**
      * Get util instance
      *
      * Same with Fwlib\Util\AbstractUtilAware::getUtil()

@@ -363,9 +363,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function newInstanceMarkdown()
     {
-        $this->checkServiceContainer();
-
-        return $this->serviceContainer->get('Markdown');
+        return $this->getService('Markdown');
     }
 
 
@@ -376,9 +374,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function newInstanceRestructuredtext()
     {
-        $this->checkServiceContainer();
-
-        return $this->serviceContainer->get('Restructuredtext');
+        return $this->getService('Restructuredtext');
     }
 
 
@@ -389,9 +385,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function newInstanceUnknownMarkup()
     {
-        $this->checkServiceContainer();
-
-        return $this->serviceContainer->get('UnknownMarkup');
+        return $this->getService('UnknownMarkup');
     }
 
 

@@ -147,7 +147,7 @@ class FormValidator extends AbstractAutoNewConfig
         $class = $this->config['class'];
         $id = $this->config['id'];
         $formSelector = $this->config['formSelector'];
-        $rule = $this->utilContainer->get('Json')->encodeUnicode($this->rule);
+        $rule = $this->getUtil('Json')->encodeUnicode($this->rule);
         $checkOnSubmit = ($this->config['checkOnSubmit'])
             ? 'enableCheckOnSubmit()'
             : 'disableCheckOnSubmit()';
@@ -212,9 +212,7 @@ $closureEnd
      */
     protected function newInstanceValidator()
     {
-        $this->checkServiceContainer();
-
-        return $this->serviceContainer->get('Validator');
+        return $this->getService('Validator');
     }
 
 

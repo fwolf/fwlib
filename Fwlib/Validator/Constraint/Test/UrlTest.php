@@ -3,6 +3,7 @@ namespace Fwlib\Validator\Constraint\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Url;
+use Fwlib\Test\ServiceContainerTest;
 
 /**
  * Test for Fwlib\Validator\Constraint\Url
@@ -20,7 +21,7 @@ class UrlTest extends PHPunitTestCase
     public static $url;
 
 
-    public function testValidate()
+    public function buildMock()
     {
         $curl = $this->getMock('Fwlib\Net\Curl', array('post'));
         $curl->expects($this->any())
@@ -31,10 +32,19 @@ class UrlTest extends PHPunitTestCase
                 return UrlTest::$curlResult;
             }));
 
-        $constraint = new Url();
-        $constraint->setInstance($curl, 'Curl');
-        $constraint->setUtilContainer();
+        $serviceContainer = ServiceContainerTest::getInstance();
+        $serviceContainer->register('Curl', $curl);
 
+        $constraint = new Url();
+        $constraint->setServiceContainer($serviceContainer);
+
+        return $constraint;
+    }
+
+
+    public function testValidate()
+    {
+        $constraint = $this->buildMock();
         $url = 'http://dummy/';
 
 

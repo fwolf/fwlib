@@ -44,8 +44,6 @@ abstract class AbstractDbClient extends AbstractAutoNewInstance
      */
     protected function newInstanceDb()
     {
-        $this->checkServiceContainer();
-
-        return $this->serviceContainer->get('Db');
+        return $this->getService('Db');
     }
 }

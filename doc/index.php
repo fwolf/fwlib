@@ -15,11 +15,12 @@ $dv = new DocumentView(
         'showFileSize'  => true,
     )
 );
-$dv->markdown = new Markdown;
-$dv->restructuredtext = new Restructuredtext;
+$dv->setInstance(new Markdown, 'Markdown');
 // Disable css from rst2html
-$dv->restructuredtext->cmdOption[] = 'stylesheet=""';
-$dv->unknownMarkup = new UnknownMarkup;
+$rest = new Restructuredtext;
+$rest->cmdOption[] = 'stylesheet=""';
+$dv->setInstance($rest, 'Restructuredtext');
+$dv->setInstance(new UnknownMarkup, 'UnknownMarkup');
 $html = $dv->display(true);
 $title = $dv->title;
 ?>

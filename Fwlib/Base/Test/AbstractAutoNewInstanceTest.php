@@ -19,11 +19,25 @@ use Fwlib\Util\UtilContainer;
 class AbstractAutoNewInstanceTest extends PHPunitTestCase
 {
     public $dummy;
+    protected $serviceContainer;
 
 
     public function __construct()
     {
         $this->dummy = new AbstractAutoNewConfigDummy;
+
+        $this->serviceContainer = ServiceContainerTest::getInstance();
+    }
+
+
+    public function buildMock()
+    {
+        $mock = $this->getMockForAbstractClass(
+            'Fwlib\Base\AbstractAutoNewInstance',
+            array()
+        );
+
+        return $mock;
     }
 
 
@@ -85,6 +99,18 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
         // Final solution: use @codeCoverageIgnore
 
         $this->assertEquals(null, $this->dummy->foo);
+    }
+
+
+    public function testGetService()
+    {
+        $mock = $this->buildMock();
+
+        $mock->setServiceContainer($this->serviceContainer);
+
+        $util = $this->reflectionCall($mock, 'getService', array('Util'));
+
+        $this->assertInstanceOf('Fwlib\Util\UtilContainer', $util);
     }
 
 

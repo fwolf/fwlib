@@ -84,6 +84,13 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         }
     }
 
+    protected function getService($name)
+    {
+        $this->checkServiceContainer(true);
+
+        return $this->serviceContainer->get($name);
+    }
+
     protected function getUtil($name)
     {
         if (is_null($this->utilContainer)) {
@@ -129,14 +136,6 @@ class Url extends AbstractConstraint implements UtilAwareInterface
 
 
     /**
-     * Curl client object
-     *
-     * @var Fwlib\Net\Curl
-     */
-    protected $curl = null;
-
-
-    /**
      * {@inheritdoc}
      */
     public $messageTemplate = array(
@@ -145,15 +144,6 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         'invalidType'   => 'The input must be Array',
         'urlEmpty'  => 'The input need url target for validate',
     );
-
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        unset($this->curl);
-    }
 
 
     /**
@@ -178,19 +168,6 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         }
 
         return $selfUrl . $url;
-    }
-
-
-    /**
-     * New Curl object
-     *
-     * @return  Fwlib\Net\Curl
-     */
-    protected function newInstanceCurl()
-    {
-        $this->checkServiceContainer();
-
-        return $this->serviceContainer->get('Curl');
     }
 
 
@@ -227,6 +204,7 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         } else {
             // Build post data array
             $postData = array();
+            $arrayUtil = $this->getUtil('Array');
             foreach ($ar as $v) {
                 $v = trim($v);
 
@@ -234,13 +212,13 @@ class Url extends AbstractConstraint implements UtilAwareInterface
                     continue;
                 }
 
-                $arrayUtil = UtilContainer::getInstance()->get('Array');
                 $postData[$v] = $arrayUtil->getIdx($value, $v, null);
             }
         }
 
         try {
-            $rs = $this->curl->post($url, $postData);
+            $curl = $this->getService('Curl');
+            $rs = $curl->post($url, $postData);
             $rv = new ReturnValue($rs);
 
             if ($rv->error()) {

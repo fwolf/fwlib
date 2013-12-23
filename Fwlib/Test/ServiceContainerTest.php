@@ -23,9 +23,11 @@ class ServiceContainerTest extends AbstractServiceContainer
      * @var array
      */
     protected $serviceClass = array(
+        'Curl'          => 'Fwlib\Net\Curl',
         'GlobalConfig'  => 'Fwlib\Config\GlobalConfig',
         'Util'          => 'Fwlib\Util\UtilContainer',
         'UtilContainer' => 'Fwlib\Util\UtilContainer',
+        'Validator'     => 'Fwlib\Validator\Validator',
     );
 
 
