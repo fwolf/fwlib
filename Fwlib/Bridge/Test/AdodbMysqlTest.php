@@ -52,7 +52,8 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
     public function testConstruct()
     {
-        $db = new Adodb(GlobalConfig::getInstance()->get('dbserver.mysql'));
+        $profile = GlobalConfig::getInstance()->get('dbserver.mysql');
+        $db = new Adodb($profile);
 
         $this->assertFalse(isset($db->sqlGenerator));
         // Will auto create SqlGenerator when access
@@ -128,16 +129,16 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testCountQuery()
     {
         $db = self::$dbMysql;
-        $i = $db::$queryCount;
+        $i = $db->queryCount;
 
         $db->GetAll('SELECT 1 AS a');
-        $this->assertEquals($i + 1, $db::$queryCount);
+        $this->assertEquals($i + 1, $db->queryCount);
 
         $db->CacheGetAll(0, 'SELECT 1 AS a');
-        $this->assertEquals($i + 1, $db::$queryCount);
+        $this->assertEquals($i + 1, $db->queryCount);
 
         $db->GetAll(0, 'SELECT 1 AS a');
-        $this->assertEquals($i + 2, $db::$queryCount);
+        $this->assertEquals($i + 2, $db->queryCount);
     }
 
 
@@ -338,6 +339,13 @@ class AdodbMysqlTest extends AbstractDbRelateTest
             null,
             self::$dbMysql->getMetaPrimaryKey(self::$tableUser . '_not_exists')
         );
+    }
+
+
+    public function testGetProfileString()
+    {
+        $profileString = self::$dbMysql->getProfileString('-');
+        $this->assertEquals(2, substr_count($profileString, '-'));
     }
 
 

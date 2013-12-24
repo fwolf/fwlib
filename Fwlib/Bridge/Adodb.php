@@ -122,7 +122,7 @@ class Adodb extends AbstractUtilAware
      *
      * @var int
      */
-    public static $queryCount = 0;
+    public $queryCount = 0;
 
     /**
      * Sql generator object
@@ -419,7 +419,7 @@ class Adodb extends AbstractUtilAware
      */
     protected function countQuery($step = 1)
     {
-        self::$queryCount += $step;
+        $this->queryCount += $step;
     }
 
 

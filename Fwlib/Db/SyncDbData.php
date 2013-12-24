@@ -421,7 +421,8 @@ class SyncDbData extends AbstractUtilAware
         }
 
 
-        $queryCountBeforeSync = Adodb::$queryCount;
+        $queryCountBeforeSync = $this->dbSrce->queryCount +
+            $this->dbDest->queryCount;
         $rowsDeleted = 0;
 
         foreach ($config as $tableSrce => $tableDest) {
@@ -436,7 +437,8 @@ class SyncDbData extends AbstractUtilAware
             $rowsDeleted += $i;
         }
 
-        $queryCount = Adodb::$queryCount - $queryCountBeforeSync;
+        $queryCount = $this->dbSrce->queryCount + $this->dbDest->queryCount -
+            $queryCountBeforeSync;
         $this->log(
             "syncDelete() done, total {$rowsDeleted} rows deleted," .
             " db query $queryCount times.\n"
@@ -561,7 +563,8 @@ class SyncDbData extends AbstractUtilAware
      */
     public function syncOneway(&$config)
     {
-        $queryCountBeforeSync = Adodb::$queryCount;
+        $queryCountBeforeSync = $this->dbSrce->queryCount +
+            $this->dbDest->queryCount;
         $rowsSynced = 0;
 
         foreach ($config as $tblSrce => $tblDest) {
@@ -576,7 +579,8 @@ class SyncDbData extends AbstractUtilAware
             $rowsSynced += $i;
         }
 
-        $queryCount = Adodb::$queryCount - $queryCountBeforeSync;
+        $queryCount = $this->dbSrce->queryCount + $this->dbDest->queryCount -
+            $queryCountBeforeSync;
         $this->log(
             "syncOneway() done, total {$rowsSynced} rows synced," .
             " db query $queryCount times.\n"
