@@ -37,6 +37,7 @@ if (!defined('P2R')) define('P2R', './');
  *
  * 这里所说的module和action主要是针对系统逻辑的，不要和MVC中的概念混淆。
  *
+ * @deprecated  Use Fwlib\Mvc\AbstractControler
  * @package		fwolflib
  * @subpackage	mvc
  * @copyright	Copyright 2008-2010, Fwolf
