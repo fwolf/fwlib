@@ -45,7 +45,7 @@ class CacheMemcached extends Cache
      */
     public function del($key)
     {
-        if (1 == $this->config->get('cache-memcached-autosplit')) {
+        if (1 == $this->config->get('memcachedAutosplit')) {
             // Is value splitted ?
             $total = $this->memcached->get($this->key($key . '[split]'));
             if (false === $total) {
@@ -87,7 +87,7 @@ class CacheMemcached extends Cache
 
         // Unknown item size, try again for autosplit
         if ((\Memcached::RES_SUCCESS != $this->memcached->getResultCode())
-            && (1 == $this->config->get('cache-memcached-autosplit'))
+            && (1 == $this->config->get('memcachedAutosplit'))
         ) {
             $val = $this->memcached->get($this->key($key . '[split]'));
         }
@@ -114,7 +114,7 @@ class CacheMemcached extends Cache
     {
         // Lifetime is handle by memcached
 
-        if (1 == $this->config->get('cache-memcached-autosplit')) {
+        if (1 == $this->config->get('memcachedAutosplit')) {
             // Is value splitted ?
             $keySplitted = $this->key($key . '[split]');
             $total = $this->memcached->get($keySplitted);
@@ -187,10 +187,10 @@ class CacheMemcached extends Cache
 
         // Length limit
         $prefix1 = $this->config->get(
-            'cache-memcached-option-default.' . \Memcached::OPT_PREFIX_KEY
+            'memcachedOptionDefault.' . \Memcached::OPT_PREFIX_KEY
         );
         $prefix2 = $this->config->get(
-            'cache-memcached-option.' . \Memcached::OPT_PREFIX_KEY
+            'memcachedOption.' . \Memcached::OPT_PREFIX_KEY
         );
         $i = max(strlen($prefix1), strlen($prefix2));
         if (250 < ($i + strlen($str))) {
@@ -209,7 +209,7 @@ class CacheMemcached extends Cache
      */
     public function newInstanceMemcached()
     {
-        $arSvr = $this->config->get('cache-memcached-server');
+        $arSvr = $this->config->get('memcachedServer');
 
         if (!empty($arSvr)) {
             // Check server and remove dead
@@ -240,7 +240,7 @@ class CacheMemcached extends Cache
         $obj = new \Memcached();
         $obj->addServers($arSvr);
 
-        foreach ((array)$this->config->get('cache-memcached-option-default') as
+        foreach ((array)$this->config->get('memcachedOptionDefault') as
             $k => $v) {
             $obj->setOption($k, $v);
         }
@@ -248,7 +248,7 @@ class CacheMemcached extends Cache
         // @codeCoverageIgnoreStart
         // This config is always empty, because create() is static call, no
         // instance, can't set this option.
-        foreach ((array)$this->config->get('cache-memcached-option') as
+        foreach ((array)$this->config->get('memcachedOption') as
             $k => $v) {
             $obj->setOption($k, $v);
         }
@@ -275,13 +275,13 @@ class CacheMemcached extends Cache
         $lifetime = $this->expireTime($lifetime);
 
         // Auto split large string val
-        if ((1 == $this->config->get('cache-memcached-autosplit'))
+        if ((1 == $this->config->get('memcachedAutosplit'))
             && is_string($val) && (strlen($val)
-            > $this->config->get('cache-memcached-maxitemsize'))
+            > $this->config->get('memcachedMaxitemsize'))
         ) {
             $ar = str_split(
                 $val,
-                $this->config->get('cache-memcached-maxitemsize')
+                $this->config->get('memcachedMaxitemsize')
             );
             $total = count($ar);
 
@@ -336,25 +336,22 @@ class CacheMemcached extends Cache
     {
         parent::setConfigDefault();
 
-        // Cache type: memcached
-        $this->config->set('cache-type', 'memcached');
-
 
         // Memcache server
         // Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
-        $this->config->set('cache-memcached-lifetime', 86400);
+        $this->config->set('memcachedLifetime', 86400);
 
         // Auto split store item larger than max item size
         // 0/off, 1/on, when off, large item store will fail.
-        $this->config->set('cache-memcached-autosplit', 0);
+        $this->config->set('memcachedAutosplit', 0);
 
         // Max item size, STRING val exceed this will auto split
         //   and store automatic, user need only care other val type.
-        $this->config->set('cache-memcached-maxitemsize', 1024000);
+        $this->config->set('memcachedMaxitemsize', 1024000);
 
         // Memcached default option, set when new memcached obj
         $this->config->set(
-            'cache-memcached-option-default',
+            'memcachedOptionDefault',
             array(
                 // Better for multi server
                 \Memcached::OPT_DISTRIBUTION =>
@@ -369,14 +366,14 @@ class CacheMemcached extends Cache
 
         // Memcached option, user set, replace default above
         $this->config->set(
-            'cache-memcached-option',
+            'memcachedOption',
             array()
         );
 
         // After change server cfg, you should unset $oMemcached.
         // or use setConfigServer()
         $this->config->set(
-            'cache-memcached-server',
+            'memcachedServer',
             array()
         );
 
@@ -399,10 +396,10 @@ class CacheMemcached extends Cache
 
         if (isset($arSvr[0]) && is_array($arSvr[0])) {
             // 2 dim array
-            $this->config->set('cache-memcached-server', $arSvr);
+            $this->config->set('memcachedServer', $arSvr);
         } else {
             // 1 dim array only
-            $this->config->set('cache-memcached-server', array($arSvr));
+            $this->config->set('memcachedServer', array($arSvr));
         }
 
         unset($this->memcached);

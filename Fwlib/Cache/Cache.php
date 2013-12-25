@@ -39,7 +39,7 @@ class Cache extends AbstractAutoNewConfig
      *
      * @var string
      */
-    public $errorMsg = '';
+    public $errorMessage = '';
 
     /**
      * Log for get() op's key and success flag
@@ -103,11 +103,11 @@ class Cache extends AbstractAutoNewConfig
      */
     public function decodeVal($str)
     {
-        if (1 == $this->config->get('cache-store-method')) {
+        if (1 == $this->config->get('storeMethod')) {
             // Json to array
             return json_decode($str, true);
 
-        } elseif (2 == $this->config->get('cache-store-method')) {
+        } elseif (2 == $this->config->get('storeMethod')) {
             // Json to object
             return json_decode($str, false);
 
@@ -141,8 +141,8 @@ class Cache extends AbstractAutoNewConfig
      */
     public function encodeVal($val)
     {
-        if (1 == $this->config->get('cache-store-method')
-            || 2 == $this->config->get('cache-store-method')
+        if (1 == $this->config->get('storeMethod')
+            || 2 == $this->config->get('storeMethod')
         ) {
             return $this->getUtil('Json')->encodeUnicode($val);
 
@@ -178,7 +178,7 @@ class Cache extends AbstractAutoNewConfig
     {
         // If not set, use config
         if (is_null($lifetime)) {
-            $lifetime = $this->config->get('cache-lifetime');
+            $lifetime = $this->config->get('lifetime');
         }
 
         // 0 means never expire
@@ -264,16 +264,12 @@ class Cache extends AbstractAutoNewConfig
      */
     protected function setConfigDefault()
     {
-        // Cache type: file, memcached
-        // Empty means parent cache class.
-        $this->config->set('cache-type', '');
-
         // Cache store method
         // 0: Raw string or other value.
         //  User should determine the value DO suite cache type.
         // 1: Json, decode to array.
         // 2: Json, decode to object.
-        $this->config->set('cache-store-method', 1);
+        $this->config->set('storeMethod', 1);
 
         // Default cache lifetime, in second
         // Can be overwrite by param when get/set.
@@ -282,7 +278,7 @@ class Cache extends AbstractAutoNewConfig
         // Larger than 30days, must assign unix time like memcached,
         //   which is number of seconds since 1970-1-1 as an integer.
         // 0 means forever.
-        $this->config->set('cache-lifetime', 2592000);
+        $this->config->set('lifetime', 2592000);
 
         return $this;
     }

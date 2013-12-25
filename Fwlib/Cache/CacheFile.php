@@ -38,28 +38,28 @@ class CacheFile extends Cache
     {
         $pass = true;
 
-        $dir = $this->config->get('cache-file-dir');
+        $dir = $this->config->get('fileDir');
         if (empty($dir)) {
-            $this->errorMsg = 'No cache file dir defined.';
+            $this->errorMessage = 'No cache file dir defined.';
             $pass = false;
 
         } else {
             $s = $this->checkConfigFileDir($dir);
             if (!empty($s)) {
-                $this->errorMsg = 'Cache file cfg dir error: ' . $s;
+                $this->errorMessage = 'Cache file cfg dir error: ' . $s;
                 $pass = false;
             }
         }
 
-        $rule = $this->config->get('cache-file-rule');
+        $rule = $this->config->get('fileRule');
         if (empty($rule)) {
-            $this->errorMsg = 'No cache file rule defined.';
+            $this->errorMessage = 'No cache file rule defined.';
             $pass = false;
 
         } else {
             $s = $this->checkConfigFileRule($rule);
             if (!empty($s)) {
-                $this->errorMsg = 'Cache file cfg rule error: ' . $s;
+                $this->errorMessage = 'Cache file cfg rule error: ' . $s;
                 $pass = false;
             }
         }
@@ -204,9 +204,9 @@ class CacheFile extends Cache
      */
     public function getFilePath($key)
     {
-        $path = $this->config->get('cache-file-dir');
+        $path = $this->config->get('fileDir');
 
-        $ar_rule = str_split($this->config->get('cache-file-rule'), 2);
+        $ar_rule = str_split($this->config->get('fileRule'), 2);
 
         foreach ($ar_rule as $rule) {
             // Path section may be empty
@@ -323,12 +323,9 @@ class CacheFile extends Cache
     {
         parent::setConfigDefault();
 
-        // Cache type: file
-        $this->config->set('cache-type', 'file');
-
 
         // Dir where data file store
-        $this->config->set('cache-file-dir', '/tmp/cache/');
+        $this->config->set('fileDir', '/tmp/cache/');
 
         /**
          * Cache file store rule
@@ -342,7 +339,7 @@ class CacheFile extends Cache
          * 5n   crc32, n=0..3, 16 * 16 = 256
          * Join these str with '/', got full path of cache file.
          */
-        $this->config->set('cache-file-rule', '10');
+        $this->config->set('fileRule', '10');
 
 
         return $this;

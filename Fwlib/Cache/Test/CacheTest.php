@@ -50,7 +50,7 @@ class CacheTest extends PHPunitTestCase
         );
 
         // Encode/decode for array
-        $this->ch->setConfig('cache-store-method', 1);
+        $this->ch->setConfig('storeMethod', 1);
         $x = array('a' => 'b');
         $this->assertEquals(
             $x,
@@ -61,7 +61,7 @@ class CacheTest extends PHPunitTestCase
         // JSON decode to object
         // Decoded object s stdClass, not original __CLASS__, array property
         // in it need convert back from stdClass too.
-        $this->ch->setConfig('cache-store-method', 2);
+        $this->ch->setConfig('storeMethod', 2);
         $x = new Cache;
         $y = $this->ch->decodeVal($this->ch->encodeVal($x));
         $this->assertObjectHasAttribute('config', $y);
@@ -82,7 +82,7 @@ class CacheTest extends PHPunitTestCase
     public function testEncodeVal()
     {
         // Encode/decode raw
-        $this->ch->setConfig('cache-store-method', 0);
+        $this->ch->setConfig('storeMethod', 0);
         $x = 'test string';
         $y = $this->ch->encodeVal($x);
         $this->assertInternalType('string', $y);

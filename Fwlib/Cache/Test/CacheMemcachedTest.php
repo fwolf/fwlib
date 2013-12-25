@@ -73,14 +73,14 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->assertEquals($x, $this->ch->get($key));
 
         // Cache expire
-        $this->ch->setConfig('cache-memcached-autosplit', 1);
+        $this->ch->setConfig('memcachedAutosplit', 1);
         $this->ch->set($key, $x, 60);
         $this->assertEquals(false, $this->ch->expire($key));
         $this->ch->del($key);
         $this->assertTrue($this->ch->expire($key));
         $this->ch->set($key, $x, -10);
         $this->assertEquals(true, $this->ch->expire($key));
-        $this->ch->setConfig('cache-memcached-autosplit', 0);
+        $this->ch->setConfig('memcachedAutosplit', 0);
         $this->ch->set($key, $x, 60);
         $this->assertEquals(false, $this->ch->expire($key));
         $this->ch->set($key, $x, -10);
@@ -117,11 +117,11 @@ class CacheMemcachedTest extends PHPunitTestCase
 
 
         // Big value exceed max item size
-        $this->ch->setConfig('cache-memcached-maxitemsize', 100);
+        $this->ch->setConfig('memcachedMaxitemsize', 100);
 
         $s = str_repeat('0', 300);
         $this->ch->del($key);       // Clear previous setted value
-        $this->ch->setConfig('cache-memcached-autosplit', 1);
+        $this->ch->setConfig('memcachedAutosplit', 1);
         $this->ch->set($key, $s, 3600);
         $this->assertEquals($s, $this->ch->get($key));
         $this->assertEquals(false, $this->ch->expire($key));
@@ -132,7 +132,7 @@ class CacheMemcachedTest extends PHPunitTestCase
         // Big value size is computed AFTER compress if compress on
         $s = str_repeat('0', 1200000);
         $this->ch->memcached->setOption(\Memcached::OPT_COMPRESSION, false);
-        $this->ch->setConfig('cache-memcached-autosplit', 0);
+        $this->ch->setConfig('memcachedAutosplit', 0);
         // Error: Memcache set error 10: SERVER ERROR
         @$this->ch->set($key, $s, 3600);
         $this->assertEquals(null, $this->ch->get($key));

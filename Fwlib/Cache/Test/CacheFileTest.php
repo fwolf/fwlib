@@ -40,7 +40,7 @@ class CacheFileTest extends PHPunitTestCase
      */
     public function testCache()
     {
-        $this->ch->setConfig(array('cache-file-rule' => '55'));
+        $this->ch->setConfig(array('fileRule' => '55'));
         $key = 'site/index';
         // '/tmp/cache/89/3ed0dc6e'
         $x = $this->ch->getFilePath($key);
@@ -54,7 +54,7 @@ class CacheFileTest extends PHPunitTestCase
 
         // Cache set
         $v = 'blah';
-        $this->ch->setConfig('cache-store-method', 1);
+        $this->ch->setConfig('storeMethod', 1);
         $this->ch->set($key, $v);
         $this->assertEquals(json_encode($v), file_get_contents($x));
 
@@ -74,12 +74,12 @@ class CacheFileTest extends PHPunitTestCase
         $this->assertEquals($v, $this->ch->get($key, null));
 
         $v = '你好';
-        $this->ch->setConfig('cache-store-method', 0);
+        $this->ch->setConfig('storeMethod', 0);
         $this->ch->set($key, $v);
         $this->assertEquals($v, $this->ch->get($key));
 
         $v = array('你' => '好');
-        $this->ch->setConfig('cache-store-method', 1);
+        $this->ch->setConfig('storeMethod', 1);
         $this->ch->set($key, $v);
         $this->assertEquals($v, $this->ch->get($key));
 
@@ -96,32 +96,32 @@ class CacheFileTest extends PHPunitTestCase
     {
         $ch = Cache::create('file');
 
-        $ch->setConfig('cache-file-dir', '');
+        $ch->setConfig('fileDir', '');
         $this->assertFalse($ch->checkConfig());
         $this->assertEquals(
             'No cache file dir defined.',
-            $ch->errorMsg
+            $ch->errorMessage
         );
 
-        $ch->setConfig('cache-file-rule', '');
+        $ch->setConfig('fileRule', '');
         $this->assertFalse($ch->checkConfig());
         $this->assertEquals(
             'No cache file rule defined.',
-            $ch->errorMsg
+            $ch->errorMessage
         );
 
         // Wrong config
-        $ch->setConfig('cache-file-dir', '/proc/');
+        $ch->setConfig('fileDir', '/proc/');
         $this->assertEquals(false, $ch->checkConfig());
 
-        $ch->setConfig('cache-file-rule', '8');
+        $ch->setConfig('fileRule', '8');
         $this->assertEquals(false, $ch->checkConfig());
 
-        $ch->setConfig('cache-file-rule', '0blah');
+        $ch->setConfig('fileRule', '0blah');
         $this->assertEquals(false, $ch->checkConfig());
 
         // Create file dir fail
-        $ch->setConfig('cache-file-dir', '/var/log/test-cache-tmp/');
+        $ch->setConfig('fileDir', '/var/log/test-cache-tmp/');
         // Hide error: mkdir(): Permission denied
         $this->assertEquals(false, @$ch->checkConfig());
     }
@@ -129,44 +129,44 @@ class CacheFileTest extends PHPunitTestCase
 
     public function testGetFilePath()
     {
-        $this->ch->setConfig('cache-file-dir', '/tmp/cache/');
-        $this->ch->setConfig('cache-file-rule', '1140');
+        $this->ch->setConfig('fileDir', '/tmp/cache/');
+        $this->ch->setConfig('fileRule', '1140');
         $key = 'site/index';
 
         $x = '/tmp/cache/d0/ex/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
-        $this->ch->setConfig(array('cache-file-rule' => ''));
+        $this->ch->setConfig(array('fileRule' => ''));
         $x = '/tmp/cache/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
-        $this->ch->setConfig(array('cache-file-rule' => '1131'));
+        $this->ch->setConfig(array('fileRule' => '1131'));
         $x = '/tmp/cache/d0/te/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Notice: Directly use key's part as path may cause wrong
-        $this->ch->setConfig(array('cache-file-rule' => '2342'));
+        $this->ch->setConfig(array('fileRule' => '2342'));
         $x = '/tmp/cache/57//i/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage
-        $this->ch->setConfig(array('cache-file-rule' => '1011'));
+        $this->ch->setConfig(array('fileRule' => '1011'));
         $x = '/tmp/cache/3e/d0/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage 2
-        $this->ch->setConfig(array('cache-file-rule' => '2021'));
+        $this->ch->setConfig(array('fileRule' => '2021'));
         $x = '/tmp/cache/b6/9c/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage 3
-        $this->ch->setConfig(array('cache-file-rule' => '55'));
+        $this->ch->setConfig(array('fileRule' => '55'));
         $x = '/tmp/cache/89/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
