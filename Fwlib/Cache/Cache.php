@@ -3,6 +3,7 @@ namespace Fwlib\Cache;
 
 use Fwlib\Base\AbstractAutoNewConfig;
 use Fwlib\Cache\CacheFile;
+use Fwlib\Cache\CacheInterface;
 use Fwlib\Cache\CacheMemcached;
 use Fwlib\Util\UtilContainer;
 
@@ -24,7 +25,7 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2012-09-14
  */
-class Cache extends AbstractAutoNewConfig
+class Cache extends AbstractAutoNewConfig implements CacheInterface
 {
 
     /**
@@ -101,7 +102,7 @@ class Cache extends AbstractAutoNewConfig
      * @param   string  $str            Str read from cache
      * @return  mixed
      */
-    public function decodeVal($str)
+    protected function decodeVal($str)
     {
         if (1 == $this->config->get('storeMethod')) {
             // Json to array
@@ -122,7 +123,7 @@ class Cache extends AbstractAutoNewConfig
      * Del cache data
      *
      * @param   string  $key
-     * @return  $this
+     * @return  Cache
      */
     public function del($key)
     {
@@ -139,7 +140,7 @@ class Cache extends AbstractAutoNewConfig
      * @param   mixed   $val
      * @return  string
      */
-    public function encodeVal($val)
+    protected function encodeVal($val)
     {
         if (1 == $this->config->get('storeMethod')
             || 2 == $this->config->get('storeMethod')
@@ -159,7 +160,7 @@ class Cache extends AbstractAutoNewConfig
      * @param   string  $key
      * @return  boolean
      */
-    public function expire($key)
+    protected function expire($key)
     {
         // Inner var never expire,
         // Also, there is no good method to keep var set time.
@@ -174,7 +175,7 @@ class Cache extends AbstractAutoNewConfig
      * @param   int     $starttime      Base start time, 0 use time()
      * @return  int                     In unix time
      */
-    public function expireTime($lifetime = null, $starttime = 0)
+    protected function expireTime($lifetime = null, $starttime = 0)
     {
         // If not set, use config
         if (is_null($lifetime)) {
@@ -234,7 +235,7 @@ class Cache extends AbstractAutoNewConfig
      * @param   string  $str
      * @return  string
      */
-    public function key($str)
+    protected function key($str)
     {
         return $str;
     }

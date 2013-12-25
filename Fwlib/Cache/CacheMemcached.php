@@ -14,7 +14,6 @@ use Fwlib\Cache\Cache;
  */
 class CacheMemcached extends Cache
 {
-
     /**
      * Memcache object
      *
@@ -79,7 +78,7 @@ class CacheMemcached extends Cache
      * @param   int     $lifetime
      * @return  boolean                 True means it IS expired
      */
-    public function expire($key, $lifetime = null)
+    protected function expire($key, $lifetime = null)
     {
         // Lifetime is handle by memcached
 
@@ -207,7 +206,7 @@ class CacheMemcached extends Cache
      *
      * @return  object
      */
-    public function newInstanceMemcached()
+    protected function newInstanceMemcached()
     {
         $arSvr = $this->config->get('memcachedServer');
 
@@ -217,7 +216,7 @@ class CacheMemcached extends Cache
                 $obj = new \Memcached();
                 $obj->addServers(array($svr));
                 // Do set test
-                $obj->set($this->Key('memcached server alive test'), true);
+                $obj->set($this->key('memcached server alive test'), true);
 
                 // @codeCoverageIgnoreStart
                 if (0 != $obj->getResultCode()) {

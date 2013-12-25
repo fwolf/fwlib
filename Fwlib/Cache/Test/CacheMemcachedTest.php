@@ -75,16 +75,26 @@ class CacheMemcachedTest extends PHPunitTestCase
         // Cache expire
         $this->ch->setConfig('memcachedAutosplit', 1);
         $this->ch->set($key, $x, 60);
-        $this->assertEquals(false, $this->ch->expire($key));
+        $this->assertFalse(
+            $this->reflectionCall($this->ch, 'expire', array($key))
+        );
         $this->ch->del($key);
-        $this->assertTrue($this->ch->expire($key));
+        $this->assertTrue(
+            $this->reflectionCall($this->ch, 'expire', array($key))
+        );
         $this->ch->set($key, $x, -10);
-        $this->assertEquals(true, $this->ch->expire($key));
+        $this->assertTrue(
+            $this->reflectionCall($this->ch, 'expire', array($key))
+        );
         $this->ch->setConfig('memcachedAutosplit', 0);
         $this->ch->set($key, $x, 60);
-        $this->assertEquals(false, $this->ch->expire($key));
+        $this->assertFalse(
+            $this->reflectionCall($this->ch, 'expire', array($key))
+        );
         $this->ch->set($key, $x, -10);
-        $this->assertEquals(true, $this->ch->expire($key));
+        $this->assertTrue(
+            $this->reflectionCall($this->ch, 'expire', array($key))
+        );
 
         // Cache del
         $this->ch->del($key);
@@ -124,10 +134,14 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->ch->setConfig('memcachedAutosplit', 1);
         $this->ch->set($key, $s, 3600);
         $this->assertEquals($s, $this->ch->get($key));
-        $this->assertEquals(false, $this->ch->expire($key));
+        $this->assertFalse(
+            $this->reflectionCall($this->ch, 'expire', array($key))
+        );
         $this->ch->del($key);
         $this->assertEquals(null, $this->ch->get($key));
-        $this->assertEquals(true, $this->ch->expire($key));
+        $this->assertTrue(
+            $this->reflectionCall($this->ch, 'expire', array($key))
+        );
 
         // Big value size is computed AFTER compress if compress on
         $s = str_repeat('0', 1200000);
