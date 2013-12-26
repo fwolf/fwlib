@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Net\Sms\Test;
 
+use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Net\Sms\SmsSender;
 
@@ -66,7 +67,12 @@ class SmsSenderTest extends PHPunitTestCase
         $db = $this->getMockBuilder('Fwlib\Bridge\Adodb')
             ->disableOriginalConstructor()
             ->getMock();
-        $sc = $this->getMock('DummyServiceContainer', array('get'));
+        $sc = $this->getMockBuilder('Fwlib\Base\AbstractServiceContainer')
+            ->disableOriginalConstructor()
+            ->getMock(
+                'Fwlib\Base\AbstractServiceContainer',
+                array('get')
+            );
         $sc->expects($this->once())
             ->method('get')
             ->will($this->returnValue($db));

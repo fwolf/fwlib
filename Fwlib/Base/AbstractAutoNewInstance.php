@@ -163,8 +163,9 @@ abstract class AbstractAutoNewInstance implements UtilAwareInterface
      * @param   AbstractServiceContainer    $serviceContainer
      * @return  AbstractAutoNewInstance
      */
-    public function setServiceContainer($serviceContainer)
-    {
+    public function setServiceContainer(
+        AbstractServiceContainer $serviceContainer = null
+    ) {
         $this->serviceContainer = $serviceContainer;
 
         return $this;

@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
+use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Base\ReturnValue;
 use Fwlib\Validator\AbstractConstraint;
 use Fwlib\Util\UtilAwareInterface;
@@ -114,8 +115,9 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         return $this;
     }
 
-    public function setServiceContainer($serviceContainer)
-    {
+    public function setServiceContainer(
+        AbstractServiceContainer $serviceContainer = null
+    ) {
         $this->serviceContainer = $serviceContainer;
     }
 
