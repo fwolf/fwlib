@@ -73,20 +73,89 @@ class AbstractControlerTest extends PHPunitTestCase
     }
 
 
-    public function testGetOutput()
+    /**
+     * Build a mock, implements abstract method only
+     */
+    protected function buildMockBasis($pathToRoot)
+    {
+        $controler = $this->getMock(
+            'Fwlib\Mvc\AbstractControler',
+            array('getViewClass'),
+            array($pathToRoot)
+        );
+
+        $controler->expects($this->any())
+            ->method('getViewClass')
+            ->will($this->returnCallback(function () {
+                return AbstractControlerTest::$viewClass;
+            }));
+
+        $controler->setServiceContainer($this->serviceContainer);
+
+
+        return $controler;
+    }
+
+
+    /**
+     * Build a mock, with getControlerClass() method
+     */
+    protected function buildMockWithGetControlerClass($pathToRoot)
+    {
+        $controler = $this->getMock(
+            'Fwlib\Mvc\AbstractControler',
+            array('getControlerClass', 'getViewClass'),
+            array($pathToRoot)
+        );
+
+        $controler->expects($this->any())
+            ->method('getControlerClass')
+            ->will($this->returnCallback(function () {
+                return AbstractControlerTest::$controlerClass;
+            }));
+
+        $controler->expects($this->any())
+            ->method('getViewClass')
+            ->will($this->returnCallback(function () {
+                return AbstractControlerTest::$viewClass;
+            }));
+
+        $controler->setServiceContainer($this->serviceContainer);
+
+
+        return $controler;
+    }
+
+
+    public function testDisplay()
     {
         $_GET = array(
             'a' => 'test-action',
         );
-        // Need a dummy view class name, or will throw exception
+        // Need a dummy view class name, empty will throw exception
         self::$viewClass = 'Dummy';
 
+        $output = $this->controler->getOutput();
+        $this->assertEquals('Dummy Output', $output);
+
+        // Action can be empty, need View allow output without action.
+        $_GET = array();
         $output = $this->controler->getOutput();
         $this->assertEquals('Dummy Output', $output);
     }
 
 
-    public function testGetOutputWithEmptyViewClass()
+    public function testDisplayWithActualView()
+    {
+        $controler = $this->buildMockWithGetControlerClass(null);
+        self::$viewClass = 'Fwlib\Mvc\Test\AbstractControlerDummy';
+
+        $output = $controler->getOutput(null);
+        $this->assertEquals('Output from dummy', $output);
+    }
+
+
+    public function testDisplayWithEmptyViewClass()
     {
         $_GET = array(
             'action' => 'test-action',
@@ -122,14 +191,28 @@ class AbstractControlerTest extends PHPunitTestCase
     }
 
 
+    public function testTransferWithActualControler()
+    {
+        $_GET = array(
+            'module' => 'testModule',
+        );
+        $controler = $this->buildMockWithGetControlerClass(null);
+
+        self::$controlerClass = 'Fwlib\Mvc\Test\AbstractControlerDummy';
+
+        $output = $controler->getOutput();
+        $this->assertEquals('Output from dummy', $output);
+    }
+
+
     public function testTransferWithEmptyControlerClass()
     {
         $_GET = array(
             'module' => 'testModule',
         );
-        self::$controlerClass = '';
+        $controler = $this->buildMockBasis(null);
 
-        $output = $this->controler->getOutput();
+        $output = $controler->getOutput();
         $this->assertStringStartsWith('Error: Controler for module', $output);
     }
 }

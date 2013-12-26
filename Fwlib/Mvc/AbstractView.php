@@ -101,7 +101,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      * @param   string  $action
      * @return  string
      */
-    public function getOutput($action)
+    public function getOutput($action = null)
     {
         $this->action = $action;
 
