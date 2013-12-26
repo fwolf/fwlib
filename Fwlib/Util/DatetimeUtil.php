@@ -159,4 +159,17 @@ class DatetimeUtil
         }
         return strtotime($time);
     }
+
+
+    /**
+     * Get microtime as float with all decimal place
+     *
+     * @return  string  Float microtime in string format, length: 10.8 .
+     */
+    public function getMicroTime()
+    {
+        list($msec, $sec) = explode(' ', microtime());
+
+        return $sec . substr($msec, 1);
+    }
 }

@@ -120,4 +120,16 @@ class DatetimeUtilTest extends PHPunitTestCase
             strtotime($t1)
         );
     }
+
+
+    /**
+     * date('Y-m-d H:i:s', 9999999999) = "2286-11-21 01:46:39"
+     * So the result will always be 19 digit.
+     */
+    public function testGetMicroTime()
+    {
+        $microTime = $this->datetimeUtil->getMicroTime();
+
+        $this->assertEquals(19, strlen($microTime));
+    }
 }
