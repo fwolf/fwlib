@@ -73,7 +73,7 @@ class AbstractControlerTest extends PHPunitTestCase
     }
 
 
-    public function testDisplay()
+    public function testGetOutput()
     {
         $_GET = array(
             'a' => 'test-action',
@@ -86,7 +86,7 @@ class AbstractControlerTest extends PHPunitTestCase
     }
 
 
-    public function testDisplayWithEmptyViewClass()
+    public function testGetOutputWithEmptyViewClass()
     {
         $_GET = array(
             'action' => 'test-action',
