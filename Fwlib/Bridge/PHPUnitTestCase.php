@@ -37,29 +37,49 @@ abstract class PHPUnitTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Call private or protected method for test using reflection
      *
-     * @param   mixed   $class
+     * @param   mixed   $classOrInstance
      * @param   mixed   $name
      * @param   array   $args
      */
-    protected function reflectionCall($class, $name, $args)
+    protected function reflectionCall($classOrInstance, $name, $args)
     {
-        $ref = new \ReflectionMethod($class, $name);
+        $ref = new \ReflectionMethod($classOrInstance, $name);
         $ref->setAccessible(true);
-        return $ref->invokeArgs($class, (array)$args);
+        return $ref->invokeArgs($classOrInstance, (array)$args);
     }
 
 
     /**
      * Get private or protected property for test using reflection
      *
-     * @param   mixed   $class
+     * @param   mixed   $classOrInstance
      * @param   string  $name
      * @return  mixed
      */
-    protected function reflectionGet($class, $name)
+    protected function reflectionGet($classOrInstance, $name)
     {
-        $ref = new \ReflectionProperty($class, $name);
+        $ref = new \ReflectionProperty($classOrInstance, $name);
         $ref->setAccessible(true);
-        return $ref->getValue($class);
+        return $ref->getValue($classOrInstance);
+    }
+
+
+    /**
+     * Set private or protected property for test using reflection
+     *
+     * @param   mixed   $classOrInstance
+     * @param   string  $name
+     * @param   mixed   $value
+     */
+    protected function reflectionSet($classOrInstance, $name, $value)
+    {
+        $ref = new \ReflectionProperty($classOrInstance, $name);
+        $ref->setAccessible(true);
+
+        if ($ref->isStatic()) {
+            $ref->setValue($value);
+        } else {
+            $ref->setValue($classOrInstance, $value);
+        }
     }
 }
