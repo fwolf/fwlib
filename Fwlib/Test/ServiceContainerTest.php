@@ -3,6 +3,7 @@ namespace Fwlib\Test;
 
 use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Bridge\Adodb;
+use Fwlib\Html\ListTable;
 
 /**
  * Service Container example, also for testcase
@@ -25,6 +26,7 @@ class ServiceContainerTest extends AbstractServiceContainer
     protected $serviceClass = array(
         'Curl'          => 'Fwlib\Net\Curl',
         'GlobalConfig'  => 'Fwlib\Config\GlobalConfig',
+        'Smarty'        => 'Fwlib\Bridge\Smarty',
         'Util'          => 'Fwlib\Util\UtilContainer',
         'UtilContainer' => 'Fwlib\Util\UtilContainer',
         'Validator'     => 'Fwlib\Validator\Validator',
@@ -97,5 +99,16 @@ class ServiceContainerTest extends AbstractServiceContainer
         $profile = $this->get('GlobalConfig')->get('dbserver.sybase');
 
         return $this->connectDb($profile);
+    }
+
+
+    /**
+     * New ListTable service instance
+     *
+     * @return  ListTable
+     */
+    protected function newListTable()
+    {
+        return new ListTable($this->get('Smarty'));
     }
 }
