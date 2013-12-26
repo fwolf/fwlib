@@ -49,6 +49,7 @@ require_once(FWOLFLIB . 'func/request.php');
  * 		Basic feature.
  *
  *
+ * @deprecated  Use Fwlib\Mvc\AbstractView
  * @package		fwolflib
  * @subpackage	class.mvc
  * @copyright	Copyright 2008-2012, Fwolf

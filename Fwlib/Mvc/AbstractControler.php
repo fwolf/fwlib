@@ -119,7 +119,7 @@ abstract class AbstractControler implements ControlerInterface
 
             $view = $this->createView($viewClass);
 
-            return $view->getOutput();
+            return $view->getOutput($action);
 
         } catch (\Exception $e) {
             return $this->displayError($e->getMessage());
@@ -252,7 +252,7 @@ abstract class AbstractControler implements ControlerInterface
      * {@inheritdoc}
      *
      * @param   string  $pathToRoot
-     * @return  ControlerInterface
+     * @return  AbstractControler
      */
     public function setPathToRoot($pathToRoot)
     {
@@ -272,7 +272,7 @@ abstract class AbstractControler implements ControlerInterface
      * {@inheritdoc}
      *
      * @param   AbstractServiceContainer    $serviceContainer
-     * @return  ControlerInterface
+     * @return  AbstractControler
      */
     public function setServiceContainer(
         AbstractServiceContainer $serviceContainer
