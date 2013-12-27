@@ -184,7 +184,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
 
 
     /**
-     * New tpl instance
+     * New Smarty instance
      *
      * @return  Fwlib\Bridge\Smarty
      */
