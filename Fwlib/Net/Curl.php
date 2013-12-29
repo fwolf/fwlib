@@ -23,7 +23,7 @@ class Curl extends AbstractUtilAware
      *
      * @var string
      */
-    protected $cookieFile = '/dev/null';
+    protected $cookieFile = '';
 
     /**
      * Debug mode, will log more infomation
@@ -270,7 +270,7 @@ class Curl extends AbstractUtilAware
      */
     public function setoptCommon()
     {
-        $this->setoptCookie();
+        $this->setoptCookieFile('');
         $this->setoptUserAgent($this->userAgent);
 
         curl_setopt($this->handle, CURLOPT_AUTOREFERER, true);
@@ -305,16 +305,13 @@ class Curl extends AbstractUtilAware
      *
      * @param   string  $cookieFile
      */
-    public function setoptCookie($cookieFile = '')
+    public function setoptCookieFile($cookieFile = '')
     {
-        if (!empty($cookieFile)) {
-            $this->cookieFile = $cookieFile;
-        }
+        $this->cookieFile = $cookieFile;
 
-        // /dev/null can set as a dummy cookie file which does nothing.
-        if (!empty($this->cookieFile) && (is_writable($this->cookieFile))) {
-            curl_setopt($this->handle, CURLOPT_COOKIEFILE, $this->cookieFile);
-            curl_setopt($this->handle, CURLOPT_COOKIEJAR, $this->cookieFile);
+        if (!empty($cookieFile) && (is_writable($cookieFile))) {
+            curl_setopt($this->handle, CURLOPT_COOKIEFILE, $cookieFile);
+            curl_setopt($this->handle, CURLOPT_COOKIEJAR, $cookieFile);
         }
     }
 
