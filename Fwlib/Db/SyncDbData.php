@@ -257,7 +257,7 @@ class SyncDbData extends AbstractUtilAware
     {
         $dbProf = $this->getDbSrceProfileString();
 
-        $rs = $dbDest->executeGenSql(
+        $rs = $dbDest->execute(
             array(
                 'SELECT'    => 'last_ts',
                 'FROM'      => $this->tableRecord,
@@ -364,7 +364,7 @@ class SyncDbData extends AbstractUtilAware
 
             // UPDATE if previous recorded, or INSERT
             if (empty($timestampOld)) {
-                $dbDest->executeGenSql(
+                $dbDest->execute(
                     array(
                         'INSERT' => $this->tableRecord,
                         'VALUES' => array(
@@ -376,7 +376,7 @@ class SyncDbData extends AbstractUtilAware
                     )
                 );
             } else {
-                $dbDest->executeGenSql(
+                $dbDest->execute(
                     array(
                         'UPDATE'    => $this->tableRecord,
                         'SET'       => array('last_ts' => $timestamp),
@@ -643,7 +643,7 @@ class SyncDbData extends AbstractUtilAware
             }
             // @codeCoverageIgnoreEnd
         }
-        $sql = $this->dbSrce->genSql($sqlConfig);
+        $sql = $this->dbSrce->generateSql($sqlConfig);
         $rs = $this->dbSrce->SelectLimit($sql, $this->batchSize - $this->batchDone);
 
 

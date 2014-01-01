@@ -523,20 +523,6 @@ class Adodb extends AbstractUtilAware
 
 
     /**
-     * Generate SQL then exec it
-     *
-     * @deprecated  execute() will auto detect and call genSql()
-     * @see genSql()
-     * @param   array   $sqlCfg
-     * @return  object
-     */
-    public function executeGenSql($sqlCfg)
-    {
-        return $this->execute($this->genSql($sqlCfg));
-    }
-
-
-    /**
      * Prepare and execute sql, with transaction
      *
      * @param   string  $sql
@@ -661,13 +647,13 @@ class Adodb extends AbstractUtilAware
      * UPDATE/INSERT/DELETE is followed by [TBL_NAME], so need not use FROM.
      *
      * @see Fwlib\Db\SqlGenerator
-     * @param   array   $sqlCfg
+     * @param   array   $sqlConfig
      * @return  string
      */
-    public function genSql($sqlCfg)
+    public function generateSql($sqlConfig)
     {
-        if (!empty($sqlCfg)) {
-            return $this->sqlGenerator->get($sqlCfg);
+        if (!empty($sqlConfig)) {
+            return $this->sqlGenerator->get($sqlConfig);
         } else {
             return '';
         }
@@ -679,15 +665,15 @@ class Adodb extends AbstractUtilAware
      *
      * Format like value -> ? or :name, and quote chars removed.
      *
-     * @see genSql()
+     * @see generateSql()
      * @see Fwlib\Db\SqlGenerator
-     * @param   array   $sqlCfg
+     * @param   array   $sqlConfig
      * @return  string
      */
-    public function genSqlPrepared($sqlCfg)
+    public function generateSqlPrepared($sqlConfig)
     {
-        if (!empty($sqlCfg)) {
-            return $this->sqlGenerator->getPrepared($sqlCfg);
+        if (!empty($sqlConfig)) {
+            return $this->sqlGenerator->getPrepared($sqlConfig);
         } else {
             return '';
         }

@@ -188,23 +188,6 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
-    public function testExecuteGenSql()
-    {
-        if (!method_exists(self::$dbMysql, 'executeGenSql')) {
-            $this->markTestSkipped('Adodb::executeGenSql() not exists.');
-        }
-
-        self::$dbMysql->executeGenSql(
-            array(
-                'SELECT'    => 'uuid',
-                'FROM'      => self::$tableUser,
-                'LIMIT'     => 1
-            )
-        );
-        $this->assertEquals(0, self::$dbMysql->errorCode(0));
-    }
-
-
     /**
      * @expectedException PHPUnit_Framework_Error
      */
@@ -264,24 +247,24 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
-    public function testGenSql()
+    public function testGenerateSql()
     {
-        $x = self::$dbMysql->genSql('');
+        $x = self::$dbMysql->generateSql('');
         $this->assertEquals('', $x);
 
         $ar = array(
             'SELECT'    => 'title',
             'FROM'      => self::$tableUser,
         );
-        $x = self::$dbMysql->genSql($ar);
+        $x = self::$dbMysql->generateSql($ar);
         $y = 'SELECT title FROM ' . self::$tableUser;
         $this->assertEquals($y, $x);
     }
 
 
-    public function testGenSqlPrepared()
+    public function testGenerateSqlPrepared()
     {
-        $x = self::$dbMysql->genSqlPrepared('');
+        $x = self::$dbMysql->generateSqlPrepared('');
         $this->assertEquals('', $x);
 
         $ar = array(
@@ -292,7 +275,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
                 'age'   => self::$dbMysql->param('age'),
             ),
         );
-        $x = self::$dbMysql->genSqlPrepared($ar);
+        $x = self::$dbMysql->generateSqlPrepared($ar);
         $y = 'INSERT INTO ' . self::$tableUser
             . '(uuid, title, age) VALUES (?, ?, ?)';
         $this->assertEquals($y, $x);
