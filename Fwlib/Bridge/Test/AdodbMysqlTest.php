@@ -168,7 +168,9 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testError()
     {
         self::$dbMysql->execute('SELECT 1');
+        $this->assertEquals('', self::$dbMysql->errorMessage());
         $this->assertEquals('', self::$dbMysql->errorMsg());
+        $this->assertEquals(0, self::$dbMysql->errorCode());
         $this->assertEquals(0, self::$dbMysql->errorNo());
     }
 
@@ -182,7 +184,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
                 'LIMIT'     => 1
             )
         );
-        $this->assertEquals(0, self::$dbMysql->errorNo(0));
+        $this->assertEquals(0, self::$dbMysql->errorCode(0));
     }
 
 
@@ -199,7 +201,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
                 'LIMIT'     => 1
             )
         );
-        $this->assertEquals(0, self::$dbMysql->errorNo(0));
+        $this->assertEquals(0, self::$dbMysql->errorCode(0));
     }
 
 
@@ -215,7 +217,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
                 'LIMIT'     => 1
             )
         );
-        $this->assertEquals(0, self::$dbMysql->errorNo(0));
+        $this->assertEquals(0, self::$dbMysql->errorCode(0));
 
         self::$dbMysql->executePrepare(
             array(

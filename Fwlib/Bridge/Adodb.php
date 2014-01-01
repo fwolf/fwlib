@@ -466,9 +466,18 @@ class Adodb extends AbstractUtilAware
      *
      * @return  string
      */
-    public function errorMsg()
+    public function errorMessage()
     {
         return $this->conn->ErrorMsg();
+    }
+
+
+    /**
+     * Alias of errorMessage() for backward compatible
+     */
+    public function errorMsg()
+    {
+        return $this->errorMessage();
     }
 
 
@@ -477,9 +486,18 @@ class Adodb extends AbstractUtilAware
      *
      * @return  int
      */
-    public function errorNo()
+    public function errorCode()
     {
         return $this->conn->errorNo();
+    }
+
+
+    /**
+     * Alias of errorCode() for backward compatible
+     */
+    public function errorNo()
+    {
+        return $this->errorCode();
     }
 
 
@@ -699,7 +717,7 @@ class Adodb extends AbstractUtilAware
      * @param   mixed   $pkCol          PK column name, null to auto get
      * @return  mixed                   Single/array, null if error occur
      */
-    public function getByPk ($table, $pkVal, $col = null, $pkCol = null)
+    public function getByPk($table, $pkVal, $col = null, $pkCol = null)
     {
         $stringUtil = $this->getUtil('StringUtil');
 
