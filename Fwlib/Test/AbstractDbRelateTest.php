@@ -138,10 +138,10 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             '
         );
 
-        if (0 != $db->errorNo()) {
+        if (0 != $db->getErrorCode()) {
             self::markTestSkipped(
                 'Create test table group error: ' .
-                $db->errorMsg()
+                $db->getErrorMessage()
             );
         }
 
@@ -157,10 +157,10 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             '
         );
 
-        if (0 != $db->errorNo()) {
+        if (0 != $db->getErrorCode()) {
             self::markTestSkipped(
                 'Create test table user error: ' .
-                $db->errorMsg()
+                $db->getErrorMessage()
             );
         }
 
@@ -174,10 +174,10 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             '
         );
 
-        if (0 != $db->errorNo()) {
+        if (0 != $db->getErrorCode()) {
             self::markTestSkipped(
                 'Create test table user_group error: ' .
-                $db->errorMsg()
+                $db->getErrorMessage()
             );
         }
     }

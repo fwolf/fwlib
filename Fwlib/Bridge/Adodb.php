@@ -462,33 +462,11 @@ class Adodb extends AbstractUtilAware
 
 
     /**
-     * Dummy for ADOdb's ErrorMsg()
-     *
-     * @return  string
-     */
-    public function errorMessage()
-    {
-        return $this->conn->ErrorMsg();
-    }
-
-
-    /**
      * Alias of errorMessage() for backward compatible
      */
     public function errorMsg()
     {
-        return $this->errorMessage();
-    }
-
-
-    /**
-     * Dummy for ADOdb's ErrorNo()
-     *
-     * @return  int
-     */
-    public function errorCode()
-    {
-        return $this->conn->errorNo();
+        return $this->getErrorMessage();
     }
 
 
@@ -497,7 +475,7 @@ class Adodb extends AbstractUtilAware
      */
     public function errorNo()
     {
-        return $this->errorCode();
+        return $this->getErrorCode();
     }
 
 
@@ -791,6 +769,28 @@ class Adodb extends AbstractUtilAware
                 return $ar;
             }
         }
+    }
+
+
+    /**
+     * Dummy for ADOdb's ErrorNo()
+     *
+     * @return  int
+     */
+    public function getErrorCode()
+    {
+        return $this->conn->ErrorNo();
+    }
+
+
+    /**
+     * Dummy for ADOdb's ErrorMsg()
+     *
+     * @return  string
+     */
+    public function getErrorMessage()
+    {
+        return $this->conn->ErrorMsg();
     }
 
 

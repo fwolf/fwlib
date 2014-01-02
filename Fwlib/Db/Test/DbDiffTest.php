@@ -24,8 +24,8 @@ class DbDiffTest extends AbstractDbRelateTest
     protected $uuid2;
     protected $uuid3;
 
-    public static $errorCode;
-    public static $errorMessage;
+    public static $getErrorCode;
+    public static $getErrorMessage;
 
     public function __construct()
     {
@@ -55,21 +55,21 @@ class DbDiffTest extends AbstractDbRelateTest
                 'Fwlib\Bridge\Adodb',
                 array(
                     'BeginTrans', 'CommitTrans', 'RollbackTrans',
-                    'errorCode', 'errorMessage',
+                    'getErrorCode', 'getErrorMessage',
                     'execute'
                 )
             );
 
         $db->expects($this->any())
-            ->method('errorCode')
+            ->method('getErrorCode')
             ->will($this->returnCallback(function () {
-                return DbDiffTest::$errorCode;
+                return DbDiffTest::$getErrorCode;
             }));
 
         $db->expects($this->any())
-            ->method('errorMessage')
+            ->method('getErrorMessage')
             ->will($this->returnCallback(function () {
-                return DbDiffTest::$errorMessage;
+                return DbDiffTest::$getErrorMessage;
             }));
 
         $dbDiff = new DbDiff($db);
@@ -126,8 +126,8 @@ class DbDiffTest extends AbstractDbRelateTest
             ),
         );
 
-        self::$errorCode = -1;
-        self::$errorMessage = 'Db execute fail';
+        self::$getErrorCode = -1;
+        self::$getErrorMessage = 'Db execute fail';
 
         $json = '{
             "rowCount": 0,
@@ -509,8 +509,8 @@ class DbDiffTest extends AbstractDbRelateTest
             ),
         );
 
-        self::$errorCode = -1;
-        self::$errorMessage = 'Db execute fail';
+        self::$getErrorCode = -1;
+        self::$getErrorMessage = 'Db execute fail';
 
         $json = '{
             "rowCount": 0,

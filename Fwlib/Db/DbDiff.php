@@ -124,8 +124,8 @@ class DbDiff extends AbstractUtilAware
             foreach ((array)$sqlArray as $sql) {
                 $this->db->execute($sql);
 
-                if (0 != $this->db->errorCode()) {
-                    throw new \Exception($this->db->errorMessage());
+                if (0 != $this->db->getErrorCode()) {
+                    throw new \Exception($this->db->getErrorMessage());
                 }
             }
 
@@ -778,8 +778,8 @@ class DbDiff extends AbstractUtilAware
             foreach ((array)$sqlArray as $sql) {
                 $this->db->execute($sql);
 
-                if (0 != $this->db->errorCode()) {
-                    throw new \Exception($this->db->errorMessage());
+                if (0 != $this->db->getErrorCode()) {
+                    throw new \Exception($this->db->getErrorMessage());
                 }
             }
 

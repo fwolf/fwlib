@@ -124,7 +124,7 @@ CREATE TABLE $table (
             // @codeCoverageIgnoreEnd
 
             $this->db->execute($sql);
-            if (0 < $this->db->errorNo()) {
+            if (0 < $this->db->getErrorCode()) {
                 // @codeCoverageIgnoreStart
                 $this->log(
                     $this->getDbError() . PHP_EOL .
@@ -193,10 +193,10 @@ CREATE TABLE $table (
             // Bad sybase support, select db will got errormsg, eg:
             // Changed database context to 'db_name'
             // @codeCoverageIgnoreStart
-            if ((0 == $this->db->errorNo()
-                    && 0 == strlen($this->db->errorMsg()))
+            if ((0 == $this->db->getErrorCode()
+                    && 0 == strlen($this->db->getErrorMessage()))
                 || ('Changed database context t' ==
-                    substr($this->db->errorMsg(), 0, 26))
+                    substr($this->db->getErrorMessage(), 0, 26))
             // @codeCoverageIgnoreEnd
             ) {
                 $this->log("Execute SQL $id successful.");
@@ -231,7 +231,8 @@ CREATE TABLE $table (
      */
     protected function getDbError()
     {
-        return 'Error ' . $this->db->errorNo() . ': '  . $this->db->errorMsg();
+        return 'Error ' . $this->db->getErrorCode() .
+            ': '  . $this->db->getErrorMessage();
     }
 
 
@@ -318,7 +319,7 @@ CREATE TABLE $table (
 VALUES ($id, '$sqltext')";
             $this->db->Execute($sql);
 
-            if (0 != $this->db->errorNo()) {
+            if (0 != $this->db->getErrorCode()) {
                 // Should not occur
                 // @codeCoverageIgnoreStart
                 $this->log($this->getDbError());
