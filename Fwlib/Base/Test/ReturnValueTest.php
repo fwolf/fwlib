@@ -9,7 +9,7 @@ use Fwlib\Util\UtilContainer;
  * Test for Fwlib\Base\ReturnValue
  *
  * @package     Fwlib\Base\Test
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-05-03
@@ -31,41 +31,37 @@ class ReturnValueTest extends PHPunitTestCase
     {
         $rv = new ReturnValue();
 
-        $this->assertEquals(0, $rv->code());
-        $this->assertEquals(null, $rv->message(null, true));
-        $this->assertEquals('hi', $rv->message('hi'));
-        $this->assertEquals('hi', $rv->message());
+        // Default value
+        $this->assertEquals(0, $rv->getCode());
+        $this->assertEquals('', $rv->getMessage());
+        $this->assertEquals(null, $rv->getData());
+        $this->assertFalse($rv->isError());
 
-        $rv->code(3);
-        $this->assertEquals(false, $rv->error());
-        $rv->code(-3);
-        $this->assertEquals(true, $rv->error());
-        $this->assertEquals(-3, $rv->errorCode());
-        $this->assertEquals('hi', $rv->errorMessage());
+        // Set and get code
+        $rv->setCode(42);
+        $this->assertEquals(42, $rv->getCode());
+        $this->assertFalse($rv->isError());
 
-        $rv->data('foobar');
-        $this->assertEquals('foobar', $rv->data());
+        // Check error
+        $rv->setCode(-42);
+        $this->assertTrue($rv->isError());
 
-        $this->assertEquals(3, count($rv->getInfo()));
+        // Set and get message
+        $rv->setMessage('hi');
+        $this->assertEquals('hi', $rv->getMessage());
+
+        // Set and get data
+        $rv->setData(array());
+        $this->assertEquals(array(), $rv->getData());
     }
 
 
     public function testJsonMode()
     {
-        $info = array(
-            'code'  => 42,
-            'message'   => 'foo',
-        );
+        $json = '{"code":42,"message":"foo","data":null}';
 
-        $y = $info;
-        $y['data'] = null;
-
-        $rv = new ReturnValue();
-        $rv->setUtilContainer($this->utilContainer)
-            ->loadJson($this->json->encodeUnicode($info));
-
-        $this->assertEqualArray($y, $rv->getInfo());
-        $this->assertEqualArray($y, $this->json->decode($rv->getJson(), true));
+        $rv = new ReturnValue($json);
+        $this->assertEquals($json, $rv->getJson());
     }
 
 
@@ -75,11 +71,8 @@ class ReturnValueTest extends PHPunitTestCase
      */
     public function testJsonModeWithInvalidStringToLoad()
     {
-        $info = array(
-            'code'  => 42,
-            'data'  => 'bar',
-        );
+        $json = '{"code":42,"data":"bar"}';
 
-        $rv = new ReturnValue($this->json->encodeUnicode($info));
+        $rv = new ReturnValue($json);
     }
 }

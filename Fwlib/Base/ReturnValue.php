@@ -7,30 +7,36 @@ use Fwlib\Util\AbstractUtilAware;
  * Return value object
  *
  * @package     Fwlib\Base
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-05-03
  */
 class ReturnValue extends AbstractUtilAware
 {
+    /**
+     * Return code
+     *
+     * In common, 0 or positive code means success and code value is counter
+     * of affected items, negative code means failed/error.
+     *
+     * @var int
+     */
+    protected $code = 0;
 
     /**
-     * Return value info
+     * Return data if needed
      *
-     * array(
-     *  code,       // Normally 0=no error, c>0=info, c<0=error occur
-     *  message,
-     *  data,
-     * )
-     *
-     * @var array
+     * @var mixed
      */
-    public $info = array(
-        'code'    => 0,
-        'message' => null,
-        'data'    => null,
-    );
+    protected $data = null;
+
+    /**
+     * Return message
+     *
+     * @var string
+     */
+    protected $message = '';
 
 
     /**
@@ -45,11 +51,9 @@ class ReturnValue extends AbstractUtilAware
     public function __construct($code = 0, $message = '', $data = null)
     {
         if (is_int($code)) {
-            $this->info = array(
-                'code'    => $code,
-                'message' => $message,
-                'data'    => $data,
-            );
+            $this->code    = $code;
+            $this->message = $message;
+            $this->data    = $data;
 
         } else {
             $this->loadJson($code);
@@ -58,74 +62,37 @@ class ReturnValue extends AbstractUtilAware
 
 
     /**
-     * Get/set code
+     * Getter of code
      *
-     * @param   int     $code
-     * @param   boolean $forceNull      Force do value assign even is null
+     * For check if error occurs, should use isError() instead.
+     *
      * @return  int
      */
-    public function code($code = null, $forceNull = false)
+    public function getCode()
     {
-        return $this->getSetInfo('code', $code, $forceNull);
+        return $this->code;
     }
 
 
     /**
-     * Get/set data
+     * Getter of data
      *
-     * @param   mixed   $data
-     * @param   boolean $forceNull      Force do value assign even is null
      * @return  mixed
      */
-    public function data($data = null, $forceNull = false)
+    public function getData()
     {
-        return $this->getSetInfo('data', $data, $forceNull);
+        return $this->data;
     }
 
 
     /**
-     * Is result means error ?
-     *
-     * @return  boolean
-     */
-    public function error()
-    {
-        return ($this->info['code'] < 0);
-    }
-
-
-    /**
-     * Get error message
+     * Getter of message
      *
      * @return  string
      */
-    public function errorMessage()
+    public function getMessage()
     {
-        return $this->info['message'];
-    }
-
-
-    /**
-     * Get error no
-     *
-     * Do NOT use this for error check, use error() instead.
-     *
-     * @return  int
-     */
-    public function errorCode()
-    {
-        return $this->info['code'];
-    }
-
-
-    /**
-     * Get return value info array
-     *
-     * @return  array
-     */
-    public function getInfo()
-    {
-        return $this->info;
+        return $this->message;
     }
 
 
@@ -136,25 +103,24 @@ class ReturnValue extends AbstractUtilAware
      */
     public function getJson()
     {
-        return $this->getUtil('Json')->encodeUnicode($this->info);
+        return $this->getUtil('Json')->encodeUnicode(
+            array(
+                'code'    => $this->code,
+                'message' => $this->message,
+                'data'    => $this->data,
+            )
+        );
     }
 
 
     /**
-     * Get/set info array
+     * Is result means error ?
      *
-     * @param   string  $idx            Should be one of code/msg/data, but no check
-     * @param   mixed   $val
-     * @param   boolean $b_force        Force do value assign ignore null
-     * @return  mixed
+     * @return  boolean
      */
-    protected function getSetInfo($idx, $val = null, $forceNull = false)
+    public function isError()
     {
-        if (!is_null($val) || ((is_null($val)) && $forceNull)) {
-            $this->info[$idx] = $val;
-        }
-
-        return $this->info[$idx];
+        return 0 > $this->code;
     }
 
 
@@ -177,25 +143,52 @@ class ReturnValue extends AbstractUtilAware
         }
 
         $arrayUtil = $this->getUtil('Array');
-        $this->info = array(
-            'code'    => $ar['code'],
-            'message' => $ar['message'],
-            'data'    => $arrayUtil->getIdx($ar, 'data', null),
-        );
+        $this->code    = $ar['code'];
+        $this->message = $ar['message'];
+        $this->data    = $arrayUtil->getIdx($ar, 'data', null);
 
         return $this;
     }
 
 
     /**
-     * Get/set message
+     * Setter of code
+     *
+     * @param   int     $code
+     * @return  ReturnValue
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of data
+     *
+     * @param   mixed   $data
+     * @return  ReturnValue
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of message
      *
      * @param   string  $message
-     * @param   boolean $forceNull      Force do value assign even is null
-     * @return  string
+     * @return  ReturnValue
      */
-    public function message($message = null, $forceNull = false)
+    public function setMessage($message)
     {
-        return $this->getSetInfo('message', $message, $forceNull);
+        $this->message = $message;
+
+        return $this;
     }
 }

@@ -223,9 +223,9 @@ class Url extends AbstractConstraint implements UtilAwareInterface
             $rs = $curl->post($url, $postData);
             $rv = new ReturnValue($rs);
 
-            if ($rv->error()) {
+            if ($rv->isError()) {
                 // Use return data as fail message
-                $data = $rv->data();
+                $data = $rv->getData();
                 if (empty($data)) {
                     $this->setMessage('default');
                 } else {
