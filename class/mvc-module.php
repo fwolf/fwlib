@@ -12,6 +12,7 @@ require_once(dirname(__FILE__) . '/../func/string.php');
  * Do data compute or database relate operate.
  * Usually only carry data, leave data format job to View.
  *
+ * @deprecated  Use Fwlib\Mvc\AbstractModel
  * @package		fwolflib
  * @subpackage	class.mvc
  * @copyright	Copyright 2008-2012, Fwolf

@@ -24,7 +24,7 @@ abstract class AbstractViewCache extends AbstractView
     protected $cache = null;
 
     /**
-     * If use Cache to store output for reuse
+     * Should it use Cache to store output for reuse
      *
      * @var bool
      */
@@ -52,6 +52,7 @@ abstract class AbstractViewCache extends AbstractView
      * instantly, this can be done by set a special url or environment, then
      * extend this method to check and return true.
      *
+     * @see     AbstractModel::forceRefreshCache()  Same
      * @return  bool
      */
     protected function forceRefreshCache()
@@ -97,6 +98,7 @@ abstract class AbstractViewCache extends AbstractView
      * This implement only return a solid lifetime, child class should extend
      * to fit application demand.
      *
+     * @see     AbstractModel::getCacheLifetime()   Same
      * @param   string  $key
      * @return  int
      */
@@ -155,6 +157,7 @@ abstract class AbstractViewCache extends AbstractView
     /**
      * Setter of $useCache
      *
+     * @see     AbstractModel::useCache()   Same
      * @param   bool    $useCache
      * @return  AbstractViewCache
      */
