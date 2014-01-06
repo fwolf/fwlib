@@ -68,7 +68,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      *
      * @param   string  $type           Cache type
      * @param   array   $config
-     * @return  Cache
+     * @return  CacheInterface
      */
     public static function create($type = '', $config = array())
     {
@@ -120,14 +120,15 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
 
 
     /**
-     * Del cache data
+     * {@inheritdoc}
      *
      * @param   string  $key
      * @return  Cache
      */
-    public function del($key)
+    public function delete($key)
     {
         unset($this->cacheData[$key]);
+
         return $this;
     }
 
@@ -247,7 +248,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      * @param   string  $key
      * @param   mixed   $val
      * @param   int     $lifetime
-     * @return  $this
+     * @return  Cache
      */
     public function set($key, $val, $lifetime = null)
     {
@@ -261,7 +262,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     /**
      * Set default config
      *
-     * @return  this
+     * @return  Cache
      */
     protected function setConfigDefault()
     {

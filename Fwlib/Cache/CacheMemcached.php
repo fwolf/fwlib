@@ -37,12 +37,12 @@ class CacheMemcached extends Cache
 
 
     /**
-     * Delete cache data
+     * {@inheritdoc}
      *
      * @param   string  $key
-     * @return  $this
+     * @return  CacheMemcached
      */
-    public function del($key)
+    public function delete($key)
     {
         if (1 == $this->config->get('memcachedAutosplit')) {
             // Is value splitted ?

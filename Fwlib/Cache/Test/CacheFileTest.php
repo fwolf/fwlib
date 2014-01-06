@@ -36,7 +36,7 @@ class CacheFileTest extends PHPunitTestCase
 
 
     /**
-     * get(), set(), del(), expire() etc
+     * get(), set(), delete(), expire() etc
      */
     public function testCache()
     {
@@ -83,8 +83,8 @@ class CacheFileTest extends PHPunitTestCase
         $this->ch->set($key, $v);
         $this->assertEquals($v, $this->ch->get($key));
 
-        // Cache del
-        $this->ch->del($key);
+        // Cache delete
+        $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
     }
 

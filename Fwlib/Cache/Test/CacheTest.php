@@ -29,7 +29,7 @@ class CacheTest extends PHPunitTestCase
 
 
     /**
-     * get(), set(), del() etc
+     * get(), set(), delete() etc
      */
     public function testCache()
     {
@@ -38,7 +38,7 @@ class CacheTest extends PHPunitTestCase
         $this->ch->set($key, $val);
         $this->assertEquals($val, $this->ch->get($key));
 
-        $this->ch->del($key);
+        $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
 
 

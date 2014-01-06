@@ -118,12 +118,12 @@ class CacheFile extends Cache
 
 
     /**
-     * Delete cache data
+     * {@inheritdoc}
      *
      * @param   string  $key
-     * @return  $this
+     * @return  CacheFile
      */
-    public function del($key)
+    public function delete($key)
     {
         $file = $this->getFilePath($key);
 

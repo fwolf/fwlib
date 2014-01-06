@@ -78,7 +78,7 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->assertFalse(
             $this->reflectionCall($this->ch, 'expire', array($key))
         );
-        $this->ch->del($key);
+        $this->ch->delete($key);
         $this->assertTrue(
             $this->reflectionCall($this->ch, 'expire', array($key))
         );
@@ -96,8 +96,8 @@ class CacheMemcachedTest extends PHPunitTestCase
             $this->reflectionCall($this->ch, 'expire', array($key))
         );
 
-        // Cache del
-        $this->ch->del($key);
+        // Cache delete
+        $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
 
         // Long key
@@ -105,7 +105,7 @@ class CacheMemcachedTest extends PHPunitTestCase
         $x = 'blah';
         $this->ch->set($key, $x, 60);
         $this->assertEquals($x, $this->ch->get($key));
-        $this->ch->del($key);
+        $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
 
         // Empty key
@@ -130,14 +130,14 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->ch->setConfig('memcachedMaxitemsize', 100);
 
         $s = str_repeat('0', 300);
-        $this->ch->del($key);       // Clear previous setted value
+        $this->ch->delete($key);       // Clear previous setted value
         $this->ch->setConfig('memcachedAutosplit', 1);
         $this->ch->set($key, $s, 3600);
         $this->assertEquals($s, $this->ch->get($key));
         $this->assertFalse(
             $this->reflectionCall($this->ch, 'expire', array($key))
         );
-        $this->ch->del($key);
+        $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
         $this->assertTrue(
             $this->reflectionCall($this->ch, 'expire', array($key))

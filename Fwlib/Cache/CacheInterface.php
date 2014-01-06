@@ -19,7 +19,7 @@ interface CacheInterface
      * @param   string  $key
      * @return  CacheInterface
      */
-    public function del($key);
+    public function delete($key);
 
 
     /**
