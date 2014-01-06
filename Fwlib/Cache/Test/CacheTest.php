@@ -44,15 +44,15 @@ class CacheTest extends PHPunitTestCase
 
         // Val encode and decode
         $x = 'This is string.';
-        $y = $this->reflectionCall($this->ch, 'encodeVal', array($x));
-        $y = $this->reflectionCall($this->ch, 'decodeVal', array($y));
+        $y = $this->reflectionCall($this->ch, 'encodeValue', array($x));
+        $y = $this->reflectionCall($this->ch, 'decodeValue', array($y));
         $this->assertEquals($x, $y);
 
         // Encode/decode for array
         $this->ch->setConfig('storeMethod', 1);
         $x = array('a' => 'b');
-        $y = $this->reflectionCall($this->ch, 'encodeVal', array($x));
-        $y = $this->reflectionCall($this->ch, 'decodeVal', array($y));
+        $y = $this->reflectionCall($this->ch, 'encodeValue', array($x));
+        $y = $this->reflectionCall($this->ch, 'decodeValue', array($y));
         $this->assertEquals($x, $y);
 
 
@@ -61,8 +61,8 @@ class CacheTest extends PHPunitTestCase
         // in it need convert back from stdClass too.
         $this->ch->setConfig('storeMethod', 2);
         $x = new Cache;
-        $y = $this->reflectionCall($this->ch, 'encodeVal', array($x));
-        $y = $this->reflectionCall($this->ch, 'decodeVal', array($y));
+        $y = $this->reflectionCall($this->ch, 'encodeValue', array($x));
+        $y = $this->reflectionCall($this->ch, 'decodeValue', array($y));
         $this->assertObjectHasAttribute('config', $y);
         $this->assertObjectHasAttribute('config', $y->config);
         $this->assertInstanceOf('stdClass', $y->config->config);
@@ -78,16 +78,16 @@ class CacheTest extends PHPunitTestCase
     }
 
 
-    public function testEncodeVal()
+    public function testEncodeValue()
     {
         // Encode/decode raw
         $this->ch->setConfig('storeMethod', 0);
         $x = 'test string';
 
-        $y = $this->reflectionCall($this->ch, 'encodeVal', array($x));
+        $y = $this->reflectionCall($this->ch, 'encodeValue', array($x));
         $this->assertInternalType('string', $y);
 
-        $y = $this->reflectionCall($this->ch, 'decodeVal', array($y));
+        $y = $this->reflectionCall($this->ch, 'decodeValue', array($y));
         $this->assertEquals($x, $y);
     }
 

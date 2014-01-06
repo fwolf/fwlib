@@ -192,7 +192,7 @@ class CacheFile extends Cache
             'success'   => !(false === $cacheContent),
         );
 
-        return $this->decodeVal($cacheContent);
+        return $this->decodeValue($cacheContent);
     }
 
 
@@ -299,7 +299,7 @@ class CacheFile extends Cache
     public function set($key, $val, $lifetime = null)
     {
         $file = $this->getFilePath($key);
-        $cache = $this->encodeVal($val);
+        $cache = $this->encodeValue($val);
 
         // Create each level dir if not exists
         $dir = $this->getUtil('FileSystem')->getDirName($file);

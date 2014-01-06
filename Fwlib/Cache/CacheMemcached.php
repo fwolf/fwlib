@@ -159,7 +159,7 @@ class CacheMemcached extends Cache
         }
 
         if (\Memcached::RES_SUCCESS == $this->memcached->getResultCode()) {
-            return $this->decodeVal($val);
+            return $this->decodeValue($val);
         } else {
             return null;
         }
@@ -304,7 +304,7 @@ class CacheMemcached extends Cache
             // Normal set
             $rs = $this->memcached->set(
                 $this->Key($key),
-                $this->encodeVal($val),
+                $this->encodeValue($val),
                 $lifetime
             );
         }

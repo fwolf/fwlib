@@ -102,7 +102,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      * @param   string  $str            Str read from cache
      * @return  mixed
      */
-    protected function decodeVal($str)
+    protected function decodeValue($str)
     {
         if (1 == $this->config->get('storeMethod')) {
             // Json to array
@@ -140,7 +140,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      * @param   mixed   $val
      * @return  string
      */
-    protected function encodeVal($val)
+    protected function encodeValue($val)
     {
         if (1 == $this->config->get('storeMethod')
             || 2 == $this->config->get('storeMethod')
@@ -214,7 +214,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
 
         // Ignored lifetime
         $arrayUtil = $this->getUtil('Array');
-        $val = $this->decodeVal(
+        $val = $this->decodeValue(
             $arrayUtil->getIdx($this->cacheData, $key, null),
             0
         );
@@ -252,7 +252,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     public function set($key, $val, $lifetime = null)
     {
         // Lifetime is useless.
-        $this->cacheData[$this->key($key)] = $this->encodeVal($val, 0);
+        $this->cacheData[$this->key($key)] = $this->encodeValue($val, 0);
 
         return $this;
     }
