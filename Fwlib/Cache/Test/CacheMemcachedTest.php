@@ -76,24 +76,24 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->ch->setConfig('memcachedAutosplit', 1);
         $this->ch->set($key, $x, 60);
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'expire', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', array($key))
         );
         $this->ch->delete($key);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'expire', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', array($key))
         );
         $this->ch->set($key, $x, -10);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'expire', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', array($key))
         );
         $this->ch->setConfig('memcachedAutosplit', 0);
         $this->ch->set($key, $x, 60);
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'expire', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', array($key))
         );
         $this->ch->set($key, $x, -10);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'expire', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', array($key))
         );
 
         // Cache delete
@@ -135,12 +135,12 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->ch->set($key, $s, 3600);
         $this->assertEquals($s, $this->ch->get($key));
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'expire', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', array($key))
         );
         $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'expire', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', array($key))
         );
 
         // Big value size is computed AFTER compress if compress on

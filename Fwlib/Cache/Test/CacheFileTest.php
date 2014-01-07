@@ -59,12 +59,25 @@ class CacheFileTest extends PHPunitTestCase
         $this->assertEquals(json_encode($v), file_get_contents($x));
 
         // Cache expire
-        $this->assertEquals(true, $this->ch->expire($key, -10));
-        $this->assertEquals(true, $this->ch->expire($key, strtotime('2012-1-1')));
-        $this->assertEquals(false, $this->ch->expire($key, 10));
-        $this->assertEquals(false, $this->ch->expire($key, 1));
-        $this->assertEquals(false, $this->ch->expire($key, 0));
-        $this->assertEquals(false, $this->ch->expire($key, null));
+        $this->assertTrue(
+            $this->reflectionCall($this->ch, 'isExpired', array($key, -10))
+        );
+        $this->assertTrue(
+            $this->reflectionCall($this->ch, 'isExpired', array($key, strtotime('2012-1-1')))
+        );
+
+        $this->assertFalse(
+            $this->reflectionCall($this->ch, 'isExpired', array($key, 10))
+        );
+        $this->assertFalse(
+            $this->reflectionCall($this->ch, 'isExpired', array($key, 1))
+        );
+        $this->assertFalse(
+            $this->reflectionCall($this->ch, 'isExpired', array($key, 0))
+        );
+        $this->assertFalse(
+            $this->reflectionCall($this->ch, 'isExpired', array($key, null))
+        );
 
         // Cache get
         $this->assertEquals($v, $this->ch->get($key));

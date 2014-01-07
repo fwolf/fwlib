@@ -157,20 +157,6 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
 
 
     /**
-     * Is cache data expire ?
-     *
-     * @param   string  $key
-     * @return  boolean
-     */
-    protected function expire($key)
-    {
-        // Inner var never expire,
-        // Also, there is no good method to keep var set time.
-        return false;
-    }
-
-
-    /**
      * Compute expiration time
      *
      * @param   int     $lifetime
@@ -248,6 +234,20 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     public function getLog()
     {
         return $this->log;
+    }
+
+
+    /**
+     * Is cache data expire ?
+     *
+     * @param   string  $key
+     * @return  boolean
+     */
+    protected function isExpired($key)
+    {
+        // Inner var never expire,
+        // Also, there is no good method to keep var set time.
+        return false;
     }
 
 

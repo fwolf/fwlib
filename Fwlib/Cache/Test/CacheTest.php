@@ -101,7 +101,7 @@ class CacheTest extends PHPunitTestCase
     public function testExpire()
     {
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'expire', array('any'))
+            $this->reflectionCall($this->ch, 'isExpired', array('any'))
         );
 
 
