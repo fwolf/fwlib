@@ -177,7 +177,7 @@ class CacheFile extends Cache
     public function get($key, $lifetime = null)
     {
         if ($this->expire($key, $lifetime)) {
-            parent::$log[] = array(
+            $this->log[] = array(
                 'key'   => $key,
                 'success'   => false,
             );
@@ -187,7 +187,7 @@ class CacheFile extends Cache
         // Read from file and parse it.
         $file = $this->getFilePath($key);
         $cacheContent = file_get_contents($file);
-        parent::$log[] = array(
+        $this->log[] = array(
             'key'   => $key,
             'success'   => !(false === $cacheContent),
         );

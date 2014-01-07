@@ -78,7 +78,7 @@ class AbstractModelTest extends PHPunitTestCase
         $model = $this->model;
         $cache = $this->serviceContainer->get('Cache');
         // Empty cache log for check later
-        $cache::$log = array();
+        $this->reflectionSet($cache, 'log', array());
 
         $model->useCache(false);
 
@@ -87,7 +87,7 @@ class AbstractModelTest extends PHPunitTestCase
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $this->assertEmpty($cache::$log);
+        $this->assertEmpty($cache->getLog());
 
 
         $model->useCache(true);
@@ -97,7 +97,8 @@ class AbstractModelTest extends PHPunitTestCase
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
 
 
@@ -106,7 +107,8 @@ class AbstractModelTest extends PHPunitTestCase
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertTrue($cacheLog['success']);
         $this->assertStringEndsWith(
             '/dummyMethod/foo',
@@ -116,7 +118,8 @@ class AbstractModelTest extends PHPunitTestCase
 
         // Change key, cache get will fail again
         $model->cachedCall('dummyMethod', array('bar'));
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
     }
 
@@ -133,7 +136,8 @@ class AbstractModelTest extends PHPunitTestCase
             array('foo', 'bar'),
             $model->cachedCall('dummyMethod', array(array('foo', 'bar')))
         );
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
 
 
@@ -142,7 +146,8 @@ class AbstractModelTest extends PHPunitTestCase
             array('foo', 'bar'),
             $model->cachedCall('dummyMethod', array(array('foo', 'bar')))
         );
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertTrue($cacheLog['success']);
         $this->assertStringEndsWith(
             '/dummyMethod/0/foo/1/bar',
@@ -152,7 +157,8 @@ class AbstractModelTest extends PHPunitTestCase
 
         // Change key, cache get will fail again
         $model->cachedCall('dummyMethod', array(array('bar', 'foo')));
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
     }
 
@@ -165,14 +171,14 @@ class AbstractModelTest extends PHPunitTestCase
         $model->useCache(true);
         self::$forceRefreshCache = true;
         // Empty cache log for check later
-        $cache::$log = array();
+        $this->reflectionSet($cache, 'log', array());
 
         // The get will not go through cache
         $this->assertEquals(
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $this->assertEmpty($cache::$log);
+        $this->assertEmpty($cache->getLog());
     }
 
 
@@ -190,7 +196,8 @@ class AbstractModelTest extends PHPunitTestCase
             $cache,
             $model->cachedCall('dummyMethod', array($cache))
         );
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
         $this->assertStringStartsWith(
             '/dummyMethod/Cache/',
@@ -203,7 +210,8 @@ class AbstractModelTest extends PHPunitTestCase
         // this is not what we test for, and json_decode itself can't keep
         // same with object before json_encode. So we check log success only.
         $model->cachedCall('dummyMethod', array($cache));
-        $cacheLog = array_pop($cache::$log);
+        $cacheLog = $cache->getLog();
+        $cacheLog = array_pop($cacheLog);
         $this->assertTrue($cacheLog['success']);
     }
 

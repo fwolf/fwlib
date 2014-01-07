@@ -43,13 +43,14 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     protected $errorMessage = '';
 
     /**
-     * Log for get() op's key and success flag
+     * Log for get() operate
      *
-     * [{key: string, success: boolean}]
+     * Format:
+     * [{key: string, success: bool}]
      *
      * @var array
      */
-    public static $log = array();
+    protected $log = array();
 
     /**
      * Supported cache type, must have corresponding child class defined
@@ -220,7 +221,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
             0
         );
 
-        self::$log[] = array(
+        $this->log[] = array(
             'key'   => $key,
             'success'   => !is_null($val),
         );
@@ -236,6 +237,17 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     public function getErrorMessage()
     {
         return $this->errorMessage;
+    }
+
+
+    /**
+     * Getter of $log
+     *
+     * @return  array
+     */
+    public function getLog()
+    {
+        return $this->log;
     }
 
 

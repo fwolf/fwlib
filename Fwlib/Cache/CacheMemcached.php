@@ -117,7 +117,7 @@ class CacheMemcached extends Cache
             // Is value splitted ?
             $keySplitted = $this->key($key . '[split]');
             $total = $this->memcached->get($keySplitted);
-            parent::$log[] = array(
+            $this->log[] = array(
                 'key'   => $keySplitted,
                 'success'   => \Memcached::RES_SUCCESS
                     == $this->memcached->getResultCode(),
@@ -125,7 +125,7 @@ class CacheMemcached extends Cache
             if (false === $total) {
                 // No split found
                 $val = $this->memcached->get($this->key($key));
-                parent::$log[] = array(
+                $this->log[] = array(
                     'key'   => $this->key($key),
                     'success'   => \Memcached::RES_SUCCESS
                         == $this->memcached->getResultCode(),
@@ -138,7 +138,7 @@ class CacheMemcached extends Cache
                         $key . '[split-' . $i . '/' . $total . ']'
                     );
                     $val .= $this->memcached->get($keySplitted);
-                    parent::$log[] = array(
+                    $this->log[] = array(
                         'key'   => $keySplitted,
                         'success'   => \Memcached::RES_SUCCESS
                             == $this->memcached->getResultCode(),
@@ -151,7 +151,7 @@ class CacheMemcached extends Cache
         } else {
             // Direct get
             $val = $this->memcached->get($this->key($key));
-            parent::$log[] = array(
+            $this->log[] = array(
                 'key'   => $this->key($key),
                 'success'   => \Memcached::RES_SUCCESS
                     == $this->memcached->getResultCode(),

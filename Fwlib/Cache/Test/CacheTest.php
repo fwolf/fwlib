@@ -37,9 +37,15 @@ class CacheTest extends PHPunitTestCase
         $val = 'val';
         $this->ch->set($key, $val);
         $this->assertEquals($val, $this->ch->get($key));
+        $log = $this->ch->getLog();
+        $log = array_pop($log);
+        $this->assertTrue($log['success']);
 
         $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
+        $log = $this->ch->getLog();
+        $log = array_pop($log);
+        $this->assertFalse($log['success']);
 
 
         // Val encode and decode
