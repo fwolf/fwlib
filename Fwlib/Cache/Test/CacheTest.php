@@ -131,16 +131,16 @@ class CacheTest extends PHPunitTestCase
     }
 
 
-    public function testVer()
+    public function testVersion()
     {
         $key = 'test-ver';
 
-        $this->assertEquals(1, $this->ch->ver($key));
+        $this->assertEquals(1, $this->ch->getVersion($key));
 
-        $this->ch->ver($key, 1);
-        $this->assertEquals(2, $this->ch->ver($key));
+        $this->ch->increaseVersion($key, 1);
+        $this->assertEquals(2, $this->ch->getVersion($key));
 
-        $this->ch->ver($key, 65534, 65535);
-        $this->assertEquals(1, $this->ch->ver($key));
+        $this->ch->increaseVersion($key, 65534, 65535);
+        $this->assertEquals(1, $this->ch->getVersion($key));
     }
 }

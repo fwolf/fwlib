@@ -250,6 +250,54 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
 
 
     /**
+     * Get version number
+     *
+     * Mostly used in memcached for batch items delete.
+     *
+     * @param   string  $key
+     * @return  int
+     * @see     increaseVersion()
+     */
+    public function getVersion($key)
+    {
+        $i = $this->get($key);
+        if (empty($i)) {
+            $i = 1;
+            $this->set($key, $i, 0);
+        }
+
+        return $i;
+    }
+
+
+    /**
+     * Increase version number
+     *
+     * Mostly used in memcached for batch items delete.
+     *
+     * @param   string  $key
+     * @param   int     $increment
+     * @param   int     $max
+     * @return  int
+     * @see     getVersion()
+     */
+    public function increaseVersion($key, $increment = 1, $max = 65535)
+    {
+        $i = $this->getVersion($key);
+
+        $i += $increment;
+
+        if ($max < $i) {
+            $i = 1;
+        }
+
+        $this->set($key, $i, 0);
+
+        return $i;
+    }
+
+
+    /**
      * Is cache data expire ?
      *
      * @param   string  $key
@@ -304,35 +352,5 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
         $this->config->set('lifetime', 2592000);
 
         return $this;
-    }
-
-
-    /**
-     * Get or increase version number
-     *
-     * Mostly used in memcached for batch items delete.
-     *
-     * @param   string  $key
-     * @param   int     $increment
-     * @param   int     $max
-     * @return  int
-     */
-    public function ver($key, $increment = 0, $max = 65535)
-    {
-        $i = $this->get($key);
-        if (empty($i)) {
-            $i = 1;
-            $this->set($key, $i, 0);
-        }
-
-        if (0 != $increment) {
-            $i += $increment;
-            if ($max < $i) {
-                $i = 1;
-            }
-            $this->set($key, $i, 0);
-        }
-
-        return $i;
     }
 }
