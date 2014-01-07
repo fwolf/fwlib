@@ -14,10 +14,10 @@ use Fwlib\Util\UtilContainer;
  * This class is also child subclass creator(Factory Mode), so not abstract.
  *
  * Main method:
- * - key(), hash or use original key,
+ * - getKey(), generate/hash or use original key as key in cache system,
  * - set(), write cache data,
  * - get(), read cache data,
- * - del(), delete cache data.
+ * - delete(), delete cache data.
  *
  * @package     Fwlib\Cache
  * @copyright   Copyright 2012-2013 Fwolf
@@ -165,7 +165,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      */
     public function get($key, $lifetime = null)
     {
-        $key = $this->key($key);
+        $key = $this->getKey($key);
 
         // Ignored lifetime
         $arrayUtil = $this->getUtil('Array');
@@ -227,6 +227,18 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
 
 
     /**
+     * {@inheritdoc}
+     *
+     * @param   string  $str
+     * @return  string
+     */
+    public function getKey($str)
+    {
+        return $str;
+    }
+
+
+    /**
      * Getter of $log
      *
      * @return  array
@@ -252,20 +264,6 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
 
 
     /**
-     * Generate cache key
-     *
-     * In some cache system, key may need hash or computed.
-     *
-     * @param   string  $str
-     * @return  string
-     */
-    protected function key($str)
-    {
-        return $str;
-    }
-
-
-    /**
      * Write data to cache
      *
      * @param   string  $key
@@ -276,7 +274,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     public function set($key, $val, $lifetime = null)
     {
         // Lifetime is useless.
-        $this->cacheData[$this->key($key)] = $this->encodeValue($val, 0);
+        $this->cacheData[$this->getKey($key)] = $this->encodeValue($val, 0);
 
         return $this;
     }

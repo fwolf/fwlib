@@ -36,6 +36,17 @@ interface CacheInterface
 
 
     /**
+     * Convert param string to key used in cache system
+     *
+     * In some cache system, key may need hash or computed.
+     *
+     * @param   string  $str
+     * @return  string
+     */
+    public function getKey($str);
+
+
+    /**
      * Write cache data
      *
      * If cache type not support auto-expire(eg: file), $lifetime can omit.
