@@ -159,7 +159,7 @@ class CacheFile extends Cache
         }
 
         // Check file expire time
-        $expireTime = $this->expireTime($lifetime, filemtime($file));
+        $expireTime = $this->getExpireTime($lifetime, filemtime($file));
 
         return (time() > $expireTime);
     }

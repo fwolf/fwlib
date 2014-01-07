@@ -157,39 +157,6 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
 
 
     /**
-     * Compute expiration time
-     *
-     * @param   int     $lifetime
-     * @param   int     $starttime      Base start time, 0 use time()
-     * @return  int                     In unix time
-     */
-    protected function expireTime($lifetime = null, $starttime = 0)
-    {
-        // If not set, use config
-        if (is_null($lifetime)) {
-            $lifetime = $this->config->get('lifetime');
-        }
-
-        // 0 means never expire
-        if (0 == $lifetime) {
-            return 0;
-        }
-
-        if (0 == $starttime) {
-            $starttime = time();
-        }
-
-        // If smaller than 30 days
-        if (2592000 >= $lifetime) {
-            return $starttime + $lifetime;
-        }
-
-        // Larger than 30days, it's unix timestamp, ignore $starttime
-        return $lifetime;
-    }
-
-
-    /**
      * Get cache data
      *
      * @param   string  $key
@@ -223,6 +190,39 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     public function getErrorMessage()
     {
         return $this->errorMessage;
+    }
+
+
+    /**
+     * Compute expiration time
+     *
+     * @param   int     $lifetime
+     * @param   int     $starttime      Base start time, 0 use time()
+     * @return  int                     In unix time
+     */
+    protected function getExpireTime($lifetime = null, $starttime = 0)
+    {
+        // If not set, use config
+        if (is_null($lifetime)) {
+            $lifetime = $this->config->get('lifetime');
+        }
+
+        // 0 means never expire
+        if (0 == $lifetime) {
+            return 0;
+        }
+
+        if (0 == $starttime) {
+            $starttime = time();
+        }
+
+        // If smaller than 30 days
+        if (2592000 >= $lifetime) {
+            return $starttime + $lifetime;
+        }
+
+        // Larger than 30days, it's unix timestamp, ignore $starttime
+        return $lifetime;
     }
 
 

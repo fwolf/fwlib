@@ -108,25 +108,25 @@ class CacheTest extends PHPunitTestCase
         $x = 0;
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'expireTime', array($x))
+            $this->reflectionCall($this->ch, 'getExpireTime', array($x))
         );
 
         $x = time() + 2592000;
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'expireTime', array(2592000))
+            $this->reflectionCall($this->ch, 'getExpireTime', array(2592000))
         );
 
         $x = 2592001;
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'expireTime', array(2592001))
+            $this->reflectionCall($this->ch, 'getExpireTime', array(2592001))
         );
 
         $x = time() + 2592000;
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'expireTime', array(2592000))
+            $this->reflectionCall($this->ch, 'getExpireTime', array(2592000))
         );
     }
 

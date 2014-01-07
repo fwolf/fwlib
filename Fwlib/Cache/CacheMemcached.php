@@ -271,7 +271,7 @@ class CacheMemcached extends Cache
     public function set($key, $val, $lifetime = null)
     {
         // Convert expiration time
-        $lifetime = $this->expireTime($lifetime);
+        $lifetime = $this->getExpireTime($lifetime);
 
         // Auto split large string val
         if ((1 == $this->config->get('memcachedAutosplit'))
