@@ -36,11 +36,11 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     protected $cacheData = array();
 
     /**
-     * Error msg
+     * Error message
      *
      * @var string
      */
-    public $errorMessage = '';
+    protected $errorMessage = '';
 
     /**
      * Log for get() op's key and success flag
@@ -225,6 +225,17 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
             'success'   => !is_null($val),
         );
         return $val;
+    }
+
+
+    /**
+     * Getter of $errorMessage
+     *
+     * @return  string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
     }
 
 

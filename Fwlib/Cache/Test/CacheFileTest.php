@@ -100,14 +100,14 @@ class CacheFileTest extends PHPunitTestCase
         $this->assertFalse($ch->checkConfig());
         $this->assertEquals(
             'No cache file dir defined.',
-            $ch->errorMessage
+            $ch->getErrorMessage()
         );
 
         $ch->setConfig('fileRule', '');
         $this->assertFalse($ch->checkConfig());
         $this->assertEquals(
             'No cache file rule defined.',
-            $ch->errorMessage
+            $ch->getErrorMessage()
         );
 
         // Wrong config
