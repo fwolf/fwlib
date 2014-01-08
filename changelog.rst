@@ -16,6 +16,7 @@ v2.0    2014-01-08
 - All class put in Fwlib/ sub-directory
 - Most class are optimized
 - Old function and class are kept
+- Need PHP 5.3.0+
 
 
 
