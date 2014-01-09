@@ -38,6 +38,14 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     protected $js = array();
 
     /**
+     * Prefix of method to generate output
+     *
+     * @var string
+     * @see getOutputBody()
+     */
+    protected $methodPrefix = 'fetch';
+
+    /**
      * Use Smarty to build html from template
      *
      * @var Fwlib\Bridge\Smarty
@@ -121,16 +129,15 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Get output of body part
      *
-     * In this implement, output is retrieved from corresponding method,
-     * which's name is converted from $action by adding prefix. Eg, action
-     * 'foo-bar' will call fetchFooBar() for result. Child class can extend to
-     * change prefix or use different mechanishm.
+     * In this implement, output is retrieved from corresponding method, whose
+     * name is converted from $action by adding prefix. Eg, action 'foo-bar'
+     * will call fetchFooBar() for result. Child class can change
+     * $methodPrefix or use different mechanishm.
      *
      * @param   string  $action
-     * @param   string  $methodPrefix
      * @return  string
      */
-    protected function getOutputBody($action = '', $methodPrefix = 'fetch')
+    protected function getOutputBody($action = '')
     {
         if (empty($action)) {
             return null;
@@ -138,10 +145,10 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
 
         $stringUtil = $this->getUtil('StringUtil');
 
-        $method = $methodPrefix . $stringUtil->toStudlyCaps($action);
+        $method = $this->methodPrefix . $stringUtil->toStudlyCaps($action);
         if (!method_exists($this, $method)) {
             throw new \Exception(
-                "View $methodPrefix method for action {$action} is not defined"
+                "View {$this->methodPrefix} method for action {$action} is not defined"
             );
         }
 
