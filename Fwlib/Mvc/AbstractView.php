@@ -20,13 +20,6 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     ViewInterface
 {
     /**
-     * Action parameter from Controler
-     *
-     * @var string
-     */
-    protected $action = null;
-
-    /**
      * Css to link in output header
      *
      * Format: {key: url}
@@ -101,10 +94,8 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      * @param   string  $action
      * @return  string
      */
-    public function getOutput($action = null)
+    public function getOutput($action = '')
     {
-        $this->action = $action;
-
         $output = '';
 
         foreach ($this->outputPart as $part) {
@@ -116,7 +107,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
                 );
             }
 
-            $output .= $this->$method();
+            $output .= $this->$method($action);
         }
 
         if ($this->useTidy) {
@@ -135,21 +126,22 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      * 'foo-bar' will call fetchFooBar() for result. Child class can extend to
      * change prefix or use different mechanishm.
      *
+     * @param   string  $action
      * @param   string  $methodPrefix
      * @return  string
      */
-    protected function getOutputBody($methodPrefix = 'fetch')
+    protected function getOutputBody($action = '', $methodPrefix = 'fetch')
     {
-        if (empty($this->action)) {
+        if (empty($action)) {
             return null;
         }
 
         $stringUtil = $this->getUtil('StringUtil');
 
-        $method = $methodPrefix. $stringUtil->toStudlyCaps($this->action);
+        $method = $methodPrefix . $stringUtil->toStudlyCaps($action);
         if (!method_exists($this, $method)) {
             throw new \Exception(
-                "View $methodPrefix method for action {$this->action} is not defined"
+                "View $methodPrefix method for action {$action} is not defined"
             );
         }
 
@@ -160,9 +152,10 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Get output of footer part
      *
+     * @param   string  $action
      * @return  string
      */
-    protected function getOutputFooter()
+    protected function getOutputFooter($action = '')
     {
         return $this->smarty->fetch('footer.tpl');
     }
@@ -171,9 +164,10 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Get output of header part
      *
+     * @param   string  $action
      * @return  string
      */
-    protected function getOutputHeader()
+    protected function getOutputHeader($action = '')
     {
         // Avoid duplicate
         $this->css = array_unique($this->css);
