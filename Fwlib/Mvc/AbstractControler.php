@@ -24,6 +24,13 @@ use Fwlib\Util\UtilContainer;
 abstract class AbstractControler implements ControlerInterface
 {
     /**
+     * Request param of action
+     *
+     * @var string
+     */
+    protected $actionParameter = 'a';
+
+    /**
      * Module name
      *
      * If module parsed from user request equals this, will call corresponding
@@ -34,6 +41,13 @@ abstract class AbstractControler implements ControlerInterface
      * @var string
      */
     private $module = '';
+
+    /**
+     * Request param of module
+     *
+     * @var string
+     */
+    protected $moduleParameter = 'm';
 
     /**
      * Path to root
@@ -154,11 +168,8 @@ abstract class AbstractControler implements ControlerInterface
      */
     protected function getActionFromRequest(array $request)
     {
-        if (isset($request['a'])) {
-            $action = trim($request['a']);
-
-        } elseif (isset($request['action'])) {
-            $action = trim($request['action']);
+        if (isset($request[$this->actionParameter])) {
+            $action = trim($request[$this->actionParameter]);
 
         } else {
             $action = '';
@@ -193,11 +204,8 @@ abstract class AbstractControler implements ControlerInterface
      */
     protected function getModuleFromRequest(array $request)
     {
-        if (isset($request['m'])) {
-            $module = trim($request['m']);
-
-        } elseif (isset($request['module'])) {
-            $module = trim($request['module']);
+        if (isset($request[$this->moduleParameter])) {
+            $module = trim($request[$this->moduleParameter]);
 
         } else {
             $module = $this->module;

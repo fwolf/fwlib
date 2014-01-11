@@ -41,6 +41,7 @@ abstract class AbstractWorkflowDummy extends AbstractWorkflow
 
     protected function executeCustomizedAction()
     {
+        $this->title = 'changed';
     }
 
 

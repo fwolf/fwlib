@@ -194,7 +194,7 @@ class AbstractControlerTest extends PHPunitTestCase
     public function testTransferWithActualControler()
     {
         $_GET = array(
-            'module' => 'testModule',
+            'm' => 'testModule',
         );
         $controler = $this->buildMockWithGetControlerClass(null);
 
@@ -208,7 +208,7 @@ class AbstractControlerTest extends PHPunitTestCase
     public function testTransferWithEmptyControlerClass()
     {
         $_GET = array(
-            'module' => 'testModule',
+            'm' => 'testModule',
         );
         $controler = $this->buildMockBasis(null);
 

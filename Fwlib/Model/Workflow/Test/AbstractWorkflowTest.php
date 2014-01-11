@@ -18,7 +18,6 @@ use Fwlib\Test\ServiceContainerTest;
 class AbstractWorkflowTest extends PHPunitTestCase
 {
     protected $serviceContainer;
-    public static $executeCustomizedAction = false;
 
 
     public function __construct()
@@ -88,6 +87,9 @@ class AbstractWorkflowTest extends PHPunitTestCase
         $this->assertFalse($workflow->isEnded());
 
         $workflow->execute('customizedAction');
+
+        // Check the customized method is executed
+        $this->assertEquals('changed', $workflow->getTitle());
 
         $this->assertTrue($workflow->isEnded());
         $this->assertEquals(
