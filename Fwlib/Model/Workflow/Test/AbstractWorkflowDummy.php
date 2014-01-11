@@ -3,7 +3,12 @@ namespace Fwlib\Model\Workflow\Test;
 
 use Fwlib\Model\Workflow\AbstractWorkflow;
 
-abstract class AbstractWorkflowDummy extends AbstractWorkflow
+/**
+ * This class is not abstract, because AbstractWorkflowView need to create its
+ * instance for test, abstract method in parent class will got an empty
+ * declare here.
+ */
+class AbstractWorkflowDummy extends AbstractWorkflow
 {
     protected $node = array(
         'start' => array(
@@ -39,9 +44,34 @@ abstract class AbstractWorkflowDummy extends AbstractWorkflow
     );
 
 
+    protected function approved()
+    {
+    }
+
+
     protected function executeCustomizedAction()
     {
         $this->title = 'changed';
+    }
+
+
+    public function load($uuid)
+    {
+    }
+
+
+    protected function save()
+    {
+    }
+
+
+    protected function saveLink()
+    {
+    }
+
+
+    protected function saveLog($prevNode)
+    {
     }
 
 
