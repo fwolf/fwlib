@@ -66,6 +66,16 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     protected $outputPart = array('header', 'body', 'footer');
 
     /**
+     * Path to root
+     *
+     * External resource in application local storage will retrieve by
+     * relative path to this path.
+     *
+     * @var string
+     */
+    protected $pathToRoot = '../../';
+
+    /**
      * Switch for format output with tidy extension
      *
      * @var bool
