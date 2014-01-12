@@ -3,6 +3,7 @@ namespace Fwlib\Test;
 
 use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Bridge\Adodb;
+use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\ListTable;
 
 /**
@@ -19,9 +20,12 @@ use Fwlib\Html\ListTable;
 class ServiceContainerTest extends AbstractServiceContainer
 {
     /**
+     * @var GlobalConfig
+     */
+    protected $globalConfig = null;
+
+    /**
      * {@inheritdoc}
-     *
-     * @var array
      */
     protected $serviceClass = array(
         'Curl'          => 'Fwlib\Net\Curl',
@@ -34,6 +38,17 @@ class ServiceContainerTest extends AbstractServiceContainer
 
 
     /**
+     * {@inheritdoc}
+     *
+     * Create common used instance, to be used when create other instances.
+     */
+    protected function __construct()
+    {
+        $this->globalConfig = GlobalConfig::getInstance();
+    }
+
+
+    /**
      * New db instance and do connect
      *
      * $fetchMode:
@@ -43,6 +58,7 @@ class ServiceContainerTest extends AbstractServiceContainer
      * 3 ADODB_FETCH_BOTH
      *
      * @param   string   $profile
+     * @return  Adodb
      */
     protected function connectDb($profile)
     {
@@ -66,39 +82,39 @@ class ServiceContainerTest extends AbstractServiceContainer
     /**
      * New Adodb service object, default db
      *
-     * @return  object
+     * @return  Adodb
      */
     protected function newDb()
     {
-        $profile = $this->get('GlobalConfig')->get('dbserver.default');
-
-        return $this->connectDb($profile);
+        return $this->connectDb(
+            $this->globalConfig->get('dbserver.default')
+        );
     }
 
 
     /**
      * New Adodb service object, Mysql db
      *
-     * @return  object
+     * @return  Adodb
      */
     protected function newDbMysql()
     {
-        $profile = $this->get('GlobalConfig')->get('dbserver.mysql');
-
-        return $this->connectDb($profile);
+        return $this->connectDb(
+            $this->globalConfig->get('dbserver.mysql')
+        );
     }
 
 
     /**
      * New Adodb service object, Sybase db
      *
-     * @return  object
+     * @return  Adodb
      */
     protected function newDbSyb()
     {
-        $profile = $this->get('GlobalConfig')->get('dbserver.sybase');
-
-        return $this->connectDb($profile);
+        return $this->connectDb(
+            $this->globalConfig->get('dbserver.sybase')
+        );
     }
 
 
