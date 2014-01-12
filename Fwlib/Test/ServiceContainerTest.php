@@ -110,7 +110,7 @@ class ServiceContainerTest extends AbstractServiceContainer
      *
      * @return  Adodb
      */
-    protected function newDbSyb()
+    protected function newDbSybase()
     {
         return $this->connectDb(
             $this->globalConfig->get('dbserver.sybase')

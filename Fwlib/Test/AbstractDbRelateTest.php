@@ -38,7 +38,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
      *
      * @var Fwlib\Bridge\Adodb
      */
-    protected static $dbSyb = null;
+    protected static $dbSybase = null;
 
     /**
      * Using db profile
@@ -92,15 +92,11 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         $profileAr = explode(',', $profile);
         foreach ($profileAr as $type) {
             $type = trim($type);
-            switch ($type) {
-                case 'default':
-                    $dbName[] = 'db';
-                    break;
-                case 'sybase':
-                    $dbName[] = 'dbSyb';
-                    break;
-                default:
-                    $dbName[] = 'db' . ucfirst($type);
+
+            if ('default' == $type) {
+                $dbName[] = 'db';
+            } else {
+                $dbName[] = 'db' . ucfirst($type);
             }
         }
 
@@ -216,8 +212,8 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         if (!is_null(self::$dbMysql) && self::$dbMysql->isConnected()) {
             self::createTable(self::$dbMysql);
         }
-        if (!is_null(self::$dbSyb) && self::$dbSyb->isConnected()) {
-            self::createTable(self::$dbSyb);
+        if (!is_null(self::$dbSybase) && self::$dbSybase->isConnected()) {
+            self::createTable(self::$dbSybase);
         }
 
         if (!is_null(self::$db) && self::$db->isConnected() &&
@@ -232,8 +228,8 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         if (!is_null(self::$dbMysql) && self::$dbMysql->isConnected()) {
             self::dropTable(self::$dbMysql);
         }
-        if (!is_null(self::$dbSyb) && self::$dbSyb->isConnected()) {
-            self::dropTable(self::$dbSyb);
+        if (!is_null(self::$dbSybase) && self::$dbSybase->isConnected()) {
+            self::dropTable(self::$dbSybase);
         }
 
         if (!is_null(self::$db) && self::$db->isConnected() &&
