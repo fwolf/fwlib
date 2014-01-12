@@ -8,6 +8,16 @@ ChangeLog
 
 
 
+v2.1    2014-01-12
+====================
+
+- New ServiceContainerInterface
+- New Model AbstractWorkflow and AbstractWorkflowView
+- Mvc/AbstractView: New property $methodPrefix
+- Mvc/AbstractControler: Define module and action parameter name as property
+
+
+
 v2.0    2014-01-08
 ====================
 
