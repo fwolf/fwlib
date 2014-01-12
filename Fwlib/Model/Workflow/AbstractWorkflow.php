@@ -149,18 +149,6 @@ abstract class AbstractWorkflow extends AbstractModel implements
 
 
     /**
-     * Process after workflow end and resultCode is approved
-     *
-     * In common, this method should write $content to entity storage.
-     *
-     * If use DbDiff to store entity db change, there will have an extra
-     * UPDATE to db (the former one is save()), by this cost, the workflow got
-     * possibility to rollback from end node.
-     */
-    abstract protected function approved();
-
-
-    /**
      * Check if an action is valid and available
      *
      * @param   string  $action
@@ -181,6 +169,18 @@ abstract class AbstractWorkflow extends AbstractModel implements
         $method = $actionArray['availableCheck'];
         return $this->$method($action);
     }
+
+
+    /**
+     * Process after workflow end and resultCode is approved
+     *
+     * In common, this method should write $content to entity storage.
+     *
+     * If use DbDiff to store entity db change, there will have an extra
+     * UPDATE to db (the former one is save()), by this cost, the workflow got
+     * possibility to rollback from end node.
+     */
+    abstract protected function commit();
 
 
     /**
@@ -375,11 +375,11 @@ abstract class AbstractWorkflow extends AbstractModel implements
     /**
      * Move workflow to another node
      *
-     * After workflow move to end node and is approved, the method approved()
-     * will be called, the reverse operate is rollbackApproved(). The end
-     * result rejected or canceled has no alike mechanishm, because in common
-     * noting need to do, although child class can extend this method to add
-     * that.
+     * After workflow move to end node and is approved, the method commit()
+     * will be called, the reverse operate is rollback(), called when node
+     * leave from end. The end result rejected or canceled has no alike
+     * mechanishm, because in common nothing need to do, although child class
+     * can extend this method to add that.
      *
      * @param   string  $node
      * @param   int     $resultCode Should set when to or from end node.
@@ -411,7 +411,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
         }
 
         if ($currentIsEnd && $currentIsApproved) {
-            $this->approved();
+            $this->commit();
 
         } elseif ($prevIsEnd && $prevIsApproved) {
             $this->rollback();
@@ -422,7 +422,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
 
 
     /**
-     * Rollback data written, mostly by approved()
+     * Rollback data written by commit()
      */
     protected function rollback()
     {

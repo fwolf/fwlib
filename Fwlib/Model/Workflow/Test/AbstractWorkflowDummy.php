@@ -44,7 +44,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     );
 
 
-    protected function approved()
+    protected function commit()
     {
     }
 
