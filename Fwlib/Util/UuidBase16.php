@@ -144,13 +144,13 @@ class UuidBase16 extends AbstractUtilAware
             $custom1 = substr('0000' . $custom1, -4);
         }
 
-        // custom2: 4 chars, split to 2 parts
-        if (empty($cus2)) {
-            $cus2 = $this->getUtil('Ip')->toHex();
+        // custom2: 8 chars, split to 2 parts
+        if (empty($custom2)) {
+            $custom2 = $this->getUtil('Ip')->toHex();
         }
-        if (8 != strlen($cus2)) {
-            $cus2 .= sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-            $cus2 = substr($cus2, 0, 8);
+        if (8 != strlen($custom2)) {
+            $custom2 .= sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+            $custom2 = substr($custom2, 0, 8);
         }
         $custom2p1 = substr($custom2, 0, 4);
         $custom2p2 = substr($custom2, -4);
@@ -188,20 +188,20 @@ class UuidBase16 extends AbstractUtilAware
      *
      * Don't use 0-9,a-z,A-Z as separator !
      *
-     * @param   string  $cus
-     * @param   string  $cus2
+     * @param   string  $custom1
+     * @param   string  $custom2
      * @param   boolean $checkDigit
      * @param   string  $separator
      * @return  string
      */
     public function generateWithSeparator(
-        $cus = '0000',
-        $cus2 = '',
+        $custom1 = '0010',
+        $custom2 = '',
         $checkDigit = false,
         $separator = '-'
     ) {
         return $this->addSeparator(
-            $this->generate($cus, $cus2, $checkDigit),
+            $this->generate($custom1, $custom2, $checkDigit),
             $separator
         );
     }
