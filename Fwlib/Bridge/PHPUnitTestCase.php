@@ -6,7 +6,7 @@ namespace Fwlib\Bridge;
  * Bridge for PHPUnit_Framework_TestCase
  *
  * @package     Fwlib\Bridge
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-25
@@ -38,14 +38,19 @@ abstract class PHPUnitTestCase extends \PHPUnit_Framework_TestCase
      * Call private or protected method for test using reflection
      *
      * @param   mixed   $classOrInstance
-     * @param   mixed   $name
-     * @param   array   $args
+     * @param   string  $name
+     * @param   array   $argument
      */
-    protected function reflectionCall($classOrInstance, $name, $args)
-    {
+    protected function reflectionCall(
+        $classOrInstance,
+        $name,
+        array $argument = array()
+    ) {
         $ref = new \ReflectionMethod($classOrInstance, $name);
+
         $ref->setAccessible(true);
-        return $ref->invokeArgs($classOrInstance, (array)$args);
+
+        return $ref->invokeArgs($classOrInstance, $argument);
     }
 
 
@@ -59,7 +64,9 @@ abstract class PHPUnitTestCase extends \PHPUnit_Framework_TestCase
     protected function reflectionGet($classOrInstance, $name)
     {
         $ref = new \ReflectionProperty($classOrInstance, $name);
+
         $ref->setAccessible(true);
+
         return $ref->getValue($classOrInstance);
     }
 
@@ -74,6 +81,7 @@ abstract class PHPUnitTestCase extends \PHPUnit_Framework_TestCase
     protected function reflectionSet($classOrInstance, $name, $value)
     {
         $ref = new \ReflectionProperty($classOrInstance, $name);
+
         $ref->setAccessible(true);
 
         if ($ref->isStatic()) {
