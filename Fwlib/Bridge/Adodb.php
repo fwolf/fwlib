@@ -952,6 +952,17 @@ class Adodb extends AbstractUtilAware
 
 
     /**
+     * Getter of $profile
+     *
+     * @return  array
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+
+    /**
      * Get string describe of profile
      *
      * Usually used for identify db source.

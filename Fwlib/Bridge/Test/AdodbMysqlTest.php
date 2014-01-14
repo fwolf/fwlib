@@ -55,6 +55,8 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $profile = GlobalConfig::getInstance()->get('dbserver.mysql');
         $db = new Adodb($profile);
 
+        $this->assertEqualArray($profile, $db->getProfile());
+
         $this->assertFalse(isset($db->sqlGenerator));
         // Will auto create SqlGenerator when access
         $this->assertFalse(is_null($db->sqlGenerator));
