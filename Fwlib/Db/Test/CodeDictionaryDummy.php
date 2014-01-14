@@ -5,17 +5,14 @@ use Fwlib\Db\CodeDictionary;
 
 class CodeDictionaryDummy extends CodeDictionary
 {
-    public function init()
+    public function __construct()
     {
-        parent::init();
-
-        $this->setConfig('pk', 'code');
-
-        $this->set(array(
-            array(123,  'a'),
-            array('bac',    2),
-        ))->set(array(321,  'c'));
-
-        return $this;
+        $this->set(
+            array(
+                array(123,  'a'),
+                array('bac', 2),
+                array(321,  'c'),
+            )
+        );
     }
 }

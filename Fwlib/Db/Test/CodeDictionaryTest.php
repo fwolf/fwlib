@@ -45,7 +45,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
     public function testGet()
     {
         $this->assertEquals(null, $this->dict->get(null));
-        $this->assertEquals(null, $this->dict->get('not-exists'));
+        $this->assertEquals(null, $this->dict->get('notExistKey'));
         $this->assertEquals('a', $this->dict->get(123));
         $this->assertEquals(2, $this->dict->get('bac'));
         $this->assertEquals(
@@ -84,23 +84,24 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function testGetSqlWithNoDb()
     {
-        $this->dict->GetSql(null);
+        $this->dict->getSql(null);
     }
 
 
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException Exception
+     * @expectedExceptionMessage Table not set
      */
     public function testGetSqlWithNoTableName()
     {
-        $this->dict->setConfig('table', '');
-        $this->dict->GetSql(self::$db);
+        $this->dict->setTable('');
+        $this->dict->getSql(self::$db);
     }
 
 
     public function testGetSqlWithTable()
     {
-        $this->dict->setConfig('table', $this->table);
+        $this->dict->setTable($this->table);
         if (!self::$db->isTableExist($this->table)) {
             self::$db->execute(
                 "CREATE TABLE $this->table (
@@ -110,7 +111,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
                 )"
             );
         }
-        $sql = $this->dict->GetSql(self::$db);
+        $sql = $this->dict->getSql(self::$db);
 
         $this->assertEquals(3, preg_match_all('/INSERT INTO/', $sql, $match));
         $this->assertEquals(1, preg_match_all('/TRUNCATE/', $sql, $match));
@@ -125,7 +126,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
 
         $this->assertEquals(3, count($this->dict->search()));
 
-        $this->dict->setConfig('pk', '');
+        $this->dict->setPrimaryKey('');
         $this->dict->set(array('foo', 'bar'));
         $this->assertEquals(4, count($this->dict->search()));
     }
@@ -166,7 +167,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
     public function testSetWithNoColumn()
     {
         $dict = new CodeDictionaryDummy();
-        $dict->setConfig('column', null);
+        $dict->setColumn(array());
         $dict->set(array('foo' => 'bar'));
     }
 }

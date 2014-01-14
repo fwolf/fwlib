@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Db;
 
-use Fwlib\Base\AbstractAutoNewConfig;
 
 /**
  * Code dictionary manager
@@ -9,13 +8,34 @@ use Fwlib\Base\AbstractAutoNewConfig;
  * Eg: code-name table in db.
  *
  * @package     Fwlib\Db
- * @copyright   Copyright 2011-2013 Fwolf
+ * @copyright   Copyright 2011-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2011-07-15
  */
-class CodeDictionary extends AbstractAutoNewConfig
+class CodeDictionary
 {
+    /**
+     * Column name, should not be empty
+     *
+     * @var array
+     */
+    protected $column = array('code', 'title');
+
+    /**
+     * Left delimiter in search condition
+     *
+     * @var string
+     */
+    protected $delimiterLeft = '{';
+
+    /**
+     * Right delimiter in search condition
+     *
+     * @var string
+     */
+    protected $delimiterRight = '}';
+
     /**
      * Dictionary data array
      *
@@ -23,23 +43,23 @@ class CodeDictionary extends AbstractAutoNewConfig
      */
     protected $dict = array();
 
+    /**
+     * Primary key column name or array
+     *
+     * Privary key column is used to get or search, MUST exist in $column.
+     *
+     * @var string|array
+     */
+    protected $primaryKey = 'code';
 
     /**
-     * Constructor
+     * Code table name in db
+     *
+     * If table name is empty, getSql() will return empty.
+     *
+     * @var string
      */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->init();
-
-        $column = $this->config['column'];
-        if (empty($column)) {
-            // @codeCoverageIgnoreStart
-            throw new \Exception('Dict col not defined.');
-            // @codeCoverageIgnoreEnd
-        }
-    }
+    protected $table = 'code_dictionary';
 
 
     /**
@@ -90,15 +110,14 @@ class CodeDictionary extends AbstractAutoNewConfig
      */
     protected function getColumn($col = '')
     {
-        $colAll = $this->config['column'];
         $arCol = array();
 
         if ('*' == $col) {
-            $arCol = $colAll;
+            $arCol = $this->column;
 
         } elseif (empty($col)) {
             // Assign first col not pk
-            $colWithoutPk = array_diff($colAll, (array)$this->config['pk']);
+            $colWithoutPk = array_diff($this->column, (array)$this->primaryKey);
             $arCol = array(array_shift($colWithoutPk));
 
         } else {
@@ -107,7 +126,7 @@ class CodeDictionary extends AbstractAutoNewConfig
                 $col = explode(',', $col);
                 array_walk($col, 'trim');
             }
-            $arCol = array_intersect($col, $colAll);
+            $arCol = array_intersect($col, $this->column);
         }
 
         if (1 == count($arCol)) {
@@ -161,15 +180,12 @@ class CodeDictionary extends AbstractAutoNewConfig
      */
     public function getSql($db, $withTruncate = true)
     {
+        if (empty($this->table)) {
+            throw new \Exception('Table not set');
+        }
+
         if (empty($db) || !$db->isConnected()) {
             trigger_error('Db empty or not connected.', E_USER_WARNING);
-            // @codeCoverageIgnoreStart
-            return null;
-            // @codeCoverageIgnoreEnd
-        }
-        $table = $this->config['table'];
-        if (empty($table)) {
-            trigger_error('Dict table not set.', E_USER_WARNING);
             // @codeCoverageIgnoreStart
             return null;
             // @codeCoverageIgnoreEnd
@@ -198,8 +214,8 @@ class CodeDictionary extends AbstractAutoNewConfig
 
         // Data
         // INSERT INTO table (col1, col2) VALUES (val1, val2)[DELIMITER]
-        $dictTable = $this->config['table'];
-        $colList = $this->config['column'];
+        $dictTable = $this->table;
+        $colList = $this->column;
         foreach ((array)$this->dict as $k => $row) {
             $valList = array();
             foreach ($row as $key => $val) {
@@ -227,7 +243,7 @@ class CodeDictionary extends AbstractAutoNewConfig
      */
     public function getSqlTruncate($db)
     {
-        $sql = 'TRUNCATE TABLE ' . $this->config['table']
+        $sql = 'TRUNCATE TABLE ' . $this->table
             . $db->getSqlDelimiter();
 
         if (!$db->isDbSybase()) {
@@ -235,29 +251,6 @@ class CodeDictionary extends AbstractAutoNewConfig
         }
 
         return $sql;
-    }
-
-
-    /**
-     * Init config, set data structure
-     *
-     * Usually override by sub class.
-     *
-     * @return  object
-     */
-    public function init()
-    {
-        // Col is array of string column name
-        $this->setConfig('column', array('code', 'title'));
-        // PK is string column name for single, or array of string for multi.
-        // PK MUST in Col list.
-        $this->setConfig('pk', 'code');
-        // Table name is used to generate SQL
-        $this->setConfig('table', 'code_dictionary');
-
-        // Delimiter in get list condition
-        $this->setConfig('delimiter-left', '{');
-        $this->setConfig('delimiter-right', '}');
     }
 
 
@@ -284,10 +277,9 @@ class CodeDictionary extends AbstractAutoNewConfig
         $col = $this->getColumn($col);
 
         $colWithDelimiter = array();
-        $delimiterLeft = $this->config['delimiter-left'];
-        $delimiterRight = $this->config['delimiter-right'];
-        foreach ($this->config['column'] as $v) {
-            $colWithDelimiter[] = $delimiterLeft . $v . $delimiterRight;
+        foreach ($this->column as $v) {
+            $colWithDelimiter[] = $this->delimiterLeft . $v .
+                $this->delimiterRight;
         }
 
         // Loop check
@@ -320,7 +312,7 @@ class CodeDictionary extends AbstractAutoNewConfig
             return $this;
             // @codeCoverageIgnoreEnd
         }
-        $column = $this->config['column'];
+        $column = $this->column;
         if (empty($column)) {
             trigger_error('Dict column not defined.', E_USER_WARNING);
             // @codeCoverageIgnoreStart
@@ -334,7 +326,7 @@ class CodeDictionary extends AbstractAutoNewConfig
         }
 
 
-        $pk = $this->config['pk'];
+        $pk = $this->primaryKey;
         foreach ($data as $row) {
             $ar = array();
             foreach ($column as $col) {
@@ -362,6 +354,69 @@ class CodeDictionary extends AbstractAutoNewConfig
                 $this->dict[] = $ar;
             }
         }
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $column
+     *
+     * @param   array   $column
+     * @return  CodeDictionary
+     */
+    public function setColumn(array $column)
+    {
+        $this->column = $column;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $delimiterLeft and $delimiterRight
+     *
+     * @param   string  $delimiterLeft
+     * @param   string  $delimiterRight
+     * @return  CodeDictionary
+     */
+    public function setDelimiter($delimiterLeft, $delimiterRight = null)
+    {
+        $this->delimiterLeft = $delimiterLeft;
+
+        if (is_null($delimiterRight)) {
+            $delimiterRight = $delimiterLeft;
+        }
+
+        $this->delimiterRight = $delimiterRight;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $primaryKey
+     *
+     * @param   string|array    $primaryKey
+     * @return  CodeDictionary
+     */
+    public function setPrimaryKey($primaryKey)
+    {
+        $this->primaryKey = $primaryKey;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $table
+     *
+     * @param   string  $table
+     * @return  CodeDictionary
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
 
         return $this;
     }
