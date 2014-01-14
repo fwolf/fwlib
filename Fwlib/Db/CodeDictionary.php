@@ -1,11 +1,22 @@
 <?php
 namespace Fwlib\Db;
 
+use Fwlib\Bridge\Adodb;
 
 /**
  * Code dictionary manager
  *
  * Eg: code-name table in db.
+ *
+ * The primary key can only contain ONE column, its used as key for $dict.
+ * Single primary key should fit most need, or your data are possibly not code
+ * dictionary.
+ *
+ * To support composite primary key, there can extend this class with a
+ * generateDictIndex() method, the dict data array will be generated from all
+ * primark key column value. In this scenario it is hard for get() and set()
+ * method to recoginize array param is key of many rows or primary key array,
+ * so more complicated work to do, maybe not suit for code dictionary.
  *
  * @package     Fwlib\Db
  * @copyright   Copyright 2011-2014 Fwolf
@@ -39,16 +50,19 @@ class CodeDictionary
     /**
      * Dictionary data array
      *
+     * For use primary key as array index, and avoid write it again in value
+     * array, it should use set() in constructor to initialize dict data.
+     *
      * @var array
      */
     protected $dict = array();
 
     /**
-     * Primary key column name or array
+     * Primary key column name
      *
      * Privary key column is used to get or search, MUST exist in $column.
      *
-     * @var string|array
+     * @var string
      */
     protected $primaryKey = 'code';
 
@@ -63,132 +77,86 @@ class CodeDictionary
 
 
     /**
-     * Get relate value for given pk
+     * Get value for given keys
      *
-     * @param   mixed   $arPk   Array or string of pk
-     * @param   mixed   $col    Array or string of cols for return
-     * @return  mixed
+     * @param   int|string|array    $key
+     * @param   string|array        $column
+     * @return  int|string|array
      */
-    public function get($arPk, $col = '')
+    public function get($key, $column = '')
     {
-        if (empty($arPk)) {
+        if (empty($key)) {
             return null;
         }
 
-        if (!is_array($arPk)) {
-            $arPk = array($arPk);
-        }
+        $resultColumn = $this->parseColumn($column);
 
-        $arCol = $this->getColumn($col);
+        $result = array();
+        foreach ((array)$key as $index) {
+            if (isset($this->dict[$index])) {
+                $result[$index] = $this->getColumnData($index, $resultColumn);
 
-        $ar = array();
-        foreach ($arPk as $pk) {
-            if (isset($this->dict[$pk])) {
-                $ar[$pk] = $this->getColumnData($this->dict[$pk], $arCol);
             } else {
-                $ar[$pk] = null;
+                $result[$index] = null;
             }
         }
 
-        if (1 == count($ar)) {
-            return array_shift($ar);
-        } else {
-            return $ar;
+        // If only have 1 row
+        if (1 == count($result)) {
+            $result = array_shift($result);
+
+            // If only have 1 column
+            if (1 == count($result)) {
+                $result = array_shift($result);
+            }
         }
+
+        return $result;
     }
 
 
     /**
-     * Get cols you want to query
+     * Getter of $dict
      *
-     * If $col not assigned, assign as first col which is not pk.
-     *
-     * Use '*' for all cols.
-     *
-     * @param   mixed   $col    Array or string of cols.
-     * @return  mixed
+     * @return  array
      */
-    protected function getColumn($col = '')
+    public function getAll()
     {
-        $arCol = array();
-
-        if ('*' == $col) {
-            $arCol = $this->column;
-
-        } elseif (empty($col)) {
-            // Assign first col not pk
-            $colWithoutPk = array_diff($this->column, (array)$this->primaryKey);
-            $arCol = array(array_shift($colWithoutPk));
-
-        } else {
-            // Find valid cols
-            if (is_string($col)) {
-                $col = explode(',', $col);
-                array_walk($col, 'trim');
-            }
-            $arCol = array_intersect($col, $this->column);
-        }
-
-        if (1 == count($arCol)) {
-            return array_shift($arCol);
-        } else {
-            return $arCol;
-        }
+        return $this->dict;
     }
 
 
     /**
-     * Get value from data array by assigned cols
+     * Get data of columns by given dict index
      *
-     * @param   array   $arData
-     * @param   mixed   $col
-     * @return  mixed
+     * @param   int|string  $index
+     * @param   array       $column
+     * @return  array
      */
-    protected function getColumnData($arData, $col)
+    protected function getColumnData($index, array $column)
     {
-        if (empty($arData) || empty($col)) {
-            // This should not occur
-            // @codeCoverageIgnoreStart
-            return null;
-            // @codeCoverageIgnoreEnd
-        }
-        if (!is_array($col)) {
-            $col = array($col);
-        }
-
-        $ar = array();
-        foreach ($col as $v) {
-            if (isset($arData[$v])) {
-                $ar[$v] = $arData[$v];
-            }
-        }
-
-        if (1 == count($ar)) {
-            return array_shift($ar);
-        } else {
-            return $ar;
-        }
+        return array_intersect_key(
+            $this->dict[$index],
+            array_fill_keys($column, null)
+        );
     }
 
 
     /**
      * Get SQL for write dict data to db
      *
-     * @param   object  $db     Fwlib\Bridge\Adodb
+     * @param   Adodb   $db
      * @param   boolean $withTruncate
      * @return  string
      */
-    public function getSql($db, $withTruncate = true)
+    public function getSql(Adodb $db, $withTruncate = true)
     {
         if (empty($this->table)) {
-            throw new \Exception('Table not set');
+            return '';
         }
 
-        if (empty($db) || !$db->isConnected()) {
-            trigger_error('Db empty or not connected.', E_USER_WARNING);
-            // @codeCoverageIgnoreStart
-            return null;
-            // @codeCoverageIgnoreEnd
+        if (!$db->isConnected()) {
+            throw new \Exception('Database not connected');
         }
 
 
@@ -198,8 +166,9 @@ class CodeDictionary
         // Mysql set names
         // @codeCoverageIgnoreStart
         if ($db->isDbMysql()) {
+            $profile = $db->getProfile();
             $sql .= 'SET NAMES \''
-                . str_replace('UTF-8', 'UTF8', strtoupper($db->profile['lang']))
+                . str_replace('UTF-8', 'UTF8', strtoupper($profile['lang']))
                 . '\'' . $db->getSqlDelimiter();
         }
         // @codeCoverageIgnoreEnd
@@ -214,17 +183,15 @@ class CodeDictionary
 
         // Data
         // INSERT INTO table (col1, col2) VALUES (val1, val2)[DELIMITER]
-        $dictTable = $this->table;
-        $colList = $this->column;
-        foreach ((array)$this->dict as $k => $row) {
-            $valList = array();
+        foreach ($this->dict as $k => $row) {
+            $valueList = array();
             foreach ($row as $key => $val) {
-                $valList[] = $db->quoteValue($dictTable, $key, $val);
+                $valueList[] = $db->quoteValue($this->table, $key, $val);
             }
 
-            $sql .= 'INSERT INTO ' . $dictTable
-                . ' (' . implode(', ', $colList) . ')'
-                . ' VALUES (' . implode(', ', $valList) . ')'
+            $sql .= 'INSERT INTO ' . $this->table
+                . ' (' . implode(', ', $this->column) . ')'
+                . ' VALUES (' . implode(', ', $valueList) . ')'
                 . $db->getSqlDelimiter();
         }
 
@@ -255,41 +222,76 @@ class CodeDictionary
 
 
     /**
+     * Parse columns you want to query
+     *
+     * If $column not assigned, assign as first col which is not primary key.
+     *
+     * Use '*' for all columns.
+     *
+     * @param   string|array    $column
+     * @return  array
+     */
+    protected function parseColumn($column = '')
+    {
+        $result = array();
+
+        if ('*' == $column) {
+            $result = $this->column;
+
+        } elseif (empty($column)) {
+            // Assign first col not pk
+            $columnWithoutPk = array_diff(
+                $this->column,
+                (array)$this->primaryKey
+            );
+            $result = array(array_shift($columnWithoutPk));
+
+        } else {
+            // Find valid columns
+            if (is_string($column)) {
+                $column = explode(',', $column);
+                array_walk($column, 'trim');
+            }
+            $result = array_intersect($column, $this->column);
+        }
+
+        return $result;
+    }
+
+
+    /**
      * Search for data fit given condition
      *
-     * In condition, use {col} and native php syntax, delimiter can change use
-     * setConfig().
+     * In condition, use {column} and native php syntax, delimiter can change
+     * use setDelimiter().
      *
      * @param   string  $condition
-     * @param   string  $col        Wanted cols.
-     * @return  array   2-dim array of result.
+     * @param   string  $column
+     * @return  array
      */
-    public function search($condition = '', $col = '*')
+    public function search($condition = '', $column = '*')
     {
-        if (empty($condition)) {
-            return $this->dict;
+        if (empty($condition) || empty($this->dict)) {
+            return array();
         }
-        if (empty($this->dict)) {
-            // @codeCoverageIgnoreStart
-            return null;
-            // @codeCoverageIgnoreEnd
-        }
-        $col = $this->getColumn($col);
 
-        $colWithDelimiter = array();
+        $columnWithDelimiter = array();
         foreach ($this->column as $v) {
-            $colWithDelimiter[] = $this->delimiterLeft . $v .
+            $columnWithDelimiter[] = $this->delimiterLeft . $v .
                 $this->delimiterRight;
         }
 
-        // Loop check
+        $resultColumn = $this->parseColumn($column);
+
         $result = array();
         $condition = "return ($condition);";
-        foreach ($this->dict as $k => &$row) {
-            $condition_t = str_replace($colWithDelimiter, $row, $condition);
-            eval($condition_t);
-            if (eval($condition_t)) {
-                $result[$k] = $this->getColumnData($row, $col);
+        foreach ($this->dict as $index => &$row) {
+            $conditionResult =
+                str_replace($columnWithDelimiter, $row, $condition);
+            eval($conditionResult);
+
+            if (eval($conditionResult)) {
+                $result[$index] = $this->getColumnData($index, $resultColumn);
             }
         }
         unset($row);
@@ -302,58 +304,53 @@ class CodeDictionary
      * Set dict value
      *
      * @param   array   $data    1 or 2-dim data array.
-     * @return  $this
+     * @return  CodeDictionary
      */
-    public function set($data)
+    public function set(array $data)
     {
         if (empty($data)) {
-            trigger_error('Empty data given.', E_USER_NOTICE);
-            // @codeCoverageIgnoreStart
             return $this;
-            // @codeCoverageIgnoreEnd
         }
-        $column = $this->column;
-        if (empty($column)) {
-            trigger_error('Dict column not defined.', E_USER_WARNING);
-            // @codeCoverageIgnoreStart
-            return $this;
-            // @codeCoverageIgnoreEnd
+
+        if (empty($this->column)) {
+            throw new \Exception('Dictionary column not defined');
+        }
+
+        if (!in_array($this->primaryKey, $this->column)) {
+            throw new \Exception(
+                'Defined columns didn\'nt include primary key'
+            );
         }
 
         // Convert 1-dim to 2-dim
-        if (!is_array($data[array_rand($data)])) {
+        if (!is_array(current($data))) {
             $data = array($data);
         }
 
 
-        $pk = $this->primaryKey;
-        foreach ($data as $row) {
-            $ar = array();
-            foreach ($column as $col) {
-                // @codeCoverageIgnoreStart
-                if (empty($row)) {
-                    trigger_error('Given data not fit all column.', E_USER_WARNING);
-                } else {
-                    $ar[$col] = array_shift($row);
-                }
-                // @codeCoverageIgnoreEnd
+        foreach ($data as &$row) {
+            try {
+                $columnValueArray = array_combine(
+                    $this->column,
+                    $row
+                );
+            } catch (\Exception $e) {
+                throw new \Exception(
+                    'Given data didn\'t contain all columns'
+                );
             }
 
-            // Single pk as array index
-            if (!empty($pk) && is_string($pk)) {
-                if (!empty($ar[$pk])) {
-                    $this->dict[$ar[$pk]] = $ar;
-                } else {
-                    // @codeCoverageIgnoreStart
-                    trigger_error('Data not include dict pk.', E_USER_WARNING);
-                    $this->dict[] = $ar;
-                    // @codeCoverageIgnoreEnd
-                }
-            } else {
-                // Multi pk or no pk
-                $this->dict[] = $ar;
+            $primaryKeyValue = $columnValueArray[$this->primaryKey];
+
+            if (empty($primaryKeyValue)) {
+                throw new \Exception(
+                    'Primary key value is empty or not set'
+                );
             }
+
+            $this->dict[$primaryKeyValue] = $columnValueArray;
         }
+        unset($row);
 
         return $this;
     }
