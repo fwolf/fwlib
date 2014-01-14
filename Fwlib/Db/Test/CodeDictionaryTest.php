@@ -2,7 +2,6 @@
 namespace Fwlib\Base\Test;
 
 use Fwlib\Db\CodeDictionary;
-use Fwlib\Db\Test\CodeDictionaryDummy;
 use Fwlib\Test\AbstractDbRelateTest;
 
 /**
@@ -39,9 +38,25 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function __construct()
     {
-        $this->dict = new CodeDictionaryDummy();
+        $this->dict = $this->buildMock();
 
         $this->dbMock = $this->buildDbMock();
+    }
+
+
+    protected function buildMock()
+    {
+        $dict = new CodeDictionary();
+
+        $dict->set(
+            array(
+                array(123,  'a'),
+                array('bac', 2),
+                array(321,  'c'),
+            )
+        );
+
+        return $dict;
     }
 
 
@@ -68,37 +83,39 @@ class CodeDictionaryTest extends AbstractDbRelateTest
 
     public function testGet()
     {
-        $this->assertEquals(null, $this->dict->get(null));
-        $this->assertEquals(null, $this->dict->get('notExistKey'));
-        $this->assertEquals('a', $this->dict->get(123));
-        $this->assertEquals(2, $this->dict->get('bac'));
+        $dict = $this->dict;
+
+        $this->assertEquals(null, $dict->get(null));
+        $this->assertEquals(null, $dict->get('notExistKey'));
+        $this->assertEquals('a', $dict->get(123));
+        $this->assertEquals(2, $dict->get('bac'));
         $this->assertEquals(
             array(123 => array('title' => 'a'), 321 => array('title' => 'c')),
-            $this->dict->Get(array(123, 321))
+            $dict->Get(array(123, 321))
         );
 
         $this->assertEquals(
             array('bac' => array('code' => 'bac', 'title' => 2)),
-            $this->dict->search('!is_numeric("{code}")')
+            $dict->search('!is_numeric("{code}")')
         );
         $this->assertEquals(
             array(
                 123 => array('code' => 123, 'title' => 'a'),
                 321 => array('code' => 321, 'title' => 'c')
             ),
-            $this->dict->search('"2" == substr("{code}", 1, 1)')
+            $dict->search('"2" == substr("{code}", 1, 1)')
         );
         $this->assertEquals(
             array(
                 321 => array('code' => 321, 'title' => 'c')
             ),
-            $this->dict->search('"c" == "{title}" && "2" == substr("{code}", 1, 1)')
+            $dict->search('"c" == "{title}" && "2" == substr("{code}", 1, 1)')
         );
 
         // search with assign cols
         $this->assertEquals(
             array(321 => array('title' => 'c')),
-            $this->dict->search('"c" == "{title}"', 'title')
+            $dict->search('"c" == "{title}"', 'title')
         );
     }
 
@@ -109,23 +126,28 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function testGetSqlWithDbNotConnected()
     {
+        $dict = $this->dict;
         self::$isConnected = false;
 
-        $this->dict->getSql($this->dbMock);
+        $dict->getSql($this->dbMock);
     }
 
 
     public function testGetSqlWithNoTableName()
     {
-        $this->dict->setTable('');
+        $dict = $this->dict;
 
-        $this->assertEmpty($this->dict->getSql(self::$db));
+        $dict->setTable('');
+
+        $this->assertEmpty($dict->getSql(self::$db));
     }
 
 
     public function testGetSqlWithTable()
     {
-        $this->dict->setTable($this->table);
+        $dict = $this->dict;
+
+        $dict->setTable($this->table);
         if (!self::$db->isTableExist($this->table)) {
             self::$db->execute(
                 "CREATE TABLE $this->table (
@@ -135,7 +157,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
                 )"
             );
         }
-        $sql = $this->dict->getSql(self::$db);
+        $sql = $dict->getSql(self::$db);
 
         $this->assertEquals(3, preg_match_all('/INSERT INTO/', $sql, $match));
         $this->assertEquals(1, preg_match_all('/TRUNCATE/', $sql, $match));
@@ -146,31 +168,31 @@ class CodeDictionaryTest extends AbstractDbRelateTest
 
     public function testSet()
     {
-        $this->dict = new CodeDictionaryDummy();
+        $dict = $this->dict;
 
-        $this->assertEmpty(count($this->dict->search()));
+        $this->assertEmpty(count($dict->search()));
 
-        $this->dict->set(array('foo', 'bar'));
-        $this->assertEquals(4, count($this->dict->getAll()));
+        $dict->set(array('foo', 'bar'));
+        $this->assertEquals(4, count($dict->getAll()));
     }
 
 
     public function testSetDelimiter()
     {
-        $this->dict = new CodeDictionaryDummy();
+        $dict = $this->dict;
 
-        $this->dict->setDelimiter('[[', ']]');
+        $dict->setDelimiter('[[', ']]');
 
         $this->assertEquals(
             array(321 => array('title' => 'c')),
-            $this->dict->search('"c" == "[[title]]"', 'title')
+            $dict->search('"c" == "[[title]]"', 'title')
         );
 
-        $this->dict->setDelimiter(':');
+        $dict->setDelimiter(':');
 
         $this->assertEquals(
             array(321 => array('title' => 'c')),
-            $this->dict->search('"c" == ":title:"', 'title')
+            $dict->search('"c" == ":title:"', 'title')
         );
     }
 
@@ -181,15 +203,19 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function testSetWithEmptyPk()
     {
-        $this->dict->set(array('', 'bar'));
+        $dict = $this->dict;
+
+        $dict->set(array('', 'bar'));
     }
 
 
     public function testSetWithEmptyValue()
     {
-        $dictBefore = $this->dict->getAll();
-        $this->dict->set(array());
-        $dictAfter = $this->dict->getAll();
+        $dict = $this->dict;
+
+        $dictBefore = $dict->getAll();
+        $dict->set(array());
+        $dictAfter = $dict->getAll();
 
         $this->assertEqualArray($dictBefore, $dictAfter);
     }
@@ -201,7 +227,9 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function testSetWithEmptyRowInData()
     {
-        $this->dict->set(array(array(null), array('foo', 'bar')));
+        $dict = $this->dict;
+
+        $dict->set(array(array(null), array('foo', 'bar')));
     }
 
 
@@ -211,7 +239,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function testSetWithNoColumn()
     {
-        $dict = new CodeDictionaryDummy();
+        $dict = $this->dict;
 
         $dict->setColumn(array());
 
@@ -225,7 +253,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
      */
     public function testSetWithPrimaryKeyNotInColumn()
     {
-        $dict = new CodeDictionaryDummy();
+        $dict = $this->dict;
 
         $dict->setPrimaryKey('notExistColumn');
 
