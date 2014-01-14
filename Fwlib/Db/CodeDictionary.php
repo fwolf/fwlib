@@ -164,14 +164,12 @@ class CodeDictionary
         $sql = '';
 
         // Mysql set names
-        // @codeCoverageIgnoreStart
         if ($db->isDbMysql()) {
             $profile = $db->getProfile();
             $sql .= 'SET NAMES \''
                 . str_replace('UTF-8', 'UTF8', strtoupper($profile['lang']))
                 . '\'' . $db->getSqlDelimiter();
         }
-        // @codeCoverageIgnoreEnd
 
         // Truncate part ?
         if ($withTruncate) {

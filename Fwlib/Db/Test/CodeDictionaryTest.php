@@ -1,8 +1,8 @@
 <?php
 namespace Fwlib\Base\Test;
 
+use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Db\CodeDictionary;
-use Fwlib\Test\AbstractDbRelateTest;
 
 /**
  * Test for Fwlib\Db\CodeDictionary
@@ -13,24 +13,16 @@ use Fwlib\Test\AbstractDbRelateTest;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2011-07-15
  */
-class CodeDictionaryTest extends AbstractDbRelateTest
+class CodeDictionaryTest extends PHPUnitTestCase
 {
-    private $dbMock = null;
+    private $db = null;
     private $dict = null;
-
-    /**
-     * Table name for generate SQL, need create it for quote name/value
-     *
-     * @var string
-     */
-    private $table = 'test_code_dictionary';
-
-    protected static $dbUsing = 'default';
 
     /**
      * Db mock return value
      */
     public static $isConnected;
+    public static $isDbMysql;
 
 
     /**
@@ -40,7 +32,62 @@ class CodeDictionaryTest extends AbstractDbRelateTest
     {
         $this->dict = $this->buildMock();
 
-        $this->dbMock = $this->buildDbMock();
+        $this->db = $this->buildDbMock();
+    }
+
+
+    protected function buildDbMock()
+    {
+        $db = $this->getMockBuilder(
+            'Fwlib\Bridge\Adodb'
+        )
+        ->setMethods(
+            array(
+                'getProfile', 'getSqlDelimiter', 'getSqlTruncate',
+                'getSqlTransBegin', 'getSqlTransCommit',
+                'isConnected', 'isDbMysql', 'quoteValue'
+            )
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
+
+        $db->expects($this->any())
+            ->method('getProfile')
+            ->will($this->returnValue(array('lang' => '{profileLang}')));
+
+        $db->expects($this->any())
+            ->method('getSqlDelimiter')
+            ->will($this->returnValue("{sqlDelimiter}\n"));
+
+        $db->expects($this->any())
+            ->method('getSqlTransBegin')
+            ->will($this->returnValue("{sqlTransBegin}\n"));
+
+        $db->expects($this->any())
+            ->method('getSqlTransCommit')
+            ->will($this->returnValue("{sqlTransCommit}\n"));
+
+        $db->expects($this->any())
+            ->method('getSqlTruncate')
+            ->will($this->returnValue('{sqlTruncate}'));
+
+        $db->expects($this->any())
+            ->method('isConnected')
+            ->will($this->returnCallback(function () {
+                return CodeDictionaryTest::$isConnected;
+            }));
+
+        $db->expects($this->any())
+            ->method('isDbMysql')
+            ->will($this->returnCallback(function () {
+                return CodeDictionaryTest::$isDbMysql;
+            }));
+
+        $db->expects($this->any())
+            ->method('quoteValue')
+            ->will($this->returnValue('{quoteValue}'));
+
+        return $db;
     }
 
 
@@ -57,27 +104,6 @@ class CodeDictionaryTest extends AbstractDbRelateTest
         );
 
         return $dict;
-    }
-
-
-    protected function buildDbMock()
-    {
-        $db = $this->getMockBuilder(
-            'Fwlib\Bridge\Adodb'
-        )
-        ->setMethods(
-            array('isConnected')
-        )
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        $db->expects($this->any())
-            ->method('isConnected')
-            ->will($this->returnCallback(function () {
-                return CodeDictionaryTest::$isConnected;
-            }));
-
-        return $db;
     }
 
 
@@ -129,7 +155,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
         $dict = $this->dict;
         self::$isConnected = false;
 
-        $dict->getSql($this->dbMock);
+        $dict->getSql($this->db);
     }
 
 
@@ -139,7 +165,7 @@ class CodeDictionaryTest extends AbstractDbRelateTest
 
         $dict->setTable('');
 
-        $this->assertEmpty($dict->getSql(self::$db));
+        $this->assertEmpty($dict->getSql($this->db));
     }
 
 
@@ -147,22 +173,25 @@ class CodeDictionaryTest extends AbstractDbRelateTest
     {
         $dict = $this->dict;
 
-        $dict->setTable($this->table);
-        if (!self::$db->isTableExist($this->table)) {
-            self::$db->execute(
-                "CREATE TABLE $this->table (
-                    code        CHAR(25)        NOT NULL,
-                    title       CHAR(255)       NOT NULL,
-                    PRIMARY KEY (code)
-                )"
-            );
-        }
-        $sql = $dict->getSql(self::$db);
+        self::$isConnected = true;
+        self::$isDbMysql = true;
 
+        $sqlExpected = 'SET NAMES \'{PROFILELANG}\'{sqlDelimiter}
+{sqlTransBegin}
+TRUNCATE TABLE code_dictionary{sqlDelimiter}
+{sqlTransCommit}
+{sqlTransBegin}
+INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sqlDelimiter}
+INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sqlDelimiter}
+INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sqlDelimiter}
+{sqlTransCommit}
+';
+
+        $sql = $dict->getSql($this->db);
+
+        $this->assertEquals($sqlExpected, $sql);
         $this->assertEquals(3, preg_match_all('/INSERT INTO/', $sql, $match));
         $this->assertEquals(1, preg_match_all('/TRUNCATE/', $sql, $match));
-
-        self::$db->execute("DROP TABLE $this->table");
     }
 
 
