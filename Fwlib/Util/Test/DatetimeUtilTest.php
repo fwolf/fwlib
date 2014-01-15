@@ -88,6 +88,7 @@ class DatetimeUtilTest extends PHPunitTestCase
         );
 
         $this->assertEquals($this->datetimeUtil->convertStringToSecond(''), 0);
+        $this->assertEquals($this->datetimeUtil->convertStringToSecond('foobar'), 0);
         $this->assertEquals($this->datetimeUtil->convertStringToSecond(100), 100);
         $this->assertEquals($this->datetimeUtil->convertStringToSecond('100'), 100);
 

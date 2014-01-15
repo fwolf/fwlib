@@ -14,6 +14,50 @@ namespace Fwlib\Util;
 class DatetimeUtil
 {
     /**
+     * Symbol of Time unit
+     *
+     * @var array
+     */
+    protected $timeUnitSymbol = array(
+        'sec'       => 's',
+        'second'    => 's',
+        'seconds'   => 's',
+        'min'       => 'i',
+        'minute'    => 'i',
+        'minutes'   => 'i',
+        'hour'      => 'h',
+        'hours'     => 'h',
+        'day'       => 'd',
+        'days'      => 'd',
+        'week'      => 'w',
+        'weeks'     => 'w',
+        'month'     => 'm',
+        'months'    => 'm',
+        'year'      => 'y',
+        'years'     => 'y',
+        'century'   => 'c',
+        'centuries' => 'c',
+    );
+
+
+    /**
+     * How many seconds a time unit equals
+     *
+     * @var array
+     */
+    protected $timeUnitWeight = array(
+        's' => 1,
+        'i' => 60,
+        'h' => 3600,
+        'd' => 86400,
+        'w' => 604800,
+        'm' => 2592000,
+        'y' => 31536000,
+        'c' => 3153600000,
+    );
+
+
+    /**
      * Convert second back to string description.
      *
      * No week and month in result, Because 12m != 1y, it can't convert month
@@ -96,58 +140,29 @@ class DatetimeUtil
             return $string;
         }
 
-        // Parse c, y, m, w, d, h, i, s
+        // Replace time unit word with symbol(single letter)
         $string = strtolower($string);
-        $string = strtr(
-            $string,
-            array(
-                'sec'       => 's',
-                'second'    => 's',
-                'seconds'   => 's',
-                'min'       => 'i',
-                'minute'    => 'i',
-                'minutes'   => 'i',
-                'hour'      => 'h',
-                'hours'     => 'h',
-                'day'       => 'd',
-                'days'      => 'd',
-                'week'      => 'w',
-                'weeks'     => 'w',
-                'month'     => 'm',
-                'months'    => 'm',
-                'year'      => 'y',
-                'years'     => 'y',
-                'century'   => 'c',
-                'centuries' => 'c',
-            )
-        );
-        $string = preg_replace(
-            array(
-                '/([+-]?\d+)s/',
-                '/([+-]?\d+)i/',
-                '/([+-]?\d+)h/',
-                '/([+-]?\d+)d/',
-                '/([+-]?\d+)w/',
-                '/([+-]?\d+)m/',
-                '/([+-]?\d+)y/',
-                '/([+-]?\d+)c/',
-            ),
-            array(
-                '+$1 ',
-                '+$1 * 60 ',
-                '+$1 * 3600 ',
-                '+$1 * 86400 ',
-                '+$1 * 604800 ',
-                '+$1 * 2592000 ',
-                '+$1 * 31536000 ',
-                '+$1 * 3153600000 ',),
-            $string
-        );
-        // Fix +-
-        $string = preg_replace('/\+\s*\-/', '-', $string);
-        $string = preg_replace('/\-\s*\+/', '-', $string);
-        $string = preg_replace('/\+\s*\+/', '+', $string);
-        eval('$second = ' . $string . ';');
+        $string = strtr($string, $this->timeUnitSymbol);
+
+        $i = preg_match_all('/([+-]?\s*)(\d+)([cymwdhis])/', $string, $match);
+        if (0 < $i) {
+            $second = 0;
+            foreach ($match[0] as $key => $value) {
+                if ('-' == trim($match[1][$key])) {
+                    $second -= $match[2][$key] *
+                        $this->timeUnitWeight[$match[3][$key]];
+
+                } else {
+                    $second += $match[2][$key] *
+                        $this->timeUnitWeight[$match[3][$key]];
+                }
+            }
+
+            return $second;
+
+        } else {
+            return 0;
+        }
 
         return $second;
     }
