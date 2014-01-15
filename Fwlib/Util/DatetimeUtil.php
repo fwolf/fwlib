@@ -6,7 +6,7 @@ namespace Fwlib\Util;
  * Datetime util
  *
  * @package     Fwlib\Util
- * @copyright   Copyright 2009-2013 Fwolf
+ * @copyright   Copyright 2009-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2009-02-24
@@ -14,83 +14,92 @@ namespace Fwlib\Util;
 class DatetimeUtil
 {
     /**
-     * Convert sec back to str describe.
+     * Convert second back to string description.
      *
-     * No week in result.
+     * No week and month in result, Because 12m != 1y, it can't convert month
+     * and year by solid ratio, so do week.
      *
-     * @param   int     $sec
-     * @param   boolean $simple         If true, use ymdhis instead of word
+     * One year are 365 days, no consider of 366 days, because it didn't know
+     * which year it is.
+     *
+     * @param   int     $second
+     * @param   boolean $useSimpleUnit  Use y instead of full word year.
      * @return  string
      */
-    public function convertSecToStr($sec, $simple = true)
+    public function convertSecondToString($second, $useSimpleUnit = true)
     {
-        if (empty($sec) || !is_numeric($sec)) {
+        if (empty($second) || !is_numeric($second)) {
             return '';
         }
 
-        $arDict = array(
+        $unitDict = array(
             array('c', -1,  'century',  'centuries'),
             array('y', 100, 'year',     'years'),
-            // 12m != 1y, can't count month in.
-            //array('m', 12,  'month',    'months'),
             array('d', 365, 'day',      'days'),
             array('h', 24,  'hour',     'hours'),
             array('i', 60,  'minute',   'minutes'),
             array('s', 60,  'second',   'seconds'),
         );
-        $i = count($arDict);
-        // Loop from end of $arDict
-        $s = '';
-        while (0 < $i && 0 < $sec) {
-            // 1. for loop, 2. got current array index
+
+        // Loop from smallest unit
+        $i = count($unitDict);
+        $result = '';
+        while (0 < $i && 0 < $second) {
             $i --;
+            // $i is index of current unit now
 
             // Reach top level, end loop
-            if (-1 == $arDict[$i][1]) {
-                $s = $sec . $arDict[$i][(($simple) ? 0
-                    : ((1 == $sec) ? 2 : 3))]
-                    . ' ' . $s;
+            if (-1 == $unitDict[$i][1]) {
+                $unitIndex = ($useSimpleUnit) ? 0
+                    : ((1 == $second) ? 2 : 3);
+
+                $result = $second . $unitDict[$i][$unitIndex] . ' ' . $result;
                 break;
             }
 
-            $j = $sec % $arDict[$i][1];
+            $j = $second % $unitDict[$i][1];
             if (0 != $j) {
-                $s = $j . $arDict[$i][(($simple) ? 0
-                    : ((1 == $sec) ? 2 : 3))]
-                    . ' ' . $s;
+                $unitIndex = ($useSimpleUnit) ? 0
+                    : ((1 == $second) ? 2 : 3);
+
+                $result = $j . $unitDict[$i][$unitIndex] . ' ' . $result;
             }
-            $sec = floor($sec / $arDict[$i][1]);
+
+            $second = floor($second / $unitDict[$i][1]);
         }
 
-        return rtrim($s);
+        return rtrim($result);
     }
 
 
     /**
-     * Convert str to seconds it means
+     * Convert string to seconds it means
      *
-     * Like 1m, 20d or combined
+     * Month and week are allowed here, with solid convertion ratio:
      *
-     * Solid: 1m = 30d, 1y = 365d
+     * 1month = 30days
+     * 1week = 7days
      *
-     * @param   string  $str
+     * One year equals 365days, same with covertSecondToString().
+     *
+     * @param   string  $string
      * @return  integer
      */
-    public function convertStrToSec($str)
+    public function convertStringToSecond($string)
     {
-        if (empty($str)) {
+        if (empty($string)) {
             return 0;
         }
 
         // All number, return directly
-        if (is_numeric($str)) {
-            return $str;
+        if (is_numeric($string)) {
+            return $string;
         }
 
         // Parse c, y, m, w, d, h, i, s
-        $str = strtolower($str);
-        $str = strtr(
-            $str,
+        $string = strtolower($string);
+        $string = strtr(
+            $string,
             array(
                 'sec'       => 's',
                 'second'    => 's',
@@ -112,7 +121,7 @@ class DatetimeUtil
                 'centuries' => 'c',
             )
         );
-        $str = preg_replace(
+        $string = preg_replace(
             array(
                 '/([+-]?\d+)s/',
                 '/([+-]?\d+)i/',
@@ -132,14 +141,15 @@ class DatetimeUtil
                 '+$1 * 2592000 ',
                 '+$1 * 31536000 ',
                 '+$1 * 3153600000 ',),
-            $str
+            $string
         );
         // Fix +-
-        $str = preg_replace('/\+\s*\-/', '-', $str);
-        $str = preg_replace('/\-\s*\+/', '-', $str);
-        $str = preg_replace('/\+\s*\+/', '+', $str);
-        eval('$sec = ' . $str . ';');
-        return $sec;
+        $string = preg_replace('/\+\s*\-/', '-', $string);
+        $string = preg_replace('/\-\s*\+/', '-', $string);
+        $string = preg_replace('/\+\s*\+/', '+', $string);
+        eval('$second = ' . $string . ';');
+
+        return $second;
     }
 
 
