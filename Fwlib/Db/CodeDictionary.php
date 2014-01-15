@@ -8,6 +8,7 @@ use Fwlib\Bridge\Adodb;
  *
  * Eg: code-name table in db.
  *
+ *
  * The primary key can only contain ONE column, its used as key for $dict.
  * Single primary key should fit most need, or your data are possibly not code
  * dictionary.
@@ -17,6 +18,17 @@ use Fwlib\Bridge\Adodb;
  * primark key column value. In this scenario it is hard for get() and set()
  * method to recoginize array param is key of many rows or primary key array,
  * so more complicated work to do, maybe not suit for code dictionary.
+ *
+ *
+ * There are 2 way to initialize a code dictionary:
+ *
+ * - Use set method for property and dict data
+ * - Inherit to a child class and set in property define
+ *
+ * These 2 way can mixed in use. If dict data is defined and not index by
+ * primary key, a method will be called in constructor to fix it. This method
+ * also change column value array to associate array index by column name, so
+ * the dict array define are as simple as param of set().
  *
  * @package     Fwlib\Db
  * @copyright   Copyright 2011-2014 Fwolf
@@ -50,9 +62,6 @@ class CodeDictionary
     /**
      * Dictionary data array
      *
-     * For use primary key as array index, and avoid write it again in value
-     * array, it should use set() in constructor to initialize dict data.
-     *
      * @var array
      */
     protected $dict = array();
@@ -74,6 +83,33 @@ class CodeDictionary
      * @var string
      */
     protected $table = 'code_dictionary';
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // $dict is never used now, need not do reset() on it
+        if (!empty($this->dict) && 0 === key($this->dict)) {
+            $this->fixDictIndex();
+        }
+    }
+
+
+    /**
+     * Fix dict index
+     *
+     * Use primary key value as index of first dimention, and column name as
+     * index of second dimention(column value array).
+     */
+    protected function fixDictIndex()
+    {
+        $dict = $this->dict;
+        $this->dict = array();
+
+        $this->set($dict);
+    }
 
 
     /**

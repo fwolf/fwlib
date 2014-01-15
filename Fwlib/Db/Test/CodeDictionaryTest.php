@@ -107,6 +107,39 @@ class CodeDictionaryTest extends PHPUnitTestCase
     }
 
 
+    public function testFixDictIndex()
+    {
+        $arrayWithoutIndex = array(
+                array(123,  'a'),
+                array('bac', 2),
+                array(321,  'c'),
+        );
+        $arrayWithIndex = array(
+            123 => array(
+                'code'  => 123,
+                'title' => 'a',
+            ),
+            'bac' => array(
+                'code'  => 'bac',
+                'title' => 2,
+            ),
+            321 => array(
+                'code'  => 321,
+                'title' => 'c',
+            ),
+        );
+
+        $dict = $this->buildMock();
+
+        // Simulate $dict define by assign value to it
+        $this->reflectionSet($dict, 'dict', $arrayWithoutIndex);
+        // Then call constructor to simulate new operate
+        $this->reflectionCall($dict, '__construct');
+
+        $this->assertEqualArray($arrayWithIndex, $dict->getAll());
+    }
+
+
     public function testGet()
     {
         $dict = $this->dict;
