@@ -113,7 +113,12 @@ class CodeDictionary
 
 
     /**
-     * Get value for given keys
+     * Get value for given key
+     *
+     * If $column is array, will use directly without parseColumn().
+     *
+     * Child class can simplify this method to improve speed by avoid parse
+     * column, get column data by index.
      *
      * @param   int|string|array    $key
      * @param   string|array        $column
@@ -121,30 +126,21 @@ class CodeDictionary
      */
     public function get($key, $column = '')
     {
-        if (empty($key)) {
+        if (!isset($this->dict[$key])) {
             return null;
         }
 
-        $resultColumn = $this->parseColumn($column);
+        $resultColumn = is_array($column) ? $column
+            : $this->parseColumn($column);
 
-        $result = array();
-        foreach ((array)$key as $index) {
-            if (isset($this->dict[$index])) {
-                $result[$index] = $this->getColumnData($index, $resultColumn);
+        $result = array_intersect_key(
+            $this->dict[$key],
+            array_fill_keys($resultColumn, null)
+        );
 
-            } else {
-                $result[$index] = null;
-            }
-        }
-
-        // If only have 1 row
+        // If only have 1 column
         if (1 == count($result)) {
             $result = array_shift($result);
-
-            // If only have 1 column
-            if (1 == count($result)) {
-                $result = array_shift($result);
-            }
         }
 
         return $result;
@@ -163,18 +159,27 @@ class CodeDictionary
 
 
     /**
-     * Get data of columns by given dict index
+     * Get value for given keys
      *
-     * @param   int|string  $index
-     * @param   array       $column
+     * @param   array               $key
+     * @param   string|array        $column
      * @return  array
      */
-    protected function getColumnData($index, array $column)
+    public function getMultiple(array $key, $column = '')
     {
-        return array_intersect_key(
-            $this->dict[$index],
-            array_fill_keys($column, null)
-        );
+        if (empty($key)) {
+            return null;
+        }
+
+        $resultColumn = is_array($column) ? $column
+            : $this->parseColumn($column);
+
+        $result = array();
+        foreach ($key as $singleKey) {
+            $result[$singleKey] = $this->get($singleKey, $resultColumn);
+        }
+
+        return $result;
     }
 
 
@@ -300,7 +305,7 @@ class CodeDictionary
      * use setDelimiter().
      *
      * @param   string  $condition
-     * @param   string  $column
+     * @param   string|array    $column
      * @return  array
      */
     public function search($condition = '', $column = '*')
@@ -315,7 +320,8 @@ class CodeDictionary
                 $this->delimiterRight;
         }
 
-        $resultColumn = $this->parseColumn($column);
+        $resultColumn = is_array($column) ? $column
+            : $this->parseColumn($column);
 
         $result = array();
         $condition = "return ($condition);";
@@ -325,7 +331,7 @@ class CodeDictionary
             eval($conditionResult);
 
             if (eval($conditionResult)) {
-                $result[$index] = $this->getColumnData($index, $resultColumn);
+                $result[$index] = $this->get($index, $resultColumn);
             }
         }
         unset($row);

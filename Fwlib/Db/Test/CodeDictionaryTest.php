@@ -145,12 +145,17 @@ class CodeDictionaryTest extends PHPUnitTestCase
         $dict = $this->dict;
 
         $this->assertEquals(null, $dict->get(null));
+        $this->assertEquals(null, $dict->getMultiple(array()));
         $this->assertEquals(null, $dict->get('notExistKey'));
+        $this->assertEquals(
+            array('notExistKey' => null),
+            $dict->getMultiple(array('notExistKey'))
+        );
         $this->assertEquals('a', $dict->get(123));
         $this->assertEquals(2, $dict->get('bac'));
         $this->assertEquals(
-            array(123 => array('title' => 'a'), 321 => array('title' => 'c')),
-            $dict->Get(array(123, 321))
+            array(123 => 'a', 321 => 'c'),
+            $dict->getMultiple(array(123, 321))
         );
 
         $this->assertEquals(
@@ -171,9 +176,9 @@ class CodeDictionaryTest extends PHPUnitTestCase
             $dict->search('"c" == "{title}" && "2" == substr("{code}", 1, 1)')
         );
 
-        // search with assign cols
+        // Search with assign cols
         $this->assertEquals(
-            array(321 => array('title' => 'c')),
+            array(321 => 'c'),
             $dict->search('"c" == "{title}"', 'title')
         );
     }
@@ -246,14 +251,14 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
         $dict->setDelimiter('[[', ']]');
 
         $this->assertEquals(
-            array(321 => array('title' => 'c')),
+            array(321 => 'c'),
             $dict->search('"c" == "[[title]]"', 'title')
         );
 
         $dict->setDelimiter(':');
 
         $this->assertEquals(
-            array(321 => array('title' => 'c')),
+            array(321 => 'c'),
             $dict->search('"c" == ":title:"', 'title')
         );
     }
