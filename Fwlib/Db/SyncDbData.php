@@ -506,7 +506,7 @@ class SyncDbData extends AbstractUtilAware
                     0,
                     $this->batchSize - $this->batchDone
                 );
-                $this->dbDest->convertEncodingRs($pkToDel);
+                $this->dbDest->convertEncodingResult($pkToDel);
 
                 // Read PK from dest db
                 $pk = $this->dbDest->getMetaPrimaryKey($tableDest);
@@ -672,7 +672,7 @@ class SyncDbData extends AbstractUtilAware
 
                 $dataSrce[] = $ar;
             }
-            $dataSrce = $this->dbSrce->convertEncodingRs($dataSrce);
+            $dataSrce = $this->dbSrce->convertEncodingResult($dataSrce);
 
 
             $rowsSynced = 0;

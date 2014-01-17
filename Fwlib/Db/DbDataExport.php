@@ -285,7 +285,7 @@ class DbDataExport extends AbstractDbClient
             }
 
             // Save this step to file
-            $sql = $this->db->convertEncodingRs($sql);
+            $sql = $this->db->convertEncodingResult($sql);
             // Save to seperated file, first check about how many files will
             // be used. File number start from 1.
             if ($rowCount > $this->maxRowPerFile) {

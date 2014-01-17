@@ -82,7 +82,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
-    public function testConvertEncodingRs()
+    public function testConvertEncodingResult()
     {
         // Backup original charset
         $originalCharsetPhp = self::$dbMysql->charsetPhp;
@@ -95,7 +95,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $y = array(null, mb_convert_encoding('你好', 'UTF-8', 'GB2312'));
         $this->assertEquals(
             $y,
-            self::$dbMysql->convertEncodingRs($x)
+            self::$dbMysql->convertEncodingResult($x)
         );
 
 

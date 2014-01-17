@@ -26,7 +26,7 @@ use Fwlib\Util\StringUtil;
  * encoding convert before query, see __call() for affected method.
  *
  * Encoding convert for query result will NOT automatic done, although we
- * provide a method convertEncodingRs() to do this manually.
+ * provide a method convertEncodingResult() to do this manually.
  *
  * @package     Fwlib\Bridge
  * @copyright   Copyright 2008-2013 Fwolf
@@ -353,29 +353,30 @@ class Adodb extends AbstractUtilAware
      *
      * Mostly used on query result.
      *
-     * @param   mixed   &$rs    (Array of)string, not RecordSet object
-     * @return mixed
+     * @param   array|string    &$result    Array or string, not RecordSet object
+     * @return  array|string
      */
-    public function convertEncodingRs(&$rs)
+    public function convertEncodingResult(&$result)
     {
-        if (empty($rs) || $this->charsetPhp == $this->profile['lang']) {
-            return $rs;
+        if (empty($result) || $this->charsetPhp == $this->profile['lang']) {
+            return $result;
         }
 
-        if (is_array($rs)) {
-            foreach ($rs as &$val) {
-                $this->convertEncodingRs($val);
+        if (is_array($result)) {
+            foreach ($result as &$value) {
+                $this->convertEncodingResult($value);
             }
-            unset($val);
-        } elseif (is_string($rs)) {
-            $rs = mb_convert_encoding(
-                $rs,
+            unset($value);
+
+        } elseif (is_string($result)) {
+            $result = mb_convert_encoding(
+                $result,
                 $this->charsetPhp,
                 $this->profile['lang']
             );
         }
 
-        return $rs;
+        return $result;
     }
 
 
