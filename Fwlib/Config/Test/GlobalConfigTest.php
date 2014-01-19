@@ -12,48 +12,39 @@ use Fwlib\Config\GlobalConfig;
  */
 class GlobalConfigTest extends PHPunitTestCase
 {
-    /**
-     * Backup config in GlobalConfig and recover after test
-     *
-     * For other testcase use GlobalConfig to work properly.
-     *
-     * @var array
-     */
-    protected static $configBackup = null;
-
+    private $globalConfig;
     public static $output = '';
 
 
-    public static function setUpBeforeClass()
+    public function __construct()
     {
-        self::$configBackup = GlobalConfig::getInstance()->config;
+        $this->globalConfig = $this->buildMock();
     }
 
 
-    public static function tearDownAfterClass()
+    protected function buildMock()
     {
-        GlobalConfig::getInstance()->config = self::$configBackup;
+        // Assign array() to param methods here will cause mock to be a stub,
+        // reason unknown, assign any method will fix it, so use constructor
+        // in parent class.
+        $globalConfig = $this->getMock(
+            'Fwlib\Config\GlobalConfig',
+            array('__construct')
+        );
+
+        return $globalConfig;
     }
 
 
     public function testLimitServerId()
     {
-        $globalConfig = GlobalConfig::getInstance();
-
-        $globalConfig->load(array());
-        $this->assertEquals(false, $globalConfig->limitServerId(10, false));
-    }
-
-
-    public function testLimitServerId2()
-    {
-        $config = GlobalConfig::getInstance();
+        $globalConfig = $this->globalConfig;
 
         // Using phpunit/test_helpers
         // @link https://github.com/php-test-helpers/php-test-helpers
         // @link http://thedeveloperworldisyours.com/php/phpunit-tips/
         if (!extension_loaded('test_helpers')) {
-            return;
+            $this->markTestSkipped('Need extension test_helpers');
         }
         set_exit_overload(
             function ($output) {
@@ -63,27 +54,27 @@ class GlobalConfigTest extends PHPunitTestCase
         );
 
 
-        $serverIdBackup = $config->get('server.id');
-        unset($config->config['server']['id']);
+        $serverIdBackup = $globalConfig->get('server.id');
+        unset($globalConfig->config['server']['id']);
 
 
         // Test exit with msg
-        $config->limitServerId(1);
+        $globalConfig->limitServerId(1);
         $this->assertEquals(
-            self::$output,
-            'Server id not set.'
+            'Server id not set.',
+            self::$output
         );
 
-        $config->set('server.id', 2);
-        $this->assertEquals(true, $config->limitServerId(2));
+        $globalConfig->set('server.id', 2);
+        $this->assertEquals(true, $globalConfig->limitServerId(2));
 
-        $config->limitServerId(1);
+        $globalConfig->limitServerId(1);
         $this->assertEquals(
             self::$output,
             'This program can only run on server 1.'
         );
 
-        $config->limitServerId(array(1, 3));
+        $globalConfig->limitServerId(array(1, 3));
         $this->assertEquals(
             self::$output,
             'This program can only run on these servers: 1, 3.'
@@ -94,19 +85,20 @@ class GlobalConfigTest extends PHPunitTestCase
 
 
         // Fail, but not exit
-        $this->assertEquals(
-            false,
-            $config->limitServerId(array(1, 3), false)
+        $this->assertFalse(
+            $globalConfig->limitServerId(array(1, 3), false)
         );
 
+        $this->assertFalse($globalConfig->limitServerId(10, false));
 
-        $config->set('server.id', $serverIdBackup);
+
+        $globalConfig->set('server.id', $serverIdBackup);
     }
 
 
     public function testLoad()
     {
-        $globalConfig = GlobalConfig::getInstance();
+        $globalConfig = $this->globalConfig;
 
         // Empty config value
         $globalConfig->load(null);

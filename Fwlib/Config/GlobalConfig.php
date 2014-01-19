@@ -75,27 +75,27 @@ class GlobalConfig extends Config
      */
     public function limitServerId($id, $exit = true, $key = 'server.id')
     {
-        $msg = '';
+        $message = '';
 
         $serverId = $this->get($key);
         if (empty($serverId)) {
-            $msg = 'Server id not set.';
+            $message = 'Server id not set.';
 
         } elseif (is_array($id) && !(in_array($serverId, $id))) {
-            $msg = 'This program can only run on these servers: ' .
+            $message = 'This program can only run on these servers: ' .
                 implode(', ', $id) . '.';
 
         } elseif (!is_array($id) && ($serverId != $id)) {
-            $msg = 'This program can only run on server ' . $id . '.';
+            $message = 'This program can only run on server ' . $id . '.';
         }
 
 
-        if (empty($msg)) {
+        if (empty($message)) {
             return true;
 
         } else {
             // Check fail
-            return (true == $exit) ? exit($msg) : false;
+            return (true == $exit) ? exit($message) : false;
         }
     }
 }
