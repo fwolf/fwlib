@@ -6,78 +6,13 @@ use Fwlib\Config\Config;
 use Fwlib\Util\UtilContainer;
 
 /**
- * Test for Fwlib\Config\Config
- *
- * @package     Fwlib\Config\Test
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-20
  */
 class ConfigTest extends PHPunitTestCase
 {
-    public static $output = '';
-
-
-    public function testLimitServerId()
-    {
-        $config = new Config;
-
-        // Using phpunit/test_helpers
-        // @link https://github.com/php-test-helpers/php-test-helpers
-        // @link http://thedeveloperworldisyours.com/php/phpunit-tips/
-        if (!extension_loaded('test_helpers')) {
-            return;
-        }
-        set_exit_overload(
-            function ($output) {
-                ConfigTest::$output = $output;
-                return false;
-            }
-        );
-
-
-        $serverIdBackup = $config->get('server.id');
-        unset($config->config['server']['id']);
-
-
-        // Test exit with msg
-        $config->limitServerId(1);
-        $this->assertEquals(
-            self::$output,
-            'Server id not set.'
-        );
-
-        $config->set('server.id', 2);
-        $this->assertEquals(true, $config->limitServerId(2));
-
-        $config->limitServerId(1);
-        $this->assertEquals(
-            self::$output,
-            'This program can only run on server 1.'
-        );
-
-        $config->limitServerId(array(1, 3));
-        $this->assertEquals(
-            self::$output,
-            'This program can only run on these servers: 1, 3.'
-        );
-
-
-        unset_exit_overload();
-
-
-        // Fail, but not exit
-        $this->assertEquals(
-            false,
-            $config->limitServerId(array(1, 3), false)
-        );
-
-
-        $config->set('server.id', $serverIdBackup);
-    }
-
-
     public function testSetGet()
     {
         $config = new Config;

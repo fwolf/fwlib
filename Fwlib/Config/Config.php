@@ -9,8 +9,7 @@ use Fwlib\Util\UtilContainer;
  *
  * Use as other class's property.
  *
- * @package     Fwlib\Config
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib.Config@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-20
@@ -86,39 +85,6 @@ class Config implements \ArrayAccess, UtilAwareInterface
         }
 
         return $this->utilContainer->get($name);
-    }
-
-
-    /**
-     * Limit program can only run on prefered server
-     *
-     * Server is identify by config key.
-     *
-     * @param   mixed   $id     Server id allowed, string|int or array of them
-     * @param   boolean $exit   If true, exit() when check fail
-     * @param   string  $key    Config key of server id
-     * @return  boolean
-     */
-    public function limitServerId($id, $exit = true, $key = 'server.id')
-    {
-        $msg = '';
-
-        $serverId = $this->get($key);
-        if (empty($serverId)) {
-            $msg = 'Server id not set.';
-        } elseif (is_array($id) && !(in_array($serverId, $id))) {
-            $msg = 'This program can only run on these servers: '
-                . implode(', ', $id) . '.';
-        } elseif (!is_array($id) && ($serverId != $id)) {
-            $msg = 'This program can only run on server ' . $id . '.';
-        }
-
-        if (empty($msg)) {
-            return true;
-        } else {
-            // Check fail
-            return (true == $exit) ? exit($msg) : false;
-        }
     }
 
 
