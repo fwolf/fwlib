@@ -214,7 +214,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         $this->assertEquals(
             false,
-            self::$dbMysql->isTsUnique()
+            self::$dbMysql->isTimestampUnique()
         );
     }
 

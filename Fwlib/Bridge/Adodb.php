@@ -1164,7 +1164,7 @@ class Adodb extends AbstractUtilAware
      *
      * @return  boolean
      */
-    public function isTsUnique()
+    public function isTimestampUnique()
     {
         // Default for: sybase
         $b = true;

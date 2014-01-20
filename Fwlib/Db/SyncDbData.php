@@ -636,7 +636,7 @@ class SyncDbData extends AbstractUtilAware
             // N > $this->batchSize, it will be endless loop, so use '>' when
             // possible by db type.
             // @codeCoverageIgnoreStart
-            if ($this->dbSrce->isTsUnique()) {
+            if ($this->dbSrce->isTimestampUnique()) {
                 $sqlConfig['WHERE'] = "$timestampColumn > $timestamp";
             } else {
                 $sqlConfig['WHERE'] = "$timestampColumn >= $timestamp";
