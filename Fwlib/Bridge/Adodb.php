@@ -791,20 +791,18 @@ class Adodb extends AbstractUtilAware
     public function getMetaPrimaryKey($table, $forcenew = false)
     {
         if (!isset($this->metaPrimaryKey[$table]) || (true == $forcenew)) {
-            // Find using ADOdb first
-            $ar = $this->conn->MetaPrimaryKeys($table);
 
             // @codeCoverageIgnoreStart
-            if (false == $ar || empty($ar)) {
+            if ($this->isDbSybase()) {
                 /**
-                 * ADOdb not support, find PK manually
+                 * MetaPrimaryKey() in ADOdb has error(till v5.18), find PK
+                 * manually.
                  *
-                 * For Sybase:
                  * @link http://topic.csdn.net/t/20030117/17/1369396.html
                  *
-                 * SELECT name, keycnt
-                 *      , index_col(tableName, indid, 1)    -- 1st PK col
-                 *      , index_col(tableName, indid, 2)    -- 2nd PK col if has
+                 * SELECT name, keycnt,
+                 *      index_col(tableName, indid, 1),    -- 1st PK col
+                 *      index_col(tableName, indid, 2)     -- 2nd PK col if has
                  * FROM sysindexes
                  * WHERE status & 2048 = 2048
                  *      AND id = object_id(tableName)
@@ -814,38 +812,41 @@ class Adodb extends AbstractUtilAware
                  *
                  * Test pass for PK include 2 columns.
                  */
-                if ($this->isDbSybase()) {
-                    $rs = $this->execute(
-                        array(
-                            'SELECT' => array(
-                                'name', 'keycnt',
-                                'k1' => "index_col('$table', indid, 1)",
-                                'k2' => "index_col('$table', indid, 2)",
-                                'k3' => "index_col('$table', indid, 3)",
-                            ),
-                            'FROM'  => 'sysindexes',
-                            'WHERE' => array(
-                                'status & 2048 = 2048 ',
-                                "id = object_id('$table')",
-                            )
+                $rs = $this->execute(
+                    array(
+                        'SELECT' => array(
+                            'name', 'keycnt',
+                            'k1' => "index_col('$table', indid, 1)",
+                            'k2' => "index_col('$table', indid, 2)",
+                            'k3' => "index_col('$table', indid, 3)",
+                        ),
+                        'FROM'  => 'sysindexes',
+                        'WHERE' => array(
+                            'status & 2048 = 2048 ',
+                            "id = object_id('$table')",
                         )
-                    );
-                    if (true == $rs && 0 < $rs->RowCount()) {
-                        // Got
-                        $ar = array($rs->fields['k1']);
-                        if (!empty($rs->fields['k2'])) {
-                            $ar[] = $rs->fields['k2'];
-                        }
-                        if (!empty($rs->fields['k3'])) {
-                            $ar[] = $rs->fields['k3'];
-                        }
-                    } else {
-                        // Table have no primary key
-                        $ar = '';
+                    )
+                );
+                if (true == $rs && 0 < $rs->RowCount()) {
+                    // Got
+                    $ar = array($rs->fields['k1']);
+                    if (!empty($rs->fields['k2'])) {
+                        $ar[] = $rs->fields['k2'];
                     }
+                    if (!empty($rs->fields['k3'])) {
+                        $ar[] = $rs->fields['k3'];
+                    }
+                } else {
+                    // Table have no primary key
+                    $ar = '';
                 }
+
+            } else {
+                // Find using ADOdb first
+                $ar = $this->conn->MetaPrimaryKeys($table);
             }
             // @codeCoverageIgnoreEnd
+
 
             // Convert columns to native case
             if (!empty($ar)) {
