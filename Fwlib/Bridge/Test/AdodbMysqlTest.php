@@ -257,9 +257,9 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     /**
      * @expectedException PHPUnit_Framework_Error_Warning
      */
-    public function testGetByPk()
+    public function testGetByKey()
     {
-        // Normal getByPk() tested with write()
+        // Normal getByKey() tested with write()
 
         // Prepare data
         $uuid = $this->generateUuid();
@@ -272,18 +272,18 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
         // * col
-        $data = self::$dbMysql->getByPk(self::$tableUser, $uuid);
+        $data = self::$dbMysql->getByKey(self::$tableUser, $uuid);
         $this->assertEquals('Title', $data['title']);
         $this->assertEquals(42, $data['age']);
 
         // Not exists data
-        $data = self::$dbMysql->getByPk(self::$tableUser, $uuid . 'foo');
+        $data = self::$dbMysql->getByKey(self::$tableUser, $uuid . 'foo');
         $this->assertEquals(null, $data);
 
         // More PK value than column, throw exception
         $this->assertEquals(
             null,
-            self::$dbMysql->getByPk(self::$tableUser, array(1, 2), 'title')
+            self::$dbMysql->getByKey(self::$tableUser, array(1, 2), 'title')
         );
     }
 
@@ -402,7 +402,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->write(self::$tableUser, $ar);
         $this->assertEquals(
             'Title',
-            self::$dbMysql->getByPk(self::$tableUser, $uuid, 'title')
+            self::$dbMysql->getByKey(self::$tableUser, $uuid, 'title')
         );
 
         // Auto UPDATE
@@ -410,7 +410,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->write(self::$tableUser, $ar);
         $this->assertEquals(
             24,
-            self::$dbMysql->getByPk(self::$tableUser, $uuid, 'age')
+            self::$dbMysql->getByKey(self::$tableUser, $uuid, 'age')
         );
 
         // Write without PK, will fail

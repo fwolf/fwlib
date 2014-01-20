@@ -318,7 +318,7 @@ class DbDiffTest extends AbstractDbRelateTest
         $this->assertEquals(2, $dbDiff->getRowCount());
         $this->assertEquals(
             420,
-            self::$db->getByPk(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
         );
         $this->assertEquals(1, self::$db->getRowCount(self::$tableUser));
 
@@ -329,7 +329,7 @@ class DbDiffTest extends AbstractDbRelateTest
         $this->assertTrue($dbDiff->isRollbacked());
         $this->assertEquals(
             42,
-            self::$db->getByPk(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
         );
         $this->assertEquals(2, self::$db->getRowCount(self::$tableUser));
 
@@ -340,7 +340,7 @@ class DbDiffTest extends AbstractDbRelateTest
         $this->assertTrue($dbDiff->isCommitted());
         $this->assertEquals(
             420,
-            self::$db->getByPk(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
         );
         $this->assertEquals(1, self::$db->getRowCount(self::$tableUser));
     }

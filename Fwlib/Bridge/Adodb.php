@@ -588,99 +588,97 @@ class Adodb extends AbstractUtilAware
 
 
     /**
-     * Get data from single table using PK
+     * Get single row data from single table using key
      *
-     * $pkVal, $col, $pkCol support multi valuesplit by ',' or array,
-     * eg: 'val' || 'val1, val2' || array('val1', 'val2')
+     * Also, this method can be used to retrieve data from a table by primary
+     * or unique key, default and recommend for primary key, which can be auto
+     * retrieved from table meta.
      *
-     * $col can include value 'colName AS colAlias'.
+     * Whatever key is used, the result should only contain maxinum one row,
+     * or the result is wrong, commonly only include data of first match row.
      *
-     * '*' can be used for $col, means all cols in table, this way can't use
-     * inner cache, not recommend.
      *
-     * Notice: if $col is array, must indexed by number start from 0.
+     * $keyValue, $column, $keyColumn support multiple value split by ',' or
+     * array, eg: 'value' or 'value1, value2' or array('value1', 'value2')
      *
-     * Also, this function can be used to retrieve data from a table with
-     * other condition by assign $pkCol to non-PK column, but it SHOULD ONLY
-     * use on unique index or maximum 1 record exists.
+     * $column can use style like 'colName AS colAlias'.
      *
-     * @param   string  $table
-     * @param   mixed   $pkVal
-     * @param   mixed   $col            Cols need to retrieve
-     * @param   mixed   $pkCol          PK column name, null to auto get
-     * @return  mixed                   Single/array, null if error occur
+     * '*' can be used for $column, means all columns in table.
+     *
+     * Notice: if $column is array, must indexed by number start from 0.
+     *
+     * @param   string          $table
+     * @param   int|string      $keyValue
+     * @param   string|array    $column     Empty or '*' for all column
+     * @param   string|array    $keyColumn  Empty to use primary key
+     * @return  int|string|array    Single value or array of it, null if error occur
      */
-    public function getByPk($table, $pkVal, $col = null, $pkCol = null)
-    {
+    public function getByKey(
+        $table,
+        $keyValue,
+        $column = null,
+        $keyColumn = array()
+    ) {
         $stringUtil = $this->getUtil('StringUtil');
 
-        // Treat PK col
-        if (empty($pkCol)) {
-            $pkCol = $this->getMetaPrimaryKey($table);
+        // Treat key column
+        if (empty($keyColumn)) {
+            $keyColumn = $this->getMetaPrimaryKey($table);
         }
 
-        // Convert PK value and col name to array
-        if (!is_array($pkVal)) {
-            if (is_string($pkVal)) {
-                $pkVal = $stringUtil->toArray($pkVal, ',');
-            } else {
-                // @codeCoverageIgnoreStart
-                $pkVal = array($pkVal);
-                // @codeCoverageIgnoreEnd
-            }
-        }
-        if (!is_array($pkCol)) {
-            if (is_string($pkCol)) {
-                $pkCol = $stringUtil->toArray($pkCol, ',');
-            } else {
-                // @codeCoverageIgnoreStart
-                $pkCol = array($pkCol);
-                // @codeCoverageIgnoreEnd
-            }
+        // Convert key value and column name to array
+        if (is_string($keyValue)) {
+                $keyValue = $stringUtil->toArray($keyValue, ',');
+        } else {
+            $keyValue = (array)$keyValue;
         }
 
-        // $pkCol need to be array same count with $pkVal
-        if (count($pkVal) != count($pkCol)) {
+        if (is_string($keyColumn)) {
+            $keyColumn = $stringUtil->toArray($keyColumn, ',');
+        } else {
+            $keyColumn = (array)$keyColumn;
+        }
+
+        // $keyColumn need to be array same count with $keyValue
+        if (count($keyValue) != count($keyColumn)) {
             // @codeCoverageIgnoreStart
-            trigger_error('PK value and column not match.', E_USER_WARNING);
+            trigger_error('Key value and column not match.', E_USER_WARNING);
             return null;
             // @codeCoverageIgnoreEnd
         }
 
-        // Convert col to proper array
-        if (empty($col)) {
-            $col = '*';
-        }
-        if ('*' == $col) {
+
+        if (empty($column) || '*' == $column) {
             // Drop uppercased index
-            $col = array_values($this->getMetaColumnName($table));
-        }
-        if (!is_array($col)) {
-            if (is_string($col)) {
-                $col = $stringUtil->toArray($col, ',');
+            $column = array_values($this->getMetaColumnName($table));
+
+        } elseif (!is_array($column)) {
+            if (is_string($column)) {
+                $column = $stringUtil->toArray($column, ',');
             } else {
                 // Column is not array nor string? is int? should not happen
                 // @codeCoverageIgnoreStart
-                $col = array($col);
+                $column = array($column);
                 // @codeCoverageIgnoreEnd
             }
         }
 
-        // $pkVal, $col, $pkCol all converted to array
+        // $keyValue, $column, $keyColumn all converted to array
+
 
         // Retrieve from db
-        $sqlCfg = array(
-            'SELECT'    => $col,
+        $sqlConfig = array(
+            'SELECT'    => $column,
             'FROM'      => $table,
             'LIMIT'     => 1,
         );
-        while (!empty($pkVal)) {
-            $pkName = array_shift($pkCol);
-            $sqlCfg['WHERE'][] = $pkName . ' = '
-                . $this->quoteValue($table, $pkName, array_shift($pkVal));
-            unset($pkName);
+        while (!empty($keyValue)) {
+            $singleKey = array_shift($keyColumn);
+            $sqlConfig['WHERE'][] = $singleKey . ' = '
+                . $this->quoteValue($table, $singleKey, array_shift($keyValue));
+            unset($singleKey);
         }
-        $rs = $this->execute($sqlCfg);
+        $rs = $this->execute($sqlConfig);
         $ar = array();
         if (!empty($rs) && !$rs->EOF) {
             $ar = $rs->GetRowAssoc(false);

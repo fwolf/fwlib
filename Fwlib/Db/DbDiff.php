@@ -709,9 +709,9 @@ class DbDiff extends AbstractUtilAware
     protected function prepareRowOld(
         $table,
         $index,
-        array $pkValueArray,
+        array $keyValueArray,
         array $columnArray,
-        array $pkArray,
+        array $keyArray,
         array &$dataOld = null
     ) {
         // Convert to 2-dim array
@@ -724,11 +724,11 @@ class DbDiff extends AbstractUtilAware
         }
 
         // Need query from db
-        $rs = $this->db->getByPk(
+        $rs = $this->db->getByKey(
             $table,
-            $pkValueArray,
+            $keyValueArray,
             $columnArray,
-            $pkArray
+            $keyArray
         );
 
         // If row only have one column, convert back to array
