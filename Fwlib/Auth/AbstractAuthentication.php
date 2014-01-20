@@ -44,4 +44,13 @@ abstract class AbstractAuthentication implements AuthenticationInterface
      * {@inheritdoc}
      */
     abstract public function authenticate();
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIdentity()
+    {
+        return $this->identity;
+    }
 }

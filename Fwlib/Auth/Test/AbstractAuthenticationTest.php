@@ -12,6 +12,15 @@ use Fwlib\Bridge\PHPUnitTestCase;
  */
 class AbstractAuthenticationTest extends PHPunitTestCase
 {
+    private $authentication;
+
+
+    public function __construct()
+    {
+        $this->authentication = $this->buildMock(null);
+    }
+
+
     protected function buildMock($userSession)
     {
         $authentication = $this->getMockBuilder(
@@ -37,7 +46,7 @@ class AbstractAuthenticationTest extends PHPunitTestCase
 
     public function testConstructor()
     {
-        $authentication = $this->buildMock(null);
+        $authentication = $this->authentication;
 
         $this->assertNull(
             $this->reflectionGet($authentication, 'userSession')
@@ -50,5 +59,13 @@ class AbstractAuthenticationTest extends PHPunitTestCase
             'Fwlib\Auth\AbstractUserSession',
             $this->reflectionGet($authentication, 'userSession')
         );
+    }
+
+
+    public function testGetIdentity()
+    {
+        $authentication = $this->authentication;
+
+        $this->assertEmpty($authentication->getIdentity());
     }
 }

@@ -27,4 +27,12 @@ interface AuthenticationInterface
      * @return  boolean
      */
     public function authenticate();
+
+
+    /**
+     * Get authenticated identity
+     *
+     * @return  string
+     */
+    public function getIdentity();
 }
