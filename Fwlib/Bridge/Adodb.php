@@ -122,7 +122,7 @@ class Adodb extends AbstractUtilAware
      *
      * @var int
      */
-    public $queryCount = 0;
+    protected $queryCount = 0;
 
     /**
      * Sql generator object
@@ -976,6 +976,17 @@ class Adodb extends AbstractUtilAware
         return $this->profile['type'] . $separator .
             $this->profile['host'] . $separator .
             $this->profile['name'];
+    }
+
+
+    /**
+     * Getter of $queryCount
+     *
+     * @return  int
+     */
+    public function getQueryCount()
+    {
+        return $this->queryCount;
     }
 
 

@@ -421,8 +421,8 @@ class SyncDbData extends AbstractUtilAware
         }
 
 
-        $queryCountBeforeSync = $this->dbSrce->queryCount +
-            $this->dbDest->queryCount;
+        $queryCountBeforeSync = $this->dbSrce->getQueryCount() +
+            $this->dbDest->getQueryCount();
         $rowsDeleted = 0;
 
         foreach ($config as $tableSrce => $tableDest) {
@@ -437,8 +437,8 @@ class SyncDbData extends AbstractUtilAware
             $rowsDeleted += $i;
         }
 
-        $queryCount = $this->dbSrce->queryCount + $this->dbDest->queryCount -
-            $queryCountBeforeSync;
+        $queryCount = $this->dbSrce->getQueryCount() +
+            $this->dbDest->getQueryCount() - $queryCountBeforeSync;
         $this->log(
             "syncDelete() done, total {$rowsDeleted} rows deleted," .
             " db query $queryCount times.\n"
@@ -563,8 +563,8 @@ class SyncDbData extends AbstractUtilAware
      */
     public function syncOneway(&$config)
     {
-        $queryCountBeforeSync = $this->dbSrce->queryCount +
-            $this->dbDest->queryCount;
+        $queryCountBeforeSync = $this->dbSrce->getQueryCount() +
+            $this->dbDest->getQueryCount();
         $rowsSynced = 0;
 
         foreach ($config as $tblSrce => $tblDest) {
@@ -579,8 +579,8 @@ class SyncDbData extends AbstractUtilAware
             $rowsSynced += $i;
         }
 
-        $queryCount = $this->dbSrce->queryCount + $this->dbDest->queryCount -
-            $queryCountBeforeSync;
+        $queryCount = $this->dbSrce->getQueryCount() +
+            $this->dbDest->getQueryCount() - $queryCountBeforeSync;
         $this->log(
             "syncOneway() done, total {$rowsSynced} rows synced," .
             " db query $queryCount times.\n"

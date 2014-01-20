@@ -128,22 +128,6 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
-    public function testCountQuery()
-    {
-        $db = self::$dbMysql;
-        $i = $db->queryCount;
-
-        $db->GetAll('SELECT 1 AS a');
-        $this->assertEquals($i + 1, $db->queryCount);
-
-        $db->CacheGetAll(0, 'SELECT 1 AS a');
-        $this->assertEquals($i + 1, $db->queryCount);
-
-        $db->GetAll(0, 'SELECT 1 AS a');
-        $this->assertEquals($i + 2, $db->queryCount);
-    }
-
-
     /**
      * @expectedException PHPUnit_Framework_Error
      */
@@ -333,6 +317,22 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     {
         $profileString = self::$dbMysql->getProfileString('-');
         $this->assertEquals(2, substr_count($profileString, '-'));
+    }
+
+
+    public function testGetQueryCount()
+    {
+        $db = self::$dbMysql;
+        $i = $db->getQueryCount();
+
+        $db->GetAll('SELECT 1 AS a');
+        $this->assertEquals($i + 1, $db->getQueryCount());
+
+        $db->CacheGetAll(0, 'SELECT 1 AS a');
+        $this->assertEquals($i + 1, $db->getQueryCount());
+
+        $db->GetAll(0, 'SELECT 1 AS a');
+        $this->assertEquals($i + 2, $db->getQueryCount());
     }
 
 
