@@ -198,20 +198,6 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
-    public function testFindColTs()
-    {
-        $this->assertEquals(
-            '',
-            self::$dbMysql->findColumnTs(self::$tableUser . '_not_exists')
-        );
-
-        $this->assertEquals(
-            '',
-            self::$dbMysql->findColumnTs(self::$tableGroup)
-        );
-    }
-
-
     /**
      * Test for Mysql db only
      */
@@ -309,6 +295,20 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $this->assertEquals(
             null,
             self::$dbMysql->getMetaPrimaryKey(self::$tableUser . '_not_exists')
+        );
+    }
+
+
+    public function testGetMetaTimestamp()
+    {
+        $this->assertEquals(
+            '',
+            self::$dbMysql->getMetaTimeStamp(self::$tableUser . '_not_exists')
+        );
+
+        $this->assertEquals(
+            '',
+            self::$dbMysql->getMetaTimeStamp(self::$tableGroup)
         );
     }
 

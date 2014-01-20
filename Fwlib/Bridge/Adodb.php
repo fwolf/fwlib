@@ -545,78 +545,6 @@ class Adodb extends AbstractUtilAware
 
 
     /**
-     * Find name of timestamp column of a table
-     *
-     * Timestamp column are various for different db, hard to test.
-     *
-     * @param   $table
-     * @return  string
-     */
-    public function findColumnTs($table)
-    {
-        $arCol = $this->getMetaColumn($table);
-        if (empty($arCol)) {
-            return '';
-        }
-
-        // @codeCoverageIgnoreStart
-        if ($this->isDbSybase()) {
-            // Sybase's timestamp column must be lower cased.
-            // If col name is 'timestamp', will auto assign (timestamp) type.
-            $rs = $this->execute(
-                array(
-                    'SELECT' => array(
-                        'name'      => 'a.name',
-                        'length'    => 'a.length',
-                        'usertype'  => 'a.usertype',
-                        'type'      => 'b.name',
-                    ),
-                    'FROM'  => array(
-                        'a' => 'syscolumns',
-                        'b' => 'systypes'
-                    ),
-                    'WHERE' => array(
-                        "a.id = object_id('$table')",
-                        'a.type = b.type',
-                        'a.usertype = b.usertype',
-                        // Without below line, can retrieve sybase's col info
-                        'b.name = "timestamp"',
-                    ),
-                )
-            );
-            if (!empty($rs) && 0 < $rs->RowCount()) {
-                return $rs->fields['name'];
-            } else {
-                return '';
-            }
-
-        } elseif ($this->isDbMysql()) {
-            // Check 'type'
-            foreach ($arCol as $k => $v) {
-                if (isset($v->type) && 'timestamp' == $v->type) {
-                    return $k;
-                }
-            }
-
-        } else {
-            // Do not trigger error, null means no implemented.
-            return null;
-
-            trigger_error(
-                __CLASS__ . '::findColumnTs() for '
-                . $this->profile['type']
-                . ' not implemented!',
-                E_USER_ERROR
-            );
-        }
-        // @codeCoverageIgnoreEnd
-
-        // No timestamp found
-        return '';
-    }
-
-
-    /**
      * Generate SQL statement
      *
      * User should avoid use SELECT/UPDATE/INSERT/DELETE simultaneously.
@@ -823,7 +751,7 @@ class Adodb extends AbstractUtilAware
             // @codeCoverageIgnoreStart
             // Fix sybase display timestamp column as varbinary
             if ($this->isDbSybase()) {
-                $s = $this->findColumnTs($table);
+                $s = $this->getMetaTimestamp($table);
                 if (!empty($s)) {
                     $this->metaColumn[$table][$s]->type = 'timestamp';
                 }
@@ -949,6 +877,78 @@ class Adodb extends AbstractUtilAware
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * Get name of timestamp column of a table
+     *
+     * Timestamp column are various for different db, hard to test.
+     *
+     * @param   $table
+     * @return  string
+     */
+    public function getMetaTimestamp($table)
+    {
+        $arCol = $this->getMetaColumn($table);
+        if (empty($arCol)) {
+            return '';
+        }
+
+        // @codeCoverageIgnoreStart
+        if ($this->isDbSybase()) {
+            // Sybase's timestamp column must be lower cased.
+            // If col name is 'timestamp', will auto assign (timestamp) type.
+            $rs = $this->execute(
+                array(
+                    'SELECT' => array(
+                        'name'      => 'a.name',
+                        'length'    => 'a.length',
+                        'usertype'  => 'a.usertype',
+                        'type'      => 'b.name',
+                    ),
+                    'FROM'  => array(
+                        'a' => 'syscolumns',
+                        'b' => 'systypes'
+                    ),
+                    'WHERE' => array(
+                        "a.id = object_id('$table')",
+                        'a.type = b.type',
+                        'a.usertype = b.usertype',
+                        // Without below line, can retrieve sybase's col info
+                        'b.name = "timestamp"',
+                    ),
+                )
+            );
+            if (!empty($rs) && 0 < $rs->RowCount()) {
+                return $rs->fields['name'];
+            } else {
+                return '';
+            }
+
+        } elseif ($this->isDbMysql()) {
+            // Check 'type'
+            foreach ($arCol as $k => $v) {
+                if (isset($v->type) && 'timestamp' == $v->type) {
+                    return $k;
+                }
+            }
+
+        } else {
+            // Do not trigger error, null means no implemented.
+            return null;
+
+            trigger_error(
+                __CLASS__ . '::getMetaTimestamp() for '
+                . $this->profile['type']
+                . ' not implemented!',
+                E_USER_ERROR
+            );
+        }
+        // @codeCoverageIgnoreEnd
+
+        // No timestamp found
+        return '';
     }
 
 

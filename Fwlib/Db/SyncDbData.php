@@ -610,7 +610,7 @@ class SyncDbData extends AbstractUtilAware
 
 
         $timestamp = $this->getLastTimestamp($this->dbDest, $tableSrce);
-        $timestampColumn = $this->dbSrce->findColumnTs($tableSrce);
+        $timestampColumn = $this->dbSrce->getMetaTimestamp($tableSrce);
         if (empty($timestampColumn)) {
             $message = "Table $tableSrce in source db hasn't timestamp column.";
             $this->log($message);
