@@ -815,7 +815,7 @@ class Adodb extends AbstractUtilAware
                  * Test pass for PK include 2 columns.
                  */
                 if ($this->isDbSybase()) {
-                    $rs = $this->executePrepare(
+                    $rs = $this->execute(
                         array(
                             'SELECT' => array(
                                 'name', 'keycnt',
