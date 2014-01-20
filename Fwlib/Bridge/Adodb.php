@@ -681,7 +681,7 @@ class Adodb extends AbstractUtilAware
         $rs = $this->execute($sqlConfig);
         $ar = array();
         if (!empty($rs) && !$rs->EOF) {
-            $ar = $rs->GetRowAssoc(false);
+            $ar = $rs->FetchRow();
         }
 
         // Return value
