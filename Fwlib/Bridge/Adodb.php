@@ -433,19 +433,19 @@ class Adodb extends AbstractUtilAware
      * N > 0 number of deleted rows.
      *
      * @param   string  $table
-     * @param   string  $cond   Condition, can be where, having etc, raw sql string, not null.
+     * @param   string  $condition  Not empty, can be raw sql where, having etc
      * @return  int
      */
-    public function delRow($table, $cond)
+    public function deleteRow($table, $condition)
     {
-        $cond = trim($cond);
-        if (empty($cond)) {
+        $condition = trim($condition);
+        if (empty($condition)) {
             return -1;
         }
 
         $this->executePrepare(
             $this->sqlGenerator->get(array('DELETE' => $table))
-            . ' ' . $cond
+            . ' ' . $condition
         );
 
         if (0 != $this->conn->ErrorNo()) {

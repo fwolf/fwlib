@@ -131,12 +131,12 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     /**
      * @expectedException PHPUnit_Framework_Error
      */
-    public function testDelRow()
+    public function testDeleteRow()
     {
-        $i = self::$dbMysql->delRow(self::$tableUser, '');
+        $i = self::$dbMysql->deleteRow(self::$tableUser, '');
         $this->assertEquals(-1, $i);
 
-        $i = self::$dbMysql->delRow(
+        $i = self::$dbMysql->deleteRow(
             self::$tableUser,
             'WHERE FALSE'
         );
@@ -144,7 +144,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         // When use executePrepare(), error was detected and rollback, so
         // return 0 instead of -1, throw exception.
-        self::$dbMysql->delRow(
+        self::$dbMysql->deleteRow(
             self::$tableUser,
             'WHERE ERROR_CLAUSE'
         );
