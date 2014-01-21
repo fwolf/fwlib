@@ -24,7 +24,10 @@ abstract class AbstractUserSession implements UserSessionInterface
      */
     public function __construct()
     {
-        session_start();
+        // PHP 5.4.0+ can use session_status()
+        if (0 == strlen(session_id())) {
+            session_start();
+        }
 
         $this->load();
     }
@@ -35,7 +38,7 @@ abstract class AbstractUserSession implements UserSessionInterface
      */
     public function clear()
     {
-        session_unset();
+        $_SESSION = array();
 
         $this->isLogined = false;
 

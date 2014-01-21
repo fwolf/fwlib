@@ -45,19 +45,3 @@ class AbstractUserSessionTest extends PHPunitTestCase
         $this->assertFalse($userSession->isLogined());
     }
 }
-
-
-/**
- * Session is conflict with PHPUnit, disable them with faker
- */
-namespace Fwlib\Auth;
-
-
-function session_start()
-{
-}
-
-
-function session_unset()
-{
-}
