@@ -30,8 +30,7 @@ use Fwlib\Util\UtilContainer;
  * from mixed config from several set() before, use clear() to clear them, or
  * use getClause() method to avoid this.
  *
- * @package     Fwlib\Db
- * @copyright   Copyright 2003-2013 Fwolf
+ * @copyright   Copyright 2003-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2003-08-25

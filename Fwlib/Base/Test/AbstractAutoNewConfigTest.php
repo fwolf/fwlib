@@ -5,10 +5,7 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Base\Test\AbstractAutoNewConfigDummy;
 
 /**
- * Test for Fwlib\Base\AbstractAutoNewConfig
- *
- * @package     Fwlib\Base\Test
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-08-22

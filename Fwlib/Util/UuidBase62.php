@@ -30,8 +30,7 @@ use Fwlib\Util\AbstractUtilAware;
  * Notice: Mix of a-zA-Z may not suit for Mysql UUID, because Mysql default
  * compare string CASE INSENSITIVE.
  *
- * @package     Fwlib\Util
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-10-31

@@ -13,8 +13,7 @@ use Fwlib\Config\Config;
  *
  * @link http://jqueryui.com/dialog/
  *
- * @package     Fwlib\Html\Ajax
- * @copyright   Copyright 2011-2013 Fwolf
+ * @copyright   Copyright 2011-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2011-08-09

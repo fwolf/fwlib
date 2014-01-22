@@ -6,9 +6,6 @@ use Fwlib\Base\ReturnValue;
 use Fwlib\Util\UtilContainer;
 
 /**
- * Test for Fwlib\Base\ReturnValue
- *
- * @package     Fwlib\Base\Test
  * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

@@ -5,9 +5,6 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\DatetimeUtil;
 
 /**
- * Test for Fwlib\Util\DatetimeUtil
- *
- * @package     Fwlib\Util\Test
  * @copyright   Copyright 2009-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

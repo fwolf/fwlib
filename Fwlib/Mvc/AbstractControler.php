@@ -15,8 +15,7 @@ use Fwlib\Util\UtilContainer;
  * Also, it can delegate request to other Controler, so sub-dir can have their
  * own index too.
  *
- * @package     Fwlib\Mvc
- * @copyright   Copyright 2008-2013 Fwolf
+ * @copyright   Copyright 2008-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-04-06

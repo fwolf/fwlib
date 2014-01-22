@@ -7,9 +7,6 @@ use Fwlib\Model\Workflow\Test\AbstractWorkflowDummy;
 use Fwlib\Test\ServiceContainerTest;
 
 /**
- * Test for Fwlib\Model\Workflow\AbstractWorkflowView
- *
- * @package     Fwlib\Model\Workflow\Test
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

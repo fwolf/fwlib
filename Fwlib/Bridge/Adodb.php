@@ -28,8 +28,7 @@ use Fwlib\Util\StringUtil;
  * Encoding convert for query result will NOT automatic done, although we
  * provide a method convertEncodingResult() to do this manually.
  *
- * @package     Fwlib\Bridge
- * @copyright   Copyright 2008-2013 Fwolf
+ * @copyright   Copyright 2008-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-04-08

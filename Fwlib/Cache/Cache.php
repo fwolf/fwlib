@@ -19,8 +19,7 @@ use Fwlib\Util\UtilContainer;
  * - get(), read cache data,
  * - delete(), delete cache data.
  *
- * @package     Fwlib\Cache
- * @copyright   Copyright 2012-2013 Fwolf
+ * @copyright   Copyright 2012-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2012-09-14

@@ -8,10 +8,7 @@ use Fwlib\Test\ServiceContainerTest;
 use Fwlib\Util\UtilContainer;
 
 /**
- * Test for Fwlib\Db\DbDataExport
- *
- * @package     Fwlib\Db\Test
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-10-11

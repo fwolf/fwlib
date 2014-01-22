@@ -6,7 +6,6 @@ use Fwlib\Base\ServiceContainerInterface;
 /**
  * Workflow interface
  *
- * @package     Fwlib\Model\Workflow
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

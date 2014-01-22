@@ -8,8 +8,7 @@ namespace Fwlib\Bridge;
  * Extend from official PHPMailer, make it easier to use with some helper
  * method, default through SMTP.
  *
- * @package     Fwlib\Bridge
- * @copyright   Copyright 2007-2013 Fwolf
+ * @copyright   Copyright 2007-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2007-03-29

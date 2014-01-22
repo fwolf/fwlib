@@ -10,8 +10,7 @@ use Fwlib\Mvc\ViewInterface;
  *
  * Receive request from Controler and generate output.
  *
- * @package     Fwlib\Mvc
- * @copyright   Copyright 2008-2013 Fwolf
+ * @copyright   Copyright 2008-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-04-06

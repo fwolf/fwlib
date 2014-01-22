@@ -27,8 +27,7 @@ use Fwlib\Util\Env;
  * Other tools similar:
  * @link http://xml2ddl.berlios.de/
  *
- * @package     Fwlib\Db
- * @copyright   Copyright 2006-2013 Fwolf
+ * @copyright   Copyright 2006-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2006-12-10

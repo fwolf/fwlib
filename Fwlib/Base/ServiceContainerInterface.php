@@ -28,7 +28,6 @@ namespace Fwlib\Base;
  * Dependency Injection: create dependent object and pass to constructor. If
  * necessary, assign ServiceContainer instance here for later usage.
  *
- * @package     Fwlib\Base
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

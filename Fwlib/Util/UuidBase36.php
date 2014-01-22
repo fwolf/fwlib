@@ -26,8 +26,7 @@ use Fwlib\Util\UuidBase62;
  *
  * Length of UUID is 25 bytes, no separator.
  *
- * @package     Fwlib\Util
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-10-31

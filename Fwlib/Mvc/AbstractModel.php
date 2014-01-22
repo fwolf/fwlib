@@ -19,7 +19,6 @@ use Fwlib\Cache\CacheInterface;
  * Obviously, a Model class which doesn't use db or cache need not to inherit
  * this class.
  *
- * @package     Fwlib\Mvc
  * @copyright   Copyright 2008-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

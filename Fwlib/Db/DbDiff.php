@@ -18,7 +18,6 @@ use Fwlib\Util\AbstractUtilAware;
  * column is array of other columns changed, format:
  * {column: {new, old}}.
  *
- * @package     Fwlib\Db
  * @copyright   Copyright 2012-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

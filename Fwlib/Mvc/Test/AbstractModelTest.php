@@ -7,9 +7,6 @@ use Fwlib\Mvc\AbstractModel;
 use Fwlib\Test\ServiceContainerTest;
 
 /**
- * Test for Fwlib\Mvc\AbstractModel
- *
- * @package     Fwlib\Mvc\Test
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

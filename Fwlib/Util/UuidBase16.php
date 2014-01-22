@@ -24,8 +24,7 @@ use Fwlib\Util\AbstractUtilAware;
  *
  * @link        http://us.php.net/uniqid
  *
- * @package     Fwlib\Util
- * @copyright   Copyright 2008-2013 Fwolf
+ * @copyright   Copyright 2008-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-05-08

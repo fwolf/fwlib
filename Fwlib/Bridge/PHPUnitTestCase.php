@@ -5,7 +5,6 @@ namespace Fwlib\Bridge;
 /**
  * Bridge for PHPUnit_Framework_TestCase
  *
- * @package     Fwlib\Bridge
  * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

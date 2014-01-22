@@ -26,7 +26,6 @@ use Fwlib\Mvc\AbstractView;
  * This view can declare an instance of a normal view, and use it to provide
  * same header, footer with other non-workflow views.
  *
- * @package     Fwlib\Model\Workflow
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

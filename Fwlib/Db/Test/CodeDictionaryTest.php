@@ -5,9 +5,6 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Db\CodeDictionary;
 
 /**
- * Test for Fwlib\Db\CodeDictionary
- *
- * @package     Fwlib\Db\Test
  * @copyright   Copyright 2011-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3

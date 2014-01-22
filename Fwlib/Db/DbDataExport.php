@@ -8,8 +8,7 @@ use Fwlib\Db\AbstractDbClient;
  *
  * Test under sybase 11.92 ok.
  *
- * @package     Fwlib\Db
- * @copyright   Copyright 2006-2013 Fwolf
+ * @copyright   Copyright 2006-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2006-11-14

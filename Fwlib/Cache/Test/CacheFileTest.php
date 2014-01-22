@@ -6,12 +6,9 @@ use Fwlib\Cache\Cache;
 use Fwlib\Util\UtilContainer;
 
 /**
- * Test for Fwlib\Cache\CacheFile
+ * Some test file/path environment is for *nix only.
  *
- * Some test fle/path environment is for *nix only.
- *
- * @package     Fwlib\Cache\Test
- * @copyright   Copyright 2012-2013 Fwolf
+ * @copyright   Copyright 2012-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2012-11-06
