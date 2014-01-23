@@ -12,31 +12,7 @@ use Fwlib\Bridge\PHPMailer;
  */
 class PHPMailerTest extends PHPunitTestCase
 {
-    private $mailer = null;
-
-
-    public function __construct()
-    {
-        $this->mailer = new PHPMailer;
-    }
-
-
-    public function testParseAddress()
-    {
-        $x = 'A <a@a.com>; B <b@b.com>, 姓名<c@c.com>;';
-        $y = array(
-            'a@a.com'   => 'A',
-            'b@b.com'   => 'B',
-            'c@c.com'   => '姓名',
-        );
-        $this->assertEqualArray($y, $this->mailer->parseAddress($x));
-
-        $x = 'a.a.com';
-        $this->assertFalse($this->mailer->parseAddress($x));
-    }
-
-
-    public function testSend()
+    protected function buildMock()
     {
         /**
          * It can't mock parent::send() method, dig into parent::send() logic
@@ -55,6 +31,31 @@ class PHPMailerTest extends PHPunitTestCase
             ->method('postSend')
             ->will($this->returnValue(true));
 
+        return $mailer;
+    }
+
+
+    public function testParseAddress()
+    {
+        $mailer = $this->buildMock();
+
+        $x = 'A <a@a.com>; B <b@b.com>, 姓名<c@c.com>;';
+        $y = array(
+            'a@a.com'   => 'A',
+            'b@b.com'   => 'B',
+            'c@c.com'   => '姓名',
+        );
+        $this->assertEqualArray($y, $mailer->parseAddress($x));
+
+        $x = 'a.a.com';
+        $this->assertFalse($mailer->parseAddress($x));
+    }
+
+
+    public function testSend()
+    {
+        $mailer = $this->buildMock();
+
         // Dummy setter
         $mailer->setCharset('utf-8');
         $mailer->setEncoding('base64');
@@ -67,10 +68,11 @@ class PHPMailerTest extends PHPunitTestCase
 
         // No error counted
         $this->assertTrue($mailer->send());
-        $this->assertEquals(0, $mailer->errorCount);
+        $this->assertEquals(0, $mailer->getErrorCount());
+        $this->assertEmpty($mailer->getErrorMessage());
 
         // Error counter raised
         $this->assertFalse($mailer->send());
-        $this->assertEquals(1, $mailer->errorCount);
+        $this->assertEquals(1, $mailer->getErrorCount());
     }
 }

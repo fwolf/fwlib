@@ -8,6 +8,8 @@ namespace Fwlib\Bridge;
  * Extend from official PHPMailer, make it easier to use with some helper
  * method, default through SMTP.
  *
+ * Property with StudlyCaps name are inherited from parent class.
+ *
  * @copyright   Copyright 2007-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
@@ -34,14 +36,14 @@ class PHPMailer extends \PHPMailer
      *
      * @var int
      */
-    public $errorCount = 0;
+    protected $errorCount = 0;
 
     /**
      * Error message, reset when mail send success
      *
      * @var string
      */
-    public $errorMsg = '';
+    protected $errorMessage = '';
 
     /**
      * Mail from address, overwrite parent default value
@@ -77,6 +79,28 @@ class PHPMailer extends \PHPMailer
      * @var boolean
      */
     public $SMTPAuth = true;
+
+
+    /**
+     * Getter of $errorCount
+     *
+     * @return  int
+     */
+    public function getErrorCount()
+    {
+        return $this->errorCount;
+    }
+
+
+    /**
+     * Getter of $errorMessage
+     *
+     * @return  string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
 
 
     /**
@@ -132,10 +156,10 @@ class PHPMailer extends \PHPMailer
         $sendSuccessful = parent::send();
         if (!$sendSuccessful) {
             $this->errorCount ++;
-            $this->errorMsg = $this->ErrorInfo;
+            $this->errorMessage = $this->ErrorInfo;
         } else {
             $this->errorCount = 0;
-            $this->errorMsg = '';
+            $this->errorMessage = '';
         }
 
         return $sendSuccessful;
