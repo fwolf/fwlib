@@ -63,7 +63,7 @@ class CodeDictionary
      *
      * @var array
      */
-    protected $dict = array();
+    protected $dictionary = array();
 
     /**
      * Primary key column name
@@ -89,25 +89,25 @@ class CodeDictionary
      */
     public function __construct()
     {
-        // $dict is never used now, need not do reset() on it
-        if (!empty($this->dict) && 0 === key($this->dict)) {
-            $this->fixDictIndex();
+        // $dictionary is never used now, need not do reset() on it
+        if (!empty($this->dictionary) && 0 === key($this->dictionary)) {
+            $this->fixDictionaryIndex();
         }
     }
 
 
     /**
-     * Fix dict index
+     * Fix dictionary array index
      *
      * Use primary key value as index of first dimention, and column name as
      * index of second dimention(column value array).
      */
-    protected function fixDictIndex()
+    protected function fixDictionaryIndex()
     {
-        $dict = $this->dict;
-        $this->dict = array();
+        $dictionary = $this->dictionary;
+        $this->dictionary = array();
 
-        $this->set($dict);
+        $this->set($dictionary);
     }
 
 
@@ -125,7 +125,7 @@ class CodeDictionary
      */
     public function get($key, $column = '')
     {
-        if (!isset($this->dict[$key])) {
+        if (!isset($this->dictionary[$key])) {
             return null;
         }
 
@@ -133,7 +133,7 @@ class CodeDictionary
             : $this->parseColumn($column);
 
         $result = array_intersect_key(
-            $this->dict[$key],
+            $this->dictionary[$key],
             array_fill_keys($resultColumn, null)
         );
 
@@ -147,13 +147,13 @@ class CodeDictionary
 
 
     /**
-     * Getter of $dict
+     * Getter of $dictionary
      *
      * @return  array
      */
     public function getAll()
     {
-        return $this->dict;
+        return $this->dictionary;
     }
 
 
@@ -183,7 +183,7 @@ class CodeDictionary
 
 
     /**
-     * Get SQL for write dict data to db
+     * Get SQL for write dictionary data to db
      *
      * @param   Adodb   $db
      * @param   boolean $withTruncate
@@ -221,7 +221,7 @@ class CodeDictionary
 
         // Data
         // INSERT INTO table (col1, col2) VALUES (val1, val2)[DELIMITER]
-        foreach ($this->dict as $k => $row) {
+        foreach ($this->dictionary as $k => $row) {
             $valueList = array();
             foreach ($row as $key => $val) {
                 $valueList[] = $db->quoteValue($this->table, $key, $val);
@@ -241,7 +241,7 @@ class CodeDictionary
 
 
     /**
-     * Get SQL for write dict data to db, truncate part.
+     * Get SQL for write dictionary data to db, truncate part.
      *
      * @param   object  $db Fwlib\Bridge\Adodb
      * @return  string
@@ -309,7 +309,7 @@ class CodeDictionary
      */
     public function search($condition = '', $column = '*')
     {
-        if (empty($condition) || empty($this->dict)) {
+        if (empty($condition) || empty($this->dictionary)) {
             return array();
         }
 
@@ -324,7 +324,7 @@ class CodeDictionary
 
         $result = array();
         $condition = "return ($condition);";
-        foreach ($this->dict as $index => &$row) {
+        foreach ($this->dictionary as $index => &$row) {
             $conditionResult =
                 str_replace($columnWithDelimiter, $row, $condition);
             eval($conditionResult);
@@ -340,7 +340,7 @@ class CodeDictionary
 
 
     /**
-     * Set dict value
+     * Set dictionary value
      *
      * @param   array   $data    1 or 2-dim data array.
      * @return  CodeDictionary
@@ -387,7 +387,7 @@ class CodeDictionary
                 );
             }
 
-            $this->dict[$primaryKeyValue] = $columnValueArray;
+            $this->dictionary[$primaryKeyValue] = $columnValueArray;
         }
         unset($row);
 
