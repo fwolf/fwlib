@@ -215,6 +215,21 @@ class PHPMailer extends \PHPMailer
 
 
     /**
+     * {@inheritdoc}
+     *
+     * Add set of sender too.
+     *
+     * @param   string  $sender
+     */
+    public function setFrom($address, $name = '', $auto = true)
+    {
+        parent::setFrom($address, $name, $auto);
+
+        $this->Sender = $address;
+    }
+
+
+    /**
      * Set host information
      *
      * @param   string  $host
