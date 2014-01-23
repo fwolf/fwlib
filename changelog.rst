@@ -8,13 +8,33 @@ ChangeLog
 
 
 
+v2.2    2014-01-23
+====================
+
+- Remove @package tag and useless class description in testcase
+- Try to avoid using eval()
+- Add some getter method
+- Use full word in naming
+- Auth: New interface and abstract class of AccessControl
+- Auth: New interface and abstract class of Authentication
+- Auth: New interface and abstract class of UserSession
+- Bridge\Adodb: Rename method getByPk() to getByKey()
+- Bridge\PHPMailer: Set $Sender when call setFrom()
+- Config: Move method limitServerId() to class GlobalConfig
+- Db\CodeDictionary: Add method getMultiple() to simplify get()
+- Db\CodeDictionary: Allow easy initialize by assign value when define $dict
+- Db\CodeDictionary: Only allow single primary key column
+- Db\CodeDictionary: Remove dependence of Base\AbstractAutoNewConfig
+
+
+
 v2.1    2014-01-12
 ====================
 
 - New ServiceContainerInterface
 - New Model AbstractWorkflow and AbstractWorkflowView
-- Mvc/AbstractView: New property $methodPrefix
-- Mvc/AbstractControler: Define module and action parameter name as property
+- Mvc\AbstractView: New property $methodPrefix
+- Mvc\AbstractControler: Define module and action parameter name as property
 
 
 
