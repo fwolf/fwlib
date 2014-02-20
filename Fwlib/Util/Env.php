@@ -26,9 +26,9 @@ class Env
     public function ecl($str = '', $noecho = false)
     {
         if ($this->isCli()) {
-            $lineEnding = "\n";
+            $lineEnding = PHP_EOL;
         } else {
-            $lineEnding = "<br />\n";
+            $lineEnding = '<br />' . PHP_EOL;
         }
 
         if (is_array($str)) {
@@ -40,7 +40,7 @@ class Env
         }
 
         // Replace line ending in str
-        $str = preg_replace('/[\r\n]/', $lineEnding, trim($str));
+        $str = preg_replace('/[\r\n]/', $lineEnding, rtrim($str));
 
         // Add new line
         $str .= $lineEnding;

@@ -23,15 +23,15 @@ class EnvTest extends PHPunitTestCase
     public function testEcl()
     {
         $x = '';
-        $y = "\n";
+        $y = PHP_EOL;
         $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
 
         $x = array('foo', 'bar');
-        $y = "foo\nbar\n";
+        $y = "foo\nbar" . PHP_EOL;
         $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
 
-        $x = " 	foo\r\nbar\n";
-        $y = "foo\n\nbar\n";
+        $x = "  foo\r\nbar\r\n";
+        $y = "  foo" . PHP_EOL . PHP_EOL . "bar" . PHP_EOL;
         $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
     }
 }
