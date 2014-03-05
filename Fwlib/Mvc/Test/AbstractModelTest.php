@@ -77,7 +77,8 @@ class AbstractModelTest extends PHPunitTestCase
         // Empty cache log for check later
         $this->reflectionSet($cache, 'log', array());
 
-        $model->useCache(false);
+        $model->setUseCache(false);
+        $this->assertFalse($model->getUseCache());
 
         // Not using cache
         $this->assertEquals(
@@ -87,7 +88,8 @@ class AbstractModelTest extends PHPunitTestCase
         $this->assertEmpty($cache->getLog());
 
 
-        $model->useCache(true);
+        $model->setUseCache(true);
+        $this->assertTrue($model->getUseCache());
 
         // Use cache, the first get from cache will fail
         $this->assertEquals(
@@ -126,7 +128,7 @@ class AbstractModelTest extends PHPunitTestCase
         $model = $this->model;
         $cache = $this->serviceContainer->get('Cache');
 
-        $model->useCache(true);
+        $model->setUseCache(true);
 
         // Use cache, the first get from cache will fail
         $this->assertEqualArray(
@@ -165,7 +167,7 @@ class AbstractModelTest extends PHPunitTestCase
         $model = $this->buildMockWithForceRefreshCache();
         $cache = $this->serviceContainer->get('Cache');
 
-        $model->useCache(true);
+        $model->setUseCache(true);
         self::$forceRefreshCache = true;
         // Empty cache log for check later
         $this->reflectionSet($cache, 'log', array());
@@ -184,7 +186,7 @@ class AbstractModelTest extends PHPunitTestCase
         $model = $this->model;
         $cache = $this->serviceContainer->get('Cache');
 
-        $model->useCache(true);
+        $model->setUseCache(true);
 
         // Use $cache as object param
 

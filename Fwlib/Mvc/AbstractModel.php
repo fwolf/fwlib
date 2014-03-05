@@ -188,6 +188,17 @@ abstract class AbstractModel extends AbstractAutoNewInstance
 
 
     /**
+     * Getter of $useCache
+     *
+     * @return  boolean
+     */
+    public function getUseCache()
+    {
+        return $this->useCache;
+    }
+
+
+    /**
      * New Cache instance
      *
      * Shoud be overwrited by child class and change cache type.
@@ -212,11 +223,11 @@ abstract class AbstractModel extends AbstractAutoNewInstance
     /**
      * Setter of $useCache
      *
-     * @see     AbstractViewCache::useCache()   Same
-     * @param   bool    $useCache
+     * @see     AbstractViewCache::setUseCache()    Same
+     * @param   boolean $useCache
      * @return  AbstractViewCache
      */
-    public function useCache($useCache)
+    public function setUseCache($useCache)
     {
         $this->useCache = $useCache;
 

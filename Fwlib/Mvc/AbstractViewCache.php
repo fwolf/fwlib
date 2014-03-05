@@ -7,8 +7,8 @@ use Fwlib\Mvc\AbstractView;
 /**
  * View with Cache feature
  *
- * Cache is disabled default, need extend class and set $useCache to true or
- * call useCache() to enable it.
+ * Cache is disabled default, need extend class and set $useCache property to
+ * true or call setUseCache() to enable it.
  *
  * @copyright   Copyright 2008-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -143,12 +143,23 @@ abstract class AbstractViewCache extends AbstractView
 
 
     /**
+     * Getter of $useCache
+     *
+     * @return  boolean
+     */
+    public function getUseCache()
+    {
+        return $this->useCache;
+    }
+
+
+    /**
      * New Cache instance
      *
      * Child class need implement this method to create Cache instance, and
      * configure it if needed.
      *
-     * @return  Fwlib\Cache\CacheInterface
+     * @return  CacheInterface
      */
     abstract protected function newInstanceCache();
 
@@ -156,11 +167,11 @@ abstract class AbstractViewCache extends AbstractView
     /**
      * Setter of $useCache
      *
-     * @see     AbstractModel::useCache()   Same
-     * @param   bool    $useCache
+     * @see     AbstractModel::setUseCache()    Same
+     * @param   boolean $useCache
      * @return  AbstractViewCache
      */
-    public function useCache($useCache)
+    public function setUseCache($useCache)
     {
         $this->useCache = $useCache;
 
