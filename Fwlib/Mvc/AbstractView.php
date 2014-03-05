@@ -194,6 +194,17 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
 
 
     /**
+     * Getter of $useTidy
+     *
+     * @return  boolean
+     */
+    public function getUseTidy()
+    {
+        return $this->useTidy;
+    }
+
+
+    /**
      * New Smarty instance
      *
      * @return  Fwlib\Bridge\Smarty
@@ -261,6 +272,20 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
 
 
     /**
+     * Setter of $useTidy
+     *
+     * @param   boolean $useTidy
+     * @return  AbstractView
+     */
+    public function setUseTidy($useTidy)
+    {
+        $this->useTidy = $useTidy;
+
+        return $this;
+    }
+
+
+    /**
      * Format html with tidy extention
      *
      * @param   string  $html
@@ -289,19 +314,5 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
 
             return tidy_get_output($tidy);
         }
-    }
-
-
-    /**
-     * Setter of $useTidy
-     *
-     * @param   bool    $useTidy
-     * @return  AbstractView
-     */
-    public function useTidy($useTidy)
-    {
-        $this->useTidy = $useTidy;
-
-        return $this;
     }
 }

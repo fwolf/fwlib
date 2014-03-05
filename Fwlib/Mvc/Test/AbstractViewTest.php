@@ -120,7 +120,8 @@ class AbstractViewTest extends PHPunitTestCase
         $view = $this->buildMock('path/to/root/');
 
         self::$class_exists = false;
-        $view->useTidy(true);
+        $view->setUseTidy(true);
+        $this->assertTrue($view->getUseTidy());
 
         $view->getOutput(null);
 
@@ -139,7 +140,8 @@ class AbstractViewTest extends PHPunitTestCase
         $view = $this->buildMock('path/to/root/');
 
         self::$class_exists = false;
-        $view->useTidy(false);
+        $view->setUseTidy(false);
+        $this->assertFalse($view->getUseTidy());
         $this->assertEquals(
             'header.tpl_body for test action_footer.tpl',
             $view->getOutput('test-action')
@@ -147,7 +149,7 @@ class AbstractViewTest extends PHPunitTestCase
 
 
         self::$class_exists = true;
-        $view->useTidy(true);
+        $view->setUseTidy(true);
         $output = $view->getOutput('test-action');
 
         $this->assertStringEndsWith('</html>', $output);
