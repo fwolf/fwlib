@@ -19,6 +19,13 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     ViewInterface
 {
     /**
+     * Current action string
+     *
+     * @var string
+     */
+    protected $action = '';
+
+    /**
      * Css to link in output header
      *
      * Format: {key: url}
@@ -113,6 +120,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      */
     public function getOutput($action = '')
     {
+        $this->action = $action;
         $output = '';
 
         foreach ($this->outputPart as $part) {

@@ -116,6 +116,8 @@ abstract class AbstractViewCache extends AbstractView
      */
     public function getOutput($action = null)
     {
+        $this->action = $action;
+
         if (!$this->useCache) {
             return parent::getOutput($action);
         }
