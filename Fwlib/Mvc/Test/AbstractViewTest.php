@@ -167,12 +167,21 @@ class AbstractViewTest extends PHPunitTestCase
         );
         $this->reflectionCall(
             $view,
+            'addCss',
+            array('default', 'path/to/default.css', 'media, print')
+        );
+        $this->reflectionCall(
+            $view,
             'addJs',
             array('jquery', 'path/to/jquery.js')
         );
 
+        // Simulate get output
+        $this->reflectionCall($view, 'getOutputHeader');
+
         $css = $this->reflectionGet($view, 'css');
         $this->assertArrayHasKey('reset', $css);
+        $this->assertArrayHasKey('default', $css);
 
         $js = $this->reflectionGet($view, 'js');
         $this->assertArrayHasKey('jquery', $js);

@@ -227,8 +227,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      */
     protected function getOutputHeader($action = '')
     {
-        // Avoid duplicate
-        $this->css = array_unique($this->css);
+        // Avoid duplicate js, css is 2-dim array, can't do unique on it
         $this->js = array_unique($this->js);
 
         return $this->smarty->fetch('header.tpl');
