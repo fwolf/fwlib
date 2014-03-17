@@ -163,12 +163,12 @@ class AbstractViewTest extends PHPunitTestCase
         $this->reflectionCall(
             $view,
             'addCss',
-            array('reset', 'path/to/reset.css', 'media, print')
+            array('reset', 'path/to/reset.css', 'screen, print')
         );
         $this->reflectionCall(
             $view,
             'addCss',
-            array('default', 'path/to/default.css', 'media, print')
+            array('default', 'path/to/default.css')
         );
         $this->reflectionCall(
             $view,
