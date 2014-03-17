@@ -28,7 +28,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Css to link in output header
      *
-     * Format: {key: url}
+     * Format: {key: {url, media}}
      *
      * @var array
      */
@@ -109,6 +109,40 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
         unset($this->smarty);
 
         $this->setPathToRoot($pathToRoot);
+    }
+
+
+    /**
+     * Add content to $js
+     *
+     * @param   string  $name
+     * @param   string  $url
+     * @param   string  $media
+     * @return  AbstractView
+     */
+    protected function addCss($name, $url, $media = 'screen, print')
+    {
+        $this->css[$name] = array(
+            'url'   => $url,
+            'media' => $media,
+        );
+
+        return $this;
+    }
+
+
+    /**
+     * Add content to $js
+     *
+     * @param   string  $name
+     * @param   string  $url
+     * @return  AbstractView
+     */
+    protected function addJs($name, $url)
+    {
+        $this->js[$name] = $url;
+
+        return $this;
     }
 
 
@@ -228,6 +262,34 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
         $smarty->assignByRef('viewTitle', $this->title);
 
         return $smarty;
+    }
+
+
+    /**
+     * Remove css assigned to output
+     *
+     * @param   string  $name
+     * @return  AbstractView
+     */
+    protected function removeCss($name)
+    {
+        unset($this->css[$name]);
+
+        return $this;
+    }
+
+
+    /**
+     * Remove js assigned to output
+     *
+     * @param   string  $name
+     * @return  AbstractView
+     */
+    protected function removeJs($name)
+    {
+        unset($this->js[$name]);
+
+        return $this;
     }
 
 

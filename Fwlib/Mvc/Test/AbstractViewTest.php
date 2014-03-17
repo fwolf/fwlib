@@ -154,6 +154,38 @@ class AbstractViewTest extends PHPunitTestCase
 
         $this->assertStringEndsWith('</html>', $output);
     }
+
+
+    public function testRemoveCssAndJs()
+    {
+        $view = $this->buildMock('path/to/root/');
+
+        $this->reflectionCall(
+            $view,
+            'addCss',
+            array('reset', 'path/to/reset.css', 'media, print')
+        );
+        $this->reflectionCall(
+            $view,
+            'addJs',
+            array('jquery', 'path/to/jquery.js')
+        );
+
+        $css = $this->reflectionGet($view, 'css');
+        $this->assertArrayHasKey('reset', $css);
+
+        $js = $this->reflectionGet($view, 'js');
+        $this->assertArrayHasKey('jquery', $js);
+
+
+        $this->reflectionCall($view, 'removeCss', array('reset'));
+        $css = $this->reflectionGet($view, 'css');
+        $this->assertArrayNotHasKey('reset', $css);
+
+        $this->reflectionCall($view, 'removejs', array('jquery'));
+        $js = $this->reflectionGet($view, 'js');
+        $this->assertArrayNotHasKey('jquery', $js);
+    }
 }
 
 
