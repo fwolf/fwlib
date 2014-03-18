@@ -16,9 +16,9 @@ abstract class AbstractDbClient extends AbstractAutoNewInstance
     /**
      * Db connection object
      *
-     * @var Fwlib\Bridge\Adodb
+     * @var object
      */
-    public $db = null;
+    protected $db = null;
 
 
     /**
@@ -28,8 +28,6 @@ abstract class AbstractDbClient extends AbstractAutoNewInstance
      */
     public function __construct($db = null)
     {
-        // Unset for auto new
-        unset($this->db);
         if (!is_null($db)) {
             $this->db = $db;
         }
@@ -39,10 +37,14 @@ abstract class AbstractDbClient extends AbstractAutoNewInstance
     /**
      * New db object
      *
-     * @return  Fwlib\Bridge\Adodb
+     * @return  object
      */
-    protected function newInstanceDb()
+    protected function getDb()
     {
-        return $this->getService('Db');
+        if (is_null($this->db)) {
+            $this->db = $this->getService('Db');
+        }
+
+        return $this->db;
     }
 }

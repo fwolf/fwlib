@@ -126,9 +126,9 @@ class Adodb extends AbstractUtilAware
     /**
      * Sql generator object
      *
-     * @var object
+     * @var SqlGenerator
      */
-    public $sqlGenerator;
+    protected $sqlGenerator;
 
 
     /**
@@ -146,9 +146,6 @@ class Adodb extends AbstractUtilAware
      */
     public function __construct($profile, $pathAdodb = '')
     {
-        // Unset for auto new
-        unset($this->sqlGenerator);
-
         // @codeCoverageIgnoreStart
         // Include ADOdb lib
         if (!empty($pathAdodb)) {
@@ -235,12 +232,7 @@ class Adodb extends AbstractUtilAware
      */
     public function __get($name)
     {
-        if ('sqlGenerator' == $name) {
-            $this->sqlGenerator = $this->newInstanceSqlGenerator();
-            return $this->sqlGenerator;
-        } else {
-            return $this->conn->$name;
-        }
+        return $this->conn->$name;
     }
 
 
@@ -252,16 +244,18 @@ class Adodb extends AbstractUtilAware
      */
     public function __set($name, $val)
     {
-        // For object need auto new in this class instead of $this->conn, need
-        // check in __get() and __set() both. If only treat in __get(), the
-        // assign will happen, but assign to $this->conn->property, next time
-        // when it's used, will trigger __get() again, and do useless
-        // newInstance() again.
-        if ('sqlGenerator' == $name) {
-            $this->$name = $val;
-        } else {
-            $this->conn->$name = $val;
-        }
+        // For object need auto new in this class instead of $this->conn, with
+        // machenishm in class AbstractAutoNewInsance with newInstanceXxx()
+        // method, need check in __get() and __set() both. If only treat in
+        // __get(), the new instance and assign operate will happen, but its
+        // assigned to $this->conn->property, instead of $this->property, next
+        // time when it's used(get), will trigger __get() again, and do
+        // useless newInstanceXxx() again.
+        //
+        // By use get method similar with getService(), this is not problem
+        // anymore.
+
+        $this->conn->$name = $val;
     }
 
 
@@ -443,7 +437,7 @@ class Adodb extends AbstractUtilAware
         }
 
         $this->executePrepare(
-            $this->sqlGenerator->get(array('DELETE' => $table))
+            $this->getSqlGenerator()->get(array('DELETE' => $table))
             . ' ' . $condition
         );
 
@@ -489,7 +483,7 @@ class Adodb extends AbstractUtilAware
     public function execute($sql, $inputArr = false)
     {
         if (is_array($sql)) {
-            $sql = $this->sqlGenerator->get($sql);
+            $sql = $this->getSqlGenerator()->get($sql);
         }
 
         $this->convertEncodingSql($sql);
@@ -510,7 +504,7 @@ class Adodb extends AbstractUtilAware
     public function executePrepare($sql, $inputArr = false)
     {
         if (is_array($sql)) {
-            $sql = $this->sqlGenerator->getPrepared($sql);
+            $sql = $this->getSqlGenerator()->getPrepared($sql);
         }
 
         $this->convertEncodingSql($sql);
@@ -559,7 +553,7 @@ class Adodb extends AbstractUtilAware
     public function generateSql($sqlConfig)
     {
         if (!empty($sqlConfig)) {
-            return $this->sqlGenerator->get($sqlConfig);
+            return $this->getSqlGenerator()->get($sqlConfig);
         } else {
             return '';
         }
@@ -579,7 +573,7 @@ class Adodb extends AbstractUtilAware
     public function generateSqlPrepared($sqlConfig)
     {
         if (!empty($sqlConfig)) {
-            return $this->sqlGenerator->getPrepared($sqlConfig);
+            return $this->getSqlGenerator()->getPrepared($sqlConfig);
         } else {
             return '';
         }
@@ -1006,7 +1000,7 @@ class Adodb extends AbstractUtilAware
             'FROM'      => $table,
         );
         $rs = $this->executePrepare(
-            $this->sqlGenerator->get($sqlCfg)
+            $this->getSqlGenerator()->get($sqlCfg)
             . ' ' . $cond
         );
         if (false == $rs || 0 != $this->conn->ErrorNo()
@@ -1048,6 +1042,21 @@ class Adodb extends AbstractUtilAware
         // @codeCoverageIgnoreEnd
 
         return $delimiter . $tail;
+    }
+
+
+    /**
+     * Get SqlGenerator instance
+     *
+     * @return  SqlGenerator
+     */
+    protected function getSqlGenerator()
+    {
+        if (is_null($this->sqlGenerator)) {
+            $this->sqlGenerator = new SqlGenerator($this);
+        }
+
+        return $this->sqlGenerator;
     }
 
 
@@ -1174,17 +1183,6 @@ class Adodb extends AbstractUtilAware
         // @codeCoverageIgnoreEnd
 
         return $b;
-    }
-
-
-    /**
-     * New SqlGenerator property
-     *
-     * @return  Fwlib\Db\SqlGenerator
-     */
-    protected function newInstanceSqlGenerator()
-    {
-        return new SqlGenerator($this);
     }
 
 
@@ -1377,7 +1375,7 @@ class Adodb extends AbstractUtilAware
                 'VALUES' => $arVal,
             );
         }
-        $sql = $this->sqlGenerator->getPrepared($sqlCfg);
+        $sql = $this->getSqlGenerator()->getPrepared($sqlCfg);
         // @codeCoverageIgnoreStart
         if (empty($sql)) {
             return -1;

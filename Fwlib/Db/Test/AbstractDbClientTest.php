@@ -26,12 +26,11 @@ class AbstractDbClientTest extends PHPunitTestCase
         // With ServiceContainer
         $o = new AbstractDbClientDummy();
         $o->setServiceContainer($sc);
-        $this->assertFalse(isset($o->db));
-        $o->db;
-        $this->assertTrue(isset($o->db));
+        $this->reflectionCall($o, 'getDb');
+        $this->assertNotNull($this->reflectionGet($o, 'db'));
 
         // With Dependency Inject
         $o = new AbstractDbClientDummy($sc->get('Db'));
-        $this->assertTrue(isset($o->db));
+        $this->assertNotNull($this->reflectionGet($o, 'db'));
     }
 }

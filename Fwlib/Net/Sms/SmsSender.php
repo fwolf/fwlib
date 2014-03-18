@@ -20,22 +20,9 @@ class SmsSender extends AbstractAutoNewConfig
     /**
      * SMS logger object
      *
-     * @var Fwlib\Net\Sms\SmsLogger
+     * @var SmsLogger
      */
     protected $smsLogger = null;
-
-
-    /**
-     * Constructor
-     *
-     * @param   array   $config
-     */
-    public function __construct($config = null)
-    {
-        unset($this->smsLogger);
-
-        parent::__construct();
-    }
 
 
     /**
@@ -78,14 +65,18 @@ class SmsSender extends AbstractAutoNewConfig
 
 
     /**
-     * New SMS logger
+     * Get SMS logger instance
      *
-     * @return  Fwlib\Net\Sms\SmsLogger
+     * @return  SmsLogger
      */
-    protected function newInstanceSmsLogger()
+    protected function getSmsLogger()
     {
-        // One-time use object, not using ServiceContainer
-        return new SmsLogger($this->serviceContainer->get('Db'));
+        if (is_null($this->smsLogger)) {
+            $this->smsLogger =
+                new SmsLogger($this->getService('Db'));
+        }
+
+        return $this->smsLogger;
     }
 
 
@@ -169,7 +160,7 @@ class SmsSender extends AbstractAutoNewConfig
             $func = $map[$this->config['method']];
             $i = $this->$func($destNumber, $sms);
 
-            $this->smsLogger->log($destNumber, $sms, $cat);
+            $this->getSmsLogger()->log($destNumber, $sms, $cat);
 
             return $i;
 

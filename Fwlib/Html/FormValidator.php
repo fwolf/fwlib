@@ -2,6 +2,7 @@
 namespace Fwlib\Html;
 
 use Fwlib\Base\AbstractAutoNewConfig;
+use Fwlib\Validator\Validator;
 
 /**
  * Validator for form
@@ -58,22 +59,11 @@ class FormValidator extends AbstractAutoNewConfig
 
 
     /**
-     * Validator object
+     * Validator instance
      *
-     * @var Fwlib\Validator\Validator
+     * @var Validator
      */
     protected $validator = null;
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($config = null)
-    {
-        unset($this->validator);
-
-        parent::__construct($config);
-    }
 
 
     /**
@@ -205,13 +195,17 @@ $closureEnd
 
 
     /**
-     * New Validator instance
+     * Get Validator instance
      *
-     * @return  Fwlib\Validator\Validator
+     * @return  Validator
      */
-    protected function newInstanceValidator()
+    protected function getValidator()
     {
-        return $this->getService('Validator');
+        if (is_null($this->validator)) {
+            $this->validator = $this->getService('Validator');
+        }
+
+        return $this->validator;
     }
 
 
@@ -349,7 +343,7 @@ $closureEnd
             // Check may be array, and constraint Url need all formData array,
             // other constraint only need formData[name], so we got loop here.
             foreach ((array)$check as $checkString) {
-                $nameIsValid = $this->validator->validate(
+                $nameIsValid = $this->getValidator()->validate(
                     ('url' == substr($checkString, 0, 3))
                     ? $formData
                     : $formData[$name],

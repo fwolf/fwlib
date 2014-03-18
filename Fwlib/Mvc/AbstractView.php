@@ -54,7 +54,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Use Smarty to build html from template
      *
-     * @var Fwlib\Bridge\Smarty
+     * @var Smarty
      */
     protected $smarty = null;
 
@@ -105,9 +105,6 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      */
     public function __construct($pathToRoot = null)
     {
-        // Unset for auto new
-        unset($this->smarty);
-
         $this->setPathToRoot($pathToRoot);
     }
 
@@ -215,7 +212,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      */
     protected function getOutputFooter($action = '')
     {
-        return $this->smarty->fetch('footer.tpl');
+        return $this->getSmarty()->fetch('footer.tpl');
     }
 
 
@@ -230,7 +227,30 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
         // Avoid duplicate js, css is 2-dim array, can't do unique on it
         $this->js = array_unique($this->js);
 
-        return $this->smarty->fetch('header.tpl');
+        return $this->getSmarty()->fetch('header.tpl');
+    }
+
+
+    /**
+     * Get Smarty instance
+     *
+     * @return  Smarty
+     */
+    protected function getSmarty()
+    {
+        if (is_null($this->smarty)) {
+            $smarty = $this->getService('Smarty');
+
+            // Connect View info to Smarty
+            $smarty->assignByRef('css', $this->css);
+            $smarty->assignByRef('js', $this->js);
+            $smarty->assignByRef('pathToRoot', $this->pathToRoot);
+            $smarty->assignByRef('viewTitle', $this->title);
+
+            $this->smarty = $smarty;
+        }
+
+        return $this->smarty;
     }
 
 
@@ -242,25 +262,6 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     public function getUseTidy()
     {
         return $this->useTidy;
-    }
-
-
-    /**
-     * New Smarty instance
-     *
-     * @return  Fwlib\Bridge\Smarty
-     */
-    protected function newInstanceSmarty()
-    {
-        $smarty = $this->getService('Smarty');
-
-        // Connect View info to Smarty
-        $smarty->assignByRef('css', $this->css);
-        $smarty->assignByRef('js', $this->js);
-        $smarty->assignByRef('pathToRoot', $this->pathToRoot);
-        $smarty->assignByRef('viewTitle', $this->title);
-
-        return $smarty;
     }
 
 

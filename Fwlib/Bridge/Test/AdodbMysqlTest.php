@@ -54,10 +54,8 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         $this->assertEqualArray($profile, $db->getProfile());
 
-        $this->assertFalse(isset($db->sqlGenerator));
-        // Will auto create SqlGenerator when access
-        $this->assertFalse(is_null($db->sqlGenerator));
-        $this->assertTrue(isset($db->sqlGenerator));
+        // SqlGenerator is not instanced now, see testGenerateSql()
+        $this->assertNull($this->reflectionGet($db, 'sqlGenerator'));
     }
 
 
@@ -221,6 +219,14 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $x = self::$dbMysql->generateSql('');
         $this->assertEquals('', $x);
 
+
+        // SqlGenerator is instanced now
+        $this->assertInstanceOf(
+            'Fwlib\Db\SqlGenerator',
+            $this->reflectionGet(self::$dbMysql, 'sqlGenerator')
+        );
+
+
         $ar = array(
             'SELECT'    => 'title',
             'FROM'      => self::$tableUser,
@@ -267,6 +273,31 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         );
         self::$dbMysql->write(self::$tableUser, $ar);
 
+
+        // Diffenent way to read one column
+        $this->assertEquals(
+            'Title',
+            self::$dbMysql->getByKey(self::$tableUser, $uuid, 'title')
+        );
+        $this->assertEquals(
+            'Title',
+            self::$dbMysql->getByKey(self::$tableUser, $uuid, 'title', 'uuid')
+        );
+        $this->assertEquals(
+            'Title',
+            self::$dbMysql->getByKey(
+                self::$tableUser,
+                array($uuid),
+                'title',
+                array('uuid')
+            )
+        );
+
+        // Read more than one column
+        $this->assertEqualArray(
+            array('title' => 'Title', 'age' => '42'),
+            self::$dbMysql->getByKey(self::$tableUser, $uuid, 'title, age')
+        );
 
         // * col
         $data = self::$dbMysql->getByKey(self::$tableUser, $uuid);

@@ -49,13 +49,18 @@ class CacheMemcachedTest extends PHPunitTestCase
             'weight' => $ms[0]['weight'],
         );
         $this->ch->setConfigServer($x);
-        $this->assertEquals(array($y), $this->ch->memcached->getServerList());
+        $this->ch->get('any key');
+        $this->assertEqualArray(
+            array($y),
+            $this->reflectionGet($this->ch, 'memcached')->getServerList()
+        );
 
 
-        // Set server cfg, writable
+        // Set server cfg, writable, $memcached is reset to null now
         $this->ch->setConfigServer($ms);
-        unset($this->ch->memcached);
-        $ar = $this->ch->memcached->getServerList();
+        // Do an operate to trigger memcached instance creation
+        $this->ch->get('any key');
+        $ar = $this->reflectionGet($this->ch, 'memcached')->getServerList();
         $this->assertEquals($ar, $ms);
 
 
@@ -142,12 +147,14 @@ class CacheMemcachedTest extends PHPunitTestCase
 
         // Big value size is computed AFTER compress if compress on
         $s = str_repeat('0', 1200000);
-        $this->ch->memcached->setOption(\Memcached::OPT_COMPRESSION, false);
+        $this->reflectionGet($this->ch, 'memcached')
+            ->setOption(\Memcached::OPT_COMPRESSION, false);
         $this->ch->setConfig('memcachedAutosplit', 0);
         // Error: Memcache set error 10: SERVER ERROR
         @$this->ch->set($key, $s, 3600);
         $this->assertEquals(null, $this->ch->get($key));
-        $this->ch->memcached->setOption(\Memcached::OPT_COMPRESSION, true);
+        $this->reflectionGet($this->ch, 'memcached')
+            ->setOption(\Memcached::OPT_COMPRESSION, true);
         $this->ch->set($key, $s, 3600);
         $this->assertEquals($s, $this->ch->get($key));
     }
@@ -161,7 +168,8 @@ class CacheMemcachedTest extends PHPunitTestCase
         $ch = Cache::create('memcached');
 
         // Server list is empty now
-        $ar = $this->ch->memcached->getServerList();
+        $this->ch->get('any key');
+        $ar = $this->reflectionGet($this->ch, 'memcached')->getServerList();
         $this->assertEquals($ar, array());
 
         $this->assertInstanceOf(

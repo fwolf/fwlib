@@ -35,6 +35,7 @@ class AbstractViewCacheTest extends PHPunitTestCase
         );
 
         $view->setServiceContainer($this->serviceContainer);
+        $this->serviceContainer->register('Cache', Cache::create());
 
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their

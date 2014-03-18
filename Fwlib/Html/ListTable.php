@@ -440,7 +440,7 @@ class ListTable extends AbstractAutoNewConfig
      */
     protected function setConfigDefault()
     {
-        $this->config->set(
+        $this->setConfig(
             array(
                 // Notice: this is NOT actual class and id used in template,
                 // see $this->info and $this->setId() for details.

@@ -46,23 +46,6 @@ abstract class AbstractModel extends AbstractAutoNewInstance
 
 
     /**
-     * Constructor
-     *
-     * Mechenishm of auto new property instance need property is un-defined,
-     * usually we define them for better documented and unset them in
-     * constructor, but the parameter of constructor will limit Model class
-     * inherit from this (they must keep same in strict mode), so we leave
-     * constructor of this class without parameter for maxinum adaptability.
-     */
-    public function __construct()
-    {
-        // Unset for auto new
-        unset($this->cache);
-        unset($this->db);
-    }
-
-
-    /**
      * Call method with cache
      *
      * By using this method, it need not to apply cache check/get/set to each
@@ -82,6 +65,8 @@ abstract class AbstractModel extends AbstractAutoNewInstance
      */
     public function cachedCall($method, array $paramArray = null)
     {
+        $cache = $this->getCache();
+
         if (!$this->useCache) {
             return call_user_func_array(array($this, $method), $paramArray);
         }
@@ -92,10 +77,10 @@ abstract class AbstractModel extends AbstractAutoNewInstance
         if ($this->forceRefreshCache()) {
             $result = call_user_func_array(array($this, $method), $paramArray);
 
-            $this->cache->set($key, $result, $lifetime);
+            $cache->set($key, $result, $lifetime);
 
         } else {
-            $result = $this->cache->get($key, $lifetime);
+            $result = $cache->get($key, $lifetime);
 
             if (is_null($result)) {
                 $result = call_user_func_array(
@@ -103,7 +88,7 @@ abstract class AbstractModel extends AbstractAutoNewInstance
                     $paramArray
                 );
 
-                $this->cache->set($key, $result, $lifetime);
+                $cache->set($key, $result, $lifetime);
             }
         }
 
@@ -124,6 +109,23 @@ abstract class AbstractModel extends AbstractAutoNewInstance
     protected function forceRefreshCache()
     {
         return false;
+    }
+
+
+    /**
+     * Get Cache instance
+     *
+     * Shoud be overwrited by child class if needed.
+     *
+     * @return CacheInterface
+     */
+    protected function getCache()
+    {
+        if (is_null($this->cache)) {
+            $this->cache = $this->getService('Cache');
+        }
+
+        return $this->cache;
     }
 
 
@@ -188,6 +190,19 @@ abstract class AbstractModel extends AbstractAutoNewInstance
 
 
     /**
+     * @return  Adodb
+     */
+    protected function getDb()
+    {
+        if (is_null($this->db)) {
+            $this->db = $this->getService('Db');
+        }
+
+        return $this->db;
+    }
+
+
+    /**
      * Getter of $useCache
      *
      * @return  boolean
@@ -195,28 +210,6 @@ abstract class AbstractModel extends AbstractAutoNewInstance
     public function getUseCache()
     {
         return $this->useCache;
-    }
-
-
-    /**
-     * New Cache instance
-     *
-     * Shoud be overwrited by child class and change cache type.
-     *
-     * @return CacheInterface
-     */
-    protected function newInstanceCache()
-    {
-        return $this->getService('Cache');
-    }
-
-
-    /**
-     * @return  Adodb
-     */
-    protected function newInstanceDb()
-    {
-        return $this->getService('Db');
     }
 
 

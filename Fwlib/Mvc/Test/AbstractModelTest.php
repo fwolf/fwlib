@@ -215,13 +215,13 @@ class AbstractModelTest extends PHPunitTestCase
     }
 
 
-    public function testNewInstanceDb()
+    public function testGetDb()
     {
         $model = $this->model;
 
         $this->assertInstanceOf(
             'Fwlib\Bridge\Adodb',
-            $this->reflectionGet($model, 'db')
+            $this->reflectionCall($model, 'getDb')
         );
     }
 }

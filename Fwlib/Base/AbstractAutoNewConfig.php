@@ -29,25 +29,11 @@ abstract class AbstractAutoNewConfig extends AbstractAutoNewInstance
      */
     public function __construct($config = array())
     {
-        // Unset for auto new
-        unset($this->config);
-
         $this->setConfigDefault();
 
         if (!empty($config)) {
-            $this->config->set($config);
+            $this->getConfigInstance()->set($config);
         }
-    }
-
-
-    /**
-     * New config object
-     *
-     * @return Fwlib\Config\Config
-     */
-    protected function newInstanceConfig()
-    {
-        return new Config;
     }
 
 
@@ -60,7 +46,9 @@ abstract class AbstractAutoNewConfig extends AbstractAutoNewInstance
      */
     public function getConfig($key, $default = null)
     {
-        return $this->config->get($key, $default);
+        $configInstance = $this->getConfigInstance();
+
+        return $configInstance->get($key, $default);
     }
 
 
@@ -69,11 +57,13 @@ abstract class AbstractAutoNewConfig extends AbstractAutoNewInstance
      *
      * @param   string  $key
      * @param   mixed   $val    Should not null except $key is array
-     * @return  $this
+     * @return  AbstractAutoNewConfig
      */
     public function setConfig($key, $val = null)
     {
-        $this->config->set($key, $val);
+        $configInstance = $this->getConfigInstance();
+
+        $configInstance->set($key, $val);
 
         return $this;
     }
@@ -82,12 +72,27 @@ abstract class AbstractAutoNewConfig extends AbstractAutoNewInstance
     /**
      * Set default config
      *
-     * @return  $this
+     * @return  AbstractAutoNewConfig
      */
     protected function setConfigDefault()
     {
         // Dummy, extend by child class
 
         return $this;
+    }
+
+
+    /**
+     * Get Config instance
+     *
+     * @return Config
+     */
+    protected function getConfigInstance()
+    {
+        if (is_null($this->config)) {
+            $this->config = new Config;
+        }
+
+        return $this->config;
     }
 }

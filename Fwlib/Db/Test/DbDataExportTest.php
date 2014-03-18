@@ -40,7 +40,8 @@ class DbDataExportTest extends AbstractDbRelateTest
         if (is_null(self::$dbe)) {
             self::$dbe = new DbDataExport(self::$db);
 
-            self::$delimiter = self::$dbe->db->getSqlDelimiter('');
+            self::$delimiter = $this->reflectionGet(self::$dbe, 'db')
+                ->getSqlDelimiter('');
 
             self::$dbe->setExportPath(self::$exportPath);
         }
@@ -84,9 +85,10 @@ class DbDataExportTest extends AbstractDbRelateTest
     {
         $dbe = new DbDataExport();
         $dbe->setServiceContainer(ServiceContainerTest::getInstance());
-        $this->assertFalse(isset($dbe->db));
-        $dbe->db;
-        $this->assertTrue(isset($dbe->db));
+        $this->assertInstanceOf(
+            'Fwlib\Bridge\Adodb',
+            $this->reflectionCall($dbe, 'getDb')
+        );
     }
 
 

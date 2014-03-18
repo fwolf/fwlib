@@ -14,24 +14,40 @@ use Fwlib\Cache\Cache;
 class CacheMemcached extends Cache
 {
     /**
-     * Memcache object
+     * Memcache instance
      *
      * @var object
      */
-    public $memcached = null;
+    protected $memcached = null;
 
 
     /**
-     * Constructor
+     * Connect to memcached server
      *
-     * @param   array   $config
+     * @param   array   $serverList
+     * @return  \Memcached
      */
-    public function __construct($config = array())
+    protected function connectMemcachedServer(array $serverList)
     {
-        parent::__construct($config);
+        $memcached = new \Memcached();
+        $memcached->addServers($serverList);
 
-        // Unset for auto new
-        unset($this->memcached);
+        foreach ((array)$this->getConfig('memcachedOptionDefault') as
+            $k => $v) {
+            $memcached->setOption($k, $v);
+        }
+
+        // @codeCoverageIgnoreStart
+        // This config is always empty, because create() is static call, no
+        // instance, can't set this option.
+        foreach ((array)$this->getConfig('memcachedOption') as
+            $k => $v) {
+            $memcached->setOption($k, $v);
+        }
+        // @codeCoverageIgnoreEnd
+
+
+        return $memcached;
     }
 
 
@@ -43,24 +59,26 @@ class CacheMemcached extends Cache
      */
     public function delete($key)
     {
-        if (1 == $this->config->get('memcachedAutosplit')) {
+        $memcached = $this->getMemcached();
+
+        if (1 == $this->getConfig('memcachedAutosplit')) {
             // Is value splitted ?
-            $total = $this->memcached->get($this->getKey($key . '[split]'));
+            $total = $memcached->get($this->getKey($key . '[split]'));
             if (false === $total) {
                 // No split found
-                $this->memcached->delete($this->getKey($key));
+                $memcached->delete($this->getKey($key));
 
             } else {
                 // Splitted string
                 for ($i = 1; $i <= $total; $i ++) {
-                    $this->memcached->delete(
+                    $memcached->delete(
                         $this->getKey($key . '[split-' . $i . '/' . $total . ']')
                     );
                 }
-                $this->memcached->delete($this->getKey($key . '[split]'));
+                $memcached->delete($this->getKey($key . '[split]'));
             }
         } else {
-            $this->memcached->delete($this->getKey($key));
+            $memcached->delete($this->getKey($key));
         }
 
         return $this;
@@ -81,16 +99,18 @@ class CacheMemcached extends Cache
     {
         // Lifetime is handle by memcached
 
-        $val = $this->memcached->get($this->getKey($key));
+        $memcached = $this->getMemcached();
+
+        $val = $memcached->get($this->getKey($key));
 
         // Unknown item size, try again for autosplit
-        if ((\Memcached::RES_SUCCESS != $this->memcached->getResultCode())
-            && (1 == $this->config->get('memcachedAutosplit'))
+        if ((\Memcached::RES_SUCCESS != $memcached->getResultCode())
+            && (1 == $this->getConfig('memcachedAutosplit'))
         ) {
-            $val = $this->memcached->get($this->getKey($key . '[split]'));
+            $val = $memcached->get($this->getKey($key . '[split]'));
         }
 
-        if (\Memcached::RES_SUCCESS == $this->memcached->getResultCode()) {
+        if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
             return false;
         } else {
             return true;
@@ -112,22 +132,24 @@ class CacheMemcached extends Cache
     {
         // Lifetime is handle by memcached
 
-        if (1 == $this->config->get('memcachedAutosplit')) {
+        $memcached = $this->getMemcached();
+
+        if (1 == $this->getConfig('memcachedAutosplit')) {
             // Is value splitted ?
             $keySplitted = $this->getKey($key . '[split]');
-            $total = $this->memcached->get($keySplitted);
+            $total = $memcached->get($keySplitted);
             $this->log[] = array(
                 'key'   => $keySplitted,
                 'success'   => \Memcached::RES_SUCCESS
-                    == $this->memcached->getResultCode(),
+                    == $memcached->getResultCode(),
             );
             if (false === $total) {
                 // No split found
-                $val = $this->memcached->get($this->getKey($key));
+                $val = $memcached->get($this->getKey($key));
                 $this->log[] = array(
                     'key'   => $this->getKey($key),
                     'success'   => \Memcached::RES_SUCCESS
-                        == $this->memcached->getResultCode(),
+                        == $memcached->getResultCode(),
                 );
             } else {
                 // Splited string
@@ -136,11 +158,11 @@ class CacheMemcached extends Cache
                     $keySplitted = $this->getKey(
                         $key . '[split-' . $i . '/' . $total . ']'
                     );
-                    $val .= $this->memcached->get($keySplitted);
+                    $val .= $memcached->get($keySplitted);
                     $this->log[] = array(
                         'key'   => $keySplitted,
                         'success'   => \Memcached::RES_SUCCESS
-                            == $this->memcached->getResultCode(),
+                            == $memcached->getResultCode(),
                     );
                 }
                 // Convert to string in JSON format
@@ -149,15 +171,15 @@ class CacheMemcached extends Cache
 
         } else {
             // Direct get
-            $val = $this->memcached->get($this->getKey($key));
+            $val = $memcached->get($this->getKey($key));
             $this->log[] = array(
                 'key'   => $this->getKey($key),
                 'success'   => \Memcached::RES_SUCCESS
-                    == $this->memcached->getResultCode(),
+                    == $memcached->getResultCode(),
             );
         }
 
-        if (\Memcached::RES_SUCCESS == $this->memcached->getResultCode()) {
+        if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
             return $this->decodeValue($val);
         } else {
             return null;
@@ -184,10 +206,10 @@ class CacheMemcached extends Cache
         }
 
         // Length limit
-        $prefix1 = $this->config->get(
+        $prefix1 = $this->getConfig(
             'memcachedOptionDefault.' . \Memcached::OPT_PREFIX_KEY
         );
-        $prefix2 = $this->config->get(
+        $prefix2 = $this->getConfig(
             'memcachedOption.' . \Memcached::OPT_PREFIX_KEY
         );
         $i = max(strlen($prefix1), strlen($prefix2));
@@ -201,59 +223,55 @@ class CacheMemcached extends Cache
 
 
     /**
-     * New memcached property
+     * Get memcached server connection
      *
-     * @return  object
+     * @return  \Memcached
      */
-    protected function newInstanceMemcached()
+    protected function getMemcached()
     {
-        $arSvr = $this->config->get('memcachedServer');
+        if (is_null($this->memcached)) {
+            $serverList = $this->getValidMemcachedServer();
+            $this->memcached = $this->connectMemcachedServer($serverList);
+        }
 
-        if (!empty($arSvr)) {
-            // Check server and remove dead
-            foreach ($arSvr as $k => $svr) {
-                $obj = new \Memcached();
-                $obj->addServers(array($svr));
-                // Do set test
-                $obj->set($this->getKey('memcached server alive test'), true);
+        return $this->memcached;
+    }
 
-                // @codeCoverageIgnoreStart
-                if (0 != $obj->getResultCode()) {
 
-                    // Got error server, log and remove it
-                    error_log(
-                        'Memcache server ' . implode($svr, ':')
-                        . ' test fail: ' . $obj->getResultCode()
-                        . ', msg: ' . $obj->getResultMessage()
-                    );
-                    unset($arSvr[$k]);
+    /**
+     * Read memcached server from config, test and return valid list
+     *
+     * @return  array
+     */
+    protected function getValidMemcachedServer()
+    {
+        $arSvr = $this->getConfig('memcachedServer');
 
-                }
-                // @codeCoverageIgnoreEnd
+        // Check server and remove dead
+        foreach ((array)$arSvr as $k => $svr) {
+            $obj = new \Memcached();
+            $obj->addServers(array($svr));
+            // Do set test
+            $obj->set($this->getKey('memcached server alive test'), true);
 
-                unset($obj);
+            // @codeCoverageIgnoreStart
+            if (0 != $obj->getResultCode()) {
+
+                // Got error server, log and remove it
+                error_log(
+                    'Memcache server ' . implode($svr, ':')
+                    . ' test fail: ' . $obj->getResultCode()
+                    . ', msg: ' . $obj->getResultMessage()
+                );
+                unset($arSvr[$k]);
+
             }
+            // @codeCoverageIgnoreEnd
+
+            unset($obj);
         }
 
-        $obj = new \Memcached();
-        $obj->addServers($arSvr);
-
-        foreach ((array)$this->config->get('memcachedOptionDefault') as
-            $k => $v) {
-            $obj->setOption($k, $v);
-        }
-
-        // @codeCoverageIgnoreStart
-        // This config is always empty, because create() is static call, no
-        // instance, can't set this option.
-        foreach ((array)$this->config->get('memcachedOption') as
-            $k => $v) {
-            $obj->setOption($k, $v);
-        }
-        // @codeCoverageIgnoreEnd
-
-
-        return $obj;
+        return $arSvr;
     }
 
 
@@ -269,22 +287,24 @@ class CacheMemcached extends Cache
      */
     public function set($key, $val, $lifetime = null)
     {
+        $memcached = $this->getMemcached();
+
         // Convert expiration time
         $lifetime = $this->getExpireTime($lifetime);
 
         // Auto split large string val
-        if ((1 == $this->config->get('memcachedAutosplit'))
+        if ((1 == $this->getConfig('memcachedAutosplit'))
             && is_string($val) && (strlen($val)
-            > $this->config->get('memcachedMaxitemsize'))
+            > $this->getConfig('memcachedMaxitemsize'))
         ) {
             $ar = str_split(
                 $val,
-                $this->config->get('memcachedMaxitemsize')
+                $this->getConfig('memcachedMaxitemsize')
             );
             $total = count($ar);
 
             // Set split total
-            $rs = $this->memcached->set(
+            $rs = $memcached->set(
                 $this->getKey($key . '[split]'),
                 $total,
                 $lifetime
@@ -292,7 +312,7 @@ class CacheMemcached extends Cache
 
             // Set split trunk
             for ($i = 1; $i <= $total; $i++) {
-                $rs = $this->memcached->set(
+                $rs = $memcached->set(
                     $this->getKey($key . '[split-' . $i . '/' . $total . ']'),
                     $ar[$i - 1],
                     $lifetime
@@ -301,7 +321,7 @@ class CacheMemcached extends Cache
 
         } else {
             // Normal set
-            $rs = $this->memcached->set(
+            $rs = $memcached->set(
                 $this->getKey($key),
                 $this->encodeValue($val),
                 $lifetime
@@ -313,8 +333,8 @@ class CacheMemcached extends Cache
 
             trigger_error(
                 'Memcache set error '
-                . $this->memcached->getResultCode() . ': '
-                . $this->memcached->getResultMessage(),
+                . $memcached->getResultCode() . ': '
+                . $memcached->getResultMessage(),
                 E_USER_WARNING
             );
 
@@ -337,18 +357,18 @@ class CacheMemcached extends Cache
 
         // Memcache server
         // Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
-        $this->config->set('memcachedLifetime', 86400);
+        $this->setConfig('memcachedLifetime', 86400);
 
         // Auto split store item larger than max item size
         // 0/off, 1/on, when off, large item store will fail.
-        $this->config->set('memcachedAutosplit', 0);
+        $this->setConfig('memcachedAutosplit', 0);
 
         // Max item size, STRING val exceed this will auto split
         //   and store automatic, user need only care other val type.
-        $this->config->set('memcachedMaxitemsize', 1024000);
+        $this->setConfig('memcachedMaxitemsize', 1024000);
 
         // Memcached default option, set when new memcached obj
-        $this->config->set(
+        $this->setConfig(
             'memcachedOptionDefault',
             array(
                 // Better for multi server
@@ -363,14 +383,14 @@ class CacheMemcached extends Cache
         );
 
         // Memcached option, user set, replace default above
-        $this->config->set(
+        $this->setConfig(
             'memcachedOption',
             array()
         );
 
         // After change server cfg, you should unset $oMemcached.
         // or use setConfigServer()
-        $this->config->set(
+        $this->setConfig(
             'memcachedServer',
             array()
         );
@@ -394,13 +414,13 @@ class CacheMemcached extends Cache
 
         if (isset($arSvr[0]) && is_array($arSvr[0])) {
             // 2 dim array
-            $this->config->set('memcachedServer', $arSvr);
+            $this->setConfig('memcachedServer', $arSvr);
         } else {
             // 1 dim array only
-            $this->config->set('memcachedServer', array($arSvr));
+            $this->setConfig('memcachedServer', array($arSvr));
         }
 
-        unset($this->memcached);
+        $this->memcached = null;
 
         return $this;
     }

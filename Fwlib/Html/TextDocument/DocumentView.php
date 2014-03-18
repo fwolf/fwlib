@@ -2,6 +2,9 @@
 namespace Fwlib\Html\TextDocument;
 
 use Fwlib\Base\AbstractAutoNewConfig;
+use Fwlib\Html\TextDocument\Markdown;
+use Fwlib\Html\TextDocument\Restructuredtext;
+use Fwlib\Html\TextDocument\UnknownMarkup;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\StringUtil;
@@ -47,16 +50,16 @@ class DocumentView extends AbstractAutoNewConfig
     /**
      * Markdown converter
      *
-     * @var Fwlib\Html\TextDocument\Markdown
+     * @var Markdown
      */
-    public $markdown = null;
+    protected $markdown = null;
 
     /**
      * Restructuredtext converter
      *
-     * @var Fwlib\Html\TextDocument\Restructuredtext
+     * @var Restructuredtext
      */
-    public $restructuredtext = null;
+    protected $restructuredtext = null;
 
     /**
      * Html title
@@ -70,25 +73,9 @@ class DocumentView extends AbstractAutoNewConfig
     /**
      * UnknownMarkup converter
      *
-     * @var Fwlib\Html\TextDocument\UnknownMarkup
+     * @var UnknownMarkup
      */
-    public $unknownMarkup = null;
-
-
-    /**
-     * Constructor
-     *
-     * @param   array   $config
-     */
-    public function __construct($config = null)
-    {
-        // Unset for autonew
-        unset($this->markdown);
-        unset($this->restructuredtext);
-        unset($this->unknownMarkup);
-
-        parent::__construct($config);
-    }
+    protected $unknownMarkup = null;
 
 
     /**
@@ -268,13 +255,13 @@ class DocumentView extends AbstractAutoNewConfig
 
         switch ($type) {
             case 'Markdown':
-                return $this->markdown;
+                return $this->getMarkdown();
                 break;
             case 'Restructuredtext':
-                return $this->restructuredtext;
+                return $this->getRestructuredtext();
                 break;
             case 'Unknown':
-                return $this->unknownMarkup;
+                return $this->getUnknownMarkup();
                 break;
             default:
                 throw new \Exception(
@@ -325,6 +312,51 @@ class DocumentView extends AbstractAutoNewConfig
 
 
     /**
+     * Get Markdown converter instance
+     *
+     * @return  Markdown
+     */
+    protected function getMarkdown()
+    {
+        if (is_null($this->markdown)) {
+            $this->markdown = $this->getService('Markdown');
+        }
+
+        return $this->markdown;
+    }
+
+
+    /**
+     * Get Restructuredtext converter instance
+     *
+     * @return  Restructuredtext
+     */
+    protected function getRestructuredtext()
+    {
+        if (is_null($this->restructuredtext)) {
+            $this->restructuredtext = $this->getService('Restructuredtext');
+        }
+
+        return $this->restructuredtext;
+    }
+
+
+    /**
+     * New UnknownMarkup converter instance
+     *
+     * @return  UnknownMarkup
+     */
+    protected function getUnknownMarkup()
+    {
+        if (is_null($this->unknownMarkup)) {
+            $this->unknownMarkup = $this->getService('UnknownMarkup');
+        }
+
+        return $this->unknownMarkup;
+    }
+
+
+    /**
      * List files
      *
      * @return  array
@@ -352,39 +384,6 @@ class DocumentView extends AbstractAutoNewConfig
         $arFile = $this->sortFile($arFile);
 
         return $arFile;
-    }
-
-
-    /**
-     * New Markdown property
-     *
-     * @return  Fwlib\Html\TextDocument\Markdown
-     */
-    protected function newInstanceMarkdown()
-    {
-        return $this->getService('Markdown');
-    }
-
-
-    /**
-     * New Restructuredtext property
-     *
-     * @return  Fwlib\Html\TextDocument\Restructuredtext
-     */
-    protected function newInstanceRestructuredtext()
-    {
-        return $this->getService('Restructuredtext');
-    }
-
-
-    /**
-     * New UnknownMarkup property
-     *
-     * @return  Fwlib\Html\TextDocument\UnknownMarkup
-     */
-    protected function newInstanceUnknownMarkup()
-    {
-        return $this->getService('UnknownMarkup');
     }
 
 

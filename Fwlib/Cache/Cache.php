@@ -104,11 +104,11 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      */
     protected function decodeValue($str)
     {
-        if (1 == $this->config->get('storeMethod')) {
+        if (1 == $this->getConfig('storeMethod')) {
             // Json to array
             return json_decode($str, true);
 
-        } elseif (2 == $this->config->get('storeMethod')) {
+        } elseif (2 == $this->getConfig('storeMethod')) {
             // Json to object
             return json_decode($str, false);
 
@@ -143,8 +143,8 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      */
     protected function encodeValue($val)
     {
-        if (1 == $this->config->get('storeMethod')
-            || 2 == $this->config->get('storeMethod')
+        if (1 == $this->getConfig('storeMethod')
+            || 2 == $this->getConfig('storeMethod')
         ) {
             return $this->getUtil('Json')->encodeUnicode($val);
 
@@ -203,7 +203,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     {
         // If not set, use config
         if (is_null($lifetime)) {
-            $lifetime = $this->config->get('lifetime');
+            $lifetime = $this->getConfig('lifetime');
         }
 
         // 0 means never expire
@@ -339,7 +339,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
         //  User should determine the value DO suite cache type.
         // 1: Json, decode to array.
         // 2: Json, decode to object.
-        $this->config->set('storeMethod', 1);
+        $this->setConfig('storeMethod', 1);
 
         // Default cache lifetime, in second
         // Can be overwrite by param when get/set.
@@ -348,7 +348,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
         // Larger than 30days, must assign unix time like memcached,
         //   which is number of seconds since 1970-1-1 as an integer.
         // 0 means forever.
-        $this->config->set('lifetime', 2592000);
+        $this->setConfig('lifetime', 2592000);
 
         return $this;
     }

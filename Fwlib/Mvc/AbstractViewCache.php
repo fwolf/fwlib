@@ -31,20 +31,6 @@ abstract class AbstractViewCache extends AbstractView
 
 
     /**
-     * Contructor
-     *
-     * @param   string  $pathToRoot
-     */
-    public function __construct($pathToRoot = null)
-    {
-        // Unset for auto new
-        unset($this->cache);
-
-        parent::__construct($pathToRoot);
-    }
-
-
-    /**
      * Force to re-generate cache
      *
      * Sometimes we need temporary disable cache or refresh cache data
@@ -57,6 +43,23 @@ abstract class AbstractViewCache extends AbstractView
     protected function forceRefreshCache()
     {
         return false;
+    }
+
+
+    /**
+     * Get Cache instance
+     *
+     * Shoud be overwrited by child class if needed.
+     *
+     * @return CacheInterface
+     */
+    protected function getCache()
+    {
+        if (is_null($this->cache)) {
+            $this->cache = $this->getService('Cache');
+        }
+
+        return $this->cache;
     }
 
 
@@ -116,6 +119,8 @@ abstract class AbstractViewCache extends AbstractView
      */
     public function getOutput($action = null)
     {
+        $cache = $this->getCache();
+
         $this->action = $action;
 
         if (!$this->useCache) {
@@ -128,15 +133,15 @@ abstract class AbstractViewCache extends AbstractView
         if ($this->forceRefreshCache()) {
             $output = parent::getOutput($action);
 
-            $this->cache->set($key, $output, $lifetime);
+            $cache->set($key, $output, $lifetime);
 
         } else {
-            $output = $this->cache->get($key, $lifetime);
+            $output = $cache->get($key, $lifetime);
 
             if (empty($output)) {
                 $output = parent::getOutput($action);
 
-                $this->cache->set($key, $output, $lifetime);
+                $cache->set($key, $output, $lifetime);
             }
         }
 
@@ -153,17 +158,6 @@ abstract class AbstractViewCache extends AbstractView
     {
         return $this->useCache;
     }
-
-
-    /**
-     * New Cache instance
-     *
-     * Child class need implement this method to create Cache instance, and
-     * configure it if needed.
-     *
-     * @return  CacheInterface
-     */
-    abstract protected function newInstanceCache();
 
 
     /**

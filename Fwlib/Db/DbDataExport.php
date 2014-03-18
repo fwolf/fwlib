@@ -115,8 +115,8 @@ class DbDataExport extends AbstractDbClient
     {
         parent::__construct($db);
 
-        if (isset($this->db) && !is_null($this->db)) {
-            $this->lineEnding = $this->db->getSqlDelimiter();
+        if (!is_null($db)) {
+            $this->lineEnding = $db->getSqlDelimiter();
         }
     }
 
@@ -138,7 +138,7 @@ class DbDataExport extends AbstractDbClient
         if (!empty($this->tableGroupby[$tbl])) {
             $groupby = $this->tableGroupby[$tbl];
             $sql = "SELECT DISTINCT $groupby FROM $tbl";
-            $rs = $this->db->Execute($sql);
+            $rs = $this->getDb()->Execute($sql);
 
             // Convert every row to where sql
             $cols = explode(',', $groupby);
@@ -201,7 +201,7 @@ class DbDataExport extends AbstractDbClient
         $logFile = $this->exportPath . '/'  . $this->logFile;
         file_put_contents($logFile, '');
 
-        $profileString = $this->db->getProfileString(':');
+        $profileString = $this->getDb()->getProfileString(':');
         $this->log("Export for db $profileString, ", false);
 
         $this->getTable();
@@ -223,9 +223,11 @@ class DbDataExport extends AbstractDbClient
     {
         $this->log('[' . $tbl . '] ', false);
 
+        $db = $this->getDb();
+
         $cols = $this->getColumn($tbl);
 
-        $rowCount = $this->db->getRowCount($tbl);
+        $rowCount = $db->getRowCount($tbl);
         $this->log('Total ' . number_format($rowCount) . ' rows.');
 
         // SQL header
@@ -258,21 +260,21 @@ class DbDataExport extends AbstractDbClient
             if (!empty($arWhere)) {
                 $where = array_shift($arWhere);
                 $sqlSelect = "SELECT * FROM $tbl $where";
-                $rs = $this->db->Execute($sqlSelect);
+                $rs = $db->Execute($sqlSelect);
 
             } else {
                 $sqlSelect = "SELECT * FROM $tbl";
-                $sqlSelect = $this->db->convertEncodingSql($sqlSelect);
-                $rs = $this->db->SelectLimit(
+                $sqlSelect = $db->convertEncodingSql($sqlSelect);
+                $rs = $db->SelectLimit(
                     $sqlSelect,
                     $this->maxRowPerFile,
                     $sqlOffset
                 );
             }
             $rsRows = $rs->RecordCount();
-            if (0 != $this->db->ErrorNo()) {
+            if (0 != $db->ErrorNo()) {
                 // @codeCoverageIgnoreStart
-                $this->log("\n" . $this->db->ErrorMsg());
+                $this->log("\n" . $db->ErrorMsg());
                 break;
                 // @codeCoverageIgnoreEnd
             } else {
@@ -284,7 +286,7 @@ class DbDataExport extends AbstractDbClient
             }
 
             // Save this step to file
-            $sql = $this->db->convertEncodingResult($sql);
+            $sql = $db->convertEncodingResult($sql);
             // Save to seperated file, first check about how many files will
             // be used. File number start from 1.
             if ($rowCount > $this->maxRowPerFile) {
@@ -335,7 +337,7 @@ class DbDataExport extends AbstractDbClient
      */
     protected function getColumn($tbl)
     {
-        $colsMeta = $this->db->MetaColumns($tbl);
+        $colsMeta = $this->getDb()->MetaColumns($tbl);
         // @codeCoverageIgnoreStart
         if (empty($colsMeta)) {
             return array();
@@ -354,6 +356,23 @@ class DbDataExport extends AbstractDbClient
 
 
     /**
+     * Get Db instance
+     *
+     * @return  Adodb
+     */
+    protected function getDb()
+    {
+        if (is_null($this->db)) {
+            $this->db = parent::getDb();
+
+            $this->lineEnding = $this->db->getSqlDelimiter();
+        }
+
+        return $this->db;
+    }
+
+
+    /**
      * Retrieve table list from db
      *
      * @see $table
@@ -363,7 +382,7 @@ class DbDataExport extends AbstractDbClient
         if (!empty($this->tableInclude)) {
             $this->table = $this->tableInclude;
         } else {
-            $this->table = $this->db->MetaTables('TABLES');
+            $this->table = $this->getDb()->MetaTables('TABLES');
         }
 
         // Compute exclude
@@ -410,24 +429,7 @@ class DbDataExport extends AbstractDbClient
     {
         $need = array('mssql', 'sybase', 'sybase_ase');
 
-        return in_array($this->db->profile['type'], $need);
-    }
-
-
-    /**
-     * New Db object
-     *
-     * @return  Fwlib\Bridge\Adodb
-     */
-    protected function newInstanceDb()
-    {
-        $conn = parent::newInstanceDb();
-
-        if (!is_null($conn)) {
-            $this->lineEnding = $conn->getSqlDelimiter();
-        }
-
-        return $conn;
+        return in_array($this->getDb()->profile['type'], $need);
     }
 
 
@@ -445,7 +447,7 @@ class DbDataExport extends AbstractDbClient
         if (is_null($val)) {
             $val = 'NULL';
         } else {
-            $val = $this->db->quoteValue($tbl, $field, $val);
+            $val = $this->getDb()->quoteValue($tbl, $field, $val);
         }
 
         return $val;

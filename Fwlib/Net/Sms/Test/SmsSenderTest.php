@@ -57,7 +57,7 @@ class SmsSenderTest extends PHPunitTestCase
     }
 
 
-    public function testNewObjSmsLogger()
+    public function testGetSmsLogger()
     {
         // Directly mock AbstractServiceContainer is difficult because it use
         // Singleton and forbid __construct() and __wakeup(), so use dummy.
@@ -78,10 +78,9 @@ class SmsSenderTest extends PHPunitTestCase
         $smsSender->setServiceContainer($sc);
 
         $this->assertObjectHasAttribute('smsLogger', $smsSender);
-        $this->assertAttributeInstanceOf(
+        $this->assertInstanceOf(
             'Fwlib\Net\Sms\SmsLogger',
-            'smsLogger',
-            $smsSender
+            $this->reflectionCall($smsSender, 'getSmsLogger')
         );
     }
 
@@ -108,10 +107,10 @@ class SmsSenderTest extends PHPunitTestCase
 
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('newInstanceSmsLogger', 'sendUsingGammuSmsdInject')
+            array('getSmsLogger', 'sendUsingGammuSmsdInject')
         );
         $smsSender->expects($this->once())
-            ->method('newInstanceSmsLogger')
+            ->method('getSmsLogger')
             ->will($this->returnValue($smsLogger));
         $smsSender->expects($this->once())
             ->method('sendUsingGammuSmsdInject')
@@ -152,13 +151,13 @@ class SmsSenderTest extends PHPunitTestCase
 
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('getPathOfGammuSmsdInject', 'newInstanceSmsLogger')
+            array('getPathOfGammuSmsdInject', 'getSmsLogger')
         );
         $smsSender->expects($this->once())
             ->method('getPathOfGammuSmsdInject')
             ->will($this->returnValue('dummy'));
         $smsSender->expects($this->once())
-            ->method('newInstanceSmsLogger')
+            ->method('getSmsLogger')
             ->will($this->returnValue($smsLogger));
 
         // Fake exec() result

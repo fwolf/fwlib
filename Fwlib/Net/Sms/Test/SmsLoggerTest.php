@@ -80,7 +80,7 @@ class SmsLoggerTest extends PHPunitTestCase
                 $this->equalTo('I')
             );
 
-        $this->smsLogger->db = $db;
+        $this->reflectionSet($this->smsLogger, 'db', $db);
 
         $this->smsLogger->log(
             array('13912345678'),
