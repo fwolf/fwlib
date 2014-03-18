@@ -4,6 +4,7 @@ namespace Fwlib\Base;
 use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Auto new property instance using magic function __get
@@ -174,11 +175,12 @@ abstract class AbstractAutoNewInstance implements UtilAwareInterface
     /**
      * Setter of UtilContainer instance
      *
-     * @param   UtilContainer   $utilContainer
+     * @param   UtilContainerInterface  $utilContainer
      * @return  AbstractAutoNewInstance
      */
-    public function setUtilContainer(UtilContainer $utilContainer = null)
-    {
+    public function setUtilContainer(
+        UtilContainerInterface $utilContainer = null
+    ) {
         if (is_null($utilContainer)) {
             $this->utilContainer = UtilContainer::getInstance();
         } else {

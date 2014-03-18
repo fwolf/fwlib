@@ -2,6 +2,7 @@
 namespace Fwlib\Util;
 
 use Fwlib\Base\AbstractServiceContainer;
+use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Util class container
@@ -11,7 +12,8 @@ use Fwlib\Base\AbstractServiceContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-12-18
  */
-class UtilContainer extends AbstractServiceContainer
+class UtilContainer extends AbstractServiceContainer implements
+    UtilContainerInterface
 {
     /**
      * {@inheritdoc}

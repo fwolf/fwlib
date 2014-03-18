@@ -6,6 +6,7 @@ use Fwlib\Base\ReturnValue;
 use Fwlib\Validator\AbstractConstraint;
 use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Constraint Url
@@ -120,8 +121,9 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         $this->serviceContainer = $serviceContainer;
     }
 
-    public function setUtilContainer(UtilContainer $utilContainer = null)
-    {
+    public function setUtilContainer(
+        UtilContainerInterface $utilContainer = null
+    ) {
         if (is_null($utilContainer)) {
             $this->utilContainer = UtilContainer::getInstance();
         } else {

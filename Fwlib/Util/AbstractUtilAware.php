@@ -3,6 +3,7 @@ namespace Fwlib\Util;
 
 use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Class uses Util
@@ -15,7 +16,7 @@ use Fwlib\Util\UtilContainer;
 class AbstractUtilAware implements UtilAwareInterface
 {
     /**
-     * @var UtilContainer
+     * @var UtilContainerInterface
      */
     protected $utilContainer = null;
 
@@ -41,11 +42,12 @@ class AbstractUtilAware implements UtilAwareInterface
     /**
      * {@inheritdoc}
      *
-     * @param   UtilContainer   $utilContainer
+     * @param   UtilContainerInterface  $utilContainer
      * @return  AbstractUtilAware
      */
-    public function setUtilContainer(UtilContainer $utilContainer = null)
-    {
+    public function setUtilContainer(
+        UtilContainerInterface $utilContainer = null
+    ) {
         if (is_null($utilContainer)) {
             $this->utilContainer = UtilContainer::getInstance();
         } else {

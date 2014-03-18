@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Util;
 
+use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Interface of class uses Util
@@ -18,8 +19,10 @@ interface UtilAwareInterface
      * Assign value to $this->utilContainer. If given param is null, should
      * get util container instance from UtilContainer or ServiceContainer.
      *
-     * @param   UtilContainer   $utilContainer
+     * @param   UtilContainerInterface  $utilContainer
      * @return  UtilAwareInterface
      */
-    public function setUtilContainer(UtilContainer $utilContainer = null);
+    public function setUtilContainer(
+        UtilContainerInterface $utilContainer = null
+    );
 }

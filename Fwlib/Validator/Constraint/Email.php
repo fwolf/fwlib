@@ -4,6 +4,7 @@ namespace Fwlib\Validator\Constraint;
 use Fwlib\Validator\AbstractConstraint;
 use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Constraint Email
@@ -56,11 +57,12 @@ class Email extends AbstractConstraint implements UtilAwareInterface
     /**
      * Setter of UtilContainer instance
      *
-     * @param   UtilContainer   $utilContainer
+     * @param   UtilContainerInterface  $utilContainer
      * @return  AbstractAutoNewInstance
      */
-    public function setUtilContainer(UtilContainer $utilContainer = null)
-    {
+    public function setUtilContainer(
+        UtilContainerInterface $utilContainer = null
+    ) {
         if (is_null($utilContainer)) {
             $this->utilContainer = UtilContainer::getInstance();
         } else {

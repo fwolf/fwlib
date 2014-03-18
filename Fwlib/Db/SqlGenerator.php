@@ -3,6 +3,7 @@ namespace Fwlib\Db;
 
 use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerInterface;
 
 /**
  * SQL Generator
@@ -791,11 +792,12 @@ class SqlGenerator implements UtilAwareInterface
     /**
      * Setter of UtilContainer
      *
-     * @param   UtilContainer   $utilContainer
-     * @return  ReturnValue
+     * @param   UtilContainerInterface  $utilContainer
+     * @return  SqlGenerator
      */
-    public function setUtilContainer(UtilContainer $utilContainer = null)
-    {
+    public function setUtilContainer(
+        UtilContainerInterface $utilContainer = null
+    ) {
         if (is_null($utilContainer)) {
             $this->utilContainer = UtilContainer::getInstance();
         } else {
