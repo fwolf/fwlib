@@ -39,7 +39,7 @@ abstract class AbstractControler implements ControlerInterface
      *
      * @var string
      */
-    private $module = '';
+    protected $module = '';
 
     /**
      * Request param of module
