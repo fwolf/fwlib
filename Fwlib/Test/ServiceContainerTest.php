@@ -56,10 +56,10 @@ class ServiceContainerTest extends AbstractServiceContainer
      * 2 ADODB_FETCH_ASSOC (default)
      * 3 ADODB_FETCH_BOTH
      *
-     * @param   string   $profile
+     * @param   array   $profile
      * @return  Adodb
      */
-    protected function connectDb($profile)
+    protected function connectDb(array $profile)
     {
         $conn = new Adodb($profile);
 
