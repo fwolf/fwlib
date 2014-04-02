@@ -289,6 +289,11 @@ class Adodb extends AbstractUtilAware
         // @codeCoverageIgnoreEnd
 
 
+        // To eliminate sybase 'Changed database context to XXX' message,
+        // should edit php.ini and change mssql.min_message_severity to 11.
+        // @link https://bugs.php.net/bug.php?id=34784
+
+
         try {
             // Disable error display tempratory
             $iniDisplayErrors = ini_get('display_errors');
