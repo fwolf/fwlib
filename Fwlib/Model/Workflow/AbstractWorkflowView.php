@@ -21,7 +21,7 @@ use Fwlib\Mvc\AbstractView;
  * - fetchLink
  * - fetchLog
  *
- * These part can used as normal view action too.
+ * These parts can be used as normal view action too.
  *
  * This view can declare an instance of a normal view, and use it to provide
  * same header, footer with other non-workflow views.
@@ -54,6 +54,13 @@ abstract class AbstractWorkflowView extends AbstractView
     );
 
     /**
+     * Workflow instance
+     *
+     * @var WorkflowInterface
+     */
+    protected $workflow = null;
+
+    /**
      * Request parameter of workflow action
      *
      * @var string
@@ -65,11 +72,12 @@ abstract class AbstractWorkflowView extends AbstractView
      *
      * When using workflow classname as part of action in url, the full
      * qualified classname is too encumbrance, so only unqualified name is
-     * used.  With this classname, the new operate can only access class under
-     * same namespace with view.  If workflow class is under different
-     * namespace with view, their full qualified classname prefix need to
-     * define here, the getWorkflowClassname() method will read and add it to
-     * unqualified name.
+     * used. The classname in url parameter will be used to create workflow
+     * instance, unqualified classname means view can only create workflow
+     * class instance in same namespace with them.  If workflow class is under
+     * different namespace with view, their full qualified classname prefix
+     * need to define here, the getWorkflowClassname() method will read and
+     * add it to unqualified name.
      *
      * @var string
      */
@@ -85,98 +93,90 @@ abstract class AbstractWorkflowView extends AbstractView
      */
     protected function createWorkflow($classname, $uuid = '')
     {
-        $workflow = new $classname($this->serviceContainer, $uuid);
+        $this->workflow = new $classname($this->serviceContainer, $uuid);
 
-        return $workflow;
+        return $this->workflow;
     }
 
 
     /**
      * Display workflow action
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    abstract protected function fetchAction(WorkflowInterface $workflow);
+    abstract protected function fetchAction();
 
 
     /**
      * Display workflow detail readonly without action
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    protected function fetchDetail(WorkflowInterface $workflow)
+    protected function fetchDetail()
     {
-        return $this->fetchDetailReadonly($workflow) .
-            $this->fetchLink($workflow) .
-            $this->fetchLog($workflow);
+        return $this->fetchDetailReadonly() .
+            $this->fetchLink() .
+            $this->fetchLog();
     }
 
 
     /**
      * Display workflow detail editable
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    abstract protected function fetchDetailEditable(WorkflowInterface $workflow);
+    abstract protected function fetchDetailEditable();
 
 
     /**
      * Display workflow detail readonly
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    abstract protected function fetchDetailReadonly(WorkflowInterface $workflow);
+    abstract protected function fetchDetailReadonly();
 
 
     /**
      * Display workflow detail editable with action
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    protected function fetchEdit(WorkflowInterface $workflow)
+    protected function fetchEdit()
     {
-        return $this->fetchDetailEditable($workflow) .
-            $this->fetchAction($workflow) .
-            $this->fetchLink($workflow) .
-            $this->fetchLog($workflow);
+        return $this->fetchDetailEditable() .
+            $this->fetchAction() .
+            $this->fetchLink() .
+            $this->fetchLog();
     }
 
 
     /**
      * Display workflow link
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    abstract protected function fetchLink(WorkflowInterface $workflow);
+    abstract protected function fetchLink();
 
 
     /**
      * Display workflow log
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    abstract protected function fetchLog(WorkflowInterface $workflow);
+    abstract protected function fetchLog();
 
 
     /**
      * Display workflow detail readonly with action
      *
-     * @param   WorkflowInterface   $workflow
      * @return  string
      */
-    protected function fetchReview(WorkflowInterface $workflow)
+    protected function fetchReview()
     {
-        return $this->fetchDetailReadonly($workflow) .
-            $this->fetchAction($workflow) .
-            $this->fetchLink($workflow) .
-            $this->fetchLog($workflow);
+        return $this->fetchDetailReadonly() .
+            $this->fetchAction() .
+            $this->fetchLink() .
+            $this->fetchLog();
     }
 
 
@@ -195,11 +195,11 @@ abstract class AbstractWorkflowView extends AbstractView
 
         $workflowClassname = $this->getWorkflowClassname($action);
         $uuid = $this->getWorkflowUuid();
-        $workflow = $this->createWorkflow($workflowClassname, $uuid);
+        $this->createWorkflow($workflowClassname, $uuid);
 
         $workflowAction = $this->getWorkflowAction();
         if (!empty($workflowAction)) {
-            $workflow->execute($workflowAction);
+            $this->workflow->execute($workflowAction);
         }
 
         $viewAction = $this->getViewAction($workflowAction, $action);
@@ -214,7 +214,7 @@ abstract class AbstractWorkflowView extends AbstractView
             );
         }
 
-        return $this->$fetchMethod($workflow);
+        return $this->$fetchMethod();
     }
 
 
