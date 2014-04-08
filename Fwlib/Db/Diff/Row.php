@@ -66,9 +66,9 @@ class Row
     {
         $this->table = $table;
         $this->primaryKey = $primaryKey;
+        $this->mode = $this->determineMode($old, $new);
         $this->old = $old;
         $this->new = $new;
-        $this->mode = $this->determineMode($old, $new);
 
         $this->removeDuplicateColumn();
     }
