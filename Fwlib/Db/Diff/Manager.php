@@ -39,9 +39,9 @@ class Manager
     /**
      * Constructor
      *
-     * @param   RowSet  $rowSet
+     * @param   RowSet|string   $rowSet
      */
-    public function __construct(RowSet $rowSet = null)
+    public function __construct($rowSet = null)
     {
         if (empty($rowSet)) {
             $this->renew();
@@ -121,8 +121,8 @@ class Manager
         foreach ($keys as $key) {
             $this->addRow(
                 $table,
-                empty($oldRow) ? null : $oldRow[$key],
-                empty($newRow) ? null : $newRow[$key]
+                empty($oldRows) ? null : $oldRows[$key],
+                empty($newRows) ? null : $newRows[$key]
             );
         }
 
