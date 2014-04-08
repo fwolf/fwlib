@@ -1,12 +1,15 @@
 <?php
 namespace Fwlib\Db\Diff;
 
-use Fwlib\Bridge\Adodb;
+use Fwlib\Db\Diff\Executor;
+use Fwlib\Db\Diff\ExecutorInterface;
 use Fwlib\Db\Diff\Row;
 use Fwlib\Db\Diff\RowSet;
 
 /**
  * Manage and execute RowSet
+ *
+ * The execute of RowSet is done by Executor.
  *
  * @copyright   Copyright 2012-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -16,9 +19,9 @@ use Fwlib\Db\Diff\RowSet;
 class Manager
 {
     /**
-     * @var Fwlib\Bridge\Adodb
+     * @var ExecutorInterface
      */
-    protected $db = null;
+    protected $executor = null;
 
     /**
      * Cache of table primaryKey, reduce db query
@@ -36,15 +39,14 @@ class Manager
     /**
      * Constructor
      *
-     * @param   Adodb   $db
      * @param   RowSet  $rowSet
      */
-    public function __construct($db = null, RowSet $rowSet = null)
+    public function __construct(RowSet $rowSet = null)
     {
-        $this->db = $db;
-
         if (empty($rowSet)) {
             $this->renew();
+        } else {
+            $this->setRowSet($rowSet);
         }
     }
 
@@ -172,36 +174,7 @@ class Manager
      */
     public function commit()
     {
-        if (empty($this->rowSet) || 0 == $this->rowSet->getRowCount()) {
-            return $this;
-        }
-
-        if ($this->rowSet->isCommitted()) {
-            throw new \Exception('RowSet is already committed');
-        }
-
-        $sqlArray = $this->generateCommitSql();
-        $db = $this->getDb();
-
-        $db->BeginTrans();
-
-        try {
-            foreach ((array)$sqlArray as $sql) {
-                $db->execute($sql);
-
-                if (0 != $db->getErrorCode()) {
-                    throw new \Exception($db->getErrorMessage());
-                }
-            }
-
-            $db->CommitTrans();
-            $this->rowSet->setCommitted();
-
-        } catch (\Exception $e) {
-            $db->RollbackTrans();
-
-            throw new \Exception($e->getMessage());
-        }
+        $this->getExecutor()->commit($this->rowSet);
 
         return $this;
     }
@@ -231,146 +204,24 @@ class Manager
      */
     public function execute()
     {
-        if ($this->rowSet->isExecuted()) {
-            throw new \Exception('RowSet is already executed');
-        }
-
-        $this->commit();
+        $this->getExecutor()->execute($this->rowSet);
 
         return $this;
     }
 
 
     /**
-     * Generate commit sql array
+     * Getter of RowSet Executor
      *
-     * Didn't check execute status of row set.
-     *
-     * @return  array
+     * @return  ExecutorInterface
      */
-    protected function generateCommitSql()
+    protected function getExecutor()
     {
-        $sqlArray = array();
-        $db = $this->getDb();
-
-        foreach ($this->rowSet->getRows() as $row) {
-            $sqlConfig = array();
-            $table = $row->getTable();
-
-            switch ($row->getMode()) {
-                case 'INSERT':
-                    $sqlConfig['INSERT'] = $table;
-
-                    $sqlConfig['VALUES'] = $row->getNew();
-
-                    break;
-
-                case 'DELETE':
-                    $sqlConfig['DELETE'] = $table;
-                    // Limit rowcount to 1 for safety
-                    $sqlConfig['LIMIT'] = 1;
-
-                    foreach ((array)$row->getPrimaryKey() as $key) {
-                        $sqlConfig['WHERE'][] = $key . ' = ' .
-                            $db->quoteValue($table, $key, $row->getOld($key));
-                    }
-
-                    break;
-
-                case 'UPDATE':
-                    $sqlConfig['UPDATE'] = $table;
-                    // Limit rowcount to 1 for safety
-                    $sqlConfig['LIMIT'] = 1;
-
-                    $sqlConfig['SET'] = $row->getNewWithoutPrimaryKey();
-
-                    foreach ((array)$row->getPrimaryKey() as $key) {
-                        $sqlConfig['WHERE'][] = $key . ' = ' .
-                            $db->quoteValue($table, $key, $row->getOld($key));
-                    }
-
-                    break;
-
-                default:
-                    throw new \Exception("Invalid mode {$row->getMode()}");
-            }
-
-            $sqlArray[] = $db->generateSql($sqlConfig);
+        if (is_null($this->executor)) {
+            $this->executor = new Executor();
         }
 
-        return $sqlArray;
-    }
-
-
-    /**
-     * Generate rollback sql array
-     *
-     * Didn't check execute status of row set.
-     *
-     * @return  array
-     */
-    protected function generateRollbackSql()
-    {
-        $sqlArray = array();
-        $db = $this->getDb();
-
-        foreach ($this->rowSet->getRows() as $row) {
-            $sqlConfig = array();
-            $table = $row->getTable();
-
-            switch ($row->getMode()) {
-                case 'INSERT':
-                    $sqlConfig['DELETE'] = $table;
-                    // Limit rowcount to 1 for safety
-                    $sqlConfig['LIMIT'] = 1;
-
-                    foreach ((array)$row->getPrimaryKey() as $key) {
-                        $sqlConfig['WHERE'][] = $key . ' = ' .
-                            $db->quoteValue($table, $key, $row->getNew($key));
-                    }
-
-                    break;
-
-                case 'DELETE':
-                    $sqlConfig['INSERT'] = $table;
-
-                    $sqlConfig['VALUES'] = $row->getOld();
-
-                    break;
-
-                case 'UPDATE':
-                    $sqlConfig['UPDATE'] = $table;
-                    // Limit rowcount to 1 for safety
-                    $sqlConfig['LIMIT'] = 1;
-
-                    $sqlConfig['SET'] = $row->getOldWithoutPrimaryKey();
-
-                    foreach ((array)$row->getPrimaryKey() as $key) {
-                        $sqlConfig['WHERE'][] = $key . ' = ' .
-                            $db->quoteValue($table, $key, $row->getNew($key));
-                    }
-
-                    break;
-
-                default:
-                    throw new \Exception("Invalid mode {$row->getMode()}");
-            }
-
-            $sqlArray[] = $db->generateSql($sqlConfig);
-        }
-
-        return $sqlArray;
-    }
-
-
-    /**
-     * Getter of db connection
-     *
-     * @return  Adodb
-     */
-    protected function getDb()
-    {
-        return $this->db;
+        return $this->executor;
     }
 
 
@@ -384,6 +235,20 @@ class Manager
      */
     protected function getPrimaryKey($table)
     {
+        return 'uuid';
+
+        /**
+         * After removed dependence of Adodb, there are no way to retrieve
+         * table primary key, so here is 2 solution:
+         *
+         * - Use stable primary key or have a map here to got it
+         * - Query from db by Adodb or other db library
+         *
+         * By default we use solid 'uuid' as primary key, the old code using
+         * Adodb is commented below.
+         */
+
+        /*
         if (isset($this->primaryKeyCache[$table])) {
             return $this->primaryKeyCache[$table];
         }
@@ -396,6 +261,7 @@ class Manager
 
         $this->primaryKeyCache[$table] = $primaryKey;
         return $primaryKey;
+         */
     }
 
 
@@ -455,50 +321,21 @@ class Manager
      */
     public function rollback()
     {
-        if (empty($this->rowSet) || 0 == $this->rowSet->getRowCount()) {
-            return $this;
-        }
-
-        if ($this->rowSet->isRollbacked()) {
-            throw new \Exception('RowSet is already rollbacked');
-        }
-
-        $sqlArray = $this->generateRollbackSql();
-        $db = $this->getDb();
-
-        $db->BeginTrans();
-
-        try {
-            foreach ((array)$sqlArray as $sql) {
-                $db->execute($sql);
-
-                if (0 != $db->getErrorCode()) {
-                    throw new \Exception($db->getErrorMessage());
-                }
-            }
-
-            $db->CommitTrans();
-            $this->rowSet->setRollbacked();
-
-        } catch (\Exception $e) {
-            $this->db->RollbackTrans();
-
-            throw new \Exception($e->getMessage());
-        }
+        $this->getExecutor()->rollback($this->rowSet);
 
         return $this;
     }
 
 
     /**
-     * Setter of db connection
+     * Setter of RowSet Executor
      *
-     * @param   Adodb   $db
+     * @param   ExecutorInterface   $executor
      * @return  Manager
      */
-    public function setDb(Adodb $db)
+    public function setExecutor(ExecutorInterface $executor)
     {
-        $this->db = $db;
+        $this->executor = $executor;
 
         return $this;
     }
