@@ -85,15 +85,15 @@ abstract class AbstractWorkflowView extends AbstractView
 
 
     /**
-     * Create workflow instance
+     * Create or load workflow instance
      *
      * @param   string  $classname
      * @param   string  $uuid
      * @return  WorkflowInterface
      */
-    protected function createWorkflow($classname, $uuid = '')
+    protected function createOrLoadWorkflow($classname, $uuid = '')
     {
-        $this->workflow = new $classname($this->serviceContainer, $uuid);
+        $this->workflow = new $classname($uuid);
 
         return $this->workflow;
     }
@@ -195,7 +195,7 @@ abstract class AbstractWorkflowView extends AbstractView
 
         $workflowClassname = $this->getWorkflowClassname($action);
         $uuid = $this->getWorkflowUuid();
-        $this->createWorkflow($workflowClassname, $uuid);
+        $this->createOrLoadWorkflow($workflowClassname, $uuid);
 
         $workflowAction = $this->getWorkflowAction();
         if (!empty($workflowAction)) {
