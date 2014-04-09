@@ -72,8 +72,13 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
 
         $this->reflectionSet(
             $view,
-            'workflowClassnamePrefix',
-            'Fwlib\\Model\\Workflow\\Test\\'
+            'workflowClassname',
+            'Fwlib\\Model\\Workflow\\Test\\AbstractWorkflowDummy'
+        );
+        $this->reflectionSet(
+            $view,
+            'viewActionPrefix',
+            'workflow-dummy-'
         );
 
         return $view;
@@ -86,7 +91,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
 
         // Workflow action not defined, view action comes from url
         $_GET = array(
-            'a'     => 'AbstractWorkflowDummy-detail',
+            'a'     => 'workflow-dummy-detail',
             'uuid'  => 'workflowUuid',
         );
 
@@ -103,14 +108,14 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
             $output
         );
 
-        $_GET['a'] = 'AbstractWorkflowDummy-edit';
+        $_GET['a'] = 'workflow-dummy-edit';
         $output = $view->setAction($_GET['a'])->getOutput();
         $this->assertEquals(
             '{header}{detailEditable}{action}{link}{log}{footer}',
             $output
         );
 
-        $_GET['a'] = 'AbstractWorkflowDummy-review';
+        $_GET['a'] = 'workflow-dummy-review';
         $output = $view->setAction($_GET['a'])->getOutput();
         $this->assertEquals(
             '{header}{detailReadonly}{action}{link}{log}{footer}',
@@ -122,7 +127,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
         // 'viewActionAfterExecute' will be used, ignore view action from url.
         // The view action of submit is detail
         $_GET = array(
-            'a'     => 'AbstractWorkflowDummy-edit',
+            'a'     => 'workflow-dummy-edit',
             'wfa'   => 'submit',
             'uuid'  => 'workflowUuid',
         );
@@ -144,23 +149,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
         $view = $this->view;
 
         $_GET = array(
-            'a'     => 'AbstractWorkflowDummy-invalid-view-action',
-        );
-
-        $output = $view->setAction($_GET['a'])->getOutput();
-    }
-
-
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage View action lost
-     */
-    public function testGetOutputWithoutViewAction()
-    {
-        $view = $this->view;
-
-        $_GET = array(
-            'a'     => 'AbstractWorkflowDummy',
+            'a'     => 'workflow-dummy-invalid-view-action',
         );
 
         $output = $view->setAction($_GET['a'])->getOutput();

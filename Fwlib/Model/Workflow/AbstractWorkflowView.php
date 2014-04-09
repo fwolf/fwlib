@@ -41,10 +41,24 @@ abstract class AbstractWorkflowView extends AbstractView
     protected $uuidParameter = 'uuid';
 
     /**
+     * View action prefix
+     *
+     * In common, view action will include information about which workflow it
+     * belongs to, used in controler. But this long view action name is not
+     * convenience here. As many view of a single workflow's names always have
+     * same prefix, so set here and strip it in getViewAction() to get short
+     * real view action to use.
+     *
+     * @var string
+     */
+    protected $viewActionPrefix = '';
+
+    /**
      * View action after execute workflow action
      *
-     * If view action are defined here, will skip getWorkflowViewAction(),
-     * which parse action from url param.
+     * If there are workflow action and have corresponding view action defined
+     * here, the origin view action $action will be skipped in
+     * getViewAction(), value of this array will act as working view action.
      *
      * @var array
      */
@@ -68,32 +82,22 @@ abstract class AbstractWorkflowView extends AbstractView
     protected $workflowActionParameter = 'wfa';
 
     /**
-     * Prefix of workflow classname
-     *
-     * When using workflow classname as part of action in url, the full
-     * qualified classname is too encumbrance, so only unqualified name is
-     * used. The classname in url parameter will be used to create workflow
-     * instance, unqualified classname means view can only create workflow
-     * class instance in same namespace with them.  If workflow class is under
-     * different namespace with view, their full qualified classname prefix
-     * need to define here, the getWorkflowClassname() method will read and
-     * add it to unqualified name.
+     * Workflow classname
      *
      * @var string
      */
-    protected $workflowClassnamePrefix = '';
+    protected $workflowClassname = '';
 
 
     /**
      * Create or load workflow instance
      *
-     * @param   string  $classname
      * @param   string  $uuid
      * @return  WorkflowInterface
      */
-    protected function createOrLoadWorkflow($classname, $uuid = '')
+    protected function createOrLoadWorkflow($uuid = '')
     {
-        $this->workflow = new $classname($uuid);
+        $this->workflow = new $this->workflowClassname($uuid);
 
         return $this->workflow;
     }
@@ -182,10 +186,6 @@ abstract class AbstractWorkflowView extends AbstractView
 
     /**
      * {@inheritdoc}
-     *
-     * The action param transfer from Controler should follow format:
-     * 'WorkflowClassname-view-action', if child class changed this format,
-     * need to change getWorkflowClassname() and getViewAction() method too.
      */
     protected function getOutputBody()
     {
@@ -193,9 +193,8 @@ abstract class AbstractWorkflowView extends AbstractView
             return '';
         }
 
-        $workflowClassname = $this->getWorkflowClassname();
         $uuid = $this->getWorkflowUuid();
-        $this->createOrLoadWorkflow($workflowClassname, $uuid);
+        $this->createOrLoadWorkflow($uuid);
 
         $workflowAction = $this->getWorkflowAction();
         if (!empty($workflowAction)) {
@@ -234,12 +233,11 @@ abstract class AbstractWorkflowView extends AbstractView
 
         // Then read from $action
         if (empty($viewAction)) {
-            // This search will not return false, because there is simular
-            // operate when get workflow classname, if '-' cannot found in
-            // action, exception is already throwed.
-            $viewAction = strstr($this->action, '-');
-
-            $viewAction = substr($viewAction, 1);
+            $viewAction = preg_replace(
+                "/^{$this->viewActionPrefix}/",
+                '',
+                $this->action
+            );
         }
 
         return $viewAction;
@@ -266,24 +264,6 @@ abstract class AbstractWorkflowView extends AbstractView
         }
 
         return $action;
-    }
-
-
-    /**
-     * Get workflow classname from $action
-     *
-     * @return  string
-     */
-    protected function getWorkflowClassname()
-    {
-        $classname = strstr($this->action, '-', true);
-
-        // Without view action
-        if (false === $classname) {
-            throw new \Exception('View action lost');
-        }
-
-        return $this->workflowClassnamePrefix . $classname;
     }
 
 
