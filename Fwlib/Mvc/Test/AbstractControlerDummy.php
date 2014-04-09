@@ -28,9 +28,4 @@ class AbstractControlerDummy
     public function setPathToRoot($pathToRoot)
     {
     }
-
-
-    public function setServiceContainer($serviceContainer)
-    {
-    }
 }

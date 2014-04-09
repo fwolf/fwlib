@@ -1,9 +1,8 @@
 <?php
 namespace Fwlib\Mvc;
 
-use Fwlib\Base\AbstractAutoNewInstance;
-use Fwlib\Bridge\Smarty;
 use Fwlib\Mvc\ViewInterface;
+use Fwlib\Util\UtilContainer;
 
 /**
  * View in MVC
@@ -15,8 +14,7 @@ use Fwlib\Mvc\ViewInterface;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-04-06
  */
-abstract class AbstractView extends AbstractAutoNewInstance implements
-    ViewInterface
+abstract class AbstractView implements ViewInterface
 {
     /**
      * Current action string
@@ -190,7 +188,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
             return '';
         }
 
-        $stringUtil = $this->getUtil('StringUtil');
+        $stringUtil = UtilContainer::getInstance()->get('StringUtil');
 
         $method = $this->methodPrefix . $stringUtil->toStudlyCaps($this->action);
         if (!method_exists($this, $method)) {
@@ -210,7 +208,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      */
     protected function getOutputFooter()
     {
-        return $this->getSmarty()->fetch('footer.tpl');
+        return '<!-- footer -->';
     }
 
 
@@ -224,30 +222,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
         // Avoid duplicate js, css is 2-dim array, can't do unique on it
         $this->js = array_unique($this->js);
 
-        return $this->getSmarty()->fetch('header.tpl');
-    }
-
-
-    /**
-     * Get Smarty instance
-     *
-     * @return  Smarty
-     */
-    protected function getSmarty()
-    {
-        if (is_null($this->smarty)) {
-            $smarty = $this->getService('Smarty');
-
-            // Connect View info to Smarty
-            $smarty->assignByRef('css', $this->css);
-            $smarty->assignByRef('js', $this->js);
-            $smarty->assignByRef('pathToRoot', $this->pathToRoot);
-            $smarty->assignByRef('viewTitle', $this->title);
-
-            $this->smarty = $smarty;
-        }
-
-        return $this->smarty;
+        return '<!-- header -->';
     }
 
 

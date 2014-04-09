@@ -4,7 +4,6 @@ namespace Fwlib\Mvc\Test;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
 use Fwlib\Mvc\AbstractViewCache;
-use Fwlib\Test\ServiceContainerTest;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -15,27 +14,21 @@ use Fwlib\Util\UtilContainer;
  */
 class AbstractViewCacheTest extends PHPunitTestCase
 {
-    protected $serviceContainer;
     protected $view;
     public static $forceRefreshCache = false;
-
-
-    public function __construct()
-    {
-        $this->serviceContainer = ServiceContainerTest::getInstance();
-    }
 
 
     protected function buildMock($pathToRoot)
     {
         $view = $this->getMock(
             'Fwlib\Mvc\AbstractViewCache',
-            array('getOutputBody', 'newInstanceCache'),
+            array('getCache', 'getOutputBody', 'newInstanceCache'),
             array($pathToRoot)
         );
 
-        $view->setServiceContainer($this->serviceContainer);
-        $this->serviceContainer->register('Cache', Cache::create());
+        $view->expects($this->any())
+            ->method('getCache')
+            ->will($this->returnValue(Cache::create()));
 
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their
@@ -61,17 +54,19 @@ class AbstractViewCacheTest extends PHPunitTestCase
     {
         $view = $this->getMock(
             'Fwlib\Mvc\AbstractViewCache',
-            array('forceRefreshCache', 'getOutputBody', 'newInstanceCache'),
+            array('forceRefreshCache', 'getCache', 'getOutputBody'),
             array($pathToRoot)
         );
-
-        $view->setServiceContainer($this->serviceContainer);
 
         $view->expects($this->any())
             ->method('forceRefreshCache')
             ->will($this->returnCallback(function () {
                 return AbstractViewCacheTest::$forceRefreshCache;
             }));
+
+        $view->expects($this->any())
+            ->method('getCache')
+            ->will($this->returnValue(Cache::create('')));
 
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their
@@ -83,10 +78,6 @@ class AbstractViewCacheTest extends PHPunitTestCase
                 $datetimeUtil = UtilContainer::getInstance()->get('DatetimeUtil');
                 return $datetimeUtil->getMicroTime();
             }));
-
-        $view->expects($this->any())
-            ->method('newInstanceCache')
-            ->will($this->returnValue(Cache::create('')));
 
 
         return $view;

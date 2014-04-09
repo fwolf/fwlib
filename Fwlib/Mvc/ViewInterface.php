@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Mvc;
 
-use Fwlib\Base\AbstractServiceContainer;
 
 /**
  * View interface
@@ -19,17 +18,4 @@ interface ViewInterface
      * @return  string
      */
     public function getOutput();
-
-
-    /**
-     * Setter of ServiceContainer instance
-     *
-     * ServiceContainer can inject to Model.
-     *
-     * @param   AbstractServiceContainer    $serviceContainer
-     * @return  ViewInterface
-     */
-    public function setServiceContainer(
-        AbstractServiceContainer $serviceContainer
-    );
 }

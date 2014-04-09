@@ -2,9 +2,7 @@
 namespace Fwlib\Mvc\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Bridge\Smarty;
 use Fwlib\Mvc\AbstractView;
-use Fwlib\Test\ServiceContainerTest;
 
 /**
  * @copyright   Copyright 2013-2014 Fwolf
@@ -14,17 +12,10 @@ use Fwlib\Test\ServiceContainerTest;
  */
 class AbstractViewTest extends PHPunitTestCase
 {
-    protected $serviceContainer;
     protected $view;
     public static $class_exists = true;
     public static $assignByRef = array();
     public static $error_log = '';
-
-
-    public function __construct()
-    {
-        $this->serviceContainer = ServiceContainerTest::getInstance();
-    }
 
 
     protected function buildMock($pathToRoot)
@@ -35,11 +26,9 @@ class AbstractViewTest extends PHPunitTestCase
             array($pathToRoot)
         );
 
-        $view->setServiceContainer($this->serviceContainer);
-
         $view->expects($this->any())
             ->method('fetchTestAction')
-            ->will($this->returnValue('_body for test action_'));
+            ->will($this->returnValue('<body for test action>'));
 
 
         // Mock a smarty instance
@@ -57,8 +46,6 @@ class AbstractViewTest extends PHPunitTestCase
             ->will($this->returnCallback(function ($name, $value) {
                 AbstractViewTest::$assignByRef[$name] = $value;
             }));
-
-        $this->serviceContainer->register('Smarty', $smarty);
 
 
         return $view;
@@ -79,12 +66,12 @@ class AbstractViewTest extends PHPunitTestCase
         $view = $this->buildMock('path/to/root/');
 
         $this->assertEquals(
-            'header.tplfooter.tpl',
+            '<!-- header --><!-- footer -->',
             $view->getOutput()
         );
 
         $this->assertEquals(
-            'header.tpl_body for test action_footer.tpl',
+            '<!-- header --><body for test action><!-- footer -->',
             $view->setAction('test-action')->getOutput()
         );
     }
@@ -143,7 +130,7 @@ class AbstractViewTest extends PHPunitTestCase
         $view->setUseTidy(false);
         $this->assertFalse($view->getUseTidy());
         $this->assertEquals(
-            'header.tpl_body for test action_footer.tpl',
+            '<!-- header --><body for test action><!-- footer -->',
             $view->setAction('test-action')->getOutput()
         );
 

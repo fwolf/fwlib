@@ -18,11 +18,6 @@ use Fwlib\Mvc\AbstractView;
 abstract class AbstractViewCache extends AbstractView
 {
     /**
-     * @var Fwlib\Cache\CacheInterface
-     */
-    protected $cache = null;
-
-    /**
      * Should it use Cache to store output for reuse
      *
      * @var bool
@@ -49,18 +44,9 @@ abstract class AbstractViewCache extends AbstractView
     /**
      * Get Cache instance
      *
-     * Shoud be overwrited by child class if needed.
-     *
      * @return CacheInterface
      */
-    protected function getCache()
-    {
-        if (is_null($this->cache)) {
-            $this->cache = $this->getService('Cache');
-        }
-
-        return $this->cache;
-    }
+    abstract protected function getCache();
 
 
     /**

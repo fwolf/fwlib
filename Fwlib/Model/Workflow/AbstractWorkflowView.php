@@ -3,6 +3,7 @@ namespace Fwlib\Model\Workflow;
 
 use Fwlib\Model\Workflow\WorkflowInterface;
 use Fwlib\Mvc\AbstractView;
+use Fwlib\Util\UtilContainer;
 
 /**
  * View for workflow
@@ -203,7 +204,7 @@ abstract class AbstractWorkflowView extends AbstractView
 
         $viewAction = $this->getViewAction($workflowAction);
 
-        $stringUtil = $this->getUtil('StringUtil');
+        $stringUtil = UtilContainer::getInstance()->get('StringUtil');
         $fetchMethod = $this->methodPrefix .
             $stringUtil->toStudlyCaps($viewAction);
 

@@ -4,7 +4,6 @@ namespace Fwlib\Model\Workflow\Test;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Model\Workflow\AbstractWorkflowView;
 use Fwlib\Model\Workflow\Test\AbstractWorkflowDummy;
-use Fwlib\Test\ServiceContainerTest;
 
 /**
  * @copyright   Copyright 2014 Fwolf
@@ -14,18 +13,6 @@ use Fwlib\Test\ServiceContainerTest;
  */
 class AbstractWorkflowViewTest extends PHPunitTestCase
 {
-    protected $serviceContainer;
-    protected $view;
-
-
-    public function __construct()
-    {
-        $this->serviceContainer = ServiceContainerTest::getInstance();
-
-        $this->view = $this->buildMock();
-    }
-
-
     protected function buildMock()
     {
         $view = $this->getMockBuilder(
@@ -68,8 +55,6 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
             ->method('fetchLog')
             ->will($this->returnValue('{log}'));
 
-        $view->setServiceContainer($this->serviceContainer);
-
         $this->reflectionSet(
             $view,
             'workflowClassname',
@@ -87,7 +72,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
 
     public function testGetOutput()
     {
-        $view = $this->view;
+        $view = $this->buildMock();
 
         // Workflow action not defined, view action comes from url
         $_GET = array(
@@ -146,7 +131,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
      */
     public function testGetOutputWithInvalidViewAction()
     {
-        $view = $this->view;
+        $view = $this->buildMock();
 
         $_GET = array(
             'a'     => 'workflow-dummy-invalid-view-action',
