@@ -291,17 +291,15 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * Only actions of current node can be available, and default available.
      *
-     * Available check can be done in this method, or make action have their
-     * own check methon, named as isAction[ActionName]Available(), return
-     * false to make this action unavailable.
+     * User should not extend this method directly, instead, user can create
+     * customize check method for any single $action, named as
+     * isAction[ActionName]Available(). These method should explicit return
+     * true to pass available check, other return value will be consider as
+     * check fail, and will be saved as fail reason/message in property
+     * $actionNotAvailableMessage. This property can be used to show user why
+     * these action can't execute.
      *
-     * Available check method may write action unavailable message to
-     * $actionNotAvailableMessage property, the View could use this to show
-     * user why these action can't execute.
-     *
-     * Child class may extend this method or make action specified method to
-     * add customize check, this is more flexible than complicated condition
-     * string.
+     * This is more flexible than complicated condition string.
      *
      * @param   string  $action
      * @return  boolean
@@ -314,17 +312,15 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
         // Use action specified check method
         $method = "isAction" . ucfirst($action) . "Available";
-        if (method_exists($this, $method) && false === $this->$method()) {
-            return false;
-        }
+        if (method_exists($this, $method)) {
+            $checkResult = $this->$method();
 
-        // In child class, should call parent check like this:
-        /*
-        if (!parent::isActionAvailable($action)) {
-            return false;
+            if (true !== $checkResult) {
+                $this->actionNotAvailableMessage[$action] =
+                    (string)$checkResult;
+                return false;
+            }
         }
-        // Do other check
-         */
 
         unset($this->actionNotAvailableMessage[$action]);
         return true;

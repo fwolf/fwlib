@@ -49,11 +49,16 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     }
 
 
+    protected function isActionCustomizedActionAvailable()
+    {
+        // Just a dummy for code coverage
+        return true;
+    }
+
+
     protected function isActionNotAvailableActionAvailable()
     {
-        $this->actionNotAvailableMessage['notAvailableAction'] = 'reason';
-
-        return false;
+        return 'this action is not available';
     }
 
 
