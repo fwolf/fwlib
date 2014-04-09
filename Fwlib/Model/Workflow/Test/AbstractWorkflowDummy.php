@@ -51,6 +51,8 @@ class AbstractWorkflowDummy extends AbstractWorkflow
 
     protected function isActionNotAvailableActionAvailable()
     {
+        $this->actionNotAvailableMessage['notAvailableAction'] = 'reason';
+
         return false;
     }
 

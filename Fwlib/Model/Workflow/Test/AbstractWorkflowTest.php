@@ -44,9 +44,22 @@ class AbstractWorkflowTest extends PHPunitTestCase
     }
 
 
+    public function testGetActionNotAvailableMessage()
+    {
+        $workflow = $this->buildMockWithDummy('dummyUuid');
+
+        $workflow->getAvailableAction();
+
+        $this->assertArrayHasKey(
+            'notAvailableAction',
+            $workflow->getActionNotAvailableMessage()
+        );
+    }
+
+
     public function testExecute()
     {
-        $workflow = $this->buildMock();
+        $workflow = $this->buildMockWithDummy();
 
         $contentData = array('dummy');
         $_POST = $contentData;
@@ -62,6 +75,10 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
         // Content data is set
         $this->assertEqualArray($contentData, $workflow->getContent());
+
+        // Rollback
+        $workflow->execute('rollback');
+        $this->assertEquals('start', $workflow->getCurrentNode());
     }
 
 
