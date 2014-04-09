@@ -2,7 +2,6 @@
 namespace Fwlib\Model\Workflow;
 
 use Fwlib\Model\Workflow\WorkflowInterface;
-use Fwlib\Util\UtilContainer;
 
 /**
  * Workflow instance
@@ -189,19 +188,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Generate an uuid
-     *
-     * @return  string
-     */
-    protected function generateUuid()
-    {
-        $uuidUtil = UtilContainer::getInstance()->get('UuidBase36');
-
-        return $uuidUtil->generate();
-    }
-
-
-    /**
      * Getter of $actionNotAvailableMessage
      *
      * @return  array
@@ -285,16 +271,14 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Initialize this workflow instance as new
+     * Initialize an empty workflow instance
      *
      * The load() method is readed from an exists instance data, so it will
      * skip this method.
      */
     protected function initialize()
     {
-        $this->uuid = $this->generateUuid();
-
-        // Other property can be extend and assign by child class
+        // Prepare content for later work, or do nothing
 
         // Optional: Log workflow create operate, mark node changed from empty
         // to start node 'start'.
@@ -433,6 +417,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
     /**
      * Save workflow
+     *
+     * For new created workflow instance, save() method should generate and
+     * update $uuid property.
      */
     abstract protected function save();
 

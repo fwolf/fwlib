@@ -2,6 +2,7 @@
 namespace Fwlib\Model\Workflow\Test;
 
 use Fwlib\Model\Workflow\AbstractWorkflow;
+use Fwlib\Util\UtilContainer;
 
 /**
  * This class is not abstract, because AbstractWorkflowView need to create its
@@ -61,6 +62,9 @@ class AbstractWorkflowDummy extends AbstractWorkflow
 
     protected function save()
     {
+        $uuidUtil = UtilContainer::getInstance()->get('UuidBase36');
+
+        $this->uuid = $uuidUtil->generate();
     }
 
 

@@ -56,9 +56,6 @@ class AbstractWorkflowTest extends PHPunitTestCase
         // Node is moved
         $this->assertEquals('end', $workflow->getCurrentNode());
 
-        // Uuid is generated
-        $this->assertNotEmpty($workflow->getUuid());
-
         // ResultCode is approved
         $this->assertTrue($workflow->isApproved());
         $this->assertEquals('Approved', $workflow->getResultCodeTitle());
@@ -84,6 +81,9 @@ class AbstractWorkflowTest extends PHPunitTestCase
             AbstractWorkflow::RESULT_CODE_REJECTED,
             $workflow->getResultCode()
         );
+
+        // Uuid is generated
+        $this->assertNotEmpty($workflow->getUuid());
     }
 
 
