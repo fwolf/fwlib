@@ -103,11 +103,11 @@ class AbstractWorkflowTest extends PHPunitTestCase
      * @expectedException Exception
      * @expectedExceptionMessage Invalid or not allowed action
      */
-    public function testExecuteWithUnAvailableAction()
+    public function testExecuteWithNotAvailableAction()
     {
         $workflow = $this->buildMockWithDummy('dummyUuid');
 
-        $workflow->execute('unAvailableAction');
+        $workflow->execute('notAvailableAction');
     }
 
 

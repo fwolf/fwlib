@@ -23,7 +23,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
                     'next'  => 'end',
                     'resultCode'     => self::RESULT_CODE_APPROVED,
                 ),
-                'unAvailableAction' => array(
+                'notAvailableAction' => array(
                 ),
                 'customizedAction'  => array(
                     'next'  => 'end',
@@ -48,7 +48,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     }
 
 
-    protected function isActionUnAvailableActionAvailable()
+    protected function isActionNotAvailableActionAvailable()
     {
         return false;
     }

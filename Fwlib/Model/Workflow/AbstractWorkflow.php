@@ -28,6 +28,13 @@ abstract class AbstractWorkflow extends AbstractModel implements
 
 
     /**
+     * Message/reason of action not available
+     *
+     * @var array   {action: message}
+     */
+    protected $actionNotAvailableMessage = array();
+
+    /**
      * Content which workflow carried
      *
      * This doesn't include workflow property like uuid, currentNode etc.
@@ -202,6 +209,17 @@ abstract class AbstractWorkflow extends AbstractModel implements
 
 
     /**
+     * Getter of $actionNotAvailableMessage
+     *
+     * @return  array
+     */
+    public function getActionNotAvailableMessage()
+    {
+        return $this->actionNotAvailableMessage;
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public function getAvailableAction()
@@ -300,6 +318,10 @@ abstract class AbstractWorkflow extends AbstractModel implements
      * own check methon, named as isAction[ActionName]Available(), return
      * false to make this action unavailable.
      *
+     * Available check method may write action unavailable message to
+     * $actionNotAvailableMessage property, the View could use this to show
+     * user why these action can't execute.
+     *
      * Child class may extend this method or make action specified method to
      * add customize check, this is more flexible than complicated condition
      * string.
@@ -327,6 +349,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
         // Do other check
          */
 
+        unset($this->actionNotAvailableMessage[$action]);
         return true;
     }
 
