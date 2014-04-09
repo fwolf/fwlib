@@ -74,9 +74,9 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     }
 
 
-    protected function updateContent()
+    protected function updateContent(array $data = null)
     {
-        parent::updateContent();
+        parent::updateContent($data);
 
         $this->title .= ' Dummy';
 

@@ -458,11 +458,16 @@ abstract class AbstractWorkflow extends AbstractModel implements
     /**
      * Update $content when execute action
      *
+     * @param   array   $data
      * @return  AbstractWorkflow
      */
-    protected function updateContent()
+    protected function updateContent(array $data = null)
     {
-        $this->content = array_merge($this->content, $_POST);
+        if (is_null($data)) {
+            $data = $_POST;
+        }
+
+        $this->content = array_merge($this->content, $data);
 
         return $this;
     }
