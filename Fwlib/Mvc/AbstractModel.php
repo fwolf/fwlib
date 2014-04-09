@@ -1,42 +1,24 @@
 <?php
 namespace Fwlib\Mvc;
 
-use Fwlib\Base\AbstractAutoNewInstance;
-use Fwlib\Bridge\Adodb;
 use Fwlib\Cache\CacheInterface;
 
 /**
  * Model in MVC
  *
- * Model may invoke various class instance, especially Service class like
- * Adodb, Cache or Util class like ArrayUtil, so this class provide common
- * implement which is needed to use these dependence.
+ * Dependence of ServiceContainer has been removed, this class is mostly
+ * useless, just leave here for at least a template for project base model
+ * class.
  *
- * Inherit AbstractAutoNewInstance for easily new instance, and setter of
- * ServiceContainer and UtilContainer are also included. Property $db and
- * $cache are also common used.
- *
- * Obviously, a Model class which doesn't use db or cache need not to inherit
- * this class.
+ * To make this a little usefull, the feature of cached method call is kept.
  *
  * @copyright   Copyright 2008-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2008-04-06
  */
-abstract class AbstractModel extends AbstractAutoNewInstance
+abstract class AbstractModel
 {
-
-    /**
-     * @var CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var Adodb
-     */
-    protected $db;
-
     /**
      * Should it use cache or not
      *
@@ -115,18 +97,9 @@ abstract class AbstractModel extends AbstractAutoNewInstance
     /**
      * Get Cache instance
      *
-     * Shoud be overwrited by child class if needed.
-     *
      * @return CacheInterface
      */
-    protected function getCache()
-    {
-        if (is_null($this->cache)) {
-            $this->cache = $this->getService('Cache');
-        }
-
-        return $this->cache;
-    }
+    abstract protected function getCache();
 
 
     /**
@@ -186,19 +159,6 @@ abstract class AbstractModel extends AbstractAutoNewInstance
     {
         // Default 60s * 60m = 3600s
         return 3600;
-    }
-
-
-    /**
-     * @return  Adodb
-     */
-    protected function getDb()
-    {
-        if (is_null($this->db)) {
-            $this->db = $this->getService('Db');
-        }
-
-        return $this->db;
     }
 
 

@@ -4,7 +4,6 @@ namespace Fwlib\Mvc\Test;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
 use Fwlib\Mvc\AbstractModel;
-use Fwlib\Test\ServiceContainerTest;
 
 /**
  * @copyright   Copyright 2014 Fwolf
@@ -14,19 +13,14 @@ use Fwlib\Test\ServiceContainerTest;
  */
 class AbstractModelTest extends PHPunitTestCase
 {
-    protected $serviceContainer;
-    protected $model;
+    protected static $cache = null;
     public static $dummyMethod = '';
     public static $forceRefreshCache = false;
 
 
     public function __construct()
     {
-        $this->serviceContainer = ServiceContainerTest::getInstance();
-
-        $this->serviceContainer->registerInstance('Cache', Cache::create(''));
-
-        $this->model = $this->buildMock();
+        self::$cache = Cache::create();
     }
 
 
@@ -34,14 +28,19 @@ class AbstractModelTest extends PHPunitTestCase
     {
         $model = $this->getMock(
             'Fwlib\Mvc\AbstractModel',
-            array('dummyMethod')
+            array('dummyMethod', 'getCache')
         );
-
-        $model->setServiceContainer($this->serviceContainer);
 
         $model->expects($this->any())
             ->method('dummyMethod')
             ->will($this->returnArgument(0));
+
+        // Empty cache log for check later
+        $this->reflectionSet(self::$cache, 'log', array());
+
+        $model->expects($this->any())
+            ->method('getCache')
+            ->will($this->returnValue(self::$cache));
 
         return $model;
     }
@@ -51,10 +50,8 @@ class AbstractModelTest extends PHPunitTestCase
     {
         $model = $this->getMock(
             'Fwlib\Mvc\AbstractModel',
-            array('dummyMethod', 'forceRefreshCache')
+            array('dummyMethod', 'forceRefreshCache', 'getCache')
         );
-
-        $model->setServiceContainer($this->serviceContainer);
 
         $model->expects($this->any())
             ->method('dummyMethod')
@@ -66,16 +63,20 @@ class AbstractModelTest extends PHPunitTestCase
                 return AbstractModelTest::$forceRefreshCache;
             }));
 
+        // Empty cache log for check later
+        $this->reflectionSet(self::$cache, 'log', array());
+
+        $model->expects($this->any())
+            ->method('getCache')
+            ->will($this->returnValue(self::$cache));
+
         return $model;
     }
 
 
     public function testCachedCall()
     {
-        $model = $this->model;
-        $cache = $this->serviceContainer->get('Cache');
-        // Empty cache log for check later
-        $this->reflectionSet($cache, 'log', array());
+        $model = $this->buildMock();
 
         $model->setUseCache(false);
         $this->assertFalse($model->getUseCache());
@@ -85,7 +86,7 @@ class AbstractModelTest extends PHPunitTestCase
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $this->assertEmpty($cache->getLog());
+        $this->assertEmpty(self::$cache->getLog());
 
 
         $model->setUseCache(true);
@@ -96,7 +97,7 @@ class AbstractModelTest extends PHPunitTestCase
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $cacheLog = $cache->getLog();
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
 
@@ -106,7 +107,7 @@ class AbstractModelTest extends PHPunitTestCase
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $cacheLog = $cache->getLog();
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertTrue($cacheLog['success']);
         $this->assertStringEndsWith(
@@ -117,7 +118,7 @@ class AbstractModelTest extends PHPunitTestCase
 
         // Change key, cache get will fail again
         $model->cachedCall('dummyMethod', array('bar'));
-        $cacheLog = $cache->getLog();
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
     }
@@ -125,8 +126,7 @@ class AbstractModelTest extends PHPunitTestCase
 
     public function testCachedCallWithArrayParam()
     {
-        $model = $this->model;
-        $cache = $this->serviceContainer->get('Cache');
+        $model = $this->buildMock();
 
         $model->setUseCache(true);
 
@@ -135,7 +135,7 @@ class AbstractModelTest extends PHPunitTestCase
             array('foo', 'bar'),
             $model->cachedCall('dummyMethod', array(array('foo', 'bar')))
         );
-        $cacheLog = $cache->getLog();
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
 
@@ -145,7 +145,7 @@ class AbstractModelTest extends PHPunitTestCase
             array('foo', 'bar'),
             $model->cachedCall('dummyMethod', array(array('foo', 'bar')))
         );
-        $cacheLog = $cache->getLog();
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertTrue($cacheLog['success']);
         $this->assertStringEndsWith(
@@ -156,7 +156,7 @@ class AbstractModelTest extends PHPunitTestCase
 
         // Change key, cache get will fail again
         $model->cachedCall('dummyMethod', array(array('bar', 'foo')));
-        $cacheLog = $cache->getLog();
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
     }
@@ -165,26 +165,22 @@ class AbstractModelTest extends PHPunitTestCase
     public function testCachedCallWithForceRefreshCache()
     {
         $model = $this->buildMockWithForceRefreshCache();
-        $cache = $this->serviceContainer->get('Cache');
 
         $model->setUseCache(true);
         self::$forceRefreshCache = true;
-        // Empty cache log for check later
-        $this->reflectionSet($cache, 'log', array());
 
         // The get will not go through cache
         $this->assertEquals(
             'foo',
             $model->cachedCall('dummyMethod', array('foo'))
         );
-        $this->assertEmpty($cache->getLog());
+        $this->assertEmpty(self::$cache->getLog());
     }
 
 
     public function testCachedCallWithObjectParam()
     {
-        $model = $this->model;
-        $cache = $this->serviceContainer->get('Cache');
+        $model = $this->buildMock();
 
         $model->setUseCache(true);
 
@@ -192,10 +188,10 @@ class AbstractModelTest extends PHPunitTestCase
 
         // Use cache, the first get from cache will fail
         $this->assertEquals(
-            $cache,
-            $model->cachedCall('dummyMethod', array($cache))
+            self::$cache,
+            $model->cachedCall('dummyMethod', array(self::$cache))
         );
-        $cacheLog = $cache->getLog();
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertFalse($cacheLog['success']);
         $this->assertStringStartsWith(
@@ -208,20 +204,9 @@ class AbstractModelTest extends PHPunitTestCase
         // The decoded return value is different with original object, but
         // this is not what we test for, and json_decode itself can't keep
         // same with object before json_encode. So we check log success only.
-        $model->cachedCall('dummyMethod', array($cache));
-        $cacheLog = $cache->getLog();
+        $model->cachedCall('dummyMethod', array(self::$cache));
+        $cacheLog = self::$cache->getLog();
         $cacheLog = array_pop($cacheLog);
         $this->assertTrue($cacheLog['success']);
-    }
-
-
-    public function testGetDb()
-    {
-        $model = $this->model;
-
-        $this->assertInstanceOf(
-            'Fwlib\Bridge\Adodb',
-            $this->reflectionCall($model, 'getDb')
-        );
     }
 }
