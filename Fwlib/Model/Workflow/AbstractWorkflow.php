@@ -156,9 +156,9 @@ abstract class AbstractWorkflow extends AbstractModel implements
      *
      * In default, this method only include updateContent(), user should
      * define customized executeAction() method to do extra job like convert
-     * form input data, this method need not include moveTo() anymore. To set
-     * specified resultCode when change node, set it in action property in
-     * $node define array.
+     * form input data, this method should not include moveTo() anymore. To
+     * set specified resultCode when change node, set it in action property in
+     * $nodes define array.
      */
     public function execute($action)
     {
@@ -170,6 +170,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
             $this->initialize();
         }
 
+        // User method should decide whether or how to call updateContent()
         $method = 'execute' . ucfirst($action);
         if (method_exists($this, $method)) {
             $this->$method();
