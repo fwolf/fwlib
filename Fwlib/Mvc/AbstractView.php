@@ -146,12 +146,12 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Get output
      *
-     * @param   string  $action
+     * When $action is empty, only show header and footer.
+     *
      * @return  string
      */
-    public function getOutput($action = '')
+    public function getOutput()
     {
-        $this->action = $action;
         $output = '';
 
         foreach ($this->outputPart as $part) {
@@ -163,7 +163,7 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
                 );
             }
 
-            $output .= $this->$method($action);
+            $output .= $this->$method();
         }
 
         if ($this->useTidy) {
@@ -182,21 +182,20 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
      * will call fetchFooBar() for result. Child class can change
      * $methodPrefix or use different mechanishm.
      *
-     * @param   string  $action
      * @return  string
      */
-    protected function getOutputBody($action = '')
+    protected function getOutputBody()
     {
-        if (empty($action)) {
-            return null;
+        if (empty($this->action)) {
+            return '';
         }
 
         $stringUtil = $this->getUtil('StringUtil');
 
-        $method = $this->methodPrefix . $stringUtil->toStudlyCaps($action);
+        $method = $this->methodPrefix . $stringUtil->toStudlyCaps($this->action);
         if (!method_exists($this, $method)) {
             throw new \Exception(
-                "View {$this->methodPrefix} method for action {$action} is not defined"
+                "View {$this->methodPrefix} method for action {$this->action} is not defined"
             );
         }
 
@@ -207,10 +206,9 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Get output of footer part
      *
-     * @param   string  $action
      * @return  string
      */
-    protected function getOutputFooter($action = '')
+    protected function getOutputFooter()
     {
         return $this->getSmarty()->fetch('footer.tpl');
     }
@@ -219,10 +217,9 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     /**
      * Get output of header part
      *
-     * @param   string  $action
      * @return  string
      */
-    protected function getOutputHeader($action = '')
+    protected function getOutputHeader()
     {
         // Avoid duplicate js, css is 2-dim array, can't do unique on it
         $this->js = array_unique($this->js);
@@ -288,6 +285,20 @@ abstract class AbstractView extends AbstractAutoNewInstance implements
     protected function removeJs($name)
     {
         unset($this->js[$name]);
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $action
+     *
+     * @param   string  $action
+     * @return  AbstractView
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
 
         return $this;
     }

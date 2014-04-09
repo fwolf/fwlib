@@ -187,13 +187,13 @@ abstract class AbstractWorkflowView extends AbstractView
      * 'WorkflowClassname-view-action', if child class changed this format,
      * need to change getWorkflowClassname() and getViewAction() method too.
      */
-    protected function getOutputBody($action = '')
+    protected function getOutputBody()
     {
-        if (empty($action)) {
+        if (empty($this->action)) {
             return '';
         }
 
-        $workflowClassname = $this->getWorkflowClassname($action);
+        $workflowClassname = $this->getWorkflowClassname();
         $uuid = $this->getWorkflowUuid();
         $this->createOrLoadWorkflow($workflowClassname, $uuid);
 
@@ -202,7 +202,7 @@ abstract class AbstractWorkflowView extends AbstractView
             $this->workflow->execute($workflowAction);
         }
 
-        $viewAction = $this->getViewAction($workflowAction, $action);
+        $viewAction = $this->getViewAction($workflowAction);
 
         $stringUtil = $this->getUtil('StringUtil');
         $fetchMethod = $this->methodPrefix .
@@ -222,10 +222,9 @@ abstract class AbstractWorkflowView extends AbstractView
      * Get view action
      *
      * @param   string  $workflowAction
-     * @param   string  $action
      * @return  string
      */
-    protected function getViewAction($workflowAction, $action)
+    protected function getViewAction($workflowAction)
     {
         // Try action after execute first
         $viewAction = (isset($this->viewActionAfterExecute[$workflowAction]))
@@ -238,7 +237,7 @@ abstract class AbstractWorkflowView extends AbstractView
             // This search will not return false, because there is simular
             // operate when get workflow classname, if '-' cannot found in
             // action, exception is already throwed.
-            $viewAction = strstr($action, '-');
+            $viewAction = strstr($this->action, '-');
 
             $viewAction = substr($viewAction, 1);
         }
@@ -273,12 +272,11 @@ abstract class AbstractWorkflowView extends AbstractView
     /**
      * Get workflow classname from $action
      *
-     * @param   string  $action
      * @return  string
      */
-    protected function getWorkflowClassname($action)
+    protected function getWorkflowClassname()
     {
-        $classname = strstr($action, '-', true);
+        $classname = strstr($this->action, '-', true);
 
         // Without view action
         if (false === $classname) {

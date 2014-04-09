@@ -66,13 +66,9 @@ abstract class AbstractViewCache extends AbstractView
     /**
      * Gen key of cache by request uri
      *
-     * $action is not used in this implement, but maybe other extended child
-     * class need to use it.
-     *
-     * @param   string  $action
      * @return  string
      */
-    protected function getCacheKey($action = null)
+    protected function getCacheKey()
     {
         if (isset($_SERVER['REQUEST_URI'])) {
             $key = $_SERVER['REQUEST_URI'];
@@ -114,24 +110,21 @@ abstract class AbstractViewCache extends AbstractView
     /**
      * Get output content with cache
      *
-     * @param   string  $action
      * @return  string
      */
-    public function getOutput($action = null)
+    public function getOutput()
     {
         $cache = $this->getCache();
 
-        $this->action = $action;
-
         if (!$this->useCache) {
-            return parent::getOutput($action);
+            return parent::getOutput();
         }
 
-        $key = $this->getCacheKey($action);
+        $key = $this->getCacheKey();
         $lifetime = $this->getCacheLifetime($key);
 
         if ($this->forceRefreshCache()) {
-            $output = parent::getOutput($action);
+            $output = parent::getOutput();
 
             $cache->set($key, $output, $lifetime);
 
@@ -139,7 +132,7 @@ abstract class AbstractViewCache extends AbstractView
             $output = $cache->get($key, $lifetime);
 
             if (empty($output)) {
-                $output = parent::getOutput($action);
+                $output = parent::getOutput();
 
                 $cache->set($key, $output, $lifetime);
             }

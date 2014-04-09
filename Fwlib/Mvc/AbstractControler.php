@@ -130,7 +130,7 @@ abstract class AbstractControler implements ControlerInterface
 
             $view = $this->createView($viewClass);
 
-            return $view->getOutput($action);
+            return $view->setAction($action)->getOutput();
 
         } catch (\Exception $e) {
             return $this->displayError($e->getMessage());

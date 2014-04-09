@@ -16,10 +16,9 @@ interface ViewInterface
     /**
      * Generate output for given action
      *
-     * @param   array   $action
      * @return  string
      */
-    public function getOutput($action);
+    public function getOutput();
 
 
     /**

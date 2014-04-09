@@ -97,21 +97,21 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
             $output
         );
 
-        $output = $view->getOutput($_GET['a']);
+        $output = $view->setAction($_GET['a'])->getOutput();
         $this->assertEquals(
             '{header}{detailReadonly}{link}{log}{footer}',
             $output
         );
 
         $_GET['a'] = 'AbstractWorkflowDummy-edit';
-        $output = $view->getOutput($_GET['a']);
+        $output = $view->setAction($_GET['a'])->getOutput();
         $this->assertEquals(
             '{header}{detailEditable}{action}{link}{log}{footer}',
             $output
         );
 
         $_GET['a'] = 'AbstractWorkflowDummy-review';
-        $output = $view->getOutput($_GET['a']);
+        $output = $view->setAction($_GET['a'])->getOutput();
         $this->assertEquals(
             '{header}{detailReadonly}{action}{link}{log}{footer}',
             $output
@@ -127,7 +127,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
             'uuid'  => 'workflowUuid',
         );
 
-        $output = $view->getOutput($_GET['a']);
+        $output = $view->setAction($_GET['a'])->getOutput();
         $this->assertEquals(
             '{header}{detailReadonly}{link}{log}{footer}',
             $output
@@ -147,7 +147,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
             'a'     => 'AbstractWorkflowDummy-invalid-view-action',
         );
 
-        $output = $view->getOutput($_GET['a']);
+        $output = $view->setAction($_GET['a'])->getOutput();
     }
 
 
@@ -163,6 +163,6 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
             'a'     => 'AbstractWorkflowDummy',
         );
 
-        $output = $view->getOutput($_GET['a']);
+        $output = $view->setAction($_GET['a'])->getOutput();
     }
 }

@@ -19,6 +19,12 @@ class AbstractControlerDummy
     }
 
 
+    public function setAction($action)
+    {
+        return $this;
+    }
+
+
     public function setPathToRoot($pathToRoot)
     {
     }

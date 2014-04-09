@@ -103,20 +103,20 @@ class AbstractViewCacheTest extends PHPunitTestCase
         unset($_SERVER['REQUEST_URI']);
 
         // Without cache
-        $x = $view->getOutput(null);
-        $y = $view->getOutput(null);
+        $x = $view->getOutput();
+        $y = $view->getOutput();
         $this->assertNotEquals($x, $y);
 
         // With cache
         $view->setUseCache(true);
         $this->assertTrue($view->getUseCache());
-        $x = $view->getOutput(null);
-        $y = $view->getOutput(null);
+        $x = $view->getOutput();
+        $y = $view->getOutput();
         $this->assertEquals($x, $y);
 
         // Change cache key, will got different result
         $_SERVER['REQUEST_URI'] = 'test.php?a=1&b=';
-        $y = $view->getOutput(null);
+        $y = $view->getOutput();
         $this->assertNotEquals($x, $y);
     }
 
@@ -126,12 +126,12 @@ class AbstractViewCacheTest extends PHPunitTestCase
         $view = $this->buildMockWithForceRefreshCache('path/to/root/');
         $view->setUseCache(true);
 
-        $x = $view->getOutput(null);
-        $y = $view->getOutput(null);
+        $x = $view->getOutput();
+        $y = $view->getOutput();
         $this->assertEquals($x, $y);
 
         self::$forceRefreshCache = true;
-        $y = $view->getOutput(null);
+        $y = $view->getOutput();
         $this->assertNotEquals($x, $y);
     }
 }

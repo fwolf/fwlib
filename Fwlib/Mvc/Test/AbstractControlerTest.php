@@ -52,7 +52,10 @@ class AbstractControlerTest extends PHPunitTestCase
 
 
         // Mock a controler/view instance for output
-        $mock = $this->getMock('stdClass', array('getOutput'));
+        $mock = $this->getMock('stdClass', array('getOutput', 'setAction'));
+        $mock->expects($this->any())
+            ->method('setAction')
+            ->will($this->returnSelf());
         $mock->expects($this->any())
             ->method('getOutput')
             ->will($this->returnValue('Dummy Output'));

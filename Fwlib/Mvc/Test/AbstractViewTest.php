@@ -80,12 +80,12 @@ class AbstractViewTest extends PHPunitTestCase
 
         $this->assertEquals(
             'header.tplfooter.tpl',
-            $view->getOutput(null)
+            $view->getOutput()
         );
 
         $this->assertEquals(
             'header.tpl_body for test action_footer.tpl',
-            $view->getOutput('test-action')
+            $view->setAction('test-action')->getOutput()
         );
     }
 
@@ -98,7 +98,7 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock('path/to/root/');
 
-        $view->getOutput('test-action-not-exist');
+        $view->setAction('test-action-not-exist')->getOutput();
     }
 
 
@@ -111,7 +111,7 @@ class AbstractViewTest extends PHPunitTestCase
         $view = $this->buildMock('path/to/root/');
 
         $view->setOutputPart(array('NotExist'));
-        $view->getOutput(null);
+        $view->getOutput();
     }
 
 
@@ -123,7 +123,7 @@ class AbstractViewTest extends PHPunitTestCase
         $view->setUseTidy(true);
         $this->assertTrue($view->getUseTidy());
 
-        $view->getOutput(null);
+        $view->getOutput();
 
         $this->assertEquals(
             'Tidy extension is not installed',
@@ -144,13 +144,13 @@ class AbstractViewTest extends PHPunitTestCase
         $this->assertFalse($view->getUseTidy());
         $this->assertEquals(
             'header.tpl_body for test action_footer.tpl',
-            $view->getOutput('test-action')
+            $view->setAction('test-action')->getOutput()
         );
 
 
         self::$class_exists = true;
         $view->setUseTidy(true);
-        $output = $view->getOutput('test-action');
+        $output = $view->setAction('test-action')->getOutput();
 
         $this->assertStringEndsWith('</html>', $output);
     }
