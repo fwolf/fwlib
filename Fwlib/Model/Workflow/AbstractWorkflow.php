@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Model\Workflow;
 
-use Fwlib\Base\ServiceContainerInterface;
 use Fwlib\Model\Workflow\WorkflowInterface;
 use Fwlib\Mvc\AbstractModel;
 
@@ -135,12 +134,8 @@ abstract class AbstractWorkflow extends AbstractModel implements
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        ServiceContainerInterface $serviceContainer,
-        $uuid = ''
-    ) {
-        $this->serviceContainer = $serviceContainer;
-
+    public function __construct($uuid = '')
+    {
         if (!empty($uuid)) {
             $this->load($uuid);
         }
@@ -179,7 +174,10 @@ abstract class AbstractWorkflow extends AbstractModel implements
      * UPDATE to db (the former one is save()), by this cost, the workflow got
      * possibility to rollback from end node.
      */
-    abstract protected function commit();
+    protected function commit()
+    {
+        // Dummy, do nothing
+    }
 
 
     /**
@@ -425,9 +423,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
      */
     protected function rollback()
     {
-        $dbDiff = $this->getService('DbDiff');
-        $dbDiff->import($this->dbDiff)
-            ->rollback();
+        // Dummy, do nothing
     }
 
 

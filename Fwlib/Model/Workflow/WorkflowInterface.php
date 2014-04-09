@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Model\Workflow;
 
-use Fwlib\Base\ServiceContainerInterface;
 
 /**
  * Workflow interface
@@ -16,17 +15,9 @@ interface WorkflowInterface
     /**
      * Constructor
      *
-     * When $uuid is assigned, will load data from storage by it and fill to
-     * workflow property, this commonly need extra service like db connection,
-     * so use ServiceContainer as first param.
-     *
-     * @param   ServiceContainerInterface   $serviceContainer
      * @param   string  $uuid
      */
-    public function __construct(
-        ServiceContainerInterface $serviceContainer,
-        $uuid = ''
-    );
+    public function __construct($uuid = '');
 
 
     /**
@@ -57,7 +48,7 @@ interface WorkflowInterface
     /**
      * Getter of current node
      *
-     * @return  int|string
+     * @return  string
      */
     public function getCurrentNode();
 
@@ -89,7 +80,7 @@ interface WorkflowInterface
     /**
      * Getter of uuid
      *
-     * @return  int|string
+     * @return  string
      */
     public function getUuid();
 
@@ -97,7 +88,7 @@ interface WorkflowInterface
     /**
      * Is this workflow ended ?
      *
-     * @return  bool
+     * @return  boolean
      */
     public function isEnded();
 

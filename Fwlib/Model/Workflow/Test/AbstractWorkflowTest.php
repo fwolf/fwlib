@@ -14,15 +14,6 @@ use Fwlib\Test\ServiceContainerTest;
  */
 class AbstractWorkflowTest extends PHPunitTestCase
 {
-    protected $serviceContainer;
-
-
-    public function __construct()
-    {
-        $this->serviceContainer = ServiceContainerTest::getInstance();
-    }
-
-
     protected function buildMock($uuid = '')
     {
         $workflow = $this->getMockBuilder(
@@ -30,7 +21,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
         )
         ->setMethods(array())
         ->setConstructorArgs(
-            array($this->serviceContainer, $uuid)
+            array($uuid)
         )
         ->getMockForAbstractClass();
 
@@ -45,7 +36,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
         )
         ->setMethods(array())
         ->setConstructorArgs(
-            array($this->serviceContainer, $uuid)
+            array($uuid)
         )
         ->getMockForAbstractClass();
 
@@ -147,42 +138,5 @@ class AbstractWorkflowTest extends PHPunitTestCase
         // no 'submit' in node 'end', so to simulate concurrence execute, we
         // use reflection to call moveTo() directly.
         $this->reflectionCall($workflow, 'moveTo', array('end'));
-    }
-
-
-    public function testRollback()
-    {
-        // Mock a DbDiff object
-        $dbDiff = $this->getMockBuilder(
-            'Fwlib\Db\DbDiff'
-        )
-        ->setMethods(
-            array('import', 'rollback')
-        )
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        $dbDiff->expects($this->once())
-            ->method('import')
-            ->will($this->returnSelf());
-
-        $dbDiff->expects($this->once())
-            ->method('rollback');
-
-
-        $workflow = $this->buildMockWithDummy();
-        $this->serviceContainer->register('DbDiff', $dbDiff);
-
-        $workflow->execute('submit');
-        $this->assertTrue($workflow->isEnded());
-        $this->assertTrue($workflow->isApproved());
-        $this->assertEquals(
-            'AbstractWorkflow Dummy',
-            $workflow->getTitle()
-        );
-
-        $workflow->execute('rollback');
-        $this->assertFalse($workflow->isEnded());
-        $this->assertFalse($workflow->isApproved());
     }
 }

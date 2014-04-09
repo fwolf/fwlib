@@ -44,11 +44,6 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     );
 
 
-    protected function commit()
-    {
-    }
-
-
     protected function executeCustomizedAction()
     {
         $this->title = 'changed';
