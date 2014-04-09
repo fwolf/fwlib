@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Mvc;
 
-use Fwlib\Base\AbstractServiceContainer;
 
 /**
  * Controler interface
@@ -34,17 +33,4 @@ interface ControlerInterface
      * @return  ControlerInterface
      */
     public function setPathToRoot($pathToRoot);
-
-
-    /**
-     * Setter of ServiceContainer instance
-     *
-     * ServiceContainer can inject to View, and then inject to Model.
-     *
-     * @param   AbstractServiceContainer    $serviceContainer
-     * @return  ControlerInterface
-     */
-    public function setServiceContainer(
-        AbstractServiceContainer $serviceContainer
-    );
 }

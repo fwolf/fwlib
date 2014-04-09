@@ -1,10 +1,8 @@
 <?php
 namespace Fwlib\Mvc;
 
-use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Mvc\ControlerInterface;
 use Fwlib\Mvc\ViewInterface;
-use Fwlib\Util\UtilContainer;
 
 /**
  * Controler and Router in MVC
@@ -58,16 +56,6 @@ abstract class AbstractControler implements ControlerInterface
      */
     protected $pathToRoot = '../../';
 
-    /**
-     * @var AbstractServiceContainer
-     */
-    protected $serviceContainer = null;
-
-    /**
-     * @var UtilContainer
-     */
-    protected $utilContainer = null;
-
 
     /**
      * Contructor
@@ -90,8 +78,6 @@ abstract class AbstractControler implements ControlerInterface
     {
         $controler = new $className($this->pathToRoot);
 
-        $controler->setServiceContainer($this->serviceContainer);
-
         return $controler;
     }
 
@@ -105,8 +91,6 @@ abstract class AbstractControler implements ControlerInterface
     protected function createView($className)
     {
         $view = new $className($this->pathToRoot);
-
-        $view->setServiceContainer($this->serviceContainer);
 
         return $view;
     }
@@ -268,23 +252,6 @@ abstract class AbstractControler implements ControlerInterface
 
             $this->pathToRoot = $pathToRoot;
         }
-
-        return $this;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param   AbstractServiceContainer    $serviceContainer
-     * @return  AbstractControler
-     */
-    public function setServiceContainer(
-        AbstractServiceContainer $serviceContainer
-    ) {
-        $this->serviceContainer = $serviceContainer;
-
-        $this->utilContainer = $serviceContainer->get('UtilContainer');
 
         return $this;
     }

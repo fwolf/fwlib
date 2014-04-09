@@ -3,7 +3,6 @@ namespace Fwlib\Mvc\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Mvc\AbstractControler;
-use Fwlib\Test\ServiceContainerTest;
 
 /**
  * @copyright   Copyright 2013-2014 Fwolf
@@ -21,8 +20,6 @@ class AbstractControlerTest extends PHPunitTestCase
 
     public function __construct()
     {
-        $this->serviceContainer = ServiceContainerTest::getInstance();
-
         $this->controler = $this->buildMock('path/to/root');
     }
 
@@ -47,8 +44,6 @@ class AbstractControlerTest extends PHPunitTestCase
             ->will($this->returnCallback(function () {
                 return AbstractControlerTest::$controlerClass;
             }));
-
-        $controler->setServiceContainer($this->serviceContainer);
 
 
         // Mock a controler/view instance for output
@@ -90,8 +85,6 @@ class AbstractControlerTest extends PHPunitTestCase
                 return AbstractControlerTest::$viewClass;
             }));
 
-        $controler->setServiceContainer($this->serviceContainer);
-
 
         return $controler;
     }
@@ -119,8 +112,6 @@ class AbstractControlerTest extends PHPunitTestCase
             ->will($this->returnCallback(function () {
                 return AbstractControlerTest::$viewClass;
             }));
-
-        $controler->setServiceContainer($this->serviceContainer);
 
 
         return $controler;
