@@ -22,10 +22,8 @@ class AbstractWorkflowDummy extends AbstractWorkflow
                     'title' => 'Submit',
                     'next'  => 'end',
                     'resultCode'     => self::RESULT_CODE_APPROVED,
-                    'availableCheck' => 'isActionAvailable',
                 ),
                 'unAvailableAction' => array(
-                    'availableCheck' => 'isActionAvailable',
                 ),
                 'customizedAction'  => array(
                     'next'  => 'end',
@@ -47,6 +45,12 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     protected function executeCustomizedAction()
     {
         $this->title = 'changed';
+    }
+
+
+    protected function isActionUnAvailableActionAvailable()
+    {
+        return false;
     }
 
 

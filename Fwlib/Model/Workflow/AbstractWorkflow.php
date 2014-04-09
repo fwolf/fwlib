@@ -67,11 +67,6 @@ abstract class AbstractWorkflow extends AbstractModel implements
      * resultCode should set only on action point to end node, set on other
      * action is meanless.
      *
-     * Available of action is default true if key 'availableCheck' is not set
-     * or empty.  A method name string can be assigned to the key, then this
-     * action will only be available when this method return true. Different
-     * action can share same check method, or have their own check method.
-     *
      * @var array
      */
     protected $nodes = array(
@@ -86,7 +81,6 @@ abstract class AbstractWorkflow extends AbstractModel implements
                     'title' => 'Submit',
                     'next'  => 'end',
                     'resultCode'     => self::RESULT_CODE_APPROVED,
-                    'availableCheck' => 'isActionAvailable',
                 ),
             ),
         ),
@@ -143,29 +137,6 @@ abstract class AbstractWorkflow extends AbstractModel implements
 
 
     /**
-     * Check if an action is valid and available
-     *
-     * @param   string  $action
-     * @return  bool
-     */
-    protected function checkActionAvailable($action)
-    {
-        if (!isset($this->nodes[$this->currentNode]['action'][$action])) {
-            return false;
-        }
-
-        $actionArray = $this->nodes[$this->currentNode]['action'][$action];
-
-        if (empty($actionArray['availableCheck'])) {
-            return true;
-        }
-
-        $method = $actionArray['availableCheck'];
-        return $this->$method($action);
-    }
-
-
-    /**
      * Process after workflow end and resultCode is approved
      *
      * In common, this method should write $content to entity storage.
@@ -191,7 +162,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
      */
     public function execute($action)
     {
-        if (!$this->checkActionAvailable($action)) {
+        if (!$this->isActionAvailable($action)) {
             throw new \Exception("Invalid or not allowed action $action");
         }
 
@@ -239,7 +210,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
         foreach ((array)$this->nodes[$this->currentNode]['action'] as
             $action => $actionArray) {
 
-            if ($this->checkActionAvailable($action)) {
+            if ($this->isActionAvailable($action)) {
                 $availableAction[$action] = $actionArray;
             }
         }
@@ -323,23 +294,40 @@ abstract class AbstractWorkflow extends AbstractModel implements
     /**
      * Is an action available ?
      *
-     * There need not to check the action belongs to currentNode, because the
-     * caller of this method will only check for action under currentNode.
+     * Only actions of current node can be available, and default available.
      *
-     * Additional auth, privilege and other check can also applied here, this
-     * is more flexible than condition string.
+     * Available check can be done in this method, or make action have their
+     * own check methon, named as isAction[ActionName]Available(), return
+     * false to make this action unavailable.
+     *
+     * Child class may extend this method or make action specified method to
+     * add customize check, this is more flexible than complicated condition
+     * string.
      *
      * @param   string  $action
-     * @return  bool
+     * @return  boolean
      */
-    protected function isActionAvailable($action)
+    public function isActionAvailable($action)
     {
-        // This is only a dummy, child class should rewrite logic.
-        if ('submit' == $action && true) {
-            return true;
+        if (!isset($this->nodes[$this->currentNode]['action'][$action])) {
+            return false;
         }
 
-        return false;
+        // Use action specified check method
+        $method = "isAction" . ucfirst($action) . "Available";
+        if (method_exists($this, $method) && false === $this->$method()) {
+            return false;
+        }
+
+        // In child class, should call parent check like this:
+        /*
+        if (!parent::isActionAvailable($action)) {
+            return false;
+        }
+        // Do other check
+         */
+
+        return true;
     }
 
 
