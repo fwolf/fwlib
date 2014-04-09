@@ -55,7 +55,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
     protected $dbDiff = '';
 
     /**
-     * Workflow node schema array
+     * Workflow nodes schema array
      *
      * Should at least have one start node and one end node.
      *
@@ -64,7 +64,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
      * action in view or template.
      *
      * Default value of resultCode is self::RESULT_CODE_NOT_ENDED if not set.
-     * ResultCode should set only on action point to end node, set on other
+     * resultCode should set only on action point to end node, set on other
      * action is meanless.
      *
      * Available of action is default true if key 'availableCheck' is not set
@@ -74,7 +74,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
      *
      * @var array
      */
-    protected $node = array(
+    protected $nodes = array(
         'start' => array(
             'title'     => 'Started',
             'action'    => array(
@@ -150,11 +150,11 @@ abstract class AbstractWorkflow extends AbstractModel implements
      */
     protected function checkActionAvailable($action)
     {
-        if (!isset($this->node[$this->currentNode]['action'][$action])) {
+        if (!isset($this->nodes[$this->currentNode]['action'][$action])) {
             return false;
         }
 
-        $actionArray = $this->node[$this->currentNode]['action'][$action];
+        $actionArray = $this->nodes[$this->currentNode]['action'][$action];
 
         if (empty($actionArray['availableCheck'])) {
             return true;
@@ -206,7 +206,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
             $this->updateContent();
         }
 
-        $actionArray = $this->node[$this->currentNode]['action'][$action];
+        $actionArray = $this->nodes[$this->currentNode]['action'][$action];
         $this->moveTo(
             $actionArray['next'],
             (isset($actionArray['resultCode']) ? $actionArray['resultCode']
@@ -236,7 +236,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
     public function getAvailableAction()
     {
         $availableAction = array();
-        foreach ((array)$this->node[$this->currentNode]['action'] as
+        foreach ((array)$this->nodes[$this->currentNode]['action'] as
             $action => $actionArray) {
 
             if ($this->checkActionAvailable($action)) {

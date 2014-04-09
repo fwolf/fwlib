@@ -10,7 +10,7 @@ use Fwlib\Model\Workflow\AbstractWorkflow;
  */
 class AbstractWorkflowDummy extends AbstractWorkflow
 {
-    protected $node = array(
+    protected $nodes = array(
         'start' => array(
             'title'     => 'Started',
             'action'    => array(
