@@ -55,13 +55,6 @@ abstract class AbstractWorkflow extends AbstractModel implements
     protected $currentNode = 'start';
 
     /**
-     * Exported DbDiff json string
-     *
-     * @var string
-     */
-    protected $dbDiff = '';
-
-    /**
      * Workflow nodes schema array
      *
      * Should at least have one start node and one end node.
