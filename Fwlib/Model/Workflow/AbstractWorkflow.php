@@ -2,7 +2,7 @@
 namespace Fwlib\Model\Workflow;
 
 use Fwlib\Model\Workflow\WorkflowInterface;
-use Fwlib\Mvc\AbstractModel;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Workflow instance
@@ -12,8 +12,7 @@ use Fwlib\Mvc\AbstractModel;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2014-01-08
  */
-abstract class AbstractWorkflow extends AbstractModel implements
-    WorkflowInterface
+abstract class AbstractWorkflow implements WorkflowInterface
 {
     /**
      * Workflow end result code
@@ -196,7 +195,7 @@ abstract class AbstractWorkflow extends AbstractModel implements
      */
     protected function generateUuid()
     {
-        $uuidUtil = $this->getUtil('UuidBase36');
+        $uuidUtil = UtilContainer::getInstance()->get('UuidBase36');
 
         return $uuidUtil->generate();
     }
