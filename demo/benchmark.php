@@ -1,6 +1,6 @@
 <?Php
 // Usage:
-require __DIR__ . '/../../../config.default.php';
+require __DIR__ . '/../config.default.php';
 
 use Fwlib\Test\Benchmark;
 

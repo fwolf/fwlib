@@ -36,9 +36,9 @@ use Fwlib\Test\Benchmark;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Util\Test\UtilContainerBenchmarkDummy as ArrayUtil;
 
-require __DIR__ . '/../../../autoload.php';
+require __DIR__ . '/../autoload.php';
 
-require __DIR__ . '/UtilContainerBenchmarkDummy.php';
+require __DIR__ . '/Dummy/UtilContainerBenchmarkDummy.php';
 
 
 // Instance ArrayUtil, will reuse in below get
