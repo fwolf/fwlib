@@ -1,5 +1,6 @@
 <?php
-require __DIR__ . '/../../../config.default.php';
+$pathToRoot = '../';
+require __DIR__ . "/{$pathToRoot}config.default.php";
 
 use Fwlib\Bridge\Smarty;
 use Fwlib\Config\GlobalConfig;
@@ -21,7 +22,7 @@ $bm->start('ListTable Benchmark');
 $globalConfig = GlobalConfig::getInstance();
 $tpl = new Smarty;
 $tpl->compile_dir = $globalConfig->get('smarty.compileDir');
-$tpl->template_dir = __DIR__ . '/../';
+$tpl->template_dir = __DIR__ . "/{$pathToRoot}Fwlib/Html/";
 $tpl->cache_dir = $globalConfig->get('smarty.cacheDir');
 
 $config = array(
@@ -158,14 +159,14 @@ $config = array(
 
 // Updata totalRows
 $listTable->setTotalRows(
-    $db->executeGenSql(
+    $db->execute(
         array_merge($config, array('SELECT' => 'COUNT(1) as c'))
     )->fields['c']
 );
 
 // Fetch real data and set
 $config = array_merge($config, $listTable->getSqlConfig(true));
-$rs = $db->executeGenSql($config);
+$rs = $db->execute($config);
 $listTable->setData($rs->GetArray(), $title);
 
 $html2 = $listTable->getHtml();
@@ -225,9 +226,9 @@ $bm->mark('Cleanup, test table dropped');
   <meta charset='utf-8' />
   <title>ListTable Demo</title>
 
-  <link rel='stylesheet' href='../../../css/reset.css'
+  <link rel='stylesheet' href='<?php echo $pathToRoot; ?>css/reset.css'
     type='text/css' media='all' />
-  <link rel='stylesheet' href='../../../css/default.css'
+  <link rel='stylesheet' href='<?php echo $pathToRoot; ?>css/default.css'
     type='text/css' media='all' />
 
   <style type='text/css' media='all'>

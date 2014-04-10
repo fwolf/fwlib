@@ -611,13 +611,13 @@ class ListTable extends AbstractAutoNewConfig
     public function setDbQuery($db, $config)
     {
         // Get totalRows
-        $this->info['totalRows'] = $db->executeGenSql(
+        $this->info['totalRows'] = $db->execute(
             array_merge($config, array('SELECT' => 'COUNT(1) AS c'))
         )
         ->fields['c'];
 
         // Query data
-        $rs = $db->executeGenSql(
+        $rs = $db->execute(
             array_merge($config, $this->getSqlConfig(true))
         );
         $this->listData = $rs->GetArray();

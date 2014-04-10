@@ -1,5 +1,6 @@
 <?php
-require __DIR__ . '/../../../config.default.php';
+$pathToRoot = '../';
+require __DIR__ . "/{$pathToRoot}config.default.php";
 
 use Fwlib\Base\ReturnValue;
 use Fwlib\Config\GlobalConfig;
@@ -138,9 +139,9 @@ if (!empty($_POST)) {
   <meta charset='utf-8' />
   <title>FormValidator Demo</title>
 
-  <link rel='stylesheet' href='../../../css/reset.css'
+  <link rel='stylesheet' href='<?php echo $pathToRoot; ?>css/reset.css'
     type='text/css' media='all' />
-  <link rel='stylesheet' href='../../../css/default.css'
+    <link rel='stylesheet' href='<?php echo $pathToRoot; ?>css/default.css'
     type='text/css' media='all' />
 
   <style type='text/css' media='all'>
@@ -197,7 +198,7 @@ if (!empty($_POST)) {
   </script>
 
   <script type="text/javascript"
-    src="../../../js/form-validator.js">
+    src="<?php echo $pathToRoot; ?>js/form-validator.js">
   </script>
 
 
