@@ -59,15 +59,24 @@ abstract class AbstractView implements ViewInterface
     /**
      * Parts of output
      *
-     * The parts to build output content. Each part should have a
-     * corresponding getOutputPart() method, or a fatal error will throw.
+     * The parts to build output content. Each part need a corresponding
+     * getOutput[PartName]() method.
      *
-     * The order of parts defined is used when combine output content, so
-     * footer part should not define before header part.
+     * In default, the order of parts defined is used when combine output
+     * content, but sometimes we need to combine parts with different sequence
+     * with the order they are generated. For example, we need to change
+     * header content in body treatment, but the generated body content is
+     * still after header content. For scene like this, we can give each part
+     * an integer index, the content generate will follow the index order
+     * accending.
      *
      * @var array
      */
-    protected $outputPart = array('header', 'body', 'footer');
+    protected $outputParts = array(
+        1 => 'header',
+        0 => 'body',
+        2 => 'footer',
+    );
 
     /**
      * Path to root
@@ -150,9 +159,12 @@ abstract class AbstractView implements ViewInterface
      */
     public function getOutput()
     {
-        $output = '';
+        // Generate parts with index order
+        $parts = $this->outputParts;
+        ksort($parts);
 
-        foreach ($this->outputPart as $part) {
+        $outputParts = array();
+        foreach ($parts as $part) {
             $method = 'getOutput' . ucfirst($part);
 
             if (!method_exists($this, $method)) {
@@ -161,8 +173,16 @@ abstract class AbstractView implements ViewInterface
                 );
             }
 
-            $output .= $this->$method();
+            $outputParts[$part] = $this->$method();
         }
+
+
+        // Combine parts with define order
+        $output = '';
+        foreach ($this->outputParts as $part) {
+            $output .= $outputParts[$part];
+        }
+
 
         if ($this->useTidy) {
             $output = $this->tidy($output);
@@ -280,14 +300,14 @@ abstract class AbstractView implements ViewInterface
 
 
     /**
-     * Setter of $outputPart
+     * Setter of $outputParts
      *
-     * @param   array   $outputPart
+     * @param   array   $outputParts
      * @return  AbstractView
      */
-    public function setOutputPart($outputPart)
+    public function setOutputParts($outputParts)
     {
-        $this->outputPart = $outputPart;
+        $this->outputParts = $outputParts;
 
         return $this;
     }

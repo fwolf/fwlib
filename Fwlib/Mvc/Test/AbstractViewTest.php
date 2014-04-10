@@ -97,7 +97,7 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock('path/to/root/');
 
-        $view->setOutputPart(array('NotExist'));
+        $view->setOutputParts(array('NotExist'));
         $view->getOutput();
     }
 
