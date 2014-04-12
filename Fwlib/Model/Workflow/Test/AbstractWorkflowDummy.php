@@ -2,7 +2,6 @@
 namespace Fwlib\Model\Workflow\Test;
 
 use Fwlib\Model\Workflow\AbstractWorkflow;
-use Fwlib\Util\UtilContainer;
 
 /**
  * This class is not abstract, because AbstractWorkflowView need to create its
@@ -27,6 +26,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
                 'notAvailableAction' => array(
                 ),
                 'customizedAction'  => array(
+                    'title' => 'Customize Action',
                     'next'  => 'end',
                     'resultCode'     => self::RESULT_CODE_REJECTED,
                 ),
@@ -36,16 +36,24 @@ class AbstractWorkflowDummy extends AbstractWorkflow
             'title'     => 'Ended',
             'action'    => array(
                 'rollback'  => array(
+                    'title' => 'Rollback',
                     'next'  => 'start',
                 ),
             ),
         ),
     );
 
+    protected static $workflowTitle = 'Workflow Title Dummy';
+
+
+    protected function commit()
+    {
+    }
+
 
     protected function executeCustomizedAction()
     {
-        $this->title = 'changed';
+        $this->model->setTitle('changed');
     }
 
 
@@ -59,38 +67,5 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     protected function isActionNotAvailableActionAvailable()
     {
         return 'this action is not available';
-    }
-
-
-    public function load($uuid)
-    {
-    }
-
-
-    protected function save()
-    {
-        $uuidUtil = UtilContainer::getInstance()->get('UuidBase36');
-
-        $this->uuid = $uuidUtil->generate();
-    }
-
-
-    protected function saveLink()
-    {
-    }
-
-
-    protected function saveLog($prevNode)
-    {
-    }
-
-
-    protected function updateContent(array $data = null)
-    {
-        parent::updateContent($data);
-
-        $this->title .= ' Dummy';
-
-        return $this;
     }
 }

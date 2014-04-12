@@ -2,9 +2,12 @@
 namespace Fwlib\Model\Workflow;
 
 use Fwlib\Model\Workflow\WorkflowInterface;
+use Fwlib\Model\Workflow\WorkflowModelInterface;
 
 /**
- * Workflow instance
+ * Workflow manager
+ *
+ * Some method belongs/mapped to workflow model, put here for easy usage.
  *
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -33,24 +36,22 @@ abstract class AbstractWorkflow implements WorkflowInterface
     protected $actionNotAvailableMessage = array();
 
     /**
-     * Content which workflow carried
+     * Classname of workflow model
      *
-     * This doesn't include workflow property like uuid, currentNode etc.
-     *
-     * @var array
-     */
-    protected $content = array();
-
-    /**
-     * Current node of workflow
-     *
-     * This can't be empty, and should be any invalid valie not defined in
-     * $node. Method save() may write log with prev node '', its only a marker
-     * of workflow create, will not be currentNode of any workflow intance.
+     * When start a new workflow, this classname is used to create empty model
+     * instance.
      *
      * @var string
      */
-    protected $currentNode = 'start';
+    protected static $modelClass =
+        'Fwlib\Model\Workflow\WorkflowModelInterface';
+
+    /**
+     * Workflow model instance
+     *
+     * @var WorkflowModelInterface
+     */
+    protected $model = null;
 
     /**
      * Workflow nodes schema array
@@ -62,8 +63,10 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * action in view or template.
      *
      * Default value of resultCode is self::RESULT_CODE_NOT_ENDED if not set.
-     * resultCode should set only on action point to end node, set on other
-     * action is meanless.
+     * ResultCode should set only on action relate to end node. When leave end
+     * node(rollback), resultCode is resetted(param default value of move()),
+     * or user can specify through action.  Set resultCode on other action is
+     * useless.
      *
      * @var array
      */
@@ -88,13 +91,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
     );
 
     /**
-     * Workflow result code
-     *
-     * @var int
-     */
-    protected $resultCode = self::RESULT_CODE_NOT_ENDED;
-
-    /**
      * Workflow result code title
      *
      * @var array
@@ -107,22 +103,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
     );
 
     /**
-     * Title of workflow instance
-     *
-     * Usually include the title of profile this instance operating on.
-     *
-     * @var string
-     */
-    protected $title = 'Workflow Instance Title';
-
-    /**
-     * Workflow instance uuid
-     *
-     * @var string
-     */
-    protected $uuid = '';
-
-    /**
      * Title of workflow class
      *
      * Usually include the description of what this workflow will do.
@@ -133,7 +113,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * {@inheritdoc}
+     * Constructor
+     *
+     * @param   string  $uuid
      */
     public function __construct($uuid = '')
     {
@@ -151,48 +133,70 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * If use DbDiff to store entity db change, there will have an extra
      * UPDATE to db (the former one is save()), by this cost, the workflow got
      * possibility to rollback from end node.
+     *
+     * Workflow may have no rollback ablity, but should commit something, so
+     * commit() is abstract and must fill by child class, as rollback() is
+     * default empty.
      */
-    protected function commit()
-    {
-        // Dummy, do nothing
-    }
+    abstract protected function commit();
 
 
     /**
      * {@inheritdoc}
      *
-     * In default, this method only include updateContent(), user should
+     * In default, this method only include updateContents(), user should
      * define customized executeAction() method to do extra job like convert
-     * form input data, this method should not include moveTo() anymore. To
-     * set specified resultCode when change node, set it in action property in
+     * form input data, this method should not include move() anymore. To set
+     * specified resultCode when change node, set it in action property in
      * $nodes define array.
      */
     public function execute($action)
     {
-        if (!$this->isActionAvailable($action)) {
-            throw new \Exception("Invalid or not allowed action $action");
+        // Must have a model instance
+        if (empty($this->model)) {
+            $this->load('');
         }
 
-        if (empty($this->uuid)) {
+        // Check and initlize model instance
+        if (0 == strlen($this->model->getUuid())) {
             $this->initialize();
         }
 
-        // User method should decide whether or how to call updateContent()
+        // User method should decide whether or how to call updateContents()
         $method = 'execute' . ucfirst($action);
         if (method_exists($this, $method)) {
             $this->$method();
         } else {
-            $this->updateContent();
+            $this->updateContents();
         }
 
-        $actionArray = $this->nodes[$this->currentNode]['action'][$action];
-        $this->moveTo(
+        // Check action available by updated state, not original
+        if (!$this->isActionAvailable($action)) {
+            throw new \Exception("Invalid or not allowed action $action");
+        }
+
+        $actionArray = $this->nodes[$this->model->getCurrentNode()]
+            ['action'][$action];
+        $this->move(
+            $action,
             $actionArray['next'],
             (isset($actionArray['resultCode']) ? $actionArray['resultCode']
-                : self::RESULT_CODE_NOT_ENDED)
+                : static::RESULT_CODE_NOT_ENDED)
         );
 
         return $this;
+    }
+
+
+    /**
+     * Find links/relations the workflow instance have
+     *
+     * @return  array|null  Return null to disable save of link
+     */
+    protected function findLinks()
+    {
+        // Dummy, return null
+        return null;
     }
 
 
@@ -210,72 +214,109 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function getAvailableAction()
+    public function getAvailableActions()
     {
-        $availableAction = array();
-        foreach ((array)$this->nodes[$this->currentNode]['action'] as
-            $action => $actionArray) {
+        $availableActions = array();
+        foreach ((array)$this->nodes[$this->model->getCurrentNode()]
+            ['action'] as $action => $actionArray) {
 
             if ($this->isActionAvailable($action)) {
-                $availableAction[$action] = $actionArray;
+                $availableActions[$action] = $actionArray;
             }
         }
 
-        return $availableAction;
+        return $availableActions;
     }
 
 
     /**
-     * {@inheritdoc}
+     * Getter of single content
+     *
+     * @param   string  $key
+     * @return  array
      */
-    public function getContent()
+    public function getContent($key)
     {
-        return $this->content;
+        return $this->model->getContent($key);
     }
 
 
     /**
-     * {@inheritdoc}
+     * Getter of whole content array
+     *
+     * @return  array
+     */
+    public function getContents()
+    {
+        return $this->model->getContents();
+    }
+
+
+    /**
+     * Getter of current node
+     *
+     * @return  string
      */
     public function getCurrentNode()
     {
-        return $this->currentNode;
+        return $this->model->getCurrentNode();
     }
 
 
     /**
-     * {@inheritdoc}
+     * Getter of current node title
+     *
+     * @return  string
+     */
+    public function getCurrentNodeTitle()
+    {
+        $node = $this->model->getCurrentNode();
+
+        return $this->nodes[$node]['title'];
+    }
+
+
+    /**
+     * Getter of result code
+     *
+     * @return  int
      */
     public function getResultCode()
     {
-        return $this->resultCode;
+        return $this->model->getResultCode();
     }
 
 
     /**
-     * {@inheritdoc}
+     * Get title of result code
+     *
+     * @return  string
      */
     public function getResultCodeTitle()
     {
-        return $this->resultCodeTitle[$this->resultCode];
+        return $this->resultCodeTitle[$this->model->getResultCode()];
     }
 
 
     /**
-     * {@inheritdoc}
+     * Getter of title
+     *
+     * @return  string
      */
     public function getTitle()
     {
-        return $this->title;
+        return $this->model->getTitle();
     }
 
 
     /**
-     * {@inheritdoc}
+     * Getter of uuid
+     *
+     * @return  string
      */
     public function getUuid()
     {
-        return $this->uuid;
+        return $this->model->getUuid();
     }
 
 
@@ -290,17 +331,11 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
     /**
      * Initialize an empty workflow instance
-     *
-     * The load() method is readed from an exists instance data, so it will
-     * skip this method.
      */
     protected function initialize()
     {
-        // Prepare content for later work, or do nothing
-
-        // Optional: Log workflow create operate, mark node changed from empty
-        // to start node 'start'.
-        $this->saveLog('');
+        // Prepare content or assign default value to model
+        $this->model->setResultCode(static::RESULT_CODE_NOT_ENDED);
     }
 
 
@@ -324,7 +359,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     public function isActionAvailable($action)
     {
-        if (!isset($this->nodes[$this->currentNode]['action'][$action])) {
+        if (!isset(
+            $this->nodes[$this->model->getCurrentNode()]['action'][$action]
+        )) {
             return false;
         }
 
@@ -346,13 +383,11 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Is the result code measn approved ?
-     *
-     * @return  bool
+     * {@inheritdoc}
      */
     public function isApproved()
     {
-        return self::RESULT_CODE_APPROVED == $this->resultCode;
+        return static::RESULT_CODE_APPROVED == $this->model->getResultCode();
     }
 
 
@@ -361,14 +396,19 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     public function isEnded()
     {
-        return 'end' == $this->currentNode;
+        return 'end' == $this->model->getCurrentNode();
     }
 
 
     /**
      * {@inheritdoc}
      */
-    abstract public function load($uuid);
+    public function load($uuid)
+    {
+        $this->model = new static::$modelClass($uuid);
+
+        return $this;
+    }
 
 
     /**
@@ -380,18 +420,22 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * mechanishm, because in common nothing need to do, although child class
      * can extend this method to add that.
      *
+     * @param   string  $action     Moved by action
      * @param   string  $node
      * @param   int     $resultCode Should set when to or from end node.
      * @return  AbstractWorkflow
      */
-    protected function moveTo($node, $resultCode = self::RESULT_CODE_NOT_ENDED)
-    {
+    protected function move(
+        $action,
+        $node,
+        $resultCode = self::RESULT_CODE_NOT_ENDED
+    ) {
         $prevIsApproved = $this->isApproved();
         $prevIsEnd = $this->isEnded();
-        $prevNode = $this->currentNode;
+        $prevNode = $this->model->getCurrentNode();
 
-        $this->currentNode = $node;
-        $this->resultCode = $resultCode;
+        $this->model->setCurrentNode($node);
+        $this->model->setResultCode($resultCode);
         $currentIsApproved = $this->isApproved();
         $currentIsEnd = $this->isEnded();
 
@@ -406,7 +450,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
         $this->save();
 
         if ($prevNode != $node) {
-            $this->saveLog($prevNode);
+            $this->saveLog($action, $prevNode, $node);
         }
 
         if ($currentIsEnd && $currentIsApproved) {
@@ -435,15 +479,13 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * For new created workflow instance, save() method should generate and
      * update $uuid property.
      */
-    abstract protected function save();
+    protected function save()
+    {
+        $this->model->save();
 
-
-    /**
-     * Save workflow link relation
-     *
-     * Should be called in save() method.
-     */
-    abstract protected function saveLink();
+        $links = $this->findLinks();
+        $this->model->syncLinks($links);
+    }
 
 
     /**
@@ -451,9 +493,27 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * Log is only saved when node change.
      *
+     * @param   string  $action
      * @param   string  $prevNode
+     * @param   string  $nextNode
      */
-    abstract protected function saveLog($prevNode);
+    protected function saveLog($action, $prevNode, $nextNode)
+    {
+        $actionTitle = $this->nodes[$prevNode]['action'][$action]['title'];
+
+        $this->model->addLog($action, $actionTitle, $prevNode, $nextNode);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setModel(WorkflowModelInterface $model)
+    {
+        $this->model = $model;
+
+        return $this;
+    }
 
 
     /**
@@ -462,13 +522,21 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * @param   array   $data
      * @return  AbstractWorkflow
      */
-    protected function updateContent(array $data = null)
+    protected function updateContents(array $data = null)
     {
         if (is_null($data)) {
             $data = $_POST;
         }
 
-        $this->content = array_merge($this->content, $data);
+        // For security, better specify which keys to pick
+        //$data = array_intersect_key($_POST, array_fill_keys($keys, null));
+
+        // When display in html, should encode html in user input contents
+        //$data = array_map('htmlentities', $model->getContents());
+
+        $this->model->setContents(
+            array_merge($this->model->getContents(), $data)
+        );
 
         return $this;
     }

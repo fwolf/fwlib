@@ -1,9 +1,13 @@
 <?php
 namespace Fwlib\Model\Workflow;
 
+use Fwlib\Model\Workflow\WorkflowModelInterface;
 
 /**
  * Workflow interface
+ *
+ * This class is mostly like a workflow manager, the access of storage is done
+ * in workflow model.
  *
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
@@ -12,14 +16,6 @@ namespace Fwlib\Model\Workflow;
  */
 interface WorkflowInterface
 {
-    /**
-     * Constructor
-     *
-     * @param   string  $uuid
-     */
-    public function __construct($uuid = '');
-
-
     /**
      * Execute an action
      *
@@ -30,59 +26,11 @@ interface WorkflowInterface
 
 
     /**
-     * Get available action currently
+     * Get available action under current node
      *
      * @return  array
      */
-    public function getAvailableAction();
-
-
-    /**
-     * Getter of content
-     *
-     * @return  array
-     */
-    public function getContent();
-
-
-    /**
-     * Getter of current node
-     *
-     * @return  string
-     */
-    public function getCurrentNode();
-
-
-    /**
-     * Getter of result code
-     *
-     * @return  int
-     */
-    public function getResultCode();
-
-
-    /**
-     * Getter of result code title
-     *
-     * @return  string
-     */
-    public function getResultCodeTitle();
-
-
-    /**
-     * Getter of workflow instance title
-     *
-     * @return  string
-     */
-    public function getTitle();
-
-
-    /**
-     * Getter of uuid
-     *
-     * @return  string
-     */
-    public function getUuid();
+    public function getAvailableActions();
 
 
     /**
@@ -94,6 +42,14 @@ interface WorkflowInterface
 
 
     /**
+     * Is the result code measn approved ?
+     *
+     * @return  boolean
+     */
+    public function isApproved();
+
+
+    /**
      * Is this workflow ended ?
      *
      * @return  boolean
@@ -102,10 +58,19 @@ interface WorkflowInterface
 
 
     /**
-     * Load workflow by given uuid
+     * Load workflow model instance by given uuid
      *
      * @param   string  $uuid
      * @return  WorkflowInterface
      */
     public function load($uuid);
+
+
+    /**
+     * Set a workflow model instance
+     *
+     * @param   WorkflowModelInterface  $model
+     * @return  WorkflowInterface
+     */
+    public function setModel(WorkflowModelInterface $model);
 }

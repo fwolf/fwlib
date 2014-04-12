@@ -4,7 +4,7 @@ namespace Fwlib\Model\Workflow\Test;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Model\Workflow\AbstractWorkflow;
 use Fwlib\Model\Workflow\Test\AbstractWorkflowDummy;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy;
 
 /**
  * @copyright   Copyright 2014 Fwolf
@@ -16,6 +16,12 @@ class AbstractWorkflowTest extends PHPunitTestCase
 {
     protected function buildMock($uuid = '')
     {
+        $this->reflectionSet(
+            'Fwlib\Model\Workflow\AbstractWorkflow',
+            'modelClass',
+            'Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy'
+        );
+
         $workflow = $this->getMockBuilder(
             'Fwlib\Model\Workflow\AbstractWorkflow'
         )
@@ -31,14 +37,18 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
     protected function buildMockWithDummy($uuid = '')
     {
+        $this->reflectionSet(
+            'Fwlib\Model\Workflow\AbstractWorkflow',
+            'modelClass',
+            'Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy'
+        );
+
         $workflow = $this->getMockBuilder(
             'Fwlib\Model\Workflow\Test\AbstractWorkflowDummy'
         )
         ->setMethods(array())
-        ->setConstructorArgs(
-            array($uuid)
-        )
-        ->getMockForAbstractClass();
+        ->getMockForAbstractClass()
+        ->setModel(new WorkflowModelInterfaceDummy($uuid));
 
         return $workflow;
     }
@@ -46,9 +56,10 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
     public function testAccessors()
     {
-        $workflow = $this->buildMock();
+        $workflow = $this->buildMock('uuid dummy');
 
-        $this->assertNotEmpty($workflow::getWorkflowTitle());
+        $this->assertEquals('uuid dummy', $workflow->getUuid());
+        $this->assertNotEmpty($workflow->getCurrentNodeTitle());
     }
 
 
@@ -56,7 +67,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
     {
         $workflow = $this->buildMockWithDummy('dummyUuid');
 
-        $workflow->getAvailableAction();
+        $workflow->getAvailableActions();
 
         $this->assertArrayHasKey(
             'notAvailableAction',
@@ -67,9 +78,11 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
     public function testExecute()
     {
-        $workflow = $this->buildMockWithDummy();
+        // If dummy workflow model's UUID is empty, will cause initialize() to
+        // reset resultCode, so don't leave it empty.
+        $workflow = $this->buildMockWithDummy('dummyUuid');
 
-        $contentData = array('dummy');
+        $contentData = array('key' => 'dummy');
         $_POST = $contentData;
 
         $workflow->execute('submit');
@@ -82,17 +95,19 @@ class AbstractWorkflowTest extends PHPunitTestCase
         $this->assertEquals('Approved', $workflow->getResultCodeTitle());
 
         // Content data is set
-        $this->assertEqualArray($contentData, $workflow->getContent());
+        $this->assertEquals('dummy', $workflow->getContent('key'));
+        $this->assertEqualArray($contentData, $workflow->getContents());
 
         // Rollback
         $workflow->execute('rollback');
         $this->assertEquals('start', $workflow->getCurrentNode());
+        $this->assertFalse($workflow->isApproved());
     }
 
 
     public function testExecuteWithCustomizedExecuteActionMethod()
     {
-        $workflow = $this->buildMockWithDummy();
+        $workflow = $this->buildMockWithDummy('uuid');
 
         $this->assertFalse($workflow->isEnded());
 
@@ -140,11 +155,22 @@ class AbstractWorkflowTest extends PHPunitTestCase
     {
         $workflow = $this->buildMockWithDummy();
 
-        $availableAction = $workflow->getAvailableAction();
+        $availableAction = $workflow->getAvailableActions();
 
         $this->assertEqualArray(
             array('edit', 'submit', 'customizedAction'),
             array_keys($availableAction)
+        );
+    }
+
+
+    public function testGetWorkflowTitle()
+    {
+        $workflow = $this->buildMockWithDummy();
+
+        $this->assertEquals(
+            'Workflow Title Dummy',
+            $workflow::getWorkflowTitle()
         );
     }
 
@@ -161,7 +187,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
         // Normally if we execute 'submit' again, will fail because there has
         // no 'submit' in node 'end', so to simulate concurrence execute, we
-        // use reflection to call moveTo() directly.
-        $this->reflectionCall($workflow, 'moveTo', array('end'));
+        // use reflection to call move() directly.
+        $this->reflectionCall($workflow, 'move', array('rollback', 'end', 'end'));
     }
 }
