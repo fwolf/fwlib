@@ -44,6 +44,14 @@ class AbstractWorkflowTest extends PHPunitTestCase
     }
 
 
+    public function testAccessors()
+    {
+        $workflow = $this->buildMock();
+
+        $this->assertNotEmpty($workflow::getWorkflowTitle());
+    }
+
+
     public function testGetActionNotAvailableMessage()
     {
         $workflow = $this->buildMockWithDummy('dummyUuid');

@@ -70,7 +70,7 @@ interface WorkflowInterface
 
 
     /**
-     * Getter of title
+     * Getter of workflow instance title
      *
      * @return  string
      */
@@ -83,6 +83,14 @@ interface WorkflowInterface
      * @return  string
      */
     public function getUuid();
+
+
+    /**
+     * Getter of workflow title
+     *
+     * @return  string
+     */
+    public static function getWorkflowTitle();
 
 
     /**

@@ -107,13 +107,13 @@ abstract class AbstractWorkflow implements WorkflowInterface
     );
 
     /**
-     * Title of workflow
+     * Title of workflow instance
      *
-     * Can be used in view or log.
+     * Usually include the title of profile this instance operating on.
      *
      * @var string
      */
-    protected $title = 'AbstractWorkflow';
+    protected $title = 'Workflow Instance Title';
 
     /**
      * Workflow instance uuid
@@ -121,6 +121,15 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * @var string
      */
     protected $uuid = '';
+
+    /**
+     * Title of workflow class
+     *
+     * Usually include the description of what this workflow will do.
+     *
+     * @return  string
+     */
+    protected static $workflowTitle = 'Workflow Title';
 
 
     /**
@@ -267,6 +276,15 @@ abstract class AbstractWorkflow implements WorkflowInterface
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getWorkflowTitle()
+    {
+        return static::$workflowTitle;
     }
 
 
