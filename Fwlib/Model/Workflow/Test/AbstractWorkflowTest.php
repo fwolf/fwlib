@@ -60,6 +60,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
         $this->assertEquals('uuid dummy', $workflow->getUuid());
         $this->assertNotEmpty($workflow->getCurrentNodeTitle());
+        $this->assertNotEmpty($workflow::getModelClass());
     }
 
 

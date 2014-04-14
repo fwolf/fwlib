@@ -295,6 +295,15 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return static::$modelClass;
+    }
+
+
+    /**
      * Getter of result code
      *
      * @return  int
