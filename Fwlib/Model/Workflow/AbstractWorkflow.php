@@ -126,6 +126,24 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
+     * Store change done in commit(), for rollback
+     */
+    protected function afterCommit()
+    {
+        // Dummy, do nothing
+    }
+
+
+    /**
+     * Prepare to record changes in commit(), for rollback
+     */
+    protected function beforeCommit()
+    {
+        // Dummy, do nothing
+    }
+
+
+    /**
      * Process after workflow end and resultCode is approved
      *
      * In common, this method should write $content to entity storage.
@@ -454,7 +472,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
         }
 
         if ($currentIsEnd && $currentIsApproved) {
+            $this->beforeCommit();
             $this->commit();
+            $this->afterCommit();
 
         } elseif ($prevIsEnd && $prevIsApproved) {
             $this->rollback();
