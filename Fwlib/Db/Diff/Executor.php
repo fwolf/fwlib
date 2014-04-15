@@ -173,7 +173,8 @@ class Executor implements ExecutorInterface
         $sqlArray = array();
         $db = $this->getDb();
 
-        foreach ($rowSet->getRows() as $row) {
+        // Rollback SQL is in reverse order of commit
+        foreach (array_reverse($rowSet->getRows()) as $row) {
             $sqlConfig = array();
             $table = $row->getTable();
 
