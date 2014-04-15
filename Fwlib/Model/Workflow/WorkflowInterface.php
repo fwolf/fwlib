@@ -34,11 +34,19 @@ interface WorkflowInterface
 
 
     /**
+     * Getter of workflow model instance
+     *
+     * @return  WorkflowModelInterface
+     */
+    public function getModel();
+
+
+    /**
      * Getter of workflow model class
      *
      * @return  string
      */
-    public static function getModelClass();
+    public function getModelClass();
 
 
     /**
@@ -46,7 +54,7 @@ interface WorkflowInterface
      *
      * @return  string
      */
-    public static function getWorkflowTitle();
+    public function getWorkflowTitle();
 
 
     /**

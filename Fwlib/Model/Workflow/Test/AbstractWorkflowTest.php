@@ -16,19 +16,11 @@ class AbstractWorkflowTest extends PHPunitTestCase
 {
     protected function buildMock($uuid = '')
     {
-        $this->reflectionSet(
-            'Fwlib\Model\Workflow\AbstractWorkflow',
-            'modelClass',
-            'Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy'
-        );
-
         $workflow = $this->getMockBuilder(
-            'Fwlib\Model\Workflow\AbstractWorkflow'
+            'Fwlib\Model\Workflow\Test\AbstractWorkflowDummy'
         )
         ->setMethods(array())
-        ->setConstructorArgs(
-            array($uuid)
-        )
+        ->setConstructorArgs(array($uuid))
         ->getMockForAbstractClass();
 
         return $workflow;
@@ -37,12 +29,6 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
     protected function buildMockWithDummy($uuid = '')
     {
-        $this->reflectionSet(
-            'Fwlib\Model\Workflow\AbstractWorkflow',
-            'modelClass',
-            'Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy'
-        );
-
         $workflow = $this->getMockBuilder(
             'Fwlib\Model\Workflow\Test\AbstractWorkflowDummy'
         )
@@ -60,7 +46,11 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
         $this->assertEquals('uuid dummy', $workflow->getUuid());
         $this->assertNotEmpty($workflow->getCurrentNodeTitle());
-        $this->assertNotEmpty($workflow::getModelClass());
+        $this->assertNotEmpty($workflow->getModelClass());
+        $this->assertInstanceOf(
+            'Fwlib\Model\Workflow\WorkflowModelInterface',
+            $workflow->getModel()
+        );
     }
 
 
@@ -119,7 +109,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
         $this->assertTrue($workflow->isEnded());
         $this->assertEquals(
-            AbstractWorkflow::RESULT_CODE_REJECTED,
+            $workflow::RESULT_CODE_REJECTED,
             $workflow->getResultCode()
         );
 
@@ -171,7 +161,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
         $this->assertEquals(
             'Workflow Title Dummy',
-            $workflow::getWorkflowTitle()
+            $workflow->getWorkflowTitle()
         );
     }
 

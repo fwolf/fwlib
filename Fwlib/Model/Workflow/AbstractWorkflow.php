@@ -43,8 +43,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * @var string
      */
-    protected static $modelClass =
-        'Fwlib\Model\Workflow\WorkflowModelInterface';
+    protected $modelClass = 'Fwlib\Model\Workflow\WorkflowModelInterface';
 
     /**
      * Workflow model instance
@@ -109,7 +108,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * @return  string
      */
-    protected static $workflowTitle = 'Workflow Title';
+    protected $workflowTitle = 'Workflow Title';
 
 
     /**
@@ -297,9 +296,18 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public static function getModelClass()
+    public function getModel()
     {
-        return static::$modelClass;
+        return $this->model;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getModelClass()
+    {
+        return $this->modelClass;
     }
 
 
@@ -350,9 +358,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public static function getWorkflowTitle()
+    public function getWorkflowTitle()
     {
-        return static::$workflowTitle;
+        return $this->workflowTitle;
     }
 
 
@@ -432,7 +440,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     public function load($uuid)
     {
-        $this->model = new static::$modelClass($uuid);
+        $this->model = new $this->modelClass($uuid);
 
         return $this;
     }

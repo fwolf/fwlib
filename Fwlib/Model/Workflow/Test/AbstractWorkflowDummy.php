@@ -10,6 +10,9 @@ use Fwlib\Model\Workflow\AbstractWorkflow;
  */
 class AbstractWorkflowDummy extends AbstractWorkflow
 {
+    protected $modelClass =
+        'Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy';
+
     protected $nodes = array(
         'start' => array(
             'title'     => 'Started',
@@ -43,7 +46,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
         ),
     );
 
-    protected static $workflowTitle = 'Workflow Title Dummy';
+    protected $workflowTitle = 'Workflow Title Dummy';
 
 
     protected function commit()

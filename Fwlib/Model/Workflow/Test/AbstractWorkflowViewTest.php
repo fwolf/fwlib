@@ -15,12 +15,6 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
 {
     protected function buildMock()
     {
-        $this->reflectionSet(
-            'Fwlib\Model\Workflow\AbstractWorkflow',
-            'modelClass',
-            'Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy'
-        );
-
         $view = $this->getMockBuilder(
             'Fwlib\Model\Workflow\AbstractWorkflowView'
         )
