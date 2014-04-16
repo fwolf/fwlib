@@ -70,6 +70,21 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
     }
 
 
+    public function testGenerateTitle()
+    {
+        $view = $this->buildMock();
+
+        $view->setAction('workflow-dummy-detail');
+        $uuid = 'workflowUuid';
+
+        // Initialize workflow instance
+        $this->reflectionCall($view, 'createOrLoadWorkflow', array($uuid));
+
+        $title = $this->reflectionCall($view, 'generateTitle');
+        $this->assertRegexp('/.+ - .+/', $title);
+    }
+
+
     public function testGetOutput()
     {
         $view = $this->buildMock();

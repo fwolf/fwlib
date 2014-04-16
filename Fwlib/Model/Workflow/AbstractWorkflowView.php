@@ -105,6 +105,24 @@ abstract class AbstractWorkflowView extends AbstractView
 
 
     /**
+     * Generate view title with workflow and instance info
+     *
+     * @return  string
+     */
+    protected function generateTitle()
+    {
+        $title = $this->workflow->getWorkflowTitle();
+
+        $model = $this->workflow->getModel();
+        if (!is_null($model)) {
+            $title .= ' - ' .  $model->getTitle();
+        }
+
+        return $title;
+    }
+
+
+    /**
      * Display workflow action
      *
      * @return  string
@@ -196,6 +214,7 @@ abstract class AbstractWorkflowView extends AbstractView
 
         $uuid = $this->getWorkflowUuid();
         $this->createOrLoadWorkflow($uuid);
+        $this->setTitle($this->generateTitle());
 
         $workflowAction = $this->getWorkflowAction();
         if (!empty($workflowAction)) {
