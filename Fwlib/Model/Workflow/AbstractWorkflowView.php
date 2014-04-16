@@ -98,7 +98,10 @@ abstract class AbstractWorkflowView extends AbstractView
      */
     protected function createOrLoadWorkflow($uuid = '')
     {
-        $this->workflow = new $this->workflowClass($uuid);
+        // Manual load, to make sure an empty workflow model instance is
+        // create even given empty $uuid.
+        $this->workflow = new $this->workflowClass;
+        $this->workflow->load($uuid);
 
         return $this->workflow;
     }
