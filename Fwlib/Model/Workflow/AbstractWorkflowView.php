@@ -118,7 +118,9 @@ abstract class AbstractWorkflowView extends AbstractView
 
         $model = $this->workflow->getModel();
         if (!is_null($model)) {
-            $title .= ' - ' .  $model->getTitle();
+            $modelTitle = $model->getTitle();
+
+            $title .= (empty($modelTitle)) ? '' : " - $modelTitle";
         }
 
         return $title;
