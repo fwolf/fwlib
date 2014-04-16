@@ -72,7 +72,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     protected $nodes = array(
         'start' => array(
             'title'     => 'Started',
-            'action'    => array(
+            'actions'   => array(
                 'edit'      => array(
                     'title' => 'Edit',
                     'next'  => 'start',
@@ -193,7 +193,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
         }
 
         $actionArray = $this->nodes[$this->model->getCurrentNode()]
-            ['action'][$action];
+            ['actions'][$action];
         $this->move(
             $action,
             $actionArray['next'],
@@ -235,7 +235,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     {
         $availableActions = array();
         foreach ((array)$this->nodes[$this->model->getCurrentNode()]
-            ['action'] as $action => $actionArray) {
+            ['actions'] as $action => $actionArray) {
 
             if ($this->isActionAvailable($action)) {
                 $availableActions[$action] = $actionArray;
@@ -395,7 +395,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     public function isActionAvailable($action)
     {
         if (!isset(
-            $this->nodes[$this->model->getCurrentNode()]['action'][$action]
+            $this->nodes[$this->model->getCurrentNode()]['actions'][$action]
         )) {
             return false;
         }
@@ -536,7 +536,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     protected function saveLog($action, $prevNode, $nextNode)
     {
-        $actionTitle = $this->nodes[$prevNode]['action'][$action]['title'];
+        $actionTitle = $this->nodes[$prevNode]['actions'][$action]['title'];
 
         $this->model->addLog($action, $actionTitle, $prevNode, $nextNode);
     }

@@ -16,7 +16,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
     protected $nodes = array(
         'start' => array(
             'title'     => 'Started',
-            'action'    => array(
+            'actions'   => array(
                 'edit'      => array(
                     'title' => 'Edit',
                     'next'  => 'start',
@@ -37,7 +37,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
         ),
         'end'   => array(
             'title'     => 'Ended',
-            'action'    => array(
+            'actions'   => array(
                 'rollback'  => array(
                     'title' => 'Rollback',
                     'next'  => 'start',
