@@ -11,7 +11,7 @@ use Fwlib\Util\UtilContainer;
  * In this implement, there are 3 type of basic view action:
  *
  * - detail: readonly, without action
- * - edit  : editable, withaction(need by edit)
+ * - edit  : editable, with action(nature need, at least action of save)
  * - review: readonly, with action
  *
  * These view action build fetch result by smaller parts:
