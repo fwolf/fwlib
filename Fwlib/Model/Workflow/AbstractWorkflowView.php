@@ -87,7 +87,7 @@ abstract class AbstractWorkflowView extends AbstractView
      *
      * @var string
      */
-    protected $workflowClassname = '';
+    protected $workflowClass = '';
 
 
     /**
@@ -98,7 +98,7 @@ abstract class AbstractWorkflowView extends AbstractView
      */
     protected function createOrLoadWorkflow($uuid = '')
     {
-        $this->workflow = new $this->workflowClassname($uuid);
+        $this->workflow = new $this->workflowClass($uuid);
 
         return $this->workflow;
     }

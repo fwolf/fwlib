@@ -57,7 +57,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
 
         $this->reflectionSet(
             $view,
-            'workflowClassname',
+            'workflowClass',
             'Fwlib\\Model\\Workflow\\Test\\AbstractWorkflowDummy'
         );
         $this->reflectionSet(
