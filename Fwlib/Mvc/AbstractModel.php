@@ -42,22 +42,22 @@ abstract class AbstractModel
      * write result to cache.
      *
      * @param   string  $method
-     * @param   array   $paramArray
+     * @param   array   $params
      * @return  mixed
      */
-    public function cachedCall($method, array $paramArray = null)
+    public function cachedCall($method, array $params = array())
     {
         $cache = $this->getCache();
 
         if (!$this->useCache) {
-            return call_user_func_array(array($this, $method), $paramArray);
+            return call_user_func_array(array($this, $method), $params);
         }
 
-        $key = $this->getCacheKey($method, $paramArray);
+        $key = $this->getCacheKey($method, $params);
         $lifetime = $this->getCacheLifetime($key);
 
         if ($this->forceRefreshCache()) {
-            $result = call_user_func_array(array($this, $method), $paramArray);
+            $result = call_user_func_array(array($this, $method), $params);
 
             $cache->set($key, $result, $lifetime);
 
@@ -67,7 +67,7 @@ abstract class AbstractModel
             if (is_null($result)) {
                 $result = call_user_func_array(
                     array($this, $method),
-                    $paramArray
+                    $params
                 );
 
                 $cache->set($key, $result, $lifetime);
@@ -108,15 +108,15 @@ abstract class AbstractModel
      * This is a default implement, child class can change as needed.
      *
      * @param   string  $method
-     * @param   array   $paramArray
+     * @param   array   $params
      * @return  string
      */
-    protected function getCacheKey($method, array $paramArray = null)
+    protected function getCacheKey($method, array $params = array())
     {
         $key = str_replace('\\', '/', get_class($this));
         $key .= "/$method";
 
-        foreach ((array)$paramArray as $param) {
+        foreach ($params as $param) {
             if (is_array($param)) {
                 // Index of array param will add to key, include int index.
                 // Another solution, $param can convert to json string and
