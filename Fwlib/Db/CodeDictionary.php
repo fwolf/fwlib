@@ -38,11 +38,11 @@ use Fwlib\Bridge\Adodb;
 class CodeDictionary
 {
     /**
-     * Column name, should not be empty
+     * Columns name, should not be empty
      *
      * @var array
      */
-    protected $column = array('code', 'title');
+    protected $columns = array('code', 'title');
 
     /**
      * Left delimiter in search condition
@@ -114,27 +114,27 @@ class CodeDictionary
     /**
      * Get value for given key
      *
-     * If $column is array, will use directly without parseColumn().
+     * If $columns is array, will use directly without parseColumns().
      *
      * Child class can simplify this method to improve speed by avoid parse
-     * column, get column data by index.
+     * columns, get columns data by index.
      *
      * @param   int|string|array    $key
-     * @param   string|array        $column
+     * @param   string|array        $columns
      * @return  int|string|array
      */
-    public function get($key, $column = '')
+    public function get($key, $columns = '')
     {
         if (!isset($this->dictionary[$key])) {
             return null;
         }
 
-        $resultColumn = is_array($column) ? $column
-            : $this->parseColumn($column);
+        $resultColumns = is_array($columns) ? $columns
+            : $this->parseColumns($columns);
 
         $result = array_intersect_key(
             $this->dictionary[$key],
-            array_fill_keys($resultColumn, null)
+            array_fill_keys($resultColumns, null)
         );
 
         // If only have 1 column
@@ -171,7 +171,7 @@ class CodeDictionary
         }
 
         $resultColumn = is_array($column) ? $column
-            : $this->parseColumn($column);
+            : $this->parseColumns($column);
 
         $result = array();
         foreach ($key as $singleKey) {
@@ -228,7 +228,7 @@ class CodeDictionary
             }
 
             $sql .= 'INSERT INTO ' . $this->table
-                . ' (' . implode(', ', $this->column) . ')'
+                . ' (' . implode(', ', $this->columns) . ')'
                 . ' VALUES (' . implode(', ', $valueList) . ')'
                 . $db->getSqlDelimiter();
         }
@@ -269,17 +269,17 @@ class CodeDictionary
      * @param   string|array    $column
      * @return  array
      */
-    protected function parseColumn($column = '')
+    protected function parseColumns($column = '')
     {
         $result = array();
 
         if ('*' == $column) {
-            $result = $this->column;
+            $result = $this->columns;
 
         } elseif (empty($column)) {
             // Assign first col not pk
             $columnWithoutPk = array_diff(
-                $this->column,
+                $this->columns,
                 (array)$this->primaryKey
             );
             $result = array(array_shift($columnWithoutPk));
@@ -290,7 +290,7 @@ class CodeDictionary
                 $column = explode(',', $column);
                 array_walk($column, 'trim');
             }
-            $result = array_intersect($column, $this->column);
+            $result = array_intersect($column, $this->columns);
         }
 
         return $result;
@@ -314,13 +314,13 @@ class CodeDictionary
         }
 
         $columnWithDelimiter = array();
-        foreach ($this->column as $v) {
+        foreach ($this->columns as $v) {
             $columnWithDelimiter[] = $this->delimiterLeft . $v .
                 $this->delimiterRight;
         }
 
         $resultColumn = is_array($column) ? $column
-            : $this->parseColumn($column);
+            : $this->parseColumns($column);
 
         $result = array();
         $condition = "return ($condition);";
@@ -351,11 +351,11 @@ class CodeDictionary
             return $this;
         }
 
-        if (empty($this->column)) {
+        if (empty($this->columns)) {
             throw new \Exception('Dictionary column not defined');
         }
 
-        if (!in_array($this->primaryKey, $this->column)) {
+        if (!in_array($this->primaryKey, $this->columns)) {
             throw new \Exception(
                 'Defined columns didn\'nt include primary key'
             );
@@ -370,7 +370,7 @@ class CodeDictionary
         foreach ($data as &$row) {
             try {
                 $columnValueArray = array_combine(
-                    $this->column,
+                    $this->columns,
                     $row
                 );
             } catch (\Exception $e) {
@@ -396,14 +396,14 @@ class CodeDictionary
 
 
     /**
-     * Setter of $column
+     * Setter of $columns
      *
-     * @param   array   $column
+     * @param   array   $columns
      * @return  CodeDictionary
      */
-    public function setColumn(array $column)
+    public function setColumns(array $columns)
     {
-        $this->column = $column;
+        $this->columns = $columns;
 
         return $this;
     }

@@ -293,7 +293,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
     {
         $dictionary = $this->buildMock();
 
-        $dictionary->setColumn(array());
+        $dictionary->setColumns(array());
 
         $dictionary->set(array('foo' => 'bar'));
     }
