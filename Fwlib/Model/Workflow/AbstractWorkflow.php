@@ -174,11 +174,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
             $this->load('');
         }
 
-        // Check and initlize model instance
-        if (0 == strlen($this->model->getUuid())) {
-            $this->initialize();
-        }
-
         // User method should decide whether or how to call updateContents()
         $method = 'execute' . ucfirst($action);
         if (method_exists($this, $method)) {
@@ -441,6 +436,11 @@ abstract class AbstractWorkflow implements WorkflowInterface
     public function load($uuid)
     {
         $this->model = new $this->modelClass($uuid);
+
+        // Check and initlize model instance
+        if (0 == strlen($this->model->getUuid())) {
+            $this->initialize();
+        }
 
         return $this;
     }
