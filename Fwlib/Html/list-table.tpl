@@ -55,7 +55,7 @@
     <thead>
     {* tr of th cannot add str, use th instead. *}
     <tr>
-  {foreach from=$listTableTitle key=keyTh item=title}
+  {foreach $listTableTitle as $keyTh => $title}
       <th {$listTableConfig.thAdd[$keyTh]|default: ''}>
     {if (!empty($listTableInfo.orderbyColumn) &&
         isset($listTableInfo.orderbyColumn[$keyTh]))}
@@ -80,11 +80,12 @@
 {/if}
 
     <tbody>
-{foreach from=$listTableData item=row key=keyTr}
+{foreach $listTableData as $keyTr => $row}
       <tr {$listTableConfig.trAdd[$keyTr]|default: ''}>
-  {foreach from=$row item=col key=keyTd}
+  {* Display data by title order *}
+  {foreach $listTableTitle as $keyTd => $title}
         <td {$listTableConfig.tdAdd[$keyTd]|default: ''}>
-          {$col}
+          {$row[$keyTd]}
         </td>
   {/foreach}
       </tr>
