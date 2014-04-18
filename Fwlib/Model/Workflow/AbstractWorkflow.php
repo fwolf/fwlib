@@ -232,8 +232,12 @@ abstract class AbstractWorkflow implements WorkflowInterface
     public function getAvailableActions()
     {
         $availableActions = array();
-        foreach ((array)$this->nodes[$this->model->getCurrentNode()]
-            ['actions'] as $action => $actionArray) {
+        if (!isset($this->nodes[$this->model->getCurrentNode()]['actions'])) {
+            return $availableActions;
+        }
+
+        foreach ($this->nodes[$this->model->getCurrentNode()] ['actions'] as
+            $action => $actionArray) {
 
             if ($this->isActionAvailable($action)) {
                 $availableActions[$action] = $actionArray;

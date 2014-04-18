@@ -163,6 +163,16 @@ class AbstractWorkflowTest extends PHPunitTestCase
             array('edit', 'submit', 'customizedAction'),
             array_keys($availableAction)
         );
+
+
+        $workflow->execute('submit');
+
+        // Simulate an end node without actions
+        $nodes = $this->reflectionGet($workflow, 'nodes');
+        unset($nodes['end']['actions']);
+        $this->reflectionSet($workflow, 'nodes', $nodes);
+
+        $this->assertEmpty($workflow->getAvailableActions());
     }
 
 
