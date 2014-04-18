@@ -54,7 +54,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
     }
 
 
-    public function testGetActionNotAvailableMessages()
+    public function testGetNotAvailableActions()
     {
         $workflow = $this->buildMockWithDummy('dummyUuid');
 
@@ -62,7 +62,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
         $this->assertArrayHasKey(
             'notAvailableAction',
-            $workflow->getActionNotAvailableMessages()
+            $workflow->getNotAvailableActions()
         );
     }
 

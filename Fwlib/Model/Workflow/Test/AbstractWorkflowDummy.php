@@ -27,6 +27,7 @@ class AbstractWorkflowDummy extends AbstractWorkflow
                     'resultCode'     => self::RESULT_CODE_APPROVED,
                 ),
                 'notAvailableAction' => array(
+                    'title' => 'Not Available Action Title',
                 ),
                 'customizedAction'  => array(
                     'title' => 'Customize Action',

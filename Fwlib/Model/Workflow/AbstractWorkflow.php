@@ -30,13 +30,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Message/reason of action not available
-     *
-     * @var array   {action: message}
-     */
-    protected $actionNotAvailableMessages = array();
-
-    /**
      * Classname of workflow model
      *
      * When start a new workflow, this classname is used to create empty model
@@ -89,6 +82,13 @@ abstract class AbstractWorkflow implements WorkflowInterface
             'title'     => 'Ended',
         ),
     );
+
+    /**
+     * Not available actions
+     *
+     * @var array   {action: {title, message or reason}}
+     */
+    protected $notAvailableActions = array();
 
     /**
      * Workflow result code title
@@ -216,13 +216,13 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Getter of $actionNotAvailableMessages
+     * Getter of $notAvailableActions
      *
      * @return  array
      */
-    public function getActionNotAvailableMessages()
+    public function getNotAvailableActions()
     {
-        return $this->actionNotAvailableMessages;
+        return $this->notAvailableActions;
     }
 
 
@@ -382,8 +382,8 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * isAction[ActionName]Available(). These method should explicit return
      * true to pass available check, other return value will be consider as
      * check fail, and will be saved as fail reason/message in property
-     * $actionNotAvailableMessages. This property can be used to show user why
-     * these action can't execute.
+     * $notAvailableActions. This property can be used to show user why these
+     * action can't execute.
      *
      * This is more flexible than complicated condition string.
      *
@@ -404,13 +404,16 @@ abstract class AbstractWorkflow implements WorkflowInterface
             $checkResult = $this->$method();
 
             if (true !== $checkResult) {
-                $this->actionNotAvailableMessages[$action] =
-                    (string)$checkResult;
+                $this->notAvailableActions[$action] = array(
+                    'title'   => $this->nodes[$this->model->getCurrentNode()]
+                        ['actions'][$action]['title'],
+                    'message' => (string)$checkResult,
+                );
                 return false;
             }
         }
 
-        unset($this->actionNotAvailableMessages[$action]);
+        unset($this->notAvailableActions[$action]);
         return true;
     }
 
