@@ -119,14 +119,25 @@ class AbstractWorkflowTest extends PHPunitTestCase
 
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid or not allowed action
+     * @expectedException Fwlib\Model\Workflow\Exception\InvalidActionException
      */
     public function testExecuteWithInvalidAction()
     {
         $workflow = $this->buildMock();
 
         $workflow->execute('actionNotExists');
+    }
+
+
+    /**
+     * @expectedException Fwlib\Model\Workflow\Exception\InvalidActionException
+     */
+    public function testExecuteWithInvalidActionByReSubmit()
+    {
+        $workflow = $this->buildMock();
+
+        $workflow->execute('submit');
+        $workflow->execute('submit');
     }
 
 

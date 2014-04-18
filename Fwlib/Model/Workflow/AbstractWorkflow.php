@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Model\Workflow;
 
+use Fwlib\Model\Workflow\Exception\InvalidActionException;
 use Fwlib\Model\Workflow\WorkflowInterface;
 use Fwlib\Model\Workflow\WorkflowModelInterface;
 
@@ -184,7 +185,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
         // Check action available by updated state, not original
         if (!$this->isActionAvailable($action)) {
-            throw new \Exception("Invalid or not allowed action $action");
+            throw new InvalidActionException(
+                "Invalid or not allowed action $action"
+            );
         }
 
         $actionArray = $this->nodes[$this->model->getCurrentNode()]
