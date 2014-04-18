@@ -34,7 +34,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * @var array   {action: message}
      */
-    protected $actionNotAvailableMessage = array();
+    protected $actionNotAvailableMessages = array();
 
     /**
      * Classname of workflow model
@@ -216,13 +216,13 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Getter of $actionNotAvailableMessage
+     * Getter of $actionNotAvailableMessages
      *
      * @return  array
      */
-    public function getActionNotAvailableMessage()
+    public function getActionNotAvailableMessages()
     {
-        return $this->actionNotAvailableMessage;
+        return $this->actionNotAvailableMessages;
     }
 
 
@@ -382,7 +382,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * isAction[ActionName]Available(). These method should explicit return
      * true to pass available check, other return value will be consider as
      * check fail, and will be saved as fail reason/message in property
-     * $actionNotAvailableMessage. This property can be used to show user why
+     * $actionNotAvailableMessages. This property can be used to show user why
      * these action can't execute.
      *
      * This is more flexible than complicated condition string.
@@ -404,13 +404,13 @@ abstract class AbstractWorkflow implements WorkflowInterface
             $checkResult = $this->$method();
 
             if (true !== $checkResult) {
-                $this->actionNotAvailableMessage[$action] =
+                $this->actionNotAvailableMessages[$action] =
                     (string)$checkResult;
                 return false;
             }
         }
 
-        unset($this->actionNotAvailableMessage[$action]);
+        unset($this->actionNotAvailableMessages[$action]);
         return true;
     }
 
