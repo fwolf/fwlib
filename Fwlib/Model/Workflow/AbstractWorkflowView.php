@@ -108,20 +108,13 @@ abstract class AbstractWorkflowView extends AbstractView
 
 
     /**
-     * Generate view title with workflow and instance info
+     * Generate view title
      *
      * @return  string
      */
     protected function generateTitle()
     {
         $title = $this->workflow->getWorkflowTitle();
-
-        $model = $this->workflow->getModel();
-        if (!is_null($model)) {
-            $modelTitle = $model->getTitle();
-
-            $title .= (empty($modelTitle)) ? '' : " - $modelTitle";
-        }
 
         return $title;
     }

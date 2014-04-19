@@ -102,7 +102,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
         $this->reflectionCall($view, 'createOrLoadWorkflow', array($uuid));
 
         $title = $this->reflectionCall($view, 'generateTitle');
-        $this->assertRegexp('/.+ - .+/', $title);
+        $this->assertEquals('Workflow Title Dummy', $title);
     }
 
 
