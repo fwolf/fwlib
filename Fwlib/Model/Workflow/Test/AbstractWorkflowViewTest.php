@@ -70,6 +70,14 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
     }
 
 
+    public function testAccessors()
+    {
+        $view = $this->buildMock();
+
+        $this->assertEquals('workflow-dummy-', $view->getViewActionPrefix());
+    }
+
+
     public function testCreateOrLoadWorkflow()
     {
         $view = $this->buildMock();

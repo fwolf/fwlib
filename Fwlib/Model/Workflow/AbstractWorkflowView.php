@@ -270,6 +270,17 @@ abstract class AbstractWorkflowView extends AbstractView
 
 
     /**
+     * Getter of view action prefix, for build query url
+     *
+     * @return  string
+     */
+    public function getViewActionPrefix()
+    {
+        return $this->viewActionPrefix;
+    }
+
+
+    /**
      * Get workflow action from user request
      *
      * @param   array   $request
