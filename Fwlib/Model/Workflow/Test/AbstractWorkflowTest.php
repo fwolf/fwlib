@@ -51,6 +51,14 @@ class AbstractWorkflowTest extends PHPunitTestCase
             'Fwlib\Model\Workflow\WorkflowModelInterface',
             $workflow->getModel()
         );
+
+        // Get title for current result code
+        $this->assertEquals('Not Ended', $workflow->getResultCodeTitle());
+        // Get title with given result code
+        $this->assertEquals(
+            'Approved',
+            $workflow->getResultCodeTitle($workflow::RESULT_CODE_APPROVED)
+        );
     }
 
 

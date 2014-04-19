@@ -327,11 +327,19 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Get title of result code
      *
+     * If $resultCode is null, will get result code of $model, otherwise will
+     * return title for given result code.
+     *
+     * @param   int     $resultCode
      * @return  string
      */
-    public function getResultCodeTitle()
+    public function getResultCodeTitle($resultCode = null)
     {
-        return $this->resultCodeTitle[$this->model->getResultCode()];
+        if (is_null($resultCode)) {
+            $resultCode = $this->model->getResultCode();
+        }
+
+        return $this->resultCodeTitle[$resultCode];
     }
 
 
