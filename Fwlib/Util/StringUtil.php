@@ -43,25 +43,37 @@ class StringUtil
      * Encode string for html output
      *
      * @param   string  $str
+     * @param   boolean $stripSlashes
+     * @param   boolean $nl2br
+     * @param   boolean $optimizeSpaces
      * @return  string
     */
-    public function encodeHtml($str)
-    {
-        $ar = array(
-            '&'     => '&amp;',
-            '<'     => '&lt;',
-            '>'     => '&gt;',
-            chr(9)  => '　　',
-            chr(34) => '&quot;',
-            '  '    => '&nbsp; ',
-            ' '     => '&nbsp;',
-            '&nbsp;&nbsp;'  => '&nbsp; ',
-            chr(13) => '<br />',
-        );
-        $search = array_keys($ar);
-        $replace = array_values($ar);
+    public function encodeHtml(
+        $str,
+        $stripSlashes = true,
+        $nl2br = true,
+        $optimizeSpaces = true
+    ) {
+        if ($stripSlashes) {
+            $str = stripSlashes($str);
+        }
 
-        return str_replace($search, $replace, $str);
+        $str = htmlentities($str, ENT_QUOTES, 'UTF-8');
+
+        if ($optimizeSpaces) {
+            $ar = array(
+                '  '    => '&nbsp; ',
+                ' '     => '&nbsp;',
+                '&nbsp;&nbsp;'  => '&nbsp; ',
+            );
+            $str = str_replace(array_keys($ar), array_values($ar), $str);
+        }
+
+        if ($nl2br) {
+            $str = nl2br($str, true);
+        }
+
+        return $str;
     }
 
 

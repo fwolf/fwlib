@@ -73,9 +73,34 @@ class StringUtilTest extends PHPunitTestCase
 
     public function testEncodeHtml()
     {
+        $x = '&';
+        $y = '&amp;';
+        $this->assertEquals($y, $this->stringUtil->encodeHtml($x));
+
+        $x = '<>';
+        $y = '&lt;&gt;';
+        $this->assertEquals($y, $this->stringUtil->encodeHtml($x));
+
+        $x = '  ';
+        $y = '&nbsp; ';
+        $this->assertEquals($y, $this->stringUtil->encodeHtml($x));
+
+        $x = ' ';
+        $y = '&nbsp;';
+        $this->assertEquals($y, $this->stringUtil->encodeHtml($x));
+
+        $x = '   ';
+        $y = '&nbsp; &nbsp;';
+        $this->assertEquals($y, $this->stringUtil->encodeHtml($x));
+
         $x = '     ';
         $y = '&nbsp; &nbsp; &nbsp;';
         $this->assertEquals($y, $this->stringUtil->encodeHtml($x));
+
+        $x = "\r\n";
+        $y = "<br />\r\n";
+        $this->assertEquals($y, $this->stringUtil->encodeHtml($x));
+
     }
 
 
