@@ -146,7 +146,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Process after workflow end and resultCode is approved
      *
-     * In common, this method should write $content to entity storage.
+     * In common, this method should write $contents to entity storage.
      *
      * If use DbDiff to store entity db change, there will have an extra
      * UPDATE to db (the former one is save()), by this cost, the workflow got
