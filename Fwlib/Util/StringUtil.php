@@ -78,6 +78,35 @@ class StringUtil
 
 
     /**
+     * Encode array of string for html output
+     *
+     * @param   array   $stringArray
+     * @param   boolean $stripSlashes
+     * @param   boolean $nl2br
+     * @param   boolean $optimizeSpaces
+     * @return  string
+    */
+    public function encodeHtmls(
+        array $stringArray,
+        $stripSlashes = true,
+        $nl2br = true,
+        $optimizeSpaces = true
+    ) {
+        foreach ($stringArray as &$string) {
+            $string = $this->encodeHtml(
+                $string,
+                $stripSlashes,
+                $nl2br,
+                $optimizeSpaces
+            );
+        }
+        unset($string);
+
+        return $stringArray;
+    }
+
+
+    /**
      * Eval string by replace tag with array value by index
      *
      * @param   string  $str

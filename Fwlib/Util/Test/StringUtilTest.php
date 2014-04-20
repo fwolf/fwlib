@@ -104,6 +104,14 @@ class StringUtilTest extends PHPunitTestCase
     }
 
 
+    public function testEncodeHtmls()
+    {
+        $x = array('foo' => '&');
+        $y = array('foo' => '&amp;');
+        $this->assertEquals($y, $this->stringUtil->encodeHtmls($x));
+    }
+
+
     public function testEvalWithTag()
     {
         $this->assertEquals(null, $this->stringUtil->evalWithTag(''));
