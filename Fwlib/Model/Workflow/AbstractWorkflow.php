@@ -520,6 +520,24 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
+     * Receive contents from request
+     *
+     * Child can extend to do more prepare work on contents before update.
+     *
+     * @return  array
+     */
+    protected function receiveContentsFromRequest()
+    {
+        $contents = $_POST;
+
+        // For security, better specify which keys to pick
+        //$contents = array_intersect_key($_POST, array_fill_keys($keys, null));
+
+        return $contents;
+    }
+
+
+    /**
      * Rollback data written by commit()
      */
     protected function rollback()
@@ -572,27 +590,37 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Update $content when execute action
+     * Update $contents, will be called when execute action
      *
-     * @param   array   $data
+     * @param   array   $contents
      * @return  AbstractWorkflow
      */
-    protected function updateContents(array $data = null)
+    protected function updateContents(array $contents = null)
     {
-        if (is_null($data)) {
-            $data = $_POST;
+        if (is_null($contents)) {
+            $contents = $this->receiveContentsFromRequest();
         }
 
-        // For security, better specify which keys to pick
-        //$data = array_intersect_key($_POST, array_fill_keys($keys, null));
+        if (!empty($contents)) {
+            $this->model->setContents(
+                array_merge($this->model->getContents(), $contents)
+            );
 
-        // When display in html, should encode html in user input contents
-        //$data = array_map('htmlentities', $model->getContents());
-
-        $this->model->setContents(
-            array_merge($this->model->getContents(), $data)
-        );
+            $this->updateModelByContents();
+        }
 
         return $this;
+    }
+
+
+    /**
+     * Update model information by contents
+     *
+     * Model property that not depends on contents should set in initialize()
+     * or executeAction() method.
+     */
+    protected function updateModelByContents()
+    {
+        // Dummy
     }
 }
