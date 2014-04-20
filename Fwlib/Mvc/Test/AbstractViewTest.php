@@ -52,12 +52,15 @@ class AbstractViewTest extends PHPunitTestCase
     }
 
 
-    public function testForCoverage()
+    public function testAccessors()
     {
         $view = $this->buildMock('path/to/root');
-        $view->setTitle('test title');
 
-        $this->assertTrue(true);
+        $view->setModule('Module');
+        $this->assertEquals('Module', $this->reflectionGet($view, 'module'));
+
+        $view->setTitle('Title');
+        $this->assertEquals('Title', $this->reflectionGet($view, 'title'));
     }
 
 

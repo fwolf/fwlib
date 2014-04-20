@@ -92,6 +92,8 @@ abstract class AbstractControler implements ControlerInterface
     {
         $view = new $className($this->pathToRoot);
 
+        $view->setModule($this->module);
+
         return $view;
     }
 

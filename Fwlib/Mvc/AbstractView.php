@@ -50,6 +50,13 @@ abstract class AbstractView implements ViewInterface
     protected $methodPrefix = 'fetch';
 
     /**
+     * Current module, used to generate urls
+     *
+     * @var string
+     */
+    protected $module = '';
+
+    /**
      * Use Smarty to build html from template
      *
      * @var Smarty
@@ -294,6 +301,20 @@ abstract class AbstractView implements ViewInterface
     public function setAction($action)
     {
         $this->action = $action;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of module
+     *
+     * @param   string  $module
+     * @return  AbstractView
+     */
+    public function setModule($module)
+    {
+        $this->module = $module;
 
         return $this;
     }
