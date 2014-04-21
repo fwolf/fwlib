@@ -59,6 +59,13 @@ class AbstractWorkflowTest extends PHPunitTestCase
             'Approved',
             $workflow->getResultCodeTitle($workflow::RESULT_CODE_APPROVED)
         );
+
+        $workflow->setNodeActionTitle('start', 'edit', 'Edit Title Modified');
+        $nodes = $this->reflectionGet($workflow, 'nodes');
+        $this->assertEquals(
+            'Edit Title Modified',
+            $nodes['start']['actions']['edit']['title']
+        );
     }
 
 

@@ -590,6 +590,28 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
+     * Change action title
+     *
+     * Sometimes action title can't fit both detail and review view mode. For
+     * example, an action with title 'Save' works fine in review mode. But in
+     * detail mode, the title 'Go to Edit' is more suitable.
+     *
+     * Note: choose a appropriate title is better than do modify like this.
+     *
+     * @param   string  $node
+     * @param   string  $action
+     * @param   string  $title
+     * @return  AbstractWorkflow
+     */
+    public function setNodeActionTitle($node, $action, $title)
+    {
+        $this->nodes[$node]['actions'][$action]['title'] = $title;
+
+        return $this;
+    }
+
+
+    /**
      * Update $contents, will be called when execute action
      *
      * @param   array   $contents
