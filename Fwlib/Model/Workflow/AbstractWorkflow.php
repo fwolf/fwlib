@@ -91,6 +91,15 @@ abstract class AbstractWorkflow implements WorkflowInterface
     protected $notAvailableActions = array();
 
     /**
+     * When update contents, these keys will be auto received
+     *
+     * Value '*' means accept all keys.
+     *
+     * @var array|string    String '*' or array of keys.
+     */
+    protected $receivableContentKeys = '*';
+
+    /**
      * Workflow result code title
      *
      * @var array
@@ -522,6 +531,8 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Receive contents from request
      *
+     * Accept only specified keys is more secure.
+     *
      * Child can extend to do more prepare work on contents before update.
      *
      * @return  array
@@ -530,8 +541,12 @@ abstract class AbstractWorkflow implements WorkflowInterface
     {
         $contents = $_POST;
 
-        // For security, better specify which keys to pick
-        //$contents = array_intersect_key($_POST, array_fill_keys($keys, null));
+        if ('*' != $this->receivableContentKeys) {
+            $contents = array_intersect_key(
+                $contents,
+                array_fill_keys($this->receivableContentKeys, null)
+            );
+        }
 
         return $contents;
     }
@@ -606,6 +621,20 @@ abstract class AbstractWorkflow implements WorkflowInterface
     public function setNodeActionTitle($node, $action, $title)
     {
         $this->nodes[$node]['actions'][$action]['title'] = $title;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of receivable content keys
+     *
+     * @param   array|string
+     * @return  AbstraceWorkflow
+     */
+    public function setReceivableContentKeys($keys)
+    {
+        $this->receivableContentKeys = $keys;
 
         return $this;
     }

@@ -217,4 +217,27 @@ class AbstractWorkflowTest extends PHPunitTestCase
         // use reflection to call move() directly.
         $this->reflectionCall($workflow, 'move', array('rollback', 'end', 'end'));
     }
+
+
+    public function testReceiveContentsFromRequest()
+    {
+        $workflow = $this->buildMock();
+
+        $_POST = array(
+            'a' => 'A',
+            'b' => 'B',
+        );
+
+        $workflow->setReceivableContentKeys('*');
+        $this->assertEqualArray(
+            $_POST,
+            $this->reflectionCall($workflow, 'receiveContentsFromRequest')
+        );
+
+        $workflow->setReceivableContentKeys(array('a'));
+        $this->assertEqualArray(
+            array('a' => 'A'),
+            $this->reflectionCall($workflow, 'receiveContentsFromRequest')
+        );
+    }
 }
