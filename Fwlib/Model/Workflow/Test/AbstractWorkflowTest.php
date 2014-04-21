@@ -69,19 +69,6 @@ class AbstractWorkflowTest extends PHPunitTestCase
     }
 
 
-    public function testGetNotAvailableActions()
-    {
-        $workflow = $this->buildMockWithDummy('dummyUuid');
-
-        $workflow->getAvailableActions();
-
-        $this->assertArrayHasKey(
-            'notAvailableAction',
-            $workflow->getNotAvailableActions()
-        );
-    }
-
-
     public function testExecute()
     {
         // If dummy workflow model's UUID is empty, will cause initialize() to
@@ -188,6 +175,19 @@ class AbstractWorkflowTest extends PHPunitTestCase
         $this->reflectionSet($workflow, 'nodes', $nodes);
 
         $this->assertEmpty($workflow->getAvailableActions());
+    }
+
+
+    public function testGetNotAvailableActions()
+    {
+        $workflow = $this->buildMockWithDummy('dummyUuid');
+
+        $workflow->getAvailableActions();
+
+        $this->assertArrayHasKey(
+            'notAvailableAction',
+            $workflow->getNotAvailableActions()
+        );
     }
 
 
