@@ -132,9 +132,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     public function __construct($uuid = '')
     {
-        if (!empty($uuid)) {
-            $this->load($uuid);
-        }
+        $this->load($uuid);
     }
 
 
@@ -183,11 +181,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     public function execute($action)
     {
-        // Must have a model instance
-        if (empty($this->model)) {
-            $this->load('');
-        }
-
         // User method should decide whether or how to call updateContents()
         $method = 'execute' . ucfirst($action);
         if (method_exists($this, $method)) {
@@ -469,7 +462,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
         $this->model = new $this->modelClass($uuid);
 
         // Check and initlize model instance
-        if (0 == strlen($this->model->getUuid())) {
+        if (empty($uuid)) {
             $this->initialize();
         }
 
