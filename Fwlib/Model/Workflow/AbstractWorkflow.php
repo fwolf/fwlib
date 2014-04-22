@@ -173,20 +173,18 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      *
-     * In default, this method only include updateContents(), user should
-     * define customized executeAction() method to do extra job like convert
-     * form input data, this method should not include move() anymore. To set
-     * specified resultCode when change node, set it in action property in
-     * $nodes define array.
+     * User can define customized executeAction() method to do extra job like
+     * generate profile code. this method should not include move() anymore,
+     * nor should this method set resultCode, that should be set as action
+     * property in $nodes define array.
      */
     public function execute($action)
     {
-        // User method should decide whether or how to call updateContents()
+        // Contents are changed by updateContents() from outside, before this.
+
         $method = 'execute' . ucfirst($action);
         if (method_exists($this, $method)) {
             $this->$method();
-        } else {
-            $this->updateContents();
         }
 
         // Check action available by updated state, not original
@@ -638,17 +636,15 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
-     * Update $contents, will be called when execute action
+     * Update $contents
+     *
+     * Eg: Assign filtered $_POST data from View.
      *
      * @param   array   $contents
      * @return  AbstractWorkflow
      */
-    protected function updateContents(array $contents = null)
+    public function updateContents(array $contents = null)
     {
-        if (is_null($contents)) {
-            $contents = $this->receiveContentsFromRequest();
-        }
-
         if (!empty($contents)) {
             $this->model->setContents(
                 array_merge($this->model->getContents(), $contents)

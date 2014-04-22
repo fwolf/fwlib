@@ -214,7 +214,8 @@ abstract class AbstractWorkflowView extends AbstractView
 
         $workflowAction = $this->getWorkflowAction();
         if (!empty($workflowAction)) {
-            $this->workflow->execute($workflowAction);
+            $this->workflow->updateContents($_POST)
+                ->execute($workflowAction);
         }
 
         $viewAction = $this->getViewAction($workflowAction);

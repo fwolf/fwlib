@@ -78,7 +78,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
         $contentData = array('key' => 'dummy');
         $_POST = $contentData;
 
-        $workflow->execute('submit');
+        $workflow->updateContents($_POST)->execute('submit');
 
         // Node is moved
         $this->assertEquals('end', $workflow->getCurrentNode());
