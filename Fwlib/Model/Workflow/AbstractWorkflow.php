@@ -61,6 +61,10 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * or user can specify through action.  Set resultCode on other action is
      * useless.
      *
+     * The end node should not have action 'next' point to itself, that action
+     * will always trigger both commit() and rollback(). A check for this in
+     * move() will throw Exception 'end twice'.
+     *
      * @var array
      */
     protected $nodes = array(
