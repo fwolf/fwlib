@@ -35,6 +35,15 @@ use Fwlib\Util\UtilContainer;
 abstract class AbstractWorkflowView extends AbstractView
 {
     /**
+     * When update contents, these keys will be auto received
+     *
+     * Value '*' means accept all keys.
+     *
+     * @var array|string    String '*' or array of keys.
+     */
+    protected $receivableContentKeys = '*';
+
+    /**
      * Request parameter of uuid
      *
      * @var string
@@ -214,7 +223,8 @@ abstract class AbstractWorkflowView extends AbstractView
 
         $workflowAction = $this->getWorkflowAction();
         if (!empty($workflowAction)) {
-            $this->workflow->updateContents($_POST)
+            $contents = $this->receiveContentsFromRequest();
+            $this->workflow->updateContents($contents)
                 ->execute($workflowAction);
         }
 
@@ -315,5 +325,28 @@ abstract class AbstractWorkflowView extends AbstractView
         }
 
         return $uuid;
+    }
+
+
+    /**
+     * Receive contents from request
+     *
+     * Child class can extend to decide which keys should be received, accept
+     * only specified keys is more secure.
+     *
+     * @return  array
+     */
+    protected function receiveContentsFromRequest()
+    {
+        $contents = $_POST;
+
+        if ('*' != $this->receivableContentKeys) {
+            $contents = array_intersect_key(
+                $contents,
+                array_fill_keys($this->receivableContentKeys, null)
+            );
+        }
+
+        return $contents;
     }
 }

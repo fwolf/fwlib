@@ -175,4 +175,27 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
 
         $output = $view->setAction($_GET['a'])->getOutput();
     }
+
+
+    public function testReceiveContentsFromRequest()
+    {
+        $view = $this->buildMock();
+
+        $_POST = array(
+            'a' => 'A',
+            'b' => 'B',
+        );
+
+        $this->reflectionSet($view, 'receivableContentKeys', '*');
+        $this->assertEqualArray(
+            $_POST,
+            $this->reflectionCall($view, 'receiveContentsFromRequest')
+        );
+
+        $this->reflectionSet($view, 'receivableContentKeys', array('a'));
+        $this->assertEqualArray(
+            array('a' => 'A'),
+            $this->reflectionCall($view, 'receiveContentsFromRequest')
+        );
+    }
 }
