@@ -222,6 +222,25 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
 
     /**
+     * Get title of action, will search action in nodes
+     *
+     * @param   string  $action
+     * @return  string
+     */
+    public function getActionTitle($action)
+    {
+        foreach ($this->nodes as &$node) {
+            if (isset($node['actions'][$action])) {
+                return $node['actions'][$action]['title'];
+            }
+        }
+        unset($node);
+
+        throw new \Exception("Get title from invalid action $action");
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public function getAvailableActions()

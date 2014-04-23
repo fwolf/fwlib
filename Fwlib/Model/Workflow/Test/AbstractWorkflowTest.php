@@ -155,6 +155,20 @@ class AbstractWorkflowTest extends PHPunitTestCase
     }
 
 
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage invalid action
+     */
+    public function testGetActionTitle()
+    {
+        $workflow = $this->buildMockWithDummy();
+
+        $this->assertEquals('Submit', $workflow->getActionTitle('submit'));
+
+        $workflow->getActionTitle('not exists action');
+    }
+
+
     public function testGetAvailableAction()
     {
         $workflow = $this->buildMockWithDummy();
