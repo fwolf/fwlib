@@ -291,7 +291,7 @@ abstract class AbstractWorkflowView extends AbstractView
     protected function getWorkflowAction(array $request = null)
     {
         if (is_null($request)) {
-            $request = $_GET;
+            $request = $_POST;
         }
 
         if (isset($request[$this->workflowActionParameter])) {
