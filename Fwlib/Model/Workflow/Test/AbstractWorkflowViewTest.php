@@ -149,8 +149,10 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
         // The view action of submit is detail
         $_GET = array(
             'a'     => 'workflow-dummy-edit',
-            'wfa'   => 'submit',
             'uuid'  => 'workflowUuid',
+        );
+        $_POST = array(
+            'wfa'   => 'submit',
         );
 
         $output = $view->setAction($_GET['a'])->getOutput();
@@ -172,6 +174,7 @@ class AbstractWorkflowViewTest extends PHPunitTestCase
         $_GET = array(
             'a'     => 'workflow-dummy-invalid-view-action',
         );
+        $_POST = array();
 
         $output = $view->setAction($_GET['a'])->getOutput();
     }
