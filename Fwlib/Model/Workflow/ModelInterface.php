@@ -16,7 +16,7 @@ namespace Fwlib\Model\Workflow;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2014-04-12
  */
-interface WorkflowModelInterface
+interface ModelInterface
 {
     /**
      * Add a workflow log
@@ -27,7 +27,7 @@ interface WorkflowModelInterface
      * @param   string  $actionTitle
      * @param   string  $prevNode
      * @param   string  $nextNode
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function addLog($action, $actionTitle, $prevNode, $nextNode);
 
@@ -84,7 +84,7 @@ interface WorkflowModelInterface
     /**
      * Save to storage
      *
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function save();
 
@@ -94,7 +94,7 @@ interface WorkflowModelInterface
      *
      * @param   string  $key
      * @param   mixed   $value
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function setContent($key, $value);
 
@@ -103,7 +103,7 @@ interface WorkflowModelInterface
      * Set multiple key of content
      *
      * @param   array   $data
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function setContents($data);
 
@@ -117,7 +117,7 @@ interface WorkflowModelInterface
      * workflow instance.
      *
      * @param   string  $node
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function setCurrentNode($node);
 
@@ -134,7 +134,7 @@ interface WorkflowModelInterface
      * Setter of title
      *
      * @param   string  $title
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function setTitle($title);
 
@@ -145,7 +145,7 @@ interface WorkflowModelInterface
      * Links can be added or removed.
      *
      * @param   array   $links
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function syncLinks($links);
 }

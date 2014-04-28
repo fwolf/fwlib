@@ -1,8 +1,8 @@
 <?php
 namespace Fwlib\Model\Workflow;
 
-use Fwlib\Model\Workflow\WorkflowInterface;
-use Fwlib\Mvc\AbstractView;
+use Fwlib\Model\Workflow\ManagerInterface;
+use Fwlib\Mvc\AbstractView as BaseView;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -32,7 +32,7 @@ use Fwlib\Util\UtilContainer;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2014-01-09
  */
-abstract class AbstractWorkflowView extends AbstractView
+abstract class AbstractView extends BaseView
 {
     /**
      * When update contents, these keys will be auto received
@@ -78,9 +78,9 @@ abstract class AbstractWorkflowView extends AbstractView
     );
 
     /**
-     * Workflow instance
+     * Workflow manager instance
      *
-     * @var WorkflowInterface
+     * @var ManagerInterface
      */
     protected $workflow = null;
 
@@ -92,7 +92,7 @@ abstract class AbstractWorkflowView extends AbstractView
     protected $workflowActionParameter = 'wfa';
 
     /**
-     * Workflow classname
+     * Workflow manager classname
      *
      * @var string
      */
@@ -103,7 +103,7 @@ abstract class AbstractWorkflowView extends AbstractView
      * Create or load workflow instance
      *
      * @param   string  $uuid
-     * @return  WorkflowInterface
+     * @return  ManagerInterface
      */
     protected function createOrLoadWorkflow($uuid = '')
     {

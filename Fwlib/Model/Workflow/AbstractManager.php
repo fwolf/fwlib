@@ -2,8 +2,8 @@
 namespace Fwlib\Model\Workflow;
 
 use Fwlib\Model\Workflow\Exception\InvalidActionException;
-use Fwlib\Model\Workflow\WorkflowInterface;
-use Fwlib\Model\Workflow\WorkflowModelInterface;
+use Fwlib\Model\Workflow\ManagerInterface;
+use Fwlib\Model\Workflow\ModelInterface;
 
 /**
  * Workflow manager
@@ -15,7 +15,7 @@ use Fwlib\Model\Workflow\WorkflowModelInterface;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2014-01-08
  */
-abstract class AbstractWorkflow implements WorkflowInterface
+abstract class AbstractManager implements ManagerInterface
 {
     /**
      * Workflow end result code
@@ -37,12 +37,12 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * @var string
      */
-    protected $modelClass = 'Fwlib\Model\Workflow\WorkflowModelInterface';
+    protected $modelClass = 'Fwlib\Model\Workflow\ModelInterface';
 
     /**
      * Workflow model instance
      *
-     * @var WorkflowModelInterface
+     * @var ModelInterface
      */
     protected $model = null;
 
@@ -490,7 +490,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * @param   string  $action     Moved by action
      * @param   string  $node
      * @param   int     $resultCode Should set when to or from end node.
-     * @return  AbstractWorkflow
+     * @return  AbstractManager
      */
     protected function move(
         $action,
@@ -577,7 +577,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function setModel(WorkflowModelInterface $model)
+    public function setModel(ModelInterface $model)
     {
         $this->model = $model;
 
@@ -597,7 +597,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * @param   string  $node
      * @param   string  $action
      * @param   string  $title
-     * @return  AbstractWorkflow
+     * @return  AbstractManager
      */
     public function setNodeActionTitle($node, $action, $title)
     {
@@ -613,7 +613,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * Eg: Assign filtered $_POST data from View.
      *
      * @param   array   $contents
-     * @return  AbstractWorkflow
+     * @return  AbstractManager
      */
     public function updateContents(array $contents = null)
     {

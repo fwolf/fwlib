@@ -1,26 +1,26 @@
 <?php
 namespace Fwlib\Model\Workflow;
 
-use Fwlib\Model\Workflow\WorkflowModelInterface;
+use Fwlib\Model\Workflow\ModelInterface;
 
 /**
- * Workflow interface
+ * Workflow manager interface
  *
- * This class is mostly like a workflow manager, the access of storage is done
- * in workflow model.
+ * Control workflow execution, get available actions and other information.
+ * The access of storage is done by workflow model.
  *
  * @copyright   Copyright 2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2014-01-09
  */
-interface WorkflowInterface
+interface ManagerInterface
 {
     /**
      * Execute an action
      *
      * @param   string  $action
-     * @return  WorkflowInterface
+     * @return  ManagerInterface
      */
     public function execute($action);
 
@@ -36,7 +36,7 @@ interface WorkflowInterface
     /**
      * Getter of workflow model instance
      *
-     * @return  WorkflowModelInterface
+     * @return  ModelInterface
      */
     public function getModel();
 
@@ -77,7 +77,7 @@ interface WorkflowInterface
      * Load workflow model instance by given uuid
      *
      * @param   string  $uuid
-     * @return  WorkflowInterface
+     * @return  ManagerInterface
      */
     public function load($uuid);
 
@@ -85,8 +85,8 @@ interface WorkflowInterface
     /**
      * Set a workflow model instance
      *
-     * @param   WorkflowModelInterface  $model
-     * @return  WorkflowInterface
+     * @param   ModelInterface  $model
+     * @return  ManagerInterface
      */
-    public function setModel(WorkflowModelInterface $model);
+    public function setModel(ModelInterface $model);
 }

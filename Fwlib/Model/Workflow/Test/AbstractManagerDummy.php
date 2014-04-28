@@ -1,17 +1,17 @@
 <?php
 namespace Fwlib\Model\Workflow\Test;
 
-use Fwlib\Model\Workflow\AbstractWorkflow;
+use Fwlib\Model\Workflow\AbstractManager;
 
 /**
- * This class is not abstract, because AbstractWorkflowView need to create its
+ * This class is not abstract, because AbstractManagerView need to create its
  * instance for test, abstract method in parent class will got an empty
  * declare here.
  */
-class AbstractWorkflowDummy extends AbstractWorkflow
+class AbstractManagerDummy extends AbstractManager
 {
     protected $modelClass =
-        'Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy';
+        'Fwlib\Model\Workflow\Test\ModelInterfaceDummy';
 
     protected $nodes = array(
         'start' => array(

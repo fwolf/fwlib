@@ -1,9 +1,9 @@
 <?php
 namespace Fwlib\Model\Workflow\Test;
 
-use Fwlib\Model\Workflow\WorkflowModelInterface;
+use Fwlib\Model\Workflow\ModelInterface;
 
-class WorkflowModelInterfaceDummy implements WorkflowModelInterface
+class ModelInterfaceDummy implements ModelInterface
 {
     public $contents = array();
     public $currentNode = 'start';

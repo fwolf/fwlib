@@ -2,9 +2,9 @@
 namespace Fwlib\Model\Workflow\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Model\Workflow\AbstractWorkflow;
-use Fwlib\Model\Workflow\Test\AbstractWorkflowDummy;
-use Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy;
+use Fwlib\Model\Workflow\AbstractManager;
+use Fwlib\Model\Workflow\Test\AbstractManagerDummy;
+use Fwlib\Model\Workflow\Test\ModelInterfaceDummy;
 
 /**
  * @copyright   Copyright 2014 Fwolf
@@ -12,12 +12,12 @@ use Fwlib\Model\Workflow\Test\WorkflowModelInterfaceDummy;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2014-01-10
  */
-class AbstractWorkflowTest extends PHPunitTestCase
+class AbstractManagerTest extends PHPunitTestCase
 {
     protected function buildMock($uuid = '')
     {
         $workflow = $this->getMockBuilder(
-            'Fwlib\Model\Workflow\Test\AbstractWorkflowDummy'
+            'Fwlib\Model\Workflow\Test\AbstractManagerDummy'
         )
         ->setMethods(array())
         ->setConstructorArgs(array($uuid))
@@ -30,11 +30,11 @@ class AbstractWorkflowTest extends PHPunitTestCase
     protected function buildMockWithDummy($uuid = '')
     {
         $workflow = $this->getMockBuilder(
-            'Fwlib\Model\Workflow\Test\AbstractWorkflowDummy'
+            'Fwlib\Model\Workflow\Test\AbstractManagerDummy'
         )
         ->setMethods(array())
         ->getMockForAbstractClass()
-        ->setModel(new WorkflowModelInterfaceDummy($uuid));
+        ->setModel(new ModelInterfaceDummy($uuid));
 
         return $workflow;
     }
@@ -48,7 +48,7 @@ class AbstractWorkflowTest extends PHPunitTestCase
         $this->assertNotEmpty($workflow->getCurrentNodeTitle());
         $this->assertNotEmpty($workflow->getModelClass());
         $this->assertInstanceOf(
-            'Fwlib\Model\Workflow\WorkflowModelInterface',
+            'Fwlib\Model\Workflow\ModelInterface',
             $workflow->getModel()
         );
 
