@@ -25,6 +25,12 @@ class AbstractControlerDummy
     }
 
 
+    public function setModule($module)
+    {
+        return $this;
+    }
+
+
     public function setPathToRoot($pathToRoot)
     {
     }
