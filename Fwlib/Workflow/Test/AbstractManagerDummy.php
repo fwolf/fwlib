@@ -1,7 +1,7 @@
 <?php
-namespace Fwlib\Model\Workflow\Test;
+namespace Fwlib\Workflow\Test;
 
-use Fwlib\Model\Workflow\AbstractManager;
+use Fwlib\Workflow\AbstractManager;
 
 /**
  * This class is not abstract, because AbstractManagerView need to create its
@@ -11,7 +11,7 @@ use Fwlib\Model\Workflow\AbstractManager;
 class AbstractManagerDummy extends AbstractManager
 {
     protected $modelClass =
-        'Fwlib\Model\Workflow\Test\ModelInterfaceDummy';
+        'Fwlib\Workflow\Test\ModelInterfaceDummy';
 
     protected $nodes = array(
         'start' => array(

@@ -1,10 +1,10 @@
 <?php
-namespace Fwlib\Model\Workflow\Test;
+namespace Fwlib\Workflow\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Model\Workflow\AbstractManager;
-use Fwlib\Model\Workflow\Test\AbstractManagerDummy;
-use Fwlib\Model\Workflow\Test\ModelInterfaceDummy;
+use Fwlib\Workflow\AbstractManager;
+use Fwlib\Workflow\Test\AbstractManagerDummy;
+use Fwlib\Workflow\Test\ModelInterfaceDummy;
 
 /**
  * @copyright   Copyright 2014 Fwolf
@@ -17,7 +17,7 @@ class AbstractManagerTest extends PHPunitTestCase
     protected function buildMock($uuid = '')
     {
         $workflow = $this->getMockBuilder(
-            'Fwlib\Model\Workflow\Test\AbstractManagerDummy'
+            'Fwlib\Workflow\Test\AbstractManagerDummy'
         )
         ->setMethods(array())
         ->setConstructorArgs(array($uuid))
@@ -30,7 +30,7 @@ class AbstractManagerTest extends PHPunitTestCase
     protected function buildMockWithDummy($uuid = '')
     {
         $workflow = $this->getMockBuilder(
-            'Fwlib\Model\Workflow\Test\AbstractManagerDummy'
+            'Fwlib\Workflow\Test\AbstractManagerDummy'
         )
         ->setMethods(array())
         ->getMockForAbstractClass()
@@ -48,7 +48,7 @@ class AbstractManagerTest extends PHPunitTestCase
         $this->assertNotEmpty($workflow->getCurrentNodeTitle());
         $this->assertNotEmpty($workflow->getModelClass());
         $this->assertInstanceOf(
-            'Fwlib\Model\Workflow\ModelInterface',
+            'Fwlib\Workflow\ModelInterface',
             $workflow->getModel()
         );
 
@@ -121,7 +121,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
 
     /**
-     * @expectedException Fwlib\Model\Workflow\Exception\InvalidActionException
+     * @expectedException Fwlib\Workflow\Exception\InvalidActionException
      */
     public function testExecuteWithInvalidAction()
     {
@@ -132,7 +132,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
 
     /**
-     * @expectedException Fwlib\Model\Workflow\Exception\InvalidActionException
+     * @expectedException Fwlib\Workflow\Exception\InvalidActionException
      */
     public function testExecuteWithInvalidActionByReSubmit()
     {

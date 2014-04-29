@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Model\Workflow;
+namespace Fwlib\Workflow;
 
 
 /**

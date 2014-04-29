@@ -1,9 +1,9 @@
 <?php
-namespace Fwlib\Model\Workflow;
+namespace Fwlib\Workflow;
 
-use Fwlib\Model\Workflow\Exception\InvalidActionException;
-use Fwlib\Model\Workflow\ManagerInterface;
-use Fwlib\Model\Workflow\ModelInterface;
+use Fwlib\Workflow\Exception\InvalidActionException;
+use Fwlib\Workflow\ManagerInterface;
+use Fwlib\Workflow\ModelInterface;
 
 /**
  * Workflow manager
@@ -37,7 +37,7 @@ abstract class AbstractManager implements ManagerInterface
      *
      * @var string
      */
-    protected $modelClass = 'Fwlib\Model\Workflow\ModelInterface';
+    protected $modelClass = 'Fwlib\Workflow\ModelInterface';
 
     /**
      * Workflow model instance

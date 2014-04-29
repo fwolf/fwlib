@@ -1,7 +1,7 @@
 <?php
-namespace Fwlib\Model\Workflow\Test;
+namespace Fwlib\Workflow\Test;
 
-use Fwlib\Model\Workflow\ModelInterface;
+use Fwlib\Workflow\ModelInterface;
 
 class ModelInterfaceDummy implements ModelInterface
 {

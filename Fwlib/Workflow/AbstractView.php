@@ -1,7 +1,7 @@
 <?php
-namespace Fwlib\Model\Workflow;
+namespace Fwlib\Workflow;
 
-use Fwlib\Model\Workflow\ManagerInterface;
+use Fwlib\Workflow\ManagerInterface;
 use Fwlib\Mvc\AbstractView as BaseView;
 use Fwlib\Util\UtilContainer;
 

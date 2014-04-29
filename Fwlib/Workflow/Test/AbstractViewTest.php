@@ -1,9 +1,9 @@
 <?php
-namespace Fwlib\Model\Workflow\Test;
+namespace Fwlib\Workflow\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Model\Workflow\AbstractView;
-use Fwlib\Model\Workflow\Test\AbstractManagerDummy;
+use Fwlib\Workflow\AbstractView;
+use Fwlib\Workflow\Test\AbstractManagerDummy;
 
 /**
  * @copyright   Copyright 2014 Fwolf
@@ -16,7 +16,7 @@ class AbstractViewTest extends PHPunitTestCase
     protected function buildMock()
     {
         $view = $this->getMockBuilder(
-            'Fwlib\Model\Workflow\AbstractView'
+            'Fwlib\Workflow\AbstractView'
         )
         ->setMethods(
             array(
@@ -58,7 +58,7 @@ class AbstractViewTest extends PHPunitTestCase
         $this->reflectionSet(
             $view,
             'workflowClass',
-            'Fwlib\\Model\\Workflow\\Test\\AbstractManagerDummy'
+            'Fwlib\Workflow\Test\AbstractManagerDummy'
         );
         $this->reflectionSet(
             $view,

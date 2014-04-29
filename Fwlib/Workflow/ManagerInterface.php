@@ -1,7 +1,7 @@
 <?php
-namespace Fwlib\Model\Workflow;
+namespace Fwlib\Workflow;
 
-use Fwlib\Model\Workflow\ModelInterface;
+use Fwlib\Workflow\ModelInterface;
 
 /**
  * Workflow manager interface
