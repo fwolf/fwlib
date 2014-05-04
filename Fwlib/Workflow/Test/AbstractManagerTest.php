@@ -27,19 +27,6 @@ class AbstractManagerTest extends PHPunitTestCase
     }
 
 
-    protected function buildMockWithDummy($uuid = '')
-    {
-        $workflow = $this->getMockBuilder(
-            'Fwlib\Workflow\Test\AbstractManagerDummy'
-        )
-        ->setMethods(array())
-        ->getMockForAbstractClass()
-        ->setModel(new ModelInterfaceDummy($uuid));
-
-        return $workflow;
-    }
-
-
     public function testAccessors()
     {
         $workflow = $this->buildMock('uuid dummy');
@@ -66,6 +53,13 @@ class AbstractManagerTest extends PHPunitTestCase
             'Edit Title Modified',
             $nodes['start']['actions']['edit']['title']
         );
+
+        $workflowModel = $workflow->getModel();
+        $workflow->setModel($workflowModel);
+        $this->assertInstanceOf(
+            'Fwlib\Workflow\ModelInterface',
+            $workflow->getModel()
+        );
     }
 
 
@@ -90,9 +84,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
     public function testExecute()
     {
-        // If dummy workflow model's UUID is empty, will cause initialize() to
-        // reset resultCode, so don't leave it empty.
-        $workflow = $this->buildMockWithDummy('dummyUuid');
+        $workflow = $this->buildMock();
 
         $contentData = array('key' => 'dummy');
         $_POST = $contentData;
@@ -119,7 +111,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
     public function testExecuteWithCustomizedExecuteActionMethod()
     {
-        $workflow = $this->buildMockWithDummy('uuid');
+        $workflow = $this->buildMock('uuid');
 
         $this->assertFalse($workflow->isEnded());
 
@@ -168,7 +160,7 @@ class AbstractManagerTest extends PHPunitTestCase
      */
     public function testExecuteWithNotAvailableAction()
     {
-        $workflow = $this->buildMockWithDummy('dummyUuid');
+        $workflow = $this->buildMock('dummyUuid');
 
         $workflow->execute('notAvailableAction');
     }
@@ -180,7 +172,7 @@ class AbstractManagerTest extends PHPunitTestCase
      */
     public function testGetActionTitle()
     {
-        $workflow = $this->buildMockWithDummy();
+        $workflow = $this->buildMock();
 
         $this->assertEquals('Submit', $workflow->getActionTitle('submit'));
 
@@ -190,7 +182,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
     public function testGetAvailableAction()
     {
-        $workflow = $this->buildMockWithDummy();
+        $workflow = $this->buildMock();
 
         $availableAction = $workflow->getAvailableActions();
 
@@ -213,7 +205,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
     public function testGetNotAvailableActions()
     {
-        $workflow = $this->buildMockWithDummy('dummyUuid');
+        $workflow = $this->buildMock('dummyUuid');
 
         $workflow->getAvailableActions();
 
@@ -226,7 +218,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
     public function testGetWorkflowTitle()
     {
-        $workflow = $this->buildMockWithDummy();
+        $workflow = $this->buildMock();
 
         $this->assertEquals(
             'Workflow Title Dummy',
