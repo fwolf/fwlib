@@ -115,19 +115,6 @@ abstract class AbstractView extends BaseView
 
 
     /**
-     * Generate view title
-     *
-     * @return  string
-     */
-    protected function generateTitle()
-    {
-        $title = $this->workflow->getWorkflowTitle();
-
-        return $title;
-    }
-
-
-    /**
      * Display workflow action
      *
      * @return  string
@@ -205,6 +192,19 @@ abstract class AbstractView extends BaseView
             $this->fetchAction() .
             $this->fetchLink() .
             $this->fetchLog();
+    }
+
+
+    /**
+     * Generate view title
+     *
+     * @return  string
+     */
+    protected function generateTitle()
+    {
+        $title = $this->workflow->getWorkflowTitle();
+
+        return $title;
     }
 
 
