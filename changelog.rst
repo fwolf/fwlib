@@ -8,6 +8,21 @@ ChangeLog
 
 
 
+v2.3    2014-05-04
+====================
+
+- Rewrite Db\DbDiff, to namespace Db\Diff, separated to several classes
+- Rewrite Workflow, separated to manager, model and view class
+- All demos has been moved to demo/ directory
+- All benchmarks has been moved to benchmark/ directory
+- Db: Generate rollback SQL in reverse order of commit
+- Db: New class AbstractSequence
+- Html: Display ListTable data by order of title keys
+- Mvc: Remove dependence of ServiceContainer
+- Mvc: Allow customize output parts combine order
+
+
+
 v2.2    2014-01-23
 ====================
 
