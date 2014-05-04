@@ -69,6 +69,25 @@ class AbstractManagerTest extends PHPunitTestCase
     }
 
 
+    public function testDisableAction()
+    {
+        $workflow = $this->buildMock();
+
+        $actionsOld = $workflow->getAvailableActions();
+
+        $workflow->disableAction('notExist');
+        $this->assertEqualArray(
+            $actionsOld,
+            $workflow->getAvailableActions()
+        );
+
+        $workflow->disableAction('submit');
+        $actionsNew = $workflow->getAvailableActions();
+        $this->assertEquals(count($actionsOld), count($actionsNew) + 1);
+        $this->assertArrayNotHasKey('submit', $actionsNew);
+    }
+
+
     public function testExecute()
     {
         // If dummy workflow model's UUID is empty, will cause initialize() to

@@ -17,6 +17,19 @@ use Fwlib\Workflow\ModelInterface;
 interface ManagerInterface
 {
     /**
+     * Disable an action, by remove it from $nodes
+     *
+     * This is a way to change node define durning runtime, can be used
+     * associate with user role/group check and other access control, to
+     * prohibit user to do this action.
+     *
+     * @param   string  $action
+     * @return  ManagerInterface
+     */
+    public function disableAction($action);
+
+
+    /**
      * Execute an action
      *
      * @param   string  $action
