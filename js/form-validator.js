@@ -12,7 +12,7 @@
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-12-10
- * @version     1.0.1
+ * @version     1.0.2
  */
 var FormValidator =
 {
@@ -473,7 +473,9 @@ var FormValidator =
      */
     formValidator.showTip = function($input, $tip)
     {
-      $input.after($tip);
+      /* Input may have containing blolock, which imfluenct its position, so
+       * we use <body> as container of tip. */
+      $('body').append($tip);
 
       /* Adjust tip position */
       $input.on('mousemove', function(event) {
