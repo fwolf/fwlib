@@ -116,7 +116,7 @@ if (!empty($_POST)) {
         $validateMessage = '
 <ul id="validate-fail-message">';
 
-        foreach ($formValidator->getMessage() as $name => $message) {
+        foreach ($formValidator->getMessages() as $name => $message) {
             if (isset($rule[$name]['title'])) {
                 $message = $rule[$name]['title'] . ': ' . $message;
             }

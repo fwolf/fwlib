@@ -22,11 +22,11 @@ use Fwlib\Validator\Validator;
 class FormValidator extends AbstractAutoNewConfig
 {
     /**
-     * Validate fail message
+     * Validate fail messages
      *
      * @var array
      */
-    protected $message = array();
+    protected $messages = array();
 
     /**
      * Validate rule
@@ -188,9 +188,9 @@ $closureEnd
      *
      * @return  array
      */
-    public function getMessage()
+    public function getMessages()
     {
-        return $this->message;
+        return $this->messages;
     }
 
 
@@ -330,7 +330,7 @@ $closureEnd
     public function validate($formData)
     {
         $isValid = true;
-        $this->message = array();
+        $this->messages = array();
 
         foreach ($this->rule as $name => $ruleContent) {
             if (!isset($formData[$name])) {
@@ -358,7 +358,7 @@ $closureEnd
 
             if (!$nameIsValid) {
                 $isValid = false;
-                $this->message[$name] = $ruleContent['tip'];
+                $this->messages[$name] = $ruleContent['tip'];
                 // Continue to check other name
             }
         }
