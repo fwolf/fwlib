@@ -20,9 +20,9 @@ $httpUtil = $utilContainer->get('HttpUtil');
 $userTitle = $httpUtil->getPost('userTitle');
 $userAge = $httpUtil->getPost('userAge');
 $remark = $httpUtil->getPost('remark');
-if (1 == $httpUtil->getPost('frontendCheck')) {
-    $frontendCheck = 'checked="checked"';
-} else {
+
+$frontendCheck = 'checked="checked"';
+if (!empty($_POST) && is_null($httpUtil->getPost('frontendCheck'))) {
     $frontendCheck = '';
 }
 
