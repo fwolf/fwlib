@@ -64,12 +64,8 @@ $urlConstraint->setServiceContainer($serviceContainer);
 $validator = $serviceContainer->get('Validator');
 $validator->setConstraintContainer($constraintContainer);
 
-$formValidator = new FormValidator(
-    array(
-        'withClosure'   => false,
-    )
-);
-$formValidator->setInstance($validator);
+$formValidator = new FormValidator;
+$formValidator->setValidator($validator);
 
 $rules = array(
     'userTitle' => array(
@@ -101,7 +97,7 @@ $formValidator->setRules($rules);
 /***************************************
  * Prepare for output, backend validate
  **************************************/
-$validateJs = $formValidator->getJs();
+$validateJs = $formValidator->getJs(true, false);
 
 // Backend validate
 $validateMessage = '';

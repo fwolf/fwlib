@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Html;
 
-use Fwlib\Base\AbstractAutoNewConfig;
+use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Validator;
 
 /**
@@ -19,8 +19,50 @@ use Fwlib\Validator\Validator;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2011-07-21
  */
-class FormValidator extends AbstractAutoNewConfig
+class FormValidator
 {
+    /**
+     * Do check when input blur
+     *
+     * @var boolean
+     */
+    protected $checkOnBlur = true;
+
+    /**
+     * Do check when user input something
+     *
+     * @var boolean
+     */
+    protected $checkOnKeyup = false;
+
+    /**
+     * Do check before form submit
+     *
+     * @var boolean
+     */
+    protected $checkOnSubmit = true;
+
+    /**
+     * jQuery selector for form, should not be empty.
+     *
+     * @var string
+     */
+    protected $formSelector = 'form';
+
+    /**
+     * Class of FormValidator in js
+     *
+     * @var string
+     */
+    protected $jsClass = 'FormValidator';
+
+    /**
+     * Id of FormValidator js instance, should be unique on page.
+     *
+     * @var string
+     */
+    protected $jsId = 'formValidator';
+
     /**
      * Validate fail messages
      *
@@ -75,11 +117,11 @@ class FormValidator extends AbstractAutoNewConfig
             // title need fill in js
 
             if (!isset($rule['checkOnBlur'])) {
-                $rule['checkOnBlur'] = $this->config['checkOnBlur'];
+                $rule['checkOnBlur'] = $this->checkOnBlur;
             }
 
             if (!isset($rule['checkOnKeyup'])) {
-                $rule['checkOnKeyup'] = $this->config['checkOnKeyup'];
+                $rule['checkOnKeyup'] = $this->checkOnKeyup;
             }
         }
     }
@@ -127,20 +169,26 @@ class FormValidator extends AbstractAutoNewConfig
     /**
      * Get validate js
      *
+     * @param   boolean $withScriptTag  Output js with <script> tag
+     * @param   boolean $withClosure    Output js with closure
+     *                                  Use closure will free resource, but
+     *                                  you can't change validator's configure
+     *                                  anymore.
      * @return  string
      */
-    public function getJs()
+    public function getJs($withScriptTag = true, $withClosure = true)
     {
         $this->checkRules();
 
-        $class = $this->config['class'];
-        $id = $this->config['id'];
-        $formSelector = $this->config['formSelector'];
-        $rules = $this->getUtil('Json')->encodeUnicode($this->rules);
-        $checkOnSubmit = ($this->config['checkOnSubmit'])
+        $class = $this->jsClass;
+        $id = $this->jsId;
+        $formSelector = $this->formSelector;
+        $rules = $this->jsonEncode($this->rules);
+        $checkOnSubmit = ($this->checkOnSubmit)
             ? 'enableCheckOnSubmit()'
             : 'disableCheckOnSubmit()';
-        if ($this->config['withClosure']) {
+
+        if ($withClosure) {
             $closureBegin = '(function () {';
             $closureEnd   = '}) ();';
         } else {
@@ -150,7 +198,7 @@ class FormValidator extends AbstractAutoNewConfig
 
         $js = '';
 
-        if ($this->config['withScriptTag']) {
+        if ($withScriptTag) {
             $js .= "
 <script type='text/javascript'>
 <!--//--><![CDATA[//>
@@ -172,7 +220,7 @@ $closureBegin
 $closureEnd
 ";
 
-        if ($this->config['withScriptTag']) {
+        if ($withScriptTag) {
             $js .= '
 //--><!]]>
 </script>
@@ -210,34 +258,29 @@ $closureEnd
 
 
     /**
-     * Set default config
+     * Encode a string to json, for used as object in js
+     *
+     * @param   array
+     * @return  string
      */
-    protected function setConfigDefault()
+    protected function jsonEncode($value)
     {
-        $this->setConfig(
-            array(
-                // Class of FormValidator in js
-                'class'         => 'FormValidator',
+        return UtilContainer::getInstance()->get('Json')
+            ->encodeUnicode($value);
+    }
 
-                // Id of FormValidator js instance, should be unique on page.
-                'id'            => 'formValidator',
 
-                // jQuery selector for form, should not be empty.
-                'formSelector'  => 'form',
+    /**
+     * Setter of formSelector
+     *
+     * @param   string  $formSelector
+     * @return  FormValidator
+     */
+    public function setFormSelector($formSelector)
+    {
+        $this->formSelector = $formSelector;
 
-                'checkOnBlur'   => true,
-                'checkOnKeyup'  => false,
-                'checkOnSubmit' => true,
-
-                // Output js with <script> tag
-                'withScriptTag' => true,
-
-                // Output js with closure
-                // Use closure will free resource, but you can't change
-                // validator's configure.
-                'withClosure'   => true,
-            )
-        );
+        return $this;
     }
 
 
@@ -247,7 +290,7 @@ $closureEnd
      * @param   string|array    $name   Name of <input>, or array of it
      * @param   array           $ruleAr
      * @param   bool            $append
-     * @return  this
+     * @return  FormValidator
      */
     public function setRule($name, $ruleAr, $append = true)
     {
@@ -314,6 +357,20 @@ $closureEnd
             $this->rules[$singleName]['check'] = (array)$check;
             $this->rules[$singleName]['tip']   = $tip;
         }
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of validator
+     *
+     * @param   Validator   $validator
+     * @return  FormValidator
+     */
+    public function setValidator(Validator $validator)
+    {
+        $this->validator = $validator;
 
         return $this;
     }
