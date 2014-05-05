@@ -97,7 +97,7 @@ $formValidator->setRules($rules);
 /***************************************
  * Prepare for output, backend validate
  **************************************/
-$validateJs = $formValidator->getJs(true, false);
+$validateJs = $formValidator->getJs();
 
 // Backend validate
 $validateMessage = '';
@@ -248,15 +248,15 @@ if (!empty($_POST)) {
   <!--
 
   /* Attach event for frontendCheck option */
-  (function () {
+  (function (global) {
     var setCheckOnSubmit = function(event)
     {
       /* Html element maybe faster */
       /*if ($(this).prop('checked')) {*/
       if (event.target.checked) {
-        formValidator.enableCheckOnSubmit();
+        global.formValidator.enableCheckOnSubmit();
       } else {
-        formValidator.disableCheckOnSubmit();
+        global.formValidator.disableCheckOnSubmit();
       }
     };
 
@@ -265,7 +265,7 @@ if (!empty($_POST)) {
       /*.on('click', setCheckOnSubmit)*/
       .on('change', setCheckOnSubmit)
       .trigger('change');
-  }) ();
+  }) (window);
 
   //--><!]]>
   </script>

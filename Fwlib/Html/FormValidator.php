@@ -171,9 +171,9 @@ class FormValidator
      *
      * @param   boolean $withScriptTag  Output js with <script> tag
      * @param   boolean $withClosure    Output js with closure
-     *                                  Use closure will free resource, but
-     *                                  you can't change validator's configure
-     *                                  anymore.
+     *                                  Use closure will avoid memory leak. To
+     *                                  use formValidator object in other js,
+     *                                  import it from window object.
      * @return  string
      */
     public function getJs($withScriptTag = true, $withClosure = true)
@@ -189,8 +189,8 @@ class FormValidator
             : 'disableCheckOnSubmit()';
 
         if ($withClosure) {
-            $closureBegin = '(function () {';
-            $closureEnd   = '}) ();';
+            $closureBegin = '(function (global) {';
+            $closureEnd   = '}) (window);';
         } else {
             $closureBegin = '';
             $closureEnd   = '';
@@ -209,9 +209,9 @@ class FormValidator
         $js .= "
 $closureBegin
 
-  var $id = $class.createNew();
+  global.$id = $class.createNew();
 
-  $id
+  global.$id
     .$checkOnSubmit
     .setForm('$formSelector')
     .setRules($rules)
