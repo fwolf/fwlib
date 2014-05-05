@@ -71,7 +71,7 @@ $formValidator = new FormValidator(
 );
 $formValidator->setInstance($validator);
 
-$rule = array(
+$rules = array(
     'userTitle' => array(
         'title' => '名称',
         'check' => 'required',
@@ -95,7 +95,7 @@ $rule = array(
     ),
 );
 
-$formValidator->setRuleArray($rule);
+$formValidator->setRules($rules);
 
 
 /***************************************

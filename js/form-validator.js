@@ -8,11 +8,11 @@
  * @link http://www.gabordemooij.com/articles/jsoop.html
  *
  * @package     fwlib/js
- * @copyright   Copyright 2013 Fwolf
+ * @copyright   Copyright 2013-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-12-10
- * @version     1.0
+ * @version     1.0.1
  */
 var FormValidator =
 {
@@ -42,7 +42,7 @@ var FormValidator =
     formValidator.$form = null;
     /* Message is indexed by name of input element validte fail */
     formValidator.message = {};
-    formValidator.rule = null;
+    formValidator.rules = null;
 
 
     /**
@@ -72,8 +72,8 @@ var FormValidator =
       var rule = null;
       var $input = null;
 
-      for (var name in formValidator.rule) {
-        rule = formValidator.rule[name];
+      for (var name in formValidator.rules) {
+        rule = formValidator.rules[name];
         $input = formValidator.getInput(name);
 
         /* Try to get title if not assigned */
@@ -169,8 +169,8 @@ var FormValidator =
           var rule = null;
           var $input = null;
 
-          for (var name in formValidator.rule) {
-            rule = formValidator.rule[name];
+          for (var name in formValidator.rules) {
+            rule = formValidator.rules[name];
             $input = formValidator.getInput(name);
 
             /* Like check on single input, a little different on isValid */
@@ -375,7 +375,7 @@ var FormValidator =
 
       var $validateTip = formValidator.generateTip(
         FormValidator.idTip,
-        formValidator.rule[$input.attr('name')].tip
+        formValidator.rules[$input.attr('name')].tip
       );
 
       formValidator.showTip($input, $validateTip);
@@ -415,14 +415,14 @@ var FormValidator =
 
 
     /**
-     * Set validate rule
+     * Set validate rules
      *
-     * @param {Object}  ruleParam
+     * @param {Object}  rulesParam
      * @returns {Object}  FormValidator
      */
-    formValidator.setRule = function(ruleParam)
+    formValidator.setRules = function(rulesParam)
     {
-      formValidator.rule = ruleParam || {};
+      formValidator.rules = rulesParam || {};
 
       return formValidator;
     };
@@ -456,7 +456,7 @@ var FormValidator =
 
       } else {
         $.each(message, function (index, value) {
-          formattedMessage += formValidator.rule[index].title + ': ' +
+          formattedMessage += formValidator.rules[index].title + ': ' +
             value + '\n';
         });
       }

@@ -29,9 +29,9 @@ class FormValidator extends AbstractAutoNewConfig
     protected $messages = array();
 
     /**
-     * Validate rule
+     * Validate rules
      *
-     * Rule need check through js, so only below constraintName supported:
+     * Rules need check through js, so only below constraintName supported:
      * - regex
      * - required
      * - url
@@ -55,7 +55,7 @@ class FormValidator extends AbstractAutoNewConfig
      *
      * @var array
      */
-    protected $rule = array();
+    protected $rules = array();
 
 
     /**
@@ -69,9 +69,9 @@ class FormValidator extends AbstractAutoNewConfig
     /**
      * Check rule array, fill empty
      */
-    protected function checkRule()
+    protected function checkRules()
     {
-        foreach ($this->rule as $name => &$rule) {
+        foreach ($this->rules as $name => &$rule) {
             // title need fill in js
 
             if (!isset($rule['checkOnBlur'])) {
@@ -92,10 +92,10 @@ class FormValidator extends AbstractAutoNewConfig
      * @param   string|array    $part   Empty means all part
      * @return  this
      */
-    public function clearRule($name = '*', $part = '')
+    public function clearRules($name = '*', $part = '')
     {
         if ('*' == $name) {
-            $this->rule = array();
+            $this->rules = array();
             return $this;
         }
 
@@ -107,7 +107,7 @@ class FormValidator extends AbstractAutoNewConfig
             $singleName = trim($singleName);
 
             if (empty($part)) {
-                $this->rule[$singleName] = array();
+                $this->rules[$singleName] = array();
 
             } else {
                 if (!is_array($part)) {
@@ -115,7 +115,7 @@ class FormValidator extends AbstractAutoNewConfig
                 }
 
                 foreach ($part as $singlePart) {
-                    unset($this->rule[$singleName][$singlePart]);
+                    unset($this->rules[$singleName][$singlePart]);
                 }
             }
         }
@@ -131,12 +131,12 @@ class FormValidator extends AbstractAutoNewConfig
      */
     public function getJs()
     {
-        $this->checkRule();
+        $this->checkRules();
 
         $class = $this->config['class'];
         $id = $this->config['id'];
         $formSelector = $this->config['formSelector'];
-        $rule = $this->getUtil('Json')->encodeUnicode($this->rule);
+        $rules = $this->getUtil('Json')->encodeUnicode($this->rules);
         $checkOnSubmit = ($this->config['checkOnSubmit'])
             ? 'enableCheckOnSubmit()'
             : 'disableCheckOnSubmit()';
@@ -166,7 +166,7 @@ $closureBegin
   $id
     .$checkOnSubmit
     .setForm('$formSelector')
-    .setRule($rule)
+    .setRules($rules)
     .bind();
 
 $closureEnd
@@ -261,17 +261,17 @@ $closureEnd
             // May append to check array
             if (isset($ruleAr['check']) && $append) {
                 foreach ((array)$ruleAr['check'] as $rule) {
-                    $this->rule[$singleName]['check'][] = $rule;
+                    $this->rules[$singleName]['check'][] = $rule;
                 }
             } else {
-                $this->rule[$singleName]['check'] = $ruleAr['check'];
+                $this->rules[$singleName]['check'] = $ruleAr['check'];
             }
 
             // Other part will be overwrited
             $partAr = array('title', 'tip', 'checkOnBlur', 'checkOnKeyup');
             foreach ($partAr as $part) {
                 if (isset($ruleAr[$part])) {
-                    $this->rule[$singleName][$part] = $ruleAr[$part];
+                    $this->rules[$singleName][$part] = $ruleAr[$part];
                 }
             }
         }
@@ -283,12 +283,12 @@ $closureEnd
     /**
      * Set whole validate rule array
      *
-     * @param   array   $ruleArray
+     * @param   array   $rules
      * @return  $this
      */
-    public function setRuleArray($ruleArray)
+    public function setRules($rules)
     {
-        $this->rule = $ruleArray;
+        $this->rules = $rules;
 
         return $this;
     }
@@ -311,8 +311,8 @@ $closureEnd
         foreach ($name as $singleName) {
             $singleName = trim($singleName);
 
-            $this->rule[$singleName]['check'] = (array)$check;
-            $this->rule[$singleName]['tip']   = $tip;
+            $this->rules[$singleName]['check'] = (array)$check;
+            $this->rules[$singleName]['tip']   = $tip;
         }
 
         return $this;
@@ -332,7 +332,7 @@ $closureEnd
         $isValid = true;
         $this->messages = array();
 
-        foreach ($this->rule as $name => $ruleContent) {
+        foreach ($this->rules as $name => $ruleContent) {
             if (!isset($formData[$name])) {
                 continue;
             }
