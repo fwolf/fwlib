@@ -271,6 +271,20 @@ $closureEnd
 
 
     /**
+     * Setter of checkOnSubmit
+     *
+     * @param   boolean $checkOnSubmit
+     * @return  FormValidator
+     */
+    public function setCheckOnSubmit($checkOnSubmit)
+    {
+        $this->checkOnSubmit = $checkOnSubmit;
+
+        return $this;
+    }
+
+
+    /**
      * Setter of formSelector
      *
      * @param   string  $formSelector
