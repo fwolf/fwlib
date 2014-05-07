@@ -145,13 +145,13 @@ CREATE TABLE $table (
 
 
     /**
-     * Del SQL from the error one
+     * Delete SQL from the error one
      *
      * All SQL after the error one(will be un-executed) will be deleted,
      * ignore their execute status. This is good for debug, if you got an
      * error SQL, just fix it and call sync script again.
      */
-    public function delErrorSql()
+    public function deleteErrorSql()
     {
         $sql = "SELECT id FROM $this->logTable WHERE done=-1 ORDER BY id ASC";
         $rs = $this->db->SelectLimit($sql, 1);
@@ -175,7 +175,7 @@ CREATE TABLE $table (
     public function execute()
     {
         // Clear previous failed SQL
-        $this->delErrorSql();
+        $this->deleteErrorSql();
 
 
         $sql = "SELECT id, sqltext FROM $this->logTable WHERE done<>1 ORDER BY id ASC";
