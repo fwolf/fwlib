@@ -30,6 +30,15 @@ interface ManagerInterface
 
 
     /**
+     * Disable some actions
+     *
+     * @param   array   $actions
+     * @return  ManagerInterface
+     */
+    public function disableActions(array $actions);
+
+
+    /**
      * Execute an action
      *
      * @param   string  $action

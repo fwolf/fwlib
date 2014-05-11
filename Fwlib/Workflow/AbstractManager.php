@@ -179,6 +179,24 @@ abstract class AbstractManager implements ManagerInterface
 
     /**
      * {@inheritdoc}
+     */
+    public function disableActions(array $actions)
+    {
+        foreach ($this->nodes as &$node) {
+            foreach ($node['actions'] as $action => $value) {
+                if (in_array($action, $actions)) {
+                    unset($node['actions'][$action]);
+                    break;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
      *
      * User can define customized executeAction() method to do extra job like
      * generate profile code. this method should not include move() anymore,

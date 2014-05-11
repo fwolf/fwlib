@@ -82,6 +82,20 @@ class AbstractManagerTest extends PHPunitTestCase
     }
 
 
+    public function testDisableActions()
+    {
+        $workflow = $this->buildMock();
+
+        $actionsOld = $workflow->getAvailableActions();
+
+        $workflow->disableActions(array('notExist', 'submit'));
+        $actionsNew = $workflow->getAvailableActions();
+
+        $this->assertEquals(count($actionsOld), count($actionsNew) + 1);
+        $this->assertArrayNotHasKey('submit', $actionsNew);
+    }
+
+
     public function testExecute()
     {
         $workflow = $this->buildMock();
