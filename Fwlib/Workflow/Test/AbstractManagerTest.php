@@ -250,6 +250,24 @@ class AbstractManagerTest extends PHPunitTestCase
     }
 
 
+    public function testLimitActions()
+    {
+        $workflow = $this->buildMock();
+
+        $actionsOld = $workflow->getAvailableActions();
+
+        $workflow->limitActions(array('notExist', 'edit', 'submit'));
+        $actionsNew = $workflow->getAvailableActions();
+
+        $this->assertEquals(2, count($actionsNew));
+        $this->assertArrayHasKey('submit', $actionsNew);
+
+        $workflow->enableAction('customizedAction');
+        $actionsNew = $workflow->getAvailableActions();
+        $this->assertArrayHasKey('customizedAction', $actionsNew);
+    }
+
+
     /**
      * @expectedException Exception
      * @expectedExceptionMessage end twice

@@ -187,6 +187,7 @@ abstract class AbstractManager implements ManagerInterface
                 break;
             }
         }
+        unset($node);
 
         return $this;
     }
@@ -206,11 +207,10 @@ abstract class AbstractManager implements ManagerInterface
                     );
 
                     unset($node['actions'][$action]);
-
-                    break;
                 }
             }
         }
+        unset($node);
 
         return $this;
     }
@@ -543,6 +543,30 @@ abstract class AbstractManager implements ManagerInterface
     public function isEnded()
     {
         return 'end' == $this->model->getCurrentNode();
+    }
+
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function limitActions(array $actions)
+    {
+        foreach ($this->nodes as $nodeIndex => &$node) {
+            foreach ($node['actions'] as $action => $value) {
+                if (!in_array($action, $actions)) {
+                    $this->disabledActions[$action] = array(
+                        'node'   => $nodeIndex,
+                        'action' => $node['actions'][$action],
+                    );
+
+                    unset($node['actions'][$action]);
+                }
+            }
+        }
+        unset($node);
+
+        return $this;
     }
 
 

@@ -114,6 +114,15 @@ interface ManagerInterface
 
 
     /**
+     * Limit do-able actions, all other actions are disabled
+     *
+     * @param   array   $actions
+     * @return  ManagerInterface
+     */
+    public function limitActions(array $actions);
+
+
+    /**
      * Load workflow model instance by given uuid
      *
      * @param   string  $uuid
