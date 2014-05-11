@@ -63,7 +63,7 @@ class AbstractManagerTest extends PHPunitTestCase
     }
 
 
-    public function testDisableAction()
+    public function testDisableEnableAction()
     {
         $workflow = $this->buildMock();
 
@@ -79,10 +79,15 @@ class AbstractManagerTest extends PHPunitTestCase
         $actionsNew = $workflow->getAvailableActions();
         $this->assertEquals(count($actionsOld), count($actionsNew) + 1);
         $this->assertArrayNotHasKey('submit', $actionsNew);
+
+        $workflow->enableAction('submit');
+        $actionsNew = $workflow->getAvailableActions();
+        // Actions order has been changed assertEqualArray() will fail
+        $this->assertEquals($actionsOld, $actionsNew);
     }
 
 
-    public function testDisableActions()
+    public function testDisableEnableActions()
     {
         $workflow = $this->buildMock();
 
@@ -93,6 +98,10 @@ class AbstractManagerTest extends PHPunitTestCase
 
         $this->assertEquals(count($actionsOld), count($actionsNew) + 1);
         $this->assertArrayNotHasKey('submit', $actionsNew);
+
+        $workflow->enableActions(array('notExist', 'submit'));
+        $actionsNew = $workflow->getAvailableActions();
+        $this->assertEquals($actionsOld, $actionsNew);
     }
 
 

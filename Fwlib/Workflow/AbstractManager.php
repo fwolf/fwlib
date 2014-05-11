@@ -30,6 +30,15 @@ abstract class AbstractManager implements ManagerInterface
 
 
     /**
+     * Storage of disabled actions
+     *
+     * {node, action: {}}
+     *
+     * @var array
+     */
+    protected $disabledActions = array();
+
+    /**
      * Classname of workflow model
      *
      * When start a new workflow, this classname is used to create empty model
@@ -166,9 +175,15 @@ abstract class AbstractManager implements ManagerInterface
      */
     public function disableAction($action)
     {
-        foreach ($this->nodes as &$node) {
+        foreach ($this->nodes as $nodeIndex => &$node) {
             if (isset($node['actions'][$action])) {
+                $this->disabledActions[$action] = array(
+                    'node'   => $nodeIndex,
+                    'action' => $node['actions'][$action],
+                );
+
                 unset($node['actions'][$action]);
+
                 break;
             }
         }
@@ -182,13 +197,48 @@ abstract class AbstractManager implements ManagerInterface
      */
     public function disableActions(array $actions)
     {
-        foreach ($this->nodes as &$node) {
+        foreach ($this->nodes as $nodeIndex => &$node) {
             foreach ($node['actions'] as $action => $value) {
                 if (in_array($action, $actions)) {
+                    $this->disabledActions[$action] = array(
+                        'node'   => $nodeIndex,
+                        'action' => $node['actions'][$action],
+                    );
+
                     unset($node['actions'][$action]);
+
                     break;
                 }
             }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function enableAction($action)
+    {
+        if (isset($this->disabledActions[$action])) {
+            $this->nodes[$this->disabledActions[$action]['node']]['actions']
+                [$action] = $this->disabledActions[$action]['action'];
+
+            unset($this->disabledActions[$action]);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function enableActions(array $actions)
+    {
+        foreach ($actions as $action) {
+            $this->enableAction($action);
         }
 
         return $this;

@@ -39,6 +39,24 @@ interface ManagerInterface
 
 
     /**
+     * Re-enable a disabled action
+     *
+     * @param   string  $action
+     * @return  ManagerInterface
+     */
+    public function enableAction($action);
+
+
+    /**
+     * Re-enable some disabled actions
+     *
+     * @param   array   $actions
+     * @return  ManagerInterface
+     */
+    public function enableActions(array $actions);
+
+
+    /**
      * Execute an action
      *
      * @param   string  $action
