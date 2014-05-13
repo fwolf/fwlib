@@ -347,6 +347,8 @@ abstract class AbstractView extends BaseView
             );
         }
 
+        $contents = array_map('trim', $contents);
+
         return $contents;
     }
 }
