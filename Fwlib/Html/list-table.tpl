@@ -27,7 +27,7 @@
     {$listTableConfig.pagerTextJump1}
     <form method='get' action='{$listTableUrl.form}'>
       {$listTablePagerHidden|default: ''}
-      <input type='text' name='{$listTableConfig.paramPage}'
+      <input type='text' name='{$listTableConfig.pageParam}'
         value='{$listTableInfo.page|default: 1}'
         size='{if (99 < $listTableInfo.pageMax|default: -1)
           }{strlen($listTableInfo.pageMax) - 1}{else}1{/if}' />

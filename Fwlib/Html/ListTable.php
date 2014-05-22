@@ -431,7 +431,7 @@ class ListTable
         $httpUtil = $this->getUtil('HttpUtil');
         $this->url['base'] = $httpUtil->getSelfUrl(false);
 
-        $page = $arrayUtil->getIdx($this->param, $this->configs['paramPage'], 1);
+        $page = $arrayUtil->getIdx($this->param, $this->configs['pageParam'], 1);
         $this->setPage($page);
 
 
@@ -630,11 +630,11 @@ class ListTable
 
 
                 // Get param for identify current page
-                'paramPage'         => 'p',
+                'pageParam'         => 'p',
                 // How many rows to display each page
                 'pageSize'          => 10,
                 //'page_cur'          => 1,
-                //'paramPage'        => 'p',// Used in url to set page no.
+                //'pageParam'        => 'p',// Used in url to set page no.
                 //'page_size'         => 10,
 
 
@@ -723,9 +723,9 @@ class ListTable
         $this->info['id'] = $this->info['classPrefix'] . $id;
 
 
-        // Change paramPage, eg: p1, pa
+        // Change pageParam, eg: p1, pa
         if ('0' != $id && '1' != $id) {
-            $this->configs['paramPage'] = 'p' . $id;
+            $this->configs['pageParam'] = 'p' . $id;
         }
         // Useless, readRequest() will call it
         //$this->setPage();
@@ -785,13 +785,13 @@ class ListTable
         // Orderby index is appended in template by each th, remove here
         $this->url['obCur'] = $this->genUrl(
             array("{$ob}Dir" => $dirReverse),
-            array($ob, $this->configs['paramPage'])
+            array($ob, $this->configs['pageParam'])
         );
 
         // Other column orderBy will clear diretion
-        // Added paramPage is dummy, to keep url start with '?', fit tpl later
+        // Added pageParam is dummy, to keep url start with '?', fit tpl later
         $this->url['obOther'] = $this->genUrl(
-            array($this->configs['paramPage'] => 1),
+            array($this->configs['pageParam'] => 1),
             array($ob, "{$ob}Dir")
         );
     }
@@ -810,7 +810,7 @@ class ListTable
         if (is_null($page)) {
             $page = $arrayUtil->getIdx(
                 $this->param,
-                $this->configs['paramPage'],
+                $this->configs['pageParam'],
                 1
             );
         }
@@ -874,10 +874,10 @@ class ListTable
         if (1 < $page) {
             // Not first page
             $this->url['pageFirst'] = $this->genUrl(
-                array($this->configs['paramPage'] => 1)
+                array($this->configs['pageParam'] => 1)
             );
             $this->url['pagePrev'] = $this->genUrl(
-                array($this->configs['paramPage'] => $page - 1)
+                array($this->configs['pageParam'] => $page - 1)
             );
         } else {
             $this->url['pageFirst'] = '';
@@ -886,10 +886,10 @@ class ListTable
         if ($page < $pageMax) {
             // Not last page
             $this->url['pageNext'] = $this->genUrl(
-                array($this->configs['paramPage'] => $page + 1)
+                array($this->configs['pageParam'] => $page + 1)
             );
             $this->url['pageLast'] = $this->genUrl(
-                array($this->configs['paramPage'] => $pageMax)
+                array($this->configs['pageParam'] => $pageMax)
             );
         } else {
             $this->url['pageNext'] = '';
@@ -899,7 +899,7 @@ class ListTable
         // Form submit target url
         $this->url['form'] = $this->genUrl(
             null,
-            array($this->configs['paramPage'])
+            array($this->configs['pageParam'])
         );
 
         // Assign hidden input
