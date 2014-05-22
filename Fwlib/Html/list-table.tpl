@@ -57,10 +57,10 @@
     <tr>
   {foreach $listTableTitle as $keyTh => $title}
       <th {$listTableConfig.thAdd[$keyTh]|default: ''}>
-    {if (!empty($listTableInfo.orderbyColumn) &&
-        isset($listTableInfo.orderbyColumn[$keyTh]))}
+    {if (!empty($listTableInfo.orderByColumn) &&
+        isset($listTableInfo.orderByColumn[$keyTh]))}
         <a href='{strip}
-      {if $keyTh==$listTableConfig.orderby}
+      {if $keyTh==$listTableConfig.orderBy}
           {$listTableUrl.obCur}
       {else}
           {$listTableUrl.obOther}
@@ -68,7 +68,7 @@
           &amp;{$listTableConfig.paramOrderby}={$keyTh}
         {/strip}'>
           {$title}
-      {if $keyTh==$listTableConfig.orderby}{$listTableConfig.orderbyText}{/if}
+      {if $keyTh==$listTableConfig.orderBy}{$listTableConfig.orderByText}{/if}
         </a>
     {else}
       {$title}

@@ -58,7 +58,7 @@ class ListTable
         // Id prefix for non-root elements
         'idPrefix'      => 'ListTable-1-',
         // Orderby enabled column and default direction
-        'orderbyColumn' => array(),
+        'orderByColumn' => array(),
         // Current page number
         'page'          => 1,
         // Max page number
@@ -112,8 +112,8 @@ class ListTable
      * {
      *  base      : Original page url
      *  form      : Page jump form target url
-     *  obCur     : Link on current orderby head, to reverse order
-     *  obOther   : Link on in-active orderby head(their default dir add in tpl)
+     *  obCur     : Link on current orderBy head, to reverse order
+     *  obOther   : Link on in-active orderBy head(their default dir add in tpl)
      *  pageFirst : First page link
      *  pageLast  : Last page link
      *  pageNext  : Next page link
@@ -376,10 +376,10 @@ class ListTable
         $ar['LIMIT'] = $this->configs['pageSize'] * ($this->info['page'] - 1)
             . ', ' . $this->configs['pageSize'];
 
-        if (!empty($this->configs['orderby'])) {
-            // orderby_idx is column name
-            $ar['ORDERBY'] = $this->configs['orderby']
-                . ' ' . $this->configs['orderbyDir'];
+        if (!empty($this->configs['orderBy'])) {
+            // orderBy_idx is column name
+            $ar['ORDERBY'] = $this->configs['orderBy']
+                . ' ' . $this->configs['orderByDir'];
         }
 
         return $ar;
@@ -435,18 +435,18 @@ class ListTable
         $this->setPage($page);
 
 
-        // Always treat orderby
-        $orderby = '';
+        // Always treat orderBy
+        $orderBy = '';
         $dir = '';
         if (isset($this->param[$this->configs['paramOrderby']])) {
-            $orderby = $this->param[$this->configs['paramOrderby']];
+            $orderBy = $this->param[$this->configs['paramOrderby']];
             $dir = $arrayUtil->getIdx(
                 $this->param,
                 $this->configs['paramOrderby'] . 'Dir',
                 ''
             );
         }
-        $this->setOrderby($orderby, $dir);
+        $this->setOrderby($orderBy, $dir);
 
         return $this;
     }
@@ -602,22 +602,22 @@ class ListTable
                 //'fit_empty'         => '&nbsp;',
 
 
-                // Enable orderby on those column, empty to disable orderby
+                // Enable orderBy on those column, empty to disable orderBy
                 // Format: {[column, direction],}
                 // First [] is default, and default direction is ASC.
-                'orderbyColumn'     => array(),
-                // Which column to orderby,
-                'orderby'           => '',
+                'orderByColumn'     => array(),
+                // Which column to orderBy,
+                'orderBy'           => '',
                 // Orderby direction, ASC or DESC
-                'orderbyDir'        => 'ASC',
-                // Get param for orderby
+                'orderByDir'        => 'ASC',
+                // Get param for orderBy
                 'paramOrderby'      => 'ob',
-                // Preserved, will be auto generated if orderby enabled
-                'orderbyText'       => '',
+                // Preserved, will be auto generated if orderBy enabled
+                'orderByText'       => '',
                 // Orderby text/symbol for ASC and DESC
-                'orderbyTextAsc'    => '↑',
-                'orderbyTextDesc'   => '↓',
-                // More orderby symbol
+                'orderByTextAsc'    => '↑',
+                'orderByTextDesc'   => '↓',
+                // More orderBy symbol
                 // &#8592 = ← &#8593 = ↑ &#8594 = → &#8595 = ↓
                 // &#8710 = ∆ &#8711 = ∇
                 //'orderby'           => 0,           // 0=off, 1=on
@@ -730,7 +730,7 @@ class ListTable
         // Useless, readRequest() will call it
         //$this->setPage();
 
-        // Change orderby param
+        // Change orderBy param
         $this->configs['paramOrderby'] = 'ob' . $id;
 
         return $this;
@@ -738,57 +738,57 @@ class ListTable
 
 
     /**
-     * Set orderby info
+     * Set orderBy info
      *
-     * Didn't validate orderby key exists in data or title array.
+     * Didn't validate orderBy key exists in data or title array.
      *
      * @param   mixed   $key
      * @param   string  $dir    ASC/DESC
      */
     public function setOrderby($key = null, $dir = null)
     {
-        // Parse orderby config
-        $orderbyColumn = array();
-        foreach ((array)$this->configs['orderbyColumn'] as $v) {
-            $orderbyColumn[$v[0]] = array(
+        // Parse orderBy config
+        $orderByColumn = array();
+        foreach ((array)$this->configs['orderByColumn'] as $v) {
+            $orderByColumn[$v[0]] = array(
                 $v[0],
                 (isset($v[1])) ? $v[1] : 'ASC',
             );
         }
-        $this->info['orderbyColumn'] = $orderbyColumn;
+        $this->info['orderByColumn'] = $orderByColumn;
 
 
-        // Check orderby param, if fail, use config default
-        if (!isset($orderbyColumn[$key])) {
-            list($key, $dir) = current($orderbyColumn);
+        // Check orderBy param, if fail, use config default
+        if (!isset($orderByColumn[$key])) {
+            list($key, $dir) = current($orderByColumn);
         } elseif (empty($dir)) {
-            $dir = $orderbyColumn[$key][1];
+            $dir = $orderByColumn[$key][1];
         }
-        $this->configs['orderby'] = $key;
+        $this->configs['orderBy'] = $key;
 
 
         $dir = strtoupper($dir);
         if ('ASC' == $dir) {
             $dirReverse = 'DESC';
-            $this->configs['orderbyDir'] = 'ASC';
-            $this->configs['orderbyText'] = $this->configs['orderbyTextAsc'];
+            $this->configs['orderByDir'] = 'ASC';
+            $this->configs['orderByText'] = $this->configs['orderByTextAsc'];
         } else {
             $dirReverse = 'ASC';
-            $this->configs['orderbyDir'] = 'DESC';
-            $this->configs['orderbyText'] = $this->configs['orderbyTextDesc'];
+            $this->configs['orderByDir'] = 'DESC';
+            $this->configs['orderByText'] = $this->configs['orderByTextDesc'];
         }
 
 
         // Url param
         $ob = $this->configs['paramOrderby'];
-        // Change orderby will clear page param
+        // Change orderBy will clear page param
         // Orderby index is appended in template by each th, remove here
         $this->url['obCur'] = $this->genUrl(
             array("{$ob}Dir" => $dirReverse),
             array($ob, $this->configs['paramPage'])
         );
 
-        // Other column orderby will clear diretion
+        // Other column orderBy will clear diretion
         // Added paramPage is dummy, to keep url start with '?', fit tpl later
         $this->url['obOther'] = $this->genUrl(
             array($this->configs['paramPage'] => 1),

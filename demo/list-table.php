@@ -136,7 +136,7 @@ $bm->mark('List1 generated');
 $listTable->setId(2);
 // Set sort able column
 $listTable->setConfig(
-    'orderbyColumn',
+    'orderByColumn',
     array(
         array('age', 'DESC'),
         array('credit', 'ASC'),
@@ -188,7 +188,7 @@ $config = array(
 
 $listTable->setId(3)
 ->setConfig(
-    'orderbyColumn',
+    'orderByColumn',
     array(
         array('age', 'ASC'),
         array('credit', 'DESC'),
