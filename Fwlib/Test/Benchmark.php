@@ -171,13 +171,9 @@ class Benchmark extends AbstractUtilAware
         $usec = substr(strval(round($time - $sec, 3)), 2);
         $html = <<<EOF
 
-<div style="float: left; width: 4em; text-align: right;">
-    {$sec}
-</div>
-<div style="float: left;">.</div>
-<div style="float: left; width: 3em; text-align: left;">
-    {$usec}
-</div>
+        <span class='fwlib-benchmark__mark__sec'>{$sec}</span>
+        <span class='fwlib-benchmark__mark__dot'>.</span>
+        <span class='fwlib-benchmark__mark__usec'>{$usec}</span>
 
 EOF;
         return $html;
@@ -348,44 +344,66 @@ EOF;
 
 <style type="text/css" media="screen, print">
 <!--
-    #fl-bm table, #fl-bm td {
-        border: 1px solid #999;
-        border-collapse: collapse;
-        padding-left: 0.2em;
-    }
-    #fl-bm table caption, #fl-bm-m {
-        margin-top: 0.5em;
-    }
-    #fl-bm tr.total {
-        background-color: #E5E5E5;
-    }
+.fwlib-benchmark table, .fwlib-benchmark td {
+  border: 1px solid #999;
+  border-collapse: collapse;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.fwlib-benchmark table caption, .fwlib-benchmark__memory-usage {
+  margin-top: 0.5em;
+}
+.fwlib-benchmark tr.total {
+  background-color: #E5E5E5;
+}
+
+.fwlib-benchmark__mark__sec {
+  display: inline-block;
+  text-align: right;
+  width: 4em;
+}
+.fwlib-benchmark__mark__dot {
+  display: inline-block;
+}
+.fwlib-benchmark__mark__usec {
+  display: inline-block;
+  text-align: left;
+  width: 3em;
+}
+
+.fwlib-benchmark__mark__desc {
+}
+
+.fwlib-benchmark__mark__pct {
+  text-align: right;
+}
 -->
 </style>
 
 EOF;
-            $html .= "<div id='fl-bm'>\n";
+            $html .= "<div class='fwlib-benchmark'>\n";
             foreach ($this->group as $groupId => $ar_group) {
                 $this->formatColor($groupId);
 
                 // Stop will create mark, so no 0=mark
-                $html .= "\t<table id='fl-bm-g{$groupId}'>\n";
-                $html .= "\t\t<caption>{$ar_group['desc']}</caption>\n";
+                $html .= "  <table class='fwlib-benchmark__g{$groupId}'>\n";
+                $html .= "    <caption>{$ar_group['desc']}</caption>\n";
 
                 // Th
                 $html .= <<<EOF
 
-<thead>
-<tr>
-    <th>Dur Time</th>
-    <th>Mark Description</th>
-    <th>%</th>
-</tr>
-</thead>
+    <thead>
+    <tr>
+      <th>Dur Time</th>
+      <th>Mark Description</th>
+      <th>%</th>
+    </tr>
+    </thead>
 
 EOF;
                 // Markers
                 if (0 < count($this->mark[$groupId])) {
-                    $html .= "<tbody>\n";
+                    $html .= "\n    <tbody>";
                     foreach ($this->mark[$groupId] as $markId => $ar_mark) {
                         $time = $this->formatTime($ar_mark['dur']);
                         // Bg color
@@ -396,11 +414,11 @@ EOF;
                         }
                         $html .= <<<EOF
 
-<tr>
-    <td{$color}>{$time}</td>
-    <td>{$ar_mark['desc']}</td>
-    <td style="text-align: right">{$ar_mark['pct']}%</td>
-</tr>
+    <tr>
+      <td{$color}>{$time}      </td>
+      <td class='fwlib-benchmark__mark__desc'>{$ar_mark['desc']}</td>
+      <td class='fwlib-benchmark__mark__pct'>{$ar_mark['pct']}%</td>
+    </tr>
 
 EOF;
                     }
@@ -413,11 +431,11 @@ EOF;
                 $time = $this->formatTime($ar_group['dur']);
                 $html .= <<<EOF
 
-<tr class="total">
-    <td>{$time}</td>
-    <td>Total</td>
-    <td>-</td>
-</tr>
+    <tr class="total">
+      <td>{$time}</td>
+      <td>Total</td>
+      <td>-</td>
+    </tr>
 
 EOF;
 
@@ -429,7 +447,7 @@ EOF;
                 $memory = number_format(memory_get_usage());
                 $html .= <<<EOF
 
-<div id="fl-bm-m">
+<div class="fwlib-benchmark__memory-usage">
     Memory Usage: $memory
 </div>
 
