@@ -446,7 +446,7 @@ class ListTable
                 ''
             );
         }
-        $this->setOrderby($orderBy, $dir);
+        $this->setOrderBy($orderBy, $dir);
 
         return $this;
     }
@@ -745,7 +745,7 @@ class ListTable
      * @param   mixed   $key
      * @param   string  $dir    ASC/DESC
      */
-    public function setOrderby($key = null, $dir = null)
+    public function setOrderBy($key = null, $dir = null)
     {
         // Parse orderBy config
         $orderByColumn = array();

@@ -143,8 +143,8 @@ $listTable->setConfig(
     )
 );
 // Set current sort order
-//$listTable->setOrderby(2, 'ASC');
-//$listTable->setOrderby(2);
+//$listTable->setOrderBy(2, 'ASC');
+//$listTable->setOrderBy(2);
 
 // Query data from db
 $config = array(
