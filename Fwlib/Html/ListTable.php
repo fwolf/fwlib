@@ -686,7 +686,9 @@ class ListTable extends AbstractAutoNewConfig
 
 
         // Change paramPage, eg: p1, pa
-        $this->config['paramPage'] = 'p' . $id;
+        if ('0' != $id && '1' != $id) {
+            $this->config['paramPage'] = 'p' . $id;
+        }
         // Useless, readRequest() will call it
         //$this->setPage();
 
