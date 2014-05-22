@@ -472,7 +472,7 @@ class ListTable extends AbstractAutoNewConfig
 
                 // Classname for root element, and prefix of inherit elements
                 // Should not be empty.
-                'class'             => 'ListTable',
+                'class'             => 'list-table',
                 // Id of this list, default 1, will use class as prefix if not empty.
                 // Can be string or integer, should not be empty.
                 'id'                => 1,
@@ -673,7 +673,7 @@ class ListTable extends AbstractAutoNewConfig
             $this->config['class'] = $class;
         }
         $this->info['class'] = $class;
-        $this->info['classPrefix'] = $class . '-';
+        $this->info['classPrefix'] = $class . '__';
 
 
         $id = trim($id);
@@ -681,7 +681,7 @@ class ListTable extends AbstractAutoNewConfig
             $id = 1;
         }
         $this->config['id'] = $id;
-        $this->info['idPrefix'] = $this->info['classPrefix'] . $id . '-';
+        $this->info['idPrefix'] = $this->info['classPrefix'] . $id . '__';
         $this->info['id'] = $this->info['classPrefix'] . $id;
 
 

@@ -25,14 +25,14 @@ $tpl->compile_dir = $globalConfig->get('smarty.compileDir');
 $tpl->template_dir = __DIR__ . "/{$pathToRoot}Fwlib/Html/";
 $tpl->cache_dir = $globalConfig->get('smarty.cacheDir');
 
-$config = array(
+$configs = array(
     'pageSize'  => 3,
     'tdAdd'     => array(
         'title'     => 'nowrap="nowrap"',
         'joindate'  => 'nowrap="nowrap"',
     ),
 );
-$listTable = new ListTable($tpl, $config);
+$listTable = new ListTable($tpl, $configs);
 $bm->mark('ListTable object prepared');
 
 
@@ -234,19 +234,19 @@ $bm->mark('Cleanup, test table dropped');
   <style type='text/css' media='all'>
   /*<![CDATA[*/
   /* Write CSS below */
-  .ListTable {
+  .list-table {
     border: 0px solid red;
     margin: auto;
     width: 70%;
   }
-  .ListTable form {
+  .list-table form {
     display: inline-block;
   }
-  .ListTable table {
+  .list-table table {
     margin: auto;
     width: 100%;
   }
-  .ListTable table, .ListTable td, .ListTable th {
+  .list-table table, .list-table td, .list-table th {
     border: 1px solid black;
     border-collapse: collapse;
   }
@@ -308,16 +308,16 @@ $bm->display();
   // then td width is assigned + fixed_for_left,
   // content width exceed limit will auto wrap,
   // but overflow content can also been seen.
-  $(".ListTable table").css("table-layout", "fixed");
+  $(".list-table table").css("table-layout", "fixed");
   // * include th & td here
-  $(".ListTable tr > td:nth-child(2)").css("background-color", "green");
-  $(".ListTable tr > *:nth-child(2)").css("width", "20em");
-  //$(".ListTable tr > *:nth-child(2)").css("width", "3em");
+  $(".list-table tr > td:nth-child(2)").css("background-color", "green");
+  $(".list-table tr > *:nth-child(2)").css("width", "20em");
+  //$(".list-table tr > *:nth-child(2)").css("width", "3em");
 
   // If "table-layout: fixed;" is not assigned,
   // width limit will work, but overflow content
   // may make width raise.
-  $("#ListTable-2 tr > *:nth-child(2)").css("width", "30%");
+  $("#list-table__2 tr > *:nth-child(2)").css("width", "30%");
 
   //--><!]]>
   </script>

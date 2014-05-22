@@ -44,7 +44,7 @@
 {if (0 < strlen($listTableInfo.class))} class='{$listTableInfo.class}'{/if}>
 
 {if ($listTableConfig.pagerAbove)}
-  <div id='{$listTableInfo.idPrefix}pager-above'
+  <div id='{$listTableInfo.idPrefix}pager--above'
     class='{$listTableInfo.classPrefix}pager'>
 {$smarty.capture.pager}
   </div>
@@ -94,7 +94,7 @@
   </table>
 
 {if ($listTableConfig.pagerBelow)}
-  <div id='{$listTableInfo.idPrefix}pager-below'
+  <div id='{$listTableInfo.idPrefix}pager--below'
     class='{$listTableInfo.classPrefix}pager'>
 {$smarty.capture.pager}
   </div>
@@ -123,14 +123,14 @@
       background-color: {$listTableConfig.colorBgTh};\
     } \
     */\
-    .{$listTableInfo.classPrefix}tr-even { \
+    .{$listTableInfo.classPrefix}tr--even { \
       background-color: {$listTableConfig.colorBgTrEven};\
     } \
-    .{$listTableInfo.classPrefix}tr-odd { \
+    .{$listTableInfo.classPrefix}tr--odd { \
       background-color: {$listTableConfig.colorBgTrOdd};\
     } \
     /* hover define must after even/odd */ \
-    .{$listTableInfo.classPrefix}tr-hover { \
+    .{$listTableInfo.classPrefix}tr--hover { \
       background-color: {$listTableConfig.colorBgTrHover};\
     } \
     -->\
@@ -143,16 +143,16 @@
   /* th 用 class 不起作用，改成直接对 styles 属性赋值 1/2 */
   /* $('th', listTable).addClass('.{$listTableInfo.classPrefix}th'); */
   $('th', listTable).css('background-color', '{$listTableConfig.colorBgTh}');
-  $('tbody tr:even', listTable).addClass('{$listTableInfo.classPrefix}tr-even');
-  $('tbody tr:odd', listTable).addClass('{$listTableInfo.classPrefix}tr-odd');
-  /* $('tbody tr:hover', listTable).addClass('{$listTableInfo.classPrefix}tr-hover'); */
+  $('tbody tr:even', listTable).addClass('{$listTableInfo.classPrefix}tr--even');
+  $('tbody tr:odd', listTable).addClass('{$listTableInfo.classPrefix}tr--odd');
+  /* $('tbody tr:hover', listTable).addClass('{$listTableInfo.classPrefix}tr--hover'); */
 
   /* Set color change for hover, when mouseover and mouseout. */
   $('tbody tr', listTable).mouseover(function() {
-    $(this).addClass('{$listTableInfo.classPrefix}tr-hover');
+    $(this).addClass('{$listTableInfo.classPrefix}tr--hover');
   });
   $('tbody tr', listTable).mouseout(function() {
-    $(this).removeClass('{$listTableInfo.classPrefix}tr-hover');
+    $(this).removeClass('{$listTableInfo.classPrefix}tr--hover');
   });
 
   /* Vertical align of td */
@@ -160,7 +160,7 @@
   $('td', listTable).css('vertical-align', 'middle');
 
   /* Pager width is same with listTable, and position */
-  var pager = $('#{$listTableInfo.idPrefix}pager-above, #{$listTableInfo.idPrefix}pager-below');
+  var pager = $('#{$listTableInfo.idPrefix}pager--above, #{$listTableInfo.idPrefix}pager--below');
   pager.css('display', 'block');
   pager.css('text-align', 'right');
   /* Pager above leave a little margin-bottom to look better */
