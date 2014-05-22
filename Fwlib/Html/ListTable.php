@@ -1,8 +1,7 @@
 <?php
 namespace Fwlib\Html;
 
-use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Html generator: list table
@@ -16,9 +15,8 @@ use Fwlib\Util\HttpUtil;
  * @copyright   Copyright 2003-2014 Fwolf
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2003-05-17 12:17:14
  */
-class ListTable extends AbstractAutoNewConfig
+class ListTable
 {
     /**
      * If column in data and title doesn't match, fitMode option will determin
@@ -35,6 +33,13 @@ class ListTable extends AbstractAutoNewConfig
 
     // Fit to union of title and data, got mostest column
     const FIT_UNION     = 3;
+
+    /**
+     * Config array
+     *
+     * @var array
+     */
+    protected $configs = array();
 
     /**
      * Information generated in treatment
@@ -136,18 +141,17 @@ class ListTable extends AbstractAutoNewConfig
      * config.
      *
      * @param   Fwlib\Bridge\Smarty $tpl
-     * @param   array               $config
+     * @param   array               $configs
      */
-    public function __construct($tpl, $config = null)
+    public function __construct($tpl, array $configs = array())
     {
-        parent::__construct();
-
         $this->tpl = $tpl;
 
         // Config will effect setData, so set it first.
-        $this->setConfig($config);
+        $this->setDefaultConfigs();
+        $this->setConfigs($configs);
 
-        $this->tpl->assignByRef("{$this->tplVarPrefix}Config", $this->config);
+        $this->tpl->assignByRef("{$this->tplVarPrefix}Config", $this->configs);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Info", $this->info);
         $this->tpl->assignByRef("{$this->tplVarPrefix}Url", $this->url);
 
@@ -161,7 +165,7 @@ class ListTable extends AbstractAutoNewConfig
      *
      * If row index is not in given keys, it will be dropped.
      * If given keys is not in row index, it will be created with value
-     * $this->config['fitEmpty'].
+     * $this->configs['fitEmpty'].
      *
      * @param   array   $key
      */
@@ -192,7 +196,7 @@ class ListTable extends AbstractAutoNewConfig
         }
 
 
-        $fitEmpty = $this->config['fitEmpty'];
+        $fitEmpty = $this->configs['fitEmpty'];
         foreach ($this->listData as &$row) {
             foreach ((array)$keyDel as $k) {
                 unset($row[$k]);
@@ -258,7 +262,7 @@ class ListTable extends AbstractAutoNewConfig
         }
 
 
-        switch ($this->config['fitMode']) {
+        switch ($this->configs['fitMode']) {
             case self::FIT_TO_TITLE:
                 $ar = $keyOfTitle;
                 break;
@@ -345,7 +349,7 @@ class ListTable extends AbstractAutoNewConfig
         $this->readRequest(true);
         $this->setPager();
 
-        return $this->tpl->fetch($this->config['tpl']);
+        return $this->tpl->fetch($this->configs['tpl']);
     }
 
 
@@ -369,16 +373,29 @@ class ListTable extends AbstractAutoNewConfig
 
         $ar = array();
 
-        $ar['LIMIT'] = $this->config['pageSize'] * ($this->info['page'] - 1)
-            . ', ' . $this->config['pageSize'];
+        $ar['LIMIT'] = $this->configs['pageSize'] * ($this->info['page'] - 1)
+            . ', ' . $this->configs['pageSize'];
 
-        if (!empty($this->config['orderby'])) {
+        if (!empty($this->configs['orderby'])) {
             // orderby_idx is column name
-            $ar['ORDERBY'] = $this->config['orderby']
-                . ' ' . $this->config['orderbyDir'];
+            $ar['ORDERBY'] = $this->configs['orderby']
+                . ' ' . $this->configs['orderbyDir'];
         }
 
         return $ar;
+    }
+
+
+    /**
+     * Get Util instance
+     *
+     * @param   string  $name
+     * @return  object
+     */
+    protected function getUtil($name)
+    {
+        return UtilContainer::getInstance()
+            ->get($name);
     }
 
 
@@ -414,18 +431,18 @@ class ListTable extends AbstractAutoNewConfig
         $httpUtil = $this->getUtil('HttpUtil');
         $this->url['base'] = $httpUtil->getSelfUrl(false);
 
-        $page = $arrayUtil->getIdx($this->param, $this->config['paramPage'], 1);
+        $page = $arrayUtil->getIdx($this->param, $this->configs['paramPage'], 1);
         $this->setPage($page);
 
 
         // Always treat orderby
         $orderby = '';
         $dir = '';
-        if (isset($this->param[$this->config['paramOrderby']])) {
-            $orderby = $this->param[$this->config['paramOrderby']];
+        if (isset($this->param[$this->configs['paramOrderby']])) {
+            $orderby = $this->param[$this->configs['paramOrderby']];
             $dir = $arrayUtil->getIdx(
                 $this->param,
-                $this->config['paramOrderby'] . 'Dir',
+                $this->configs['paramOrderby'] . 'Dir',
                 ''
             );
         }
@@ -436,24 +453,21 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
-     * Set config
+     * Set single config
      *
-     * @param   array   $configs
+     * @param   string  $key
+     * @param   mixed   $value
      * @return  ListTable
      */
-    public function setConfig($configs, $val = null)
+    public function setConfig($key, $value)
     {
-        parent::setConfig($configs, $val);
+        $this->configs[$key] = $value;
 
-        if (is_array($configs) &&
-            (isset($configs['class']) || isset($configs['id']))
-        ) {
-            $this->setId(
-                isset($configs['id']) ? $configs['id']
-                : $this->getConfig('id'),
-                isset($configs['class']) ? $configs['class']
-                : $this->getConfig('class')
-            );
+        if ('class' == $key) {
+            $this->setId($this->configs['id'], $value);
+
+        } elseif ('id' == $key) {
+            $this->setId($value, $this->configs['class']);
         }
 
         return $this;
@@ -461,11 +475,91 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
-     * Set default config
+     * Set multiple configs
+     *
+     * @param   array   $configs
+     * @return  ListTable
      */
-    protected function setConfigDefault()
+    public function setConfigs(array $configs)
     {
-        $this->setConfig(
+        $this->configs = array_merge($this->configs, $configs);
+
+        if (isset($configs['class']) || isset($configs['id'])) {
+            $this->setId(
+                isset($configs['id']) ? $configs['id']
+                : $this->configs['id'],
+                isset($configs['class']) ? $configs['class']
+                : $this->configs['class']
+            );
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Set list data and title
+     *
+     * @param   array   $listData
+     * @param   array   $listTitle
+     * @param   boolean $updateTotalRows
+     * @return  $this
+     */
+    public function setData($listData, $listTitle = null, $updateTotalRows = false)
+    {
+        $this->listData = $listData;
+        if ($updateTotalRows || (-1 == $this->info['totalRows'])) {
+            $this->info['totalRows'] = count($listData);
+        }
+
+        if (!is_null($listTitle)) {
+            $this->listTitle = $listTitle;
+        }
+
+        // Same number of items maybe index diff, so always do fit.
+        $this->fitTitleWithData();
+
+        return $this;
+    }
+
+
+    /**
+     * Set db query
+     *
+     * Will query total rows and list data by set db connection and config,
+     * will overwrite exists $listData.
+     *
+     * @param   Fwlib\Bridge\Adodb  $db
+     * @param   array       $config
+     * @return  $this
+     */
+    public function setDbQuery($db, $config)
+    {
+        // Get totalRows
+        $this->info['totalRows'] = $db->execute(
+            array_merge($config, array('SELECT' => 'COUNT(1) AS c'))
+        )
+        ->fields['c'];
+
+        // Query data
+        $rs = $db->execute(
+            array_merge($config, $this->getSqlConfig(true))
+        );
+        $this->listData = $rs->GetArray();
+
+        $this->fitTitleWithData();
+
+        return $this;
+    }
+
+
+    /**
+     * Set default configs
+     */
+    protected function setDefaultConfigs()
+    {
+        $this->setConfigs(
             array(
                 // Notice: this is NOT actual class and id used in template,
                 // see $this->info and $this->setId() for details.
@@ -598,62 +692,6 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
-     * Set list data and title
-     *
-     * @param   array   $listData
-     * @param   array   $listTitle
-     * @param   boolean $updateTotalRows
-     * @return  $this
-     */
-    public function setData($listData, $listTitle = null, $updateTotalRows = false)
-    {
-        $this->listData = $listData;
-        if ($updateTotalRows || (-1 == $this->info['totalRows'])) {
-            $this->info['totalRows'] = count($listData);
-        }
-
-        if (!is_null($listTitle)) {
-            $this->listTitle = $listTitle;
-        }
-
-        // Same number of items maybe index diff, so always do fit.
-        $this->fitTitleWithData();
-
-        return $this;
-    }
-
-
-    /**
-     * Set db query
-     *
-     * Will query total rows and list data by set db connection and config,
-     * will overwrite exists $listData.
-     *
-     * @param   Fwlib\Bridge\Adodb  $db
-     * @param   array       $config
-     * @return  $this
-     */
-    public function setDbQuery($db, $config)
-    {
-        // Get totalRows
-        $this->info['totalRows'] = $db->execute(
-            array_merge($config, array('SELECT' => 'COUNT(1) AS c'))
-        )
-        ->fields['c'];
-
-        // Query data
-        $rs = $db->execute(
-            array_merge($config, $this->getSqlConfig(true))
-        );
-        $this->listData = $rs->GetArray();
-
-        $this->fitTitleWithData();
-
-        return $this;
-    }
-
-
-    /**
      * Set id and class of list table
      *
      * Id and class should not have space or other special chars not allowed
@@ -668,9 +706,9 @@ class ListTable extends AbstractAutoNewConfig
         $class = trim($class);
         // Class should not be empty
         if (empty($class)) {
-            $class = $this->config['class'];    // For later use
+            $class = $this->configs['class'];    // For later use
         } else {
-            $this->config['class'] = $class;
+            $this->configs['class'] = $class;
         }
         $this->info['class'] = $class;
         $this->info['classPrefix'] = $class . '__';
@@ -680,20 +718,20 @@ class ListTable extends AbstractAutoNewConfig
         if (0 == strlen($id)) {     // Avoid 0, which is empty
             $id = 1;
         }
-        $this->config['id'] = $id;
+        $this->configs['id'] = $id;
         $this->info['idPrefix'] = $this->info['classPrefix'] . $id . '__';
         $this->info['id'] = $this->info['classPrefix'] . $id;
 
 
         // Change paramPage, eg: p1, pa
         if ('0' != $id && '1' != $id) {
-            $this->config['paramPage'] = 'p' . $id;
+            $this->configs['paramPage'] = 'p' . $id;
         }
         // Useless, readRequest() will call it
         //$this->setPage();
 
         // Change orderby param
-        $this->config['paramOrderby'] = 'ob' . $id;
+        $this->configs['paramOrderby'] = 'ob' . $id;
 
         return $this;
     }
@@ -711,7 +749,7 @@ class ListTable extends AbstractAutoNewConfig
     {
         // Parse orderby config
         $orderbyColumn = array();
-        foreach ((array)$this->config['orderbyColumn'] as $v) {
+        foreach ((array)$this->configs['orderbyColumn'] as $v) {
             $orderbyColumn[$v[0]] = array(
                 $v[0],
                 (isset($v[1])) ? $v[1] : 'ASC',
@@ -726,34 +764,34 @@ class ListTable extends AbstractAutoNewConfig
         } elseif (empty($dir)) {
             $dir = $orderbyColumn[$key][1];
         }
-        $this->config['orderby'] = $key;
+        $this->configs['orderby'] = $key;
 
 
         $dir = strtoupper($dir);
         if ('ASC' == $dir) {
             $dirReverse = 'DESC';
-            $this->config['orderbyDir'] = 'ASC';
-            $this->config['orderbyText'] = $this->config['orderbyTextAsc'];
+            $this->configs['orderbyDir'] = 'ASC';
+            $this->configs['orderbyText'] = $this->configs['orderbyTextAsc'];
         } else {
             $dirReverse = 'ASC';
-            $this->config['orderbyDir'] = 'DESC';
-            $this->config['orderbyText'] = $this->config['orderbyTextDesc'];
+            $this->configs['orderbyDir'] = 'DESC';
+            $this->configs['orderbyText'] = $this->configs['orderbyTextDesc'];
         }
 
 
         // Url param
-        $ob = $this->config['paramOrderby'];
+        $ob = $this->configs['paramOrderby'];
         // Change orderby will clear page param
         // Orderby index is appended in template by each th, remove here
         $this->url['obCur'] = $this->genUrl(
             array("{$ob}Dir" => $dirReverse),
-            array($ob, $this->config['paramPage'])
+            array($ob, $this->configs['paramPage'])
         );
 
         // Other column orderby will clear diretion
         // Added paramPage is dummy, to keep url start with '?', fit tpl later
         $this->url['obOther'] = $this->genUrl(
-            array($this->config['paramPage'] => 1),
+            array($this->configs['paramPage'] => 1),
             array($ob, "{$ob}Dir")
         );
     }
@@ -772,7 +810,7 @@ class ListTable extends AbstractAutoNewConfig
         if (is_null($page)) {
             $page = $arrayUtil->getIdx(
                 $this->param,
-                $this->config['paramPage'],
+                $this->configs['paramPage'],
                 1
             );
         }
@@ -784,10 +822,10 @@ class ListTable extends AbstractAutoNewConfig
             $page = 1;
         }
         if (0 < $this->info['totalRows']
-            && 0 < $this->config['pageSize']
+            && 0 < $this->configs['pageSize']
         ) {
             $this->info['pageMax'] =
-                ceil($this->info['totalRows'] / $this->config['pageSize']);
+                ceil($this->info['totalRows'] / $this->configs['pageSize']);
             $page = min($page, $this->info['pageMax']);
         }
 
@@ -809,7 +847,7 @@ class ListTable extends AbstractAutoNewConfig
     {
         $page      = $this->info['page'];
         $pageMax   = $this->info['pageMax'];
-        $pageSize  = $this->config['pageSize'];
+        $pageSize  = $this->configs['pageSize'];
         $totalRows = $this->info['totalRows'];
 
 
@@ -828,7 +866,7 @@ class ListTable extends AbstractAutoNewConfig
         $this->info['pagerTextBody'] = str_replace(
             array('{page}', '{pageMax}', '{totalRows}', '{pageSize}'),
             array($page, $pageMax, $totalRows, $pageSize),
-            $this->config['pagerTextBody']
+            $this->configs['pagerTextBody']
         );
 
         // Generate url for pager
@@ -836,10 +874,10 @@ class ListTable extends AbstractAutoNewConfig
         if (1 < $page) {
             // Not first page
             $this->url['pageFirst'] = $this->genUrl(
-                array($this->config['paramPage'] => 1)
+                array($this->configs['paramPage'] => 1)
             );
             $this->url['pagePrev'] = $this->genUrl(
-                array($this->config['paramPage'] => $page - 1)
+                array($this->configs['paramPage'] => $page - 1)
             );
         } else {
             $this->url['pageFirst'] = '';
@@ -848,10 +886,10 @@ class ListTable extends AbstractAutoNewConfig
         if ($page < $pageMax) {
             // Not last page
             $this->url['pageNext'] = $this->genUrl(
-                array($this->config['paramPage'] => $page + 1)
+                array($this->configs['paramPage'] => $page + 1)
             );
             $this->url['pageLast'] = $this->genUrl(
-                array($this->config['paramPage'] => $pageMax)
+                array($this->configs['paramPage'] => $pageMax)
             );
         } else {
             $this->url['pageNext'] = '';
@@ -859,7 +897,10 @@ class ListTable extends AbstractAutoNewConfig
         }
 
         // Form submit target url
-        $this->url['form'] = $this->genUrl(null, array($this->config['paramPage']));
+        $this->url['form'] = $this->genUrl(
+            null,
+            array($this->configs['paramPage'])
+        );
 
         // Assign hidden input
         if (!empty($this->param)) {
