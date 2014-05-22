@@ -436,6 +436,31 @@ class ListTable extends AbstractAutoNewConfig
 
 
     /**
+     * Set config
+     *
+     * @param   array   $configs
+     * @return  ListTable
+     */
+    public function setConfig($configs, $val = null)
+    {
+        parent::setConfig($configs, $val);
+
+        if (is_array($configs) &&
+            (isset($configs['class']) || isset($configs['id']))
+        ) {
+            $this->setId(
+                isset($configs['id']) ? $configs['id']
+                : $this->getConfig('id'),
+                isset($configs['class']) ? $configs['class']
+                : $this->getConfig('class')
+            );
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Set default config
      */
     protected function setConfigDefault()
