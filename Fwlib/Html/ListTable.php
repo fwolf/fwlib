@@ -438,11 +438,11 @@ class ListTable
         // Always treat orderBy
         $orderBy = '';
         $dir = '';
-        if (isset($this->param[$this->configs['paramOrderby']])) {
-            $orderBy = $this->param[$this->configs['paramOrderby']];
+        if (isset($this->param[$this->configs['orderByParam']])) {
+            $orderBy = $this->param[$this->configs['orderByParam']];
             $dir = $arrayUtil->getIdx(
                 $this->param,
-                $this->configs['paramOrderby'] . 'Dir',
+                $this->configs['orderByParam'] . 'Dir',
                 ''
             );
         }
@@ -611,7 +611,7 @@ class ListTable
                 // Orderby direction, ASC or DESC
                 'orderByDir'        => 'ASC',
                 // Get param for orderBy
-                'paramOrderby'      => 'ob',
+                'orderByParam'      => 'ob',
                 // Preserved, will be auto generated if orderBy enabled
                 'orderByText'       => '',
                 // Orderby text/symbol for ASC and DESC
@@ -731,7 +731,7 @@ class ListTable
         //$this->setPage();
 
         // Change orderBy param
-        $this->configs['paramOrderby'] = 'ob' . $id;
+        $this->configs['orderByParam'] = 'ob' . $id;
 
         return $this;
     }
@@ -780,7 +780,7 @@ class ListTable
 
 
         // Url param
-        $ob = $this->configs['paramOrderby'];
+        $ob = $this->configs['orderByParam'];
         // Change orderBy will clear page param
         // Orderby index is appended in template by each th, remove here
         $this->url['obCur'] = $this->genUrl(

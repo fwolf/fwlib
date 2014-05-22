@@ -65,7 +65,7 @@
       {else}
           {$listTableUrl.obOther}
       {/if}
-          &amp;{$listTableConfig.paramOrderby}={$keyTh}
+          &amp;{$listTableConfig.orderByParam}={$keyTh}
         {/strip}'>
           {$title}
       {if $keyTh==$listTableConfig.orderBy}{$listTableConfig.orderByText}{/if}
