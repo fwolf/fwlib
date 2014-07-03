@@ -710,7 +710,14 @@ class ListTable
         } else {
             $this->configs['class'] = $class;
         }
+
         $this->info['class'] = $class;
+
+        // Class may have multiple value split by space, use first one as
+        // prefix of other elements.
+        if (false !== strpos($class, ' ')) {
+            $class = strstr($class, ' ', true);
+        }
         $this->info['classPrefix'] = $class . '__';
 
 
