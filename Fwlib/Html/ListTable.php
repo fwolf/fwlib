@@ -185,7 +185,8 @@ class ListTable
         }
         // Add key not exists
         foreach ($key as $k) {
-            if (!isset($row[$k])) {
+            // isset() will return false if array key exists but value is null
+            if (!array_key_exists($k, $row)) {
                 $keyAdd[] = $k;
             }
         }
