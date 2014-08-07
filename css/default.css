@@ -108,7 +108,7 @@ th, td {
 .clearit {
 	clear: both;
 }
-.error {
+.error, .error p, .error td, .error th, .error li {
 	text-align: center;
 	color: red;
 }
