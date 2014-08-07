@@ -437,3 +437,11 @@ p.last {margin-bottom: 0px;}
 .debug {
 	border: 2px solid red;
 }
+
+
+.bad {
+  color: red;
+}
+.good {
+  color: limegreen;
+}
