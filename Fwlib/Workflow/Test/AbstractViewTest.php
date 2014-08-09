@@ -62,19 +62,50 @@ class AbstractViewTest extends PHPunitTestCase
         );
         $this->reflectionSet(
             $view,
-            'viewActionPrefix',
-            'workflow-dummy-'
+            'action',
+            'workflow-dummy'
         );
 
         return $view;
     }
 
 
-    public function testAccessors()
+    public function testBuildQueryUrl()
     {
-        $view = $this->buildMock();
+        $view = $this->getMockBuilder(
+            'Fwlib\Workflow\AbstractView'
+        )
+        ->getMockForAbstractClass();
 
-        $this->assertEquals('workflow-dummy-', $view->getViewActionPrefix());
+        $workflow = $this->getMock(
+            'stdClass',
+            array('getUuid')
+        );
+        $workflow->expects($this->any())
+            ->method('getUuid')
+            ->will($this->returnValue('dummy-uuid'));
+
+        $this->reflectionSet($view, 'workflow', $workflow);
+
+
+        $_GET = array(
+            'm' => 'dummy-module',
+            'a' => 'workflow-dummy',
+            'uselessParameter' => 'dummy',
+        );
+
+        $url = $view->buildQueryUrl(
+            'detail',
+            array(
+                'someParam' => 'param-value',
+            ),
+            array('uselessParameter')
+        );
+
+        $this->assertStringEndsWith(
+            '?m=dummy-module&a=workflow-dummy&va=detail&uuid=dummy-uuid&someParam=param-value',
+            $url
+        );
     }
 
 
@@ -83,7 +114,10 @@ class AbstractViewTest extends PHPunitTestCase
         $view = $this->buildMock();
 
         // Trigger method call
-        $view->setAction('workflow-dummy-detail')->getOutput();
+        $viewActionParameter =
+            $this->reflectionGet($view, 'viewActionParameter');
+        $_GET[$viewActionParameter] = 'detail';
+        $view->setAction('workflow-dummy')->getOutput();
 
         $workflowModel = $this->reflectionGet($view, 'workflow')->getModel();
 
@@ -95,7 +129,7 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock();
 
-        $view->setAction('workflow-dummy-detail');
+        $view->setAction('workflow-dummy');
         $uuid = 'workflowUuid';
 
         // Initialize workflow instance
@@ -110,34 +144,27 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock();
 
-        // Workflow action not defined, view action comes from url
         $_GET = array(
-            'a'     => 'workflow-dummy-detail',
+            'a'     => 'workflow-dummy',
+            'va'    => 'detail',
             'uuid'  => 'workflowUuid',
         );
 
-        // Empty body output for empty action, same with parent view
         $output = $view->getOutput();
-        $this->assertEquals(
-            '{header}{footer}',
-            $output
-        );
-
-        $output = $view->setAction($_GET['a'])->getOutput();
         $this->assertEquals(
             '{header}{detailReadonly}{link}{log}{footer}',
             $output
         );
 
-        $_GET['a'] = 'workflow-dummy-edit';
-        $output = $view->setAction($_GET['a'])->getOutput();
+        $_GET['va'] = 'edit';
+        $output = $view->getOutput();
         $this->assertEquals(
             '{header}{detailEditable}{action}{link}{log}{footer}',
             $output
         );
 
-        $_GET['a'] = 'workflow-dummy-review';
-        $output = $view->setAction($_GET['a'])->getOutput();
+        $_GET['va'] = 'review';
+        $output = $view->getOutput();
         $this->assertEquals(
             '{header}{detailReadonly}{action}{link}{log}{footer}',
             $output
@@ -148,16 +175,26 @@ class AbstractViewTest extends PHPunitTestCase
         // 'viewActionAfterExecute' will be used, ignore view action from url.
         // The view action of submit is detail
         $_GET = array(
-            'a'     => 'workflow-dummy-edit',
+            'a'     => 'workflow-dummy',
+            'va'    => 'edit',
             'uuid'  => 'workflowUuid',
         );
         $_POST = array(
             'wfa'   => 'submit',
         );
 
-        $output = $view->setAction($_GET['a'])->getOutput();
+        $output = $view->getOutput();
         $this->assertEquals(
             '{header}{detailReadonly}{link}{log}{footer}',
+            $output
+        );
+
+
+        // Empty body output for empty action, same with parent view
+        $this->reflectionSet($view, 'action', '');
+        $output = $view->getOutput();
+        $this->assertEquals(
+            '{header}{footer}',
             $output
         );
     }

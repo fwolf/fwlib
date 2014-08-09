@@ -51,17 +51,11 @@ abstract class AbstractView extends BaseView
     protected $uuidParameter = 'uuid';
 
     /**
-     * View action prefix
-     *
-     * In common, view action will include information about which workflow it
-     * belongs to, used in controler. But this long view action name is not
-     * convenience here. As many view of a single workflow's names always have
-     * same prefix, so set here and strip it in getViewAction() to get short
-     * real view action to use.
+     * Request parameter of view action
      *
      * @var string
      */
-    protected $viewActionPrefix = '';
+    protected $viewActionParameter = 'va';
 
     /**
      * View action after execute workflow action
@@ -97,6 +91,43 @@ abstract class AbstractView extends BaseView
      * @var string
      */
     protected $workflowClass = '';
+
+
+    /**
+     * Build url about this workflow
+     *
+     * When used, more router parameter may need to be added.
+     *
+     * @param   string  $viewAction
+     * @param   array   $queryData
+     * @param   array   $removeKeys
+     * @return  string  Relative url, start with '?'
+     */
+    public function buildQueryUrl(
+        $viewAction,
+        array $queryData = array(),
+        array $removeKeys = array()
+    ) {
+        $params = $_GET;
+        $params[$this->viewActionParameter] = $viewAction;
+
+        if (!empty($this->workflow)) {
+            $uuid = $this->workflow->getUuid();
+            if (!empty($uuid)) {
+                $params[$this->uuidParameter] = $uuid;
+            }
+        }
+
+        $params = array_merge($params, $queryData);
+
+        foreach ($removeKeys as $key) {
+            unset($params[$key]);
+        }
+
+        $url = $this->pathToRoot . '?' . http_build_query($params);
+
+        return $url;
+    }
 
 
     /**
@@ -248,9 +279,10 @@ abstract class AbstractView extends BaseView
      * Get view action
      *
      * @param   string  $workflowAction
+     * @param   array   $request
      * @return  string
      */
-    protected function getViewAction($workflowAction)
+    protected function getViewAction($workflowAction, $request = null)
     {
         // Try action after execute first
         $viewAction = (isset($this->viewActionAfterExecute[$workflowAction]))
@@ -258,27 +290,18 @@ abstract class AbstractView extends BaseView
             : '';
 
 
-        // Then read from $action
+        // Then read from request
         if (empty($viewAction)) {
-            $viewAction = preg_replace(
-                "/^{$this->viewActionPrefix}/",
-                '',
-                $this->action
-            );
+            if (is_null($request)) {
+                $request = $_GET;
+            }
+
+            if (isset($request[$this->viewActionParameter])) {
+                $viewAction = trim($request[$this->viewActionParameter]);
+            }
         }
 
         return $viewAction;
-    }
-
-
-    /**
-     * Getter of view action prefix, for build query url
-     *
-     * @return  string
-     */
-    public function getViewActionPrefix()
-    {
-        return $this->viewActionPrefix;
     }
 
 
