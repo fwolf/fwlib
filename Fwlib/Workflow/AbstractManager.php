@@ -729,9 +729,11 @@ abstract class AbstractManager implements ManagerInterface
             $this->model->setContents(
                 array_merge($this->model->getContents(), $contents)
             );
-
-            $this->updateModelByContents();
         }
+
+        // Even request may contain no data, there may have preset readonly
+        // information in contents, and model need to be updated.
+        $this->updateModelByContents();
 
         return $this;
     }
