@@ -18,6 +18,13 @@ use Fwlib\Util\AbstractUtilAware;
 class ChnCitizenIdentificationNumber extends AbstractUtilAware
 {
     /**
+     * Title of genders
+     *
+     * @var array
+     */
+    protected $genderMap = array('男', '女');
+
+    /**
      * Generate pin code
      *
      * @return  string
@@ -68,6 +75,23 @@ class ChnCitizenIdentificationNumber extends AbstractUtilAware
         $cin = $this->to18(substr($cin, 0, 6) . substr($cin, 8), 19);
 
         return $cin;
+    }
+
+
+    /**
+     * Get gender from code
+     *
+     * @param   string  $cin
+     * @return  string
+     */
+    public function getGender($cin)
+    {
+        $cin = $this->to18($cin);
+        $seq = intval(substr($cin, 14, 3));
+
+        return (0 == $seq % 2)
+            ? $this->genderMap[1]
+            : $this->genderMap[0];
     }
 
 
