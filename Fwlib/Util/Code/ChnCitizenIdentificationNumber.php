@@ -79,6 +79,23 @@ class ChnCitizenIdentificationNumber extends AbstractUtilAware
 
 
     /**
+     * Get birthday from code
+     *
+     * @param   string  $cin
+     * @return  string  Format: Y-m-d
+     */
+    public function getBirthday($cin)
+    {
+        $cin = $this->to18($cin);
+
+        $birthday = substr($cin, 6, 4) . '-' . substr($cin, 10, 2) .
+            '-' . substr($cin, 12, 2);
+
+        return $birthday;
+    }
+
+
+    /**
      * Get gender from code
      *
      * @param   string  $cin

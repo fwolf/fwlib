@@ -32,6 +32,22 @@ class ChnCitizenIdentificationNumberTest extends PHPunitTestCase
     }
 
 
+    public function testGetBirthday()
+    {
+        $cin = '11010519491231002X';
+        $this->assertEquals(
+            '1949-12-31',
+            $this->chnCinCode->getBirthday($cin)
+        );
+
+        $cin = '440524188001010014';
+        $this->assertEquals(
+            '1880-01-01',
+            $this->chnCinCode->getBirthday($cin)
+        );
+    }
+
+
     public function testGetGender()
     {
         $cin = '11010519491231002X';
