@@ -305,7 +305,21 @@ class CacheMemcached extends Cache {
 		$this->aCfg['cache-type'] = 'memcached';
 
 
-		// Memcache server
+		// Memcached server
+
+		$memcachedOptions = array(
+			// Better for multi server
+			Memcached::OPT_DISTRIBUTION	=>
+				Memcached::DISTRIBUTION_CONSISTENT,
+			// Better for multi app use one memcached
+			Memcached::OPT_PREFIX_KEY	=> 'fw',
+		);
+		// Use json is better for debug
+        if (Memcached::HAVE_JSON) {
+            $memcachedOptions[Memcached::OPT_SERIALIZER] =
+                Memcached::SERIALIZER_JSON;
+        }
+
 		// Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
 		$this->aCfg['cache-memcached-lifetime'] = 86400;
 
@@ -318,16 +332,7 @@ class CacheMemcached extends Cache {
 		$this->aCfg['cache-memcached-maxitemsize'] = 1024000;
 
 		// Memcached default option, set when new memcached obj
-		$this->aCfg['cache-memcached-option-default'] = array(
-			// Better for multi server
-			Memcached::OPT_DISTRIBUTION	=>
-				Memcached::DISTRIBUTION_CONSISTENT,
-			// Better for multi app use one memcached
-			Memcached::OPT_PREFIX_KEY	=> 'fw',
-			// Better for debug
-			Memcached::OPT_SERIALIZER	=>
-				Memcached::SERIALIZER_JSON,
-		);
+		$this->aCfg['cache-memcached-option-default'] = $memcachedOptions;
 
 		// Memcached option, user set, replace default above
 		$this->aCfg['cache-memcached-option'] = array(
