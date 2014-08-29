@@ -418,7 +418,10 @@ class ListTable
 
         $this->param = &$_GET;
         if (!get_magic_quotes_gpc()) {
-            array_walk($this->param, 'addslashes');
+            foreach ($this->param as &$value) {
+                $value = addslashes($value);
+            }
+            unset($value);
         }
 
         // :NOTICE: Will got only url of backend if ProxyPass actived
