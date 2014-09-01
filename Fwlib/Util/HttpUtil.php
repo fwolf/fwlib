@@ -16,6 +16,15 @@ use Fwlib\Util\AbstractUtilAware;
 class HttpUtil extends AbstractUtilAware
 {
     /**
+     * Clear all session content, but still keep it started
+     */
+    public function clearSession()
+    {
+        $_SESSION = array();
+    }
+
+
+    /**
      * Download content as a file
      *
      * @codeCoverageIgnore
@@ -387,6 +396,40 @@ class HttpUtil extends AbstractUtilAware
             return strtolower($ar[1]);
         } else {
             return '';
+        }
+    }
+
+
+    /**
+     * Set value to session
+     *
+     * @param   string  $name
+     * @param   mixed   $value
+     * @return  HttpUtil
+     */
+    public function setSession($name, $value)
+    {
+        $_SESSION[$name] = $value;
+
+        return $this;
+    }
+
+
+    /**
+     * Start session if its not started
+     *
+     * @param   boolean $forcenew
+     */
+    public function startSession($forcenew = false)
+    {
+        $started = (0 != strlen(session_id()));
+
+        if ($forcenew && $started) {
+            session_destroy();
+        }
+
+        if ($forcenew || !$started) {
+            session_start();
         }
     }
 }

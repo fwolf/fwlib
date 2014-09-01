@@ -23,6 +23,16 @@ class HttpUtilTest extends PHPunitTestCase
     }
 
 
+    public function testClearGetSetSession()
+    {
+        $this->httpUtil->setSession('foo', 'bar');
+        $this->assertEquals('bar', $this->httpUtil->getSession('foo'));
+
+        $this->httpUtil->clearSession();
+        $this->assertArrayNotHasKey('foo', $_SESSION);
+    }
+
+
     public function testDownload()
     {
         $x = 'Test for download()';
@@ -109,5 +119,24 @@ class HttpUtilTest extends PHPunitTestCase
 
         $url = '';
         $this->assertRegExp('/(https?)?/i', $this->httpUtil->getUrlPlan($url));
+    }
+
+
+    public function testStartSession()
+    {
+        if (0 != session_id()) {
+            session_destroy();
+        }
+
+        $sessionId = session_id();
+        $this->assertEmpty($sessionId);
+
+        $this->httpUtil->startSession();
+        $sessionId = session_id();
+        $this->assertNotEmpty($sessionId);
+
+        $this->httpUtil->startSession(true);
+        $newSessionId = session_id();
+        $this->assertNotEquals($sessionId, $newSessionId);
     }
 }
