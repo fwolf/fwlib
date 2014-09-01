@@ -14,6 +14,7 @@ use Fwlib\Util\UtilContainer;
 class HttpUtilTest extends PHPunitTestCase
 {
     protected $httpUtil;
+    public static $sessionId = '';
 
 
     public function __construct()
@@ -124,19 +125,42 @@ class HttpUtilTest extends PHPunitTestCase
 
     public function testStartSession()
     {
-        if (0 != session_id()) {
-            session_destroy();
+        if (0 != \Fwlib\Util\session_id()) {
+            \Fwlib\Util\session_destroy();
         }
 
-        $sessionId = session_id();
+        $sessionId = \Fwlib\Util\session_id();
         $this->assertEmpty($sessionId);
 
         $this->httpUtil->startSession();
-        $sessionId = session_id();
+        $sessionId = \Fwlib\Util\session_id();
         $this->assertNotEmpty($sessionId);
 
         $this->httpUtil->startSession(true);
-        $newSessionId = session_id();
+        $newSessionId = \Fwlib\Util\session_id();
         $this->assertNotEquals($sessionId, $newSessionId);
     }
+}
+
+
+namespace Fwlib\Util;
+
+
+function session_destroy()
+{
+    \Fwlib\Util\Test\HttpUtilTest::$sessionId = '';
+}
+
+
+function session_id()
+{
+    return \Fwlib\Util\Test\HttpUtilTest::$sessionId;
+}
+
+
+function session_start()
+{
+    \Fwlib\Util\Test\HttpUtilTest::$sessionId = UtilContainer::getInstance()
+        ->get('StringUtil')
+        ->random(10, 'a0');
 }
