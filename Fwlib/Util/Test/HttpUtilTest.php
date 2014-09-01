@@ -125,19 +125,19 @@ class HttpUtilTest extends PHPunitTestCase
 
     public function testStartSession()
     {
-        if (0 != \Fwlib\Util\session_id()) {
+        if (0 != $this->httpUtil->getSessionId()) {
             \Fwlib\Util\session_destroy();
         }
 
-        $sessionId = \Fwlib\Util\session_id();
+        $sessionId = $this->httpUtil->getSessionId();
         $this->assertEmpty($sessionId);
 
         $this->httpUtil->startSession();
-        $sessionId = \Fwlib\Util\session_id();
+        $sessionId = $this->httpUtil->getSessionId();
         $this->assertNotEmpty($sessionId);
 
         $this->httpUtil->startSession(true);
-        $newSessionId = \Fwlib\Util\session_id();
+        $newSessionId = $this->httpUtil->getSessionId();
         $this->assertNotEquals($sessionId, $newSessionId);
     }
 }

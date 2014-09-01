@@ -320,6 +320,17 @@ class HttpUtil extends AbstractUtilAware
 
 
     /**
+     * Get id of PHP session
+     *
+     * @return  string
+     */
+    public function getSessionId()
+    {
+        return session_id();
+    }
+
+
+    /**
      * Get and return modified url param
      *
      * If $k is string, then $v is string too and means add $k=$v.
