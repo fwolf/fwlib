@@ -15,6 +15,7 @@ class HttpUtilTest extends PHPunitTestCase
 {
     protected $httpUtil;
     public static $sessionId = '';
+    public static $cookies = array();
 
 
     public function __construct()
@@ -123,6 +124,46 @@ class HttpUtilTest extends PHPunitTestCase
     }
 
 
+    /**
+     * Please notice that normal cookie set will only be available till next
+     * page load, here in test we are using simulated cookie method.
+     */
+    public function testSetUnsetCookie()
+    {
+        $httpUtil = $this->getMock(
+            'Fwlib\Util\HttpUtil',
+            array('getCookie')
+        );
+        $httpUtil->expects($this->any())
+            ->method('getCookie')
+            ->will($this->returnCallback(function ($name) {
+                $cookies = \Fwlib\Util\Test\HttpUtilTest::$cookies;
+
+                if (array_key_exists($name, $cookies)) {
+                    // Did not check expire time
+                    return $cookies[$name];
+
+                } else {
+                    return null;
+                }
+            }));
+
+        $httpUtil->setCookie('foo', 'bar', time() + 10);
+        $this->assertEquals('bar', $httpUtil->getCookie('foo'));
+
+        $httpUtil->setCookie('foo', 'bar', time() - 10);
+        $this->assertNull($httpUtil->getCookie('foo'));
+
+
+        // For unset
+        $httpUtil->setCookie('foo', 'bar', time() + 10);
+        $this->assertEquals('bar', $httpUtil->getCookie('foo'));
+
+        $httpUtil->unsetCookie('foo');
+        $this->assertNull($httpUtil->getCookie('foo'));
+    }
+
+
     public function testStartSession()
     {
         if (0 != $this->httpUtil->getSessionId()) {
@@ -168,4 +209,19 @@ function session_start()
     \Fwlib\Util\Test\HttpUtilTest::$sessionId = UtilContainer::getInstance()
         ->get('StringUtil')
         ->random(10, 'a0');
+}
+
+
+function setcookie($name, $value, $expire)
+{
+    if (0 == $expire) {
+        $expire = time();
+    }
+
+    if (time() > $expire) {
+        unset(\Fwlib\Util\Test\HttpUtilTest::$cookies[$name]);
+
+    } else {
+        \Fwlib\Util\Test\HttpUtilTest::$cookies[$name] = $value;
+    }
 }

@@ -412,6 +412,51 @@ class HttpUtil extends AbstractUtilAware
 
 
     /**
+     * Set value to cookie
+     *
+     * Notice: Cookies will not become visible until the next loading of a
+     * page that the cookie should be visible for.
+     *
+     * @param   string  $name
+     * @param   mixed   $value
+     * @param   integer $expire
+     * @param   string  $path
+     * @param   string  $domain
+     * @param   boolean $secure
+     * @param   boolean $httponly
+     */
+    public function setCookie(
+        $name,
+        $value,
+        $expire = 0,
+        $path = null,
+        $domain = null,
+        $secure = false,
+        $httponly = false
+    ) {
+        if (is_null($domain)) {
+            if (is_null($path)) {
+                setcookie($name, $value, $expire);
+
+            } else {
+                setcookie($name, $value, $expire, $path);
+            }
+
+        } else {
+            setcookie(
+                $name,
+                $value,
+                $expire,
+                $path,
+                $domain,
+                $secure,
+                $httponly
+            );
+        }
+    }
+
+
+    /**
      * Set value to session
      *
      * @param   string  $name
@@ -442,5 +487,18 @@ class HttpUtil extends AbstractUtilAware
         if ($forcenew || !$started) {
             session_start();
         }
+    }
+
+
+    /**
+     * Unset a cookie
+     *
+     * @param   string  $name
+     */
+    public function unsetCookie($name)
+    {
+        $this->setCookie($name, null);
+
+        unset($_COOKIE[$name]);
     }
 }
