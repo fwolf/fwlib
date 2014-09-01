@@ -146,6 +146,11 @@ class HttpUtilTest extends PHPunitTestCase
 namespace Fwlib\Util;
 
 
+function header($headerString)
+{
+}
+
+
 function session_destroy()
 {
     \Fwlib\Util\Test\HttpUtilTest::$sessionId = '';
