@@ -445,3 +445,9 @@ p.last {margin-bottom: 0px;}
 .good {
   color: limegreen;
 }
+.no {
+  color: #A52A2A;
+}
+.yes {
+  color: #4AA02C;
+}
