@@ -258,11 +258,8 @@ var FormValidator =
      */
     formValidator.getInput = function(name)
     {
-      var $input = $('input[name="' + name + '"]', formValidator.$form);
-
-      if (0 === $input.length) {
-        $input = $('textarea[name="' + name + '"]', formValidator.$form);
-      }
+      /* Search in every input or html tag */
+      var $input = $('[name="' + name + '"]', formValidator.$form);
 
       return $input;
     };
