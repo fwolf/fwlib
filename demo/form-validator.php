@@ -84,8 +84,8 @@ $rules = array(
     ),
     'hiddenValue' => array(
         'title' => 'Hidden Input',
-        'check' => 'required',
-        'tip'   => 'Must select one, highlight puppetOfHidden when fail',
+        'check' => 'regex: /11/',
+        'tip'   => 'Must select one, must equals 11',
         'puppet' => 'puppetOfHidden',
     ),
     'remark' => array(
@@ -229,17 +229,27 @@ if (!empty($_POST)) {
 
     <br />
 
+    <!-- Hidden's value may not equals its puppet input -->
     <label for='puppetOfHidden'>Hidden Value:</label>
-    <input type='hidden' name='hiddenValue' id='hiddenValue'
-      value='<?php echo $hiddenValue; ?>' />
+    <input type='text' name='hiddenValue' id='hiddenValue'
+      value='<?php echo $hiddenValue; ?>' readonly='readonly' />
     <select name='puppetOfHidden' id='puppetOfHidden'>
-      <option value=''<?php ('' == $hiddenValue) ? ' selected' : '';?>>
+      <option value=''<?php echo ('' == $hiddenValue - 10) ? ' selected' : '';?>>
         Please Select</option>
-      <option value='A'<?php ('A' == $hiddenValue) ? ' selected' : '';?>>
-        Option One: A</option>
-      <option value='B'<?php ('B' == $hiddenValue) ? ' selected' : '';?>>
-        Option Two: B</option>
+      <option value='1'<?php echo (1 == $hiddenValue - 10) ? ' selected' : '';?>>
+        Option One: 1</option>
+      <option value='2'<?php echo (2 == $hiddenValue - 10) ? ' selected' : '';?>>
+        Option Two: 2</option>
     </select>
+    <script type='text/javascript'>
+    <!--
+    (function () {
+      $('#puppetOfHidden').on('change', function () {
+        $('#hiddenValue').val($('#puppetOfHidden').val() * 1 + 10);
+      });
+    }) ();
+    -->
+    </script>
 
     <br />
 
