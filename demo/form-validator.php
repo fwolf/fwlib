@@ -84,7 +84,10 @@ $rules = array(
     ),
     'hiddenValue' => array(
         'title' => 'Hidden Input',
-        'check' => 'regex: /11/',
+        'check' => array(
+            'required',
+            'regex: /11/',
+        ),
         'tip'   => 'Must select one, must equals 11',
         'puppet' => 'puppetOfHidden',
     ),
@@ -233,7 +236,7 @@ if (!empty($_POST)) {
     <label for='puppetOfHidden'>Hidden Value:</label>
     <input type='text' name='hiddenValue' id='hiddenValue'
       value='<?php echo $hiddenValue; ?>' readonly='readonly' />
-    <select name='puppetOfHidden' id='puppetOfHidden'>
+    <select id='puppetOfHidden'>
       <option value=''<?php echo ('' == $hiddenValue - 10) ? ' selected' : '';?>>
         Please Select</option>
       <option value='1'<?php echo (1 == $hiddenValue - 10) ? ' selected' : '';?>>
