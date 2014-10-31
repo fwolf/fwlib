@@ -12,7 +12,7 @@
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-12-10
- * @version     1.0.2
+ * @version     1.1.0
  */
 var FormValidator =
 {
@@ -175,8 +175,9 @@ var FormValidator =
 
             /* Like check on single input, a little different on isValid */
             if (!formValidator.validate($input, rule)) {
-              formValidator.message[$input.attr('name')] = rule.tip;
-              formValidator.markFailed($input, rule.tip);
+              var tip = formValidator.getTip($input.attr('name'));
+              formValidator.message[$input.attr('name')] = tip;
+              formValidator.markFailed($input, tip);
               isValid = false;
             } else {
               delete formValidator.message[$input.attr('name')];
@@ -208,8 +209,9 @@ var FormValidator =
       var method = function(event)
       {
         if (!formValidator.validate($input, rule)) {
-          formValidator.message[$input.attr('name')] = rule.tip;
-          formValidator.markFailed($input, rule.tip);
+          var tip = formValidator.getTip($input.attr('name'));
+          formValidator.message[$input.attr('name')] = tip;
+          formValidator.markFailed($input, tip);
         } else {
           delete formValidator.message[$input.attr('name')];
           formValidator.unmarkFailed($input);
@@ -258,8 +260,15 @@ var FormValidator =
      */
     formValidator.getInput = function(name)
     {
+      /* Use puppet if set */
+      if ('undefined' != typeof(formValidator.rules[name]['puppet'])) {
+        var visualName = formValidator.rules[name]['puppet'];
+      } else {
+        var visualName = name;
+      }
+
       /* Search in every input or html tag */
-      var $input = $('[name="' + name + '"]', formValidator.$form);
+      var $input = $('[name="' + visualName + '"]', formValidator.$form);
 
       return $input;
     };
@@ -288,6 +297,29 @@ var FormValidator =
     formValidator.getMessage = function()
     {
       return formValidator.message;
+    };
+
+
+    /**
+     * Get tip
+     *
+     * @param {string}  name  Maybe name of puppet
+     * @return  {string}
+     */
+    formValidator.getTip = function(name)
+    {
+      if ('undefined' != typeof(formValidator.rules[name])) {
+        return formValidator.rules[name]['tip'] || '';
+
+      } else {
+        // Is puppet
+        for (var hiddenName in formValidator.rules) {
+          if ('undefined' != formValidator.rules[hiddenName]['puppet'] &&
+            name == formValidator.rules[hiddenName]['puppet']) {
+            return formValidator.rules[hiddenName]['tip'] || '';
+          }
+        }
+      }
     };
 
 
@@ -369,10 +401,12 @@ var FormValidator =
     formValidator.onMouseEnter = function(event)
     {
       var $input = $(event.target);
+      var name = $input.attr('name');
+      var tip = formValidator.getTip(name);
 
       var $validateTip = formValidator.generateTip(
         FormValidator.idTip,
-        formValidator.rules[$input.attr('name')].tip
+        tip
       );
 
       formValidator.showTip($input, $validateTip);

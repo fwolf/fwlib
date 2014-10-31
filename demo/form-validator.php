@@ -19,6 +19,7 @@ $httpUtil = $utilContainer->get('HttpUtil');
 
 $userTitle = $httpUtil->getPost('userTitle');
 $userAge = $httpUtil->getPost('userAge');
+$hiddenValue = $httpUtil->getPost('hiddenValue');
 $remark = $httpUtil->getPost('remark');
 
 $frontendCheck = 'checked="checked"';
@@ -71,7 +72,7 @@ $rules = array(
     'userTitle' => array(
         'title' => '名称',
         'check' => 'required',
-        'tip'   => 'should not be empty',
+        'tip'   => 'Should not be empty',
         'checkOnKeyup'  => true,
     ),
     'userAge' => array(
@@ -80,6 +81,12 @@ $rules = array(
             'url: ?a=checkAge , userAge , ',
         ),
         'tip'   => 'Age should be a valid age',
+    ),
+    'hiddenValue' => array(
+        'title' => 'Hidden Input',
+        'check' => 'required',
+        'tip'   => 'Must select one, highlight puppetOfHidden when fail',
+        'puppet' => 'puppetOfHidden',
     ),
     'remark' => array(
         'check' => array(
@@ -103,9 +110,10 @@ $validateJs = $formValidator->getJs();
 $validateMessage = '';
 if (!empty($_POST)) {
     $postData = array(
-        'userTitle' => $userTitle,
-        'userAge'   => $userAge,
-        'remark'    => $remark,
+        'userTitle'   => $userTitle,
+        'userAge'     => $userAge,
+        'hiddenValue' => $hiddenValue,
+        'remark'      => $remark,
     );
 
     if (!$formValidator->validate($postData)) {
@@ -218,6 +226,20 @@ if (!empty($_POST)) {
     <label for='userAge'>User Age:</label>
     <input type='text' name='userAge' id='userAge'
       value='<?php echo $userAge; ?>' />
+
+    <br />
+
+    <label for='puppetOfHidden'>Hidden Value:</label>
+    <input type='hidden' name='hiddenValue' id='hiddenValue'
+      value='<?php echo $hiddenValue; ?>' />
+    <select name='puppetOfHidden' id='puppetOfHidden'>
+      <option value=''<?php ('' == $hiddenValue) ? ' selected' : '';?>>
+        Please Select</option>
+      <option value='A'<?php ('A' == $hiddenValue) ? ' selected' : '';?>>
+        Option One: A</option>
+      <option value='B'<?php ('B' == $hiddenValue) ? ' selected' : '';?>>
+        Option Two: B</option>
+    </select>
 
     <br />
 

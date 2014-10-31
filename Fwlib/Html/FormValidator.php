@@ -325,7 +325,8 @@ $closureEnd
             }
 
             // Other part will be overwrited
-            $partAr = array('title', 'tip', 'checkOnBlur', 'checkOnKeyup');
+            $partAr = array('title', 'tip', 'checkOnBlur', 'checkOnKeyup',
+                'puppet');
             foreach ($partAr as $part) {
                 if (isset($ruleAr[$part])) {
                     $this->rules[$singleName][$part] = $ruleAr[$part];
