@@ -12,7 +12,7 @@
  * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-12-10
- * @version     1.1.1
+ * @version     1.1.2
  */
 var FormValidator =
 {
@@ -212,7 +212,7 @@ var FormValidator =
     {
       var method = function(event)
       {
-        var name = $input.attr('name');
+        var name = $input.attr('name') || $input.attr('id');
         var $visualInput = formValidator.getInputOrPuppet(name);
 
         if (!formValidator.validate($input, rule)) {
@@ -338,7 +338,7 @@ var FormValidator =
       } else {
         // Is puppet
         for (var hiddenName in formValidator.rules) {
-          if ('undefined' != formValidator.rules[hiddenName]['puppet'] &&
+          if ('undefined' != typeof(formValidator.rules[hiddenName]['puppet']) &&
             name == formValidator.rules[hiddenName]['puppet']) {
             return formValidator.rules[hiddenName]['tip'] || '';
           }
@@ -425,7 +425,7 @@ var FormValidator =
     formValidator.onMouseEnter = function(event)
     {
       var $input = $(event.target);
-      var name = $input.attr('name');
+      var name = $input.attr('name') || $input.attr('id');
       var tip = formValidator.getTip(name);
 
       var $validateTip = formValidator.generateTip(
