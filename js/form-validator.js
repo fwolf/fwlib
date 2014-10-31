@@ -71,10 +71,12 @@ var FormValidator =
       var validateMethod = null;
       var rule = null;
       var $input = null;
+      var $visualInput = null;
 
       for (var name in formValidator.rules) {
         rule = formValidator.rules[name];
         $input = formValidator.getInput(name);
+        $visualInput = formValidator.getInputOrPuppet(name);
 
         /* Try to get title if not assigned */
         if (!rule.title || 0 === rule.title.length) {
@@ -82,22 +84,22 @@ var FormValidator =
         }
 
         /* Show tip by hover event */
-        $input
+        $visualInput
           .on('mouseenter', formValidator.onMouseEnter)
           .on('mouseleave', formValidator.onMouseLeave);
 
         /* Mark requried */
         if (formValidator.isRequired(rule.check)) {
-          formValidator.markRequired($input);
+          formValidator.markRequired($visualInput);
         }
 
         /* Bind validate method on input */
         validateMethod = formValidator.generateValidateInput($input, rule);
         if (rule.checkOnBlur) {
-          $input.on('blur', validateMethod);
+          $visualInput.on('blur', validateMethod);
         }
         if (rule.checkOnKeyup) {
-          $input.on('keyup', validateMethod);
+          $visualInput.on('keyup', validateMethod);
         }
       }
 
@@ -168,20 +170,22 @@ var FormValidator =
           var isValid = true;
           var rule = null;
           var $input = null;
+          var $visualInput = null;
 
           for (var name in formValidator.rules) {
             rule = formValidator.rules[name];
             $input = formValidator.getInput(name);
+            $visualInput = formValidator.getInputOrPuppet(name);
 
             /* Like check on single input, a little different on isValid */
             if (!formValidator.validate($input, rule)) {
-              var tip = formValidator.getTip($input.attr('name'));
-              formValidator.message[$input.attr('name')] = tip;
-              formValidator.markFailed($input, tip);
+              var tip = formValidator.getTip(name);
+              formValidator.message[name] = tip;
+              formValidator.markFailed($visualInput, tip);
               isValid = false;
             } else {
-              delete formValidator.message[$input.attr('name')];
-              formValidator.unmarkFailed($input);
+              delete formValidator.message[name];
+              formValidator.unmarkFailed($visualInput);
             }
           }
 
@@ -208,13 +212,16 @@ var FormValidator =
     {
       var method = function(event)
       {
+        var name = $input.attr('name');
+        var $visualInput = formValidator.getInputOrPuppet(name);
+
         if (!formValidator.validate($input, rule)) {
-          var tip = formValidator.getTip($input.attr('name'));
-          formValidator.message[$input.attr('name')] = tip;
-          formValidator.markFailed($input, tip);
+          var tip = formValidator.getTip(name);
+          formValidator.message[name] = tip;
+          formValidator.markFailed($visualInput, tip);
         } else {
-          delete formValidator.message[$input.attr('name')];
-          formValidator.unmarkFailed($input);
+          delete formValidator.message[name];
+          formValidator.unmarkFailed($visualInput);
         }
       };
 
@@ -253,12 +260,27 @@ var FormValidator =
 
 
     /**
-     * Get jQuery object of form input or textarea element
+     * Get jQuery object of form input
      *
      * @param {string}  name
      * @returns {jQuery}
      */
     formValidator.getInput = function(name)
+    {
+      /* Search in every input or html tag */
+      var $input = $('[name="' + name + '"]', formValidator.$form);
+
+      return $input;
+    };
+
+
+    /**
+     * Get jQuery object of form input, return puppet if set
+     *
+     * @param {string}  name
+     * @returns {jQuery}
+     */
+    formValidator.getInputOrPuppet = function(name)
     {
       /* Use puppet if set */
       if ('undefined' != typeof(formValidator.rules[name]['puppet'])) {
@@ -267,10 +289,7 @@ var FormValidator =
         var visualName = name;
       }
 
-      /* Search in every input or html tag */
-      var $input = $('[name="' + visualName + '"]', formValidator.$form);
-
-      return $input;
+      return formValidator.getInput(visualName);
     };
 
 
