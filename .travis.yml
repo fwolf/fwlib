@@ -1,0 +1,52 @@
+language: php
+php:
+    - 5.4
+    - 5.3
+
+
+services:
+    - memcached
+
+
+before_install:
+    - mysql -e "CREATE DATABASE IF NOT EXISTS test;" -uroot
+    - mysql -e "CREATE USER 'test'@'localhost';" -uroot
+    - mysql -e "GRANT ALL PRIVILEGES ON test.* TO 'test'@'localhost';" -uroot
+    - mysql -e "FLUSH PRIVILEGES;" -uroot
+
+
+install:
+    - composer install
+
+    # Prepare directory for php_include path, for some old dependence
+    # Use current where fwlib is in
+    - cd ../
+    - export PHP_INCLUDE=`pwd`
+
+    # ADOdb
+    - wget http://sourceforge.net/projects/adodb/files/latest/download?source=files -O adodb.tar.gz
+    - tar xzf adodb.tar.gz
+    - mv adodb5 adodb
+
+    # PHPMailer
+    - git clone --depth=10 https://github.com/PHPMailer/PHPMailer.git
+    - mv PHPMailer phpmailer
+
+    # Smarty
+    - wget http://www.smarty.net/files/Smarty-stable.tar.gz
+    - tar xzf Smarty-stable.tar.gz
+    - mv `ls -1A | grep Smarty | grep -v stable`/libs smarty
+    - rm -rf `ls -1A | grep Smarty | grep -v stable`
+
+    - cd fwlib/
+
+
+before_script:
+    - echo 'date.timezone = "Asia/ShangHai"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - echo "include_path = '.:"$PHP_INCLUDE":/usr/share/php/'" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
+
+script:
+    - phpunit --coverage-text
+
