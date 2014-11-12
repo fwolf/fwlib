@@ -144,22 +144,22 @@ class CodeDictionary
     /**
      * Get value for given keys
      *
-     * @param   array               $key
-     * @param   string|array        $column
+     * @param   array               $keys
+     * @param   string|array        $columns
      * @return  array
      */
-    public function getMultiple(array $key, $column = '')
+    public function getMultiple(array $keys, $columns = '')
     {
-        if (empty($key)) {
+        if (empty($keys)) {
             return null;
         }
 
-        $resultColumn = is_array($column) ? $column
-            : $this->parseColumns($column);
+        $resultColumns = is_array($columns) ? $columns
+            : $this->parseColumns($columns);
 
         $result = array();
-        foreach ($key as $singleKey) {
-            $result[$singleKey] = $this->get($singleKey, $resultColumn);
+        foreach ($keys as $singleKey) {
+            $result[$singleKey] = $this->get($singleKey, $resultColumns);
         }
 
         return $result;
@@ -288,22 +288,22 @@ class CodeDictionary
      * value, can be anonymouse function or other callable.
      *
      * @param   callable        $condition
-     * @param   string|array    $column
+     * @param   string|array    $columns
      * @return  array
      */
-    public function search($checkMethod, $column = '*')
+    public function search($checkMethod, $columns = '*')
     {
         if (empty($this->dictionary)) {
             return array();
         }
 
-        $resultColumn = is_array($column) ? $column
-            : $this->parseColumns($column);
+        $resultColumns = is_array($columns) ? $columns
+            : $this->parseColumns($columns);
 
         $results = array();
         foreach ($this->dictionary as $index => $row) {
             if ($checkMethod($row)) {
-                $results[$index] = $this->get($index, $resultColumn);
+                $results[$index] = $this->get($index, $resultColumns);
             }
         }
 
