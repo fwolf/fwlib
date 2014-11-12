@@ -25,7 +25,8 @@ abstract class AbstractUserSession implements UserSessionInterface
     public function __construct()
     {
         // PHP 5.4.0+ can use session_status()
-        if (0 == strlen(session_id())) {
+        // If has output before(mostly by PHPUnit), ignore session start
+        if (0 == strlen(session_id()) && false === ob_get_length()) {
             session_start();
         }
 
