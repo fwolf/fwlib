@@ -133,7 +133,12 @@ class DbDiffTest extends AbstractDbRelateTest
                 "' . self::$tableUser .  '": [
                     {
                         "mode": "INSERT",
-                        "pk": {"uuid": "' . $this->uuid1 . '"},
+                        "pk": {
+                            "uuid": {
+                                "new": "' . $this->uuid1 . '",
+                                "old": null
+                            }
+                        },
                         "column": []
                     }
                 ]
@@ -516,7 +521,12 @@ class DbDiffTest extends AbstractDbRelateTest
                 "' . self::$tableUser .  '": [
                     {
                         "mode": "INSERT",
-                        "pk": {"uuid": "' . $this->uuid1 . '"},
+                        "pk": {
+                            "uuid": {
+                                "new": "' . $this->uuid1 . '",
+                                "old": null
+                            }
+                        },
                         "column": []
                     }
                 ]
