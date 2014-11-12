@@ -50,18 +50,21 @@ class CacheMemcachedTest extends PHPunitTestCase
         );
         $this->ch->setConfigServer($x);
         $this->ch->get('any key');
-        $this->assertEqualArray(
-            array($y),
-            $this->reflectionGet($this->ch, 'memcached')->getServerList()
-        );
+        $serverList = $this->reflectionGet($this->ch, 'memcached')
+            ->getServerList();
+        // Memcached::getServerList() result may not include weight
+        $this->assertEquals($y['host'], $serverList[0]['host']);
+        $this->assertEquals($y['port'], $serverList[0]['port']);
 
 
         // Set server cfg, writable, $memcached is reset to null now
         $this->ch->setConfigServer($ms);
         // Do an operate to trigger memcached instance creation
         $this->ch->get('any key');
-        $ar = $this->reflectionGet($this->ch, 'memcached')->getServerList();
-        $this->assertEquals($ar, $ms);
+        $serverList = $this->reflectionGet($this->ch, 'memcached')
+            ->getServerList();
+        $this->assertEquals($ms[0]['host'], $serverList[0]['host']);
+        $this->assertEquals($ms[0]['port'], $serverList[0]['port']);
 
 
         // Cache write
