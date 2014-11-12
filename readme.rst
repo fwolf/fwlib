@@ -20,6 +20,10 @@ Fwlib
     :alt: License
     :target: https://packagist.org/packages/fwlib/fwlib
 
+.. image:: https://insight.sensiolabs.com/projects/f7492e73-ecfa-4eaf-96f5-d013fd2c1f9d/mini.png
+    :alt: SensioLabsInsight
+    :target: https://insight.sensiolabs.com/projects/f7492e73-ecfa-4eaf-96f5-d013fd2c1f9d
+
 
 
 Common PHP library with some css, doc and js useful.
