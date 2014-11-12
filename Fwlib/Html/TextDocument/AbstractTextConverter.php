@@ -41,7 +41,7 @@ abstract class AbstractTextConverter extends AbstractUtilAware
     {
         try {
             return $this->convertString(file_get_contents($filename));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             trigger_error(
                 "File $filename read fail: {$e->getMessage()}",
                 E_USER_ERROR
@@ -61,7 +61,7 @@ abstract class AbstractTextConverter extends AbstractUtilAware
         if ($this->isFile($source)) {
             try {
                 $source = file_get_contents($source);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 trigger_error(
                     "File $filename read fail: {$e->getMessage()}",
                     E_USER_ERROR

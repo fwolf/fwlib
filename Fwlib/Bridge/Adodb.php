@@ -1415,7 +1415,7 @@ class Adodb extends AbstractUtilAware
         try {
             $this->conn->Execute($stmt, $data);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Show error message ?
             $this->conn->RollbackTrans();
             return -1;
