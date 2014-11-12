@@ -87,7 +87,7 @@ class AbstractConstraint implements ConstraintInterface
             $replace = array();
             foreach ($this->messageVariable as $k => $v) {
                 $search[] = "%$k%";
-                $replace[] = (string)$v;
+                $replace[] = is_array($v) ? 'Array' : strval($v);
             }
 
             $message = str_replace($search, $replace, $message);
