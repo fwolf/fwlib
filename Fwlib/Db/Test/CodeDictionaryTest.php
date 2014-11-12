@@ -6,9 +6,7 @@ use Fwlib\Db\CodeDictionary;
 
 /**
  * @copyright   Copyright 2011-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2011-07-15
  */
 class CodeDictionaryTest extends PHPUnitTestCase
 {
@@ -140,32 +138,6 @@ class CodeDictionaryTest extends PHPUnitTestCase
             array(123 => 'a', 321 => 'c'),
             $dictionary->getMultiple(array(123, 321))
         );
-
-        $this->assertEquals(
-            array('bac' => array('code' => 'bac', 'title' => 2)),
-            $dictionary->search('!is_numeric("{code}")')
-        );
-        $this->assertEquals(
-            array(
-                123 => array('code' => 123, 'title' => 'a'),
-                321 => array('code' => 321, 'title' => 'c')
-            ),
-            $dictionary->search('"2" == substr("{code}", 1, 1)')
-        );
-        $this->assertEquals(
-            array(
-                321 => array('code' => 321, 'title' => 'c')
-            ),
-            $dictionary->search(
-                '"c" == "{title}" && "2" == substr("{code}", 1, 1)'
-            )
-        );
-
-        // Search with assign cols
-        $this->assertEquals(
-            array(321 => 'c'),
-            $dictionary->search('"c" == "{title}"', 'title')
-        );
     }
 
 
@@ -218,34 +190,60 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
     }
 
 
+    public function testSearch()
+    {
+        $dictionary = $this->buildMock();
+
+        $this->assertEquals(
+            array('bac' => array('code' => 'bac', 'title' => 2)),
+            $dictionary->search(function ($row) {
+                return !is_numeric($row['code']);
+            })
+        );
+
+        $this->assertEquals(
+            array(
+                123 => array('code' => 123, 'title' => 'a'),
+                321 => array('code' => 321, 'title' => 'c')
+            ),
+            $dictionary->search(function ($row) {
+                return '2' == substr($row['code'], 1, 1);
+            })
+        );
+
+        $this->assertEquals(
+            array(
+                321 => array('code' => 321, 'title' => 'c')
+            ),
+            $dictionary->search(function ($row) {
+                return 'c' == $row['title'] &&
+                    '2' == substr($row['code'], 1, 1);
+            })
+        );
+
+        // Search with assign cols
+        $this->assertEquals(
+            array(321 => 'c'),
+            $dictionary->search(function ($row) {
+                return 'c' == $row['title'];
+            }, 'title')
+        );
+
+        // Search on empty dictionary will return empty array
+        $this->reflectionSet($dictionary, 'dictionary', array());
+        $this->assertEqualArray(
+            array(),
+            $dictionary->search('time')
+        );
+    }
+
+
     public function testSet()
     {
         $dictionary = $this->buildMock();
 
-        $this->assertEmpty(count($dictionary->search()));
-
         $dictionary->set(array('foo', 'bar'));
         $this->assertEquals(4, count($dictionary->getAll()));
-    }
-
-
-    public function testSetDelimiter()
-    {
-        $dictionary = $this->buildMock();
-
-        $dictionary->setDelimiter('[[', ']]');
-
-        $this->assertEquals(
-            array(321 => 'c'),
-            $dictionary->search('"c" == "[[title]]"', 'title')
-        );
-
-        $dictionary->setDelimiter(':');
-
-        $this->assertEquals(
-            array(321 => 'c'),
-            $dictionary->search('"c" == ":title:"', 'title')
-        );
     }
 
 

@@ -31,9 +31,7 @@ use Fwlib\Bridge\Adodb;
  * the dict array define are as simple as param of set().
  *
  * @copyright   Copyright 2011-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2011-07-15
  */
 class CodeDictionary
 {
@@ -43,20 +41,6 @@ class CodeDictionary
      * @var array
      */
     protected $columns = array('code', 'title');
-
-    /**
-     * Left delimiter in search condition
-     *
-     * @var string
-     */
-    protected $delimiterLeft = '{';
-
-    /**
-     * Right delimiter in search condition
-     *
-     * @var string
-     */
-    protected $delimiterRight = '}';
 
     /**
      * Dictionary data array
@@ -300,42 +284,30 @@ class CodeDictionary
     /**
      * Search for data fit given condition
      *
-     * In condition, use {column} and native php syntax, delimiter can change
-     * use setDelimiter().
+     * $checkMethod is a function take $row as parameter and return boolean
+     * value, can be anonymouse function or other callable.
      *
-     * @param   string  $condition
+     * @param   callable        $condition
      * @param   string|array    $column
      * @return  array
      */
-    public function search($condition = '', $column = '*')
+    public function search($checkMethod, $column = '*')
     {
-        if (empty($condition) || empty($this->dictionary)) {
+        if (empty($this->dictionary)) {
             return array();
-        }
-
-        $columnWithDelimiter = array();
-        foreach ($this->columns as $v) {
-            $columnWithDelimiter[] = $this->delimiterLeft . $v .
-                $this->delimiterRight;
         }
 
         $resultColumn = is_array($column) ? $column
             : $this->parseColumns($column);
 
-        $result = array();
-        $condition = "return ($condition);";
-        foreach ($this->dictionary as $index => &$row) {
-            $conditionResult =
-                str_replace($columnWithDelimiter, $row, $condition);
-            eval($conditionResult);
-
-            if (eval($conditionResult)) {
-                $result[$index] = $this->get($index, $resultColumn);
+        $results = array();
+        foreach ($this->dictionary as $index => $row) {
+            if ($checkMethod($row)) {
+                $results[$index] = $this->get($index, $resultColumn);
             }
         }
-        unset($row);
 
-        return $result;
+        return $results;
     }
 
 
@@ -404,27 +376,6 @@ class CodeDictionary
     public function setColumns(array $columns)
     {
         $this->columns = $columns;
-
-        return $this;
-    }
-
-
-    /**
-     * Setter of $delimiterLeft and $delimiterRight
-     *
-     * @param   string  $delimiterLeft
-     * @param   string  $delimiterRight
-     * @return  CodeDictionary
-     */
-    public function setDelimiter($delimiterLeft, $delimiterRight = null)
-    {
-        $this->delimiterLeft = $delimiterLeft;
-
-        if (is_null($delimiterRight)) {
-            $delimiterRight = $delimiterLeft;
-        }
-
-        $this->delimiterRight = $delimiterRight;
 
         return $this;
     }
