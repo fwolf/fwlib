@@ -112,26 +112,6 @@ class StringUtilTest extends PHPunitTestCase
     }
 
 
-    public function testEvalWithTag()
-    {
-        $this->assertEquals(null, $this->stringUtil->evalWithTag(''));
-
-        $ar = array('a' => 'string');
-
-        $s = 'substr("{a}", 1, 2)';
-        $this->assertEquals('tr', $this->stringUtil->evalWithTag($s, $ar));
-
-        $s = 'substr("[a]", 1, 2)';
-        $this->assertEquals('tr', $this->stringUtil->evalWithTag($s, $ar, '[', ']'));
-
-        $s = 'substr("string", 1, 2)';
-        $this->assertEquals('tr', $this->stringUtil->evalWithTag($s));
-
-        $s = 'substr("{a}", 1, 2) == "tr"; return false;';
-        $this->assertEquals(false, $this->stringUtil->evalWithTag($s));
-    }
-
-
     public function testMatchWildcard()
     {
         $this->assertEquals(
