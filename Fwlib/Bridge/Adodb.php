@@ -158,6 +158,10 @@ class Adodb extends AbstractUtilAware
 
         $this->profile = $profile;
         $this->conn = ADONewConnection($profile['type']);
+
+        // From ADOdb 5.11 Execute 2d array is disabled by default, we need
+        // enable it for using write etc.
+        $this->conn->bulkBind = true;
     }
 
 
