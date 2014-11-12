@@ -20,9 +20,9 @@ Fwlib
     :alt: License
     :target: https://packagist.org/packages/fwlib/fwlib
 
-.. image:: https://insight.sensiolabs.com/projects/f7492e73-ecfa-4eaf-96f5-d013fd2c1f9d/mini.png
+.. image:: https://insight.sensiolabs.com/projects/2cc73a92-0166-440c-a6c7-4e1f58d1bfaa/mini.png
     :alt: SensioLabsInsight
-    :target: https://insight.sensiolabs.com/projects/f7492e73-ecfa-4eaf-96f5-d013fd2c1f9d
+    :target: https://insight.sensiolabs.com/projects/2cc73a92-0166-440c-a6c7-4e1f58d1bfaa
 
 
 
