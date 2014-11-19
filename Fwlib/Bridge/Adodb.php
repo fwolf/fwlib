@@ -3,7 +3,7 @@ namespace Fwlib\Bridge;
 
 use Fwlib\Db\SqlGenerator;
 use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\StringUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Extended ADOdb class
@@ -29,9 +29,7 @@ use Fwlib\Util\StringUtil;
  * provide a method convertEncodingResult() to do this manually.
  *
  * @copyright   Copyright 2008-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2008-04-08
  */
 class Adodb extends AbstractUtilAware
 {
@@ -141,15 +139,16 @@ class Adodb extends AbstractUtilAware
      *
      * if $pathAdodb is empty, should load ADOdb through ClassLoader.
      *
-     * @var param   array   $profile
-     * @var param   string  $pathAdodb      Include path of original ADOdb
+     * @param   array   $profile
+     * @param   string  $pathAdodb      Include path of original ADOdb
      */
     public function __construct($profile, $pathAdodb = '')
     {
         // @codeCoverageIgnoreStart
         // Include ADOdb lib
         if (!empty($pathAdodb)) {
-            require_once($pathAdodb);
+            /** @noinspection PhpIncludeInspection */
+            require_once $pathAdodb;
         }
         // @codeCoverageIgnoreEnd
 
@@ -269,7 +268,7 @@ class Adodb extends AbstractUtilAware
      * If db is mysql, will auto execute 'set names utf8'.
      *
      * @see $profile
-     * @param   $forcenew         Force new connection
+     * @param   boolean $forcenew   Force new connection
      * @return  boolean
      */
     public function connect($forcenew = false)
@@ -326,8 +325,9 @@ class Adodb extends AbstractUtilAware
                 . $e->getMessage() . "\n";
             error_log($trace);
 
-            if (!$this->getUtil('Env')->isCli()) {
-                $trace = $this->getUtil('StringUtil')->encodeHtml($trace);
+            if (!$this->getUtilContainer()->getEnv()->isCli()) {
+                $trace = $this->getUtilContainer()->getString()
+                    ->encodeHtml($trace);
             }
             echo $trace;
 
@@ -507,7 +507,7 @@ class Adodb extends AbstractUtilAware
      * Prepare and execute sql, with transaction
      *
      * @param   string  $sql
-     * @param   array   $inputArr   Optional parameters in sql
+     * @param   array|boolean   $inputArr   Optional parameters in sql
      * @return  object
      */
     public function executePrepare($sql, $inputArr = false)
@@ -621,7 +621,7 @@ class Adodb extends AbstractUtilAware
         $column = null,
         $keyColumn = array()
     ) {
-        $stringUtil = $this->getUtil('StringUtil');
+        $stringUtil = $this->getUtilContainer()->getString();
 
         // Treat key column
         if (empty($keyColumn)) {
@@ -793,7 +793,6 @@ class Adodb extends AbstractUtilAware
     public function getMetaPrimaryKey($table, $forcenew = false)
     {
         if (!isset($this->metaPrimaryKey[$table]) || (true == $forcenew)) {
-
             // @codeCoverageIgnoreStart
             if ($this->isDbSybase()) {
                 /**
@@ -937,9 +936,8 @@ class Adodb extends AbstractUtilAware
 
         } else {
             // Do not trigger error, null means no implemented.
-            return null;
-
-            trigger_error(
+            // Use '||' to fool code inspection.
+            return null || trigger_error(
                 __CLASS__ . '::getMetaTimestamp() for '
                 . $this->profile['type']
                 . ' not implemented!',
@@ -1111,6 +1109,17 @@ class Adodb extends AbstractUtilAware
 
 
     /**
+     * Get instance of UtilContainer
+     *
+     * @return  UtilContainer
+     */
+    protected function getUtilContainer()
+    {
+        return UtilContainer::getInstance();
+    }
+
+
+    /**
      * If current db is connected successful
      *
      * @return  boolean
@@ -1155,8 +1164,8 @@ class Adodb extends AbstractUtilAware
 
         // @codeCoverageIgnoreStart
         if ($this->isDbSybase()) {
-            $sql = 'SELECT count(1) AS c FROM sysobjects WHERE name = "'
-                . $table . '" AND type = "U"';
+            $sql = "SELECT count(1) AS c FROM sysobjects WHERE name =
+                '{$table}' AND type = 'U'";
             $rs = $this->execute($sql);
             return (0 != $rs->fields['c']);
 
@@ -1168,7 +1177,7 @@ class Adodb extends AbstractUtilAware
         } else {
             // :THINK: Better method ?
             $sql = "SELECT 1 FROM $table";
-            $rs = $this->execute($sql);
+            $this->execute($sql);
             return (0 == $this->conn->ErrorNo());
         }
         // @codeCoverageIgnoreEnd
@@ -1338,6 +1347,8 @@ class Adodb extends AbstractUtilAware
         }
 
         $mode = strtoupper($mode);
+        $sqlCfg = array();
+
         // Auto determine mode
         if ('A' == $mode) {
             $where = ' WHERE ';
@@ -1429,7 +1440,7 @@ class Adodb extends AbstractUtilAware
                 'ErrorMsg: ' . $this->conn->ErrorMsg(),
                 E_USER_WARNING
             );
-            $this->RollbackTrans();
+            $this->conn->RollbackTrans();
             return -1;
 
         } else {

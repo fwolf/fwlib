@@ -8,9 +8,7 @@ use Fwlib\Util\UtilContainer;
 
 /**
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-09-18
  */
 class AdodbMysqlTest extends AbstractDbRelateTest
 {
@@ -30,20 +28,27 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     }
 
 
+    /**
+     * Notice: Parameter type in adodb::SetFetchMode() is wrong, version 5.07
+     * - 5.19
+     */
     public function testCall()
     {
-        $fetchMode = self::$dbMysql->fetchMode;
-        self::$dbMysql->SetFetchMode(3);    // Both
+        /** @var \ADOConnection $dbMysql */
+        $dbMysql = self::$dbMysql;
 
-        $ar = self::$dbMysql->GetAll('SELECT 1 AS a');
+        $fetchMode = $dbMysql->fetchMode;
+        $dbMysql->SetFetchMode(3);    // Both
+
+        $ar = $dbMysql->GetAll('SELECT 1 AS a');
         $y = array(array('1', 'a' => '1'));
         $this->assertEqualArray($y, $ar);
 
-        $ar = self::$dbMysql->CacheGetAll(1, 'SELECT 1 AS a');
+        $ar = $dbMysql->CacheGetAll(1, 'SELECT 1 AS a');
         $y = array(array('1', 'a' => '1'));
         $this->assertEqualArray($y, $ar);
 
-        self::$dbMysql->SetFetchMode($fetchMode);
+        $dbMysql->SetFetchMode($fetchMode);
     }
 
 
@@ -124,7 +129,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      */
     public function testDeleteRow()
     {
@@ -170,7 +175,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      */
     public function testExecutePrepare()
     {
@@ -216,6 +221,8 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
     public function testGenerateSql()
     {
+        $userTable = self::$tableUser;
+
         $x = self::$dbMysql->generateSql('');
         $this->assertEquals('', $x);
 
@@ -229,16 +236,18 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         $ar = array(
             'SELECT'    => 'title',
-            'FROM'      => self::$tableUser,
+            'FROM'      => $userTable,
         );
         $x = self::$dbMysql->generateSql($ar);
-        $y = 'SELECT title FROM ' . self::$tableUser;
+        $y = "SELECT title FROM $userTable";
         $this->assertEquals($y, $x);
     }
 
 
     public function testGenerateSqlPrepared()
     {
+        $userTable = self::$tableUser;
+
         $x = self::$dbMysql->generateSqlPrepared('');
         $this->assertEquals('', $x);
 
@@ -251,14 +260,13 @@ class AdodbMysqlTest extends AbstractDbRelateTest
             ),
         );
         $x = self::$dbMysql->generateSqlPrepared($ar);
-        $y = 'INSERT INTO ' . self::$tableUser
-            . '(uuid, title, age) VALUES (?, ?, ?)';
+        $y = "INSERT INTO $userTable(uuid, title, age) VALUES (?, ?, ?)";
         $this->assertEquals($y, $x);
     }
 
 
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException \PHPUnit_Framework_Error_Warning
      */
     public function testGetByKey()
     {
@@ -350,6 +358,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
     public function testGetQueryCount()
     {
+        /** @var \ADOConnection|\Fwlib\Bridge\Adodb $db */
         $db = self::$dbMysql;
         $i = $db->getQueryCount();
 
@@ -398,7 +407,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException \PHPUnit_Framework_Error_Warning
      */
     public function testQuoteValue()
     {
@@ -415,7 +424,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException \PHPUnit_Framework_Error_Warning
      */
     public function testWrite()
     {

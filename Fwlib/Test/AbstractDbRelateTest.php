@@ -12,30 +12,28 @@ use Fwlib\Test\ServiceContainerTest;
  * @codeCoverageIgnore
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-09-11
  */
 abstract class AbstractDbRelateTest extends PHPunitTestCase
 {
     /**
      * Db connection, default
      *
-     * @var Fwlib\Bridge\Adodb
+     * @var Adodb
      */
     protected static $db = null;
 
     /**
      * Db connection, mysql
      *
-     * @var Fwlib\Bridge\Adodb
+     * @var Adodb
      */
     protected static $dbMysql = null;
 
     /**
      * Db connection, Sybase
      *
-     * @var Fwlib\Bridge\Adodb
+     * @var Adodb
      */
     protected static $dbSybase = null;
 
@@ -116,7 +114,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
 
     /**
-     * @param   Fwlib\Bridge\Adodb  $db
+     * @param   Adodb   $db
      */
     protected static function createTable($db)
     {

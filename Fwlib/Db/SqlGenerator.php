@@ -4,6 +4,7 @@ namespace Fwlib\Db;
 use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UtilContainerInterface;
+use Fwlib\Bridge\Adodb;
 
 /**
  * SQL Generator
@@ -68,7 +69,7 @@ class SqlGenerator implements UtilAwareInterface
     /**
      * Constructor
      *
-     * @param   Fwlib\Bridge\Adodb  &$db    Db object
+     * @param   Adodb  &$db    Db object
      */
     public function __construct(&$db)
     {
