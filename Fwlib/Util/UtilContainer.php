@@ -2,7 +2,6 @@
 namespace Fwlib\Util;
 
 use Fwlib\Base\AbstractServiceContainer;
-use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Util class container
@@ -219,7 +218,7 @@ class UtilContainer extends AbstractServiceContainer implements
      * Inject self to Util instance.
      *
      * @param   string  $name
-     * @return  AbstractUtil
+     * @return  mixed
      */
     protected function newService($name)
     {

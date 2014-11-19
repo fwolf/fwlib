@@ -10,6 +10,9 @@ use Fwlib\Util\UtilContainer;
  */
 class UtilContainerTest extends PHPunitTestCase
 {
+    /**
+     * @return  UtilContainer
+     */
     protected function buildMock()
     {
         $utilContainer = $this->getMockBuilder(
