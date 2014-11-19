@@ -274,7 +274,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->write(self::$tableUser, $ar);
 
 
-        // Diffenent way to read one column
+        // Different way to read one column
         $this->assertEquals(
             'Title',
             self::$dbMysql->getByKey(self::$tableUser, $uuid, 'title')
@@ -405,7 +405,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         // Normal test completed by other method
 
         // Quote un-exists column
-        // Compare will not execute because exception catched by PHPUnit
+        // Compare will not execute because exception will be caught by PHPUnit
         $col = 'not_exists';
         $this->assertEquals(
             '\'' . $col . '\'',

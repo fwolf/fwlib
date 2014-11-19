@@ -77,7 +77,7 @@ class Adodb extends AbstractUtilAware
      *  }
      * }
      *
-     * Notice: col is ADOFieldObjct object, not array !
+     * Notice: col is ADOFieldObject object, not array !
      *
      * @var array
      */
@@ -248,13 +248,13 @@ class Adodb extends AbstractUtilAware
      */
     public function __set($name, $val)
     {
-        // For object need auto new in this class instead of $this->conn, with
-        // machenishm in class AbstractAutoNewInsance with newInstanceXxx()
+        // For object need auto new in this class instead of $this->conn,
+        // with mechanism in class AbstractAutoNewInstance with newInstanceXxx()
         // method, need check in __get() and __set() both. If only treat in
         // __get(), the new instance and assign operate will happen, but its
         // assigned to $this->conn->property, instead of $this->property, next
-        // time when it's used(get), will trigger __get() again, and do
-        // useless newInstanceXxx() again.
+        // time when it's used(get), will trigger __get() again, and do useless
+        // newInstanceXxx() again.
         //
         // By use get method similar with getService(), this is not problem
         // anymore.
@@ -299,7 +299,7 @@ class Adodb extends AbstractUtilAware
 
 
         try {
-            // Disable error display tempratory
+            // Disable error display temporary
             $iniDisplayErrors = ini_get('display_errors');
             ini_set('display_errors', '0');
 
@@ -596,7 +596,7 @@ class Adodb extends AbstractUtilAware
      * or unique key, default and recommend for primary key, which can be auto
      * retrieved from table meta.
      *
-     * Whatever key is used, the result should only contain maxinum one row,
+     * Whatever key is used, the result should only contain maximum one row,
      * or the result is wrong, commonly only include data of first match row.
      *
      *
@@ -651,7 +651,7 @@ class Adodb extends AbstractUtilAware
 
 
         if (empty($column) || '*' == $column) {
-            // Drop uppercased index
+            // Drop uppercase index
             $column = array_values($this->getMetaColumnName($table));
 
         } elseif (!is_array($column)) {
@@ -898,7 +898,7 @@ class Adodb extends AbstractUtilAware
 
         // @codeCoverageIgnoreStart
         if ($this->isDbSybase()) {
-            // Sybase's timestamp column must be lower cased.
+            // Sybase timestamp column must be lower cased.
             // If col name is 'timestamp', will auto assign (timestamp) type.
             $rs = $this->execute(
                 array(
@@ -916,7 +916,7 @@ class Adodb extends AbstractUtilAware
                         "a.id = object_id('$table')",
                         'a.type = b.type',
                         'a.usertype = b.usertype',
-                        // Without below line, can retrieve sybase's col info
+                        // Without below line, can retrieve sybase col info
                         'b.name = "timestamp"',
                     ),
                 )
@@ -999,10 +999,10 @@ class Adodb extends AbstractUtilAware
      * N >= 0: number of rows.
      *
      * @param   string  $table
-     * @param   string  $cond   Condition, raw sql, can be WHERE, HAVING etc
+     * @param   string  $condition  Raw sql, can be WHERE, HAVING etc
      * @return  int
      */
-    public function getRowCount($table, $cond = '')
+    public function getRowCount($table, $condition = '')
     {
         $sqlCfg = array(
             'SELECT'    => array('c' => 'COUNT(1)'),
@@ -1010,7 +1010,7 @@ class Adodb extends AbstractUtilAware
         );
         $rs = $this->executePrepare(
             $this->getSqlGenerator()->get($sqlCfg)
-            . ' ' . $cond
+            . ' ' . $condition
         );
         if (false == $rs || 0 != $this->conn->ErrorNo()
             || 0 == $rs->RowCount()
@@ -1196,7 +1196,7 @@ class Adodb extends AbstractUtilAware
 
 
     /**
-     * Generate a bind placeholder portably
+     * Generate a bind placeholder portable
      *
      * @param   string  $name
      * @return  string
@@ -1338,7 +1338,7 @@ class Adodb extends AbstractUtilAware
         }
 
         $mode = strtoupper($mode);
-        // Auto detemine mode
+        // Auto determine mode
         if ('A' == $mode) {
             $where = ' WHERE ';
             foreach ($arPk as $key) {
