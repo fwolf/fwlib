@@ -28,9 +28,7 @@ use Fwlib\Util\UtilContainer;
  * same header, footer with other non-workflow views.
  *
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-01-09
  */
 abstract class AbstractView extends BaseView
 {
@@ -282,9 +280,12 @@ abstract class AbstractView extends BaseView
      * @param   array   $request
      * @return  string
      */
-    protected function getViewAction($workflowAction, $request = null)
+    protected function getViewAction($workflowAction = '', $request = null)
     {
         // Try action after execute first
+        if (empty($workflowAction)) {
+            $workflowAction = $this->getWorkflowAction($request);
+        }
         $viewAction = (isset($this->viewActionAfterExecute[$workflowAction]))
             ? $this->viewActionAfterExecute[$workflowAction]
             : '';
