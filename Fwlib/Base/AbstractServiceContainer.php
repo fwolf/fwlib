@@ -10,9 +10,7 @@ use Fwlib\Base\ServiceContainerInterface;
  * Usually only one container instance is need, so use Singleton pattern.
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-11-07
  */
 abstract class AbstractServiceContainer extends AbstractSingleton implements
     ServiceContainerInterface
@@ -100,7 +98,7 @@ abstract class AbstractServiceContainer extends AbstractSingleton implements
      *
      * @param   string  $name
      * @param   string|object   $service
-     * @return  AbstractServiceContainer
+     * @return  $this
      */
     public function register($name, $service)
     {
@@ -117,7 +115,7 @@ abstract class AbstractServiceContainer extends AbstractSingleton implements
      *
      * @param   string  $name
      * @param   string  $className  Full qualified name without leading '\'
-     * @return  AbstractServiceContainer
+     * @return  $this
      */
     public function registerClass($name, $className)
     {
@@ -132,7 +130,7 @@ abstract class AbstractServiceContainer extends AbstractSingleton implements
      *
      * @param   string  $name
      * @param   object  $instance
-     * @return  AbstractServiceContainer
+     * @return  $this
      */
     public function registerInstance($name, $instance)
     {
