@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Html;
 
+use Fwlib\Bridge\Adodb;
 use Fwlib\Bridge\Smarty;
 use Fwlib\Util\UtilContainer;
 
@@ -19,8 +20,8 @@ use Fwlib\Util\UtilContainer;
 class ListTable
 {
     /**
-     * If column in data and title doesn't match, fitMode option will determin
-     * which columns will be used, its value defines here.
+     * If column in data and title does not match, fitMode option will
+     * determine which columns will be used, its value defines here.
      */
     // Fit to title, drop data whose index is not in title index
     const FIT_TO_TITLE  = 0;
@@ -28,10 +29,10 @@ class ListTable
     // Fit to data, drop title whose index is not in data index
     const FIT_TO_DATA   = 1;
 
-    // Fit to insection of title and data, got fewest column
-    const FIT_INSECTION = 2;
+    // Fit to intersection of title and data, got fewest column
+    const FIT_INTERSECTION = 2;
 
-    // Fit to union of title and data, got mostest column
+    // Fit to union of title and data, got most column
     const FIT_UNION     = 3;
 
     /**
@@ -92,7 +93,7 @@ class ListTable
     /**
      * Template object
      *
-     * @var Fwlib\Bridge\Smarty
+     * @var Smarty
      */
     protected $tpl = null;
 
@@ -241,7 +242,7 @@ class ListTable
     /**
      * Fit data and title if their key are different
      *
-     * Notice: data have multi row(2 dim), and 2nd dimention must use assoc
+     * Notice: data have multi row(2 dim), and 2nd dimension must use assoc
      * index. Title have only 1 row(1 dim), integer or assoc indexed.
      *
      * @see $config['fitMode']
@@ -263,6 +264,7 @@ class ListTable
         }
 
 
+        $ar = array();
         switch ($this->configs['fitMode']) {
             case self::FIT_TO_TITLE:
                 $ar = $keyOfTitle;
@@ -272,7 +274,7 @@ class ListTable
                 $ar = $keyOfData;
                 break;
 
-            case self::FIT_INSECTION:
+            case self::FIT_INTERSECTION:
                 $ar = array_intersect($keyOfTitle, $keyOfData);
                 break;
 
@@ -395,15 +397,17 @@ class ListTable
      */
     protected function getUtil($name)
     {
-        return UtilContainer::getInstance()
-            ->get($name);
+        /** @var UtilContainer $utilContainer */
+        $utilContainer =  UtilContainer::getInstance();
+
+        return $utilContainer->get($name);
     }
 
 
     /**
      * Read http param and parse
      *
-     * $param   boolean $forcenew
+     * @param   boolean $forcenew
      * @return  $this
      */
     protected function readRequest($forcenew = false)
@@ -412,7 +416,7 @@ class ListTable
 
         // Avoid duplicate
         if (!empty($this->url['base']) && !$forcenew) {
-            return;
+            return $this;
         }
 
 
@@ -424,7 +428,7 @@ class ListTable
             unset($value);
         }
 
-        // :NOTICE: Will got only url of backend if ProxyPass actived
+        // :NOTICE: Will got only url of backend if ProxyPass used
         // Can treat as below before new ListTable obj.
         /*
         $ar = array('/needless1/', '/needless1/');
@@ -534,8 +538,8 @@ class ListTable
      * Will query total rows and list data by set db connection and config,
      * will overwrite exists $listData.
      *
-     * @param   Fwlib\Bridge\Adodb  $db
-     * @param   array       $config
+     * @param   Adodb   $db
+     * @param   array   $config
      * @return  $this
      */
     public function setDbQuery($db, $config)
@@ -563,6 +567,7 @@ class ListTable
      */
     protected function setDefaultConfigs()
     {
+        /** @noinspection SpellCheckingInspection */
         $this->setConfigs(
             array(
                 // Notice: this is NOT actual class and id used in template,
@@ -681,7 +686,7 @@ class ListTable
 
                 // Add custom string in td/th/tr tag, eg: nowrap='nowrap'
                 // td/th can use index same with data array index,
-                // tr can use int index which's value is string too.
+                // tr can use int index whose value is string too.
                 // :TODO: tr int index is converted to string ?
                 // For tr of th row, use th instead.
                 'tdAdd'             => array(),
@@ -752,7 +757,7 @@ class ListTable
     /**
      * Set orderBy info
      *
-     * Didn't validate orderBy key exists in data or title array.
+     * Did not validate orderBy key exists in data or title array.
      *
      * @param   mixed   $key
      * @param   string  $dir    ASC/DESC
@@ -800,7 +805,7 @@ class ListTable
             array($ob, $this->configs['pageParam'])
         );
 
-        // Other column orderBy will clear diretion
+        // Other column orderBy will clear direction
         // Added pageParam is dummy, to keep url start with '?', fit tpl later
         $this->url['obOther'] = $this->genUrl(
             array($this->configs['pageParam'] => 1),

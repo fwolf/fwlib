@@ -81,7 +81,7 @@ class ListTableTest extends PHPunitTestCase
         $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listTitle'));
 
 
-        $this->lt->setConfig('fitMode', ListTable::FIT_INSECTION);
+        $this->lt->setConfig('fitMode', ListTable::FIT_INTERSECTION);
         $this->lt->setData($data, $title);
         $x = array(
             array(
