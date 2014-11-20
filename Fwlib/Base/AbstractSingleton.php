@@ -50,7 +50,7 @@ abstract class AbstractSingleton
     /**
      * Get instance of Singleton itself
      *
-     * @return  self
+     * @return  static
      */
     public static function getInstance()
     {
