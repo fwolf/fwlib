@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Html;
 
+use Fwlib\Bridge\Smarty;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -13,7 +14,6 @@ use Fwlib\Util\UtilContainer;
  * @codeCoverageIgnore
  *
  * @copyright   Copyright 2003-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  */
 class ListTable
@@ -140,8 +140,8 @@ class ListTable
      * If there are multiple list to show in one page, MUST set 'id' in
      * config.
      *
-     * @param   Fwlib\Bridge\Smarty $tpl
-     * @param   array               $configs
+     * @param   Smarty  $tpl
+     * @param   array   $configs
      */
     public function __construct($tpl, array $configs = array())
     {
@@ -726,7 +726,8 @@ class ListTable
 
 
         $id = trim($id);
-        if (0 == strlen($id)) {     // Avoid 0, which is empty
+        // Avoid 0, which is empty
+        if (0 == strlen($id)) {
             $id = 1;
         }
         $this->configs['id'] = $id;
