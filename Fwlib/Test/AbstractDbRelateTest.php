@@ -3,8 +3,6 @@ namespace Fwlib\Test;
 
 use Fwlib\Bridge\Adodb;
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Config\ConfigGlobal;
-use Fwlib\Test\ServiceContainerTest;
 
 /**
  * Parent class for db relate tests
@@ -100,6 +98,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         // Get db connection from ServiceContainer
         $sc = ServiceContainerTest::getInstance();
         foreach ($dbName as $name) {
+            /** @var Adodb $db */
             $db = &self::${$name};
 
             if (is_null($db)) {
@@ -121,14 +120,18 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         // Try drop table in case last test didn't success
         self::dropTable($db);
 
+        $groupTable = self::$tableGroup;
+        $userTable = self::$tableUser;
+        $userGroupTable = self::$tableUserGroup;
+
         // Create test table
         $db->execute(
-            'CREATE TABLE ' . self::$tableGroup . '(
+            "CREATE TABLE {$groupTable}(
                 uuid        CHAR(36)        NOT NULL,
                 title       CHAR(255)       NULL,
                 PRIMARY KEY (uuid)
             );
-            '
+            "
         );
 
         if (0 != $db->getErrorCode()) {
@@ -139,7 +142,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         $db->execute(
-            'CREATE TABLE ' . self::$tableUser . '(
+            "CREATE TABLE {$userTable}(
                 uuid        CHAR(36)        NOT NULL,
                 title       VARCHAR(255)    NULL,
                 age         INTEGER         NOT NULL DEFAULT 0,
@@ -147,7 +150,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
                 joindate    DATETIME        NULL,
                 PRIMARY KEY (uuid)
             );
-            '
+            "
         );
 
         if (0 != $db->getErrorCode()) {
@@ -158,13 +161,13 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         $db->execute(
-            'CREATE TABLE ' . self::$tableUserGroup . '(
+            "CREATE TABLE {$userGroupTable}(
                 uuid        CHAR(36)        NOT NULL,
                 uuid_user   CHAR(36)        NOT NULL,
                 uuid_group  CHAR(36)        NOT NULL,
                 PRIMARY KEY (uuid)
             );
-            '
+            "
         );
 
         if (0 != $db->getErrorCode()) {
@@ -177,25 +180,29 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
 
 
     /**
-     * @param   Fwlib\Bridge\Adodb  $db
+     * @param   Adodb  $db
      */
     protected static function dropTable($db)
     {
+        $groupTable = self::$tableGroup;
+        $userTable = self::$tableUser;
+        $userGroupTable = self::$tableUserGroup;
+
         if ($db->isTableExist(self::$tableUserGroup)) {
             $db->execute(
-                'DROP TABLE ' . self::$tableUserGroup
+                "DROP TABLE {$userGroupTable}"
             );
         }
 
         if ($db->isTableExist(self::$tableGroup)) {
             $db->execute(
-                'DROP TABLE ' . self::$tableGroup
+                "DROP TABLE {$groupTable}"
             );
         }
 
         if ($db->isTableExist(self::$tableUser)) {
             $db->execute(
-                'DROP TABLE ' . self::$tableUser
+                "DROP TABLE {$userTable}"
             );
         }
     }
