@@ -38,7 +38,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $dbMysql = self::$dbMysql;
 
         $fetchMode = $dbMysql->fetchMode;
-        $dbMysql->SetFetchMode(3);    // Both
+        $dbMysql->setFetchMode(3);    // Both
 
         $ar = $dbMysql->GetAll('SELECT 1 AS a');
         $y = array(array('1', 'a' => '1'));
@@ -48,7 +48,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $y = array(array('1', 'a' => '1'));
         $this->assertEqualArray($y, $ar);
 
-        $dbMysql->SetFetchMode($fetchMode);
+        $dbMysql->setFetchMode($fetchMode);
     }
 
 

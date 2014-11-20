@@ -1290,6 +1290,22 @@ class Adodb extends AbstractUtilAware
 
 
     /**
+     * Setter of fetchMode
+     *
+     * This is a transfer method to fool code inspection.
+     *
+     * @param   int     $fetchMode
+     * @return  int
+     */
+    public function setFetchMode($fetchMode)
+    {
+        $oldFetchMode = $this->conn->SetFetchMode($fetchMode);
+
+        return $oldFetchMode;
+    }
+
+
+    /**
      * Smart write data row(s) to db
      *
      * Can auto check row existence, and decide to use INSERT or UPDATE, this
