@@ -11,9 +11,7 @@ namespace Fwlib\Bridge;
  * config.default.php footer part, or require Smarty.class.php somewhere.
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-01-18
  */
 class Smarty extends \Smarty
 {

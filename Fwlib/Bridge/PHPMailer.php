@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Bridge;
 
-
 /**
  * Send mail using PHPMailer
  *
@@ -11,9 +10,7 @@ namespace Fwlib\Bridge;
  * Property with StudlyCaps name are inherited from parent class.
  *
  * @copyright   Copyright 2007-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2007-03-29
  */
 class PHPMailer extends \PHPMailer
 {
