@@ -218,6 +218,8 @@ class Url extends AbstractConstraint implements UtilAwareInterface
 
         try {
             $curl = $this->getService('Curl');
+            $curl->setoptSslVerify(false);
+
             $rs = $curl->post($url, $postData);
             $rv = new ReturnValue($rs);
 
