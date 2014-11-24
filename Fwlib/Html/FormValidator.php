@@ -15,9 +15,7 @@ use Fwlib\Validator\Validator;
  * @codeCoverageIgnore
  *
  * @copyright   Copyright 2011-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2011-07-21
  */
 class FormValidator
 {
@@ -216,7 +214,15 @@ $closureBegin
     .setForm('$formSelector')
     .setRules($rules)
     .bind();
+";
 
+        foreach (array_keys($this->messages) as $name) {
+            $js .= "
+  global.$id.markFailed(global.$id.getInput('$name'));
+";
+        }
+
+        $js .= "
 $closureEnd
 ";
 
