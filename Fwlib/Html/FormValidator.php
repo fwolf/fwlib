@@ -97,13 +97,52 @@ class FormValidator
      */
     protected $rules = array();
 
-
     /**
      * Validator instance
      *
      * @var Validator
      */
     protected $validator = null;
+
+
+    /**
+     * Apply closure clause to js
+     *
+     * @param   string  $js
+     * @return  string
+     */
+    protected function applyJsClosure($js)
+    {
+        $js = UtilContainer::getInstance()->getString()
+            ->indent($js, 2);
+
+        $js = "(function (global) {
+$js
+}) (window);";
+
+        return $js;
+    }
+
+
+    /**
+     * Apply script tab to js, this should the last apply method used
+     *
+     * @param   string  $js
+     * @return  string
+     */
+    protected function applyJsScriptTag($js)
+    {
+        $js = "<script type='text/javascript'>
+<!--//--><![CDATA[//>
+<!--
+
+$js
+
+//--><!]]>
+</script>";
+
+        return $js;
+    }
 
 
     /**
@@ -186,51 +225,28 @@ class FormValidator
             ? 'enableCheckOnSubmit()'
             : 'disableCheckOnSubmit()';
 
-        if ($withClosure) {
-            $closureBegin = '(function (global) {';
-            $closureEnd   = '}) (window);';
-        } else {
-            $closureBegin = '';
-            $closureEnd   = '';
-        }
+        $js = "
+global.$id = $class.createNew();
 
-        $js = '';
-
-        if ($withScriptTag) {
-            $js .= "
-<script type='text/javascript'>
-<!--//--><![CDATA[//>
-<!--
-";
-        }
-
-        $js .= "
-$closureBegin
-
-  global.$id = $class.createNew();
-
-  global.$id
-    .$checkOnSubmit
-    .setForm('$formSelector')
-    .setRules($rules)
-    .bind();
+global.$id
+  .$checkOnSubmit
+  .setForm('$formSelector')
+  .setRules($rules)
+  .bind();
 ";
 
         foreach (array_keys($this->messages) as $name) {
             $js .= "
-  global.$id.markFailed(global.$id.getInput('$name'));
+global.$id.markFailed(global.$id.getInput('$name'));
 ";
         }
 
-        $js .= "
-$closureEnd
-";
+        if ($withClosure) {
+            $js = $this->applyJsClosure($js);
+        }
 
         if ($withScriptTag) {
-            $js .= '
-//--><!]]>
-</script>
-';
+            $js = $this->applyJsScriptTag($js);
         }
 
         return $js;
