@@ -1,24 +1,22 @@
 <?php
 namespace Fwlib\Mvc;
 
-use Fwlib\Mvc\ControlerInterface;
+use Fwlib\Mvc\ControllerInterface;
 use Fwlib\Mvc\ViewInterface;
 
 /**
- * Controler and Router in MVC
+ * Controller and Router in MVC
  *
- * In application, Controler is common called in index.php as entry, the main
+ * In application, Controller is common called in index.php as entry, the main
  * perpose is to route user request(via $_GET) to View.
  *
- * Also, it can delegate request to other Controler, so sub-dir can have their
+ * Also, it can delegate request to other Controller, so sub-dir can have their
  * own index too.
  *
  * @copyright   Copyright 2008-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2008-04-06
  */
-abstract class AbstractControler implements ControlerInterface
+abstract class AbstractController implements ControllerInterface
 {
     /**
      * Request param of action
@@ -33,7 +31,7 @@ abstract class AbstractControler implements ControlerInterface
      * If module parsed from user request equals this, will call corresponding
      * View to get output.
      *
-     * Root Controler use empty string as module name.
+     * Root Controller use empty string as module name.
      *
      * @var string
      */
@@ -69,16 +67,16 @@ abstract class AbstractControler implements ControlerInterface
 
 
     /**
-     * Create controler instance
+     * Create controller instance
      *
      * @param   string  $className
-     * @return  ControlerInterface
+     * @return  ControllerInterface
      */
-    protected function createControler($className)
+    protected function createController($className)
     {
-        $controler = new $className($this->pathToRoot);
+        $controller = new $className($this->pathToRoot);
 
-        return $controler;
+        return $controller;
     }
 
 
@@ -127,10 +125,10 @@ abstract class AbstractControler implements ControlerInterface
     /**
      * Render error message for display
      *
-     * Error from Controler include module/action configure error, or wrong
+     * Error from Controller include module/action configure error, or wrong
      * request data, eg: user input wrong url. These error are different with
      * other process error like validate fail, they should not exists when
-     * Controler and View are correctly defined/called, and user didn't use
+     * Controller and View are correctly defined/called, and user didn't use
      * wrong url or submit wrong request data.
      *
      * Usually, it can use View to show friendly error message in html format,
@@ -165,17 +163,17 @@ abstract class AbstractControler implements ControlerInterface
 
 
     /**
-     * Get class name of Controler by module
+     * Get class name of Controller by module
      *
      * By given $module name, use switch or check prefix, to determin which
-     * Controler should use. Return null if not found.
+     * Controller should use. Return null if not found.
      *
      * Should extend by child class if need to use module.
      *
      * @param   string  $module
      * @return  string
      */
-    protected function getControlerClass($module)
+    protected function getControllerClass($module)
     {
         return null;
     }
@@ -243,7 +241,7 @@ abstract class AbstractControler implements ControlerInterface
      * {@inheritdoc}
      *
      * @param   string  $pathToRoot
-     * @return  AbstractControler
+     * @return  AbstractController
      */
     public function setPathToRoot($pathToRoot)
     {
@@ -260,7 +258,7 @@ abstract class AbstractControler implements ControlerInterface
 
 
     /**
-     * Transfer request to another Controler
+     * Transfer request to another Controller
      *
      * @param   string  $module
      * @return  string
@@ -268,16 +266,16 @@ abstract class AbstractControler implements ControlerInterface
     protected function transfer($module)
     {
         try {
-            $controlerClass = $this->getControlerClass($module);
-            if (empty($controlerClass)) {
+            $controllerClass = $this->getControllerClass($module);
+            if (empty($controllerClass)) {
                 throw new \Exception(
-                    "Controler for module $module not defined"
+                    "Controller for module $module not defined"
                 );
             }
 
-            $controler = $this->createControler($controlerClass);
+            $controller = $this->createController($controllerClass);
 
-            return $controler->getOutput();
+            return $controller->getOutput();
 
         } catch (\Exception $e) {
             return $this->displayError($e->getMessage());

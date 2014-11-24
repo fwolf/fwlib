@@ -2,51 +2,49 @@
 namespace Fwlib\Mvc\Test;
 
 use Fwlib\Bridge\PHPUnitTestCase;
-use Fwlib\Mvc\AbstractControler;
+use Fwlib\Mvc\AbstractController;
 
 /**
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-12-24
  */
-class AbstractControlerTest extends PHPunitTestCase
+class AbstractControllerTest extends PHPunitTestCase
 {
-    protected $controler;
+    protected $controller;
     protected $serviceContainer;
-    public static $controlerClass;
+    public static $controllerClass;
     public static $viewClass;
 
 
     public function __construct()
     {
-        $this->controler = $this->buildMock('path/to/root');
+        $this->controller = $this->buildMock('path/to/root');
     }
 
 
     protected function buildMock($pathToRoot)
     {
-        $controler = $this->getMock(
-            'Fwlib\Mvc\AbstractControler',
-            array('createControler', 'createView',
-                'getControlerClass', 'getViewClass'),
+        $controller = $this->getMock(
+            'Fwlib\Mvc\AbstractController',
+            array('createController', 'createView',
+                'getControllerClass', 'getViewClass'),
             array($pathToRoot)
         );
 
-        $controler->expects($this->any())
+        $controller->expects($this->any())
             ->method('getViewClass')
             ->will($this->returnCallback(function () {
-                return AbstractControlerTest::$viewClass;
+                return AbstractControllerTest::$viewClass;
             }));
 
-        $controler->expects($this->any())
-            ->method('getControlerClass')
+        $controller->expects($this->any())
+            ->method('getControllerClass')
             ->will($this->returnCallback(function () {
-                return AbstractControlerTest::$controlerClass;
+                return AbstractControllerTest::$controllerClass;
             }));
 
 
-        // Mock a controler/view instance for output
+        // Mock a controller/view instance for output
         $mock = $this->getMock('stdClass', array('getOutput', 'setAction'));
         $mock->expects($this->any())
             ->method('setAction')
@@ -56,15 +54,15 @@ class AbstractControlerTest extends PHPunitTestCase
             ->will($this->returnValue('Dummy Output'));
 
         // Attach this mock
-        $controler->expects($this->any())
-            ->method('createControler')
+        $controller->expects($this->any())
+            ->method('createController')
             ->will($this->returnValue($mock));
-        $controler->expects($this->any())
+        $controller->expects($this->any())
             ->method('createView')
             ->will($this->returnValue($mock));
 
 
-        return $controler;
+        return $controller;
     }
 
 
@@ -73,48 +71,48 @@ class AbstractControlerTest extends PHPunitTestCase
      */
     protected function buildMockBasis($pathToRoot)
     {
-        $controler = $this->getMock(
-            'Fwlib\Mvc\AbstractControler',
+        $controller = $this->getMock(
+            'Fwlib\Mvc\AbstractController',
             array('getViewClass'),
             array($pathToRoot)
         );
 
-        $controler->expects($this->any())
+        $controller->expects($this->any())
             ->method('getViewClass')
             ->will($this->returnCallback(function () {
-                return AbstractControlerTest::$viewClass;
+                return AbstractControllerTest::$viewClass;
             }));
 
 
-        return $controler;
+        return $controller;
     }
 
 
     /**
-     * Build a mock, with getControlerClass() method
+     * Build a mock, with getControllerClass() method
      */
-    protected function buildMockWithGetControlerClass($pathToRoot)
+    protected function buildMockWithGetControllerClass($pathToRoot)
     {
-        $controler = $this->getMock(
-            'Fwlib\Mvc\AbstractControler',
-            array('getControlerClass', 'getViewClass'),
+        $controller = $this->getMock(
+            'Fwlib\Mvc\AbstractController',
+            array('getControllerClass', 'getViewClass'),
             array($pathToRoot)
         );
 
-        $controler->expects($this->any())
-            ->method('getControlerClass')
+        $controller->expects($this->any())
+            ->method('getControllerClass')
             ->will($this->returnCallback(function () {
-                return AbstractControlerTest::$controlerClass;
+                return AbstractControllerTest::$controllerClass;
             }));
 
-        $controler->expects($this->any())
+        $controller->expects($this->any())
             ->method('getViewClass')
             ->will($this->returnCallback(function () {
-                return AbstractControlerTest::$viewClass;
+                return AbstractControllerTest::$viewClass;
             }));
 
 
-        return $controler;
+        return $controller;
     }
 
 
@@ -126,22 +124,22 @@ class AbstractControlerTest extends PHPunitTestCase
         // Need a dummy view class name, empty will throw exception
         self::$viewClass = 'Dummy';
 
-        $output = $this->controler->getOutput();
+        $output = $this->controller->getOutput();
         $this->assertEquals('Dummy Output', $output);
 
         // Action can be empty, need View allow output without action.
         $_GET = array();
-        $output = $this->controler->getOutput();
+        $output = $this->controller->getOutput();
         $this->assertEquals('Dummy Output', $output);
     }
 
 
     public function testDisplayWithActualView()
     {
-        $controler = $this->buildMockWithGetControlerClass(null);
-        self::$viewClass = 'Fwlib\Mvc\Test\AbstractControlerDummy';
+        $controller = $this->buildMockWithGetControllerClass(null);
+        self::$viewClass = 'Fwlib\Mvc\Test\AbstractControllerDummy';
 
-        $output = $controler->getOutput(null);
+        $output = $controller->getOutput(null);
         $this->assertEquals('Output from dummy', $output);
     }
 
@@ -153,18 +151,18 @@ class AbstractControlerTest extends PHPunitTestCase
         );
         self::$viewClass = '';
 
-        $output = $this->controler->getOutput();
+        $output = $this->controller->getOutput();
         $this->assertStringStartsWith('Error: View for action', $output);
     }
 
 
     public function testSetPathToRoot()
     {
-        $this->controler->setPathToRoot('path/to/root');
+        $this->controller->setPathToRoot('path/to/root');
 
         $this->assertEquals(
             'path/to/root/',
-            $this->reflectionGet($this->controler, 'pathToRoot')
+            $this->reflectionGet($this->controller, 'pathToRoot')
         );
     }
 
@@ -175,35 +173,35 @@ class AbstractControlerTest extends PHPunitTestCase
             'm' => 'testModule',
         );
         // Need a dummy view class name, or will throw exception
-        self::$controlerClass = 'Dummy';
+        self::$controllerClass = 'Dummy';
 
-        $output = $this->controler->getOutput();
+        $output = $this->controller->getOutput();
         $this->assertEquals('Dummy Output', $output);
     }
 
 
-    public function testTransferWithActualControler()
+    public function testTransferWithActualController()
     {
         $_GET = array(
             'm' => 'testModule',
         );
-        $controler = $this->buildMockWithGetControlerClass(null);
+        $controller = $this->buildMockWithGetControllerClass(null);
 
-        self::$controlerClass = 'Fwlib\Mvc\Test\AbstractControlerDummy';
+        self::$controllerClass = 'Fwlib\Mvc\Test\AbstractControllerDummy';
 
-        $output = $controler->getOutput();
+        $output = $controller->getOutput();
         $this->assertEquals('Output from dummy', $output);
     }
 
 
-    public function testTransferWithEmptyControlerClass()
+    public function testTransferWithEmptyControllerClass()
     {
         $_GET = array(
             'm' => 'testModule',
         );
-        $controler = $this->buildMockBasis(null);
+        $controller = $this->buildMockBasis(null);
 
-        $output = $controler->getOutput();
-        $this->assertStringStartsWith('Error: Controler for module', $output);
+        $output = $controller->getOutput();
+        $this->assertStringStartsWith('Error: Controller for module', $output);
     }
 }

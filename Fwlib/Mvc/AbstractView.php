@@ -7,12 +7,10 @@ use Fwlib\Util\UtilContainer;
 /**
  * View in MVC
  *
- * Receive request from Controler and generate output.
+ * Receive request from Controller and generate output.
  *
  * @copyright   Copyright 2008-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2008-04-06
  */
 abstract class AbstractView implements ViewInterface
 {

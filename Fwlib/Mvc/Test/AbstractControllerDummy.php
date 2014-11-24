@@ -1,17 +1,16 @@
 <?php
 namespace Fwlib\Mvc\Test;
 
-
 /**
- * Test dummy for Controler and View
+ * Test dummy for Controller and View
  *
  * Not implements interface because there are some method with same name with
  * different parameter.
  */
-class AbstractControlerDummy
+class AbstractControllerDummy
 {
     /**
-     * Param 1 is array in Controler, and string in View, so remove type hint.
+     * Param 1 is array in Controller, and string in View, so remove type hint.
      */
     public function getOutput($request = null)
     {
