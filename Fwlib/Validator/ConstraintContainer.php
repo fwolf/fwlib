@@ -2,15 +2,14 @@
 namespace Fwlib\Validator;
 
 use Fwlib\Base\AbstractServiceContainer;
+use Fwlib\Test\ServiceContainerTest;
 use Fwlib\Util\UtilContainer;
 
 /**
  * Validate constraint container
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-12-23
  */
 class ConstraintContainer extends AbstractServiceContainer
 {
@@ -46,6 +45,14 @@ class ConstraintContainer extends AbstractServiceContainer
     protected function newService($name)
     {
         $service = parent::newService($name);
+
+        // Fix: parent will set ConstraintContainer as ServiceContainer
+        // :TODO: Make a service container for Fwlib
+        if (method_exists($service, 'setServiceContainer')) {
+            $service->setServiceContainer(
+                ServiceContainerTest::getInstance()
+            );
+        }
 
         if (method_exists($service, 'setUtilContainer')) {
             if (is_null($this->utilContainer)) {
