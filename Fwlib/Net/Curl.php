@@ -11,9 +11,7 @@ use Fwlib\Util\AbstractUtilAware;
  * @codeCoverageIgnore
  *
  * @copyright   Copyright 2007-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2007-03-14
  */
 class Curl extends AbstractUtilAware
 {
@@ -348,11 +346,11 @@ class Curl extends AbstractUtilAware
 
 
     /**
-     * Set http referer url
+     * Set http referrer url
      *
      * @param   string  $url
      */
-    public function setoptReferer($url = null)
+    public function setoptReferrer($url = null)
     {
         if (!empty($url)) {
             curl_setopt($this->handle, CURLOPT_REFERER, $url);
@@ -361,13 +359,13 @@ class Curl extends AbstractUtilAware
 
 
     /**
-     * Enable or disable ssl verify functin
+     * Enable or disable ssl verify function
      *
      * Ssl verify is enabled by curl in default.
      *
      * @param   boolean $enable
      */
-    public function setoptSslverify($enable = true)
+    public function setoptSslVerify($enable = true)
     {
         if (false === $enable) {
             curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, false);
