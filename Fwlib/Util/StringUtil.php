@@ -1,14 +1,11 @@
 <?php
 namespace Fwlib\Util;
 
-
 /**
  * String util
  *
  * @copyright   Copyright 2004-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       Before 2008-04-07
  */
 class StringUtil
 {
@@ -103,6 +100,32 @@ class StringUtil
         unset($string);
 
         return $stringArray;
+    }
+
+
+    /**
+     * Indent a string
+     *
+     * The first line will also be indented.
+     *
+     * Commonly used in generate and combine html, fix indents.
+     *
+     * The $indentChar should consider width equals = 1, if not, the real
+     * indent width is mb_strwidth($indentChar) * $width .
+     *
+     * @param   string  $str
+     * @param   int     $width      Must > 0
+     * @param   string  $spacer     Which char is used to indent
+     * @param   string  $lineEnding Original string's line ending
+     * @return  string
+     */
+    public function indent($str, $width, $spacer = ' ', $lineEnding = "\n")
+    {
+        $space = str_repeat($spacer, $width);
+
+        $str = $space . str_replace($lineEnding, $lineEnding . $space, $str);
+
+        return $str;
     }
 
 
