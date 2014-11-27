@@ -10,11 +10,9 @@
  * This file contains default config, user config in 'config.php' will
  * overwrite default config value.
  *
- * @package     Fwlib\Base
- * @copyright   Copyright 2013 Fwolf
- * @author      Fwolf <fwolf.aide+fwlib@gmail.com>
+ * @package     Fwlib
+ * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
- * @since       2013-07-26
  */
 
 use Fwlib\Base\ClassLoader;
