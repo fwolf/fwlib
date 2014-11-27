@@ -7,7 +7,7 @@ use Fwlib\Db\Diff\RowSet;
  * RowSet executor interface
  *
  * @copyright   Copyright 2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface ExecutorInterface
 {

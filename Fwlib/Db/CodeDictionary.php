@@ -31,7 +31,7 @@ use Fwlib\Bridge\Adodb;
  * the dict array define are as simple as param of set().
  *
  * @copyright   Copyright 2011-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class CodeDictionary
 {

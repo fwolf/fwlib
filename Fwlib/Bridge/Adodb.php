@@ -29,7 +29,7 @@ use Fwlib\Util\UtilContainer;
  * provide a method convertEncodingResult() to do this manually.
  *
  * @copyright   Copyright 2008-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Adodb extends AbstractUtilAware
 {

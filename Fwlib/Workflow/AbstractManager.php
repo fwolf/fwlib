@@ -11,7 +11,7 @@ use Fwlib\Workflow\ModelInterface;
  * Some method belongs/mapped to workflow model, put here for easy usage.
  *
  * @copyright   Copyright 2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractManager implements ManagerInterface
 {

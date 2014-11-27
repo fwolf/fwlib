@@ -6,7 +6,7 @@ use Fwlib\Util\ArrayUtil;
 
 /**
  * @copyright   Copyright 2009-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ArrayUtilTest extends PHPunitTestCase
 {

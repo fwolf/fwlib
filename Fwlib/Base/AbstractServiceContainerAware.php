@@ -11,7 +11,7 @@ use Fwlib\Test\ServiceContainerTest;
  * The ServiceContainerTest should be replaced in production environment.
  *
  * @copyright   Copyright 2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AbstractServiceContainerAware implements ServiceContainerAwareInterface
 {

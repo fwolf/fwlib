@@ -13,7 +13,7 @@ use Fwlib\Cache\CacheInterface;
  * To make this a little usefull, the feature of cached method call is kept.
  *
  * @copyright   Copyright 2008-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractModel
 {

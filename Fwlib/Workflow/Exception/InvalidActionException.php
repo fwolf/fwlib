@@ -9,7 +9,7 @@ namespace Fwlib\Workflow\Exception;
  * are moved, so the action is not exists in currentNode.
  *
  * @copyright   Copyright 2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class InvalidActionException extends \Exception
 {

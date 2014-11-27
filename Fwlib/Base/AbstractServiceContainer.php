@@ -10,7 +10,7 @@ use Fwlib\Base\ServiceContainerInterface;
  * Usually only one container instance is need, so use Singleton pattern.
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractServiceContainer extends AbstractSingleton implements
     ServiceContainerInterface

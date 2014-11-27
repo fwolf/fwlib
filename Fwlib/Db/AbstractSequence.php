@@ -13,7 +13,7 @@ namespace Fwlib\Db;
  * system, which should use native db sequence/identity or better others.
  *
  * @copyright   Copyright 2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractSequence
 {

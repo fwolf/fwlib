@@ -13,7 +13,7 @@
  * @package     Fwlib\Base
  * @copyright   Copyright 2013 Fwolf
  * @author      Fwolf <fwolf.aide+fwlib@gmail.com>
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  * @since       2013-07-26
  */
 

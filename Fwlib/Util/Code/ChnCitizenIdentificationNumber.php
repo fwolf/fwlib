@@ -10,7 +10,7 @@ use Fwlib\Util\AbstractUtilAware;
  * Synonym: Resident Identity number
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  * @link    https://zh.wikisource.org/wiki/GB_11643-1999_公民身份号码
  */
 class ChnCitizenIdentificationNumber extends AbstractUtilAware

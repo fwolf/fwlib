@@ -7,7 +7,7 @@ use Fwlib\Validator\AbstractConstraint;
  * Constraint Ipv4
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Ipv4 extends AbstractConstraint
 {

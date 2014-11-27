@@ -29,7 +29,7 @@ namespace Fwlib\Base;
  * necessary, assign ServiceContainer instance here for later usage.
  *
  * @copyright   Copyright 2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface ServiceContainerInterface
 {

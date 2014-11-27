@@ -9,7 +9,7 @@ use Fwlib\Db\AbstractDbClient;
  * Test under sybase 11.92 ok.
  *
  * @copyright   Copyright 2006-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  * @uses        Fwlib\Bridge\Adodb
  */
 class DbDataExport extends AbstractDbClient

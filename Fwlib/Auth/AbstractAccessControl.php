@@ -5,7 +5,7 @@ namespace Fwlib\Auth;
  * Control access by information from user session
  *
  * @copyright   Copyright 2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractAccessControl implements AccessControlInterface
 {

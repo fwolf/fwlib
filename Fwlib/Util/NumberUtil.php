@@ -6,7 +6,7 @@ namespace Fwlib\Util;
  * Number util
  *
  * @copyright   Copyright 2006-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class NumberUtil
 {

@@ -10,7 +10,7 @@ namespace Fwlib\Bridge;
  * Property with StudlyCaps name are inherited from parent class.
  *
  * @copyright   Copyright 2007-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class PHPMailer extends \PHPMailer
 {

@@ -12,7 +12,7 @@ use Fwlib\Db\Diff\RowSet;
  * The execute of RowSet is done by Executor.
  *
  * @copyright   Copyright 2012-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Manager
 {

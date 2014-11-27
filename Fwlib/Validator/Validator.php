@@ -8,7 +8,7 @@ use Fwlib\Validator\ConstraintContainer;
  * Validate data and got fail message
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
+ * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Validator
 {
