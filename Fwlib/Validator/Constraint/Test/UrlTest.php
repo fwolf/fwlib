@@ -97,9 +97,10 @@ class UrlTest extends PHPunitTestCase
         $this->assertEqualArray($failMessage, $constraint->getMessage());
 
 
-        // Url fixup
+        // Url fix up
         $url = '?a=check';
         // Fake self url: http://dummy/?m=origin
+        unset($_SERVER['HTTPS']);
         $_SERVER['HTTP_HOST'] = 'dummy/';
         $_SERVER['REQUEST_URI'] = '?m=origin';
 
