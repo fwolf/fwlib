@@ -111,7 +111,7 @@ class HttpUtilTest extends PHPunitTestCase
         $url = 'http://www.google.com/?a=https://something';
         $this->assertEquals('http', $this->httpUtil->getUrlPlan($url));
 
-        $url = 'https://www.domail.tld/';
+        $url = 'https://www.domain.tld/';
         $this->assertEquals('https', $this->httpUtil->getUrlPlan($url));
 
         $url = 'ftp://domain.tld/';
@@ -146,6 +146,7 @@ class HttpUtilTest extends PHPunitTestCase
                 }
             }));
 
+        /** @type HttpUtil $httpUtil */
         $httpUtil->setCookie('foo', 'bar', time() + 10);
         $this->assertEquals('bar', $httpUtil->getCookie('foo'));
 
@@ -168,6 +169,7 @@ class HttpUtilTest extends PHPunitTestCase
             \Fwlib\Util\session_destroy();
         }
 
+        self::$sessionId = '';
         $sessionId = $this->httpUtil->getSessionId();
         $this->assertEmpty($sessionId);
 
@@ -183,7 +185,6 @@ class HttpUtilTest extends PHPunitTestCase
 
 
 namespace Fwlib\Util;
-
 
 function header($headerString)
 {
@@ -202,10 +203,18 @@ function session_id()
 }
 
 
+function session_regenerate_id()
+{
+    \Fwlib\Util\Test\HttpUtilTest::$sessionId = UtilContainer::getInstance()
+        ->getString()
+        ->random(10, 'a0');
+}
+
+
 function session_start()
 {
     \Fwlib\Util\Test\HttpUtilTest::$sessionId = UtilContainer::getInstance()
-        ->get('StringUtil')
+        ->getString()
         ->random(10, 'a0');
 }
 

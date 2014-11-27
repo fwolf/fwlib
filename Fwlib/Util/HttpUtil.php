@@ -473,21 +473,32 @@ class HttpUtil extends AbstractUtilAware
      * Start session if its not started
      *
      * PHP 5.4.0+ can use session_status() to check if session is started.
-     * If has output before(mostly by PHPUnit), will clear it if forcenew.
+     * If has output before(mostly by PHPUnit), ignore session start.
      *
      * @param   boolean $forcenew
      */
     public function startSession($forcenew = false)
     {
-        $started = (0 != strlen(session_id()));
+        static $started = false;
 
-        if ($forcenew && $started) {
-            session_destroy();
+        if (false === ob_get_length()) {
+            if ($forcenew && $started) {
+                session_destroy();
+            }
+
+            if ($forcenew || !$started) {
+                session_start();
+            }
+
+        } else {
+            // Fix PHPUnit start session without id, but the id regeneration
+            // not work, still need mock session method in test case.
+            if (0 == strlen(session_id()) || $forcenew) {
+                session_regenerate_id();
+            }
         }
 
-        if ($forcenew || !$started) {
-            session_start();
-        }
+        $started = true;
     }
 
 
