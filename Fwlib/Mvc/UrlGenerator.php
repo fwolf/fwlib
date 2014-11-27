@@ -197,6 +197,17 @@ class UrlGenerator implements UrlGeneratorInterface
     /**
      * {@inheritdoc}
      */
+    public function unsetAllParameters()
+    {
+        $this->parameters = array();
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function unsetParameter($name)
     {
         unset($this->parameters[$name]);

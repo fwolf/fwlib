@@ -97,7 +97,7 @@ class UrlGeneratorTest extends PHPunitTestCase
             $urlGenerator->getUrl()
         );
 
-        $urlGenerator->unsetParameter('foo');
+        $urlGenerator->unsetAllParameters();
         $this->assertEmpty($urlGenerator->getUrl());
     }
 }

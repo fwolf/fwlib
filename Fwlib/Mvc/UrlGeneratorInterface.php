@@ -69,6 +69,14 @@ interface UrlGeneratorInterface
 
 
     /**
+     * Unset all parameters
+     *
+     * @return  static
+     */
+    public function unsetAllParameters();
+
+
+    /**
      * Unset a get parameter
      *
      * @param   string  $name
