@@ -23,7 +23,7 @@ use Fwlib\Util\AbstractUtilAware;
  * random: 6 chars, random string.
  *      62^6 = 56800235584, about 13x of 16^8 = 4294967296,
  *      and microsecond is 100x of general UUID.
- * (Notice: base_convert() doesn't allow base greater than 36.)
+ * (Notice: base_convert() does not allow base greater than 36.)
  *
  * Length of UUID is 24 bytes, no separator.
  *
@@ -31,9 +31,7 @@ use Fwlib\Util\AbstractUtilAware;
  * compare string CASE INSENSITIVE.
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-10-31
  */
 class UuidBase62 extends AbstractUtilAware
 {

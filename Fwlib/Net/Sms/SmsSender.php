@@ -11,9 +11,7 @@ use Fwlib\Net\Sms\SmsLogger;
  * - gammu smsd inject command
  *
  * @copyright   Copyright 2010-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2010-11-23
  */
 class SmsSender extends AbstractAutoNewConfig
 {

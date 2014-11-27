@@ -9,9 +9,7 @@ use Fwlib\Util\UtilContainer;
  * Some test file/path environment is for *nix only.
  *
  * @copyright   Copyright 2012-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2012-11-06
  */
 class CacheFileTest extends PHPunitTestCase
 {

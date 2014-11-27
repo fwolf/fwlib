@@ -11,9 +11,7 @@ use Fwlib\Util\UtilContainerInterface;
  * Use as other class's property.
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib.Config@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-08-20
  */
 class Config implements \ArrayAccess, UtilAwareInterface
 {

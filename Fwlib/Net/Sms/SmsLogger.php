@@ -10,9 +10,7 @@ use Fwlib\Util\UuidBase36;
  * For schema of log table in db, see sms-log.sql.
  *
  * @copyright   Copyright 2010-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2010-11-23
  * @see sms-log.sql
  */
 class SmsLogger extends AbstractDbClient

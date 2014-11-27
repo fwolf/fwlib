@@ -25,7 +25,7 @@ use Fwlib\Bridge\Adodb;
  *  WHERE,
  * }
  *
- * When combime SQL parts, add space before clause keywords except DELETE,
+ * When combine SQL parts, add space before clause keywords except DELETE,
  * SELECT, INSERT, UPDATE.
  *
  * Notice: call genClause() method directly works, but beware the result may
@@ -33,9 +33,7 @@ use Fwlib\Bridge\Adodb;
  * use getClause() method to avoid this.
  *
  * @copyright   Copyright 2003-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2003-08-25
  */
 class SqlGenerator implements UtilAwareInterface
 {

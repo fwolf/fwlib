@@ -9,9 +9,7 @@ use Fwlib\Cache\Cache;
  * Notice: Expired cache file is not deleted automatic.
  *
  * @copyright   Copyright 2010-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2010-01-07
  */
 class CacheFile extends Cache
 {

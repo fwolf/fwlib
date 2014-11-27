@@ -7,9 +7,7 @@ use Fwlib\Util\AbstractUtilAware;
  * China organization code
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-08-27
  * @link    http://zh.wikisource.org/zh/GB_11714-1997_全国组织机构代码编制规则
  */
 class ChnOrganizationCode extends AbstractUtilAware

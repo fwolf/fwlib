@@ -8,9 +8,7 @@ namespace Fwlib\Db\Diff;
  * Some table/row meta info is also included to help execute.
  *
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-04-08
  */
 class Row
 {

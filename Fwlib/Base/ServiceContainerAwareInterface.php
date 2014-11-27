@@ -7,9 +7,7 @@ use Fwlib\Base\ServiceContainerInterface;
  * Interface of class uses ServiceContainer
  *
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-03-18
  */
 interface ServiceContainerAwareInterface
 {

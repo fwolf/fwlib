@@ -7,9 +7,7 @@ use Fwlib\Util\UuidBase16;
 
 /**
  * @copyright   Copyright 2008-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2008-05-08
  */
 class UuidBase16Test extends PHPunitTestCase
 {

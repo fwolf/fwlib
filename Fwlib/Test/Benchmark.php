@@ -6,7 +6,7 @@ use Fwlib\Util\AbstractUtilAware;
 /**
  * Benchmark tool for program execute time
  *
- * Time is mesured by microtime.
+ * Time is measured by microsecond.
  *
  * Reference:
  * http://pear.php.net/package/Benchmark
@@ -16,9 +16,7 @@ use Fwlib\Util\AbstractUtilAware;
  * @codeCoverageIgnore
  *
  * @copyright   Copyright 2009-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2009-11-17
  */
 class Benchmark extends AbstractUtilAware
 {

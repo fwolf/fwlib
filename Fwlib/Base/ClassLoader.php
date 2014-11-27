@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Base;
 
-
 /**
  * ClassLoader implement PSR-0
  *
@@ -42,9 +41,7 @@ namespace Fwlib\Base;
  * To keep things simple, copy need method here.
  *
  * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-07-27
  */
 class ClassLoader
 {

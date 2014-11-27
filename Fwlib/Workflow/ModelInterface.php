@@ -1,20 +1,17 @@
 <?php
 namespace Fwlib\Workflow;
 
-
 /**
  * Workflow model interface
  *
- * Only deal with storage relate operate, should have no bussiness logic done
+ * Only deal with storage relate operate, should have no business logic done
  * here.
  *
- * All bussiness relate information are stored in $content, but doesn't
+ * All business relate information are stored in $content, but does not
  * include workflow instance property like uuid, currentNode etc.
  *
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-04-12
  */
 interface ModelInterface
 {

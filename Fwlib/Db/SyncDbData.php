@@ -29,13 +29,11 @@ use Fwlib\Util\UuidBase36;
  * When sync job is done for a table, the latest timestamp will save in record
  * table in dest db, next time sync job will start from this timestamp.
  *
- * Avoid concurrenct run by file lock.
+ * Avoid concurrence run by file lock.
  * @link http://stackoverflow.com/questions/16048648
  *
  * @copyright   Copyright 2008-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2008-05-20
  */
 class SyncDbData extends AbstractUtilAware
 {
@@ -677,7 +675,6 @@ class SyncDbData extends AbstractUtilAware
             $rowsSynced = 0;
             $stringUtil = $this->getUtil('StringUtil');
             foreach ((array)$tableDest as $table) {
-
                 // Call data convert method
                 $convertFunc = 'convertData' . $stringUtil->toStudlyCaps($tableSrce)
                     . 'To' . $stringUtil->toStudlyCaps($table);
