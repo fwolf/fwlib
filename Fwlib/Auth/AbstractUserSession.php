@@ -14,7 +14,7 @@ abstract class AbstractUserSession implements UserSessionInterface
     /**
      * @var boolean
      */
-    protected $isLogined = false;
+    protected $isLoggedIn = false;
 
 
     /**
@@ -36,7 +36,7 @@ abstract class AbstractUserSession implements UserSessionInterface
     {
         $_SESSION = array();
 
-        $this->isLogined = false;
+        $this->isLoggedIn = false;
 
         return $this;
     }
@@ -45,9 +45,9 @@ abstract class AbstractUserSession implements UserSessionInterface
     /**
      * {@inheritdoc}
      */
-    public function isLogined()
+    public function isLoggedIn()
     {
-        return $this->isLogined;
+        return $this->isLoggedIn;
     }
 
 

@@ -1,16 +1,13 @@
 <?php
 namespace Fwlib\Auth;
 
-
 /**
  * User session accessor
  *
  * Provide user and session info to ACL, or directly use as a simple ACL.
  *
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+Cbtms@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-01-18
  */
 interface UserSessionInterface
 {
@@ -31,11 +28,11 @@ interface UserSessionInterface
 
 
     /**
-     * Currently is logined
+     * Currently is logged in
      *
      * @return  boolean
      */
-    public function isLogined();
+    public function isLoggedIn();
 
 
     /**
@@ -49,7 +46,7 @@ interface UserSessionInterface
     /**
      * Save session to storage
      *
-     * Should throw exception if currently is not logined.
+     * Should throw exception if currently is not logged in.
      *
      * @return  UserSessionInterface
      */

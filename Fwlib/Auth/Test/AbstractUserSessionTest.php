@@ -6,12 +6,13 @@ use Fwlib\Bridge\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-01-18
  */
 class AbstractUserSessionTest extends PHPunitTestCase
 {
+    /**
+     * @return AbstractUserSession
+     */
     protected function buildMock()
     {
         $userSession = $this->getMockBuilder(
@@ -26,6 +27,7 @@ class AbstractUserSessionTest extends PHPunitTestCase
         $userSession->expects($this->never())
             ->method('save');
 
+        /** @type AbstractUserSession $userSession */
         $userSession->__construct();
 
         return $userSession;
@@ -36,12 +38,12 @@ class AbstractUserSessionTest extends PHPunitTestCase
     {
         $userSession = $this->buildMock();
 
-        $this->assertFalse($userSession->isLogined());
+        $this->assertFalse($userSession->isLoggedIn());
 
-        $this->reflectionSet($userSession, 'isLogined', true);
-        $this->assertTrue($userSession->isLogined());
+        $this->reflectionSet($userSession, 'isLoggedIn', true);
+        $this->assertTrue($userSession->isLoggedIn());
 
         $userSession->clear();
-        $this->assertFalse($userSession->isLogined());
+        $this->assertFalse($userSession->isLoggedIn());
     }
 }
