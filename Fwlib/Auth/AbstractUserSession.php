@@ -1,15 +1,13 @@
 <?php
 namespace Fwlib\Auth;
 
-use Fwlib\Auth\UserSessionInterface;
+use Fwlib\Util\UtilContainer;
 
 /**
  * User session accessor
  *
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+Cbtms@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-01-18
  */
 abstract class AbstractUserSession implements UserSessionInterface
 {
@@ -24,11 +22,8 @@ abstract class AbstractUserSession implements UserSessionInterface
      */
     public function __construct()
     {
-        // PHP 5.4.0+ can use session_status()
-        // If has output before(mostly by PHPUnit), ignore session start
-        if (0 == strlen(session_id()) && false === ob_get_length()) {
-            session_start();
-        }
+        UtilContainer::getInstance()->getHttp()
+            ->startSession();
 
         $this->load();
     }

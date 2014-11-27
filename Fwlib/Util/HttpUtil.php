@@ -9,9 +9,7 @@ use Fwlib\Util\AbstractUtilAware;
  * @codeCoverageIgnore
  *
  * @copyright   Copyright 2006-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2006-07-03
  */
 class HttpUtil extends AbstractUtilAware
 {
@@ -473,6 +471,9 @@ class HttpUtil extends AbstractUtilAware
 
     /**
      * Start session if its not started
+     *
+     * PHP 5.4.0+ can use session_status() to check if session is started.
+     * If has output before(mostly by PHPUnit), will clear it if forcenew.
      *
      * @param   boolean $forcenew
      */
