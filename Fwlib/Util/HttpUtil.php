@@ -481,6 +481,10 @@ class HttpUtil extends AbstractUtilAware
     {
         static $started = false;
 
+        if (0 < strlen(session_id())) {
+            $started = true;
+        }
+
         if (false === ob_get_length()) {
             if ($forcenew && $started) {
                 session_destroy();
