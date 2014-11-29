@@ -271,15 +271,14 @@ class HttpUtil extends AbstractUtilAware
 
 
     /**
-     * Get self url which user visit
+     * Get host and before parts of self url
      *
-     * @codeCoverageIgnore
+     * The host name did not contains tailing '/', eg: http://www.fwolf.com
      *
-     * @param   boolean $withGetParam   Include get param in url, default yes
-     * @return  string
      * @link http://stackoverflow.com/a/8891890/1759745
+     * @return  string
      */
-    public function getSelfUrl($withGetParam = true)
+    public function getSelfHostUrl()
     {
         if (empty($_SERVER['HTTP_HOST'])) {
             return '';
@@ -293,10 +292,38 @@ class HttpUtil extends AbstractUtilAware
         $url = ($ssl) ? 'https' : 'http';
         $url .= '://';
 
-        $url .= $_SERVER['HTTP_HOST'] .
-            (($withGetParam) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME']);
+        return $url . $_SERVER['HTTP_HOST'];
+    }
 
-        return $url;
+
+    /**
+     * Get self url which user visit, with get parameter
+     *
+     * @param   boolean $withGetParameter   For back compatible
+     * @return  string
+     */
+    public function getSelfUrl($withGetParameter = true)
+    {
+        if (!$withGetParameter) {
+            return $this->getSelfUrlWithoutParameter();
+        }
+
+        $url = $this->getSelfHostUrl();
+
+        return empty($url) ? '' : $url . $_SERVER['REQUEST_URI'];
+    }
+
+
+    /**
+     * Get self url without get parameter
+     *
+     * @return  string
+     */
+    public function getSelfUrlWithoutParameter()
+    {
+        $url = $this->getSelfHostUrl();
+
+        return empty($url) ? '' : $url . $_SERVER['SCRIPT_NAME'];
     }
 
 
