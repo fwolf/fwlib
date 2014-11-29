@@ -161,6 +161,14 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         $httpUtil = UtilContainer::getInstance()->getHttp();
         $selfUrl = $httpUtil->getSelfUrlWithoutParameter();
 
+        if ('.' == $url[0]) {
+            // Remove last filename
+            $selfUrl = substr($selfUrl, 0, strrpos($selfUrl, '/') + 1);
+        } elseif ('/' == $url[0]) {
+            // Get url host without any request url or get parameter
+            $selfUrl = $httpUtil->getSelfHostUrl();
+        }
+
         return $selfUrl . $url;
     }
 

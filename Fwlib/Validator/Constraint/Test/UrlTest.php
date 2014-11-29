@@ -4,6 +4,8 @@ namespace Fwlib\Validator\Constraint\Test;
 use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Url;
 use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Util\HttpUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * @copyright   Copyright 2013-2014 Fwolf
@@ -12,7 +14,24 @@ use Fwlib\Test\ServiceContainerTest;
 class UrlTest extends PHPunitTestCase
 {
     public static $curlResult;
+
+    /**
+     * @type    HttpUtil
+     */
+    protected static $originalHttpUtil;
+
     public static $param;
+
+    /**
+     * @type    string
+     */
+    public static $selfHostUrl;
+
+    /**
+     * @type    string
+     */
+    public static $selfUrlWithoutParameter;
+
     public static $url;
 
 
@@ -34,6 +53,41 @@ class UrlTest extends PHPunitTestCase
         $constraint->setServiceContainer($serviceContainer);
 
         return $constraint;
+    }
+
+
+    public static function setUpBeforeClass()
+    {
+        $utilContainer = UtilContainer::getInstance();
+        self::$originalHttpUtil = $utilContainer->getHttp();
+
+        $urlTest = new UrlTest;
+        $httpUtil = $urlTest->getMock(
+            'Fwlib\Util\HttpUtil',
+            array('getSelfHostUrl', 'getSelfUrlWithoutParameter')
+        );
+
+        $httpUtil->expects($urlTest->any())
+            ->method('getSelfHostUrl')
+            ->willReturnCallback(function () {
+                return UrlTest::$selfHostUrl;
+            });
+
+        $httpUtil->expects($urlTest->any())
+            ->method('getSelfUrlWithoutParameter')
+            ->willReturnCallback(function () {
+                return UrlTest::$selfUrlWithoutParameter;
+            });
+
+        $utilContainer->register('HttpUtil', $httpUtil);
+    }
+
+
+    public static function tearDownAfterClass()
+    {
+        $utilContainer = UtilContainer::getInstance();
+
+        $utilContainer->register('HttpUtil', self::$originalHttpUtil);
     }
 
 
@@ -96,13 +150,26 @@ class UrlTest extends PHPunitTestCase
 
 
         // Url fix up
+        self::$selfUrlWithoutParameter = 'http://domain.tld/';
         $url = '?a=check';
-        // Fake self url: http://domain.tld/?a=origin
-        unset($_SERVER['HTTPS']);
-        $_SERVER['HTTP_HOST'] = 'domain.tld';
-        $_SERVER['REQUEST_URI'] = '/?a=origin';
-        $_SERVER['SCRIPT_NAME'] = '/';
+        $constraint->validate($value, $url);
+        $this->assertEquals(
+            'http://domain.tld/?a=check',
+            self::$url
+        );
 
+
+        // Url start with '.' or '/'
+        self::$selfUrlWithoutParameter = 'http://domain.tld/foo/bar.php';
+        $url = './?a=check';
+        $constraint->validate($value, $url);
+        $this->assertEquals(
+            'http://domain.tld/foo/./?a=check',
+            self::$url
+        );
+
+        self::$selfHostUrl = 'http://domain.tld';
+        $url = '/?a=check';
         $constraint->validate($value, $url);
         $this->assertEquals(
             'http://domain.tld/?a=check',
