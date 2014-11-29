@@ -272,7 +272,7 @@ global.$id.markFailed(global.$id.getInput('$name'));
     protected function getValidator()
     {
         if (is_null($this->validator)) {
-            $this->validator = $this->getService('Validator');
+            $this->validator = new Validator;
         }
 
         return $this->validator;
