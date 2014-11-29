@@ -13,7 +13,7 @@ use Fwlib\Util\UtilContainerInterface;
  *
  * The validate url is called by HTTP POST, should return a json encoded
  * string, with structure same as Fwlib\Base\ReturnValue::info, code less than
- * 0 means validate fail, and data is array of fail messsage.
+ * 0 means validate fail, and data is array of fail message.
  *
  * Additional $constraintData is string, the format is:
  *
@@ -21,12 +21,12 @@ use Fwlib\Util\UtilContainerInterface;
  * - url, [inputName,]
  *
  * Validate value should be an array, mostly come from $_POST. For the 1st
- * format, the whole value is throwed to target url; For the 2nd format, it
+ * format, the whole value is thrown to target url; For the 2nd format, it
  * will build a new array, only include index same as inputName in value
  * array, this helps reduce post data size, and raise security.
  *
  * If validate value is empty, the validate totally depends on url result,
- * this maybe usefull in some special situation.
+ * this maybe useful in some special situation.
  *
  * @codeCoverageIgnore
  *
@@ -158,14 +158,8 @@ class Url extends AbstractConstraint implements UtilAwareInterface
             return $url;
         }
 
-
-        $httpUtil = $this->getUtil('HttpUtil');
-        $selfUrl = $httpUtil->getSelfUrl(true);
-        if (false !== strpos($selfUrl, '?')) {
-            $url{0} = '&';
-        } else {
-            $url{0} = '?';
-        }
+        $httpUtil = UtilContainer::getInstance()->getHttp();
+        $selfUrl = $httpUtil->getSelfUrlWithoutParameter();
 
         return $selfUrl . $url;
     }
@@ -193,9 +187,7 @@ class Url extends AbstractConstraint implements UtilAwareInterface
 
         // Url must start from 'HTTP', can't use relative '?a=b' style, which
         // works well in js ajax, is common used.
-        if ('HTTP' != strtoupper(substr($url, 0, 4))) {
-            $url = $this->getFullUrl($url);
-        }
+        $url = $this->getFullUrl($url);
 
         if (empty($ar)) {
             // All value will be posted

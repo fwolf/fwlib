@@ -97,14 +97,15 @@ class UrlTest extends PHPunitTestCase
 
         // Url fix up
         $url = '?a=check';
-        // Fake self url: http://dummy/?m=origin
+        // Fake self url: http://domain.tld/?a=origin
         unset($_SERVER['HTTPS']);
-        $_SERVER['HTTP_HOST'] = 'dummy/';
-        $_SERVER['REQUEST_URI'] = '?m=origin';
+        $_SERVER['HTTP_HOST'] = 'domain.tld';
+        $_SERVER['REQUEST_URI'] = '/?a=origin';
+        $_SERVER['SCRIPT_NAME'] = '/';
 
         $constraint->validate($value, $url);
         $this->assertEquals(
-            'http://dummy/?m=origin&a=check',
+            'http://domain.tld/?a=check',
             self::$url
         );
     }
