@@ -118,6 +118,34 @@ class StringUtilTest extends PHPunitTestCase
     }
 
 
+    public function testIndentHtml()
+    {
+        $x = "  <textarea>
+foo
+  bar
+</textarea>
+<hr />";
+        $y = "    <textarea>
+foo
+  bar
+</textarea>
+  <hr />";
+        $this->assertEquals($y, $this->stringUtil->indentHtml($x, 2));
+
+
+        // Illegal string without ending tag
+        $x = "  <textarea>
+foo
+  bar
+";
+        $y = "    <textarea>
+foo
+  bar
+";
+        $this->assertEquals($y, $this->stringUtil->indentHtml($x, 2));
+    }
+
+
     public function testMatchWildcard()
     {
         $this->assertEquals(

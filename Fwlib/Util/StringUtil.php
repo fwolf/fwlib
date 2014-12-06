@@ -130,6 +130,72 @@ class StringUtil
 
 
     /**
+     * Indent a html string, except value of some html tag like textarea
+     *
+     * Html string should have both start and end tag of html tag.
+     *
+     * Works for html tag:
+     *  - textarea
+
+     * @param   string  $str
+     * @param   int     $width      Must > 0
+     * @param   string  $spacer     Which char is used to indent
+     * @param   string  $lineEnding Original string's line ending
+     * @return  string
+     */
+    public function indentHtml(
+        $html,
+        $width,
+        $spacer = ' ',
+        $lineEnding = "\n"
+    ) {
+        // Find textarea start point
+        $i = stripos($html, '<textarea>');
+        if (false === $i) {
+            $i = stripos($html, '<textarea ');
+        }
+        if (false === $i) {
+            return $this->indent($html, $width, $spacer, $lineEnding);
+
+        } else {
+            $htmlBefore = substr($html, 0, $i);
+            $htmlBefore =  $this->indent(
+                $htmlBefore,
+                $width,
+                $spacer,
+                $lineEnding
+            );
+
+            // Find textarea end point
+            $html = substr($html, $i);
+            $i = stripos($html, '</textarea>');
+            if (false === $i) {
+                // Should not happen, source html format error
+                $htmlAfter = '';
+
+            } else {
+                $i += strlen('</textarea>');
+
+                $htmlAfter = substr($html, $i);
+                // In case there are another textarea in it
+                $htmlAfter =  $this->indentHtml(
+                    $htmlAfter,
+                    $width,
+                    $spacer,
+                    $lineEnding
+                );
+                // Remove leading space
+                $htmlAfter = substr($htmlAfter, 2);
+
+                $html = substr($html, 0, $i);
+            }
+
+            return $htmlBefore . $html . $htmlAfter;
+        }
+    }
+
+
+    /**
      * Match a string with rule including wildcard
      *
      * Eg: 'abcd' match rule '*c?'
