@@ -10,7 +10,7 @@ require_once(FWOLFLIB . 'func/array.php');
 *
 * @deprecated   Use Fwlib\Net\Curl
 * @package    fwolflib
-* @copyright  Copyright © 2007-2012, Fwolf
+* @copyright  Copyright © 2007-2012, 2014, Fwolf
 * @author     Fwolf <fwolf.aide+fwolflib@gmail.com>
 * @since      2007-03-14
 */
@@ -241,6 +241,8 @@ class Curl extends Fwolflib {
 		// See CURLOPT_ACCEPT_ENCODING in libcurl
 		// Set this to get uncompressed html content
 		curl_setopt($this->mSh, CURLOPT_ENCODING, '');
+
+        curl_setopt($this->mSh, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
 	} // end of func SetoptCommon
 
 

@@ -291,6 +291,8 @@ class Curl extends AbstractUtilAware
         // See CURLOPT_ACCEPT_ENCODING in libcurl
         // Set this to get uncompressed html content
         curl_setopt($this->handle, CURLOPT_ENCODING, '');
+
+        curl_setopt($this->handle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
     }
 
 
