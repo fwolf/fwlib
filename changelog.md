@@ -6,6 +6,20 @@
 
 
 
+### v2.3.4    2015-01-05
+
+- Move class files to src/ directory
+- Move testcase files to tests/ directory
+- Remove @author and @since tag
+- Mvc: New UrlGenerator class and interface
+- Mvc: Rename Controler to Controller
+- Util: Add individual getter method for each util
+- Net: Assign TLSv1 cipher to use for SSL
+- Workflow: Method getViewAction() can call without workflow action
+- Change changelog to markdown format
+
+
+
 ### v2.3.3    2014-11-14
 
 - Change to PSR-4 autoload style
