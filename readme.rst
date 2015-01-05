@@ -8,8 +8,8 @@ Fwlib
 
 
 
-.. image:: https://travis-ci.org/fwolf/fwlib.svg?branch=dev
-    :alt: Build Status Image(for dev branch)
+.. image:: https://travis-ci.org/fwolf/fwlib.svg?branch=master
+    :alt: Build Status Image
     :target: https://travis-ci.org/fwolf/fwlib
 
 .. image:: https://poser.pugx.org/fwlib/fwlib/v/stable.svg
