@@ -29,6 +29,6 @@ Fwlib
 Common PHP library with some css, doc and js useful.
 
 
-Copyright 2003-2014 Fwolf. All rights reserved.
+Copyright 2003-2015 Fwolf. All rights reserved.
 
 Distribute under the GNU Lesser General Public License (LGPL) version 3.
