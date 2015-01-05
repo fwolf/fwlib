@@ -6,7 +6,7 @@
 
 
 
-### v2.3.4    2015-01-05
+### v2.3.4 (2015-01-05)
 
 - Move class files to src/ directory
 - Move testcase files to tests/ directory
@@ -20,7 +20,7 @@
 
 
 
-### v2.3.3    2014-11-14
+### v2.3.3 (2014-11-14)
 
 - Change to PSR-4 autoload style
 - Util: Remove method evalWithTag()
@@ -35,7 +35,7 @@
 
 
 
-### v2.3.2    2014-09-01
+### v2.3.2 (2014-09-01)
 
 - Util: Add cookie and session relate methods
 - Util: Add method getBirthday()
@@ -54,7 +54,7 @@
 
 
 
-### v2.3.1    2014-05-13
+### v2.3.1 (2014-05-13)
 
 - Workflow: Add limit and disable/enable actions feature
 - Db: Rename delErrorSql() to deleteErrorSql()
@@ -63,7 +63,7 @@
 
 
 
-## v2.3    2014-05-04
+## v2.3 (2014-05-04)
 
 - Rewrite Db\DbDiff, to namespace Db\Diff, separated to several classes
 - Rewrite Workflow, separated to manager, model and view class
@@ -77,7 +77,7 @@
 
 
 
-## v2.2    2014-01-23
+## v2.2 (2014-01-23)
 
 - Remove @package tag and useless class description in testcase
 - Try to avoid using eval()
@@ -96,7 +96,7 @@
 
 
 
-## v2.1    2014-01-12
+## v2.1 (2014-01-12)
 
 - New ServiceContainerInterface
 - New Model AbstractWorkflow and AbstractWorkflowView
@@ -105,7 +105,7 @@
 
 
 
-## v2.0    2014-01-08
+## v2.0 (2014-01-08)
 
 - Follow to PSR-0,1,2,4 standard, all class/function rewrited
 - Use PHPUnit for unit test
@@ -116,6 +116,6 @@
 
 
 
-## v1.0    2013-07-17
+## v1.0 (2013-07-17)
 
 All history from 2003, no changelog info, check Git log if needed.
