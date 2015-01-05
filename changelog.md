@@ -1,15 +1,8 @@
-..	-*- mode: rst -*-
-..	-*- coding: utf-8 -*-
-
-
-===========================================================================
-ChangeLog
-===========================================================================
+#ChangeLog
 
 
 
-v2.3    2014-05-04
-====================
+## v2.3    2014-05-04
 
 - Rewrite Db\DbDiff, to namespace Db\Diff, separated to several classes
 - Rewrite Workflow, separated to manager, model and view class
@@ -23,8 +16,7 @@ v2.3    2014-05-04
 
 
 
-v2.2    2014-01-23
-====================
+## v2.2    2014-01-23
 
 - Remove @package tag and useless class description in testcase
 - Try to avoid using eval()
@@ -43,8 +35,7 @@ v2.2    2014-01-23
 
 
 
-v2.1    2014-01-12
-====================
+## v2.1    2014-01-12
 
 - New ServiceContainerInterface
 - New Model AbstractWorkflow and AbstractWorkflowView
@@ -53,8 +44,7 @@ v2.1    2014-01-12
 
 
 
-v2.0    2014-01-08
-====================
+## v2.0    2014-01-08
 
 - Follow to PSR-0,1,2,4 standard, all class/function rewrited
 - Use PHPUnit for unit test
@@ -65,7 +55,6 @@ v2.0    2014-01-08
 
 
 
-v1.0    2013-07-17
-====================
+## v1.0    2013-07-17
 
 All history from 2003, no changelog info, check Git log if needed.
