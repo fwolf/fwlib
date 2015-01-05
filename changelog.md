@@ -2,6 +2,53 @@
 
 
 
+### Un-versioned
+
+
+
+### v2.3.3    2014-11-14
+
+- Change to PSR-4 autoload style
+- Util: Remove method evalWithTag()
+- Cache: Ignore test of weight
+- Bridge: Enable $bulkBind option by default
+- js: Find puppet with id=name as failsafe
+- js: Use puppet as visual element to show validate info
+- css: Add class .yes and .no
+- Use Travis CI for continuous integration test
+- Add badge from SensioLabsInsight code analysis
+- Add Badge Poser from pugx.org
+
+
+
+### v2.3.2    2014-09-01
+
+- Util: Add cookie and session relate methods
+- Util: Add method getBirthday()
+- Util: Add method getGender()
+- css: New class .bad and .good
+- Cache: Only set json serializer option when json is enabled
+- Workflow: Split workflow action parameter out from router view action
+- Html: Allow set multiple class to ListTable
+- css: Make class .error covers html tag p, td, th, li
+- Html: Rename method setOrderby() to setOrderBy()
+- Html: Rename config orderbyXxx to orderByXxx
+- Html: Remove dependence of AbstractAutoNewConfig
+- Html: Use BEM CSS naming convention
+- Html: Page param p0, p1 will be simplify to p
+- Html: Fix array_walk() with addslashes() cause warning
+
+
+
+### v2.3.1    2014-05-13
+
+- Workflow: Add limit and disable/enable actions feature
+- Db: Rename delErrorSql() to deleteErrorSql()
+- Html: Remove dependence of AbstractAutoNewConfig
+- demo: Enable frontend validate by default
+
+
+
 ## v2.3    2014-05-04
 
 - Rewrite Db\DbDiff, to namespace Db\Diff, separated to several classes
