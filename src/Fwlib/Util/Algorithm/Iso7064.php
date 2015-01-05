@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Util\Algorithm;
 
-
 /**
  * ISO 7064
  *
@@ -16,7 +15,7 @@ namespace Fwlib\Util\Algorithm;
  * @link https://en.wikipedia.org/wiki/Global_Release_Identifier Use ISO 7064:1983 Mod 37, 36
  * @link https://code.google.com/p/checkdigits/wiki/CheckDigitSystems
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Iso7064

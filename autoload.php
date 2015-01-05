@@ -6,14 +6,14 @@
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 
-require __DIR__ . '/Fwlib/Base/ClassLoader.php';
+require __DIR__ . '/src/Fwlib/Base/ClassLoader.php';
 
 use Fwlib\Base\ClassLoader;
 
 $classLoader = ClassLoader::getInstance();
 
 // Add resource lookup path
-$classLoader->addPrefix('Fwlib', __DIR__ . '/Fwlib/');
+$classLoader->addPrefix('Fwlib', __DIR__ . '/src/Fwlib/');
 $classLoader->addPrefix('FwlibTest', __DIR__ . '/tests/FwlibTest/');
 
 // Search include_path at last

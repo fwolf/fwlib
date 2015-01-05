@@ -10,7 +10,7 @@ use Fwlib\Workflow\ModelInterface;
  *
  * Some method belongs/mapped to workflow model, put here for easy usage.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractManager implements ManagerInterface
@@ -332,9 +332,8 @@ abstract class AbstractManager implements ManagerInterface
             return $availableActions;
         }
 
-        foreach ($this->nodes[$this->model->getCurrentNode()] ['actions'] as
-            $action => $actionArray
-        ) {
+        $actions = $this->nodes[$this->model->getCurrentNode()]['actions'];
+        foreach ($actions as $action => $actionArray) {
             if ($this->isActionAvailable($action)) {
                 $availableActions[$action] = $actionArray;
             }

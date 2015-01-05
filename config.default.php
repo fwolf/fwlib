@@ -10,12 +10,10 @@
  * This file contains default config, user config in 'config.php' will
  * overwrite default config value.
  *
- * @package     Fwlib
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 
-use Fwlib\Base\ClassLoader;
 use Fwlib\Config\GlobalConfig;
 
 if ('config.default.php' == basename(__FILE__)) {
@@ -96,7 +94,6 @@ $config['dbserver.default.lang'] = $config['dbserver.mysql.lang'];
  * Dir path in local file system should end with tailing '/'.
  */
 $config['lib.path.adodb'] = 'adodb/';
-$config['lib.path.fwlib'] = 'fwlib/';
 $config['lib.path.jquery'] = '/js/jquery.js';
 $config['lib.path.phpmailer'] = 'phpmailer/';
 $config['lib.path.phpunit'] = '/usr/share/php/';
@@ -132,7 +129,7 @@ if ('config.default.php' == basename(__FILE__)) {
     $config = array_merge($config, $userConfig);
 
     // Include autoloader of Fwlib, need before other library
-    require $config['lib.path.fwlib'] . 'autoload.php';
+    require __DIR__ . '/autoload.php';
 
     // Deal with config, store in GlobalConfig instance
     GlobalConfig::getInstance()->load($config);
