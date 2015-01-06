@@ -21,3 +21,5 @@ $classLoader->useIncludePath = true;
 
 // Register autoloader
 $classLoader->register();
+
+return $classLoader;

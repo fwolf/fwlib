@@ -129,7 +129,7 @@ if ('config.default.php' == basename(__FILE__)) {
     $config = array_merge($config, $userConfig);
 
     // Include autoloader of Fwlib, need before other library
-    require __DIR__ . '/autoload.php';
+    $classLoader = require __DIR__ . '/autoload.php';
 
     // Deal with config, store in GlobalConfig instance
     GlobalConfig::getInstance()->load($config);
