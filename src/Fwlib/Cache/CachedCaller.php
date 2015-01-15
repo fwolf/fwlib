@@ -43,9 +43,8 @@ class CachedCaller implements CachedCallerInterface
             is_null($result = $cache->get($key, $lifetime))
         ) {
             $result = call_user_func_array(array($instance, $method), $params);
+            $cache->set($key, $result, $lifetime);
         }
-
-        $cache->set($key, $result, $lifetime);
 
         return $result;
     }
