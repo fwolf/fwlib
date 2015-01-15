@@ -14,6 +14,7 @@ class CachedCallerTest extends PHPUnitTestCase
 {
     public static $isForceRefreshCache = false;
     public static $isUseCache = true;
+    public static $callMe = null;
 
 
     /**
@@ -48,7 +49,9 @@ class CachedCallerTest extends PHPUnitTestCase
 
         $dummy->expects($this->any())
             ->method('callMe')
-            ->will($this->returnValue('not cached'));
+            ->will($this->returnCallback(function () {
+                return CachedCallerTest::$callMe;
+            }));
 
         $dummy->expects($this->any())
             ->method('getCacheKey')
@@ -91,6 +94,7 @@ class CachedCallerTest extends PHPUnitTestCase
     {
         $cachedCaller = $this->buildMock();
         $dummy = $this->buildCachedCallerAwareMock();
+        self::$callMe = 'not cached';
 
 
         // Call without use cache
@@ -118,5 +122,50 @@ class CachedCallerTest extends PHPUnitTestCase
 
         $rs = $cachedCaller->call($dummy, 'callMe');
         $this->assertEquals('cached', $rs);
+    }
+
+
+    /**
+     * Test data is a datetime string, stored in cache with int format.
+     */
+    public function testCallWithRenderer()
+    {
+        $cachedCaller = $this->buildMock();
+        $cacheHandler = $this->reflectionGet($cachedCaller, 'handler');
+        $dummy = $this->buildCachedCallerAwareMock();
+        self::$callMe = '2015-01-16 00:50:00';
+
+        $readRenderer = function ($rs) {
+            return date('Y-m-d H:i:s', $rs);
+        };
+        $writeRenderer = function ($rs) {
+            return strtotime($rs);
+        };
+
+
+        // Write cache
+        self::$isUseCache = true;
+        self::$isForceRefreshCache = true;
+        $rs = $cachedCaller->call(
+            $dummy,
+            'callMe',
+            array(),
+            $readRenderer,
+            $writeRenderer
+        );
+        $this->assertEquals('2015-01-16 00:50:00', $rs);
+        $this->assertEquals(1421340600, $cacheHandler->get('cacheKey'));
+
+
+        // Read from cache
+        self::$isForceRefreshCache = false;
+        $rs = $cachedCaller->call(
+            $dummy,
+            'callMe',
+            array(),
+            $readRenderer,
+            $writeRenderer
+        );
+        $this->assertEquals('2015-01-16 00:50:00', $rs);
     }
 }

@@ -28,7 +28,9 @@ class CachedCaller implements CachedCallerInterface
     public function call(
         CachedCallerAwareInterface $instance,
         $method,
-        array $params = array()
+        array $params = array(),
+        $readRenderer = null,
+        $writeRenderer = null
     ) {
         $cache = $this->getHandler();
 
@@ -43,7 +45,16 @@ class CachedCaller implements CachedCallerInterface
             is_null($result = $cache->get($key, $lifetime))
         ) {
             $result = call_user_func_array(array($instance, $method), $params);
-            $cache->set($key, $result, $lifetime);
+            /** @type callable $writeRenderer */
+            $cache->set(
+                $key,
+                is_null($writeRenderer) ? $result : $writeRenderer($result),
+                $lifetime
+            );
+
+        } elseif (!is_null($readRenderer)) {
+            /** @type callable $readRenderer */
+            $result = $readRenderer($result);
         }
 
         return $result;

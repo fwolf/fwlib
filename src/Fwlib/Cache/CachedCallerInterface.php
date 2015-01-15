@@ -17,15 +17,25 @@ interface CachedCallerInterface
     /**
      * Call given method
      *
+     * After data is read from cache, read renderer can be used to convert
+     * data to format/type same as call user function directly.
+     *
+     * Before write data to cache, write renderer can be used to convert data
+     * to proper format for storing with cache.
+     *
      * @param   CachedCallerAwareInterface $instance
      * @param   string                     $method
      * @param   array                      $params
-     * @return  int|string|array
+     * @param   callable                   $readRenderer
+     * @param   callable                   $writeRenderer
+     * @return  mixed
      */
     public function call(
         CachedCallerAwareInterface $instance,
         $method,
-        array $params = array()
+        array $params = array(),
+        $readRenderer = null,
+        $writeRenderer = null
     );
 
 
