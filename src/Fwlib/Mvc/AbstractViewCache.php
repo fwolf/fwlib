@@ -2,7 +2,6 @@
 namespace Fwlib\Mvc;
 
 use Fwlib\Cache\CacheInterface;
-use Fwlib\Mvc\AbstractView;
 
 /**
  * View with Cache feature
@@ -10,7 +9,7 @@ use Fwlib\Mvc\AbstractView;
  * Cache is disabled default, need extend class and set $useCache property to
  * true or call setUseCache() to enable it.
  *
- * @copyright   Copyright 2008-2014 Fwolf
+ * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractViewCache extends AbstractView
@@ -30,7 +29,6 @@ abstract class AbstractViewCache extends AbstractView
      * instantly, this can be done by set a special url or environment, then
      * extend this method to check and return true.
      *
-     * @see     AbstractModel::forceRefreshCache()  Same
      * @return  bool
      */
     protected function forceRefreshCache()
@@ -80,7 +78,6 @@ abstract class AbstractViewCache extends AbstractView
      * This implement only return a solid lifetime, child class should extend
      * to fit application demand.
      *
-     * @see     AbstractModel::getCacheLifetime()   Same
      * @param   string  $key
      * @return  int
      */
@@ -140,7 +137,6 @@ abstract class AbstractViewCache extends AbstractView
     /**
      * Setter of $useCache
      *
-     * @see     AbstractModel::setUseCache()    Same
      * @param   boolean $useCache
      * @return  AbstractViewCache
      */

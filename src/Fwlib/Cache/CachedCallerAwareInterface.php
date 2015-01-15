@@ -40,6 +40,7 @@ interface CachedCallerAwareInterface
      */
     public function isForceRefreshCache();
 
+
     /**
      * If to use cache
      *
