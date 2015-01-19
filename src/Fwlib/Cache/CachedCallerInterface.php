@@ -23,6 +23,14 @@ interface CachedCallerInterface
      * Before write data to cache, write renderer can be used to convert data
      * to proper format for storing with cache.
      *
+     * Both renderer should take one param.
+     *
+     * The reason for use renderer as param rather than property, is to avoid
+     * cached caller to keep state. The renderer may include business logic
+     * about how to convert between cached data and original method result, keep
+     * these in same class with method to call is better, or assign manually
+     * when explicit use cached caller.
+     *
      * @param   CachedCallerAwareInterface $instance
      * @param   string                     $method
      * @param   array                      $params
