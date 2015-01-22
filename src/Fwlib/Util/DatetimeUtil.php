@@ -183,9 +183,11 @@ class DatetimeUtil
 
 
     /**
-     * Get microtime as float with all decimal place
+     * Get time with seconds.microseconds format
      *
-     * @return  string  Float microtime in string format, length: 10.8 .
+     * The result comes from float value, but is string format, length: 10.8.
+     *
+     * @return  string
      */
     public function getMicroTime()
     {
