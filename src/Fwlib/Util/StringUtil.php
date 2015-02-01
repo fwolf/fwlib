@@ -12,26 +12,26 @@ class StringUtil
     /**
      * Addslashes for any string|array, recursive
      *
-     * @param   mixed   $srce
+     * @param   mixed   $source
      * @return  mixed
      */
-    public function addSlashesRecursive($srce)
+    public function addSlashesRecursive($source)
     {
-        if (empty($srce)) {
-            return $srce;
+        if (empty($source)) {
+            return $source;
         }
 
-        if (is_string($srce)) {
-            return addslashes($srce);
-        } elseif (is_array($srce)) {
+        if (is_string($source)) {
+            return addslashes($source);
+        } elseif (is_array($source)) {
             $rs = array();
-            foreach ($srce as $k => $v) {
+            foreach ($source as $k => $v) {
                 $rs[addslashes($k)] = $this->addSlashesRecursive($v);
             }
             return $rs;
         } else {
             // Other data type, return original
-            return $srce;
+            return $source;
         }
     }
 
@@ -137,7 +137,7 @@ class StringUtil
      * Works for html tag:
      *  - textarea
 
-     * @param   string  $str
+     * @param   string  $html
      * @param   int     $width      Must > 0
      * @param   string  $spacer     Which char is used to indent
      * @param   string  $lineEnding Original string's line ending
@@ -212,8 +212,8 @@ class StringUtil
         $rule = '/' . $rule . '/';
 
         // Must match whole string, same length
-        if ((1 == preg_match($rule, $str, $ar_match))
-            && (strlen($ar_match[0]) == strlen($str))
+        if ((1 == preg_match($rule, $str, $matches))
+            && (strlen($matches[0]) == strlen($str))
         ) {
             return true;
         } else {
@@ -335,6 +335,7 @@ class StringUtil
             $str = mb_strimwidth($str, $start, $len, $marker, $encoding);
             $str = htmlspecialchars($str);
             return $str;
+
         } else {
             // Have html tags, need split str into parts by html
             $ar = $ar[0];
@@ -401,30 +402,29 @@ class StringUtil
 
             return $result;
         }
-        return '';
     }
 
 
     /**
      * Convert string to array by splitter
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @param   string  $splitter
      * @param   boolean $trim
      * @param   boolean $removeEmpty
      * @return  array
      */
     public function toArray(
-        $srce,
+        $source,
         $splitter = ',',
         $trim = true,
         $removeEmpty = true
     ) {
-        if (!is_string($srce)) {
-            $srce = strval($srce);
+        if (!is_string($source)) {
+            $source = strval($source);
         }
 
-        $rs = explode($splitter, $srce);
+        $rs = explode($splitter, $source);
 
         if ($trim) {
             foreach ($rs as &$v) {
@@ -450,30 +450,30 @@ class StringUtil
     /**
      * Convert to camelCase
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @return  string
      */
-    public function toCamelCase($srce)
+    public function toCamelCase($source)
     {
-        return lcfirst($this->toStudlyCaps($srce));
+        return lcfirst($this->toStudlyCaps($source));
     }
 
 
     /**
      * Convert to snake case
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @param   string  $separator
-     * @param   boolean $ucwords
+     * @param   boolean $ucfirstWords
      * @return  string
      */
     public function toSnakeCase(
-        $srce,
+        $source,
         $separator = '_',
-        $ucwords = false
+        $ucfirstWords = false
     ) {
         // Split to words
-        $s = preg_replace('/([A-Z])/', ' \1', $srce);
+        $s = preg_replace('/([A-Z])/', ' \1', $source);
 
         // Remove leading space
         $s = trim($s);
@@ -481,7 +481,7 @@ class StringUtil
         // Merge non-words char and replace by space
         $s = preg_replace('/[ _\-\.]+/', ' ', $s);
 
-        if ($ucwords) {
+        if ($ucfirstWords) {
             $s = ucwords($s);
         } else {
             $s = strtolower($s);
@@ -497,11 +497,11 @@ class StringUtil
     /**
      * Convert to StudlyCaps
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @return  string
      */
-    public function toStudlyCaps($srce)
+    public function toStudlyCaps($source)
     {
-        return $this->toSnakeCase($srce, '', true);
+        return $this->toSnakeCase($source, '', true);
     }
 }
