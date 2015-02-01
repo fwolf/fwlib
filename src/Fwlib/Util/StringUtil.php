@@ -4,7 +4,7 @@ namespace Fwlib\Util;
 /**
  * String util
  *
- * @copyright   Copyright 2004-2014 Fwolf
+ * @copyright   Copyright 2004-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class StringUtil
@@ -198,7 +198,7 @@ class StringUtil
     /**
      * Match a string with rule including wildcard
      *
-     * Eg: 'abcd' match rule '*c?'
+     * Eg: 'duck' match rule '*c?'
      *
      * @param   string  $str
      * @param   string  $rule

@@ -5,7 +5,7 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\StringUtil;
 
 /**
- * @copyright   Copyright 2004-2014 Fwolf
+ * @copyright   Copyright 2004-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class StringUtilTest extends PHPunitTestCase
@@ -148,20 +148,15 @@ foo
 
     public function testMatchWildcard()
     {
-        $this->assertEquals(
-            true,
-            $this->stringUtil->matchWildcard('abcd', '*c?')
-        );
+        $stringUtil = $this->stringUtil;
 
-        $this->assertEquals(
-            false,
-            $this->stringUtil->matchWildcard('abcd', '?c*')
-        );
+        $this->assertTrue($stringUtil->matchWildcard('duck', '*c?'));
+        $this->assertFalse($stringUtil->matchWildcard('duck', '?c*'));
 
-        $s = 'abcdefg';
-        $this->assertEquals(true, $this->stringUtil->matchWildcard($s, 'a*e?g'));
-        $this->assertEquals(true, $this->stringUtil->matchWildcard($s, '?b*e*'));
-        $this->assertEquals(false, $this->stringUtil->matchWildcard($s, '?b*e?'));
+        $s = 'beautiful';
+        $this->assertTrue($stringUtil->matchWildcard($s, 'b*f?l'));
+        $this->assertTrue($stringUtil->matchWildcard($s, '?e*f*'));
+        $this->assertFalse($stringUtil->matchWildcard($s, '?e*f?'));
     }
 
 
