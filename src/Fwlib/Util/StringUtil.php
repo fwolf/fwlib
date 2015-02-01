@@ -198,6 +198,8 @@ class StringUtil
     /**
      * Match a string with rule including wildcard
      *
+     * Wildcard '*' means any number of chars, and '?' means EXACTLY one char.
+     *
      * Eg: 'duck' match rule '*c?'
      *
      * @param   string  $str
@@ -207,7 +209,7 @@ class StringUtil
     public function matchWildcard($str, $rule)
     {
         // Convert wildcard rule to regex
-        $rule = str_replace('*', '.+', $rule);
+        $rule = str_replace('*', '.*', $rule);
         $rule = str_replace('?', '.{1}', $rule);
         $rule = '/' . $rule . '/';
 

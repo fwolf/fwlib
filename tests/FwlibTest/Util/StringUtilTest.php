@@ -164,6 +164,7 @@ foo
         $stringUtil = $this->buildMock();
 
         $this->assertTrue($stringUtil->matchWildcard('duck', '*c?'));
+        $this->assertTrue($stringUtil->matchWildcard('duck', '*d???'));
         $this->assertFalse($stringUtil->matchWildcard('duck', '?c*'));
 
         $s = 'beautiful';
