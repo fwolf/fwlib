@@ -20,7 +20,7 @@ class ArrayUtil extends AbstractUtilAware
      */
     public function getEdx($ar, $key, $default = null)
     {
-        if (isset($ar[$key]) && !empty($ar[$key])) {
+        if (array_key_exists($key, $ar) && !empty($ar[$key])) {
             return $ar[$key];
         } else {
             return $default;
@@ -38,7 +38,7 @@ class ArrayUtil extends AbstractUtilAware
      */
     public function getIdx($ar, $key, $default = null)
     {
-        if (isset($ar[$key])) {
+        if (array_key_exists($key, $ar)) {
             return $ar[$key];
         } else {
             return $default;

@@ -45,6 +45,12 @@ class ArrayUtilTest extends PHPunitTestCase
 
         // With default value
         $this->assertEquals('bar', $arrayUtil->getIdx($ar, 'foo1', 'bar'));
+
+        // Compare with array_key_exists()
+        $ar = array('foo' => null);
+        $this->assertFalse(isset($ar['foo']));
+        $this->assertTrue(array_key_exists('foo', $ar));
+        $this->assertEquals(null, $arrayUtil->getIdx($ar, 'foo', 42));
     }
 
 
