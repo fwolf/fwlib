@@ -253,51 +253,5 @@ class ArrayUtilTest extends PHPunitTestCase
         $ar = $x;
         $arrayUtil->sortByLevel2($ar, 'col', false, 25);
         $this->assertEqualArray($ar, $y);
-
-
-        return;
-        // Benchmark compare with array_multisort
-        // @link http://php.net/manual/en/function.array-multisort.php
-
-        $x = array(
-            'a' => array('volume' => 67, 'edition' => 2),
-            'b' => array('volume' => 86, 'edition' => 1),
-            'c' => array('volume' => 85, 'edition' => 6),
-            'd' => array('volume' => 98, 'edition' => 2),
-            'e' => array('volume' => 86, 'edition' => 6),
-            'f' => array('volume' => 67, 'edition' => 7),
-        );
-        $y = array(
-            'd' => array('volume' => 98, 'edition' => 2),
-            'b' => array('volume' => 86, 'edition' => 1),
-            'e' => array('volume' => 86, 'edition' => 6),
-            'c' => array('volume' => 85, 'edition' => 6),
-            'a' => array('volume' => 67, 'edition' => 2),
-            'f' => array('volume' => 67, 'edition' => 7),
-        );
-
-
-        $t1 = microtime(true);
-        $j = 100;
-        echo "\n";
-
-        for ($i = 0; $i < $j; $i ++) {
-            $ar = $x;
-            $arrayUtil->sortByLevel2($ar, 'volume', 'DESC');
-        }
-        $t2 = microtime(true);
-        echo 'sortByLevel2()    cost ' . ($t2 - $t1) . ' seconds.' . "\n";
-
-        for ($i = 0; $i < $j; $i ++) {
-            $ar = $x;
-            $volume = array();
-            foreach ($ar as $k => $v) {
-                $volume[$k] = $v['volume'];
-            }
-            array_multisort($volume, SORT_DESC, $ar);
-        }
-        $this->assertEqualArray($ar, $y);
-        $t3 = microtime(true);
-        echo 'array_multisort() cost ' . ($t3 - $t2) . ' seconds.' . "\n";
     }
 }
