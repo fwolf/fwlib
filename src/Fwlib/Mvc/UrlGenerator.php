@@ -63,6 +63,7 @@ class UrlGenerator implements UrlGeneratorInterface
     public function getFullUrl()
     {
         $components = $this->urlComponents;
+        $arrayUtil = UtilContainer::getInstance()->getArray();
         $url = '';
 
         $url .= array_key_exists('scheme', $components)
@@ -76,17 +77,17 @@ class UrlGenerator implements UrlGeneratorInterface
                 . '@'
             : '';
 
-        $url .= array_key_exists('host', $components)
-            ? $components['host'] : '';
+        $url .= $arrayUtil->getIdx($components, 'host', '');
 
-        $url .= array_key_exists('path', $components)
-            ? $components['path'] : '/';
+        $url .= $arrayUtil->getIdx($components, 'path', '/');
 
-        $url .= empty($this->parameters) ? ''
-            : '?' . http_build_query($this->parameters);
+        if (!empty($this->parameters)) {
+            $url .= '?' . http_build_query($this->parameters);
+        }
 
-        $url .= array_key_exists('fragment', $components)
-            ? '#' . $components['fragment'] : '';
+        if (array_key_exists('fragment', $components)) {
+            $url .= '#' . $components['fragment'];
+        }
 
         return $url;
     }
