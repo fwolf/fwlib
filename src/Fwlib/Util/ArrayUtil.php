@@ -1,12 +1,10 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\AbstractUtilAware;
-
 /**
  * Array util
  *
- * @copyright   Copyright 2009-2014 Fwolf
+ * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ArrayUtil extends AbstractUtilAware
@@ -53,35 +51,36 @@ class ArrayUtil extends AbstractUtilAware
      *
      * If key is unset, set with the value.
      *
-     * @param   array   &$arSrce
+     * @param   array   &$source
      * @param   mixed   $key
      * @param   mixed   $val        Value to increase of set
+     * @return  array
      */
-    public function increaseByKey(&$arSrce, $key, $val = 1)
+    public function increaseByKey(&$source, $key, $val = 1)
     {
-        if (isset($arSrce[$key])) {
+        if (isset($source[$key])) {
             // Force type of result value by param $val
             if (is_string($val)) {
-                $arSrce[$key] .= $val;
+                $source[$key] .= $val;
             } else {
-                $arSrce[$key] += $val;
+                $source[$key] += $val;
             }
         } else {
-            $arSrce[$key] = $val;
+            $source[$key] = $val;
         }
 
-        return $arSrce;
+        return $source;
     }
 
 
     /**
-     * Insert data to assigned position in srce array by key
+     * Insert data to assigned position in source array by key
      *
-     * If key in $ins already exists in $srce, it will only assign new value
+     * If key in $ins already exists in $source, it will only assign new value
      * on old key. So if you want to use this move item in array forward or
      * backward, need unset them from array first.
      *
-     * @param   array   &$srce
+     * @param   array   &$source
      * @param   mixed   $idx        Position idx, append at end if not found.
      * @param   array   $ins        Array to insert, can have multi item.
      *      This muse be array, bcs array($non-array-val) always have index 0.
@@ -92,39 +91,39 @@ class ArrayUtil extends AbstractUtilAware
      *        -2   -1  0  1   2         Insert position by $mode
      * @return  array
      */
-    public function insert(&$srce, $idx, $ins, $mode = 1)
+    public function insert(&$source, $idx, $ins, $mode = 1)
     {
         if (empty($ins)) {
-            return $srce;
+            return $source;
         }
 
 
         // Find ins position
-        $keySrce = array_keys($srce);
-        $insPos = array_search($idx, $keySrce, true);
+        $sourceKeys = array_keys($source);
+        $insPos = array_search($idx, $sourceKeys, true);
         if (false === $insPos) {
             // Idx not found, append.
-            $srce = array_merge($srce, $ins);
-            return $srce;
+            $source = array_merge($source, $ins);
+            return $source;
         }
 
 
         // Compute actual ins position by $mode
         $insPos += $mode + (0 >= $mode ? 1 : 0);
-        $cntSrce = count($srce);
+        $sourceCount = count($source);
         if (0 > $insPos) {
             $insPos = 0;
-        } elseif ($cntSrce < $insPos) {
-            $insPos = $cntSrce;
+        } elseif ($sourceCount < $insPos) {
+            $insPos = $sourceCount;
         }
 
         // Loop to gen result ar
         $rs = array();
-        // Need loop to $cntSrce, not $cntSrce-1,
+        // Need loop to $sourceCount, not $sourceCount-1,
         // for append after all exists keys.
-        $iSrce = 0;
-        while ($iSrce <= $cntSrce) {
-            if ($insPos == $iSrce) {
+        $iSource = 0;
+        while ($iSource <= $sourceCount) {
+            if ($insPos == $iSource) {
                 // Got insert position
                 foreach ($ins as $k => $v) {
                     // Notice: if key exists, will be overwrite.
@@ -132,22 +131,22 @@ class ArrayUtil extends AbstractUtilAware
                 }
             }
 
-            if ($iSrce != $cntSrce) {
+            if ($iSource != $sourceCount) {
                 // Insert original data
-                $k = $keySrce[$iSrce];
-                $rs[$k] = $srce[$k];
+                $k = $sourceKeys[$iSource];
+                $rs[$k] = $source[$k];
             }
 
-            $iSrce ++;
+            $iSource ++;
         }
         // Replace mode will remove original key
         if (0 == $mode) {
-            unset($rs[$keySrce[$insPos - 1]]);
+            unset($rs[$sourceKeys[$insPos - 1]]);
         }
 
         // Final result
-        $srce = $rs;
-        return $srce;
+        $source = $rs;
+        return $source;
     }
 
 
@@ -163,21 +162,21 @@ class ArrayUtil extends AbstractUtilAware
      *
      * Rules example: a*, -*b, -??c, +?d*
      *
-     * @param   array   $arSrce     Source data.
+     * @param   array   $sources     Source data.
      * @param   string  $rules      Wildcard rule string.
      * @param   string  $delimiter  Default ','
      * @return  array
      */
-    public function searchByWildcard($arSrce, $rules, $delimiter = ',')
+    public function searchByWildcard($sources, $rules, $delimiter = ',')
     {
         $arResult = array();
 
         // Check empty input
-        if (empty($arSrce)) {
+        if (empty($sources)) {
             return $arResult;
         }
         if (empty($rules)) {
-            return $arSrce;
+            return $sources;
         }
 
         // Read rules
@@ -203,16 +202,17 @@ class ArrayUtil extends AbstractUtilAware
                 $op = '+';
             }
 
-            // Loop srce ar
+            // Loop source array
             $stringUtil = $this->getUtil('StringUtil');
-            foreach ($arSrce as $k => $srce) {
-                if (true == $stringUtil->matchWildcard($srce, $rule)) {
+            foreach ($sources as $k => $source) {
+                if (true == $stringUtil->matchWildcard($source, $rule)) {
                     // Got element to +/-
-                    $i = array_search($srce, $arResult);
+                    $i = array_search($source, $arResult);
                     if ('+' == $op) {
                         // Add to ar if not in it.
                         if (false === $i) {
-                            $arResult = array_merge($arResult, array($k => $srce));
+                            $arResult =
+                                array_merge($arResult, array($k => $source));
                         }
                     } else {
                         // Remove from ar if exists.
@@ -231,20 +231,20 @@ class ArrayUtil extends AbstractUtilAware
     /**
      * Sort multi-dimension array according to it's 2nd level value
      *
-     * @param   array   &$arSrce    Array to be sort
+     * @param   array   &$source    Array to be sort
      * @param   mixed   $key        Sort by this key's value in 2nd-dimension
      * @param   mixed   $order      True = ASC/false = DESC, or use str.
      * @param   mixed   $joker      Use when val of key isn't set.
      * @return  array
      */
     public function sortByLevel2(
-        &$arSrce,
+        &$source,
         $key,
         $order = true,
         $joker = ''
     ) {
         $arVal = array();
-        foreach ($arSrce as $k => $v) {
+        foreach ($source as $k => $v) {
             $arVal[$k] = self::getIdx($v, $key, $joker);
         }
 
@@ -254,15 +254,15 @@ class ArrayUtil extends AbstractUtilAware
             arsort($arVal);
         }
 
-        // Got currect order, write back.
+        // Got current order, write back.
         $rs = array();
         foreach ($arVal as $k => $v) {
-            $rs[$k] = &$arSrce[$k];
+            $rs[$k] = &$source[$k];
         }
 
         // Re-order numeric array key
-        $arSrce = array_merge($rs, array());
+        $source = array_merge($rs, array());
 
-        return $arSrce;
+        return $source;
     }
 }

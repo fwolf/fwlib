@@ -74,129 +74,100 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $ar_srce = array('a', 'b', 'c');
-        $x = $ar_srce;
+        $x = array('a', 'b', 'c');
+        $y = $x;
 
         // Empty input
-        $this->assertEqualArray(
-            $ar_srce,
-            $arrayUtil->insert($x, 'foo', array())
-        );
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'foo', array()));
 
         // Pos not exists, number indexed
-        $x = $arrayUtil->insert($x, 'd', array('d'));
-        $this->assertEqualArray($x, array('a', 'b', 'c', 'd'));
+        $arrayUtil->insert($x, 'd', array('d'));
+        $this->assertEqualArray(array('a', 'b', 'c', 'd'), $x);
 
         // Pos not exists, assoc indexed
-        $ar_srce = array(
+        $x = array(
             'a' => 1,
-            'b' => 2,
-            'c' => 3,
         );
-        $x = $ar_srce;
         $y = array(
             'a' => 1,
-            'b' => 2,
-            'c' => 3,
             0 => 'd',
         );
-        $x = $arrayUtil->insert($x, 'd', array('d'));
-        $this->assertEqualArray($x, $y);
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'd', array('d')));
 
         // Assoc indexed, normal
-        $ar_srce = array(
+        $source = array(
             'a' => 1,
             'b' => 2,
             'c' => 3,
-            'd' => 4,
-            'e' => 5,
         );
-        $ar_ins = array(
+        $insert = array(
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
         );
         // Insert before a key
-        $x = $ar_srce;
+        $x = $source;
         $y = array(
             'a' => 1,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
             'b' => 2,
             'c' => 3,
-            'd' => 4,
-            'e' => 5,
         );
-        $arrayUtil->insert($x, 'c', $ar_ins, -2);
-        $this->assertEqualArray($x, $y);
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'c', $insert, -2));
 
         // Insert after a key
-        $x = $ar_srce;
+        $x = $source;
         $y = array(
             'a' => 1,
-            'b' => 2,
-            'c' => 3,
-            'd' => 4,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
-            'e' => 5,
+            'b' => 2,
+            'c' => 3,
         );
-        $arrayUtil->insert($x, 'c', $ar_ins, 2);
-        $this->assertEqualArray($x, $y);
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'a', $insert, 1));
 
         // Replace
-        $x = $ar_srce;
+        $x = $source;
         $y = array(
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
             'b' => 2,
             'c' => 3,
-            'd' => 4,
-            'e' => 5,
         );
-        $arrayUtil->insert($x, 'a', $ar_ins, 0);
-        $this->assertEqualArray($x, $y);
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'a', $insert, 0));
 
         // Replace & not exist = append
-        $x = $ar_srce;
+        $x = $source;
         $y = array(
             'a' => 1,
             'b' => 2,
             'c' => 3,
-            'd' => 4,
-            'e' => 5,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
         );
-        $arrayUtil->insert($x, 'f', $ar_ins, 0);
-        $this->assertEqualArray($x, $y);
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'f', $insert, 0));
 
         // Insert far before
-        $x = $ar_srce;
+        $x = $source;
         $y = array(
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
             'a' => 1,
             'b' => 2,
             'c' => 3,
-            'd' => 4,
-            'e' => 5,
         );
-        $arrayUtil->insert($x, 'a', $ar_ins, -10);
-        $this->assertEqualArray($x, $y);
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'a', $insert, -10));
 
         // Insert far after
-        $x = $ar_srce;
+        $x = $source;
         $y = array(
             'a' => 1,
             'b' => 2,
             'c' => 3,
-            'd' => 4,
-            'e' => 5,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
         );
-        $arrayUtil->insert($x, 'e', $ar_ins, 10);
-        $this->assertEqualArray($x, $y);
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'c', $insert, 10));
     }
 
 
@@ -215,12 +186,12 @@ class ArrayUtilTest extends PHPunitTestCase
 
 
         $rule = 'a*, -*b, -??c, +?d*';
-        $arSrce = array(
+        $sourceArray = array(
             'a' => 'ab',
             'b' => 'abc',
             'c' => 'adc',
         );
-        $ar = $arrayUtil->searchByWildcard($arSrce, $rule);
+        $ar = $arrayUtil->searchByWildcard($sourceArray, $rule);
         $this->assertEquals($ar, array('c' => 'adc'));
     }
 
