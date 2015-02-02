@@ -8,7 +8,7 @@ use Fwlib\Util\UtilContainer;
  *
  * Should only work on http/https protocol.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class UrlGenerator implements UrlGeneratorInterface
@@ -57,6 +57,20 @@ class UrlGenerator implements UrlGeneratorInterface
 
     /**
      * {@inheritdoc}
+     */
+    public function getFullLink($title, $rawHtml = '')
+    {
+        if (!empty($rawHtml)) {
+            $rawHtml = ' ' . $rawHtml;
+        }
+
+        return "<a href='" . $this->getFullUrl() . "'" . $rawHtml . ">" .
+            $title . "</a>";
+    }
+
+
+    /**
+     * {@inheritdoc}
      *
      * http_build_url() maybe not usable.
      */
@@ -90,6 +104,20 @@ class UrlGenerator implements UrlGeneratorInterface
         }
 
         return $url;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLink($title, $rawHtml = '')
+    {
+        if (!empty($rawHtml)) {
+            $rawHtml = ' ' . $rawHtml;
+        }
+
+        return "<a href='" . $this->getUrl() . "'" . $rawHtml . ">" .
+            $title . "</a>";
     }
 
 

@@ -4,17 +4,37 @@ namespace Fwlib\Mvc;
 /**
  * UrlGenerator Interface
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface UrlGeneratorInterface
 {
+    /**
+     * Get full html link with computed url and given title
+     *
+     * @param   string  $title
+     * @param   string  $rawHtml    Extra html in <a> tag
+     * @return  string
+     */
+    public function getFullLink($title, $rawHtml = '');
+
+
     /**
      * Get result url, with base url, eg 'http://domail.tld/?foo=1'
      *
      * @return  string
      */
     public function getFullUrl();
+
+
+    /**
+     * Get html link with computed url and given title
+     *
+     * @param   string  $title
+     * @param   string  $rawHtml    Extra html in <a> tag
+     * @return  string
+     */
+    public function getLink($title, $rawHtml = '');
 
 
     /**

@@ -5,7 +5,7 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Mvc\UrlGenerator;
 
 /**
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class UrlGeneratorTest extends PHPunitTestCase
@@ -32,7 +32,7 @@ class UrlGeneratorTest extends PHPunitTestCase
     }
 
 
-    public function testFullUrl()
+    public function testGetFullUrl()
     {
         $urlGenerator = $this->buildMock();
 
@@ -65,7 +65,23 @@ class UrlGeneratorTest extends PHPunitTestCase
     }
 
 
-    public function testSimpleUrl()
+    public function testGetLink()
+    {
+        $urlGenerator = $this->buildMock();
+
+        $this->assertEquals(
+            "<a href='?foo=bar' hidden='hidden'>FOO</a>",
+            $urlGenerator->getLink('FOO', 'hidden=\'hidden\'')
+        );
+
+        $this->assertEquals(
+            "<a href='https://domain.tld/index.php?foo=bar' hidden='hidden'>FOO</a>",
+            $urlGenerator->getFullLink('FOO', 'hidden=\'hidden\'')
+        );
+    }
+
+
+    public function testGetUrl()
     {
         $urlGenerator = $this->buildMock();
 
