@@ -5,12 +5,13 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Util\Json;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class JsonTest extends PHPunitTestCase
 {
     public $dummyForTestEncodeHex = 42;
+    public $dummyForTestEncodeHex2;
     protected $json;
 
 
@@ -66,9 +67,10 @@ class JsonTest extends PHPunitTestCase
             $this->json->encodeHex($x)
         );
 
-        $x = new StringUtilTest;
+        $x = new JsonTest;
+        $x->dummyForTestEncodeHex2 = new \stdClass;
         $this->assertEquals(
-            '{"dummyForTestJsonEncodeHex":42,"stringUtil":{}}',
+            '{"dummyForTestEncodeHex":42,"dummyForTestEncodeHex2":{}}',
             $this->json->encodeHex($x)
         );
     }

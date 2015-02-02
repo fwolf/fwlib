@@ -11,9 +11,6 @@ use Fwlib\Util\UtilContainer;
  */
 class StringUtilTest extends PHPunitTestCase
 {
-    public $dummyForTestJsonEncodeHex = 42;
-
-
     /**
      * @return  StringUtil
      */
