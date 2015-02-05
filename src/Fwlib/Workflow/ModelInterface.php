@@ -10,7 +10,7 @@ namespace Fwlib\Workflow;
  * All business relate information are stored in $content, but does not
  * include workflow instance property like uuid, currentNode etc.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface ModelInterface
@@ -122,7 +122,8 @@ interface ModelInterface
     /**
      * Setter of result code
      *
-     * @return  int
+     * @param   int $code
+     * @return  ModelInterface
      */
     public function setResultCode($code);
 

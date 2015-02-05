@@ -1,15 +1,13 @@
 <?php
 namespace Fwlib\Workflow;
 
-use Fwlib\Workflow\ModelInterface;
-
 /**
  * Workflow manager interface
  *
  * Control workflow execution, get available actions and other information.
  * The access of storage is done by workflow model.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface ManagerInterface
@@ -17,7 +15,7 @@ interface ManagerInterface
     /**
      * Disable an action, by remove it from $nodes
      *
-     * This is a way to change node define durning runtime, can be used
+     * This is a way to change node define during runtime, can be used
      * associate with user role/group check and other access control, to
      * prohibit user to do this action.
      *
@@ -96,7 +94,7 @@ interface ManagerInterface
 
 
     /**
-     * Is the result code measn approved ?
+     * Is the result code means approved ?
      *
      * @return  boolean
      */

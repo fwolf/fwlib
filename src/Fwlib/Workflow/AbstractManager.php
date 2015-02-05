@@ -2,8 +2,6 @@
 namespace Fwlib\Workflow;
 
 use Fwlib\Workflow\Exception\InvalidActionException;
-use Fwlib\Workflow\ManagerInterface;
-use Fwlib\Workflow\ModelInterface;
 
 /**
  * Workflow manager
@@ -37,6 +35,13 @@ abstract class AbstractManager implements ManagerInterface
     protected $disabledActions = array();
 
     /**
+     * Workflow model instance
+     *
+     * @var ModelInterface
+     */
+    protected $model = null;
+
+    /**
      * Classname of workflow model
      *
      * When start a new workflow, this classname is used to create empty model
@@ -47,25 +52,18 @@ abstract class AbstractManager implements ManagerInterface
     protected $modelClass = 'Fwlib\Workflow\ModelInterface';
 
     /**
-     * Workflow model instance
-     *
-     * @var ModelInterface
-     */
-    protected $model = null;
-
-    /**
      * Workflow nodes schema array
      *
      * Should at least have one start node and one end node.
      *
      * Action name should be unique in all nodes, same action may cause error,
-     * and confusion for reading code, especially when add controler/view
+     * and confusion for reading code, especially when add controller/view
      * action in view or template.
      *
      * Default value of resultCode is self::RESULT_CODE_NOT_ENDED if not set.
      * ResultCode should set only on action relate to end node. When leave end
-     * node(rollback), resultCode is resetted(param default value of move()),
-     * or user can specify through action.  Set resultCode on other action is
+     * node(rollback), resultCode is reset(param default value of move()), or
+     * user can specify through action.  Set resultCode on other action is
      * useless.
      *
      * The end node should not have action 'next' point to itself, that action
@@ -161,7 +159,7 @@ abstract class AbstractManager implements ManagerInterface
      * UPDATE to db (the former one is save()), by this cost, the workflow got
      * possibility to rollback from end node.
      *
-     * Workflow may have no rollback ablity, but should commit something, so
+     * Workflow may have no rollback ability, but should commit something, so
      * commit() is abstract and must fill by child class, as rollback() is
      * default empty.
      */
@@ -293,21 +291,11 @@ abstract class AbstractManager implements ManagerInterface
 
 
     /**
-     * Getter of $notAvailableActions
-     *
-     * @return  array
-     */
-    public function getNotAvailableActions()
-    {
-        return $this->notAvailableActions;
-    }
-
-
-    /**
      * Get title of action, will search action in nodes
      *
      * @param   string  $action
      * @return  string
+     * @throws  \Exception  If nodes use invalid action
      */
     public function getActionTitle($action)
     {
@@ -405,6 +393,17 @@ abstract class AbstractManager implements ManagerInterface
     public function getModelClass()
     {
         return $this->modelClass;
+    }
+
+
+    /**
+     * Getter of $notAvailableActions
+     *
+     * @return  array
+     */
+    public function getNotAvailableActions()
+    {
+        return $this->notAvailableActions;
     }
 
 
@@ -574,7 +573,7 @@ abstract class AbstractManager implements ManagerInterface
     {
         $this->model = new $this->modelClass($uuid);
 
-        // Check and initlize model instance
+        // Check and initialize model instance
         if (empty($uuid)) {
             $this->initialize();
         }
@@ -589,13 +588,14 @@ abstract class AbstractManager implements ManagerInterface
      * After workflow move to end node and is approved, the method commit()
      * will be called, the reverse operate is rollback(), called when node
      * leave from end. The end result rejected or canceled has no alike
-     * mechanishm, because in common nothing need to do, although child class
+     * mechanism, because in common nothing need to do, although child class
      * can extend this method to add that.
      *
      * @param   string  $action     Moved by action
      * @param   string  $node
      * @param   int     $resultCode Should set when to or from end node.
      * @return  AbstractManager
+     * @throws  \Exception  If 2 user end a workflow at same time.
      */
     protected function move(
         $action,

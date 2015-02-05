@@ -48,13 +48,6 @@ abstract class AbstractView extends BaseView
     protected $uuidParameter = 'uuid';
 
     /**
-     * Request parameter of view action
-     *
-     * @var string
-     */
-    protected $viewActionParameter = 'va';
-
-    /**
      * View action after execute workflow action
      *
      * If there are workflow action and have corresponding view action defined
@@ -69,9 +62,16 @@ abstract class AbstractView extends BaseView
     );
 
     /**
+     * Request parameter of view action
+     *
+     * @var string
+     */
+    protected $viewActionParameter = 'va';
+
+    /**
      * Workflow manager instance
      *
-     * @var ManagerInterface
+     * @type    AbstractManager
      */
     protected $workflow = null;
 
@@ -130,7 +130,7 @@ abstract class AbstractView extends BaseView
     /**
      * Create or load workflow instance
      *
-     * @return  ManagerInterface
+     * @return  AbstractManager
      */
     protected function createOrLoadWorkflow()
     {
