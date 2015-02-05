@@ -80,72 +80,69 @@ class ArrayUtil extends AbstractUtilAware
      * on old key. So if you want to use this move item in array forward or
      * backward, need unset them from array first.
      *
-     * @param   array   &$source
-     * @param   mixed   $idx        Position idx, append at end if not found.
-     * @param   array   $ins        Array to insert, can have multi item.
-     *      This muse be array, bcs array($non-array-val) always have index 0.
-     * @param   integer $mode      -1=insert before index, 0=replace index
-     *      1=insert after index, default=1.
-     *      If $mode!=0, eg: 2, means insert between origin idx 1 and 2
-     *      a    b     c    d   e       Original index
+     * Insert offset:
+     *  * -1 = insert before index
+     *  * 0 = replace index
+     *  * 1 = insert after index, default=1.
+     * Eg:
+     *      a    b     C    d   e       Original index
      *        -2   -1  0  1   2         Insert position by $mode
+     * When insert position is 2 and offset is -1, the data will be insert
+     * between 'b' and 'C', and 'C' will be push behind inserted data.
+     *
+     * @param   array       &$source
+     * @param   string|int  $idx        Position idx, append if not found
+     * @param   array       $insert     Array to insert, can have multi item
+     * @param   integer     $offset       Insert offset
      * @return  array
      */
-    public function insert(&$source, $idx, $ins, $mode = 1)
+    public function insert(&$source, $idx, array $insert, $offset = 1)
     {
-        if (empty($ins)) {
+        if (empty($insert)) {
             return $source;
         }
 
 
-        // Find ins position
+        // Find insert position
         $sourceKeys = array_keys($source);
-        $insPos = array_search($idx, $sourceKeys, true);
-        if (false === $insPos) {
-            // Idx not found, append.
-            $source = array_merge($source, $ins);
+        $insertPosition = array_search($idx, $sourceKeys, true);
+        if (false === $insertPosition) {
+            // Idx not found, append
+            $source = array_merge($source, $insert);
             return $source;
+
+        } elseif (0 == $offset) {
+            // Implement replace
+            unset($source[$sourceKeys[$insertPosition]]);
         }
 
+        // When combines result, drop keys from source exist in insert
+        $duplicate = array_intersect($source, $insert);
 
-        // Compute actual ins position by $mode
-        $insPos += $mode + (0 >= $mode ? 1 : 0);
-        $sourceCount = count($source);
-        if (0 > $insPos) {
-            $insPos = 0;
-        } elseif ($sourceCount < $insPos) {
-            $insPos = $sourceCount;
+        // Compute actual insert position by offset
+        $insertPosition += $offset;
+        if (0 > $offset) {
+            $insertPosition += 1;
         }
 
-        // Loop to gen result ar
-        $rs = array();
-        // Need loop to $sourceCount, not $sourceCount-1,
-        // for append after all exists keys.
-        $iSource = 0;
-        while ($iSource <= $sourceCount) {
-            if ($insPos == $iSource) {
-                // Got insert position
-                foreach ($ins as $k => $v) {
-                    // Notice: if key exists, will be overwrite.
-                    $rs[$k] = $v;
-                }
-            }
+        // Different combine method by insert position
+        if (0 >= $insertPosition) {
+            $source = array_diff_key($source, $duplicate);
+            $source = array_merge($insert, $source);
 
-            if ($iSource != $sourceCount) {
-                // Insert original data
-                $k = $sourceKeys[$iSource];
-                $rs[$k] = $source[$k];
-            }
+        } elseif (count($source) < $insertPosition) {
+            $source = array_merge($source, $insert);
 
-            $iSource ++;
-        }
-        // Replace mode will remove original key
-        if (0 == $mode) {
-            unset($rs[$sourceKeys[$insPos - 1]]);
+        } else {
+            $before = array_slice($source, 0, $insertPosition);
+            $after = array_slice($source, $insertPosition + ((0 == $offset) ? 1 : 0));
+
+            $before = array_diff_key($before, $duplicate);
+            $after = array_diff_key($after, $duplicate);
+
+            $source = array_merge($before, $insert, $after);
         }
 
-        // Final result
-        $source = $rs;
         return $source;
     }
 
