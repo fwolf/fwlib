@@ -195,6 +195,11 @@ abstract class AbstractManager implements ManagerInterface
     public function disableActions(array $actions)
     {
         foreach ($this->nodes as $nodeIndex => &$node) {
+            // Some node like end has no actions
+            if (!array_key_exists('actions', $node)) {
+                continue;
+            }
+
             foreach ($node['actions'] as $action => $value) {
                 if (in_array($action, $actions)) {
                     $this->disabledActions[$action] = array(
@@ -549,6 +554,11 @@ abstract class AbstractManager implements ManagerInterface
     public function limitActions(array $actions)
     {
         foreach ($this->nodes as $nodeIndex => &$node) {
+            // Some node like end has no actions
+            if (!array_key_exists('actions', $node)) {
+                continue;
+            }
+
             foreach ($node['actions'] as $action => $value) {
                 if (!in_array($action, $actions)) {
                     $this->disabledActions[$action] = array(

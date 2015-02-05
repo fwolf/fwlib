@@ -45,6 +45,9 @@ class AbstractManagerDummy extends AbstractManager
                 ),
             ),
         ),
+        'unReachable' => array(
+            'title' => 'Stub 节点',
+        ),
     );
 
     protected $workflowTitle = 'Workflow Title Dummy';
@@ -61,6 +64,9 @@ class AbstractManagerDummy extends AbstractManager
     }
 
 
+    /**
+     * @return bool
+     */
     protected function isActionCustomizedActionAvailable()
     {
         // Just a dummy for code coverage
@@ -68,6 +74,9 @@ class AbstractManagerDummy extends AbstractManager
     }
 
 
+    /**
+     * @return string
+     */
     protected function isActionNotAvailableActionAvailable()
     {
         return 'this action is not available';
