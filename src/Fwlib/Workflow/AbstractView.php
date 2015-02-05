@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Workflow;
 
-use Fwlib\Workflow\ManagerInterface;
 use Fwlib\Mvc\AbstractView as BaseView;
 use Fwlib\Util\UtilContainer;
 
@@ -27,7 +26,7 @@ use Fwlib\Util\UtilContainer;
  * This view can declare an instance of a normal view, and use it to provide
  * same header, footer with other non-workflow views.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractView extends BaseView
@@ -131,15 +130,18 @@ abstract class AbstractView extends BaseView
     /**
      * Create or load workflow instance
      *
-     * @param   string  $uuid
      * @return  ManagerInterface
      */
-    protected function createOrLoadWorkflow($uuid = '')
+    protected function createOrLoadWorkflow()
     {
-        $workflow = new $this->workflowClass($uuid);
+        if (is_null($this->workflow)) {
+            $uuid = $this->getWorkflowUuid();
+            $workflow = new $this->workflowClass($uuid);
 
-        $this->workflow = $workflow;
-        return $workflow;
+            $this->workflow = $workflow;
+        }
+
+        return $this->workflow;
     }
 
 
@@ -246,14 +248,13 @@ abstract class AbstractView extends BaseView
             return '';
         }
 
-        $uuid = $this->getWorkflowUuid();
-        $this->createOrLoadWorkflow($uuid);
+        $workflow = $this->createOrLoadWorkflow();
         $this->setTitle($this->generateTitle());
 
         $workflowAction = $this->getWorkflowAction();
         if (!empty($workflowAction)) {
             $contents = $this->receiveContentsFromRequest();
-            $this->workflow->updateContents($contents)
+            $workflow->updateContents($contents)
                 ->execute($workflowAction);
         }
 
