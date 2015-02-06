@@ -6,6 +6,8 @@ use Fwlib\Util\StringUtil;
 use Fwlib\Util\UtilContainer;
 
 /**
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ *
  * @copyright   Copyright 2004-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
