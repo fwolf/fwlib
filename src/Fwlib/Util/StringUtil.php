@@ -320,7 +320,6 @@ class StringUtil
      * @param   string $str      Source string
      * @param   int    $length   Length
      * @param   string $marker   If str length exceed, cut & fill with this
-     * @param   int    $start    Start position
      * @param   string $encoding Default is utf-8
      * @return  string
      * @link http://www.fwolf.com/blog/post/133
@@ -329,7 +328,6 @@ class StringUtil
         $str,
         $length,
         $marker = '...',
-        $start = 0,
         $encoding = 'utf-8'
     ) {
         $str = htmlspecialchars_decode($str);
@@ -337,7 +335,7 @@ class StringUtil
         $i = preg_match_all('/<[^>]*>/i', $str, $matches);
         if (0 == $i) {
             // No html in $str
-            $str = mb_strimwidth($str, $start, $length, $marker, $encoding);
+            $str = mb_strimwidth($str, 0, $length, $marker, $encoding);
             $str = htmlspecialchars($str);
 
             return $str;
