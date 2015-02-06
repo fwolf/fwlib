@@ -148,6 +148,46 @@ class ArrayUtil extends AbstractUtilAware
 
 
     /**
+     * Pick specific keys from given array
+     *
+     * All set key in source can be picked, if noEmpty parameter is true, keys
+     * have empty value will not be picked.
+     *
+     * Callback can be apply to value before return result array. If callback
+     * and noEmpty are both present, will do empty check on callback result.
+     *
+     * @param   array    $sources
+     * @param   array    $keys
+     * @param   boolean  $noEmpty
+     * @param   callable $callback
+     * @return  array
+     */
+    public function pick(
+        array $sources,
+        array $keys,
+        $noEmpty = false,
+        $callback = null
+    ) {
+        $results = array_intersect_key($sources, array_fill_keys($keys, null));
+
+        if (is_callable($callback)) {
+            foreach ($results as &$value) {
+                $value = $callback($value);
+            }
+            unset($value);
+        }
+
+        if ($noEmpty) {
+            $results = array_filter($results, function ($result) {
+                return !empty($result);
+            });
+        }
+
+        return $results;
+    }
+
+
+    /**
      * Search item in an array by wildcard rules
      *
      * Wildcard rules is a string include many part joined by ',', each part

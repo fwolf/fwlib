@@ -177,6 +177,50 @@ class ArrayUtilTest extends PHPunitTestCase
     }
 
 
+    public function testPick()
+    {
+        $arrayUtil = $this->buildMock();
+
+        $sources = array(
+            'a' => 'A ',
+            'b' => 42,
+            'c' => null,
+            'd' => '0',
+        );
+
+
+        // noEmpty
+        $keys = array('a', 'b', 'c', 'd');
+        $y = array(
+            'a' => 'A ',
+            'b' => 42,
+        );
+        $this->assertEqualArray($y, $arrayUtil->pick($sources, $keys, true));
+
+
+        // Callback
+        $callback = function ($value) {
+            return is_null($value) ? 'null' : $value;
+        };
+        $y = array(
+            'a' => 'A ',
+            'b' => 42,
+            'c' => 'null',
+        );
+        $this->assertEqualArray(
+            $y,
+            $arrayUtil->pick($sources, $keys, true, $callback)
+        );
+
+
+        // Use build-in function as callback
+        $this->assertEqualArray(
+            array('a' => 'A'),
+            $arrayUtil->pick($sources, array('a'), false, 'trim')
+        );
+    }
+
+
     public function testSearchByWildcard()
     {
         $arrayUtil = $this->buildMock();
