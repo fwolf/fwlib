@@ -314,6 +314,9 @@ class StringUtil
      * Notice: No consider of html complement, all html tag treat as zero
      * length.
      *
+     * Notice: Self close tag need use style as <br />, not <br>, for correct
+     * html tag depth compute.
+     *
      * @param   string $str      Source string
      * @param   int    $length   Length
      * @param   string $marker   If str length exceed, cut & fill with this
@@ -349,58 +352,68 @@ class StringUtil
             $pos = strpos($str, $match);
 
             // Add 2 parts by position
-            $arParts[] = substr($str, 0, $pos); // Before match
-            $arParts[] = $match;
+            // Part 1 is normal text before matched html tag
+            $part = substr($str, 0, $pos);
+            $arParts[] = array(
+                'content' => $part,
+                'depth'   => 0,
+                'width'   => mb_strwidth($part, $encoding),
+            );
+
+            // Part 2 is html tag
+            if (0 < preg_match('/\/\s*>/', $match)) {
+                // Self close tag
+                $depth = 0;
+            } elseif (0 < preg_match('/<\s*\//', $match)) {
+                // End tag
+                $depth = -1;
+            } else {
+                $depth = 1;
+            }
+            $arParts[] = array(
+                'content' => $match,
+                'depth'   => $depth,
+                'width'   => 0,
+            );
 
             // Cut source string for next loop
             $str = substr($str, $pos + strlen($match));
         }
 
         // All left part of source str, after all html tags
-        $arParts[] = $str;
+        $arParts[] = array(
+            'content' => $str,
+            'depth'   => 0,
+            'width'   => mb_strwidth($str, $encoding),
+        );
 
         // Remove empty parts
         $arParts = array_filter($arParts, function ($part) {
-            return 0 < strlen($part);
+            return 0 < strlen($part['content']);
         });
 
         // Loop to cut needed length
         $result = '';
-        $tagDepth = 0;     // In html tag ?
+        $totalDepth = 0;
         foreach ($arParts as $part) {
-            if (0 < preg_match('/\/\s*>/', $part)) {
-                // Is self-close html tag
-                $result .= $part;
+            if (0 >= $length && 0 == $totalDepth) {
+                break;
+            }
 
-            } elseif (0 < preg_match('/<\s*\//', $part)) {
-                // End of html tag
-                // When len exceed, only end tag allowed
-                if (0 < $tagDepth) {
-                    $result .= $part;
-                    $tagDepth --;
-                }
-
-            } elseif (0 < strpos($part, '>')) {
-                // Begin of html tag ?
-                // When len exceed, no start tag allowed
-                if (0 < $length) {
-                    $result .= $part;
-                    $tagDepth ++;
-                }
+            $width = $part['width'];
+            if (0 == $width) {
+                $result .= $part['content'];
+                $totalDepth += $part['depth'];
 
             } else {
-                // Real string
-                if (0 >= $length) {
-                    // Already reach length, only some html tag allowed
-                    continue;
-
-                } else {
-                    // Need cut then add to result
-                    $result .= htmlspecialchars(
-                        mb_strimwidth($part, 0, $length, $marker, $encoding)
-                    );
-                    $length -= mb_strwidth($part, $encoding);
-                }
+                $result .= htmlspecialchars(mb_strimwidth(
+                    $part['content'],
+                    0,
+                    max($length, 0),
+                    $marker,
+                    $encoding
+                ));
+                $length -= $width;
             }
         }
 
