@@ -311,97 +311,100 @@ class StringUtil
      *
      * Using mb_strimwidth()
      *
-     * Attention: No consider of html complement.
+     * Notice: No consider of html complement, all html tag treat as zero
+     * length.
      *
-     * @param   string  $str    Source string
-     * @param   int     $len    Length
-     * @param   string  $marker If str length exceed, cut & fill with this
-     * @param   int     $start  Start position
-     * @param   string  $encoding   Default is utf-8
+     * @param   string $str      Source string
+     * @param   int    $length   Length
+     * @param   string $marker   If str length exceed, cut & fill with this
+     * @param   int    $start    Start position
+     * @param   string $encoding Default is utf-8
      * @return  string
      * @link http://www.fwolf.com/blog/post/133
      */
     public function substrIgnoreHtml(
         $str,
-        $len,
+        $length,
         $marker = '...',
         $start = 0,
         $encoding = 'utf-8'
     ) {
-        $i = preg_match_all('/<[^>]*>/i', $str, $ar);
+        $str = htmlspecialchars_decode($str);
+
+        $i = preg_match_all('/<[^>]*>/i', $str, $matches);
         if (0 == $i) {
             // No html in $str
-            $str = htmlspecialchars_decode($str);
-            $str = mb_strimwidth($str, $start, $len, $marker, $encoding);
+            $str = mb_strimwidth($str, $start, $length, $marker, $encoding);
             $str = htmlspecialchars($str);
+
             return $str;
-
-        } else {
-            // Have html tags, need split str into parts by html
-            $ar = $ar[0];
-            $arParts = array();
-            for ($i = 0; $i < count($ar); $i ++) {
-                // Find sub str
-                $j = strpos($str, $ar[$i]);
-                // Add to new ar: before, tag
-                if (0 != $j) {
-                    $arParts[] = substr($str, 0, $j);
-                }
-                $arParts[] = $ar[$i];
-                // Trim origin str, so we start from 0 again next loop
-                $str = substr($str, $j + strlen($ar[$i]));
-            }
-            // Tail of $str, which after html tags
-            $arParts[] = $str;
-
-            // Loop to cut needed length
-            $result = '';
-            $length = $len - mb_strwidth($marker, $encoding);
-            $tagDepth = 0;     // In html tag ?
-            $i = 0;
-            while ($i < count($arParts)) {
-                $s = $arParts[$i];
-                $i ++;
-
-                // Is it self-end html tag ?
-                if (0 < preg_match('/\/\s*>/', $s)) {
-                    $result .= $s;
-                } elseif (0 < preg_match('/<\s*\//', $s)) {
-                    // End of html tag ?
-                    // When len exceed, only end tag allowed
-                    if (0 < $tagDepth) {
-                        $result .= $s;
-                        $tagDepth --;
-                    }
-                } elseif (0 < strpos($s, '>')) {
-                    // Begin of html tag ?
-                    // When len exceed, no start tag allowed
-                    if (0 < $length) {
-                        $result .= $s;
-                        $tagDepth ++;
-                    }
-                } else {
-                    // Real string
-                    $s = htmlspecialchars_decode($s);
-                    if (0 == $length) {
-                        // Already got length
-                        continue;
-                    } elseif (mb_strwidth($s, $encoding) < $length) {
-                        // Can add to rs completely
-                        $length -= mb_strwidth($s, $encoding);
-                        $result .= htmlspecialchars($s);
-                    } else {
-                        // Need cut then add to rs
-                        $result .= htmlspecialchars(
-                            mb_strimwidth($s, 0, $length, '', $encoding)
-                        ) . $marker;
-                        $length = 0;
-                    }
-                }
-            }
-
-            return $result;
         }
+
+        // Have html tags, need split str into parts by html
+        $matches = $matches[0];
+
+        $arParts = array();
+        foreach ($matches as $match) {
+            // Find position of match in source string
+            $pos = strpos($str, $match);
+
+            // Add 2 parts by position
+            $arParts[] = substr($str, 0, $pos); // Before match
+            $arParts[] = $match;
+
+            // Cut source string for next loop
+            $str = substr($str, $pos + strlen($match));
+        }
+
+        // All left part of source str, after all html tags
+        $arParts[] = $str;
+
+        // Remove empty parts
+        $arParts = array_filter($arParts, function ($part) {
+            return 0 < strlen($part);
+        });
+
+        // Loop to cut needed length
+        $result = '';
+        $tagDepth = 0;     // In html tag ?
+        foreach ($arParts as $part) {
+            if (0 < preg_match('/\/\s*>/', $part)) {
+                // Is self-close html tag
+                $result .= $part;
+
+            } elseif (0 < preg_match('/<\s*\//', $part)) {
+                // End of html tag
+                // When len exceed, only end tag allowed
+                if (0 < $tagDepth) {
+                    $result .= $part;
+                    $tagDepth --;
+                }
+
+            } elseif (0 < strpos($part, '>')) {
+                // Begin of html tag ?
+                // When len exceed, no start tag allowed
+                if (0 < $length) {
+                    $result .= $part;
+                    $tagDepth ++;
+                }
+
+            } else {
+                // Real string
+                if (0 >= $length) {
+                    // Already reach length, only some html tag allowed
+                    continue;
+
+                } else {
+                    // Need cut then add to result
+                    $result .= htmlspecialchars(
+                        mb_strimwidth($part, 0, $length, $marker, $encoding)
+                    );
+                    $length -= mb_strwidth($part, $encoding);
+                }
+            }
+        }
+
+        return $result;
     }
 
 
