@@ -4,7 +4,10 @@ namespace Fwlib\Util;
 /**
  * String util
  *
+ * Util class is collection of functions, will not keep state, so method
+ * amount and class complexity should have no limit.
  * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  *
  * @copyright   Copyright 2004-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
