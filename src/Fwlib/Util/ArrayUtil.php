@@ -150,18 +150,18 @@ class ArrayUtil extends AbstractUtilAware
     /**
      * Search item in an array by wildcard rules
      *
-     * Wildcard rules is a string include many part joined by ',',
-     * each part can include * and ?, head by '+'(default) or '-',
-     * they means find elements suit the rules in source array,
-     * and add_to/remove_from result array.
+     * Wildcard rules is a string include many part joined by ',', each part
+     * can include * and ?, head by '+'(default) or '-', they means find
+     * elements suit the rules in source array, and add_to/remove_from result
+     * array.
      *
      * Parts operate sequence is by occur position in rules string, an item
      * can be added or removed multiple times.
      *
      * Rules example: a*, -*b, -??c, +?d*
      *
-     * @param   array   $sources     Source data.
-     * @param   string  $rules      Wildcard rule string.
+     * @param   array   $sources    Source data
+     * @param   string  $rules      Wildcard rule string
      * @param   string  $delimiter  Default ','
      * @return  array
      */
@@ -173,12 +173,10 @@ class ArrayUtil extends AbstractUtilAware
         }
 
         // Read rules
-        $arRule = explode($delimiter, $rules);
+        $arRules = explode($delimiter, $rules);
 
-        $arResult = array();
-
-        // Use rules
-        foreach ($arRule as $rule) {
+        $results = array();
+        foreach ($arRules as $rule) {
             $rule = trim($rule);
 
             // Empty rule means 'all'
@@ -202,16 +200,16 @@ class ArrayUtil extends AbstractUtilAware
                     // Got element to +/-
                     if ('+' == $op) {
                         // Add to result
-                        $arResult[$k] = $source;
+                        $results[$k] = $source;
                     } else {
                         // Remove from result
-                        unset($arResult[$k]);
+                        unset($results[$k]);
                     }
                 }
             }
         }
 
-        return $arResult;
+        return $results;
     }
 
 
