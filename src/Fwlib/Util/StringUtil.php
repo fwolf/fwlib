@@ -242,33 +242,29 @@ class StringUtil
             return null;
         }
 
-        $i = preg_match_all($preg, $str, $ar, PREG_SET_ORDER);
-        if (0 == $i || false === $i) {
+        $i = preg_match_all($preg, $str, $matches, PREG_SET_ORDER);
+        if (0 >= intval($i)) {
             // Got none match or Got error
             return null;
-        } elseif (1 == $i) {
-            // Got 1 match, return as string or array(2 value in 1 match)
-            $ar = $ar[0];
-            if (1 < count($ar)) {
-                array_shift($ar);
-            }
-            if (1 == count($ar) && true == $simple) {
-                $ar = $ar[0];
-            }
-        } else {
-            // Got more than 1 match return array contains string or sub-array
-            foreach ($ar as &$row) {
-                if (1 < count($row)) {
-                    array_shift($row);
-                }
-                if (1 == count($row)) {
-                    $row = $row[0];
-                }
-            }
-            unset($row);
         }
 
-        return $ar;
+        // Remove first element of match array, the whole match str part
+        foreach ($matches as &$row) {
+            if (1 < count($row)) {
+                array_shift($row);
+            }
+            if (1 == count($row)) {
+                $row = $row[0];
+            }
+        }
+        unset($row);
+
+        // Simplify
+        if (1 == count($matches) && $simple) {
+            $matches = $matches[0];
+        }
+
+        return $matches;
     }
 
 
