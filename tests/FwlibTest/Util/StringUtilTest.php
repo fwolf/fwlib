@@ -158,21 +158,6 @@ foo
     }
 
 
-    public function testMatchWildcard()
-    {
-        $stringUtil = $this->buildMock();
-
-        $this->assertTrue($stringUtil->matchWildcard('duck', '*c?'));
-        $this->assertTrue($stringUtil->matchWildcard('duck', '*d???'));
-        $this->assertFalse($stringUtil->matchWildcard('duck', '?c*'));
-
-        $s = 'beautiful';
-        $this->assertTrue($stringUtil->matchWildcard($s, 'b*f?l'));
-        $this->assertTrue($stringUtil->matchWildcard($s, '?e*f*'));
-        $this->assertFalse($stringUtil->matchWildcard($s, '?e*f?'));
-    }
-
-
     public function testMatchRegex()
     {
         $stringUtil = $this->buildMock();
@@ -199,6 +184,21 @@ foo
 
         $y = $stringUtil->matchRegex('/((q\w+) (b\w+))/', $x);
         $this->assertEqualArray(array('quick brown', 'quick', 'brown'), $y);
+    }
+
+
+    public function testMatchWildcard()
+    {
+        $stringUtil = $this->buildMock();
+
+        $this->assertTrue($stringUtil->matchWildcard('duck', '*c?'));
+        $this->assertTrue($stringUtil->matchWildcard('duck', '*d???'));
+        $this->assertFalse($stringUtil->matchWildcard('duck', '?c*'));
+
+        $s = 'beautiful';
+        $this->assertTrue($stringUtil->matchWildcard($s, 'b*f?l'));
+        $this->assertTrue($stringUtil->matchWildcard($s, '?e*f*'));
+        $this->assertFalse($stringUtil->matchWildcard($s, '?e*f?'));
     }
 
 

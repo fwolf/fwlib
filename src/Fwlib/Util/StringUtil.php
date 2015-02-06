@@ -201,35 +201,6 @@ class StringUtil
 
 
     /**
-     * Match a string with rule including wildcard
-     *
-     * Wildcard '*' means any number of chars, and '?' means EXACTLY one char.
-     *
-     * Eg: 'duck' match rule '*c?'
-     *
-     * @param   string  $str
-     * @param   string  $rule
-     * @return  boolean
-     */
-    public function matchWildcard($str, $rule)
-    {
-        // Convert wildcard rule to regex
-        $rule = str_replace('*', '.*', $rule);
-        $rule = str_replace('?', '.{1}', $rule);
-        $rule = '/' . $rule . '/';
-
-        // Must match whole string, same length
-        if ((1 == preg_match($rule, $str, $matches))
-            && (strlen($matches[0]) == strlen($str))
-        ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    /**
      * Match content using preg, return result array or string
      *
      * Return value maybe string or array, use with caution.
@@ -268,6 +239,35 @@ class StringUtil
         }
 
         return $matches;
+    }
+
+
+    /**
+     * Match a string with rule including wildcard
+     *
+     * Wildcard '*' means any number of chars, and '?' means EXACTLY one char.
+     *
+     * Eg: 'duck' match rule '*c?'
+     *
+     * @param   string  $str
+     * @param   string  $rule
+     * @return  boolean
+     */
+    public function matchWildcard($str, $rule)
+    {
+        // Convert wildcard rule to regex
+        $rule = str_replace('*', '.*', $rule);
+        $rule = str_replace('?', '.{1}', $rule);
+        $rule = '/' . $rule . '/';
+
+        // Must match whole string, same length
+        if ((1 == preg_match($rule, $str, $matches))
+            && (strlen($matches[0]) == strlen($str))
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
