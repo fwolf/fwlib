@@ -155,7 +155,8 @@ class ArrayUtil extends AbstractUtilAware
      * they means find elements suit the rules in source array,
      * and add_to/remove_from result array.
      *
-     * Parts operate sequence is by occur position in rules string.
+     * Parts operate sequence is by occur position in rules string, an item
+     * can be added or removed multiple times.
      *
      * Rules example: a*, -*b, -??c, +?d*
      *
@@ -186,33 +187,25 @@ class ArrayUtil extends AbstractUtilAware
             }
 
             // + or - ?
-            if ('+' == $rule[0]) {
-                $op = '+';
-                $rule = substr($rule, 1);
-            } elseif ('-' == $rule[0]) {
+            if ('-' == $rule[0]) {
                 $op = '-';
                 $rule = substr($rule, 1);
             } else {
                 $op = '+';
+                $rule = trim($rule, '+');
             }
 
             // Loop source array
             $stringUtil = $this->getUtil('StringUtil');
             foreach ($sources as $k => $source) {
-                if (true == $stringUtil->matchWildcard($source, $rule)) {
+                if ($stringUtil->matchWildcard($source, $rule)) {
                     // Got element to +/-
-                    $i = array_search($source, $arResult);
                     if ('+' == $op) {
-                        // Add to ar if not in it.
-                        if (false === $i) {
-                            $arResult =
-                                array_merge($arResult, array($k => $source));
-                        }
+                        // Add to result
+                        $arResult[$k] = $source;
                     } else {
-                        // Remove from ar if exists.
-                        if (false !== $i) {
-                            unset($arResult[$i]);
-                        }
+                        // Remove from result
+                        unset($arResult[$k]);
                     }
                 }
             }
