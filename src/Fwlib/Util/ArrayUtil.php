@@ -166,18 +166,15 @@ class ArrayUtil extends AbstractUtilAware
      */
     public function searchByWildcard($sources, $rules, $delimiter = ',')
     {
-        $arResult = array();
-
-        // Check empty input
-        if (empty($sources)) {
-            return $arResult;
-        }
-        if (empty($rules)) {
-            return $sources;
+        // Check empty input or rules
+        if (empty($sources) && empty($rules)) {
+            return array();
         }
 
         // Read rules
         $arRule = explode($delimiter, $rules);
+
+        $arResult = array();
 
         // Use rules
         foreach ($arRule as $rule) {
