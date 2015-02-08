@@ -6,7 +6,9 @@ namespace Fwlib\Util;
  *
  * @codeCoverageIgnore
  *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.Superglobals)
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  *
  * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -361,43 +363,48 @@ class HttpUtil extends AbstractUtilAware
      * if $k is array, then $v is array to, and k-v/values in $k/$v is
      * added/removed to/from url param.
      *
+     * Notice: Use UrlGenerator instead.
+     *
      * @codeCoverageIgnore
      *
-     * @param   mixed   $k          Key of url param, or array of k/v to add
-     * @param   mixed   $v          Val of url param, or array of key to remove
-     * @param   boolean $withSelfUrl    If true, return value include self url
-     * @return  string              '?' and '&' included.
+     * @param   string|array $k           Key of url param,
+     *                                    or array of keys/values to add
+     * @param   string|array $v           Value of url param,
+     *                                    or array of keys to remove
+     * @param   boolean      $fullUrl     Include 'http://...' part if true
+     * @return  string                    '?' and '&' included.
      */
     public function getUrlParam(
         $k = null,
         $v = null,
-        $withSelfUrl = false
+        $fullUrl = false
     ) {
-        $param = $this->getUtilContainer()->getString()
+        $params = $this->getUtilContainer()->getString()
             ->addSlashesRecursive($_GET);
 
         // $k is string
         if (is_string($k) && !empty($k)) {
-            $param[addslashes($k)] = addslashes($v);
+            $params[addslashes($k)] = addslashes($v);
+
         } else {
             // Add
-            if (is_array($k) && !empty($k)) {
-                foreach ($k as $key => $val) {
-                    $param[addslashes($key)] = addslashes($val);
+            if (!empty($k)) {
+                $k = array_map('addslashes', $k);
+                foreach ($k as $key => $value) {
+                    $params[$key] = $value;
                 }
             }
 
             // Remove
             if (!empty($v)) {
-                foreach ((array)$v as $val) {
-                    unset($param[$val]);
-                }
+                $v = (array)$v;
+                $params = array_diff_key($params, array_fill_keys($v, null));
             }
         }
 
         // Combine param
         $s = '';
-        foreach ((array)$param as $key => $val) {
+        foreach ((array)$params as $key => $val) {
             $s .= '&' . $key . '=' . $val;
         }
         if (!empty($s)) {
@@ -405,7 +412,7 @@ class HttpUtil extends AbstractUtilAware
         }
 
         // Add self url
-        if (true == $withSelfUrl) {
+        if ($fullUrl) {
             $s = $this->getSelfUrl(false) . $s;
         }
 
