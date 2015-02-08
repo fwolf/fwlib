@@ -19,7 +19,7 @@ use Fwlib\Util\UtilContainer;
  * - get(), read cache data,
  * - delete(), delete cache data.
  *
- * @copyright   Copyright 2012-2014 Fwolf
+ * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Cache extends AbstractAutoNewConfig implements CacheInterface

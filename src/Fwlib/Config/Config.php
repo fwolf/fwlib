@@ -10,7 +10,7 @@ use Fwlib\Util\UtilContainerInterface;
  *
  * Use as other class's property.
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Config implements \ArrayAccess, UtilAwareInterface
@@ -47,11 +47,11 @@ class Config implements \ArrayAccess, UtilAwareInterface
     public function get($key, $default = null)
     {
         if (false === strpos($key, $this->separator)) {
-            $arrayUtil = $this->getUtil('Array');
+            $arrayUtil = $this->getUtilContainer()->getArray();
             return $arrayUtil->getIdx($this->config, $key, $default);
 
         } else {
-            // Recoginize separator
+            // Recognize separator
             $ar = explode($this->separator, $key);
             $c = &$this->config;
 
@@ -70,20 +70,15 @@ class Config implements \ArrayAccess, UtilAwareInterface
 
 
     /**
-     * Get util instance
-     *
-     * Same with Fwlib\Util\AbstractUtilAware::getUtil()
-     *
-     * @param   string  $name
-     * @return  object  Util instance
+     * {@inheritdoc}
      */
-    protected function getUtil($name)
+    public function getUtilContainer()
     {
         if (is_null($this->utilContainer)) {
-            $this->setUtilContainer(null);
+            $this->utilContainer = UtilContainer::getInstance();
         }
 
-        return $this->utilContainer->get($name);
+        return $this->utilContainer;
     }
 
 
@@ -212,16 +207,12 @@ class Config implements \ArrayAccess, UtilAwareInterface
      * Setter of UtilContainer instance
      *
      * @param   UtilContainerInterface  $utilContainer
-     * @return  AbstractAutoNewInstance
+     * @return  static
      */
     public function setUtilContainer(
         UtilContainerInterface $utilContainer = null
     ) {
-        if (is_null($utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        } else {
-            $this->utilContainer = $utilContainer;
-        }
+        $this->utilContainer = $utilContainer;
 
         return $this;
     }

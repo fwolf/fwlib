@@ -8,6 +8,7 @@ use Fwlib\Html\TextDocument\UnknownMarkup;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\StringUtil;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Viewer of text document
@@ -32,7 +33,7 @@ use Fwlib\Util\StringUtil;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class DocumentView extends AbstractAutoNewConfig
@@ -351,6 +352,19 @@ class DocumentView extends AbstractAutoNewConfig
         }
 
         return $this->unknownMarkup;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUtilContainer()
+    {
+        if (is_null($this->utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        }
+
+        return $this->utilContainer;
     }
 
 

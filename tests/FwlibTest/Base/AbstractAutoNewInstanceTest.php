@@ -108,6 +108,17 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
     }
 
 
+    public function testGetUtilContainer()
+    {
+        $mock = $this->buildMock();
+
+        $this->assertInstanceOf(
+            'Fwlib\Util\UtilContainerInterface',
+            $mock->getUtilContainer()
+        );
+    }
+
+
     public function testSetInstance()
     {
         $dummy = new AbstractAutoNewConfigDummy;

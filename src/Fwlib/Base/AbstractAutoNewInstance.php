@@ -13,7 +13,7 @@ use Fwlib\Util\UtilContainerInterface;
  *
  * Auto new can also be skipped by call setInstance() method.
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractAutoNewInstance implements UtilAwareInterface
@@ -127,6 +127,19 @@ abstract class AbstractAutoNewInstance implements UtilAwareInterface
         }
 
         return $this->utilContainer->get($name);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUtilContainer()
+    {
+        if (is_null($this->utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        }
+
+        return $this->utilContainer;
     }
 
 

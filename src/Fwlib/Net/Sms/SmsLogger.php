@@ -2,6 +2,7 @@
 namespace Fwlib\Net\Sms;
 
 use Fwlib\Db\AbstractDbClient;
+use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UuidBase36;
 
 /**
@@ -9,7 +10,7 @@ use Fwlib\Util\UuidBase36;
  *
  * For schema of log table in db, see sms-log.sql.
  *
- * @copyright   Copyright 2010-2014 Fwolf
+ * @copyright   Copyright 2010-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  * @see sms-log.sql
  */

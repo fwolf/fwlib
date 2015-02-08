@@ -32,7 +32,7 @@ use Fwlib\Bridge\Adodb;
  * from mixed config from several set() before, use clear() to clear them, or
  * use getClause() method to avoid this.
  *
- * @copyright   Copyright 2003-2014 Fwolf
+ * @copyright   Copyright 2003-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SqlGenerator implements UtilAwareInterface
@@ -125,10 +125,10 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genDelete($part = null)
     {
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
 
         if (!empty($part) && is_array($part)) {
-            // Using prefered parts in $part only
+            // Using preferred parts in $part only
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
@@ -152,10 +152,10 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genInsert($part = array())
     {
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
 
         if (!empty($part) && is_array($part)) {
-            // Using prefered parts in $part only
+            // Using preferred parts in $part only
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
@@ -179,10 +179,10 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genSelect($part = array())
     {
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
 
         if (!empty($part) && is_array($part)) {
-            // Using prefered parts in $part only
+            // Using preferred parts in $part only
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
@@ -362,10 +362,10 @@ class SqlGenerator implements UtilAwareInterface
      */
     public function genUpdate($part = array())
     {
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
 
         if (!empty($part) && is_array($part)) {
-            // Using prefered parts in $part only
+            // Using preferred parts in $part only
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
@@ -514,27 +514,22 @@ class SqlGenerator implements UtilAwareInterface
 
 
     /**
-     * Get util instance
-     *
-     * Same with Fwlib\Util\AbstractUtilAware::getUtil()
-     *
-     * @param   string  $name
-     * @return  object  Util instance
+     * {@inheritdoc}
      */
-    protected function getUtil($name)
+    public function getUtilContainer()
     {
         if (is_null($this->utilContainer)) {
-            $this->setUtilContainer(null);
+            $this->utilContainer = UtilContainer::getInstance();
         }
 
-        return $this->utilContainer->get($name);
+        return $this->utilContainer;
     }
 
 
     /**
      * Set param
      *
-     * Un-recoginized clause is ignored.
+     * Un-recognized clause is ignored.
      *
      * @param   array   &$config
      * @return  string
@@ -792,16 +787,12 @@ class SqlGenerator implements UtilAwareInterface
      * Setter of UtilContainer
      *
      * @param   UtilContainerInterface  $utilContainer
-     * @return  SqlGenerator
+     * @return  static
      */
     public function setUtilContainer(
         UtilContainerInterface $utilContainer = null
     ) {
-        if (is_null($utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        } else {
-            $this->utilContainer = $utilContainer;
-        }
+        $this->utilContainer = $utilContainer;
 
         return $this;
     }

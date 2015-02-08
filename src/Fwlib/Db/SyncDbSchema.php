@@ -3,6 +3,7 @@ namespace Fwlib\Db;
 
 use Fwlib\Db\AbstractDbClient;
 use Fwlib\Util\Env;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Db schema synchronize & update tools
@@ -27,7 +28,7 @@ use Fwlib\Util\Env;
  * Other tools similar:
  * @link http://xml2ddl.berlios.de/
  *
- * @copyright   Copyright 2006-2014 Fwolf
+ * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SyncDbSchema extends AbstractDbClient

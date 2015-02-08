@@ -1,24 +1,27 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\UtilContainerInterface;
-
 /**
- * Interface of class uses Util
+ * Interface of class uses UtilContainer
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface UtilAwareInterface
 {
     /**
-     * Setter of UtilContainer
+     * Getter of UtilContainer instance
      *
-     * Assign value to $this->utilContainer. If given param is null, should
-     * get util container instance from UtilContainer or ServiceContainer.
+     * @return  UtilContainerInterface
+     */
+    public function getUtilContainer();
+
+
+    /**
+     * Setter of UtilContainer instance
      *
      * @param   UtilContainerInterface  $utilContainer
-     * @return  UtilAwareInterface
+     * @return  static
      */
     public function setUtilContainer(
         UtilContainerInterface $utilContainer = null

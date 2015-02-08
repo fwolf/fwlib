@@ -3,6 +3,7 @@ namespace Fwlib\Net\Sms;
 
 use Fwlib\Base\AbstractAutoNewConfig;
 use Fwlib\Net\Sms\SmsLogger;
+use Fwlib\Util\UtilContainer;
 
 /**
  * SMS Sender
@@ -10,7 +11,7 @@ use Fwlib\Net\Sms\SmsLogger;
  * Supported SMS send method:
  * - gammu smsd inject command
  *
- * @copyright   Copyright 2010-2014 Fwolf
+ * @copyright   Copyright 2010-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SmsSender extends AbstractAutoNewConfig

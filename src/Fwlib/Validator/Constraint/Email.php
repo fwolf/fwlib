@@ -9,7 +9,7 @@ use Fwlib\Util\UtilContainerInterface;
 /**
  * Constraint Email
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Email extends AbstractConstraint implements UtilAwareInterface
@@ -35,20 +35,15 @@ class Email extends AbstractConstraint implements UtilAwareInterface
 
 
     /**
-     * Get util instance
-     *
-     * Same with Fwlib\Util\AbstractUtilAware::getUtil()
-     *
-     * @param   string  $name
-     * @return  object  Util instance
+     * {@inheritdoc}
      */
-    protected function getUtil($name)
+    public function getUtilContainer()
     {
         if (is_null($this->utilContainer)) {
-            $this->setUtilContainer(null);
+            $this->utilContainer = UtilContainer::getInstance();
         }
 
-        return $this->utilContainer->get($name);
+        return $this->utilContainer;
     }
 
 
@@ -56,16 +51,12 @@ class Email extends AbstractConstraint implements UtilAwareInterface
      * Setter of UtilContainer instance
      *
      * @param   UtilContainerInterface  $utilContainer
-     * @return  AbstractAutoNewInstance
+     * @return  static
      */
     public function setUtilContainer(
         UtilContainerInterface $utilContainer = null
     ) {
-        if (is_null($utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        } else {
-            $this->utilContainer = $utilContainer;
-        }
+        $this->utilContainer = $utilContainer;
 
         return $this;
     }
@@ -132,7 +123,7 @@ class Email extends AbstractConstraint implements UtilAwareInterface
         // Some network provider will return fake A record if a dns query
         // return fail, usually disp some ads, so we only check MX record.
         if ($valid && $this->dnsCheck &&
-            $this->getUtil('Env')->isNixOs() &&
+            $this->getUtilContainer()->getEnv()->isNixOs() &&
             !checkdnsrr($domain, 'MX')
         ) {
             $valid = false;

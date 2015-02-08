@@ -30,7 +30,7 @@ use Fwlib\Util\UtilContainerInterface;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Url extends AbstractConstraint implements UtilAwareInterface
@@ -89,14 +89,19 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         return $this->serviceContainer->get($name);
     }
 
-    protected function getUtil($name)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUtilContainer()
     {
         if (is_null($this->utilContainer)) {
-            $this->setUtilContainer(null);
+            $this->utilContainer = UtilContainer::getInstance();
         }
 
-        return $this->utilContainer->get($name);
+        return $this->utilContainer;
     }
+
 
     public function setInstance($instance, $className = null)
     {
@@ -204,7 +209,7 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         } else {
             // Build post data array
             $postData = array();
-            $arrayUtil = $this->getUtil('Array');
+            $arrayUtil = $this->getUtilContainer()->getArray();
             foreach ($ar as $v) {
                 $v = trim($v);
 

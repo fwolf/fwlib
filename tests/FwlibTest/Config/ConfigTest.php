@@ -6,11 +6,23 @@ use Fwlib\Config\Config;
 use Fwlib\Util\UtilContainer;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ConfigTest extends PHPunitTestCase
 {
+    public function testAccessors()
+    {
+        $config = new Config;
+
+        $utilContainer = $config->getUtilContainer();
+        $this->assertInstanceOf(
+            'Fwlib\Util\UtilContainerInterface',
+            $utilContainer
+        );
+    }
+
+
     public function testSetGet()
     {
         $config = new Config;

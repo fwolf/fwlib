@@ -28,7 +28,7 @@ use Fwlib\Util\UtilContainer;
  * Encoding convert for query result will NOT automatic done, although we
  * provide a method convertEncodingResult() to do this manually.
  *
- * @copyright   Copyright 2008-2014 Fwolf
+ * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Adodb extends AbstractUtilAware
@@ -1109,13 +1109,15 @@ class Adodb extends AbstractUtilAware
 
 
     /**
-     * Get instance of UtilContainer
-     *
-     * @return  UtilContainer
+     * {@inheritdoc}
      */
-    protected function getUtilContainer()
+    public function getUtilContainer()
     {
-        return UtilContainer::getInstance();
+        if (is_null($this->utilContainer)) {
+            $this->utilContainer = UtilContainer::getInstance();
+        }
+
+        return $this->utilContainer;
     }
 
 
