@@ -11,57 +11,64 @@ use Fwlib\Util\UtilContainer;
  */
 class HttpUtilTest extends PHPunitTestCase
 {
-    protected $httpUtil;
     public static $sessionId = '';
     public static $cookies = array();
 
 
-    public function __construct()
+    /**
+     * @return HttpUtil
+     */
+    public function buildMock()
     {
-        $this->httpUtil = new HttpUtil;
-        $this->httpUtil->setUtilContainer();
+        return UtilContainer::getInstance()->getHttp();
     }
 
 
     public function testClearGetSetSession()
     {
-        $this->httpUtil->setSession('foo', 'bar');
-        $this->assertEquals('bar', $this->httpUtil->getSession('foo'));
+        $httpUtil = $this->buildMock();
 
-        $this->httpUtil->clearSession();
+        $httpUtil->setSession('foo', 'bar');
+        $this->assertEquals('bar', $httpUtil->getSession('foo'));
+
+        $httpUtil->clearSession();
         $this->assertArrayNotHasKey('foo', $_SESSION);
     }
 
 
     public function testDownload()
     {
+        $httpUtil = $this->buildMock();
+
         $x = 'Test for download()';
         $this->expectOutputString($x);
-        $this->httpUtil->download($x);
+        $httpUtil->download($x);
     }
 
 
     public function testGetBrowserType()
     {
-        $this->assertEquals('gecko', $this->httpUtil->getBrowserType(''));
-        $this->assertEquals(null, $this->httpUtil->getBrowserType('none', null));
+        $httpUtil = $this->buildMock();
+
+        $this->assertEquals('gecko', $httpUtil->getBrowserType(''));
+        $this->assertEquals(null, $httpUtil->getBrowserType('none', null));
 
         // Safari 6.0
-        $x = $this->httpUtil->getBrowserType(
+        $x = $httpUtil->getBrowserType(
             'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko)' .
             ' Version/6.0 Mobile/10A5355d Safari/8536.25'
         );
         $this->assertEquals('webkit', $x);
 
         // IE 10.6
-        $x = $this->httpUtil->getBrowserType(
+        $x = $httpUtil->getBrowserType(
             'Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1;' .
             ' .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0'
         );
         $this->assertEquals('trident', $x);
 
         // Chrome 30.0.1599.17
-        $x = $this->httpUtil->getBrowserType(
+        $x = $httpUtil->getBrowserType(
             'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)' .
             ' Chrome/30.0.1599.17 Safari/537.36'
         );
@@ -72,23 +79,25 @@ class HttpUtilTest extends PHPunitTestCase
 
     public function testGetParam()
     {
+        $httpUtil = $this->buildMock();
+
         $_GET = array('a' => 1);
-        $x = $this->httpUtil->getUrlParam();
+        $x = $httpUtil->getUrlParam();
         $y = '?a=1';
         $this->assertEquals($y, $x);
 
         $_GET = array('a' => 1);
-        $x = $this->httpUtil->getUrlParam('b', 2);
+        $x = $httpUtil->getUrlParam('b', 2);
         $y = '?a=1&b=2';
         $this->assertEquals($y, $x);
 
         $_GET = array('a' => 1, 'b' => '', 'c' => 3);
-        $x = $this->httpUtil->getUrlParam(array('a' => 2, 1 => 'a'), array('b', 'c'));
+        $x = $httpUtil->getUrlParam(array('a' => 2, 1 => 'a'), array('b', 'c'));
         $y = '?a=2&1=a';
         $this->assertEquals($y, $x);
 
         $_GET = array('a' => 1, 'b' => '', 'c' => 3);
-        $x = $this->httpUtil->getUrlParam(array('a' => 2, 1 => 'a'), 'b');
+        $x = $httpUtil->getUrlParam(array('a' => 2, 1 => 'a'), 'b');
         $y = '?a=2&c=3&1=a';
         $this->assertEquals($y, $x);
 
@@ -97,28 +106,32 @@ class HttpUtilTest extends PHPunitTestCase
 
     public function testGetRequest()
     {
+        $httpUtil = $this->buildMock();
+
         $_REQUEST = array(
             'a' => 'foo',
             'b' => array('foo', 'bar'),
         );
 
-        $this->assertEquals('foo', $this->httpUtil->getRequest($_REQUEST, 'a'));
+        $this->assertEquals('foo', $httpUtil->getRequest($_REQUEST, 'a'));
     }
 
 
     public function testGetUrlPlan()
     {
+        $httpUtil = $this->buildMock();
+
         $url = 'http://www.google.com/?a=https://something';
-        $this->assertEquals('http', $this->httpUtil->getUrlPlan($url));
+        $this->assertEquals('http', $httpUtil->getUrlPlan($url));
 
         $url = 'https://www.domain.tld/';
-        $this->assertEquals('https', $this->httpUtil->getUrlPlan($url));
+        $this->assertEquals('https', $httpUtil->getUrlPlan($url));
 
         $url = 'ftp://domain.tld/';
-        $this->assertEquals('ftp', $this->httpUtil->getUrlPlan($url));
+        $this->assertEquals('ftp', $httpUtil->getUrlPlan($url));
 
         $url = '';
-        $this->assertRegExp('/(https?)?/i', $this->httpUtil->getUrlPlan($url));
+        $this->assertRegExp('/(https?)?/i', $httpUtil->getUrlPlan($url));
     }
 
 
@@ -165,20 +178,22 @@ class HttpUtilTest extends PHPunitTestCase
 
     public function testStartSession()
     {
-        if (0 != $this->httpUtil->getSessionId()) {
+        $httpUtil = $this->buildMock();
+
+        if (0 != $httpUtil->getSessionId()) {
             \Fwlib\Util\session_destroy();
         }
 
         self::$sessionId = '';
-        $sessionId = $this->httpUtil->getSessionId();
+        $sessionId = $httpUtil->getSessionId();
         $this->assertEmpty($sessionId);
 
-        $this->httpUtil->startSession();
-        $sessionId = $this->httpUtil->getSessionId();
+        $httpUtil->startSession();
+        $sessionId = $httpUtil->getSessionId();
         $this->assertNotEmpty($sessionId);
 
-        $this->httpUtil->startSession(true);
-        $newSessionId = $this->httpUtil->getSessionId();
+        $httpUtil->startSession(true);
+        $newSessionId = $httpUtil->getSessionId();
         $this->assertNotEquals($sessionId, $newSessionId);
     }
 }
