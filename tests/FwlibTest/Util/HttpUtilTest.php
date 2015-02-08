@@ -133,6 +133,24 @@ class HttpUtilTest extends PHPunitTestCase
     }
 
 
+    public function testGetGetsAndGetPosts()
+    {
+        $httpUtil = $this->buildMock();
+
+        $dummy = array(
+            'foo' => "It's hot",
+        );
+
+        $_GET = $dummy;
+        $getParams = $httpUtil->getGets();
+        $this->assertEquals("It\\'s hot", $getParams['foo']);
+
+        $_POST = $dummy;
+        $getParams = $httpUtil->getPosts();
+        $this->assertEquals("It\\'s hot", $getParams['foo']);
+    }
+
+
     public function testGetParam()
     {
         $httpUtil = $this->buildMock();

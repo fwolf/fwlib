@@ -16,6 +16,27 @@ namespace Fwlib\Util;
 class HttpUtil extends AbstractUtilAware
 {
     /**
+     * Add slashes to user input contents recursive
+     *
+     * @param   array   $input
+     * @return  array
+     */
+    protected function addSlashes($input)
+    {
+        // magic_quotes_gpc is deprecated from php 5.4.0
+        if (version_compare(PHP_VERSION, '5.4.0', '>=')
+            || !get_magic_quotes_gpc()
+        ) {
+            $stringUtil = $this->getUtilContainer()->getString();
+
+            $input = $stringUtil->addSlashesRecursive($input);
+        }
+
+        return $input;
+    }
+
+
+    /**
      * Clear all session content, but still keep it started
      */
     public function clearSession()
@@ -226,6 +247,21 @@ class HttpUtil extends AbstractUtilAware
 
 
     /**
+     * Get all get parameters
+     *
+     * @return  string[]
+     */
+    public function getGets()
+    {
+        $params = $_GET;
+
+        $params = $this->addSlashes($params);
+
+        return $params;
+    }
+
+
+    /**
      * Get variant from $_POST
      *
      * @codeCoverageIgnore
@@ -237,6 +273,21 @@ class HttpUtil extends AbstractUtilAware
     public function getPost($var, $default = null)
     {
         return $this->getRequest($_POST, $var, $default);
+    }
+
+
+    /**
+     * Get all post parameters
+     *
+     * @return  string[]
+     */
+    public function getPosts()
+    {
+        $params = $_POST;
+
+        $params = $this->addSlashes($params);
+
+        return $params;
     }
 
 
@@ -255,16 +306,10 @@ class HttpUtil extends AbstractUtilAware
         if (isset($request[$var])) {
             $val = $request[$var];
 
-            // Deal with special chars in parameters
-            // magic_quotes_gpc is deprecated from php 5.4.0
-            if (version_compare(PHP_VERSION, '5.4.0', '>=')
-                || !get_magic_quotes_gpc()
-            ) {
-                $val = $this->getUtilContainer()->getString()
-                    ->addSlashesRecursive($val);
-            }
+            $val = $this->addSlashes($val);
 
             return $val;
+
         } else {
             return $default;
         }
