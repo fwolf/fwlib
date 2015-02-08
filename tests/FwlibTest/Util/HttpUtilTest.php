@@ -6,12 +6,31 @@ use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
 
 /**
+ * @SuppressWarnings(PHPMD.Superglobals)
+ *
  * @copyright   Copyright 2004-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class HttpUtilTest extends PHPunitTestCase
 {
+    /**
+     * Mocked result of native header()
+     *
+     * @type string
+     */
+    public static $header = '';
+
+    /**
+     * Mocked result of native session methods
+     *
+     * @type string
+     */
     public static $sessionId = '';
+
+    /**
+     * Mocked result of native cookie methods
+     * @type array
+     */
     public static $cookies = array();
 
 
@@ -148,7 +167,7 @@ class HttpUtilTest extends PHPunitTestCase
         $httpUtil->expects($this->any())
             ->method('getCookie')
             ->will($this->returnCallback(function ($name) {
-                $cookies = \FwlibTest\Util\HttpUtilTest::$cookies;
+                $cookies = HttpUtilTest::$cookies;
 
                 if (array_key_exists($name, $cookies)) {
                     // Did not check expire time
@@ -201,39 +220,69 @@ class HttpUtilTest extends PHPunitTestCase
 
 namespace Fwlib\Util;
 
+/**
+ * @param   string  $headerString
+ */
 function header($headerString)
 {
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+    \FwlibTest\Util\HttpUtilTest::$header = $headerString;
 }
 
 
+/**
+ * Mock
+ */
 function session_destroy()
 {
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     \FwlibTest\Util\HttpUtilTest::$sessionId = '';
 }
 
 
+/**
+ * Mock
+ *
+ * @return string
+ */
 function session_id()
 {
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     return \FwlibTest\Util\HttpUtilTest::$sessionId;
 }
 
 
+/**
+ * Mock
+ */
 function session_regenerate_id()
 {
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     \FwlibTest\Util\HttpUtilTest::$sessionId = UtilContainer::getInstance()
         ->getString()
         ->random(10, 'a0');
 }
 
 
+/**
+ * Mock
+ */
 function session_start()
 {
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     \FwlibTest\Util\HttpUtilTest::$sessionId = UtilContainer::getInstance()
         ->getString()
         ->random(10, 'a0');
 }
 
 
+/**
+ * Mock
+ *
+ * @param   string  $name
+ * @param   string  $value
+ * @param   int     $expire
+ */
 function setcookie($name, $value, $expire)
 {
     if (0 == $expire) {
@@ -241,9 +290,11 @@ function setcookie($name, $value, $expire)
     }
 
     if (time() > $expire) {
+        /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
         unset(\FwlibTest\Util\HttpUtilTest::$cookies[$name]);
 
     } else {
+        /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
         \FwlibTest\Util\HttpUtilTest::$cookies[$name] = $value;
     }
 }

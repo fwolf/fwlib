@@ -1,14 +1,14 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\AbstractUtilAware;
-
 /**
  * Http util
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2006-2014 Fwolf
+ * @SuppressWarnings(PHPMD.Superglobals)
+ *
+ * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class HttpUtil extends AbstractUtilAware
@@ -39,23 +39,23 @@ class HttpUtil extends AbstractUtilAware
     ) {
         // Use timestamp as filename if not provide
         if (empty($filename)) {
-            list($usec, $sec) = explode(' ', microtime());
-            $usec = substr(strval($usec), 2, 3);
-            $filename = $sec . $usec;
+            list($msec, $sec) = explode(' ', microtime());
+            $msec = substr(strval($msec), 2, 3);
+            $filename = $sec . $msec;
         }
 
-        $filepath = sys_get_temp_dir();
-        if ('/' != substr($filepath, -1)) {
-            $filepath .= '/';
+        $filePath = sys_get_temp_dir();
+        if ('/' != substr($filePath, -1)) {
+            $filePath .= '/';
         }
 
         // Then got full path of tmp file
-        $tmpfilename = $filepath . $filename;
+        $tmpFileName = $filePath . $filename;
 
-        file_put_contents($tmpfilename, $content);
-        $result = $this->downloadFile($tmpfilename, $filename, $mime);
+        file_put_contents($tmpFileName, $content);
+        $result = $this->downloadFile($tmpFileName, $filename, $mime);
 
-        unlink($tmpfilename);
+        unlink($tmpFileName);
         return $result;
     }
 
@@ -65,24 +65,24 @@ class HttpUtil extends AbstractUtilAware
      *
      * @codeCoverageIgnore
      *
-     * @param   string  $filepath   Full path to download file.
+     * @param   string  $filePath   Full path to download file.
      * @param   string  $filename   Download file name, send to client, not path on server.
      * @param   string  $mime       Mime type of file
      * @return  boolean
      */
     public function downloadFile(
-        $filepath,
+        $filePath,
         $filename = '',
         $mime = 'application/force-download'
     ) {
         // Check and fix parameters
-        if (!is_file($filepath) || !is_readable($filepath)) {
+        if (!is_file($filePath) || !is_readable($filePath)) {
             return false;
         }
 
         // If no client filename given, use original name
         if (empty($filename)) {
-            $filename = basename($filepath);
+            $filename = basename($filePath);
         }
 
         // Begin writing headers
@@ -104,17 +104,17 @@ class HttpUtil extends AbstractUtilAware
         header("Accept-Ranges: bytes");
 
         // Read temp file & output
-        $size = filesize($filepath);
-        $size_downloaded = 0;   // Avoid infinite loop
-        $size_step = 1024 * 64;  // Control download speed
+        $totalSize = filesize($filePath);
+        $downloadedSize = 0;   // Avoid infinite loop
+        $stepSize = 1024 * 64;  // Control download speed
 
-        $fp = fopen($filepath, 'rb');
+        $fp = fopen($filePath, 'rb');
         // Start buffered download
         // Reset time limit for big files
         set_time_limit(0);
-        while (!feof($fp) && ($size > $size_downloaded)) {
-            print(fread($fp, $size_step));
-            $size_downloaded += $size_step;
+        while (!feof($fp) && ($totalSize > $downloadedSize)) {
+            print(fread($fp, $stepSize));
+            $downloadedSize += $stepSize;
         }
 
         fclose($fp);
@@ -176,22 +176,20 @@ class HttpUtil extends AbstractUtilAware
      */
     public function getClientIp()
     {
-        $s = '';
-
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             // Original way: check ip from share internet
-            $s = $_SERVER['HTTP_CLIENT_IP'];
+            $rs = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             // Using proxy ?
-            $s = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $rs = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
             // Another way
-            $s = $_SERVER['REMOTE_ADDR'];
+            $rs = $_SERVER['REMOTE_ADDR'];
         } else {
-            $s = '';
+            $rs = '';
         }
 
-        return $s;
+        return $rs;
     }
 
 
@@ -448,7 +446,7 @@ class HttpUtil extends AbstractUtilAware
      * @param   string  $path
      * @param   string  $domain
      * @param   boolean $secure
-     * @param   boolean $httponly
+     * @param   boolean $httpOnly
      */
     public function setCookie(
         $name,
@@ -457,7 +455,7 @@ class HttpUtil extends AbstractUtilAware
         $path = null,
         $domain = null,
         $secure = false,
-        $httponly = false
+        $httpOnly = false
     ) {
         if (is_null($domain)) {
             if (is_null($path)) {
@@ -475,7 +473,7 @@ class HttpUtil extends AbstractUtilAware
                 $path,
                 $domain,
                 $secure,
-                $httponly
+                $httpOnly
             );
         }
     }
