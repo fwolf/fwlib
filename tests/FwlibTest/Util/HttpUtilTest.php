@@ -7,12 +7,27 @@ use Fwlib\Util\UtilContainer;
 
 /**
  * @SuppressWarnings(PHPMD.Superglobals)
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  *
  * @copyright   Copyright 2004-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class HttpUtilTest extends PHPunitTestCase
 {
+    /**
+     * Backup of globals
+     *
+     * @type    array[]
+     */
+    protected static $backups = array();
+
+    /**
+     * Mocked result of native cookie methods
+     *
+     * @type array
+     */
+    public static $cookies = array();
+
     /**
      * Mocked result of native header()
      *
@@ -27,12 +42,6 @@ class HttpUtilTest extends PHPunitTestCase
      */
     public static $sessionId = '';
 
-    /**
-     * Mocked result of native cookie methods
-     * @type array
-     */
-    public static $cookies = array();
-
 
     /**
      * @return HttpUtil
@@ -40,6 +49,34 @@ class HttpUtilTest extends PHPunitTestCase
     public function buildMock()
     {
         return UtilContainer::getInstance()->getHttp();
+    }
+
+
+    public static function setUpBeforeClass()
+    {
+        self::$backups['get'] = $_GET;
+        self::$backups['post'] = $_POST;
+        self::$backups['request'] = $_REQUEST;
+
+        if (isset($_SESSION)) {
+            self::$backups['session'] = $_SESSION;
+        }
+
+        self::$backups['cookie'] = $_COOKIE;
+    }
+
+
+    public static function tearDownAfterClass()
+    {
+        $_GET = self::$backups['get'];
+        $_POST = self::$backups['post'];
+        $_REQUEST = self::$backups['request'];
+
+        if (isset(self::$backups['session'])) {
+            $_SESSION = self::$backups['session'];
+        }
+
+        $_COOKIE = self::$backups['cookie'];
     }
 
 
