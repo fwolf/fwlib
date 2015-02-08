@@ -156,6 +156,14 @@ class ArrayUtil extends AbstractUtilAware
      * Callback can be apply to value before return result array. If callback
      * and noEmpty are both present, will do empty check on callback result.
      *
+     * The result array will use same keys of $keys, if $keys uses number
+     * index, the value of $keys will be used, this is also key in $sources.
+     * Eg:
+     *      // Key replace mode, $rs will be array('paramA' => 1)
+     *      $rs = pick(array('a' => 1), array('paramA' => 'a'))
+     *      // Normal mode, $rs will be array('a' => 1)
+     *      $rs = pick(array('a' => 1), array('a'))
+     *
      * @param   array    $sources
      * @param   array    $keys
      * @param   boolean  $noEmpty
@@ -168,7 +176,16 @@ class ArrayUtil extends AbstractUtilAware
         $noEmpty = false,
         $callback = null
     ) {
-        $results = array_intersect_key($sources, array_fill_keys($keys, null));
+        $results = array();
+        foreach ($keys as $keyOfKeys => $valueOfKeys) {
+            if (array_key_exists($valueOfKeys, $sources)) {
+                // '1' is number, so do string check instead
+                $keyOfResult = is_string($keyOfKeys)
+                    ? $keyOfKeys
+                    : $valueOfKeys;
+                $results[$keyOfResult] = $sources[$valueOfKeys];
+            }
+        }
 
         if (is_callable($callback)) {
             foreach ($results as &$value) {

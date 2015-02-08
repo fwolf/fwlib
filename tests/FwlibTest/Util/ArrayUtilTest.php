@@ -189,6 +189,15 @@ class ArrayUtilTest extends PHPunitTestCase
         );
 
 
+        // Key replacement
+        $keys = array('paramA' => 'a', 'paramB' => 'b');
+        $y = array(
+            'paramA' => 'A ',
+            'paramB' => 42,
+        );
+        $this->assertEqualArray($y, $arrayUtil->pick($sources, $keys, true));
+
+
         // noEmpty
         $keys = array('a', 'b', 'c', 'd');
         $y = array(
