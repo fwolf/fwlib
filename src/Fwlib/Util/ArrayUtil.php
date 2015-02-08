@@ -251,7 +251,7 @@ class ArrayUtil extends AbstractUtilAware
             }
 
             // Loop source array
-            $stringUtil = $this->getUtil('StringUtil');
+            $stringUtil = $this->getUtilContainer()->getString();
             foreach ($sources as $k => $source) {
                 if ($stringUtil->matchWildcard($source, $rule)) {
                     // Got element to +/-
