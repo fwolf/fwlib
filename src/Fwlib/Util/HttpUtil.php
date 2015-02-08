@@ -489,6 +489,42 @@ class HttpUtil extends AbstractUtilAware
 
 
     /**
+     * Pick values from all get parameters
+     *
+     * @param   string[]    $keys
+     * @param   boolean     $noEmpty
+     * @param   callable    $callback
+     * @return  string[]
+     */
+    public function pickGets(array $keys, $noEmpty = false, $callback = null)
+    {
+        $arrayUtil = $this->getUtilContainer()->getArray();
+
+        $params = $this->getGets();
+
+        return $arrayUtil->pick($params, $keys, $noEmpty, $callback);
+    }
+
+
+    /**
+     * Pick values from all post parameters
+     *
+     * @param   string[]    $keys
+     * @param   boolean     $noEmpty
+     * @param   callable    $callback
+     * @return  string[]
+     */
+    public function pickPosts(array $keys, $noEmpty = false, $callback = null)
+    {
+        $arrayUtil = $this->getUtilContainer()->getArray();
+
+        $params = $this->getPosts();
+
+        return $arrayUtil->pick($params, $keys, $noEmpty, $callback);
+    }
+
+
+    /**
      * Set value to cookie
      *
      * Notice: Cookies will not become visible until the next loading of a

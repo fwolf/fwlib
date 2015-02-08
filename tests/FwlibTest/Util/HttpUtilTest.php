@@ -209,6 +209,28 @@ class HttpUtilTest extends PHPunitTestCase
     }
 
 
+    public function testPickGetsAndPickPosts()
+    {
+        $httpUtil = $this->buildMock();
+
+        $dummy = array(
+            'a' => '0',
+            'b' => '1',
+        );
+
+        $_GET = $dummy;
+        $params = $httpUtil->pickGets(array('a', 'b'), true);
+        $this->assertEqualArray(array('b' => '1'), $params);
+
+        $_POST = $dummy;
+        $callback = function ($value) {
+            return 10 * $value;
+        };
+        $params = $httpUtil->pickPosts(array('a', 'b'), false, $callback);
+        $this->assertEqualArray(array('a' => 0, 'b' => 10), $params);
+    }
+
+
     /**
      * Please notice that normal cookie set will only be available till next
      * page load, here in test we are using simulated cookie method.
