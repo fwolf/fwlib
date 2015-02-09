@@ -93,7 +93,7 @@ class ArrayUtil extends AbstractUtilAware
      * @param   array       &$source
      * @param   string|int  $idx        Position idx, append if not found
      * @param   array       $insert     Array to insert, can have multi item
-     * @param   integer     $offset       Insert offset
+     * @param   integer     $offset     Insert offset
      * @return  array
      */
     public function insert(&$source, $idx, array $insert, $offset = 1)
@@ -117,7 +117,7 @@ class ArrayUtil extends AbstractUtilAware
         }
 
         // When combines result, drop keys from source exist in insert
-        $duplicate = array_intersect($source, $insert);
+        $duplicate = array_intersect_key($source, $insert);
 
         // Compute actual insert position by offset
         $insertPosition += $offset;

@@ -177,6 +177,29 @@ class ArrayUtilTest extends PHPunitTestCase
     }
 
 
+    public function testInsertWithReplaceKey()
+    {
+        $arrayUtil = $this->buildMock();
+
+        $source = array(
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        );
+        $insert = array(
+            'c' => 33,
+        );
+        // Insert before a key
+        $x = $source;
+        $y = array(
+            'a' => 1,
+            'c' => 33,
+            'b' => 2,
+        );
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'c', $insert, -2));
+    }
+
+
     public function testPick()
     {
         $arrayUtil = $this->buildMock();
