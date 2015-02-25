@@ -4,6 +4,9 @@ namespace Fwlib\Base;
 /**
  * ClassLoader implement PSR-4
  *
+ * Notice: Composer and its autoloader will be enough good in most case.
+ * Although this class can still used to load old library not support composer.
+ *
  * Usage:
  *
  *  require 'path/to/ClassLoader.php';
