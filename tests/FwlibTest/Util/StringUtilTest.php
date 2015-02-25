@@ -235,6 +235,11 @@ foo
         $y = '测<b><i><br / >试</i></b>&quot;<b>2...</b>';
         $this->assertEquals($y, $x);
 
+        $x = '<b>Test</b><b>Test</b><b>Test</b>';
+        $x = $stringUtil->substrIgnoreHtml($x, 7, '...');
+        $y = '<b>Test</b><b>...</b>';
+        $this->assertEquals($y, $x);
+
         $x = '`reStructuredText 中文示例 <?f=20101113-restructuredtext-example.rst>`_';
         $y = $stringUtil->substrIgnoreHtml($x, 71, '');
         $this->assertEquals($y, $x);
