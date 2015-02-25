@@ -5,21 +5,48 @@ use Fwlib\Bridge\PHPUnitTestCase;
 use Fwlib\Config\GlobalConfig;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class GlobalConfigTest extends PHPunitTestCase
 {
+    /**
+     * Config key of server id
+     *
+     * @type    string
+     */
+    const KEY_SERVER_ID = 'server.id';
+
+    /**
+     * @type    GlobalConfig
+     */
     private $globalConfig;
+
+    /**
+     * @type string
+     */
     public static $output = '';
 
+    /**
+     * Backup of server id
+     *
+     * @type    string|int
+     */
+    private static $serverIdBackup;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->globalConfig = $this->buildMock();
     }
 
 
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject | GlobalConfig
+     */
     protected function buildMock()
     {
         // Assign array() to param methods here will cause mock to be a stub,
@@ -34,63 +61,75 @@ class GlobalConfigTest extends PHPunitTestCase
     }
 
 
+    public static function setUpBeforeClass()
+    {
+        self::$serverIdBackup = GlobalConfig::getInstance()
+            ->get(self::KEY_SERVER_ID);
+    }
+
+
+    public static function tearDownAfterClass()
+    {
+        GlobalConfig::getInstance()
+            ->set(self::KEY_SERVER_ID, self::$serverIdBackup);
+    }
+
+
+    public function testCheckServerId()
+    {
+        $globalConfig = $this->globalConfig;
+
+        $globalConfig->set(self::KEY_SERVER_ID, 'dummy');
+        $this->assertTrue(
+            $globalConfig->checkServerId('dummy', self::KEY_SERVER_ID)
+        );
+        $this->assertTrue(
+            $globalConfig->checkServerId(array('dummy'), self::KEY_SERVER_ID)
+        );
+        $this->assertFalse(
+            $globalConfig->checkServerId('foobar', self::KEY_SERVER_ID)
+        );
+    }
+
+
+    /**
+     * @expectedException   \Fwlib\Config\Exception\ServerIdNotSet
+     */
+    public function testCheckServerIdWithException()
+    {
+        $globalConfig = $this->globalConfig;
+
+        // TODO: Need an unset ?
+        unset($globalConfig->config['server']['id']);
+
+        $globalConfig->checkServerId('dummy', self::KEY_SERVER_ID);
+    }
+
+
     public function testLimitServerId()
     {
         $globalConfig = $this->globalConfig;
 
-        // Using phpunit/test_helpers
-        // @link https://github.com/php-test-helpers/php-test-helpers
-        // @link http://thedeveloperworldisyours.com/php/phpunit-tips/
-        if (!extension_loaded('test_helpers')) {
-            $this->markTestSkipped('Need extension test_helpers');
-        }
-        set_exit_overload(
-            function ($output) {
-                GlobalConfigTest::$output = $output;
-                return false;
-            }
-        );
+        $globalConfig->set(self::KEY_SERVER_ID, 'dummy');
+        $globalConfig->limitServerId('dummy', self::KEY_SERVER_ID);
+
+        $globalConfig->set(self::KEY_SERVER_ID, 42);
+        $globalConfig->limitServerId(42, self::KEY_SERVER_ID);
+
+        // No exception thrown
+        $this->assertTrue(true);
+    }
 
 
-        $serverIdBackup = $globalConfig->get('server.id');
-        unset($globalConfig->config['server']['id']);
+    /**
+     * @expectedException   \Fwlib\Config\Exception\ServerProhibited
+     */
+    public function testLimitServerIdWithException()
+    {
+        $globalConfig = $this->globalConfig;
 
-
-        // Test exit with msg
-        $globalConfig->limitServerId(1);
-        $this->assertEquals(
-            'Server id not set.',
-            self::$output
-        );
-
-        $globalConfig->set('server.id', 2);
-        $this->assertEquals(true, $globalConfig->limitServerId(2));
-
-        $globalConfig->limitServerId(1);
-        $this->assertEquals(
-            self::$output,
-            'This program can only run on server 1.'
-        );
-
-        $globalConfig->limitServerId(array(1, 3));
-        $this->assertEquals(
-            self::$output,
-            'This program can only run on these servers: 1, 3.'
-        );
-
-
-        unset_exit_overload();
-
-
-        // Fail, but not exit
-        $this->assertFalse(
-            $globalConfig->limitServerId(array(1, 3), false)
-        );
-
-        $this->assertFalse($globalConfig->limitServerId(10, false));
-
-
-        $globalConfig->set('server.id', $serverIdBackup);
+        $globalConfig->set(self::KEY_SERVER_ID, 'dummy');
+        $globalConfig->limitServerId('foo', self::KEY_SERVER_ID);
     }
 
 

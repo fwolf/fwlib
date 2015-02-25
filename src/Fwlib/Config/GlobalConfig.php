@@ -1,7 +1,8 @@
 <?php
 namespace Fwlib\Config;
 
-use Fwlib\Config\Config;
+use Fwlib\Config\Exception\ServerIdNotSet;
+use Fwlib\Config\Exception\ServerProhibited;
 
 /**
  * Config class for store global setting
@@ -12,7 +13,7 @@ use Fwlib\Config\Config;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class GlobalConfig extends Config
@@ -45,6 +46,32 @@ class GlobalConfig extends Config
 
 
     /**
+     * Check current server id in allowed list
+     *
+     * Server is identify by config key.
+     *
+     * @param   string|int|string[]|int[]   $allowedId
+     * @param   string                      $key    Config key of server id
+     * @return  boolean
+     * @throws  ServerIdNotSet
+     */
+    public function checkServerId($allowedId, $key = 'server.id')
+    {
+        $serverId = $this->get($key);
+
+        if (empty($serverId)) {
+            throw new ServerIdNotSet('Server id not set');
+        }
+
+        if (!is_array($allowedId)) {
+            $allowedId = array($allowedId);
+        }
+
+        return in_array($serverId, $allowedId);
+    }
+
+
+    /**
      * Get instance of Singleton itself
      *
      * @return  object
@@ -62,38 +89,26 @@ class GlobalConfig extends Config
 
 
     /**
-     * Limit program can only run on prefered server
+     * Limit program can only run on preferred server
      *
      * Server is identify by config key.
      *
-     * @param   mixed   $id     Server id allowed, string|int or array of them
-     * @param   boolean $exit   If true, exit() when check fail
-     * @param   string  $key    Config key of server id
-     * @return  boolean
+     * @param   string|int|string[]|int[]   $allowedId
+     * @param   string                      $key    Config key of server id
+     * @return  static
+     * @throws  ServerProhibited
      */
-    public function limitServerId($id, $exit = true, $key = 'server.id')
+    public function limitServerId($allowedId, $key = 'server.id')
     {
-        $message = '';
+        if (!$this->checkServerId($allowedId, $key)) {
+            $message = 'This program can only run on ' .
+                (is_array($allowedId)
+                    ? 'servers: ' . implode(', ', $allowedId)
+                    : 'server ' . $allowedId);
 
-        $serverId = $this->get($key);
-        if (empty($serverId)) {
-            $message = 'Server id not set.';
-
-        } elseif (is_array($id) && !(in_array($serverId, $id))) {
-            $message = 'This program can only run on these servers: ' .
-                implode(', ', $id) . '.';
-
-        } elseif (!is_array($id) && ($serverId != $id)) {
-            $message = 'This program can only run on server ' . $id . '.';
+            throw new ServerProhibited($message);
         }
 
-
-        if (empty($message)) {
-            return true;
-
-        } else {
-            // Check fail
-            return (true == $exit) ? exit($message) : false;
-        }
+        return $this;
     }
 }
