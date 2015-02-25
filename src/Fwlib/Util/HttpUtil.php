@@ -41,7 +41,7 @@ class HttpUtil extends AbstractUtilAware
      */
     public function clearSession()
     {
-        $_SESSION = array();
+        $_SESSION = [];
     }
 
 
@@ -173,11 +173,11 @@ class HttpUtil extends AbstractUtilAware
             return $default;
         }
 
-        $arAgent = array(
+        $arAgent = [
             'AppleWebKit'   => 'webkit',
             'Trident'       => 'trident',
             'Gecko'         => 'gecko',
-        );
+        ];
 
         foreach ($arAgent as $k => $v) {
             if (false !== strpos($agentStr, $k)) {

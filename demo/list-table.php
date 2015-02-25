@@ -25,13 +25,13 @@ $tpl->compile_dir = $globalConfig->get('smarty.compileDir');
 $tpl->template_dir = __DIR__ . "/{$pathToRoot}Fwlib/Html/";
 $tpl->cache_dir = $globalConfig->get('smarty.cacheDir');
 
-$configs = array(
+$configs = [
     'pageSize'  => 3,
-    'tdAdd'     => array(
+    'tdAdd'     => [
         'title'     => 'nowrap="nowrap"',
         'joindate'  => 'nowrap="nowrap"',
-    ),
-);
+    ],
+];
 $listTable = new ListTable($tpl, $configs);
 $bm->mark('ListTable object prepared');
 
@@ -47,7 +47,7 @@ $tableUser = $ref->getValue('Fwlib\Test\AbstractDbRelateTest');
 
 $ref = new \ReflectionMethod('Fwlib\Test\AbstractDbRelateTest', 'createTable');
 $ref->setAccessible(true);
-$ref->invokeArgs(null, array($db));
+$ref->invokeArgs(null, [$db]);
 
 $bm->mark('Db prepared and test table created');
 
@@ -60,7 +60,7 @@ phpcredits();
 $credits = ob_get_contents();
 ob_end_clean();
 
-$name = array();
+$name = [];
 // Part1, name take a full row(3: PHP Group, Language design, QA)
 preg_match_all('/<tr><td class="e">([^<]+)<\/td><\/tr>/', $credits, $ar);
 foreach ($ar[1] as $v) {
@@ -78,7 +78,7 @@ $name = array_map('trim', $name);
 $name = array_unique($name);
 
 // Reorder index
-$name = array_merge($name, array());
+$name = array_merge($name, []);
 $nameCount = count($name);
 
 $bm->mark('Fake name grabbed');
@@ -87,21 +87,21 @@ $bm->mark('Fake name grabbed');
 /***************************************
  * Prepare dummy data, write to db
  **************************************/
-$title = array(
+$title = [
     'uuid'     => 'UUID',
     'title'    => 'Name',
     'age'      => 'Age',
     'credit'   => 'Money',
     'joindate' => 'Join Date',
-);
-$data = array();
+];
+$data = [];
 $rows = $nameCount;
 // Casual algorithm, but solid result
 $seed = 42;
 for ($j = 0; $j < $rows; $j++) {
     $seed = round((100 + $seed) / 100);
     $seed = 101 + $seed * ($j + 2);
-    $data[$j] = array(
+    $data[$j] = [
         'uuid'  => $j,
         'title' => $name[$j],
         'age'   => $seed % 40 + 20,
@@ -112,7 +112,7 @@ for ($j = 0; $j < $rows; $j++) {
                 '-' . ($seed % 30) . ' days -' . ($seed % 12) . ' hours'
             )
         )
-    );
+    ];
 }
 
 // Write data to db
@@ -137,30 +137,30 @@ $listTable->setId(2);
 // Set sort able column
 $listTable->setConfig(
     'orderByColumn',
-    array(
-        array('age', 'DESC'),
-        array('credit', 'ASC'),
-    )
+    [
+        ['age', 'DESC'],
+        ['credit', 'ASC'],
+    ]
 );
 // Set current sort order
 //$listTable->setOrderBy(2, 'ASC');
 //$listTable->setOrderBy(2);
 
 // Query data from db
-$config = array(
-    'SELECT'    => array(
+$config = [
+    'SELECT'    => [
         'uuid', 'title', 'age', 'credit', 'joindate',
-    ),
+    ],
     'FROM'      => $tableUser,
-    'WHERE'     => array(
+    'WHERE'     => [
         'age > 30',
-    ),
-);
+    ],
+];
 
 // Updata totalRows
 $listTable->setTotalRows(
     $db->execute(
-        array_merge($config, array('SELECT' => 'COUNT(1) as c'))
+        array_merge($config, ['SELECT' => 'COUNT(1) as c'])
     )->fields['c']
 );
 
@@ -176,23 +176,23 @@ $bm->mark('List2 generated');
 /***************************************
  * Show list table 3, Use inner db query
  **************************************/
-$config = array(
-    'SELECT'    => array(
+$config = [
+    'SELECT'    => [
         'uuid', 'title', 'age', 'credit', 'joindate',
-    ),
+    ],
     'FROM'      => $tableUser,
-    'WHERE'     => array(
+    'WHERE'     => [
         'age > 30',
-    ),
-);
+    ],
+];
 
 $listTable->setId(3)
 ->setConfig(
     'orderByColumn',
-    array(
-        array('age', 'ASC'),
-        array('credit', 'DESC'),
-    )
+    [
+        ['age', 'ASC'],
+        ['credit', 'DESC'],
+    ]
 )
 
 // Title still need manual set
@@ -215,7 +215,7 @@ $bm->mark('List3 generated');
  **************************************/
 $ref = new \ReflectionMethod('Fwlib\Test\AbstractDbRelateTest', 'dropTable');
 $ref->setAccessible(true);
-$ref->invokeArgs(null, array($db));
+$ref->invokeArgs(null, [$db]);
 
 $bm->mark('Cleanup, test table dropped');
 ?>

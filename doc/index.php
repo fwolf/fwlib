@@ -7,13 +7,13 @@ use Fwlib\Html\TextDocument\Restructuredtext;
 use Fwlib\Html\TextDocument\UnknownMarkup;
 
 $dv = new DocumentView(
-    array(
+    [
         'className' => 'document-view article',
         'dir'       => __DIR__ . '/',
-        'exclude'   => array('^\.*', 'index.php'),
+        'exclude'   => ['^\.*', 'index.php'],
         'rawView'   => true,
         'showFileSize'  => true,
-    )
+    ]
 );
 $dv->setInstance(new Markdown, 'Markdown');
 // Disable css from rst2html

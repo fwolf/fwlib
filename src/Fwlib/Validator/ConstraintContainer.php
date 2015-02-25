@@ -18,7 +18,7 @@ class ConstraintContainer extends AbstractServiceContainer
      *
      * @var array
      */
-    protected $serviceClass = array(
+    protected $serviceClass = [
         'Email'     => 'Fwlib\Validator\Constraint\Email',
         'Ipv4'      => 'Fwlib\Validator\Constraint\Ipv4',
         'Length'    => 'Fwlib\Validator\Constraint\Length',
@@ -26,7 +26,7 @@ class ConstraintContainer extends AbstractServiceContainer
         'Required'  => 'Fwlib\Validator\Constraint\Required',
         'Regex'     => 'Fwlib\Validator\Constraint\Regex',
         'Url'       => 'Fwlib\Validator\Constraint\Url',
-    );
+    ];
 
     /**
      * @var UtilContainer

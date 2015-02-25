@@ -88,7 +88,7 @@ class SyncDbData extends AbstractUtilAware
      *
      * @var array
      */
-    public $logMessage = array();
+    public $logMessage = [];
 
     /**
      * Name of record table
@@ -255,15 +255,15 @@ class SyncDbData extends AbstractUtilAware
         $dbProf = $this->getDbSrceProfileString();
 
         $rs = $dbDest->execute(
-            array(
+            [
                 'SELECT'    => 'last_ts',
                 'FROM'      => $this->tableRecord,
-                'WHERE'     => array(
+                'WHERE'     => [
                     "db_prof = '{$dbProf}'",
                     "tbl_title = '$table'",
-                ),
+                ],
                 'LIMIT'     => 1,
-            )
+            ]
         );
 
         if (0 < $rs->RowCount()) {
@@ -329,7 +329,7 @@ class SyncDbData extends AbstractUtilAware
      */
     public function setDb($srce, $dest)
     {
-        foreach (array('dbSrce' => $srce, 'dbDest' => $dest) as $k => $v) {
+        foreach (['dbSrce' => $srce, 'dbDest' => $dest] as $k => $v) {
             if (is_array($v)) {
                 // Param is profile, new db and conect
                 $this->$k = new Adodb($v);
@@ -362,27 +362,27 @@ class SyncDbData extends AbstractUtilAware
             // UPDATE if previous recorded, or INSERT
             if (empty($timestampOld)) {
                 $dbDest->execute(
-                    array(
+                    [
                         'INSERT' => $this->tableRecord,
-                        'VALUES' => array(
+                        'VALUES' => [
                             'uuid'      => $this->generateUuid(),
                             'db_prof'   => $dbProf,
                             'tbl_title' => $table,
                             'last_ts'   => $timestamp
-                        ),
-                    )
+                        ],
+                    ]
                 );
             } else {
                 $dbDest->execute(
-                    array(
+                    [
                         'UPDATE'    => $this->tableRecord,
-                        'SET'       => array('last_ts' => $timestamp),
-                        'WHERE'     => array(
+                        'SET'       => ['last_ts' => $timestamp],
+                        'WHERE'     => [
                             "db_prof = '$dbProf'",
                             "tbl_title = '$table'",
-                            ),
+                        ],
                         'LIMIT'     => 1,
-                    )
+                    ]
                 );
             }
 
@@ -515,14 +515,14 @@ class SyncDbData extends AbstractUtilAware
                 }
                 // @codeCoverageIgnoreEnd
                 if (!is_array($pk)) {
-                    $pk = array($pk);
+                    $pk = [$pk];
                 }
 
                 // Generate SQL config
-                $sqlConfig = array(
+                $sqlConfig = [
                     'DELETE' => $tableDest,
                     'LIMIT' => 1,
-                );
+                ];
                 foreach ($pk as $key) {
                     $sqlConfig['WHERE'][] = "$key = "
                         . $this->dbDest->Param($key);
@@ -616,11 +616,11 @@ class SyncDbData extends AbstractUtilAware
 
 
         // Retrieve data from source db
-        $sqlConfig = array(
+        $sqlConfig = [
             'SELECT'    => '*',
             'FROM'      => $tableSrce,
             'ORDERBY'   => "$timestampColumn ASC",
-            );
+        ];
         if (!empty($timestamp)) {
             $timestamp = $this->dbSrce->quoteValue(
                 $tableSrce,
@@ -651,7 +651,7 @@ class SyncDbData extends AbstractUtilAware
 
         } else {
             // Got data, prepare
-            $dataSrce = array();
+            $dataSrce = [];
             $lastTimestamp = '';
 
             while (!$rs->EOF) {
@@ -679,7 +679,7 @@ class SyncDbData extends AbstractUtilAware
                 $convertFunc = 'convertData' . $stringUtil->toStudlyCaps($tableSrce)
                     . 'To' . $stringUtil->toStudlyCaps($table);
 
-                $dataDest = array();
+                $dataDest = [];
                 if (method_exists($this, $convertFunc)) {
                     // Convert data from source db to data for destination db.
                     // If convert method return empty, will skip this row.

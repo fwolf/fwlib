@@ -68,38 +68,38 @@ $validator->setConstraintContainer($constraintContainer);
 $formValidator = new FormValidator;
 $formValidator->setValidator($validator);
 
-$rules = array(
-    'userTitle' => array(
+$rules = [
+    'userTitle' => [
         'title' => '名称',
         'check' => 'required',
         'tip'   => 'Should not be empty',
         'checkOnKeyup'  => true,
-    ),
-    'userAge' => array(
-        'check' => array(
+    ],
+    'userAge' => [
+        'check' => [
             'required',
             'url: ?a=checkAge , userAge , ',
-        ),
+        ],
         'tip'   => 'Age should be a valid age',
-    ),
-    'hiddenValue' => array(
+    ],
+    'hiddenValue' => [
         'title' => 'Hidden Input',
-        'check' => array(
+        'check' => [
             'required',
             'regex: /11/',
-        ),
+        ],
         'tip'   => 'Must select one, must equals 11',
         'puppet' => 'puppetOfHidden',
-    ),
-    'remark' => array(
-        'check' => array(
+    ],
+    'remark' => [
+        'check' => [
             'required',
             'regex: /g/i',
-        ),
+        ],
         'tip'   => '不能为空，必须包含字母 g 或者 G',
         'checkOnKeyup'  => true,
-    ),
-);
+    ],
+];
 
 $formValidator->setRules($rules);
 
@@ -112,12 +112,12 @@ $validateJs = $formValidator->getJs();
 // Backend validate
 $validateMessage = '';
 if (!empty($_POST)) {
-    $postData = array(
+    $postData = [
         'userTitle'   => $userTitle,
         'userAge'     => $userAge,
         'hiddenValue' => $hiddenValue,
         'remark'      => $remark,
-    );
+    ];
 
     if (!$formValidator->validate($postData)) {
         $validateMessage = '

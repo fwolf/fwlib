@@ -19,9 +19,9 @@ class UrlGeneratorTest extends PHPunitTestCase
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['REQUEST_URI'] = '/index.php?foo=bar';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
-        $_GET = array(
+        $_GET = [
             'foo' => 'bar',
-        );
+        ];
 
         $urlGenerator = $this->getMock(
             'Fwlib\Mvc\UrlGenerator',
@@ -96,10 +96,10 @@ class UrlGeneratorTest extends PHPunitTestCase
             $urlGenerator->getUrl()
         );
 
-        $urlGenerator->setParameters(array(
+        $urlGenerator->setParameters([
             'f3' => 420,
             'f4' => '4200',
-        ));
+        ]);
         $this->assertEquals(
             '?foo=bar&f2=42&f3=420&f4=4200',
             $urlGenerator->getUrl()
@@ -111,7 +111,7 @@ class UrlGeneratorTest extends PHPunitTestCase
             $urlGenerator->getUrl()
         );
 
-        $urlGenerator->unsetParameters(array('f2', 'f3'));
+        $urlGenerator->unsetParameters(['f2', 'f3']);
         $this->assertEquals(
             '?foo=bar',
             $urlGenerator->getUrl()

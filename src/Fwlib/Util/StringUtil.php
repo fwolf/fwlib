@@ -29,7 +29,7 @@ class StringUtil
         if (is_string($source)) {
             return addslashes($source);
         } elseif (is_array($source)) {
-            $rs = array();
+            $rs = [];
             foreach ($source as $k => $v) {
                 $rs[addslashes($k)] = $this->addSlashesRecursive($v);
             }
@@ -63,11 +63,11 @@ class StringUtil
         $str = htmlentities($str, ENT_QUOTES, 'UTF-8');
 
         if ($optimizeSpaces) {
-            $ar = array(
+            $ar = [
                 '  '    => '&nbsp; ',
                 ' '     => '&nbsp;',
                 '&nbsp;&nbsp;'  => '&nbsp; ',
-            );
+            ];
             $str = str_replace(array_keys($ar), array_values($ar), $str);
         }
 
@@ -347,7 +347,7 @@ class StringUtil
         // Have html tags, need split str into parts by html
         $matches = $matches[0];
 
-        $arParts = array();
+        $arParts = [];
         foreach ($matches as $match) {
             // Find position of match in source string
             $pos = strpos($str, $match);
@@ -355,11 +355,11 @@ class StringUtil
             // Add 2 parts by position
             // Part 1 is normal text before matched html tag
             $part = substr($str, 0, $pos);
-            $arParts[] = array(
+            $arParts[] = [
                 'content' => $part,
                 'depth'   => 0,
                 'width'   => mb_strwidth($part, $encoding),
-            );
+            ];
 
             // Part 2 is html tag
             if (0 < preg_match('/\/\s*>/', $match)) {
@@ -371,22 +371,22 @@ class StringUtil
             } else {
                 $depth = 1;
             }
-            $arParts[] = array(
+            $arParts[] = [
                 'content' => $match,
                 'depth'   => $depth,
                 'width'   => 0,
-            );
+            ];
 
             // Cut source string for next loop
             $str = substr($str, $pos + strlen($match));
         }
 
         // All left part of source str, after all html tags
-        $arParts[] = array(
+        $arParts[] = [
             'content' => $str,
             'depth'   => 0,
             'width'   => mb_strwidth($str, $encoding),
-        );
+        ];
 
         // Remove empty parts
         $arParts = array_filter($arParts, function ($part) {
@@ -457,7 +457,7 @@ class StringUtil
                 }
             }
             // Re generate array index
-            $rs = array_merge($rs, array());
+            $rs = array_merge($rs, []);
         }
 
         return $rs;

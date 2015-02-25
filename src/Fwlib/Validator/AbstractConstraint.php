@@ -16,7 +16,7 @@ class AbstractConstraint implements ConstraintInterface
      *
      * @var array
      */
-    protected $message = array();
+    protected $message = [];
 
     /**
      * Validate fail message template
@@ -27,9 +27,9 @@ class AbstractConstraint implements ConstraintInterface
      *
      * @var array
      */
-    public $messageTemplate = array(
+    public $messageTemplate = [
         'default'   => 'Validate fail message'
-    );
+    ];
 
     /**
      * Variable used in message template
@@ -39,9 +39,9 @@ class AbstractConstraint implements ConstraintInterface
      *
      * @var array
      */
-    protected $messageVariable = array(
+    protected $messageVariable = [
         'value' => null,
-    );
+    ];
 
 
     /**
@@ -81,8 +81,8 @@ class AbstractConstraint implements ConstraintInterface
         if (!empty($this->messageVariable)) {
             // Need skip if no message variable usable, so should not use
             // 'foreach (array)' here.
-            $search = array();
-            $replace = array();
+            $search = [];
+            $replace = [];
             foreach ($this->messageVariable as $k => $v) {
                 $search[] = "%$k%";
                 $replace[] = is_array($v) ? 'Array' : strval($v);
@@ -103,7 +103,7 @@ class AbstractConstraint implements ConstraintInterface
     public function validate($value, $constraintData = null)
     {
         // Clear previous message
-        $this->message = array();
+        $this->message = [];
 
         // Assign message vairable, maybe assign more in inherit class
         $this->messageVariable['value'] = $value;

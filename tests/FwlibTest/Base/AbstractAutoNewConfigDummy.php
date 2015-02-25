@@ -18,7 +18,7 @@ class AbstractAutoNewConfigDummy extends AbstractAutoNewConfig
      *
      * @param   array   $config
      */
-    public function __construct($config = array())
+    public function __construct($config = [])
     {
         // Unset for auto new
         unset($this->abstractAutoNewConfigDummy);

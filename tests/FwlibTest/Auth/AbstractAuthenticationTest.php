@@ -29,7 +29,7 @@ class AbstractAuthenticationTest extends PHPunitTestCase
         $authentication = $this->getMockBuilder(
             'Fwlib\Auth\AbstractAuthentication'
         )
-        ->setConstructorArgs(array($userSession))
+        ->setConstructorArgs([$userSession])
         ->getMockForAbstractClass();
 
         return $authentication;

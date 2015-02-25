@@ -40,7 +40,7 @@ class ListTable
      *
      * @var array
      */
-    protected $configs = array();
+    protected $configs = [];
 
     /**
      * Information generated in treatment
@@ -49,7 +49,7 @@ class ListTable
      *
      * @var array
      */
-    protected $info = array(
+    protected $info = [
         // Class for root element
         'class'         => 'ListTable',
         // Class prefix for non-root elements
@@ -59,7 +59,7 @@ class ListTable
         // Id prefix for non-root elements
         'idPrefix'      => 'ListTable-1-',
         // Orderby enabled column and default direction
-        'orderByColumn' => array(),
+        'orderByColumn' => [],
         // Current page number
         'page'          => 1,
         // Max page number
@@ -67,28 +67,28 @@ class ListTable
         // Parsed pager text
         'pagerTextBody' => '',
         'totalRows'     => -1,
-    );
+    ];
 
     /**
      * List data array
      *
      * @var array
      */
-    protected $listData = array();
+    protected $listData = [];
 
     /**
      * List title array, show as table title
      *
      * @var array
      */
-    protected $listTitle = array();
+    protected $listTitle = [];
 
     /**
      * Page url param array
      *
      * @var array
      */
-    protected $param = array();
+    protected $param = [];
 
     /**
      * Template object
@@ -123,7 +123,7 @@ class ListTable
      *
      * @var array
      */
-    protected $url = array(
+    protected $url = [
         'base'      => '',
         'form'      => '',
         'obCur'     => '',
@@ -132,7 +132,7 @@ class ListTable
         'pageLast'  => '',
         'pageNext'  => '',
         'pagePrev'  => '',
-    );
+    ];
 
 
     /**
@@ -144,7 +144,7 @@ class ListTable
      * @param   Smarty  $tpl
      * @param   array   $configs
      */
-    public function __construct($tpl, array $configs = array())
+    public function __construct($tpl, array $configs = [])
     {
         $this->tpl = $tpl;
 
@@ -173,8 +173,8 @@ class ListTable
     protected function fitData(array $key)
     {
         // Do search on first row for speed
-        $keyAdd = array();
-        $keyDel = array();
+        $keyAdd = [];
+        $keyDel = [];
         reset($this->listData);
         $row = current($this->listData);
 
@@ -264,7 +264,7 @@ class ListTable
         }
 
 
-        $ar = array();
+        $ar = [];
         switch ($this->configs['fitMode']) {
             case self::FIT_TO_TITLE:
                 $ar = $keyOfTitle;
@@ -374,7 +374,7 @@ class ListTable
     {
         $this->readRequest($forcenew);
 
-        $ar = array();
+        $ar = [];
 
         $ar['LIMIT'] = $this->configs['pageSize'] * ($this->info['page'] - 1)
             . ', ' . $this->configs['pageSize'];
@@ -546,7 +546,7 @@ class ListTable
     {
         // Get totalRows
         $this->info['totalRows'] = $db->execute(
-            array_merge($config, array('SELECT' => 'COUNT(1) AS c'))
+            array_merge($config, ['SELECT' => 'COUNT(1) AS c'])
         )
         ->fields['c'];
 
@@ -569,7 +569,7 @@ class ListTable
     {
         /** @noinspection SpellCheckingInspection */
         $this->setConfigs(
-            array(
+            [
                 // Notice: this is NOT actual class and id used in template,
                 // see $this->info and $this->setId() for details.
 
@@ -614,7 +614,7 @@ class ListTable
                 // Enable orderBy on those column, empty to disable orderBy
                 // Format: {[column, direction],}
                 // First [] is default, and default direction is ASC.
-                'orderByColumn'     => array(),
+                'orderByColumn'     => [],
                 // Which column to orderBy,
                 'orderBy'           => '',
                 // Orderby direction, ASC or DESC
@@ -689,13 +689,13 @@ class ListTable
                 // tr can use int index whose value is string too.
                 // :TODO: tr int index is converted to string ?
                 // For tr of th row, use th instead.
-                'tdAdd'             => array(),
-                'thAdd'             => array(),
-                'trAdd'             => array(),
+                'tdAdd'             => [],
+                'thAdd'             => [],
+                'trAdd'             => [],
                 //'td_add'            => array(),
                 //'th_add'            => array(),
                 //'tr_add'            => array(),
-            )
+            ]
         );
     }
 
@@ -765,12 +765,12 @@ class ListTable
     public function setOrderBy($key = null, $dir = null)
     {
         // Parse orderBy config
-        $orderByColumn = array();
+        $orderByColumn = [];
         foreach ((array)$this->configs['orderByColumn'] as $v) {
-            $orderByColumn[$v[0]] = array(
+            $orderByColumn[$v[0]] = [
                 $v[0],
                 (isset($v[1])) ? $v[1] : 'ASC',
-            );
+            ];
         }
         $this->info['orderByColumn'] = $orderByColumn;
 
@@ -801,15 +801,15 @@ class ListTable
         // Change orderBy will clear page param
         // Orderby index is appended in template by each th, remove here
         $this->url['obCur'] = $this->genUrl(
-            array("{$ob}Dir" => $dirReverse),
-            array($ob, $this->configs['pageParam'])
+            ["{$ob}Dir" => $dirReverse],
+            [$ob, $this->configs['pageParam']]
         );
 
         // Other column orderBy will clear direction
         // Added pageParam is dummy, to keep url start with '?', fit tpl later
         $this->url['obOther'] = $this->genUrl(
-            array($this->configs['pageParam'] => 1),
-            array($ob, "{$ob}Dir")
+            [$this->configs['pageParam'] => 1],
+            [$ob, "{$ob}Dir"]
         );
     }
 
@@ -881,8 +881,8 @@ class ListTable
         }
 
         $this->info['pagerTextBody'] = str_replace(
-            array('{page}', '{pageMax}', '{totalRows}', '{pageSize}'),
-            array($page, $pageMax, $totalRows, $pageSize),
+            ['{page}', '{pageMax}', '{totalRows}', '{pageSize}'],
+            [$page, $pageMax, $totalRows, $pageSize],
             $this->configs['pagerTextBody']
         );
 
@@ -891,10 +891,10 @@ class ListTable
         if (1 < $page) {
             // Not first page
             $this->url['pageFirst'] = $this->genUrl(
-                array($this->configs['pageParam'] => 1)
+                [$this->configs['pageParam'] => 1]
             );
             $this->url['pagePrev'] = $this->genUrl(
-                array($this->configs['pageParam'] => $page - 1)
+                [$this->configs['pageParam'] => $page - 1]
             );
         } else {
             $this->url['pageFirst'] = '';
@@ -903,10 +903,10 @@ class ListTable
         if ($page < $pageMax) {
             // Not last page
             $this->url['pageNext'] = $this->genUrl(
-                array($this->configs['pageParam'] => $page + 1)
+                [$this->configs['pageParam'] => $page + 1]
             );
             $this->url['pageLast'] = $this->genUrl(
-                array($this->configs['pageParam'] => $pageMax)
+                [$this->configs['pageParam'] => $pageMax]
             );
         } else {
             $this->url['pageNext'] = '';
@@ -916,7 +916,7 @@ class ListTable
         // Form submit target url
         $this->url['form'] = $this->genUrl(
             null,
-            array($this->configs['pageParam'])
+            [$this->configs['pageParam']]
         );
 
         // Assign hidden input

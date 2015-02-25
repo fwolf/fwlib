@@ -18,14 +18,14 @@ class AbstractConstraintTest extends PHPunitTestCase
 
 
         // Call setMessage() method
-        $this->reflectionCall($constraint, 'setMessage', array('default'));
+        $this->reflectionCall($constraint, 'setMessage', ['default']);
         // Can't use class name of mocked object, so only check message value
         $x = 'Validate fail message';
         $this->assertEqualArray($x, current($constraint->getMessage()));
 
 
         // Call setMessage() method again will affect nothing
-        $this->reflectionCall($constraint, 'setMessage', array('default'));
+        $this->reflectionCall($constraint, 'setMessage', ['default']);
         $this->assertEqualArray($x, current($constraint->getMessage()));
         $this->assertEquals(1, count($constraint->getMessage()));
 
@@ -50,6 +50,6 @@ class AbstractConstraintTest extends PHPunitTestCase
             'Fwlib\Validator\AbstractConstraint'
         );
 
-        $this->reflectionCall($constraint, 'setMessage', array('notExist'));
+        $this->reflectionCall($constraint, 'setMessage', ['notExist']);
     }
 }

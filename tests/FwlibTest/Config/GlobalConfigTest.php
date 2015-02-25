@@ -54,7 +54,7 @@ class GlobalConfigTest extends PHPunitTestCase
         // in parent class.
         $globalConfig = $this->getMock(
             'Fwlib\Config\GlobalConfig',
-            array('__construct')
+            ['__construct']
         );
 
         return $globalConfig;
@@ -84,7 +84,7 @@ class GlobalConfigTest extends PHPunitTestCase
             $globalConfig->checkServerId('dummy', self::KEY_SERVER_ID)
         );
         $this->assertTrue(
-            $globalConfig->checkServerId(array('dummy'), self::KEY_SERVER_ID)
+            $globalConfig->checkServerId(['dummy'], self::KEY_SERVER_ID)
         );
         $this->assertFalse(
             $globalConfig->checkServerId('foobar', self::KEY_SERVER_ID)
@@ -144,21 +144,21 @@ class GlobalConfigTest extends PHPunitTestCase
 
 
         // Normal get
-        $config = array(
+        $config = [
             'a'         => 1,
             'b.b1'      => 2,
-        );
+        ];
 
         $globalConfig->load($config);
 
         $this->assertEquals(1, $globalConfig->get('a'));
-        $this->assertEquals(array('b1' => 2), $globalConfig->get('b'));
+        $this->assertEquals(['b1' => 2], $globalConfig->get('b'));
 
 
         // Set
         $globalConfig->set('c.c1.c2', 3);
         $this->assertEquals(
-            array('c1' => array('c2' => 3)),
+            ['c1' => ['c2' => 3]],
             $globalConfig->get('c')
         );
     }

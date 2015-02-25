@@ -16,7 +16,7 @@ class RequiredTest extends PHPunitTestCase
 
         $this->assertTrue($constraint->validate(42));
         $this->assertTrue($constraint->validate(0));
-        $this->assertTrue($constraint->validate(array()));
+        $this->assertTrue($constraint->validate([]));
 
         $this->assertFalse($constraint->validate(''));
         $this->assertFalse($constraint->validate('   '));

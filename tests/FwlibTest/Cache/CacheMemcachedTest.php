@@ -36,16 +36,16 @@ class CacheMemcachedTest extends PHPunitTestCase
 
 
         // Memcache server recognize by array position, not assoc key
-        $x = array(
+        $x = [
             'h' => $ms[0]['host'],
             'p' => $ms[0]['port'],
             'w' => $ms[0]['weight'],
-        );
-        $y = array(
+        ];
+        $y = [
             'host' => $ms[0]['host'],
             'port' => $ms[0]['port'],
             'weight' => $ms[0]['weight'],
-        );
+        ];
         $this->ch->setConfigServer($x);
         $this->ch->get('any key');
         $serverList = $this->reflectionGet($this->ch, 'memcached')
@@ -71,7 +71,7 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->ch->set($key, $x, 60);
         $this->assertEquals($x, $this->ch->get($key));
 
-        $x = array('blah', array('foo' => 'boo'));
+        $x = ['blah', ['foo' => 'boo']];
         $this->ch->set($key, $x, 60);
         $this->assertEquals($x, $this->ch->get($key));
 
@@ -79,24 +79,24 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->ch->setConfig('memcachedAutosplit', 1);
         $this->ch->set($key, $x, 60);
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
         $this->ch->delete($key);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
         $this->ch->set($key, $x, -10);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
         $this->ch->setConfig('memcachedAutosplit', 0);
         $this->ch->set($key, $x, 60);
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
         $this->ch->set($key, $x, -10);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
 
         // Cache delete
@@ -138,12 +138,12 @@ class CacheMemcachedTest extends PHPunitTestCase
         $this->ch->set($key, $s, 3600);
         $this->assertEquals($s, $this->ch->get($key));
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
         $this->ch->delete($key);
         $this->assertEquals(null, $this->ch->get($key));
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', array($key))
+            $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
 
         // Big value size is computed AFTER compress if compress on
@@ -171,7 +171,7 @@ class CacheMemcachedTest extends PHPunitTestCase
         // Server list is empty now
         $this->ch->get('any key');
         $ar = $this->reflectionGet($this->ch, 'memcached')->getServerList();
-        $this->assertEquals($ar, array());
+        $this->assertEquals($ar, []);
 
         $this->assertInstanceOf(
             'Fwlib\Cache\CacheMemcached',
@@ -189,23 +189,23 @@ class CacheMemcachedTest extends PHPunitTestCase
         $ms = GlobalConfig::getInstance()->get('memcached.server');
 
         // Multi server, one of them is dead
-        $x = array(
+        $x = [
             // Dead one
-            array(
+            [
                 'host'      => $ms[0]['host'],
                 'port'      => 80,
                 'weight'    => 67,
-            ),
+            ],
             // Alive one
-            array(
+            [
                 'host'      => $ms[0]['host'],
                 'port'      => $ms[0]['port'],
                 'weight'    => 33
-            ),
-        );
+            ],
+        ];
         $this->ch->setConfigServer($x);
         $this->assertEquals(
-            array($x[1]),
+            [$x[1]],
             $this->ch->memcached->getServerList()
         );
     }

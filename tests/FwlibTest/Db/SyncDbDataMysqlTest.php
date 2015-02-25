@@ -101,9 +101,9 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
     {
         $sdd = new SyncDbData;
         $sdd->setDb(self::$dbMysql, self::$dbMysql);
-        $config = array(
+        $config = [
             self::$tableUser => self::$tableUserDest,
-        );
+        ];
         $sdd->syncOneway($config);
     }
 
@@ -133,14 +133,14 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
 
 
         // Prepare dummy date in srce table
-        $data = array();
+        $data = [];
         for ($i = 0; $i < $this->totalRows; $i ++) {
-            $data[] = array(
+            $data[] = [
                 'uuid'  => self::generateUuid(),
                 'title' => "Title - $i",
                 'age'   => $i + 20,
                 'credit'    => $i * 100,
-            );
+            ];
         }
         self::$dbMysql->write($tableUser, $data, 'I');
         $rowsSrce = self::$dbMysql->getRowCount($tableUser);
@@ -150,9 +150,9 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         // The table $tableNotExist if test dummy, we will use mock to create
         // convertDataXxx() method for it, and return empty convert result to
         // skip data write to it.
-        $config = array(
-            $tableUser => array($tableUserDest, $tableNotExist),
-        );
+        $config = [
+            $tableUser => [$tableUserDest, $tableNotExist],
+        ];
 
         $stringUtil = self::$utilContainer->get('StringUtil');
 
@@ -165,7 +165,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             'To' . $stringUtil->toStudlyCaps($tableUserDest);
         $sdd = $this->getMock(
             'Fwlib\Db\SyncDbData',
-            array($convertForNotExist)
+            [$convertForNotExist]
         );
         $sdd->expects($this->any())
             ->method($convertForNotExist)
@@ -191,7 +191,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
 
         $sdd = $this->getMock(
             'Fwlib\Db\SyncDbData',
-            array($convertForNotExist, $convertForUserDest)
+            [$convertForNotExist, $convertForUserDest]
         );
         $sdd->expects($this->any())
             ->method($convertForNotExist)
@@ -240,9 +240,9 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         // Prepare SyncDbData instance
         // The 2nd $tableUserDest is test dummy for empty table or table need
         // not to sync. All actual sync is done on 1st $tableUserDest.
-        $config = array(
-            $tableUser => array($tableUserDest, $tableUserDest),
-        );
+        $config = [
+            $tableUser => [$tableUserDest, $tableUserDest],
+        ];
 
         $stringUtil = self::$utilContainer->get('StringUtil');
 
@@ -252,7 +252,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             'To' . $stringUtil->toStudlyCaps($tableUserDest);
         $sdd = $this->getMock(
             'Fwlib\Db\SyncDbData',
-            array($compareForUserDest)
+            [$compareForUserDest]
         );
         $db = self::$dbMysql;
         $callback = function () use ($db, $tableUser, $tableUserDest) {
@@ -297,10 +297,10 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         // Third sync round, all rest need sync but limit by batchSize
         // Remove 2nd $tableUserDest in $config, because do sync on it will
         // exceed batchSize.
-        $config = array(
-            $tableUser => array($tableUserDest),
+        $config = [
+            $tableUser => [$tableUserDest],
             'not_exist' => 'not_exist',
-        );
+        ];
 
         self::$dbMysql->Execute("TRUNCATE TABLE $tableUser");
         $this->assertEquals($sdd->batchSize - 2, $sdd->syncDelete($config));
@@ -327,9 +327,9 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         $tableUser = self::$tableUser;
         $tableUserDest = self::$tableUserDest;
 
-        $config = array(
-            $tableUser => array($tableUserDest),
-        );
+        $config = [
+            $tableUser => [$tableUserDest],
+        ];
 
         $sdd = new SyncDbData;
         $sdd->setDb(self::$dbMysql, self::$dbMysql);

@@ -13,7 +13,7 @@ class RowSetTest extends PHPunitTestCase
 {
     public function testAddRow()
     {
-        $row = new Row('table', 'uuid', null, array('column' => 'value'));
+        $row = new Row('table', 'uuid', null, ['column' => 'value']);
 
         $rowSet = new RowSet();
         $rowSet->addRow($row);
@@ -87,7 +87,7 @@ class RowSetTest extends PHPunitTestCase
 
         $rowSet = new RowSet();
         $rowSet->addRow(
-            new Row('table', 'uuid', null, array('column' => 'value'))
+            new Row('table', 'uuid', null, ['column' => 'value'])
         );
 
         $this->assertEquals($json, $rowSet->toJson());

@@ -26,7 +26,7 @@ class Row
      *
      * @var array|null  {column: value}
      */
-    protected $new = array();
+    protected $new = [];
 
     /**
      * Row data before change, null for INSERT mode
@@ -35,7 +35,7 @@ class Row
      *
      * @var array|null  {column: value}
      */
-    protected $old = array();
+    protected $old = [];
 
     /**
      * Table primark keys

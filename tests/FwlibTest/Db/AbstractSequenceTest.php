@@ -10,20 +10,20 @@ use Fwlib\Db\AbstractSequence;
  */
 class AbstractSequenceTest extends PHPunitTestCase
 {
-    public static $storage = array();
+    public static $storage = [];
 
 
     protected function buildMock()
     {
         $sequence = $this->getMockBuilder(
             'Fwlib\Db\AbstractSequence'
-        )->setMethods(array(
+        )->setMethods([
             'increase',
             'initialize',
             'lockStorage',
             'read',
             'unlockStorage',
-        ))->getMock();
+        ])->getMock();
 
         $sequence->expects($this->any())
             ->method('increase')

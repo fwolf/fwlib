@@ -20,7 +20,7 @@ class Restructuredtext extends AbstractTextConverter
      *
      * @var array
      */
-    public $cmdOption = array(
+    public $cmdOption = [
         'embed-stylesheet',
         //'link-stylesheet',
 
@@ -30,7 +30,7 @@ class Restructuredtext extends AbstractTextConverter
         //'no-doc-title',
         //'no-xml-declaration',
         'cloak-email-addresses',
-    );
+    ];
 
     /**
      * Actural path of docutils execute file
@@ -81,10 +81,10 @@ class Restructuredtext extends AbstractTextConverter
         $cmd = escapeshellcmd($cmd);
 
         if ($this->usePipe) {
-            $desc = array(
-                0 => array('pipe', 'r'),
-                1 => array('pipe', 'w'),
-            );
+            $desc = [
+                0 => ['pipe', 'r'],
+                1 => ['pipe', 'w'],
+            ];
 
             $proc = proc_open($cmd, $desc, $pipes);
             if (!is_resource($proc)) {
@@ -199,11 +199,11 @@ class Restructuredtext extends AbstractTextConverter
     public function setPathDocutils($path = '')
     {
         // Possible path of docutils execute file for choose
-        $possiblePath = array(
+        $possiblePath = [
             '/usr/bin/',
             '/usr/local/bin/',
             '/bin/',
-        );
+        ];
 
         if (!empty($path)) {
             // Prepend to array

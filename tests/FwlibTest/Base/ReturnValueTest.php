@@ -46,8 +46,8 @@ class ReturnValueTest extends PHPunitTestCase
         $this->assertEquals('hi', $rv->getMessage());
 
         // Set and get data
-        $rv->setData(array());
-        $this->assertEquals(array(), $rv->getData());
+        $rv->setData([]);
+        $this->assertEquals([], $rv->getData());
     }
 
 

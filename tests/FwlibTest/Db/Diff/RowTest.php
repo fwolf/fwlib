@@ -12,16 +12,16 @@ class RowTest extends PHPunitTestCase
 {
     public function testAccessors()
     {
-        $old = array(
+        $old = [
             'uuid'    => 'uuid value',
             'column'  => 1,
             'column2' => 'will be removed',
-        );
-        $new = array(
+        ];
+        $new = [
             'uuid'    => 'uuid value',
             'column'  => 2,
             'column2' => 'will be removed',
-        );
+        ];
         $row = new Row('table', 'uuid', $old, $new);
 
         $this->assertEquals('table', $row->getTable());
@@ -36,11 +36,11 @@ class RowTest extends PHPunitTestCase
         $this->assertEquals(2, $row->getNew('column'));
 
         $this->assertEqualArray(
-            array('column' => 1),
+            ['column' => 1],
             $row->getOldWithoutPrimaryKey()
         );
         $this->assertEqualArray(
-            array('column' => 2),
+            ['column' => 2],
             $row->getNewWithoutPrimaryKey()
         );
     }
@@ -67,7 +67,7 @@ class RowTest extends PHPunitTestCase
             'table',
             'pk',
             null,
-            array('column' => 1)
+            ['column' => 1]
         );
 
         $this->assertEquals('INSERT', $row->getMode());
@@ -75,7 +75,7 @@ class RowTest extends PHPunitTestCase
         $row = new Row(
             'table',
             'pk',
-            array('column' => 1),
+            ['column' => 1],
             null
         );
 
@@ -84,8 +84,8 @@ class RowTest extends PHPunitTestCase
         $row = new Row(
             'table',
             'pk',
-            array('column' => 1),
-            array('column' => 2)
+            ['column' => 1],
+            ['column' => 2]
         );
 
         $this->assertEquals('UPDATE', $row->getMode());

@@ -82,7 +82,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             return;
         }
 
-        $dbName = array();
+        $dbName = [];
 
         $profileAr = explode(',', $profile);
         foreach ($profileAr as $type) {

@@ -20,7 +20,7 @@ class Config implements \ArrayAccess, UtilAwareInterface
      *
      * @var array
      */
-    public $config = array();
+    public $config = [];
 
     /**
      * Separator for config key
@@ -90,7 +90,7 @@ class Config implements \ArrayAccess, UtilAwareInterface
      */
     public function load($configData)
     {
-        $this->config = array();
+        $this->config = [];
 
         if (!is_null($configData)) {
             $this->set($configData);
@@ -188,7 +188,7 @@ class Config implements \ArrayAccess, UtilAwareInterface
 
                 // 'a.b.c', if b is not set, create it as an empty array
                 if (!isset($c[$currentKey])) {
-                    $c[$currentKey] = array();
+                    $c[$currentKey] = [];
                 }
 
                 // Go down to next level

@@ -35,7 +35,7 @@ class CacheFileTest extends PHPunitTestCase
      */
     public function testCache()
     {
-        $this->ch->setConfig(array('fileRule' => '55'));
+        $this->ch->setConfig(['fileRule' => '55']);
         $key = 'site/index';
         // '/tmp/cache/89/3ed0dc6e'
         $x = $this->ch->getFilePath($key);
@@ -55,23 +55,23 @@ class CacheFileTest extends PHPunitTestCase
 
         // Cache expire
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', array($key, -10))
+            $this->reflectionCall($this->ch, 'isExpired', [$key, -10])
         );
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', array($key, strtotime('2012-1-1')))
+            $this->reflectionCall($this->ch, 'isExpired', [$key, strtotime('2012-1-1')])
         );
 
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', array($key, 10))
+            $this->reflectionCall($this->ch, 'isExpired', [$key, 10])
         );
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', array($key, 1))
+            $this->reflectionCall($this->ch, 'isExpired', [$key, 1])
         );
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', array($key, 0))
+            $this->reflectionCall($this->ch, 'isExpired', [$key, 0])
         );
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', array($key, null))
+            $this->reflectionCall($this->ch, 'isExpired', [$key, null])
         );
 
         // Cache get
@@ -86,7 +86,7 @@ class CacheFileTest extends PHPunitTestCase
         $this->ch->set($key, $v);
         $this->assertEquals($v, $this->ch->get($key));
 
-        $v = array('你' => '好');
+        $v = ['你' => '好'];
         $this->ch->setConfig('storeMethod', 1);
         $this->ch->set($key, $v);
         $this->assertEquals($v, $this->ch->get($key));
@@ -145,36 +145,36 @@ class CacheFileTest extends PHPunitTestCase
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
-        $this->ch->setConfig(array('fileRule' => ''));
+        $this->ch->setConfig(['fileRule' => '']);
         $x = '/tmp/cache/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
-        $this->ch->setConfig(array('fileRule' => '1131'));
+        $this->ch->setConfig(['fileRule' => '1131']);
         $x = '/tmp/cache/d0/te/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Notice: Directly use key's part as path may cause wrong
-        $this->ch->setConfig(array('fileRule' => '2342'));
+        $this->ch->setConfig(['fileRule' => '2342']);
         $x = '/tmp/cache/57//i/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage
-        $this->ch->setConfig(array('fileRule' => '1011'));
+        $this->ch->setConfig(['fileRule' => '1011']);
         $x = '/tmp/cache/3e/d0/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage 2
-        $this->ch->setConfig(array('fileRule' => '2021'));
+        $this->ch->setConfig(['fileRule' => '2021']);
         $x = '/tmp/cache/b6/9c/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage 3
-        $this->ch->setConfig(array('fileRule' => '55'));
+        $this->ch->setConfig(['fileRule' => '55']);
         $x = '/tmp/cache/89/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);

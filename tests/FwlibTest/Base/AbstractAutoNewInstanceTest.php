@@ -28,7 +28,7 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
     {
         $mock = $this->getMockForAbstractClass(
             'Fwlib\Base\AbstractAutoNewInstance',
-            array()
+            []
         );
 
         return $mock;
@@ -102,7 +102,7 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
 
         $mock->setServiceContainer($this->serviceContainer);
 
-        $util = $this->reflectionCall($mock, 'getService', array('Util'));
+        $util = $this->reflectionCall($mock, 'getService', ['Util']);
 
         $this->assertInstanceOf('Fwlib\Util\UtilContainer', $util);
     }
@@ -137,13 +137,13 @@ class AbstractAutoNewInstanceTest extends PHPunitTestCase
     public function testSetUtilContainer()
     {
         $datetimeUtil =
-            $this->reflectionCall($this->dummy, 'getUtil', array('Datetime'));
+            $this->reflectionCall($this->dummy, 'getUtil', ['Datetime']);
         $this->assertInstanceOf('Fwlib\Util\DatetimeUtil', $datetimeUtil);
 
         $this->dummy->setUtilContainer(UtilContainer::getInstance());
 
         $datetimeUtil =
-            $this->reflectionCall($this->dummy, 'getUtil', array('Datetime'));
+            $this->reflectionCall($this->dummy, 'getUtil', ['Datetime']);
         $this->assertInstanceOf('Fwlib\Util\DatetimeUtil', $datetimeUtil);
     }
 }

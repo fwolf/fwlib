@@ -29,7 +29,7 @@ class RowSet extends AbstractUtilAware
     /**
      * @var array of Row
      */
-    protected $rows = array();
+    protected $rows = [];
 
     /**
      * Execute status
@@ -187,22 +187,22 @@ class RowSet extends AbstractUtilAware
     {
         $json = $this->getUtil('Json');
 
-        $rows = array();
+        $rows = [];
         foreach ($this->rows as $row) {
-            $rows[] = array(
+            $rows[] = [
                 'table'      => $row->getTable(),
                 'primaryKey' => $row->getPrimaryKey(),
                 'old'        => $row->getOld(),
                 'new'        => $row->getNew(),
-            );
+            ];
         }
 
         return $json->encodeUnicode(
-            array(
+            [
                 'rowCount'      => $this->rowCount,
                 'executeStatus' => $this->executeStatus,
                 'rows'          => $rows,
-            )
+            ]
         );
     }
 }

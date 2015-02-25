@@ -19,14 +19,14 @@ class HttpUtilTest extends PHPunitTestCase
      *
      * @type    array[]
      */
-    protected static $backups = array();
+    protected static $backups = [];
 
     /**
      * Mocked result of native cookie methods
      *
      * @type array
      */
-    public static $cookies = array();
+    public static $cookies = [];
 
     /**
      * Mocked result of native header()
@@ -137,9 +137,9 @@ class HttpUtilTest extends PHPunitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $dummy = array(
+        $dummy = [
             'foo' => "It's hot",
-        );
+        ];
 
         $_GET = $dummy;
         $getParams = $httpUtil->getGets();
@@ -155,23 +155,23 @@ class HttpUtilTest extends PHPunitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $_GET = array('a' => 1);
+        $_GET = ['a' => 1];
         $x = $httpUtil->getUrlParam();
         $y = '?a=1';
         $this->assertEquals($y, $x);
 
-        $_GET = array('a' => 1);
+        $_GET = ['a' => 1];
         $x = $httpUtil->getUrlParam('b', 2);
         $y = '?a=1&b=2';
         $this->assertEquals($y, $x);
 
-        $_GET = array('a' => 1, 'b' => '', 'c' => 3);
-        $x = $httpUtil->getUrlParam(array('a' => 2, 1 => 'a'), array('b', 'c'));
+        $_GET = ['a' => 1, 'b' => '', 'c' => 3];
+        $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], ['b', 'c']);
         $y = '?a=2&1=a';
         $this->assertEquals($y, $x);
 
-        $_GET = array('a' => 1, 'b' => '', 'c' => 3);
-        $x = $httpUtil->getUrlParam(array('a' => 2, 1 => 'a'), 'b');
+        $_GET = ['a' => 1, 'b' => '', 'c' => 3];
+        $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], 'b');
         $y = '?a=2&c=3&1=a';
         $this->assertEquals($y, $x);
 
@@ -182,10 +182,10 @@ class HttpUtilTest extends PHPunitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $_REQUEST = array(
+        $_REQUEST = [
             'a' => 'foo',
-            'b' => array('foo', 'bar'),
-        );
+            'b' => ['foo', 'bar'],
+        ];
 
         $this->assertEquals('foo', $httpUtil->getRequest($_REQUEST, 'a'));
     }
@@ -213,21 +213,21 @@ class HttpUtilTest extends PHPunitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $dummy = array(
+        $dummy = [
             'a' => '0',
             'b' => '1',
-        );
+        ];
 
         $_GET = $dummy;
-        $params = $httpUtil->pickGets(array('a', 'b'), true);
-        $this->assertEqualArray(array('b' => '1'), $params);
+        $params = $httpUtil->pickGets(['a', 'b'], true);
+        $this->assertEqualArray(['b' => '1'], $params);
 
         $_POST = $dummy;
         $callback = function ($value) {
             return 10 * $value;
         };
-        $params = $httpUtil->pickPosts(array('a', 'b'), false, $callback);
-        $this->assertEqualArray(array('a' => 0, 'b' => 10), $params);
+        $params = $httpUtil->pickPosts(['a', 'b'], false, $callback);
+        $this->assertEqualArray(['a' => 0, 'b' => 10], $params);
     }
 
 
@@ -239,7 +239,7 @@ class HttpUtilTest extends PHPunitTestCase
     {
         $httpUtil = $this->getMock(
             'Fwlib\Util\HttpUtil',
-            array('getCookie')
+            ['getCookie']
         );
         $httpUtil->expects($this->any())
             ->method('getCookie')

@@ -25,14 +25,14 @@ class Benchmark extends AbstractUtilAware
      *
      * @var array
      */
-    public $colorMap = array(
+    public $colorMap = [
         '#00FF00',
         '#CCFFCC',
         '#77FF77',
         '#FFCCCC',
         '#FF7777',
         '#FF0000'
-    );
+    ];
 
     /**
      * Group data
@@ -41,7 +41,7 @@ class Benchmark extends AbstractUtilAware
      *
      * @var array
      */
-    protected $group = array();
+    protected $group = [];
 
     /**
      * Current group id
@@ -59,7 +59,7 @@ class Benchmark extends AbstractUtilAware
      *
      * @var array
      */
-    protected $mark = array();
+    protected $mark = [];
 
     /**
      * Mark id in group
@@ -125,7 +125,7 @@ class Benchmark extends AbstractUtilAware
 
         // Split dur
         $step = $dur / $i_color;
-        $ar_dur = array();
+        $ar_dur = [];
         // 6 color need 7 bound value
         for ($i = 0; $i < ($i_color + 1); $i ++) {
             $ar_dur[$i] = $step * $i;
@@ -200,7 +200,7 @@ EOF;
     public function mark($desc = '', $color = '')
     {
         if (0 == $this->markId) {
-            $this->mark[$this->groupId] = array();
+            $this->mark[$this->groupId] = [];
         }
         $ar = &$this->mark[$this->groupId][$this->markId];
 

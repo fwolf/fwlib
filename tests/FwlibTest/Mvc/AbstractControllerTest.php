@@ -26,9 +26,11 @@ class AbstractControllerTest extends PHPunitTestCase
     {
         $controller = $this->getMock(
             'Fwlib\Mvc\AbstractController',
-            array('createController', 'createView',
-                'getControllerClass', 'getViewClass'),
-            array($pathToRoot)
+            [
+                'createController', 'createView',
+                'getControllerClass', 'getViewClass'
+            ],
+            [$pathToRoot]
         );
 
         $controller->expects($this->any())
@@ -45,7 +47,7 @@ class AbstractControllerTest extends PHPunitTestCase
 
 
         // Mock a controller/view instance for output
-        $mock = $this->getMock('stdClass', array('getOutput', 'setAction'));
+        $mock = $this->getMock('stdClass', ['getOutput', 'setAction']);
         $mock->expects($this->any())
             ->method('setAction')
             ->will($this->returnSelf());
@@ -73,8 +75,8 @@ class AbstractControllerTest extends PHPunitTestCase
     {
         $controller = $this->getMock(
             'Fwlib\Mvc\AbstractController',
-            array('getViewClass'),
-            array($pathToRoot)
+            ['getViewClass'],
+            [$pathToRoot]
         );
 
         $controller->expects($this->any())
@@ -95,8 +97,8 @@ class AbstractControllerTest extends PHPunitTestCase
     {
         $controller = $this->getMock(
             'Fwlib\Mvc\AbstractController',
-            array('getControllerClass', 'getViewClass'),
-            array($pathToRoot)
+            ['getControllerClass', 'getViewClass'],
+            [$pathToRoot]
         );
 
         $controller->expects($this->any())
@@ -118,9 +120,9 @@ class AbstractControllerTest extends PHPunitTestCase
 
     public function testDisplay()
     {
-        $_GET = array(
+        $_GET = [
             'a' => 'test-action',
-        );
+        ];
         // Need a dummy view class name, empty will throw exception
         self::$viewClass = 'Dummy';
 
@@ -128,7 +130,7 @@ class AbstractControllerTest extends PHPunitTestCase
         $this->assertEquals('Dummy Output', $output);
 
         // Action can be empty, need View allow output without action.
-        $_GET = array();
+        $_GET = [];
         $output = $this->controller->getOutput();
         $this->assertEquals('Dummy Output', $output);
     }
@@ -146,9 +148,9 @@ class AbstractControllerTest extends PHPunitTestCase
 
     public function testDisplayWithEmptyViewClass()
     {
-        $_GET = array(
+        $_GET = [
             'action' => 'test-action',
-        );
+        ];
         self::$viewClass = '';
 
         $output = $this->controller->getOutput();
@@ -169,9 +171,9 @@ class AbstractControllerTest extends PHPunitTestCase
 
     public function testTransfer()
     {
-        $_GET = array(
+        $_GET = [
             'm' => 'testModule',
-        );
+        ];
         // Need a dummy view class name, or will throw exception
         self::$controllerClass = 'Dummy';
 
@@ -182,9 +184,9 @@ class AbstractControllerTest extends PHPunitTestCase
 
     public function testTransferWithActualController()
     {
-        $_GET = array(
+        $_GET = [
             'm' => 'testModule',
-        );
+        ];
         $controller = $this->buildMockWithGetControllerClass(null);
 
         self::$controllerClass = 'FwlibTest\Mvc\AbstractControllerDummy';
@@ -196,9 +198,9 @@ class AbstractControllerTest extends PHPunitTestCase
 
     public function testTransferWithEmptyControllerClass()
     {
-        $_GET = array(
+        $_GET = [
             'm' => 'testModule',
-        );
+        ];
         $controller = $this->buildMockBasis(null);
 
         $output = $controller->getOutput();

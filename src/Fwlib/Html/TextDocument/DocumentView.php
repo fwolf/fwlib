@@ -155,7 +155,7 @@ class DocumentView extends AbstractAutoNewConfig
     <thead>
       <tr>";
 
-        foreach (array('File Name', 'Title', 'Last Modified') as $v) {
+        foreach (['File Name', 'Title', 'Last Modified'] as $v) {
             $html .= "
         <th>$v</th>";
         }
@@ -294,14 +294,14 @@ class DocumentView extends AbstractAutoNewConfig
      */
     public function getDocumentType($filename)
     {
-        $ar = array(
+        $ar = [
             ''         => 'Unknown',
             'md'       => 'Markdown',
             'markdown' => 'Markdown',
             'rst'      => 'Restructuredtext',
             'rest'     => 'Restructuredtext',
             'txt'      => 'Markdown',
-        );
+        ];
 
         $ext = $this->getUtil('FileSystem')->getFileExt($filename);
 
@@ -375,7 +375,7 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function listFile()
     {
-        $arFile = array();
+        $arFile = [];
 
         $arDir = (array)$this->config['dir'];
         $fileSystem = $this->getUtil('FileSystem');
@@ -405,9 +405,9 @@ class DocumentView extends AbstractAutoNewConfig
     protected function setConfigDefault()
     {
         $this->setConfig(
-            array(
+            [
                 'className'     => 'document-view',
-                'exclude'       => array('^\.*'),
+                'exclude'       => ['^\.*'],
                 'paramFile'     => 'f',
                 'paramRaw'      => 'view',
                 'rawView'       => false,
@@ -415,7 +415,7 @@ class DocumentView extends AbstractAutoNewConfig
                 'showFileSize'  => false,
                 'timeFormat'    => 'Y-m-d H:i:s',
                 'titleTail'     => 'Document in Fwlib',
-            )
+            ]
         );
     }
 

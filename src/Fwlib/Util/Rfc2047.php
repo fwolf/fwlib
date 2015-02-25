@@ -26,7 +26,7 @@ class Rfc2047
     public function decode($str, $encoding = 'utf-8')
     {
         // Find string encoding
-        $ar = array();
+        $ar = [];
         preg_match_all('/=\?(.{3,13})\?([B|Q])\?([^\?]*)\?\=/i', $str, $ar);
         // 0 is all-string pattern, 1 is encoding, 2 is string to base64_decode
         $i = count($ar[0]);

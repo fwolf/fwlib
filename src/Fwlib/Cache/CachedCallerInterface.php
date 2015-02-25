@@ -41,7 +41,7 @@ interface CachedCallerInterface
     public function call(
         CachedCallerAwareInterface $instance,
         $method,
-        array $params = array(),
+        array $params = [],
         $readRenderer = null,
         $writeRenderer = null
     );

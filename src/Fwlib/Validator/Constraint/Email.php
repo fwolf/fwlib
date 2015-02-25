@@ -24,9 +24,9 @@ class Email extends AbstractConstraint implements UtilAwareInterface
     /**
      * {@inheritdoc}
      */
-    public $messageTemplate = array(
+    public $messageTemplate = [
         'default'   => 'The input should be valid email address'
-    );
+    ];
 
     /**
      * @var UtilContainer

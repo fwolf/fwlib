@@ -84,13 +84,13 @@ class Json
                     || array_keys($val) === range(0, count($val) - 1));
 
                 if ($isList) {
-                    $art = array();
+                    $art = [];
                     foreach ($val as $v) {
                         $art[] = $this->jsonEncodeHex($v, $option);
                     }
                     $jsonStr = '[' . implode(',', $art) . ']';
                 } else {
-                    $art = array();
+                    $art = [];
                     foreach ($val as $k => $v) {
                         $art[] = $this->jsonEncodeHex($k, $option)
                             . ':'
@@ -164,23 +164,23 @@ class Json
      */
     protected function replaceByHexOption($val, $option = 0)
     {
-        $search = array();
-        $replace = array();
+        $search = [];
+        $replace = [];
         if ($option & JSON_HEX_TAG) {
-            $search = array_merge($search, array('<', '>'));
-            $replace = array_merge($replace, array('\u003C', '\u003E'));
+            $search = array_merge($search, ['<', '>']);
+            $replace = array_merge($replace, ['\u003C', '\u003E']);
         }
         if ($option & JSON_HEX_APOS) {
-            $search = array_merge($search, array('\''));
-            $replace = array_merge($replace, array('\u0027'));
+            $search = array_merge($search, ['\'']);
+            $replace = array_merge($replace, ['\u0027']);
         }
         if ($option & JSON_HEX_QUOT) {
-            $search = array_merge($search, array('\"'));
-            $replace = array_merge($replace, array('\u0022'));
+            $search = array_merge($search, ['\"']);
+            $replace = array_merge($replace, ['\u0022']);
         }
         if ($option & JSON_HEX_AMP) {
-            $search = array_merge($search, array('&'));
-            $replace = array_merge($replace, array('\u0026'));
+            $search = array_merge($search, ['&']);
+            $replace = array_merge($replace, ['\u0026']);
         }
 
         $val = str_replace($search, $replace, $val);

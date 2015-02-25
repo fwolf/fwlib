@@ -62,9 +62,9 @@ class DbDataExportTest extends AbstractDbRelateTest
         for ($i = 0; $i < self::$insertCount; $i ++) {
             self::$db->write(
                 self::$tableUser,
-                array(
+                [
                     'uuid'  => $uuidUtil->generate(),
-                )
+                ]
             );
         }
     }
@@ -140,7 +140,7 @@ class DbDataExportTest extends AbstractDbRelateTest
 
     public function testExportWithGroupby()
     {
-        self::$dbe->setTableInclude(array(self::$tableUser));
+        self::$dbe->setTableInclude([self::$tableUser]);
         self::$dbe->setTableGroupby(self::$tableUser, 'uuid');
 
         //self::$dbe->verbose = true;

@@ -58,7 +58,7 @@ abstract class AbstractViewCache extends AbstractView
             // Maybe cli mode, use argv array
             $key = implode('/', $_SERVER['argv']);
         }
-        $key = str_replace(array('?', '&', '=', '//'), '/', $key);
+        $key = str_replace(['?', '&', '=', '//'], '/', $key);
 
         // If a special url parameter is used to force refresh cache, it may
         // need to remove it from key here.

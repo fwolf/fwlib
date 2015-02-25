@@ -20,14 +20,14 @@ abstract class AbstractServiceContainer extends AbstractSingleton implements
      *
      * @var array
      */
-    protected $serviceClass = array();
+    protected $serviceClass = [];
 
     /**
      * Service instance
      *
      * @var array
      */
-    protected $serviceInstance = array();
+    protected $serviceInstance = [];
 
 
     /**

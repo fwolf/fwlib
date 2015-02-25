@@ -156,7 +156,7 @@ class Iso7064
      */
     protected function encodeModN($srce, $mod)
     {
-        static $dict = array(
+        static $dict = [
             '0' => 0,
             '1' => 1,
             '2' => 2,
@@ -193,7 +193,7 @@ class Iso7064
             'X' => 33,
             'Y' => 34,
             'Z' => 35,
-        );
+        ];
 
         $val = 0;
 

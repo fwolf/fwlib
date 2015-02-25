@@ -5,10 +5,10 @@ use Fwlib\Workflow\ModelInterface;
 
 class ModelInterfaceDummy implements ModelInterface
 {
-    public $contents = array();
+    public $contents = [];
     public $currentNode = 'start';
-    public $links = array();
-    public $logs = array();
+    public $links = [];
+    public $logs = [];
     public $resultCode = 0;
     public $title = 'Workflow Model Interface Dummy';
     public $uuid = '';
@@ -22,12 +22,12 @@ class ModelInterfaceDummy implements ModelInterface
 
     public function addLog($action, $actionTitle, $prevNode, $nextNode)
     {
-        $this->logs[] = array(
+        $this->logs[] = [
             'action'    => $action,
             'actionTitle'   => $actionTitle,
             'prevNode'  => $prevNode,
             'nextNode'  => $nextNode,
-        );
+        ];
 
         return $this;
     }

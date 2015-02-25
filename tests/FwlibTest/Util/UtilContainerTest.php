@@ -32,7 +32,7 @@ class UtilContainerTest extends PHPunitTestCase
 
         $this->assertEquals(
             42,
-            $utilContainer->get('Array')->getIdx(array(), 'foo', 42)
+            $utilContainer->get('Array')->getIdx([], 'foo', 42)
         );
 
         $this->assertInstanceOf(

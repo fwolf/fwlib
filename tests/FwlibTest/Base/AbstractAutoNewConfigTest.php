@@ -29,10 +29,10 @@ class AbstractAutoNewConfigTest extends PHPunitTestCase
     public function testContruct()
     {
         $this->dummy = new AbstractAutoNewConfigDummy(
-            array(
+            [
                 'config.key1'   => 10,
                 'config.key2'   => 20,
-            )
+            ]
         );
         $this->assertEquals(20, $this->dummy->getConfig('config.key2'));
     }

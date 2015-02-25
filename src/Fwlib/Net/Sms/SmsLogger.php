@@ -32,16 +32,18 @@ class SmsLogger extends AbstractDbClient
      */
     public function countDestCompany($arDest)
     {
-        $ar = array(
+        $ar = [
             'cm'    => 0,
             'cu'    => 0,
             'ct'    => 0,
-        );
+        ];
 
-        $arCm = array(134, 135, 136, 137, 138, 139, 147, 150, 151, 152, 157,
-            158, 159, 182, 183, 184, 187, 188);
-        $arCu = array(130, 131, 132, 145, 155, 156, 185, 186);
-        $arCt = array(133, 153, 180, 181, 189);
+        $arCm = [
+            134, 135, 136, 137, 138, 139, 147, 150, 151, 152, 157,
+            158, 159, 182, 183, 184, 187, 188
+        ];
+        $arCu = [130, 131, 132, 145, 155, 156, 185, 186];
+        $arCt = [133, 153, 180, 181, 189];
 
         foreach ($arDest as $dest) {
             $i = intval(substr($dest, 0, 3));
@@ -98,7 +100,7 @@ class SmsLogger extends AbstractDbClient
     public function log($arDest, $sms, $cat)
     {
         // Prepare data array
-        $logData = array();
+        $logData = [];
         $countDestCompany = $this->countDestCompany($arDest);
 
         $logData['uuid']        = $this->generateUuid();

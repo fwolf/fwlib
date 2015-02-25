@@ -143,12 +143,12 @@ class Url extends AbstractConstraint implements UtilAwareInterface
     /**
      * {@inheritdoc}
      */
-    public $messageTemplate = array(
+    public $messageTemplate = [
         'curlFail'  => 'The input validate url request fail',
         'default'   => 'The input must pass validate',
         'invalidType'   => 'The input must be Array',
         'urlEmpty'  => 'The input need url target for validate',
-    );
+    ];
 
 
     /**
@@ -208,7 +208,7 @@ class Url extends AbstractConstraint implements UtilAwareInterface
 
         } else {
             // Build post data array
-            $postData = array();
+            $postData = [];
             $arrayUtil = $this->getUtilContainer()->getArray();
             foreach ($ar as $v) {
                 $v = trim($v);

@@ -66,7 +66,7 @@ class FormValidator
      *
      * @var array
      */
-    protected $messages = array();
+    protected $messages = [];
 
     /**
      * Validate rules
@@ -95,7 +95,7 @@ class FormValidator
      *
      * @var array
      */
-    protected $rules = array();
+    protected $rules = [];
 
     /**
      * Validator instance
@@ -174,7 +174,7 @@ $js
     public function clearRules($name = '*', $part = '')
     {
         if ('*' == $name) {
-            $this->rules = array();
+            $this->rules = [];
             return $this;
         }
 
@@ -186,7 +186,7 @@ $js
             $singleName = trim($singleName);
 
             if (empty($part)) {
-                $this->rules[$singleName] = array();
+                $this->rules[$singleName] = [];
 
             } else {
                 if (!is_array($part)) {
@@ -347,8 +347,10 @@ global.$id.markFailed(global.$id.getInput('$name'));
             }
 
             // Other part will be overwrited
-            $partAr = array('title', 'tip', 'checkOnBlur', 'checkOnKeyup',
-                'puppet');
+            $partAr = [
+                'title', 'tip', 'checkOnBlur', 'checkOnKeyup',
+                'puppet'
+            ];
             foreach ($partAr as $part) {
                 if (isset($ruleAr[$part])) {
                     $this->rules[$singleName][$part] = $ruleAr[$part];
@@ -424,7 +426,7 @@ global.$id.markFailed(global.$id.getInput('$name'));
     public function validate($formData)
     {
         $isValid = true;
-        $this->messages = array();
+        $this->messages = [];
 
         foreach ($this->rules as $name => $ruleContent) {
             if (!isset($formData[$name])) {

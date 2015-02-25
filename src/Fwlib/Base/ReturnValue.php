@@ -101,11 +101,11 @@ class ReturnValue extends AbstractUtilAware
     public function getJson()
     {
         return $this->getUtil('Json')->encodeUnicode(
-            array(
+            [
                 'code'    => $this->code,
                 'message' => $this->message,
                 'data'    => $this->data,
-            )
+            ]
         );
     }
 
@@ -133,7 +133,7 @@ class ReturnValue extends AbstractUtilAware
     {
         $ar = $this->getUtil('Json')->decode($json, true);
 
-        foreach (array('code', 'message') as $v) {
+        foreach (['code', 'message'] as $v) {
             if (!isset($ar[$v])) {
                 throw new \Exception("Json string to load have no $v info");
             }

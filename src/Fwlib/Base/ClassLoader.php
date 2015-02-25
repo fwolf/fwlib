@@ -60,7 +60,7 @@ class ClassLoader
      *
      * @var array
      */
-    public $prefix = array();
+    public $prefix = [];
 
     /**
      * Namespace separator, default '\'
@@ -122,7 +122,7 @@ class ClassLoader
     public function findFile($prefix, $fileName)
     {
         // Each prefix may have multiple path, so dest file is array
-        $arFile = array();
+        $arFile = [];
 
 
         // Match possible filepath
@@ -233,7 +233,7 @@ class ClassLoader
     {
         // Both \ and _ are supported, will convert to inner separator
         $className = str_replace(
-            array('\\', '_'),
+            ['\\', '_'],
             $this->prefixSeparator,
             $className
         );
@@ -268,7 +268,7 @@ class ClassLoader
      */
     public function register($prepend = false)
     {
-        spl_autoload_register(array($this, 'loadClass'), true, $prepend);
+        spl_autoload_register([$this, 'loadClass'], true, $prepend);
 
         return $this;
     }
@@ -281,7 +281,7 @@ class ClassLoader
      */
     public function unregister()
     {
-        spl_autoload_unregister(array($this, 'loadClass'));
+        spl_autoload_unregister([$this, 'loadClass']);
 
         return $this;
     }

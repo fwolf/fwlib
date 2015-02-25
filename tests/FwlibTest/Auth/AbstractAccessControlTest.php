@@ -24,7 +24,7 @@ class AbstractAccessControlTest extends PHPunitTestCase
         $accessControl = $this->getMockBuilder(
             'Fwlib\Auth\AbstractAccessControl'
         )
-        ->setConstructorArgs(array($userSession))
+        ->setConstructorArgs([$userSession])
         ->getMockForAbstractClass();
 
         return $accessControl;

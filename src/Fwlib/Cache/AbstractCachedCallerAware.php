@@ -38,7 +38,7 @@ abstract class AbstractCachedCallerAware implements CachedCallerAwareInterface
      *
      * - other: Append '/stringValueOfParam' to key.
      */
-    public function getCacheKey($method, array $params = array())
+    public function getCacheKey($method, array $params = [])
     {
         $key = str_replace('\\', '/', get_class($this));
         $key .= "/$method";

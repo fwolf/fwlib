@@ -42,7 +42,7 @@ class Smarty extends \Smarty
         $dir = $this->getConfigDir();
 
         if (is_string($configDir)) {
-            $configDir = array($key => $configDir);
+            $configDir = [$key => $configDir];
         }
 
         $dir = array_merge($configDir, $dir);
@@ -64,7 +64,7 @@ class Smarty extends \Smarty
         $dir = $this->getPluginsDir();
 
         if (is_string($pluginDir)) {
-            $pluginDir = array($key => $pluginDir);
+            $pluginDir = [$key => $pluginDir];
         }
 
         $dir = array_merge($pluginDir, $dir);
@@ -86,7 +86,7 @@ class Smarty extends \Smarty
         $dir = $this->getTemplateDir();
 
         if (is_string($templateDir)) {
-            $templateDir = array($key => $templateDir);
+            $templateDir = [$key => $templateDir];
         }
 
         $dir = array_merge($templateDir, $dir);

@@ -40,7 +40,7 @@ class ConfigTest extends PHPunitTestCase
 
         // Value with separator turns to array
         $config->set('foo1.bar', 42);
-        $this->assertEquals($config->get('foo1'), array('bar' => 42));
+        $this->assertEquals($config->get('foo1'), ['bar' => 42]);
         $config['foo3.bar'] = 'bar3';
         $this->assertEquals('bar3', $config['foo3.bar']);
 
@@ -49,11 +49,11 @@ class ConfigTest extends PHPunitTestCase
         $this->assertEquals($config->get('a.b.c', 43), 42);
         $this->assertEquals(
             $config->get('a'),
-            array(
-                'b' => array(
+            [
+                'b' => [
                     'c' => 42,
-                ),
-            )
+                ],
+            ]
         );
 
         // Default value
@@ -61,26 +61,26 @@ class ConfigTest extends PHPunitTestCase
 
 
         // Set array data
-        $ar = array(
+        $ar = [
             'a'     => 1,
             'b.1'   => 2,
             'b.2'   => 3,
             'c.1.1' => 4,
-        );
+        ];
         // load() will reset all previous set data.
         $config->load($ar);
-        $y = array(
+        $y = [
             'a' => 1,
-            'b' => array(
+            'b' => [
                 1   => 2,
                 2   => 3
-            ),
-            'c' => array(
-                1   => array(
+            ],
+            'c' => [
+                1   => [
                     1   => 4,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
         $this->assertEqualArray($y, $config->config);
     }
 }

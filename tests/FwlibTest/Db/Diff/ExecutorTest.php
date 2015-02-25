@@ -53,11 +53,11 @@ class ExecutorTest extends AbstractDbRelateTest
             ->disableOriginalConstructor()
             ->getMock(
                 'Fwlib\Bridge\Adodb',
-                array(
+                [
                     'BeginTrans', 'CommitTrans', 'RollbackTrans',
                     'getErrorCode', 'getErrorMessage',
                     'execute'
-                )
+                ]
             );
 
         $db->expects($this->any())
@@ -81,7 +81,7 @@ class ExecutorTest extends AbstractDbRelateTest
 
     protected function buildMockRowSetWithInvalidMode()
     {
-        $row = new Row('table', 'uuid', null, array('uuid' => 'uuid value'));
+        $row = new Row('table', 'uuid', null, ['uuid' => 'uuid value']);
         $this->reflectionSet($row, 'mode', 'invalid mode');
 
         $rowSet = new RowSet();
@@ -175,13 +175,13 @@ class ExecutorTest extends AbstractDbRelateTest
         $manager = $this->buildMockManager();
 
         // Normal insert
-        $dataNew1 = array(
+        $dataNew1 = [
             'uuid'  => $this->uuid1,
             'title' => 'User Title',
             'age'   => 42,
             'credit'    => '0.42',
             'joindate'  => '2014-01-02',
-        );
+        ];
         $manager->addRow(self::$tableUser, null, $dataNew1);
         $executor->execute($manager->getRowSet());
 
@@ -196,9 +196,9 @@ class ExecutorTest extends AbstractDbRelateTest
 
 
         // Insert with PK column only
-        $dataNew2 = array(
+        $dataNew2 = [
             'uuid'  => $this->uuid2,
-        );
+        ];
         $manager->renew()->addRow(self::$tableUser, null, $dataNew2);
         $executor->execute($manager->getRowSet());
 
@@ -208,13 +208,13 @@ class ExecutorTest extends AbstractDbRelateTest
 
 
         // Update row with $uuid1, and delete row with $uuid2
-        $dataNew1Changed = array(
+        $dataNew1Changed = [
             'uuid'  => $this->uuid1,
             'title' => 'User Title Changed',
             'age'   => 420,
             'credit'    => '4.2',
             'joindate'  => '2013-01-02',
-        );
+        ];
         $manager->renew()
             ->addRow(self::$tableUser, $dataNew1, $dataNew1Changed)
             ->addRow(self::$tableUser, $dataNew2, null);
@@ -280,9 +280,9 @@ class ExecutorTest extends AbstractDbRelateTest
         $executor = $this->buildMock();
         $manager = $this->buildMockManager();
 
-        $dataNew = array(
+        $dataNew = [
             'uuid'  => $this->uuid3,
-        );
+        ];
         $condition = "WHERE uuid = '{$this->uuid3}'";
 
 
@@ -350,9 +350,9 @@ class ExecutorTest extends AbstractDbRelateTest
     {
         $executor = $this->buildMockWithFakeDb();
 
-        $dataNew = array(
+        $dataNew = [
             'uuid'  => $this->uuid1,
-        );
+        ];
 
         self::$getErrorCode = -1;
         self::$getErrorMessage = 'Db execute fail';

@@ -23,18 +23,18 @@ class CodeDictionaryTest extends PHPUnitTestCase
             'Fwlib\Bridge\Adodb'
         )
         ->setMethods(
-            array(
+            [
                 'getProfile', 'getSqlDelimiter', 'getSqlTruncate',
                 'getSqlTransBegin', 'getSqlTransCommit',
                 'isConnected', 'isDbMysql', 'quoteValue'
-            )
+            ]
         )
         ->disableOriginalConstructor()
         ->getMock();
 
         $db->expects($this->any())
             ->method('getProfile')
-            ->will($this->returnValue(array('lang' => '{profileLang}')));
+            ->will($this->returnValue(['lang' => '{profileLang}']));
 
         $db->expects($this->any())
             ->method('getSqlDelimiter')
@@ -77,11 +77,11 @@ class CodeDictionaryTest extends PHPUnitTestCase
         $dictionary = new CodeDictionary();
 
         $dictionary->set(
-            array(
-                array(123,  'a'),
-                array('bac', 2),
-                array(321,  'c'),
-            )
+            [
+                [123,  'a'],
+                ['bac', 2],
+                [321,  'c'],
+            ]
         );
 
         return $dictionary;
@@ -90,25 +90,25 @@ class CodeDictionaryTest extends PHPUnitTestCase
 
     public function testFixDictionaryIndex()
     {
-        $arrayWithoutIndex = array(
-                array(123,  'a'),
-                array('bac', 2),
-                array(321,  'c'),
-        );
-        $arrayWithIndex = array(
-            123 => array(
+        $arrayWithoutIndex = [
+                [123,  'a'],
+                ['bac', 2],
+                [321,  'c'],
+        ];
+        $arrayWithIndex = [
+            123 => [
                 'code'  => 123,
                 'title' => 'a',
-            ),
-            'bac' => array(
+            ],
+            'bac' => [
                 'code'  => 'bac',
                 'title' => 2,
-            ),
-            321 => array(
+            ],
+            321 => [
                 'code'  => 321,
                 'title' => 'c',
-            ),
-        );
+            ],
+        ];
 
         $dictionary = $this->buildMock();
 
@@ -126,17 +126,17 @@ class CodeDictionaryTest extends PHPUnitTestCase
         $dictionary = $this->buildMock();
 
         $this->assertEquals(null, $dictionary->get(null));
-        $this->assertEquals(null, $dictionary->getMultiple(array()));
+        $this->assertEquals(null, $dictionary->getMultiple([]));
         $this->assertEquals(null, $dictionary->get('notExistKey'));
         $this->assertEquals(
-            array('notExistKey' => null),
-            $dictionary->getMultiple(array('notExistKey'))
+            ['notExistKey' => null],
+            $dictionary->getMultiple(['notExistKey'])
         );
         $this->assertEquals('a', $dictionary->get(123));
         $this->assertEquals(2, $dictionary->get('bac'));
         $this->assertEquals(
-            array(123 => 'a', 321 => 'c'),
-            $dictionary->getMultiple(array(123, 321))
+            [123 => 'a', 321 => 'c'],
+            $dictionary->getMultiple([123, 321])
         );
     }
 
@@ -195,26 +195,26 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
         $dictionary = $this->buildMock();
 
         $this->assertEquals(
-            array('bac' => array('code' => 'bac', 'title' => 2)),
+            ['bac' => ['code' => 'bac', 'title' => 2]],
             $dictionary->search(function ($row) {
                 return !is_numeric($row['code']);
             })
         );
 
         $this->assertEquals(
-            array(
-                123 => array('code' => 123, 'title' => 'a'),
-                321 => array('code' => 321, 'title' => 'c')
-            ),
+            [
+                123 => ['code' => 123, 'title' => 'a'],
+                321 => ['code' => 321, 'title' => 'c']
+            ],
             $dictionary->search(function ($row) {
                 return '2' == substr($row['code'], 1, 1);
             })
         );
 
         $this->assertEquals(
-            array(
-                321 => array('code' => 321, 'title' => 'c')
-            ),
+            [
+                321 => ['code' => 321, 'title' => 'c']
+            ],
             $dictionary->search(function ($row) {
                 return 'c' == $row['title'] &&
                     '2' == substr($row['code'], 1, 1);
@@ -223,16 +223,16 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
 
         // Search with assign cols
         $this->assertEquals(
-            array(321 => 'c'),
+            [321 => 'c'],
             $dictionary->search(function ($row) {
                 return 'c' == $row['title'];
             }, 'title')
         );
 
         // Search on empty dictionary will return empty array
-        $this->reflectionSet($dictionary, 'dictionary', array());
+        $this->reflectionSet($dictionary, 'dictionary', []);
         $this->assertEqualArray(
-            array(),
+            [],
             $dictionary->search('time')
         );
     }
@@ -242,7 +242,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
     {
         $dictionary = $this->buildMock();
 
-        $dictionary->set(array('foo', 'bar'));
+        $dictionary->set(['foo', 'bar']);
         $this->assertEquals(4, count($dictionary->getAll()));
     }
 
@@ -255,7 +255,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
     {
         $dictionary = $this->buildMock();
 
-        $dictionary->set(array('', 'bar'));
+        $dictionary->set(['', 'bar']);
     }
 
 
@@ -264,7 +264,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
         $dictionary = $this->buildMock();
 
         $dictionaryBefore = $dictionary->getAll();
-        $dictionary->set(array());
+        $dictionary->set([]);
         $dictionaryAfter = $dictionary->getAll();
 
         $this->assertEqualArray($dictionaryBefore, $dictionaryAfter);
@@ -279,7 +279,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
     {
         $dictionary = $this->buildMock();
 
-        $dictionary->set(array(array(null), array('foo', 'bar')));
+        $dictionary->set([[null], ['foo', 'bar']]);
     }
 
 
@@ -291,9 +291,9 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
     {
         $dictionary = $this->buildMock();
 
-        $dictionary->setColumns(array());
+        $dictionary->setColumns([]);
 
-        $dictionary->set(array('foo' => 'bar'));
+        $dictionary->set(['foo' => 'bar']);
     }
 
 
@@ -307,6 +307,6 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
 
         $dictionary->setPrimaryKey('notExistColumn');
 
-        $dictionary->set(array('foo' => 'bar'));
+        $dictionary->set(['foo' => 'bar']);
     }
 }

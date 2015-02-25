@@ -15,8 +15,8 @@ class AbstractManagerTest extends PHPunitTestCase
         $workflow = $this->getMockBuilder(
             'FwlibTest\Workflow\AbstractManagerDummy'
         )
-        ->setMethods(array())
-        ->setConstructorArgs(array($uuid))
+        ->setMethods([])
+        ->setConstructorArgs([$uuid])
         ->getMockForAbstractClass();
 
         return $workflow;
@@ -89,13 +89,13 @@ class AbstractManagerTest extends PHPunitTestCase
 
         $actionsOld = $workflow->getAvailableActions();
 
-        $workflow->disableActions(array('notExist', 'submit'));
+        $workflow->disableActions(['notExist', 'submit']);
         $actionsNew = $workflow->getAvailableActions();
 
         $this->assertEquals(count($actionsOld), count($actionsNew) + 1);
         $this->assertArrayNotHasKey('submit', $actionsNew);
 
-        $workflow->enableActions(array('notExist', 'submit'));
+        $workflow->enableActions(['notExist', 'submit']);
         $actionsNew = $workflow->getAvailableActions();
         $this->assertEquals($actionsOld, $actionsNew);
     }
@@ -105,7 +105,7 @@ class AbstractManagerTest extends PHPunitTestCase
     {
         $workflow = $this->buildMock();
 
-        $contentData = array('key' => 'dummy');
+        $contentData = ['key' => 'dummy'];
         $_POST = $contentData;
 
         $workflow->updateContents($_POST)->execute('submit');
@@ -206,7 +206,7 @@ class AbstractManagerTest extends PHPunitTestCase
         $availableAction = $workflow->getAvailableActions();
 
         $this->assertEqualArray(
-            array('edit', 'submit', 'customizedAction'),
+            ['edit', 'submit', 'customizedAction'],
             array_keys($availableAction)
         );
 
@@ -252,7 +252,7 @@ class AbstractManagerTest extends PHPunitTestCase
 
         $actionsOld = $workflow->getAvailableActions();
 
-        $workflow->limitActions(array('notExist', 'edit', 'submit'));
+        $workflow->limitActions(['notExist', 'edit', 'submit']);
         $actionsNew = $workflow->getAvailableActions();
 
         $this->assertEquals(2, count($actionsNew));
@@ -277,6 +277,6 @@ class AbstractManagerTest extends PHPunitTestCase
         // Normally if we execute 'submit' again, will fail because there has
         // no 'submit' in node 'end', so to simulate concurrence execute, we
         // use reflection to call move() directly.
-        $this->reflectionCall($workflow, 'move', array('rollback', 'end', 'end'));
+        $this->reflectionCall($workflow, 'move', ['rollback', 'end', 'end']);
     }
 }

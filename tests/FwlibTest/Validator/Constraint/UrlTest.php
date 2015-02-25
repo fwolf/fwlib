@@ -37,7 +37,7 @@ class UrlTest extends PHPunitTestCase
 
     public function buildMock()
     {
-        $curl = $this->getMock('Fwlib\Net\Curl', array('post'));
+        $curl = $this->getMock('Fwlib\Net\Curl', ['post']);
         $curl->expects($this->any())
             ->method('post')
             ->will($this->returnCallback(function ($url, $param) {
@@ -64,7 +64,7 @@ class UrlTest extends PHPunitTestCase
         $urlTest = new UrlTest;
         $httpUtil = $urlTest->getMock(
             'Fwlib\Util\HttpUtil',
-            array('getSelfHostUrl', 'getSelfUrlWithoutParameter')
+            ['getSelfHostUrl', 'getSelfUrlWithoutParameter']
         );
 
         $httpUtil->expects($urlTest->any())
@@ -102,7 +102,7 @@ class UrlTest extends PHPunitTestCase
 
 
         // Url empty
-        $this->assertFalse($constraint->validate(array(), ''));
+        $this->assertFalse($constraint->validate([], ''));
         $this->assertEquals(
             'The input need url target for validate',
             current($constraint->getMessage())
@@ -110,23 +110,23 @@ class UrlTest extends PHPunitTestCase
 
 
         // Curl return success
-        self::$curlResult = json_encode(array('code' => 0, 'message' => ''));
+        self::$curlResult = json_encode(['code' => 0, 'message' => '']);
         $this->assertTrue($constraint->validate(null, $url));
         $this->assertEquals($url, self::$url);
 
 
         // Curl post data
-        $value = array(
+        $value = [
             'foo'   => 'Foo',
             'bar'   => 'Bar',
-        );
-        self::$curlResult = json_encode(array('code' => -1, 'message' => ''));
+        ];
+        self::$curlResult = json_encode(['code' => -1, 'message' => '']);
 
         $constraint->validate($value, $url);
         $this->assertEqualArray($value, self::$param);
 
         $constraint->validate($value, "$url ,foo");
-        $this->assertEqualArray(array('foo' => 'Foo'), self::$param);
+        $this->assertEqualArray(['foo' => 'Foo'], self::$param);
 
         $constraint->validate($value, "$url, foo, bar, ");
         $this->assertEqualArray($value, self::$param);
@@ -138,12 +138,12 @@ class UrlTest extends PHPunitTestCase
 
 
         // Curl return fail with message
-        $failMessage = array(
+        $failMessage = [
             'fail message 1',
             'fail message 2',
-        );
+        ];
         self::$curlResult = json_encode(
-            array('code' => -1, 'message' => '', 'data' => $failMessage)
+            ['code' => -1, 'message' => '', 'data' => $failMessage]
         );
         $this->assertFalse($constraint->validate($value, $url));
         $this->assertEqualArray($failMessage, $constraint->getMessage());

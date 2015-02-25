@@ -16,7 +16,7 @@ class AbstractServiceContainerTest extends PHPunitTestCase
             'Fwlib\Base\AbstractServiceContainer'
         )
             ->disableOriginalConstructor()
-            ->setMethods(array('newFoo'))
+            ->setMethods(['newFoo'])
             ->getMock();
 
         $serviceContainer->expects($this->any())

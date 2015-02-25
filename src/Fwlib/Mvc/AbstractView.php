@@ -28,7 +28,7 @@ abstract class AbstractView implements ViewInterface
      *
      * @var array
      */
-    protected $css = array();
+    protected $css = [];
 
     /**
      * Js to link in output header
@@ -37,7 +37,7 @@ abstract class AbstractView implements ViewInterface
      *
      * @var array
      */
-    protected $js = array();
+    protected $js = [];
 
     /**
      * Prefix of method to generate output
@@ -77,11 +77,11 @@ abstract class AbstractView implements ViewInterface
      *
      * @var array
      */
-    protected $outputParts = array(
+    protected $outputParts = [
         1 => 'header',
         0 => 'body',
         2 => 'footer',
-    );
+    ];
 
     /**
      * Path to root
@@ -131,10 +131,10 @@ abstract class AbstractView implements ViewInterface
      */
     protected function addCss($name, $url, $media = 'screen, print')
     {
-        $this->css[$name] = array(
+        $this->css[$name] = [
             'url'   => $url,
             'media' => $media,
-        );
+        ];
 
         return $this;
     }
@@ -168,7 +168,7 @@ abstract class AbstractView implements ViewInterface
         $parts = $this->outputParts;
         ksort($parts);
 
-        $outputParts = array();
+        $outputParts = [];
         foreach ($parts as $part) {
             $method = 'getOutput' . ucfirst($part);
 
@@ -395,13 +395,13 @@ abstract class AbstractView implements ViewInterface
             return $html;
 
         } else {
-            $config = array(
+            $config = [
                 'doctype'       => 'strict',
                 'indent'        => true,
                 'indent-spaces' => 2,
                 'output-xhtml'  => true,
                 'wrap'          => 200
-            );
+            ];
 
             $tidy = new \tidy;
             $tidy->parseString($html, $config, 'utf8');

@@ -19,8 +19,8 @@ $uuidBase16 = $utilContainer->get('UuidBase16');
 $uuidBase36 = $utilContainer->get('UuidBase36');
 $uuidBase62 = $utilContainer->get('UuidBase62');
 
-$arSpeed = array();
-foreach (array('UuidBase16', 'UuidBase36', 'UuidBase62') as $k => $v) {
+$arSpeed = [];
+foreach (['UuidBase16', 'UuidBase36', 'UuidBase62'] as $k => $v) {
     $class = 'Fwlib\\Util\\' . $v;
     $instanceName = lcfirst($v);
     $instance = $$instanceName;

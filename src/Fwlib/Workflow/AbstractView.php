@@ -56,10 +56,10 @@ abstract class AbstractView extends BaseView
      *
      * @var array
      */
-    protected $viewActionAfterExecute = array(
+    protected $viewActionAfterExecute = [
         'edit'   => 'edit',
         'submit' => 'detail',
-    );
+    ];
 
     /**
      * Request parameter of view action
@@ -102,8 +102,8 @@ abstract class AbstractView extends BaseView
      */
     public function buildQueryUrl(
         $viewAction,
-        array $queryData = array(),
-        array $removeKeys = array()
+        array $queryData = [],
+        array $removeKeys = []
     ) {
         $params = $_GET;
         $params[$this->viewActionParameter] = $viewAction;

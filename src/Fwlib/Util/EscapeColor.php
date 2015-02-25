@@ -19,7 +19,7 @@ class EscapeColor extends AbstractUtilAware
     /**
      * Dict: attr
      */
-    protected $dictAttr = array(
+    protected $dictAttr = [
         'reset'     => 0,    // Reset All Attributes (return to normal mode)
         'bright'    => 1,    // Bright (Usually turns on BOLD)
         'bold'      => 1,    // Bright (Usually turns on BOLD)
@@ -29,12 +29,12 @@ class EscapeColor extends AbstractUtilAware
         'blink'     => 5,
         'reverse'   => 7,
         'hidden'    => 8,
-    );
+    ];
 
     /**
      * Dict: bg color
      */
-    protected $dictBg = array(
+    protected $dictBg = [
         'black'     => 40,
         'red'       => 41,
         'green'     => 42,
@@ -43,12 +43,12 @@ class EscapeColor extends AbstractUtilAware
         'magenta'   => 45,
         'cyan'      => 46,
         'white'     => 47,
-    );
+    ];
 
     /**
      * Dict: fg color
      */
-    protected $dictFg = array(
+    protected $dictFg = [
         'black'     => 30,
         'red'       => 31,
         'green'     => 32,
@@ -57,7 +57,7 @@ class EscapeColor extends AbstractUtilAware
         'magenta'   => 35,
         'cyan'      => 36,
         'white'     => 37,
-    );
+    ];
 
     /**
      * Set false to disable color paint
@@ -88,7 +88,7 @@ class EscapeColor extends AbstractUtilAware
         }
 
 
-        $ar = array();
+        $ar = [];
 
         if (isset($this->dictAttr[$attr])) {
             $attr = strtolower($attr);
@@ -207,8 +207,8 @@ class EscapeColor extends AbstractUtilAware
 
 
         // fg colors:
-        $key = array();
-        $replace = array();
+        $key = [];
+        $replace = [];
         foreach ($this->dictFg as $k => $v) {
             $key[] = "/\x1b\[{$v};?(\d{0,2};?)m/";
             $replace[] = "<span style=\"color: $k;\">\x1b[\\1m";
@@ -266,14 +266,14 @@ class EscapeColor extends AbstractUtilAware
         );
 
         // Clean escape control chars
-        $escapeControl = array(
+        $escapeControl = [
             "/\x1b\\[(\\d+;)?\\d*[ABCDGJKnr]/",
             "/\x1b\\[(\\d+;)?\\d*[fH]/",
             //below is some chars which i don't know what it is .
             "/\x1b\\[\\??\\d*[hl]/",
             "/\x1b[>\\=]/",
             "/\x1b\&gt;/",
-        );
+        ];
         $in = preg_replace($escapeControl, '', $in);
 
         return($in);

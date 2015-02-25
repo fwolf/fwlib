@@ -32,7 +32,7 @@ abstract class AbstractManager implements ManagerInterface
      *
      * @var array
      */
-    protected $disabledActions = array();
+    protected $disabledActions = [];
 
     /**
      * Workflow model instance
@@ -72,44 +72,44 @@ abstract class AbstractManager implements ManagerInterface
      *
      * @var array
      */
-    protected $nodes = array(
-        'start' => array(
+    protected $nodes = [
+        'start' => [
             'title'     => 'Started',
-            'actions'   => array(
-                'edit'      => array(
+            'actions'   => [
+                'edit'      => [
                     'title' => 'Edit',
                     'next'  => 'start',
-                ),
-                'submit'    => array(
+                ],
+                'submit'    => [
                     'title' => 'Submit',
                     'next'  => 'end',
                     'resultCode'     => self::RESULT_CODE_APPROVED,
-                ),
-            ),
-        ),
-        'end'   => array(
+                ],
+            ],
+        ],
+        'end'   => [
             'title'     => 'Ended',
-        ),
-    );
+        ],
+    ];
 
     /**
      * Not available actions
      *
      * @var array   {action: {title, message or reason}}
      */
-    protected $notAvailableActions = array();
+    protected $notAvailableActions = [];
 
     /**
      * Workflow result code title
      *
      * @var array
      */
-    protected $resultCodeTitle = array(
+    protected $resultCodeTitle = [
         self::RESULT_CODE_NOT_ENDED => 'Not Ended',
         self::RESULT_CODE_APPROVED  => 'Approved',
         self::RESULT_CODE_REJECTED  => 'Rejected',
         self::RESULT_CODE_CANCELED  => 'Canceled',
-    );
+    ];
 
     /**
      * Title of workflow class
@@ -173,10 +173,10 @@ abstract class AbstractManager implements ManagerInterface
     {
         foreach ($this->nodes as $nodeIndex => &$node) {
             if (isset($node['actions'][$action])) {
-                $this->disabledActions[$action] = array(
+                $this->disabledActions[$action] = [
                     'node'   => $nodeIndex,
                     'action' => $node['actions'][$action],
-                );
+                ];
 
                 unset($node['actions'][$action]);
 
@@ -202,10 +202,10 @@ abstract class AbstractManager implements ManagerInterface
 
             foreach ($node['actions'] as $action => $value) {
                 if (in_array($action, $actions)) {
-                    $this->disabledActions[$action] = array(
+                    $this->disabledActions[$action] = [
                         'node'   => $nodeIndex,
                         'action' => $node['actions'][$action],
-                    );
+                    ];
 
                     unset($node['actions'][$action]);
                 }
@@ -320,7 +320,7 @@ abstract class AbstractManager implements ManagerInterface
      */
     public function getAvailableActions()
     {
-        $availableActions = array();
+        $availableActions = [];
         if (!isset($this->nodes[$this->model->getCurrentNode()]['actions'])) {
             return $availableActions;
         }
@@ -515,11 +515,11 @@ abstract class AbstractManager implements ManagerInterface
             $checkResult = $this->$method();
 
             if (true !== $checkResult) {
-                $this->notAvailableActions[$action] = array(
+                $this->notAvailableActions[$action] = [
                     'title'   => $this->nodes[$this->model->getCurrentNode()]
                         ['actions'][$action]['title'],
                     'message' => (string)$checkResult,
-                );
+                ];
                 return false;
             }
         }
@@ -561,10 +561,10 @@ abstract class AbstractManager implements ManagerInterface
 
             foreach ($node['actions'] as $action => $value) {
                 if (!in_array($action, $actions)) {
-                    $this->disabledActions[$action] = array(
+                    $this->disabledActions[$action] = [
                         'node'   => $nodeIndex,
                         'action' => $node['actions'][$action],
-                    );
+                    ];
 
                     unset($node['actions'][$action]);
                 }

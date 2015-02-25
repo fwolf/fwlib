@@ -66,7 +66,7 @@ class SmsSenderTest extends PHPunitTestCase
             ->disableOriginalConstructor()
             ->getMock(
                 'Fwlib\Base\AbstractServiceContainer',
-                array('get')
+                ['get']
             );
         $sc->expects($this->once())
             ->method('get')
@@ -85,16 +85,16 @@ class SmsSenderTest extends PHPunitTestCase
 
     public function testParsePhoneNumber()
     {
-        $x = array(
+        $x = [
             '+8613912345678',
             '008613912345678',
             '10086，  13912345678',
             '12345678',
-        );
-        $y = array(
+        ];
+        $y = [
             '13912345678',
             '10086',
-        );
+        ];
         $this->assertEquals($y, $this->smsSender->parsePhoneNumber($x));
     }
 
@@ -105,7 +105,7 @@ class SmsSenderTest extends PHPunitTestCase
 
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('getSmsLogger', 'sendUsingGammuSmsdInject')
+            ['getSmsLogger', 'sendUsingGammuSmsdInject']
         );
         $smsSender->expects($this->once())
             ->method('getSmsLogger')
@@ -149,7 +149,7 @@ class SmsSenderTest extends PHPunitTestCase
 
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('getPathOfGammuSmsdInject', 'getSmsLogger')
+            ['getPathOfGammuSmsdInject', 'getSmsLogger']
         );
         $smsSender->expects($this->once())
             ->method('getPathOfGammuSmsdInject')
@@ -176,14 +176,14 @@ class SmsSenderTest extends PHPunitTestCase
     {
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('getPathOfGammuSmsdInject')
+            ['getPathOfGammuSmsdInject']
         );
         $smsSender->expects($this->once())
             ->method('getPathOfGammuSmsdInject')
             ->will($this->returnValue('dummy'));
 
         // Fake exec() result
-        self::$exec_output = array(null, 'output_1');
+        self::$exec_output = [null, 'output_1'];
         self::$exec_returnValue = -1;
 
         $smsSender->config['method'] = 'gammuSmsdInject';
@@ -199,7 +199,7 @@ class SmsSenderTest extends PHPunitTestCase
     {
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('getPathOfGammuSmsdInject')
+            ['getPathOfGammuSmsdInject']
         );
         $smsSender->expects($this->once())
             ->method('getPathOfGammuSmsdInject')
@@ -218,7 +218,7 @@ class SmsSenderTest extends PHPunitTestCase
     {
         $smsSender = $this->getMock(
             'Fwlib\Net\Sms\SmsSender',
-            array('getPathOfGammuSmsdInject')
+            ['getPathOfGammuSmsdInject']
         );
         $smsSender->expects($this->once())
             ->method('getPathOfGammuSmsdInject')

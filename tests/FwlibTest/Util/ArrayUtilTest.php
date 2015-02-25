@@ -23,7 +23,7 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $ar = array('foo' => '', 'foo1' => 42);
+        $ar = ['foo' => '', 'foo1' => 42];
 
         $this->assertEquals('', $arrayUtil->getIdx($ar, 'foo'));
         $this->assertEquals(null, $arrayUtil->getEdx($ar, 'foo'));
@@ -38,7 +38,7 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $ar = array('foo' => 'bar');
+        $ar = ['foo' => 'bar'];
 
         $this->assertEquals('bar', $arrayUtil->getIdx($ar, 'foo'));
         $this->assertEquals(null, $arrayUtil->getIdx($ar, 'foo1'));
@@ -47,7 +47,7 @@ class ArrayUtilTest extends PHPunitTestCase
         $this->assertEquals('bar', $arrayUtil->getIdx($ar, 'foo1', 'bar'));
 
         // Compare with array_key_exists()
-        $ar = array('foo' => null);
+        $ar = ['foo' => null];
         $this->assertFalse(isset($ar['foo']));
         $this->assertTrue(array_key_exists('foo', $ar));
         $this->assertEquals(null, $arrayUtil->getIdx($ar, 'foo', 42));
@@ -58,7 +58,7 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $ar = array();
+        $ar = [];
         $arrayUtil->increaseByKey($ar, 'a', 3);
         $arrayUtil->increaseByKey($ar, 'a', 4);
         $this->assertEquals($ar['a'], 7);
@@ -80,99 +80,99 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $x = array('a', 'b', 'c');
+        $x = ['a', 'b', 'c'];
         $y = $x;
 
         // Empty input
-        $this->assertEqualArray($y, $arrayUtil->insert($x, 'foo', array()));
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'foo', []));
 
         // Pos not exists, number indexed
-        $arrayUtil->insert($x, 'd', array('d'));
-        $this->assertEqualArray(array('a', 'b', 'c', 'd'), $x);
+        $arrayUtil->insert($x, 'd', ['d']);
+        $this->assertEqualArray(['a', 'b', 'c', 'd'], $x);
 
         // Pos not exists, assoc indexed
-        $x = array(
+        $x = [
             'a' => 1,
-        );
-        $y = array(
+        ];
+        $y = [
             'a' => 1,
             0 => 'd',
-        );
-        $this->assertEqualArray($y, $arrayUtil->insert($x, 'd', array('d')));
+        ];
+        $this->assertEqualArray($y, $arrayUtil->insert($x, 'd', ['d']));
 
         // Assoc indexed, normal
-        $source = array(
+        $source = [
             'a' => 1,
             'b' => 2,
             'c' => 3,
-        );
-        $insert = array(
+        ];
+        $insert = [
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
-        );
+        ];
         // Insert before a key
         $x = $source;
-        $y = array(
+        $y = [
             'a' => 1,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
             'b' => 2,
             'c' => 3,
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->insert($x, 'c', $insert, -2));
 
         // Insert after a key
         $x = $source;
-        $y = array(
+        $y = [
             'a' => 1,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
             'b' => 2,
             'c' => 3,
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->insert($x, 'a', $insert, 1));
 
         // Replace
         $x = $source;
-        $y = array(
+        $y = [
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
             'b' => 2,
             'c' => 3,
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->insert($x, 'a', $insert, 0));
 
         // Replace & not exist = append
         $x = $source;
-        $y = array(
+        $y = [
             'a' => 1,
             'b' => 2,
             'c' => 3,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->insert($x, 'f', $insert, 0));
 
         // Insert far before
         $x = $source;
-        $y = array(
+        $y = [
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
             'a' => 1,
             'b' => 2,
             'c' => 3,
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->insert($x, 'a', $insert, -10));
 
         // Insert far after
         $x = $source;
-        $y = array(
+        $y = [
             'a' => 1,
             'b' => 2,
             'c' => 3,
             'ins1'  => 'ins1',
             'ins2'  => 'ins2',
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->insert($x, 'c', $insert, 10));
     }
 
@@ -181,21 +181,21 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $source = array(
+        $source = [
             'a' => 1,
             'b' => 2,
             'c' => 3,
-        );
-        $insert = array(
+        ];
+        $insert = [
             'c' => 33,
-        );
+        ];
         // Insert before a key
         $x = $source;
-        $y = array(
+        $y = [
             'a' => 1,
             'c' => 33,
             'b' => 2,
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->insert($x, 'c', $insert, -2));
     }
 
@@ -204,29 +204,29 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $sources = array(
+        $sources = [
             'a' => 'A ',
             'b' => 42,
             'c' => null,
             'd' => '0',
-        );
+        ];
 
 
         // Key replacement
-        $keys = array('paramA' => 'a', 'paramB' => 'b');
-        $y = array(
+        $keys = ['paramA' => 'a', 'paramB' => 'b'];
+        $y = [
             'paramA' => 'A ',
             'paramB' => 42,
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->pick($sources, $keys, true));
 
 
         // noEmpty
-        $keys = array('a', 'b', 'c', 'd');
-        $y = array(
+        $keys = ['a', 'b', 'c', 'd'];
+        $y = [
             'a' => 'A ',
             'b' => 42,
-        );
+        ];
         $this->assertEqualArray($y, $arrayUtil->pick($sources, $keys, true));
 
 
@@ -234,11 +234,11 @@ class ArrayUtilTest extends PHPunitTestCase
         $callback = function ($value) {
             return is_null($value) ? 'null' : $value;
         };
-        $y = array(
+        $y = [
             'a' => 'A ',
             'b' => 42,
             'c' => 'null',
-        );
+        ];
         $this->assertEqualArray(
             $y,
             $arrayUtil->pick($sources, $keys, true, $callback)
@@ -247,8 +247,8 @@ class ArrayUtilTest extends PHPunitTestCase
 
         // Use build-in function as callback
         $this->assertEqualArray(
-            array('a' => 'A'),
-            $arrayUtil->pick($sources, array('a'), false, 'trim')
+            ['a' => 'A'],
+            $arrayUtil->pick($sources, ['a'], false, 'trim')
         );
     }
 
@@ -258,9 +258,9 @@ class ArrayUtilTest extends PHPunitTestCase
         $arrayUtil = $this->buildMock();
 
         // Empty check
-        $this->assertEquals(array(), $arrayUtil->searchByWildcard(null, null));
+        $this->assertEquals([], $arrayUtil->searchByWildcard(null, null));
 
-        $x = array('foo' => 'bar');
+        $x = ['foo' => 'bar'];
         $y = $arrayUtil->searchByWildcard($x, null);
         $this->assertEqualArray($x, $y);
         $y = $arrayUtil->searchByWildcard($x, '|', '|');
@@ -268,13 +268,13 @@ class ArrayUtilTest extends PHPunitTestCase
 
 
         $rule = 'a*, -*b, -??c, +?d*';
-        $sourceArray = array(
+        $sourceArray = [
             'a' => 'ab',
             'b' => 'abc',
             'c' => 'adc',
-        );
+        ];
         $ar = $arrayUtil->searchByWildcard($sourceArray, $rule);
-        $this->assertEquals($ar, array('c' => 'adc'));
+        $this->assertEquals($ar, ['c' => 'adc']);
     }
 
 
@@ -282,27 +282,27 @@ class ArrayUtilTest extends PHPunitTestCase
     {
         $arrayUtil = $this->buildMock();
 
-        $x = array(
-            'a' => array('col' => 20),
-            'b' => array('col' => 30),
-            'c' => array('col' => 10),
-        );
-        $y = array(
-            'c' => array('col' => 10),
-            'a' => array('col' => 20),
-            'b' => array('col' => 30),
-        );
+        $x = [
+            'a' => ['col' => 20],
+            'b' => ['col' => 30],
+            'c' => ['col' => 10],
+        ];
+        $y = [
+            'c' => ['col' => 10],
+            'a' => ['col' => 20],
+            'b' => ['col' => 30],
+        ];
 
         $ar = $x;
         $arrayUtil->sortByLevel2($ar, 'col', 'ASC');
         $this->assertEqualArray($ar, $y);
 
         unset($x['c']['col']);
-        $y = array(
-            'b' => array('col' => 30),
-            'c' => array(),
-            'a' => array('col' => 20),
-        );
+        $y = [
+            'b' => ['col' => 30],
+            'c' => [],
+            'a' => ['col' => 20],
+        ];
         $ar = $x;
         $arrayUtil->sortByLevel2($ar, 'col', false, 25);
         $this->assertEqualArray($ar, $y);

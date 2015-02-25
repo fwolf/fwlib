@@ -13,42 +13,42 @@ class AbstractManagerDummy extends AbstractManager
     protected $modelClass =
         'FwlibTest\Workflow\ModelInterfaceDummy';
 
-    protected $nodes = array(
-        'start' => array(
+    protected $nodes = [
+        'start' => [
             'title'     => 'Started',
-            'actions'   => array(
-                'edit'      => array(
+            'actions'   => [
+                'edit'      => [
                     'title' => 'Edit',
                     'next'  => 'start',
-                ),
-                'submit'    => array(
+                ],
+                'submit'    => [
                     'title' => 'Submit',
                     'next'  => 'end',
                     'resultCode'     => self::RESULT_CODE_APPROVED,
-                ),
-                'notAvailableAction' => array(
+                ],
+                'notAvailableAction' => [
                     'title' => 'Not Available Action Title',
-                ),
-                'customizedAction'  => array(
+                ],
+                'customizedAction'  => [
                     'title' => 'Customize Action',
                     'next'  => 'end',
                     'resultCode'     => self::RESULT_CODE_REJECTED,
-                ),
-            ),
-        ),
-        'end'   => array(
+                ],
+            ],
+        ],
+        'end'   => [
             'title'     => 'Ended',
-            'actions'   => array(
-                'rollback'  => array(
+            'actions'   => [
+                'rollback'  => [
                     'title' => 'Rollback',
                     'next'  => 'start',
-                ),
-            ),
-        ),
-        'unReachable' => array(
+                ],
+            ],
+        ],
+        'unReachable' => [
             'title' => 'Stub 节点',
-        ),
-    );
+        ],
+    ];
 
     protected $workflowTitle = 'Workflow Title Dummy';
 

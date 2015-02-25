@@ -31,7 +31,7 @@ class AbstractServiceContainerAwareTest extends PHPunitTestCase
             $this->reflectionCall(
                 $serviceContainerAware,
                 'getService',
-                array('UtilContainer')
+                ['UtilContainer']
             )
         );
     }
@@ -50,7 +50,7 @@ class AbstractServiceContainerAwareTest extends PHPunitTestCase
             $this->reflectionCall(
                 $serviceContainerAware,
                 'getService',
-                array('UtilContainer')
+                ['UtilContainer']
             )
         );
     }

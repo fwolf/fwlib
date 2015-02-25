@@ -26,7 +26,7 @@ if ('config.default.php' == basename(__FILE__)) {
 
 
     // Init config data array
-    $config = array();
+    $config = [];
 
 
     // Load user config if exists
@@ -102,13 +102,13 @@ $config['lib.path.smarty'] = 'smarty/';
 /**
  * Memcached
  */
-$config['memcached.server'] = array(
-    array(
+$config['memcached.server'] = [
+    [
         'host'      => '127.0.0.1',
         'port'      => 11211,
         'weight'    => 100,
-    ),
-);
+    ],
+];
 
 
 /**

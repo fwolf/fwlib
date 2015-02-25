@@ -38,13 +38,13 @@ class CachedCallerTest extends PHPUnitTestCase
     {
         $dummy = $this->getMock(
             'Fwlib\Cache\CachedCallerAwareInterface',
-            array(
+            [
                 'callMe',
                 'getCacheKey',
                 'getCacheLifetime',
                 'isForceRefreshCache',
                 'isUseCache',
-            )
+            ]
         );
 
         $dummy->expects($this->any())
@@ -149,7 +149,7 @@ class CachedCallerTest extends PHPUnitTestCase
         $rs = $cachedCaller->call(
             $dummy,
             'callMe',
-            array(),
+            [],
             $readRenderer,
             $writeRenderer
         );
@@ -162,7 +162,7 @@ class CachedCallerTest extends PHPUnitTestCase
         $rs = $cachedCaller->call(
             $dummy,
             'callMe',
-            array(),
+            [],
             $readRenderer,
             $writeRenderer
         );

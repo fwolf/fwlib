@@ -30,7 +30,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      *
      * @var array
      */
-    protected $cacheData = array();
+    protected $cacheData = [];
 
     /**
      * Error message
@@ -47,18 +47,18 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      *
      * @var array
      */
-    protected $log = array();
+    protected $log = [];
 
     /**
      * Supported cache type, must have corresponding child class defined
      *
      * @var array
      */
-    private static $supportedType = array(
+    private static $supportedType = [
         '',
         'file',
         'memcached',
-    );
+    ];
 
 
     /**
@@ -68,7 +68,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      * @param   array   $config
      * @return  CacheInterface
      */
-    public static function create($type = '', $config = array())
+    public static function create($type = '', $config = [])
     {
         // Supported cache type
         if (!in_array($type, self::$supportedType)) {
@@ -171,10 +171,10 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
             0
         );
 
-        $this->log[] = array(
+        $this->log[] = [
             'key'   => $key,
             'success'   => !is_null($val),
-        );
+        ];
         return $val;
     }
 

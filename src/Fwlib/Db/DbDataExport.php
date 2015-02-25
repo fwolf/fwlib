@@ -22,7 +22,7 @@ class DbDataExport extends AbstractDbClient
      *
      * @var array
      */
-    public $columnExclude = array('lasttime');
+    public $columnExclude = ['lasttime'];
 
     /**
      * Where to save exported sql files
@@ -62,14 +62,14 @@ class DbDataExport extends AbstractDbClient
      *
      * @var array
      */
-    protected $table = array();
+    protected $table = [];
 
     /**
      * Tables to be exclude from export
      *
      * @var array
      */
-    public $tableExclude = array();
+    public $tableExclude = [];
 
     /**
      * Table need to be group by some cols when export
@@ -79,7 +79,7 @@ class DbDataExport extends AbstractDbClient
      *
      * @var array
      */
-    public $tableGroupby = array();
+    public $tableGroupby = [];
 
     /**
      * Tables to be include in export
@@ -88,7 +88,7 @@ class DbDataExport extends AbstractDbClient
      *
      * @var array
      */
-    public $tableInclude = array();
+    public $tableInclude = [];
 
     /**
      * Print log message
@@ -132,7 +132,7 @@ class DbDataExport extends AbstractDbClient
      */
     protected function convertGroupby2Where($tbl)
     {
-        $arWhere = array();
+        $arWhere = [];
 
         if (!empty($this->tableGroupby[$tbl])) {
             $groupby = $this->tableGroupby[$tbl];
@@ -165,7 +165,7 @@ class DbDataExport extends AbstractDbClient
      * @param   array   $cols
      * @return  string
      */
-    protected function convertRs2Sql(&$rs, $tbl, $cols = array())
+    protected function convertRs2Sql(&$rs, $tbl, $cols = [])
     {
         $sql = '';
 
@@ -174,7 +174,7 @@ class DbDataExport extends AbstractDbClient
             $sql .= "INSERT INTO $tbl (" . implode(', ', $cols) . ") VALUES (\n";
 
             // Fields data
-            $ar = array();
+            $ar = [];
             foreach ($cols as $c) {
                 $val = $this->parseField($tbl, $rs, $c);
                 array_push($ar, $val);
@@ -339,11 +339,11 @@ class DbDataExport extends AbstractDbClient
         $colsMeta = $this->getDb()->MetaColumns($tbl);
         // @codeCoverageIgnoreStart
         if (empty($colsMeta)) {
-            return array();
+            return [];
         }
         // @codeCoverageIgnoreEnd
 
-        $cols = array();
+        $cols = [];
         foreach ($colsMeta as $c) {
             if (!in_array($c->name, $this->columnExclude)) {
                 array_push($cols, $c->name);
@@ -426,7 +426,7 @@ class DbDataExport extends AbstractDbClient
      */
     protected function needIdentityInsert()
     {
-        $need = array('mssql', 'sybase', 'sybase_ase');
+        $need = ['mssql', 'sybase', 'sybase_ase'];
 
         return in_array($this->getDb()->profile['type'], $need);
     }
@@ -491,7 +491,7 @@ class DbDataExport extends AbstractDbClient
             $this->tableExclude = $ar;
         } else {
             $ar = explode(',', $ar);
-            $this->tableExclude = array();
+            $this->tableExclude = [];
             foreach ($ar as $tbl) {
                 $tbl = trim($tbl);
                 if (!empty($tbl)) {
@@ -535,7 +535,7 @@ class DbDataExport extends AbstractDbClient
             $this->tableInclude = $ar;
         } else {
             $ar = explode(',', $ar);
-            $this->tableInclude = array();
+            $this->tableInclude = [];
             foreach ($ar as $tbl) {
                 $tbl = trim($tbl);
                 if (!empty($tbl)) {

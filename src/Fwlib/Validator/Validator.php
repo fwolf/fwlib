@@ -22,7 +22,7 @@ class Validator
      *
      * @var array
      */
-    protected $message = array();
+    protected $message = [];
 
 
     /**
@@ -101,7 +101,7 @@ class Validator
     public function validate($value, $rule = null)
     {
         // Clear previous message
-        $this->message = array();
+        $this->message = [];
 
 
         $valid = true;

@@ -29,14 +29,14 @@ class SmsLoggerTest extends PHPunitTestCase
 
     public function testCountDestCompany()
     {
-        $arDest = array(
+        $arDest = [
             '13912345678', '13012345678', '18012345678',
-        );
-        $y = array(
+        ];
+        $y = [
             'cm' => 1,
             'cu' => 1,
             'ct' => 1,
-        );
+        ];
         $this->assertEqualArray($y, $this->smsLogger->countDestCompany($arDest));
     }
 
@@ -81,7 +81,7 @@ class SmsLoggerTest extends PHPunitTestCase
         $this->reflectionSet($this->smsLogger, 'db', $db);
 
         $this->smsLogger->log(
-            array('13912345678'),
+            ['13912345678'],
             'Test sms message.',
             0
         );

@@ -47,11 +47,11 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 
         // Error config will got empty result
         $this->sg->clear();
-        $ar = array('foo' => 'bar');
+        $ar = ['foo' => 'bar'];
         $x = $this->sg->get($ar);
         $this->assertEquals('', $x);
 
-        $x = $this->sg->get(array());
+        $x = $this->sg->get([]);
         $this->assertEquals('', $x);
     }
 
@@ -61,13 +61,13 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
         $this->sg->clear();
 
         // Normal delete
-        $ar = array(
+        $ar = [
             'DELETE'    => self::$tableUser,
             'WHERE'     => 'id = 42',
             'ORDERBY'   => 'credit DESC',
             'LIMIT'     => 1,
             'useless'   => 'blah',
-        );
+        ];
         $x = $this->sg->get($ar);
         $y = 'DELETE FROM ' . self::$tableUser
             . ' WHERE (id = 42) ORDER BY credit DESC LIMIT 1';
@@ -100,24 +100,24 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
         $this->sg->clear();
 
         // Raw values in config with special char
-        $ar = array(
+        $ar = [
             'INSERT'    => self::$tableUser,
             'VALUES'    => '(credit, title) VALUES ("a\"t\a\'c", 123456)',
-        );
+        ];
         $x = $this->sg->get($ar);
         $y = 'INSERT INTO ' . self::$tableUser
             . '(credit, title) VALUES ("a\"t\a\'c", 123456)';
         $this->assertEquals($y, $x);
 
         // Raw values in config with special char
-        $ar = array(
+        $ar = [
             'INSERT'    => self::$tableUser,
-            'VALUES'    => array(
+            'VALUES'    => [
                 'age'  => 123456,
                 'title'  => 'string content',
                 'joindate'  => date('Y-m-d H:i:s', strtotime('2013-09-17 15:14:50')),
-            ),
-        );
+            ],
+        ];
         $x = $this->sg->get($ar);
         $y = 'INSERT INTO ' . self::$tableUser . '(age, title, joindate) VALUES '
             . '(123456, \'string content\', \'2013-09-17 15:14:50\')';
@@ -134,28 +134,28 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 
     public function testGetPrepared()
     {
-        $ar = array(
+        $ar = [
             'INSERT'    => self::$tableUser,
-            'VALUES'    => array(
+            'VALUES'    => [
                 'uuid'  => self::$dbMysql->param('uuid'),
                 'title' => self::$dbMysql->param('title'),
                 'age'   => self::$dbMysql->param('age'),
-            ),
-        );
+            ],
+        ];
         $x = $this->sg->getPrepared($ar);
         $y = 'INSERT INTO ' . self::$tableUser
             . '(uuid, title, age) VALUES (?, ?, ?)';
         $this->assertEquals($y, $x);
 
-        $ar = array(
+        $ar = [
             'UPDATE'    => self::$tableUser,
-            'SET'   => array(
+            'SET'   => [
                 'uuid'      => self::$dbMysql->param('uuid'),
                 'title'     => self::$dbMysql->param('title'),
                 'credit'    => self::$dbMysql->param('credit'),
-            ),
+            ],
             'WHERE' => 'age = 42',
-        );
+        ];
         $x = $this->sg->getPrepared($ar);
         $y = 'UPDATE ' . self::$tableUser
             . ' SET uuid = ?, title = ?, credit = ? WHERE (age = 42)';
@@ -167,7 +167,7 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
     {
         $this->sg->clear();
 
-        $ar = array(
+        $ar = [
             'SELECT'    => 'title, age, credit',
             'FROM'      => self::$tableUser . ' a, ' . self::$tableGroup . ' b',
             'WHERE'     => 'a.uuidGroup = b.uuid',
@@ -175,7 +175,7 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
             'HAVING'    => 'a.age > 42',
             'ORDRBY'    => 'a.age DESC',
             'LIMIT'     => 3,
-        );
+        ];
         $x = $this->sg->get($ar);
         $y = 'SELECT title, age, credit FROM ' . self::$tableUser
             . ' a, ' . self::$tableGroup . ' b WHERE (a.uuidGroup = b.uuid) '
@@ -183,21 +183,21 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
         $this->assertEquals($y, $x);
 
         $this->sg->clear();
-        $ar = array(
-            'SELECT'    => array(
+        $ar = [
+            'SELECT'    => [
                 'title',
                 'titleGroup' => 'b.title'
-            ),
-            'FROM'      => array(
+            ],
+            'FROM'      => [
                 'a' => self::$tableUser,
                 'b' => self::$tableGroup,
-            ),
-            'WHERE'     => array(
+            ],
+            'WHERE'     => [
                 'a.uuidGroup = b.uuid',
                 '1 = 1',
-            ),
-            'LIMIT'     => array(1, 3),
-        );
+            ],
+            'LIMIT'     => [1, 3],
+        ];
         $x = $this->sg->get($ar);
         $y = 'SELECT title, b.title AS \'titleGroup\' FROM ' . self::$tableUser
             . ' a, ' . self::$tableGroup . ' b '
@@ -218,13 +218,13 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
         $this->sg->clear();
 
         // Normal update, SQL clause lowercase
-        $ar = array(
+        $ar = [
             'update'    => self::$tableUser,
             'set'       => 'age = 42',
             'where'     => 'credit > 70',
             'orderby'   => 'title desc',
             'limit'     => 1,
-        );
+        ];
         $x = $this->sg->get($ar);
         $y = 'UPDATE ' . self::$tableUser . ' SET age = 42 '
             . 'WHERE (credit > 70) ORDER BY title desc LIMIT 1';
@@ -232,21 +232,21 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 
         // Normal update define with array
         $this->sg->clear();
-        $ar = array(
+        $ar = [
             'update'    => self::$tableUser,
-            'set'       => array(
+            'set'       => [
                 'age'   => 42,
                 'title' => '\'Mr. \' + title',
-            ),
-            'where'     => array(
+            ],
+            'where'     => [
                 'joindate > \'2013-09-17\'',
                 '1 = (age % 2)',   // Odd
-            ),
-            'orderby'   => array(
+            ],
+            'orderby'   => [
                 'title desc',
                 'joindate asc',
-            ),
-        );
+            ],
+        ];
         $x = $this->sg->get($ar);
         $y = 'UPDATE ' . self::$tableUser . ' SET age = 42, '
             . 'title = \'\\\'Mr. \\\' + title\' '

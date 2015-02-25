@@ -32,7 +32,7 @@ class AbstractUtilAwareTest extends PHPUnitTestCase
 
         $this->assertInstanceOf(
             'Fwlib\Util\StringUtil',
-            $this->reflectionCall($utilAware, 'getUtil', array('String'))
+            $this->reflectionCall($utilAware, 'getUtil', ['String'])
         );
     }
 

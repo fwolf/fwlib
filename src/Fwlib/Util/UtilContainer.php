@@ -19,7 +19,7 @@ class UtilContainer extends AbstractServiceContainer implements
      *
      * @var array
      */
-    protected $serviceClass = array(
+    protected $serviceClass = [
         'Array'             => 'Fwlib\Util\ArrayUtil',
         'ArrayUtil'         => 'Fwlib\Util\ArrayUtil',
         'Datetime'          => 'Fwlib\Util\DatetimeUtil',
@@ -47,7 +47,7 @@ class UtilContainer extends AbstractServiceContainer implements
         'ChnCinCode'            => 'Fwlib\Util\Code\ChnCitizenIdentificationNumber',
         'ChnOrgCode'            => 'Fwlib\Util\Code\ChnOrganizationCode',
         'ChnOrganizationCode'   => 'Fwlib\Util\Code\ChnOrganizationCode',
-    );
+    ];
 
 
     /**

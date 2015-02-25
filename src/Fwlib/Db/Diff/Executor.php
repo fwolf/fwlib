@@ -27,7 +27,7 @@ class Executor implements ExecutorInterface
      *
      * @var array
      */
-    protected $primaryKeyCache = array();
+    protected $primaryKeyCache = [];
 
 
     /**
@@ -106,11 +106,11 @@ class Executor implements ExecutorInterface
      */
     protected function generateCommitSql(RowSet $rowSet)
     {
-        $sqlArray = array();
+        $sqlArray = [];
         $db = $this->getDb();
 
         foreach ($rowSet->getRows() as $row) {
-            $sqlConfig = array();
+            $sqlConfig = [];
             $table = $row->getTable();
 
             switch ($row->getMode()) {
@@ -168,12 +168,12 @@ class Executor implements ExecutorInterface
      */
     protected function generateRollbackSql(RowSet $rowSet)
     {
-        $sqlArray = array();
+        $sqlArray = [];
         $db = $this->getDb();
 
         // Rollback SQL is in reverse order of commit
         foreach (array_reverse($rowSet->getRows()) as $row) {
-            $sqlConfig = array();
+            $sqlConfig = [];
             $table = $row->getTable();
 
             switch ($row->getMode()) {

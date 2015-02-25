@@ -41,9 +41,9 @@ class ManagerTest extends PHPUnitTestCase
     {
         $manager = $this->buildMock();
 
-        $dataNew = array(
+        $dataNew = [
             'title' => 'User Title',
-        );
+        ];
 
         $manager->addRow('table_not_exist', null, $dataNew);
     }
@@ -53,14 +53,14 @@ class ManagerTest extends PHPUnitTestCase
     {
         $manager = $this->buildMock();
 
-        $old = array(
+        $old = [
             'uuid'  => 'uuid',
             'column' => 1,
-        );
-        $new = array(
+        ];
+        $new = [
             'uuid'  => 'uuid',
             'column' => 2,
-        );
+        ];
 
         // Insert, update, delete
         $manager->addRow('table', null, $old);
@@ -81,16 +81,16 @@ class ManagerTest extends PHPUnitTestCase
 
 
         // Insert, update, delete
-        $old = array(
+        $old = [
             'uuid'  => 'uuid',
             'column' => 1,
-        );
-        $new = array(
+        ];
+        $new = [
             'uuid'  => 'uuid',
             'column' => 2,
-        );
-        $oldRows = array(null, $old, $new);
-        $newRows = array($old, $new, null);
+        ];
+        $oldRows = [null, $old, $new];
+        $newRows = [$old, $new, null];
 
         $manager->addRows('table', $oldRows, $newRows);
 
@@ -98,7 +98,7 @@ class ManagerTest extends PHPUnitTestCase
 
 
         // Add 2 rows
-        $newRows = array($old, $new);
+        $newRows = [$old, $new];
 
         $manager->renew()->addRows('table', null, $newRows);
 
@@ -128,9 +128,9 @@ class ManagerTest extends PHPUnitTestCase
     {
         $manager = $this->buildMock();
 
-        $new = array(
+        $new = [
             'title' => 'Title',
-        );
+        ];
 
         $manager->addRow('table', null, $new);
     }
@@ -154,10 +154,10 @@ class ManagerTest extends PHPUnitTestCase
     {
         $manager = $this->buildMock();
 
-        $old = array(
+        $old = [
             'uuid'  => 'uuid',
             'column' => 1,
-        );
+        ];
 
         $manager->addRow('table', $old, $old);
 
@@ -215,7 +215,7 @@ class ManagerTest extends PHPUnitTestCase
     public function testSetRowSet()
     {
         // Throuth constructor
-        $row = new Row('table', 'uuid', null, array('uuid' => 'value'));
+        $row = new Row('table', 'uuid', null, ['uuid' => 'value']);
         $rowSet = new RowSet();
         $rowSet->addRow($row);
 

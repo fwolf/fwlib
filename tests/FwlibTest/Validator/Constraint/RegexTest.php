@@ -21,6 +21,6 @@ class RegexTest extends PHPunitTestCase
         $this->assertFalse($constraint->validate('   ', '/!^\s/'));
         // Invalid type
         $this->assertFalse($constraint->validate(null));
-        $this->assertFalse($constraint->validate(array()));
+        $this->assertFalse($constraint->validate([]));
     }
 }

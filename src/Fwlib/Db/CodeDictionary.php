@@ -40,14 +40,14 @@ class CodeDictionary
      *
      * @var array
      */
-    protected $columns = array('code', 'title');
+    protected $columns = ['code', 'title'];
 
     /**
      * Dictionary data array
      *
      * @var array
      */
-    protected $dictionary = array();
+    protected $dictionary = [];
 
     /**
      * Primary key column name
@@ -89,7 +89,7 @@ class CodeDictionary
     protected function fixDictionaryIndex()
     {
         $dictionary = $this->dictionary;
-        $this->dictionary = array();
+        $this->dictionary = [];
 
         $this->set($dictionary);
     }
@@ -157,7 +157,7 @@ class CodeDictionary
         $resultColumns = is_array($columns) ? $columns
             : $this->parseColumns($columns);
 
-        $result = array();
+        $result = [];
         foreach ($keys as $singleKey) {
             $result[$singleKey] = $this->get($singleKey, $resultColumns);
         }
@@ -206,7 +206,7 @@ class CodeDictionary
         // Data
         // INSERT INTO table (col1, col2) VALUES (val1, val2)[DELIMITER]
         foreach ($this->dictionary as $k => $row) {
-            $valueList = array();
+            $valueList = [];
             foreach ($row as $key => $val) {
                 $valueList[] = $db->quoteValue($this->table, $key, $val);
             }
@@ -255,7 +255,7 @@ class CodeDictionary
      */
     protected function parseColumns($column = '')
     {
-        $result = array();
+        $result = [];
 
         if ('*' == $column) {
             $result = $this->columns;
@@ -266,7 +266,7 @@ class CodeDictionary
                 $this->columns,
                 (array)$this->primaryKey
             );
-            $result = array(array_shift($columnWithoutPk));
+            $result = [array_shift($columnWithoutPk)];
 
         } else {
             // Find valid columns
@@ -294,13 +294,13 @@ class CodeDictionary
     public function search($checkMethod, $columns = '*')
     {
         if (empty($this->dictionary)) {
-            return array();
+            return [];
         }
 
         $resultColumns = is_array($columns) ? $columns
             : $this->parseColumns($columns);
 
-        $results = array();
+        $results = [];
         foreach ($this->dictionary as $index => $row) {
             if ($checkMethod($row)) {
                 $results[$index] = $this->get($index, $resultColumns);
@@ -335,7 +335,7 @@ class CodeDictionary
 
         // Convert 1-dim to 2-dim
         if (!is_array(current($data))) {
-            $data = array($data);
+            $data = [$data];
         }
 
 

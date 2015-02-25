@@ -64,7 +64,7 @@ class GlobalConfig extends Config
         }
 
         if (!is_array($allowedId)) {
-            $allowedId = array($allowedId);
+            $allowedId = [$allowedId];
         }
 
         return in_array($serverId, $allowedId);

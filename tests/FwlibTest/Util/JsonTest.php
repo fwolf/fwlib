@@ -23,7 +23,7 @@ class JsonTest extends PHPunitTestCase
 
     public function testDummy()
     {
-        $x = array('foo' => 'bar');
+        $x = ['foo' => 'bar'];
         $y = '{"foo":"bar"}';
 
         $this->assertEquals($y, $this->json->encode($x));
@@ -34,7 +34,7 @@ class JsonTest extends PHPunitTestCase
 
     public function testEncodeHex()
     {
-        $x = array('<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9");
+        $x = ['<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9"];
 
         $this->assertEquals(
             '["<foo>","\'bar\'","\"baz\"","&blong&","\u00e9"]',
@@ -61,7 +61,7 @@ class JsonTest extends PHPunitTestCase
             $this->json->encodeHex($x)
         );
 
-        $x = array('foo' => 'bar');
+        $x = ['foo' => 'bar'];
         $this->assertEquals(
             '{"foo":"bar"}',
             $this->json->encodeHex($x)
@@ -78,7 +78,7 @@ class JsonTest extends PHPunitTestCase
 
     public function testEncodeUnicode()
     {
-        $x = array('<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9");
+        $x = ['<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9"];
 
         $this->assertEquals(
             '["<foo>","\'bar\'","\"baz\"","&blong&","é"]',
@@ -105,13 +105,13 @@ class JsonTest extends PHPunitTestCase
             $this->json->encodeUnicode($x)
         );
 
-        $x = array('foo' => 'é');
+        $x = ['foo' => 'é'];
         $this->assertEquals(
             '{"foo":"é"}',
             $this->json->encodeUnicode($x)
         );
 
-        $x = array('中文', array('中' => '文'));
+        $x = ['中文', ['中' => '文']];
         $y = '["中文",{"中":"文"}]';
         $this->assertEquals($y, $this->json->encodeUnicode($x));
         $this->assertEqualArray($x, json_decode($y, true));

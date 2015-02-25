@@ -134,19 +134,19 @@ class CacheMemcached extends Cache
             // Is value splitted ?
             $keySplitted = $this->getKey($key . '[split]');
             $total = $memcached->get($keySplitted);
-            $this->log[] = array(
+            $this->log[] = [
                 'key'   => $keySplitted,
                 'success'   => \Memcached::RES_SUCCESS
                     == $memcached->getResultCode(),
-            );
+            ];
             if (false === $total) {
                 // No split found
                 $val = $memcached->get($this->getKey($key));
-                $this->log[] = array(
+                $this->log[] = [
                     'key'   => $this->getKey($key),
                     'success'   => \Memcached::RES_SUCCESS
                         == $memcached->getResultCode(),
-                );
+                ];
             } else {
                 // Splited string
                 $val = '';
@@ -155,11 +155,11 @@ class CacheMemcached extends Cache
                         $key . '[split-' . $i . '/' . $total . ']'
                     );
                     $val .= $memcached->get($keySplitted);
-                    $this->log[] = array(
+                    $this->log[] = [
                         'key'   => $keySplitted,
                         'success'   => \Memcached::RES_SUCCESS
                             == $memcached->getResultCode(),
-                    );
+                    ];
                 }
                 // Convert to string in JSON format
                 $val = '"' . $val . '"';
@@ -168,11 +168,11 @@ class CacheMemcached extends Cache
         } else {
             // Direct get
             $val = $memcached->get($this->getKey($key));
-            $this->log[] = array(
+            $this->log[] = [
                 'key'   => $this->getKey($key),
                 'success'   => \Memcached::RES_SUCCESS
                     == $memcached->getResultCode(),
-            );
+            ];
         }
 
         if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
@@ -246,7 +246,7 @@ class CacheMemcached extends Cache
         // Check server and remove dead
         foreach ((array)$arSvr as $k => $svr) {
             $obj = new \Memcached();
-            $obj->addServers(array($svr));
+            $obj->addServers([$svr]);
             // Do set test
             $obj->set($this->getKey('memcached server alive test'), true);
 
@@ -352,13 +352,13 @@ class CacheMemcached extends Cache
 
         // Memcached server
 
-        $memcachedOptions = array(
+        $memcachedOptions = [
             // Better for multi server
             \Memcached::OPT_DISTRIBUTION    =>
                 \Memcached::DISTRIBUTION_CONSISTENT,
             // Better for multi app use one memcached
             \Memcached::OPT_PREFIX_KEY  => 'fw',
-        );
+        ];
 
         // @codeCoverageIgnoreStart
         // Use json is better for debug
@@ -385,14 +385,14 @@ class CacheMemcached extends Cache
         // Memcached option, user set, replace default above
         $this->setConfig(
             'memcachedOption',
-            array()
+            []
         );
 
         // After change server cfg, you should unset $oMemcached.
         // or use setConfigServer()
         $this->setConfig(
             'memcachedServer',
-            array()
+            []
         );
 
 
@@ -406,7 +406,7 @@ class CacheMemcached extends Cache
      * @param   array   $arSvr      1 or 2 dim array of server(s)
      * @return  this
      */
-    public function setConfigServer($arSvr = array())
+    public function setConfigServer($arSvr = [])
     {
         if (empty($arSvr)) {
             return $this;
@@ -417,7 +417,7 @@ class CacheMemcached extends Cache
             $this->setConfig('memcachedServer', $arSvr);
         } else {
             // 1 dim array only
-            $this->setConfig('memcachedServer', array($arSvr));
+            $this->setConfig('memcachedServer', [$arSvr]);
         }
 
         $this->memcached = null;

@@ -220,7 +220,7 @@ class UuidBase16 extends AbstractUtilAware
             $timeLow = hexdec(substr($uuid, 0, 8));
             $timeMid = hexdec(substr($uuid, 8, 4));
             $custom2 = substr($uuid, 16, 8);
-            return array(
+            return [
                 'timeLow' => $timeLow,
                 'timeMid' => $timeMid,
                 'time'    => date('Y-m-d H:i:s', $timeLow),
@@ -229,7 +229,7 @@ class UuidBase16 extends AbstractUtilAware
                 'ip'      => $this->getUtil('Ip')->fromHex($custom2),
                 'random1' => substr($uuid, 24, 4),
                 'random2' => substr($uuid, 28, 4)
-            );
+            ];
         } else {
             return null;
         }

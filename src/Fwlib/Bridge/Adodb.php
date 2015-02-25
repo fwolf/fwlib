@@ -79,7 +79,7 @@ class Adodb extends AbstractUtilAware
      *
      * @var array
      */
-    public $metaColumn = array();
+    public $metaColumn = [];
 
     /**
      * Table column name array, with upper case column name as index
@@ -90,7 +90,7 @@ class Adodb extends AbstractUtilAware
      *
      * @var array
      */
-    public $metaColumnName = array();
+    public $metaColumnName = [];
 
     /**
      * Primary key columns of table
@@ -103,7 +103,7 @@ class Adodb extends AbstractUtilAware
      *
      * @var array
      */
-    public $metaPrimaryKey = array();
+    public $metaPrimaryKey = [];
 
     /**
      * Db profile
@@ -178,7 +178,7 @@ class Adodb extends AbstractUtilAware
 
         if (in_array(
             $name,
-            array(
+            [
                 'Execute',
                 'SelectLimit',
                 'Prepare',
@@ -189,13 +189,13 @@ class Adodb extends AbstractUtilAware
                 'GetCol',
                 'GetAssoc',
                 'ExecuteCursor',
-            )
+            ]
         )) {
             // $sql is the 1st param
             $this->convertEncodingSql($arg[0]);
         } elseif (in_array(
             $name,
-            array(
+            [
                 'CacheExecute',
                 'CacheSelectLimit',
                 'CacheGetOne',
@@ -203,7 +203,7 @@ class Adodb extends AbstractUtilAware
                 'CacheGetAll',
                 'CacheGetCol',
                 'CacheGetAssoc',
-            )
+            ]
         )) {
             // $sql is the 2nd param
             $this->convertEncodingSql($arg[1]);
@@ -215,15 +215,15 @@ class Adodb extends AbstractUtilAware
         // CacheXxx() method is not counted.
         if (in_array(
             $name,
-            array(
+            [
                 'Execute', 'SelectLimit', 'GetOne', 'GetRow', 'GetAll',
                 'GetCol', 'GetAssoc', 'ExecuteCursor'
-            )
+            ]
         )) {
             $this->countQuery();
         }
 
-        return call_user_func_array(array($this->conn, $name), $arg);
+        return call_user_func_array([$this->conn, $name], $arg);
     }
 
 
@@ -281,7 +281,7 @@ class Adodb extends AbstractUtilAware
         // @codeCoverageIgnoreStart
         // Mysqli doesn't allow port in host, grab it out and set
         if ('mysqli' == strtolower($this->conn->databaseType)) {
-            $ar = array();
+            $ar = [];
             $i = preg_match('/:(\d+)$/', $this->profile['host'], $ar);
             if (0 < $i) {
                 $this->conn->port = $ar[1];
@@ -446,7 +446,7 @@ class Adodb extends AbstractUtilAware
         }
 
         $this->executePrepare(
-            $this->getSqlGenerator()->get(array('DELETE' => $table))
+            $this->getSqlGenerator()->get(['DELETE' => $table])
             . ' ' . $condition
         );
 
@@ -619,7 +619,7 @@ class Adodb extends AbstractUtilAware
         $table,
         $keyValue,
         $column = null,
-        $keyColumn = array()
+        $keyColumn = []
     ) {
         $stringUtil = $this->getUtilContainer()->getString();
 
@@ -660,7 +660,7 @@ class Adodb extends AbstractUtilAware
             } else {
                 // Column is not array nor string? is int? should not happen
                 // @codeCoverageIgnoreStart
-                $column = array($column);
+                $column = [$column];
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -669,11 +669,11 @@ class Adodb extends AbstractUtilAware
 
 
         // Retrieve from db
-        $sqlConfig = array(
+        $sqlConfig = [
             'SELECT'    => $column,
             'FROM'      => $table,
             'LIMIT'     => 1,
-        );
+        ];
         while (!empty($keyValue)) {
             $singleKey = array_shift($keyColumn);
             $sqlConfig['WHERE'][] = $singleKey . ' = '
@@ -681,7 +681,7 @@ class Adodb extends AbstractUtilAware
             unset($singleKey);
         }
         $rs = $this->execute($sqlConfig);
-        $ar = array();
+        $ar = [];
         if (!empty($rs) && !$rs->EOF) {
             $ar = $rs->FetchRow();
         }
@@ -742,7 +742,7 @@ class Adodb extends AbstractUtilAware
             // Convert columns to native case
             $colName = $this->getMetaColumnName($table, $forcenew);
             // $colName = array(COLUMN => column), $c is UPPER CASED
-            $art = array();
+            $art = [];
             foreach ($this->metaColumn[$table] as $c => $ar) {
                 $art[$colName[strtoupper($c)]] = $ar;
             }
@@ -814,23 +814,23 @@ class Adodb extends AbstractUtilAware
                  * Test pass for PK include 2 columns.
                  */
                 $rs = $this->execute(
-                    array(
-                        'SELECT' => array(
+                    [
+                        'SELECT' => [
                             'name', 'keycnt',
                             'k1' => "index_col('$table', indid, 1)",
                             'k2' => "index_col('$table', indid, 2)",
                             'k3' => "index_col('$table', indid, 3)",
-                        ),
+                        ],
                         'FROM'  => 'sysindexes',
-                        'WHERE' => array(
+                        'WHERE' => [
                             'status & 2048 = 2048 ',
                             "id = object_id('$table')",
-                        )
-                    )
+                        ]
+                    ]
                 );
                 if (true == $rs && 0 < $rs->RowCount()) {
                     // Got
-                    $ar = array($rs->fields['k1']);
+                    $ar = [$rs->fields['k1']];
                     if (!empty($rs->fields['k2'])) {
                         $ar[] = $rs->fields['k2'];
                     }
@@ -853,7 +853,7 @@ class Adodb extends AbstractUtilAware
             if (!empty($ar)) {
                 $colName = $this->GetMetaColumnName($table);
                 // $colName = array(COLUMN => column), $c is UPPER CASED
-                $art = array();
+                $art = [];
                 foreach ($ar as $idx => $col) {
                     $art[] = $colName[strtoupper($col)];
                 }
@@ -900,25 +900,25 @@ class Adodb extends AbstractUtilAware
             // Sybase timestamp column must be lower cased.
             // If col name is 'timestamp', will auto assign (timestamp) type.
             $rs = $this->execute(
-                array(
-                    'SELECT' => array(
+                [
+                    'SELECT' => [
                         'name'      => 'a.name',
                         'length'    => 'a.length',
                         'usertype'  => 'a.usertype',
                         'type'      => 'b.name',
-                    ),
-                    'FROM'  => array(
+                    ],
+                    'FROM'  => [
                         'a' => 'syscolumns',
                         'b' => 'systypes'
-                    ),
-                    'WHERE' => array(
+                    ],
+                    'WHERE' => [
                         "a.id = object_id('$table')",
                         'a.type = b.type',
                         'a.usertype = b.usertype',
                         // Without below line, can retrieve sybase col info
                         'b.name = "timestamp"',
-                    ),
-                )
+                    ],
+                ]
             );
             if (!empty($rs) && 0 < $rs->RowCount()) {
                 return $rs->fields['name'];
@@ -1002,10 +1002,10 @@ class Adodb extends AbstractUtilAware
      */
     public function getRowCount($table, $condition = '')
     {
-        $sqlCfg = array(
-            'SELECT'    => array('c' => 'COUNT(1)'),
+        $sqlCfg = [
+            'SELECT'    => ['c' => 'COUNT(1)'],
             'FROM'      => $table,
-        );
+        ];
         $rs = $this->executePrepare(
             $this->getSqlGenerator()->get($sqlCfg)
             . ' ' . $condition
@@ -1245,7 +1245,7 @@ class Adodb extends AbstractUtilAware
         $type = $this->metaColumn[$table][$col]->type;
         if (in_array(
             $type,
-            array(
+            [
                 'bigint',
                 'bit',
                 'decimal',
@@ -1259,7 +1259,7 @@ class Adodb extends AbstractUtilAware
                 'real',
                 'smallint',
                 'tinyint',
-            )
+            ]
         )) {
             // Need not quote, output directly
             return $val;
@@ -1342,12 +1342,12 @@ class Adodb extends AbstractUtilAware
 
         // Convert single row data to multi row mode
         if (!isset($data[0])) {
-            $data = array(0 => $data);
+            $data = [0 => $data];
         }
 
         // Convert primary key to array if it's single string now
         if (!is_array($arPk)) {
-            $arPk = array(0 => $arPk);
+            $arPk = [0 => $arPk];
         }
 
         // Columns in $data
@@ -1365,7 +1365,7 @@ class Adodb extends AbstractUtilAware
         }
 
         $mode = strtoupper($mode);
-        $sqlCfg = array();
+        $sqlCfg = [];
 
         // Auto determine mode
         if ('A' == $mode) {
@@ -1385,10 +1385,10 @@ class Adodb extends AbstractUtilAware
 
         // Prepare sql
         if ('U' == $mode) {
-            $sqlCfg = array(
+            $sqlCfg = [
                 'UPDATE' => $table,
                 'LIMIT' => 1,
-                );
+            ];
             // Primary key cannot change, so exclude them from SET clause,
             // Here use prepare, actual value will assign later, do quote
             // then.
@@ -1404,14 +1404,14 @@ class Adodb extends AbstractUtilAware
             }
 
         } elseif ('I' == $mode) {
-            $arVal = array();
+            $arVal = [];
             foreach ($arCols as $key) {
                 $arVal[$key] = $this->conn->Param($key);
             }
-            $sqlCfg = array(
+            $sqlCfg = [
                 'INSERT' => $table,
                 'VALUES' => $arVal,
-            );
+            ];
         }
         $sql = $this->getSqlGenerator()->getPrepared($sqlCfg);
         // @codeCoverageIgnoreStart

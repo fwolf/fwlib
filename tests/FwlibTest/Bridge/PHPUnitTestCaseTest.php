@@ -15,12 +15,12 @@ class PHPUnitTestCaseTest extends PHPunitTestCase
         $y = null;
         $this->assertEqualArray($x, $y);
 
-        $x = array();
-        $y = array();
+        $x = [];
+        $y = [];
         $this->assertEqualArray($x, $y);
 
-        $x = array(1);
-        $y = array(1);
+        $x = [1];
+        $y = [1];
         $this->assertEqualArray($x, $y);
     }
 
@@ -37,7 +37,7 @@ class PHPUnitTestCaseTest extends PHPunitTestCase
         $i = $this->reflectionCall(
             $dummy,
             'protectedMethod',
-            array(4, 2)
+            [4, 2]
         );
         $this->assertEquals(42, $i);
 

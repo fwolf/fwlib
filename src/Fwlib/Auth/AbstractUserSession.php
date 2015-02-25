@@ -34,7 +34,7 @@ abstract class AbstractUserSession implements UserSessionInterface
      */
     public function clear()
     {
-        $_SESSION = array();
+        $_SESSION = [];
 
         $this->isLoggedIn = false;
 

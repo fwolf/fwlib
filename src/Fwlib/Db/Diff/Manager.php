@@ -26,7 +26,7 @@ class Manager
      *
      * @var array
      */
-    protected $primaryKeyCache = array();
+    protected $primaryKeyCache = [];
 
     /**
      * @var RowSet

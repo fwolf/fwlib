@@ -176,7 +176,7 @@ class ArrayUtil extends AbstractUtilAware
         $noEmpty = false,
         $callback = null
     ) {
-        $results = array();
+        $results = [];
         foreach ($keys as $keyOfKeys => $valueOfKeys) {
             if (array_key_exists($valueOfKeys, $sources)) {
                 // '1' is number, so do string check instead
@@ -226,13 +226,13 @@ class ArrayUtil extends AbstractUtilAware
     {
         // Check empty input or rules
         if (empty($sources) && empty($rules)) {
-            return array();
+            return [];
         }
 
         // Read rules
         $arRules = explode($delimiter, $rules);
 
-        $results = array();
+        $results = [];
         foreach ($arRules as $rule) {
             $rule = trim($rule);
 
@@ -285,7 +285,7 @@ class ArrayUtil extends AbstractUtilAware
         $order = true,
         $joker = ''
     ) {
-        $arVal = array();
+        $arVal = [];
         foreach ($source as $k => $v) {
             $arVal[$k] = self::getIdx($v, $key, $joker);
         }
@@ -297,13 +297,13 @@ class ArrayUtil extends AbstractUtilAware
         }
 
         // Got current order, write back.
-        $rs = array();
+        $rs = [];
         foreach ($arVal as $k => $v) {
             $rs[$k] = &$source[$k];
         }
 
         // Re-order numeric array key
-        $source = array_merge($rs, array());
+        $source = array_merge($rs, []);
 
         return $source;
     }

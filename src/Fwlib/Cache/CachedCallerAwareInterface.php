@@ -19,7 +19,7 @@ interface CachedCallerAwareInterface
      * @param   array   $params     Method calling params
      * @return  string
      */
-    public function getCacheKey($method, array $params = array());
+    public function getCacheKey($method, array $params = []);
 
 
     /**

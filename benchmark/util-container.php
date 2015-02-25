@@ -54,7 +54,7 @@ $bench->start("Test loop $loopCount times");
 
 // Use static call
 for ($i = 0; $i < $loopCount; $i ++) {
-    ArrayUtil::getIdx(array(), 'foo', 'bar');
+    ArrayUtil::getIdx([], 'foo', 'bar');
 }
 $bench->mark('ArrayUtil::getIdx()');
 
@@ -62,7 +62,7 @@ $bench->mark('ArrayUtil::getIdx()');
 // Use UtilContainer instance
 $utilContainer = UtilContainer::getInstance();
 for ($i = 0; $i < $loopCount; $i ++) {
-    $utilContainer->get('Array')->getIdx(array(), 'foo', 'bar');
+    $utilContainer->get('Array')->getIdx([], 'foo', 'bar');
 }
 $bench->mark('$utilContainer->get(\'Array\')->getIdx()');
 
@@ -70,7 +70,7 @@ $bench->mark('$utilContainer->get(\'Array\')->getIdx()');
 // Use util instance
 $arrayUtil = $utilContainer->get('Array');
 for ($i = 0; $i < $loopCount; $i ++) {
-    $arrayUtil->getIdx(array(), 'foo', 'bar');
+    $arrayUtil->getIdx([], 'foo', 'bar');
 }
 $bench->mark('$arrayUtil->getIdx()');
 

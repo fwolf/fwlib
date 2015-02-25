@@ -16,32 +16,32 @@ $utilContainer = UtilContainer::getInstance();
 $envUtil = $utilContainer->getEnv();
 $arrayUtil = $utilContainer->getArray();
 
-$x = array(
-    'a' => array('volume' => 67, 'edition' => 2),
-    'b' => array('volume' => 86, 'edition' => 1),
-    'c' => array('volume' => 85, 'edition' => 6),
-    'd' => array('volume' => 98, 'edition' => 2),
-    'e' => array('volume' => 86, 'edition' => 6),
-    'f' => array('volume' => 67, 'edition' => 7),
-);
+$x = [
+    'a' => ['volume' => 67, 'edition' => 2],
+    'b' => ['volume' => 86, 'edition' => 1],
+    'c' => ['volume' => 85, 'edition' => 6],
+    'd' => ['volume' => 98, 'edition' => 2],
+    'e' => ['volume' => 86, 'edition' => 6],
+    'f' => ['volume' => 67, 'edition' => 7],
+];
 // Notice: sortByLevel2() will sort by 'edition' if 'volume' are same, while
 // array_multisort() will not.
-$y1 = array(
-    'd' => array('volume' => 98, 'edition' => 2),
-    'e' => array('volume' => 86, 'edition' => 6),
-    'b' => array('volume' => 86, 'edition' => 1),
-    'c' => array('volume' => 85, 'edition' => 6),
-    'f' => array('volume' => 67, 'edition' => 7),
-    'a' => array('volume' => 67, 'edition' => 2),
-);
-$y2 = array(
-    'd' => array('volume' => 98, 'edition' => 2),
-    'b' => array('volume' => 86, 'edition' => 1),
-    'e' => array('volume' => 86, 'edition' => 6),
-    'c' => array('volume' => 85, 'edition' => 6),
-    'a' => array('volume' => 67, 'edition' => 2),
-    'f' => array('volume' => 67, 'edition' => 7),
-);
+$y1 = [
+    'd' => ['volume' => 98, 'edition' => 2],
+    'e' => ['volume' => 86, 'edition' => 6],
+    'b' => ['volume' => 86, 'edition' => 1],
+    'c' => ['volume' => 85, 'edition' => 6],
+    'f' => ['volume' => 67, 'edition' => 7],
+    'a' => ['volume' => 67, 'edition' => 2],
+];
+$y2 = [
+    'd' => ['volume' => 98, 'edition' => 2],
+    'b' => ['volume' => 86, 'edition' => 1],
+    'e' => ['volume' => 86, 'edition' => 6],
+    'c' => ['volume' => 85, 'edition' => 6],
+    'a' => ['volume' => 67, 'edition' => 2],
+    'f' => ['volume' => 67, 'edition' => 7],
+];
 
 
 $loopCount = 1000;
@@ -65,7 +65,7 @@ if ($y1 !== $result) {
 $startTime = microtime(true);
 for ($i = 0; $i < $loopCount; $i ++) {
     $result = $x;
-    $volume = array();
+    $volume = [];
     foreach ($result as $k => $v) {
         $volume[$k] = $v['volume'];
     }

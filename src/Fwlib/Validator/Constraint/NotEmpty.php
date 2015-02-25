@@ -16,9 +16,9 @@ class NotEmpty extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public $messageTemplate = array(
+    public $messageTemplate = [
         'default'   => 'The input should not be empty or zero'
-    );
+    ];
 
     /**
      * {@inheritdoc}

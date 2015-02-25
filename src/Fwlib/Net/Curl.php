@@ -383,11 +383,11 @@ class Curl extends AbstractUtilAware
      */
     public function setoptUserAgent($userAgent)
     {
-        $ua = array(
+        $ua = [
             'ff14'  => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:14.0) Gecko/20100101 Firefox/14',
             'ie6'   => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)',
             'googlebot' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        );
+        ];
 
         if (isset($ua[$userAgent])) {
             curl_setopt($this->handle, CURLOPT_USERAGENT, $ua[$userAgent]);

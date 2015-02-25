@@ -19,7 +19,7 @@ class AbstractCachedCallerAwareTest extends PHPunitTestCase
     {
         $model = $this->getMock(
             'Fwlib\Cache\AbstractCachedCallerAware',
-            array('callMe', 'getCacheLifetime')
+            ['callMe', 'getCacheLifetime']
         );
 
         $model->expects($this->atMost(1))
@@ -46,8 +46,8 @@ class AbstractCachedCallerAwareTest extends PHPunitTestCase
         $cachedCaller->setHandler(new Cache);
 
         // The 2nd call should read from cache, callMe() is called only once
-        $resultOne = $cachedCaller->call($model, 'callMe', array(42));
-        $resultTwo = $cachedCaller->call($model, 'callMe', array(42));
+        $resultOne = $cachedCaller->call($model, 'callMe', [42]);
+        $resultTwo = $cachedCaller->call($model, 'callMe', [42]);
 
         $this->assertEquals($resultOne, $resultTwo);
     }
@@ -57,28 +57,28 @@ class AbstractCachedCallerAwareTest extends PHPunitTestCase
     {
         $model = $this->buildMock();
 
-        $key = $model->getCacheKey('callMe', array());
+        $key = $model->getCacheKey('callMe', []);
         // Class of mocked object is Mock_AbstractCachedCallerAwareModel_67d22466
         $key = strstr($key, '/', false);
         $this->assertEquals('/callMe', $key);
 
 
-        $key = $model->getCacheKey('callMe', array('foo', 'bar'));
+        $key = $model->getCacheKey('callMe', ['foo', 'bar']);
         $key = strstr($key, '/', false);
         $this->assertEquals('/callMe/foo/bar', $key);
 
 
-        $key = $model->getCacheKey('callMe', array(array('foo', 'bar')));
+        $key = $model->getCacheKey('callMe', [['foo', 'bar']]);
         $key = strstr($key, '/', false);
         $this->assertEquals('/callMe/0/foo/1/bar', $key);
 
 
-        $key = $model->getCacheKey('callMe', array(array(array('f' => 'b'))));
+        $key = $model->getCacheKey('callMe', [[['f' => 'b']]]);
         $key = strstr($key, '/', false);
         $this->assertEquals('/callMe/0/12cf2842', $key);
 
 
-        $key = $model->getCacheKey('callMe', array(new \stdClass));
+        $key = $model->getCacheKey('callMe', [new \stdClass]);
         $key = strstr($key, '/', false);
         $this->assertEquals('/callMe/stdClass/99914b93', $key);
     }

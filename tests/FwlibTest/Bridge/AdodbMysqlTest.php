@@ -41,11 +41,11 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $dbMysql->setFetchMode(3);    // Both
 
         $ar = $dbMysql->GetAll('SELECT 1 AS a');
-        $y = array(array('1', 'a' => '1'));
+        $y = [['1', 'a' => '1']];
         $this->assertEqualArray($y, $ar);
 
         $ar = $dbMysql->CacheGetAll(1, 'SELECT 1 AS a');
-        $y = array(array('1', 'a' => '1'));
+        $y = [['1', 'a' => '1']];
         $this->assertEqualArray($y, $ar);
 
         $dbMysql->setFetchMode($fetchMode);
@@ -91,8 +91,8 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->setCharsetPhp('UTF-8');
         self::$dbMysql->profile['lang'] = 'GB2312';
 
-        $x = array(null, '你好');
-        $y = array(null, mb_convert_encoding('你好', 'UTF-8', 'GB2312'));
+        $x = [null, '你好'];
+        $y = [null, mb_convert_encoding('你好', 'UTF-8', 'GB2312')];
         $this->assertEquals(
             $y,
             self::$dbMysql->convertEncodingResult($x)
@@ -114,8 +114,8 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         self::$dbMysql->setCharsetPhp('UTF-8');
         self::$dbMysql->profile['lang'] = 'GB2312';
 
-        $x = array(null, '你好');
-        $y = array(null, mb_convert_encoding('你好', 'GB2312', 'UTF-8'));
+        $x = [null, '你好'];
+        $y = [null, mb_convert_encoding('你好', 'GB2312', 'UTF-8')];
         $this->assertEquals(
             $y,
             self::$dbMysql->convertEncodingSql($x)
@@ -164,11 +164,11 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testExecute()
     {
         self::$dbMysql->execute(
-            array(
+            [
                 'SELECT'    => 'uuid',
                 'FROM'      => self::$tableUser,
                 'LIMIT'     => 1
-            )
+            ]
         );
         $this->assertEquals(0, self::$dbMysql->getErrorCode());
     }
@@ -180,20 +180,20 @@ class AdodbMysqlTest extends AbstractDbRelateTest
     public function testExecutePrepare()
     {
         self::$dbMysql->executePrepare(
-            array(
+            [
                 'SELECT'    => 'uuid',
                 'FROM'      => self::$tableUser,
                 'LIMIT'     => 1
-            )
+            ]
         );
         $this->assertEquals(0, self::$dbMysql->getErrorCode());
 
         self::$dbMysql->executePrepare(
-            array(
+            [
                 'SELECT'    => 'uuid',
                 'FROM'      => self::$tableUser,
                 'WHERE'     => 'Error Clause',
-            )
+            ]
         );
     }
 
@@ -234,10 +234,10 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         );
 
 
-        $ar = array(
+        $ar = [
             'SELECT'    => 'title',
             'FROM'      => $userTable,
-        );
+        ];
         $x = self::$dbMysql->generateSql($ar);
         $y = "SELECT title FROM $userTable";
         $this->assertEquals($y, $x);
@@ -251,14 +251,14 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $x = self::$dbMysql->generateSqlPrepared('');
         $this->assertEquals('', $x);
 
-        $ar = array(
+        $ar = [
             'INSERT'    => self::$tableUser,
-            'VALUES'    => array(
+            'VALUES'    => [
                 'uuid'  => self::$dbMysql->param('uuid'),
                 'title' => self::$dbMysql->param('title'),
                 'age'   => self::$dbMysql->param('age'),
-            ),
-        );
+            ],
+        ];
         $x = self::$dbMysql->generateSqlPrepared($ar);
         $y = "INSERT INTO $userTable(uuid, title, age) VALUES (?, ?, ?)";
         $this->assertEquals($y, $x);
@@ -274,11 +274,11 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         // Prepare data
         $uuid = $this->generateUuid();
-        $ar = array(
+        $ar = [
             'uuid'  => $uuid,
             'title' => 'Title',
             'age'   => 42,
-        );
+        ];
         self::$dbMysql->write(self::$tableUser, $ar);
 
 
@@ -295,15 +295,15 @@ class AdodbMysqlTest extends AbstractDbRelateTest
             'Title',
             self::$dbMysql->getByKey(
                 self::$tableUser,
-                array($uuid),
+                [$uuid],
                 'title',
-                array('uuid')
+                ['uuid']
             )
         );
 
         // Read more than one column
         $this->assertEqualArray(
-            array('title' => 'Title', 'age' => '42'),
+            ['title' => 'Title', 'age' => '42'],
             self::$dbMysql->getByKey(self::$tableUser, $uuid, 'title, age')
         );
 
@@ -319,7 +319,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         // More PK value than column, throw exception
         $this->assertEquals(
             null,
-            self::$dbMysql->getByKey(self::$tableUser, array(1, 2), 'title')
+            self::$dbMysql->getByKey(self::$tableUser, [1, 2], 'title')
         );
     }
 
@@ -431,11 +431,11 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $uuid = $this->generateUuid();
 
         // Auto INSERT
-        $ar = array(
+        $ar = [
             'uuid'  => $uuid,
             'title' => 'Title',
             'age'   => 42,
-        );
+        ];
         self::$dbMysql->write(self::$tableUser, $ar);
         $this->assertEquals(
             'Title',

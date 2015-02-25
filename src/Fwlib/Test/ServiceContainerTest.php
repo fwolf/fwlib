@@ -24,14 +24,14 @@ class ServiceContainerTest extends AbstractServiceContainer
     /**
      * {@inheritdoc}
      */
-    protected $serviceClass = array(
+    protected $serviceClass = [
         'Curl'          => 'Fwlib\Net\Curl',
         'GlobalConfig'  => 'Fwlib\Config\GlobalConfig',
         'Smarty'        => 'Fwlib\Bridge\Smarty',
         'Util'          => 'Fwlib\Util\UtilContainer',
         'UtilContainer' => 'Fwlib\Util\UtilContainer',
         'Validator'     => 'Fwlib\Validator\Validator',
-    );
+    ];
 
 
     /**

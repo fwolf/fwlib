@@ -14,7 +14,7 @@ class DatetimeUtil
      *
      * @var array
      */
-    protected $timeUnitSymbol = array(
+    protected $timeUnitSymbol = [
         'sec'       => 's',
         'second'    => 's',
         'seconds'   => 's',
@@ -33,7 +33,7 @@ class DatetimeUtil
         'years'     => 'y',
         'century'   => 'c',
         'centuries' => 'c',
-    );
+    ];
 
 
     /**
@@ -41,7 +41,7 @@ class DatetimeUtil
      *
      * @var array
      */
-    protected $timeUnitWeight = array(
+    protected $timeUnitWeight = [
         's' => 1,
         'i' => 60,
         'h' => 3600,
@@ -50,7 +50,7 @@ class DatetimeUtil
         'm' => 2592000,
         'y' => 31536000,
         'c' => 3153600000,
-    );
+    ];
 
 
     /**
@@ -72,14 +72,14 @@ class DatetimeUtil
             return '';
         }
 
-        $unitDict = array(
-            array('c', -1,  'century',  'centuries'),
-            array('y', 100, 'year',     'years'),
-            array('d', 365, 'day',      'days'),
-            array('h', 24,  'hour',     'hours'),
-            array('i', 60,  'minute',   'minutes'),
-            array('s', 60,  'second',   'seconds'),
-        );
+        $unitDict = [
+            ['c', -1,  'century',  'centuries'],
+            ['y', 100, 'year',     'years'],
+            ['d', 365, 'day',      'days'],
+            ['h', 24,  'hour',     'hours'],
+            ['i', 60,  'minute',   'minutes'],
+            ['s', 60,  'second',   'seconds'],
+        ];
 
         // Loop from smallest unit
         $i = count($unitDict);

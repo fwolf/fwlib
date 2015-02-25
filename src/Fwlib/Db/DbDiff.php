@@ -42,7 +42,7 @@ class DbDiff extends AbstractUtilAware
      *
      * @var array
      */
-    protected $diff = array();
+    protected $diff = [];
 
     /**
      * DbDiff execute status
@@ -175,11 +175,11 @@ class DbDiff extends AbstractUtilAware
         }
 
 
-        $diff = array();
+        $diff = [];
         foreach ($dataNew as $table => &$rowArrayNew) {
             // Convert row array to 2-dim array
             if (!is_array(current($rowArrayNew))) {
-                $rowArrayNew = array($rowArrayNew);
+                $rowArrayNew = [$rowArrayNew];
             }
 
             $pkArray = (array)$this->db->getMetaPrimaryKey($table);
@@ -239,11 +239,11 @@ class DbDiff extends AbstractUtilAware
             return null;
 
         } else {
-            return array(
+            return [
                 'mode'   => $mode,
                 'pk'     => $pkDiff,
                 'column' => $columnDiff,
-            );
+            ];
         }
     }
 
@@ -265,7 +265,7 @@ class DbDiff extends AbstractUtilAware
         array $columnArray,
         array &$rowOld = null
     ) {
-        $diff = array();
+        $diff = [];
 
         foreach ((array)$columnArray as $column) {
             $valueNew = isset($rowNew[$column]) ? $rowNew[$column] : null;
@@ -292,10 +292,10 @@ class DbDiff extends AbstractUtilAware
                 continue;
             }
 
-            $diff[$column] = array(
+            $diff[$column] = [
                 'new'   => $valueNew,
                 'old'   => $valueOld,
-            );
+            ];
         }
 
         return $diff;
@@ -365,13 +365,13 @@ class DbDiff extends AbstractUtilAware
         array $pkArray,
         array &$rowOld = null
     ) {
-        $diff = array();
+        $diff = [];
 
         foreach ($pkArray as $pk) {
-            $diff[$pk] = array(
+            $diff[$pk] = [
                 'new'   => $rowNew[$pk],
                 'old'   => isset($rowOld[$pk]) ? $rowOld[$pk] : null,
-            );
+            ];
 
             unset($rowNew[$pk]);
             unset($rowOld[$pk]);
@@ -396,7 +396,7 @@ class DbDiff extends AbstractUtilAware
         array &$rowArrayNew,
         array &$dataOld = null
     ) {
-        $diff = array();
+        $diff = [];
         foreach ($rowArrayNew as $index => &$rowNew) {
             $columnArray = array_keys($rowNew);
             $pkValueArray = array_intersect_key(
@@ -463,11 +463,11 @@ class DbDiff extends AbstractUtilAware
         $json = $this->getUtil('Json');
 
         return $json->encodeUnicode(
-            array(
+            [
                 'rowCount'  => $this->rowCount,
                 'executeStatus' => $this->executeStatus,
                 'diff'          => $this->diff,
-            )
+            ]
         );
     }
 
@@ -479,12 +479,12 @@ class DbDiff extends AbstractUtilAware
      */
     protected function generateCommitSql()
     {
-        $sqlArray = array();
+        $sqlArray = [];
         $db = $this->db;
 
         foreach ($this->diff as $table => $rowArray) {
             foreach ((array)$rowArray as $index => $row) {
-                $sqlConfig = array();
+                $sqlConfig = [];
 
                 switch ($row['mode']) {
                     case 'INSERT':
@@ -544,12 +544,12 @@ class DbDiff extends AbstractUtilAware
      */
     protected function generateRollbackSql()
     {
-        $sqlArray = array();
+        $sqlArray = [];
         $db = $this->db;
 
         foreach ($this->diff as $table => $rowArray) {
             foreach ((array)$rowArray as $index => $row) {
-                $sqlConfig = array();
+                $sqlConfig = [];
 
                 switch ($row['mode']) {
                     case 'INSERT':
@@ -715,7 +715,7 @@ class DbDiff extends AbstractUtilAware
     ) {
         // Convert to 2-dim array
         if (isset($dataOld[$table]) && !is_array(current($dataOld[$table]))) {
-            $dataOld[$table] = array($dataOld[$table]);
+            $dataOld[$table] = [$dataOld[$table]];
         }
 
         if (isset($dataOld[$table][$index])) {
@@ -746,7 +746,7 @@ class DbDiff extends AbstractUtilAware
     {
         $this->rowCount = 0;
         $this->executeStatus = 0;
-        $this->diff = array();
+        $this->diff = [];
 
         return $this;
     }

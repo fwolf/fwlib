@@ -25,10 +25,10 @@ class ValidatorTest extends PHPunitTestCase
     {
         $this->validator = new Validator($this->constraintContainer);
 
-        $rule = array(
+        $rule = [
             'notEmpty',
             'length: 3',
-        );
+        ];
 
         $this->assertTrue($this->validator->validate('foobar', $rule));
 
@@ -51,9 +51,9 @@ class ValidatorTest extends PHPunitTestCase
         $this->validator = new Validator();
         $this->validator->setConstraintContainer($this->constraintContainer);
 
-        $rule = array(
+        $rule = [
             'notRegisted',
-        );
+        ];
 
         $this->validator->validate('dummy', $rule);
     }

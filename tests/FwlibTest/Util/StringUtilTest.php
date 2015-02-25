@@ -36,33 +36,33 @@ class StringUtilTest extends PHPunitTestCase
         $z = 'it\\\'s ok';
         $this->assertEquals($y, $z);
 
-        $x = array('it\'s ok');
+        $x = ['it\'s ok'];
         $y = $stringUtil->addSlashesRecursive($x);
-        $z = array('it\\\'s ok');
+        $z = ['it\\\'s ok'];
         $this->assertEqualArray($y, $z);
 
-        $x = array(
+        $x = [
             "It's 1.",
             "It's 2."   => "It's 3.",
             2012,
-            "It's 4."   => array(
-                "It's 5."   => array(
+            "It's 4."   => [
+                "It's 5."   => [
                     "It's 6."   => "It's 7.",
-                ),
+                ],
             'end',
-            ),
-        );
-        $y = array(
+            ],
+        ];
+        $y = [
             "It\\'s 1.",
             "It\\'s 2." => "It\\'s 3.",
             2012,
-            "It\\'s 4." => array(
-                "It\\'s 5." => array(
+            "It\\'s 4." => [
+                "It\\'s 5." => [
                     "It\\'s 6." => "It\\'s 7.",
-                ),
+                ],
             "end",
-            ),
-        );
+            ],
+        ];
         $this->assertEquals($y, $stringUtil->addslashesRecursive($x));
 
         // Object, should return original
@@ -112,8 +112,8 @@ class StringUtilTest extends PHPunitTestCase
     {
         $stringUtil = $this->buildMock();
 
-        $x = array('foo' => '&');
-        $y = array('foo' => '&amp;');
+        $x = ['foo' => '&'];
+        $y = ['foo' => '&amp;'];
         $this->assertEquals($y, $stringUtil->encodeHtmls($x));
     }
 
@@ -177,13 +177,13 @@ foo
         $this->assertEquals('over', $y);
 
         $y = $stringUtil->matchRegex('/\w{5}/', $x);
-        $this->assertEqualArray(array('quick', 'brown', 'jumps'), $y);
+        $this->assertEqualArray(['quick', 'brown', 'jumps'], $y);
 
         $y = $stringUtil->matchRegex('/(\w{5})/', $x);
-        $this->assertEqualArray(array('quick', 'brown', 'jumps'), $y);
+        $this->assertEqualArray(['quick', 'brown', 'jumps'], $y);
 
         $y = $stringUtil->matchRegex('/((q\w+) (b\w+))/', $x);
-        $this->assertEqualArray(array('quick brown', 'quick', 'brown'), $y);
+        $this->assertEqualArray(['quick brown', 'quick', 'brown'], $y);
     }
 
 
@@ -251,30 +251,30 @@ foo
         $stringUtil = $this->buildMock();
 
         $x = ' blah ';
-        $y = array('blah');
-        $y2 = array(' blah ');
+        $y = ['blah'];
+        $y2 = [' blah '];
         $this->assertEquals($y, $stringUtil->toArray($x));
         $this->assertEquals($y2, $stringUtil->toArray($x, '|', false));
 
         $x = 42;
-        $y = array('42');
+        $y = ['42'];
         $this->assertEquals($y, $stringUtil->toArray($x));
 
         $x = ', a, b, c  , d  , ';
         $this->assertEquals(
-            array('a', 'b', 'c', 'd'),
+            ['a', 'b', 'c', 'd'],
             $stringUtil->toArray($x, ',')
         );
         $this->assertEquals(
-            array(',', 'a,', 'b,', 'c', ',', 'd', ','),
+            [',', 'a,', 'b,', 'c', ',', 'd', ','],
             $stringUtil->toArray($x, ' ')
         );
         $this->assertEquals(
-            array('', 'a', 'b', 'c',  'd', ''),
+            ['', 'a', 'b', 'c',  'd', ''],
             $stringUtil->toArray($x, ',', true, false)
         );
         $this->assertEquals(
-            array(' a', ' b', ' c  ',  ' d  ', ' '),
+            [' a', ' b', ' c  ',  ' d  ', ' '],
             $stringUtil->toArray($x, ',', false, true)
         );
     }

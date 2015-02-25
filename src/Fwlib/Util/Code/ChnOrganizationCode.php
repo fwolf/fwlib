@@ -37,7 +37,7 @@ class ChnOrganizationCode extends AbstractUtilAware
 
 
         // Prepare value table
-        $arVal = array();
+        $arVal = [];
         // 0-9 to 0-9
         for ($i = 48; $i < 58; $i ++) {
             $arVal[chr($i)] = $i - 48;
@@ -48,7 +48,7 @@ class ChnOrganizationCode extends AbstractUtilAware
         }
 
         // Weight table
-        $arWeight = array(3, 7, 9, 10, 5, 8, 4, 2);
+        $arWeight = [3, 7, 9, 10, 5, 8, 4, 2];
 
         // Add each digit value after plus it's weight
         $j = 0;

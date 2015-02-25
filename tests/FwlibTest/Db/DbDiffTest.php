@@ -48,11 +48,11 @@ class DbDiffTest extends AbstractDbRelateTest
             ->disableOriginalConstructor()
             ->getMock(
                 'Fwlib\Bridge\Adodb',
-                array(
+                [
                     'BeginTrans', 'CommitTrans', 'RollbackTrans',
                     'getErrorCode', 'getErrorMessage',
                     'execute'
-                )
+                ]
             );
 
         $db->expects($this->any())
@@ -115,11 +115,11 @@ class DbDiffTest extends AbstractDbRelateTest
     {
         $dbDiff = $this->buildMockWithFakeDb();
 
-        $dataNew = array(
-            self::$tableUser => array(
+        $dataNew = [
+            self::$tableUser => [
                 'uuid'  => $this->uuid1,
-            ),
-        );
+            ],
+        ];
 
         self::$getErrorCode = -1;
         self::$getErrorMessage = 'Db execute fail';
@@ -189,20 +189,20 @@ class DbDiffTest extends AbstractDbRelateTest
     public function testCompareWithDeleteMode()
     {
         $dbDiff = $this->buildMock();
-        $dataNew = array(
-            self::$tableUser => array(
+        $dataNew = [
+            self::$tableUser => [
                 'uuid'  => null,
-            ),
-        );
-        $dataOld = array(
-            self::$tableUser => array(
+            ],
+        ];
+        $dataOld = [
+            self::$tableUser => [
                 'uuid'  => $this->uuid1,
                 'title' => 'User Title The Third',
                 'age'   => 4200,
                 'credit'    => '42',
                 'joindate'  => '2012-01-02',
-            ),
-        );
+            ],
+        ];
 
         $dbDiff->compare($dataNew, $dataOld);
         $diff = $dbDiff->getDiff();
@@ -220,11 +220,11 @@ class DbDiffTest extends AbstractDbRelateTest
     public function testCompareWithNullPkInBothDataNewAndOld()
     {
         $dbDiff = $this->buildMock();
-        $dataNew = array(
-            self::$tableUser => array(
+        $dataNew = [
+            self::$tableUser => [
                 'uuid'  => null,
-            ),
-        );
+            ],
+        ];
 
         $dbDiff->compare($dataNew);
     }
@@ -233,15 +233,15 @@ class DbDiffTest extends AbstractDbRelateTest
     public function testCompareWithUpdateModeWithSameDataNewAndOld()
     {
         $dbDiff = $this->buildMock();
-        $dataNew = array(
-            self::$tableUser => array(
+        $dataNew = [
+            self::$tableUser => [
                 'uuid'  => $this->uuid1,
                 'title' => 'User Title The Third',
                 'age'   => 4200,
                 'credit'    => '42',
                 'joindate'  => '2012-01-02',
-            ),
-        );
+            ],
+        ];
 
         $dbDiff->compare($dataNew, $dataNew);
 
@@ -254,15 +254,15 @@ class DbDiffTest extends AbstractDbRelateTest
         $dbDiff = $this->buildMock();
 
         // Normal insert
-        $dataNew1 = array(
-            self::$tableUser => array(
+        $dataNew1 = [
+            self::$tableUser => [
                 'uuid'  => $this->uuid1,
                 'title' => 'User Title',
                 'age'   => 42,
                 'credit'    => '0.42',
                 'joindate'  => '2014-01-02',
-            ),
-        );
+            ],
+        ];
 
         $dbDiff->execute($dataNew1);
         $this->assertEquals(1, $dbDiff->getRowCount());
@@ -277,11 +277,11 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
         // Insert with PK column only
-        $dataNew2 = array(
-            self::$tableUser => array(
+        $dataNew2 = [
+            self::$tableUser => [
                 'uuid'  => $this->uuid2,
-            ),
-        );
+            ],
+        ];
 
         $dbDiff->execute($dataNew2);
         $this->assertEquals(1, $dbDiff->getRowCount());
@@ -292,27 +292,27 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
         // Update row with $uuid1, and delete row with $uuid2
-        $dataNewChanged = array(
-            self::$tableUser => array(
+        $dataNewChanged = [
+            self::$tableUser => [
                 // Modify from $dataNew1
-                array(
+                [
                     'uuid'  => $this->uuid1,
                     'title' => 'User Title Changed',
                     'age'   => 420,
                     'credit'    => '4.2',
                     'joindate'  => '2013-01-02',
-                ),
-                array(
+                ],
+                [
                     'uuid'  => null,
-                )
-            ),
-        );
-        $dataOld = array(
-            self::$tableUser => array(
+                ]
+            ],
+        ];
+        $dataOld = [
+            self::$tableUser => [
                 $dataNew1[self::$tableUser],
                 $dataNew2[self::$tableUser],
-            ),
-        );
+            ],
+        ];
         $dbDiff->execute($dataNewChanged, $dataOld);
 
         $this->assertEquals(2, $dbDiff->getRowCount());
@@ -377,11 +377,11 @@ class DbDiffTest extends AbstractDbRelateTest
     {
         $dbDiff = $this->buildMock();
 
-        $dataNew = array(
-            self::$tableUser => array(
+        $dataNew = [
+            self::$tableUser => [
                 'uuid'  => $this->uuid3,
-            ),
-        );
+            ],
+        ];
 
         $condition = "WHERE uuid = '{$this->uuid3}'";
 
@@ -414,7 +414,7 @@ class DbDiffTest extends AbstractDbRelateTest
     public function testExecuteWithEmptyDataNew()
     {
         $dbDiff = $this->buildMock();
-        $dbDiff->execute(array(), null);
+        $dbDiff->execute([], null);
     }
 
 
@@ -427,11 +427,11 @@ class DbDiffTest extends AbstractDbRelateTest
         $dbDiff = $this->buildMock();
 
         // No PK column uuid
-        $dataNew = array(
-            self::$tableUser => array(
+        $dataNew = [
+            self::$tableUser => [
                 'title' => 'User Title',
-            ),
-        );
+            ],
+        ];
 
         $dbDiff->execute($dataNew);
     }
@@ -446,11 +446,11 @@ class DbDiffTest extends AbstractDbRelateTest
         $dbDiff = $this->buildMock();
 
         // No PK column uuid
-        $dataNew = array(
-            'table_not_exist' => array(
+        $dataNew = [
+            'table_not_exist' => [
                 'title' => 'User Title',
-            ),
-        );
+            ],
+        ];
 
         $dbDiff->execute($dataNew);
     }
@@ -503,11 +503,11 @@ class DbDiffTest extends AbstractDbRelateTest
     {
         $dbDiff = $this->buildMockWithFakeDb();
 
-        $dataNew = array(
-            self::$tableUser => array(
+        $dataNew = [
+            self::$tableUser => [
                 'uuid'  => $this->uuid1,
-            ),
-        );
+            ],
+        ];
 
         self::$getErrorCode = -1;
         self::$getErrorMessage = 'Db execute fail';

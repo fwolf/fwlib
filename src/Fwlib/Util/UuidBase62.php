@@ -166,7 +166,7 @@ class UuidBase62 extends AbstractUtilAware
             $usec = $numberUtil->baseConvert(substr($uuid, 6, 4), $this->base, 10);
             $custom = substr($uuid, 10 + $this->lengthGroup, $this->lengthCustom);
             $random = substr($uuid, -1 * $this->lengthRandom);
-            return array(
+            return [
                 'second' => $sec,
                 'microsecond' => $usec,
                 'time'    => date('Y-m-d H:i:s', $sec),
@@ -176,7 +176,7 @@ class UuidBase62 extends AbstractUtilAware
                     $numberUtil->baseConvert($custom, $this->base, 10)
                 ),
                 'random'  => $random,
-            );
+            ];
         } else {
             return null;
         }
@@ -198,8 +198,8 @@ class UuidBase62 extends AbstractUtilAware
 
         // AlphaNumeric 0-9 a-z A-Z
         $chars = str_replace(
-            array('0', 'a', 'A'),
-            array('0-9', 'a-z', 'A-Z'),
+            ['0', 'a', 'A'],
+            ['0-9', 'a-z', 'A-Z'],
             $this->randomMode
         );
         if ('' !== preg_replace("/[$chars]/", '', $uuid)) {

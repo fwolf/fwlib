@@ -39,7 +39,7 @@ class UnknownMarkup extends AbstractTextConverter
 
         // Use first 50 chars, without special chars
         $source = str_replace(
-            array("\n", "\r", "\t", '/', '*', '<?php', '<?'),
+            ["\n", "\r", "\t", '/', '*', '<?php', '<?'],
             '',
             ltrim($source)
         );

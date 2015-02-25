@@ -25,114 +25,114 @@ class ListTableTest extends PHPunitTestCase
     public function testFitDataWithTitle()
     {
         $this->lt->setConfig('fitEmpty', '&nbsp;');
-        $data = array(
-            array(
+        $data = [
+            [
                 'uuid'  => '1',
                 'title' => 'tom',
                 'age'   => 20,
-            ),
-            array(
+            ],
+            [
                 'uuid'  => '2',
                 'title' => 'jack',
                 'age'   => 30,
-            ),
-            array(
+            ],
+            [
                 'uuid'  => '3',
                 'title' => 'smith',
                 'age'   => 40,
-            ),
-        );
-        $title = array(
+            ],
+        ];
+        $title = [
             'title' => 'Name',
             'age'   => 'Current Age',
             'credit'    => 'Money',
-        );
+        ];
 
 
         $this->lt->setConfig('fitMode', ListTable::FIT_TO_TITLE);
         $this->lt->setData($data, $title);
-        $x = array(
-            array(
+        $x = [
+            [
                 'title' => 'tom',
                 'age'   => 20,
                 'credit'    => '&nbsp;',
-            ),
-            array(
+            ],
+            [
                 'title' => 'jack',
                 'age'   => 30,
                 'credit'    => '&nbsp;',
-            ),
-            array(
+            ],
+            [
                 'title' => 'smith',
                 'age'   => 40,
                 'credit'    => '&nbsp;',
-            ),
-        );
+            ],
+        ];
         $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listData'));
 
 
         $this->lt->setConfig('fitMode', ListTable::FIT_TO_DATA);
         $this->lt->setData($data, $title);
-        $x = array(
+        $x = [
             'title' => 'Name',
             'age'   => 'Current Age',
             'uuid'  => 'uuid',  // Add later, so on last position
-        );
+        ];
         $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listTitle'));
 
 
         $this->lt->setConfig('fitMode', ListTable::FIT_INTERSECTION);
         $this->lt->setData($data, $title);
-        $x = array(
-            array(
+        $x = [
+            [
                 'title' => 'tom',
                 'age'   => 20,
-            ),
-            array(
+            ],
+            [
                 'title' => 'jack',
                 'age'   => 30,
-            ),
-            array(
+            ],
+            [
                 'title' => 'smith',
                 'age'   => 40,
-            ),
-        );
-        $y = array(
+            ],
+        ];
+        $y = [
             'title' => 'Name',
             'age'   => 'Current Age',
-        );
+        ];
         $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listData'));
         $this->assertEqualArray($y, $this->reflectionGet($this->lt, 'listTitle'));
 
 
         $this->lt->setConfig('fitMode', ListTable::FIT_UNION);
         $this->lt->setData($data, $title);
-        $x = array(
-            array(
+        $x = [
+            [
                 'uuid'  => '1',
                 'title' => 'tom',
                 'age'   => 20,
                 'credit'    => '&nbsp;',
-            ),
-            array(
+            ],
+            [
                 'uuid'  => '2',
                 'title' => 'jack',
                 'age'   => 30,
                 'credit'    => '&nbsp;',
-            ),
-            array(
+            ],
+            [
                 'uuid'  => '3',
                 'title' => 'smith',
                 'age'   => 40,
                 'credit'    => '&nbsp;',
-            ),
-        );
-        $y = array(
+            ],
+        ];
+        $y = [
             'title' => 'Name',
             'age'   => 'Current Age',
             'credit'    => 'Money',
             'uuid'  => 'uuid',
-        );
+        ];
         $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listData'));
         $this->assertEqualArray($y, $this->reflectionGet($this->lt, 'listTitle'));
     }

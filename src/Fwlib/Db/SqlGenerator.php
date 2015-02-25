@@ -49,14 +49,14 @@ class SqlGenerator implements UtilAwareInterface
      *
      * @var array
      */
-    protected $paramPart = array();
+    protected $paramPart = [];
 
     /**
      * Generated SQL string part
      *
      * @var string
      */
-    protected $sqlPart = array();
+    protected $sqlPart = [];
 
     /**
      * @var UtilContainer
@@ -88,7 +88,7 @@ class SqlGenerator implements UtilAwareInterface
         $part = str_replace(' ', '', (strtoupper($part)));
 
         // Reset-able part
-        $arPart = array(
+        $arPart = [
             'DELETE',
             'FROM',
             'GROUPBY',
@@ -101,11 +101,11 @@ class SqlGenerator implements UtilAwareInterface
             'UPDATE',
             'VALUES',
             'WHERE',
-        );
+        ];
 
         if (empty($part) || 'all' == $part) {
-            $this->paramPart = array();
-            $this->sqlPart = array();
+            $this->paramPart = [];
+            $this->sqlPart = [];
         } else {
             // Reset part split by comma
             $arToClear = explode(',', $part);
@@ -132,7 +132,7 @@ class SqlGenerator implements UtilAwareInterface
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
-            $ar = array('DELETE', 'WHERE', 'ORDERBY', 'LIMIT');
+            $ar = ['DELETE', 'WHERE', 'ORDERBY', 'LIMIT'];
         }
 
         $sql = '';
@@ -150,7 +150,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $part
      * @return  string
      */
-    public function genInsert($part = array())
+    public function genInsert($part = [])
     {
         $arrayUtil = $this->getUtilContainer()->getArray();
 
@@ -159,7 +159,7 @@ class SqlGenerator implements UtilAwareInterface
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
-            $ar = array('INSERT', 'VALUES');
+            $ar = ['INSERT', 'VALUES'];
         }
 
         $sql = '';
@@ -177,7 +177,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $part
      * @return  string
      */
-    public function genSelect($part = array())
+    public function genSelect($part = [])
     {
         $arrayUtil = $this->getUtilContainer()->getArray();
 
@@ -186,10 +186,10 @@ class SqlGenerator implements UtilAwareInterface
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
-            $ar = array(
+            $ar = [
                 'SELECT', 'FROM', 'WHERE', 'GROUPBY', 'HAVING',
                 'ORDERBY', 'LIMIT'
-            );
+            ];
         }
 
         $sql = '';
@@ -360,7 +360,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $part
      * @return  string
      */
-    public function genUpdate($part = array())
+    public function genUpdate($part = [])
     {
         $arrayUtil = $this->getUtilContainer()->getArray();
 
@@ -369,7 +369,7 @@ class SqlGenerator implements UtilAwareInterface
             $ar = &$part;
         } else {
             // Using all parts, by below sequence
-            $ar = array('UPDATE', 'SET', 'WHERE', 'ORDERBY', 'LIMIT');
+            $ar = ['UPDATE', 'SET', 'WHERE', 'ORDERBY', 'LIMIT'];
         }
 
         $sql = '';
@@ -392,7 +392,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   string  $part       SELECT/UPDATE ... etc
      * @return  string
      */
-    public function get($config = array(), $part = '')
+    public function get($config = [], $part = '')
     {
         $part = strtoupper($part);
         $this->set($config);
@@ -403,7 +403,7 @@ class SqlGenerator implements UtilAwareInterface
                 // SELECT/UPDATE/INSERT/DELETE ? Use the 1st occured one
                 if (in_array(
                     $key,
-                    array('SELECT', 'UPDATE', 'INSERT', 'DELETE')
+                    ['SELECT', 'UPDATE', 'INSERT', 'DELETE']
                 )) {
                     $part = $key;
                     break;
@@ -430,7 +430,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $config
      * @return  string
      */
-    public function getDelete($config = array())
+    public function getDelete($config = [])
     {
         return $this->get($config, 'DELETE');
     }
@@ -442,7 +442,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $config
      * @return  string
      */
-    public function getInsert($config = array())
+    public function getInsert($config = [])
     {
         return $this->get($config, 'INSERT');
     }
@@ -465,7 +465,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $param
      * @return  string
      */
-    public function getPrepared($param = array())
+    public function getPrepared($param = [])
     {
         $sql = $this->get($param);
 
@@ -495,7 +495,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $config
      * @return  string
      */
-    public function getSelect($config = array())
+    public function getSelect($config = [])
     {
         return $this->get($config, 'SELECT');
     }
@@ -507,7 +507,7 @@ class SqlGenerator implements UtilAwareInterface
      * @param   array   $config
      * @return  string
      */
-    public function getUpdate($config = array())
+    public function getUpdate($config = [])
     {
         return $this->get($config, 'UPDATE');
     }
@@ -541,14 +541,14 @@ class SqlGenerator implements UtilAwareInterface
         }
 
         // Global clause order, will sort by this.
-        $clauseOrder = array(
+        $clauseOrder = [
             'SELECT', 'DELETE', 'INSERT', 'UPDATE',
             'VALUES', 'FROM', 'SET',
             'WHERE', 'GROUPBY', 'HAVING', 'ORDERBY', 'LIMIT'
-        );
+        ];
 
         // Re-order sql part
-        $ar = array();
+        $ar = [];
         $config = array_change_key_case($config, CASE_UPPER);
         foreach ($clauseOrder as $clause) {
             if (isset($config[$clause])) {

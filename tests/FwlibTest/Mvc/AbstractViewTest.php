@@ -12,7 +12,7 @@ class AbstractViewTest extends PHPunitTestCase
 {
     protected $view;
     public static $class_exists = true;
-    public static $assignByRef = array();
+    public static $assignByRef = [];
     public static $error_log = '';
 
 
@@ -20,8 +20,8 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->getMock(
             'Fwlib\Mvc\AbstractView',
-            array('fetchTestAction'),
-            array($pathToRoot)
+            ['fetchTestAction'],
+            [$pathToRoot]
         );
 
         $view->expects($this->any())
@@ -32,7 +32,7 @@ class AbstractViewTest extends PHPunitTestCase
         // Mock a smarty instance
         $smarty = $this->getMock(
             'Fwlib\Bridge\Smarty',
-            array('fetch', 'assignByRef')
+            ['fetch', 'assignByRef']
         );
 
         $smarty->expects($this->any())
@@ -98,7 +98,7 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock('path/to/root/');
 
-        $view->setOutputParts(array('NotExist'));
+        $view->setOutputParts(['NotExist']);
         $view->getOutput();
     }
 
@@ -151,17 +151,17 @@ class AbstractViewTest extends PHPunitTestCase
         $this->reflectionCall(
             $view,
             'addCss',
-            array('reset', 'path/to/reset.css', 'screen, print')
+            ['reset', 'path/to/reset.css', 'screen, print']
         );
         $this->reflectionCall(
             $view,
             'addCss',
-            array('default', 'path/to/default.css')
+            ['default', 'path/to/default.css']
         );
         $this->reflectionCall(
             $view,
             'addJs',
-            array('jquery', 'path/to/jquery.js')
+            ['jquery', 'path/to/jquery.js']
         );
 
         // Simulate get output
@@ -175,11 +175,11 @@ class AbstractViewTest extends PHPunitTestCase
         $this->assertArrayHasKey('jquery', $js);
 
 
-        $this->reflectionCall($view, 'removeCss', array('reset'));
+        $this->reflectionCall($view, 'removeCss', ['reset']);
         $css = $this->reflectionGet($view, 'css');
         $this->assertArrayNotHasKey('reset', $css);
 
-        $this->reflectionCall($view, 'removejs', array('jquery'));
+        $this->reflectionCall($view, 'removejs', ['jquery']);
         $js = $this->reflectionGet($view, 'js');
         $this->assertArrayNotHasKey('jquery', $js);
     }

@@ -10,15 +10,15 @@ namespace Fwlib\Util;
  */
 class NumberUtil
 {
-    public $baseConvertMap = array(
+    public $baseConvertMap = [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    );
+    ];
 
-    public $baseConvertMapReverse = array(
+    public $baseConvertMapReverse = [
         '0' => 0,   '1' => 1,   '2' => 2,   '3' => 3,   '4' => 4,
         '5' => 5,   '6' => 6,   '7' => 7,   '8' => 8,   '9' => 9,
         'a' => 10,  'b' => 11,  'c' => 12,  'd' => 13,  'e' => 14,
@@ -33,7 +33,7 @@ class NumberUtil
         'P' => 51,  'Q' => 52,  'R' => 53,  'S' => 54,  'T' => 55,
         'U' => 56,  'V' => 57,  'W' => 58,  'X' => 59,  'Y' => 60,
         'Z' => 61,
-    );
+    ];
 
     /**
      * Number equal or larger than 100000000000000(1.0E+14) will represent by
@@ -45,7 +45,7 @@ class NumberUtil
      *
      * @link https://gist.github.com/fwolf/7250392
      */
-    public $baseConvertSafeLength = array(
+    public $baseConvertSafeLength = [
         2  => 46,   //  2^46 = 70368744177664
         3  => 29,   //  3^29 = 68630377364883
         4  => 23,   //  4^23 = 70368744177664
@@ -107,7 +107,7 @@ class NumberUtil
         60 => 7,    // 60^7  = 2799360000000,
         61 => 7,    // 61^7  = 3142742836021,
         62 => 7,    // 62^7  = 3521614606208,
-    );
+    ];
 
 
     /**
@@ -282,7 +282,7 @@ class NumberUtil
      */
     public function toHumanSize($size, $precision = 1, $step = 1024)
     {
-        $ranks = array('B', 'K', 'M', 'G', 'T', 'P');
+        $ranks = ['B', 'K', 'M', 'G', 'T', 'P'];
         // Total 6 levels, loop from 0 to 5 just fit $ranks index
         $i = 0;
         while ($size > $step && $i <5) {

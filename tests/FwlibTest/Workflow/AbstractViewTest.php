@@ -16,11 +16,11 @@ class AbstractViewTest extends PHPunitTestCase
             'Fwlib\Workflow\AbstractView'
         )
         ->setMethods(
-            array(
+            [
                 'getOutputHeader', 'getOutputFooter',
                 'fetchDetailEditable', 'fetchDetailReadonly',
                 'fetchAction', 'fetchLink', 'fetchLog',
-            )
+            ]
         )
         ->getMockForAbstractClass();
 
@@ -76,7 +76,7 @@ class AbstractViewTest extends PHPunitTestCase
 
         $workflow = $this->getMock(
             'stdClass',
-            array('getUuid')
+            ['getUuid']
         );
         $workflow->expects($this->any())
             ->method('getUuid')
@@ -85,18 +85,18 @@ class AbstractViewTest extends PHPunitTestCase
         $this->reflectionSet($view, 'workflow', $workflow);
 
 
-        $_GET = array(
+        $_GET = [
             'm' => 'dummy-module',
             'a' => 'workflow-dummy',
             'uselessParameter' => 'dummy',
-        );
+        ];
 
         $url = $view->buildQueryUrl(
             'detail',
-            array(
+            [
                 'someParam' => 'param-value',
-            ),
-            array('uselessParameter')
+            ],
+            ['uselessParameter']
         );
 
         $this->assertStringEndsWith(
@@ -130,7 +130,7 @@ class AbstractViewTest extends PHPunitTestCase
         $uuid = 'workflowUuid';
 
         // Initialize workflow instance
-        $this->reflectionCall($view, 'createOrLoadWorkflow', array($uuid));
+        $this->reflectionCall($view, 'createOrLoadWorkflow', [$uuid]);
 
         $title = $this->reflectionCall($view, 'generateTitle');
         $this->assertEquals('Workflow Title Dummy', $title);
@@ -141,11 +141,11 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock();
 
-        $_GET = array(
+        $_GET = [
             'a'     => 'workflow-dummy',
             'va'    => 'detail',
             'uuid'  => 'workflowUuid',
-        );
+        ];
 
         $output = $view->getOutput();
         $this->assertEquals(
@@ -171,14 +171,14 @@ class AbstractViewTest extends PHPunitTestCase
         // With workflow action, the view action defined in
         // 'viewActionAfterExecute' will be used, ignore view action from url.
         // The view action of submit is detail
-        $_GET = array(
+        $_GET = [
             'a'     => 'workflow-dummy',
             'va'    => 'edit',
             'uuid'  => 'workflowUuid',
-        );
-        $_POST = array(
+        ];
+        $_POST = [
             'wfa'   => 'submit',
-        );
+        ];
 
         $output = $view->getOutput();
         $this->assertEquals(
@@ -205,10 +205,10 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock();
 
-        $_GET = array(
+        $_GET = [
             'a'     => 'workflow-dummy-invalid-view-action',
-        );
-        $_POST = array();
+        ];
+        $_POST = [];
 
         $output = $view->setAction($_GET['a'])->getOutput();
     }
@@ -218,10 +218,10 @@ class AbstractViewTest extends PHPunitTestCase
     {
         $view = $this->buildMock();
 
-        $_POST = array(
+        $_POST = [
             'a' => 'A',
             'b' => 'B',
-        );
+        ];
 
         $this->reflectionSet($view, 'receivableContentKeys', '*');
         $this->assertEqualArray(
@@ -229,9 +229,9 @@ class AbstractViewTest extends PHPunitTestCase
             $this->reflectionCall($view, 'receiveContentsFromRequest')
         );
 
-        $this->reflectionSet($view, 'receivableContentKeys', array('a'));
+        $this->reflectionSet($view, 'receivableContentKeys', ['a']);
         $this->assertEqualArray(
-            array('a' => 'A'),
+            ['a' => 'A'],
             $this->reflectionCall($view, 'receiveContentsFromRequest')
         );
     }

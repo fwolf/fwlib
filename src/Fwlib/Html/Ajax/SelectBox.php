@@ -32,7 +32,7 @@ class SelectBox
      *
      * @var array
      */
-    protected $idMap = array();
+    protected $idMap = [];
 
     /**
      * Text map
@@ -41,7 +41,7 @@ class SelectBox
      *
      * @var array
      */
-    protected $textMap = array();
+    protected $textMap = [];
 
 
     /**
@@ -49,7 +49,7 @@ class SelectBox
      *
      * @param   array   $config
      */
-    public function __construct($config = array())
+    public function __construct($config = [])
     {
         $this->config = new Config();
 
@@ -66,7 +66,7 @@ class SelectBox
      */
     protected function genIdMap()
     {
-        $this->idMap = array();
+        $this->idMap = [];
 
         $prefix = $this->config->get('id-prefix') . $this->config->get('id');
 
@@ -76,7 +76,7 @@ class SelectBox
         $prefix .= '-';
 
         // Standalone id
-        foreach (array('caller', 'td-choose') as $v) {
+        foreach (['caller', 'td-choose'] as $v) {
             $this->idMap['{' . $v . '}'] = $prefix .
                 $this->config->get('id-' . $v);
         }
@@ -109,20 +109,20 @@ class SelectBox
         );
 
 
-        $this->textMap = array();
+        $this->textMap = [];
 
         // Title, {title} is used in $idMap
         $this->textMap['{title-box}'] = $this->config->get('title');
 
         $prefix = 'title-';
-        foreach (array('close', 'query-input', 'query-submit', 'choose') as $v) {
+        foreach (['close', 'query-input', 'query-submit', 'choose'] as $v) {
             $v = $prefix . $v;
             $this->textMap['{' . $v . '}'] = $this->config->get($v);
         }
 
         // Text
         $prefix = 'text-';
-        foreach (array('loading', 'empty', 'tip') as $v) {
+        foreach (['loading', 'empty', 'tip'] as $v) {
             $v = $prefix . $v;
             $this->textMap['{' . $v . '}'] = $this->config->get($v);
         }
@@ -555,22 +555,22 @@ class SelectBox
         }
 
         // Join select list cols and hidden
-        $this->config->set('list', array());
+        $this->config->set('list', []);
         foreach ((array)$this->config->get('title-datarow-col') as $k => $v) {
             $this->config->set(
                 'list.' . $k,
-                array(
+                [
                     'title' => $v,
                     'get'   => 'text',  // jQuery method to read content
-                )
+                ]
             );
         }
         foreach ((array)$this->config->get('datarow-col-hidden') as $k) {
             $this->config->set(
                 'list.' . $k,
-                array(
+                [
                     'get'   => 'val',   // jQuery method to read content
-                )
+                ]
             );
         }
 
@@ -618,7 +618,7 @@ class SelectBox
      * @param   array   $config
      * @return  $this
      */
-    public function setConfig($config = array())
+    public function setConfig($config = [])
     {
         $this->config->set($config);
     }
@@ -632,7 +632,7 @@ class SelectBox
     protected function setConfigDefault()
     {
         $this->config->set(
-            array(
+            [
                 // Html
 
                 'id-prefix' => 'fwlib-sel-box-',
@@ -645,16 +645,16 @@ class SelectBox
 
                 // Other id will simple pretend with prefix, value is same
                 // with name, can't customize
-                'id-other' => array(
+                'id-other' => [
                     'bg', 'close-bottom', 'close-top', 'div',
                     'table', 'title', 'clearit',
                     'empty', 'loading', 'tip',
                     'row-tpl',
-                ),
+                ],
                 // Other class, same with other id
-                'class-other' => array(
+                'class-other' => [
                     'tr-hover', 'row',
-                ),
+                ],
 
                 // Allow query data by user input
                 'query' => true,
@@ -682,13 +682,13 @@ class SelectBox
                 // Will auto compute later
                 'datarow-col-cnt' => 0,
                 // Hidden input on datarow to store dta for writeback.
-                'datarow-col-hidden' => array(
+                'datarow-col-hidden' => [
                     // [id]
-                ),
+                ],
                 // When choosen, write these data back
-                'writeback' => array(
+                'writeback' => [
                     // {'id/class in datarow without prefix': 'id in caller'}
-                ),
+                ],
 
                 // Div position adjust(based on h/v center)
                 'offset-x' => 0,
@@ -704,9 +704,9 @@ class SelectBox
                 'title-choose' => 'Choose',
                 // Data row col title
                 // Id should fit index of query result data array.
-                'title-datarow-col' => array(
+                'title-datarow-col' => [
                     // {id: title}
-                ),
+                ],
 
                 'text-loading' => 'Searching, please stand by ...',
                 'text-empty' => 'No result found, please change search keywords.',
@@ -791,7 +791,7 @@ result will only show first {pagesize} items.',
                 // Css add are user defined, can overwrite upper setting
                 'css-add' => '
 ',
-            )
+            ]
         );
 
         return $this;

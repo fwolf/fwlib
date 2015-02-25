@@ -101,7 +101,7 @@ class SmsSender extends AbstractAutoNewConfig
         }
 
         // Remove special chars
-        $number = str_replace(array('，', '。', '；'), ',', $number);
+        $number = str_replace(['，', '。', '；'], ',', $number);
         $number = preg_replace('/[ ,;\r\n\t]{1,}/', ',', $number);
         $arNumber = explode(',', $number);
 
@@ -126,7 +126,7 @@ class SmsSender extends AbstractAutoNewConfig
         $arNumber = array_unique($arNumber);
 
         // Resort array index
-        $arNumber = array_merge($arNumber, array());
+        $arNumber = array_merge($arNumber, []);
 
         return $arNumber;
     }
@@ -143,9 +143,9 @@ class SmsSender extends AbstractAutoNewConfig
     public function send($destNumber, $sms, $cat = 0)
     {
         // Map of method config to send function
-        $map = array(
+        $map = [
             'gammuSmsdInject'   => 'sendUsingGammuSmsdInject',
-        );
+        ];
 
 
         $destNumber = $this->parsePhoneNumber($destNumber);
@@ -195,8 +195,8 @@ class SmsSender extends AbstractAutoNewConfig
 
         // Prepare cmd to sent
         $cmd = str_replace(
-            array('[cmd]', '[sms]'),
-            array($this->config['path.gammuSmsdInject'], addslashes($sms)),
+            ['[cmd]', '[sms]'],
+            [$this->config['path.gammuSmsdInject'], addslashes($sms)],
             $this->config['cmd.gammuSmsdInject']
         );
         $i = strpos($cmd, '[dest]');
@@ -211,7 +211,7 @@ class SmsSender extends AbstractAutoNewConfig
         // Loop to sent each number
         foreach ($destNumber as $dest) {
             $cmd = $cmd1 . $dest . $cmd2;
-            $output = array();
+            $output = [];
             $returnValue = 0;
             exec($cmd, $output, $returnValue);
 
@@ -233,11 +233,11 @@ class SmsSender extends AbstractAutoNewConfig
         $this->config['method'] = 'gammuSmsdInject';
 
         // Possible bin path
-        $this->config['path.bin'] = array(
+        $this->config['path.bin'] = [
             '/usr/bin/',
             '/usr/local/bin/',
             '/bin/',
-        );
+        ];
 
         // Path of gammu-smsd-inject, leave empty to find in path.bin.
         // Set this will bypass inject cmd search in path.bin.

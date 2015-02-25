@@ -141,7 +141,7 @@ class FileSystem extends AbstractUtilAware
 
         // Remove special chars in filename
         $file = str_replace(
-            array('?', '&', ';', '=', ':', "\\"),
+            ['?', '&', ';', '=', ':', "\\"],
             '-',
             $file
         );
@@ -209,14 +209,14 @@ class FileSystem extends AbstractUtilAware
         $dirfiles = scandir($dir);
         // @codeCoverageIgnoreStart
         if (empty($dirfiles)) {
-            return(array());
+            return([]);
         }
         // @codeCoverageIgnoreEnd
         $dir .= DIRECTORY_SEPARATOR;
 
 
         // Get file information, ignore '.', '..'
-        $arFiles = array();
+        $arFiles = [];
         foreach ($dirfiles as $file) {
             if (('.' != $file) && ('..' != $file)) {
                 $fullpath = $dir . $file;
@@ -227,11 +227,11 @@ class FileSystem extends AbstractUtilAware
                     $size = $this->getFileSize($fullpath);
                 }
 
-                $arFiles[] = array(
+                $arFiles[] = [
                     'name'  => $file,
                     'mtime' => filemtime($dir . $file),
                     'size'  => $size,
-                );
+                ];
             }
         }
 

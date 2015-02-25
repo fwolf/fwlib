@@ -20,7 +20,7 @@ class ChnCitizenIdentificationNumber extends AbstractUtilAware
      *
      * @var array
      */
-    protected $genderMap = array('男', '女');
+    protected $genderMap = ['男', '女'];
 
     /**
      * Generate pin code
@@ -43,7 +43,7 @@ class ChnCitizenIdentificationNumber extends AbstractUtilAware
             range(41, 46),
             range(50, 54),
             range(61, 65),
-            array(71, 81, 82)
+            [71, 81, 82]
         );
         $k = array_rand($province);
         $cin .= $province[$k];
