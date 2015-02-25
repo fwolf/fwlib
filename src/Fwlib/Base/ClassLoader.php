@@ -2,7 +2,7 @@
 namespace Fwlib\Base;
 
 /**
- * ClassLoader implement PSR-0
+ * ClassLoader implement PSR-4
  *
  * Usage:
  *
@@ -15,10 +15,10 @@ namespace Fwlib\Base;
  *  // Root namespace
  *  $classLoader->addPrefix('Fwlib', 'path/to/dir/contain/fwlib/Fwlib/');
  *
- *  // Subnamespace define can be after parent namespace
+ *  // Sub namespace define can be after parent namespace
  *  $classLoader->addPrefix('Fwlib\\Base', 'path/to/another/dir/contain/fwlib/Fwlib/Base/');
  *
- *  // Standalone class(not implement PSR-0) use full path
+ *  // Standalone class(not implement PSR-4) use full path
  *  $classLoader->addPrefix('FooClass', 'path/to/FooClass.php');
  *
  *  // Search include_path at last
@@ -33,14 +33,14 @@ namespace Fwlib\Base;
  *
  * Ref:
  * - https://wiki.php.net/rfc/splclassloader
- * - https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
+ * - https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4.md
  * - https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ClassLoader/ClassLoader.php
  *
  * This class can use Singleton pattern, but its used before autoloader is
  * registered , require AbstractSingleton class need hardcoded relative path.
  * To keep things simple, copy need method here.
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ClassLoader
@@ -125,7 +125,7 @@ class ClassLoader
         $arFile = [];
 
 
-        // Match possible filepath
+        // Match possible file path
         if (empty($fileName)) {
             // Standalone class
             if (isset($this->prefix[$prefix])) {
@@ -135,7 +135,7 @@ class ClassLoader
             }
 
         } else {
-            // Replace \ in perfix to /
+            // Replace \ in prefix to /
             // Replace _ in ClassName to /
             // Add file extension
             $filePath = str_replace(
@@ -185,7 +185,7 @@ class ClassLoader
             }
 
 
-            // Filepath start from current path ?
+            // FilePath start from current path ?
             $arFile[] = $filePath;
         }
 
