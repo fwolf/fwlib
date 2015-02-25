@@ -1,12 +1,10 @@
 <?php
 namespace Fwlib\Cache;
 
-use Fwlib\Cache\Cache;
-
 /**
  * Key-value cache system, data store in memcached
  *
- * @copyright   Copyright 2012-2014 Fwolf
+ * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class CacheMemcached extends Cache
@@ -254,7 +252,6 @@ class CacheMemcached extends Cache
 
             // @codeCoverageIgnoreStart
             if (0 != $obj->getResultCode()) {
-
                 // Got error server, log and remove it
                 error_log(
                     'Memcache server ' . implode($svr, ':')
@@ -362,11 +359,14 @@ class CacheMemcached extends Cache
             // Better for multi app use one memcached
             \Memcached::OPT_PREFIX_KEY  => 'fw',
         );
+
+        // @codeCoverageIgnoreStart
         // Use json is better for debug
         if (\Memcached::HAVE_JSON) {
             $memcachedOptions[\Memcached::OPT_SERIALIZER] =
                 \Memcached::SERIALIZER_JSON;
         }
+        // @codeCoverageIgnoreEnd
 
         // Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
         $this->setConfig('memcachedLifetime', 86400);
