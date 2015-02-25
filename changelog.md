@@ -2,7 +2,21 @@
 
 
 
-### Un-versioned
+### v2.3.5 (2015-02-25)
+
+This is last version for PHP 5.3.
+
+- Cache: New class CachedCaller and interface
+- Cache: New interface CachedCallerAwareInterface
+- Mvc: Migrate class AbstractModel to Cache\AbstractCachedCallerAware
+- Cache: Add read/write renderer feature
+- Cache: Do not rewrite cache when read successful
+- Config: Split checkServerId() from limitServerId()
+- Util: New method ArrayUtil::pick(), with key replace mode
+- Util: Add pick method to http GET/POST
+- Util: Add get all method to http GET/POST
+- Mvc: Add method getLink() and getFullLink()
+- Util: Move benchmark code out of test
 
 
 
