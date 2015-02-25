@@ -9,10 +9,10 @@
 ### v2.3.4 (2015-01-05)
 
 - Move class files to src/ directory
-- Move testcase files to tests/ directory
+- Move test case files to tests/ directory
 - Remove @author and @since tag
 - Mvc: New UrlGenerator class and interface
-- Mvc: Rename Controler to Controller
+- Mvc: Rename Controller to Controller
 - Util: Add individual getter method for each util
 - Net: Assign TLSv1 cipher to use for SSL
 - Workflow: Method getViewAction() can call without workflow action
@@ -31,7 +31,7 @@
 - css: Add class .yes and .no
 - Use Travis CI for continuous integration test
 - Add badge from SensioLabsInsight code analysis
-- Add Badge Poser from pugx.org
+- Add Badge Poser from https://poser.pugx.org/
 
 
 
@@ -79,7 +79,7 @@
 
 ## v2.2 (2014-01-23)
 
-- Remove @package tag and useless class description in testcase
+- Remove @package tag and useless class description in test case
 - Try to avoid using eval()
 - Add some getter method
 - Use full word in naming
@@ -101,13 +101,13 @@
 - New ServiceContainerInterface
 - New Model AbstractWorkflow and AbstractWorkflowView
 - Mvc\AbstractView: New property $methodPrefix
-- Mvc\AbstractControler: Define module and action parameter name as property
+- Mvc\AbstractController: Define module and action parameter name as property
 
 
 
 ## v2.0 (2014-01-08)
 
-- Follow to PSR-0,1,2,4 standard, all class/function rewrited
+- Follow to PSR-0,1,2,4 standard, all class/function rewritten
 - Use PHPUnit for unit test
 - All class put in Fwlib/ sub-directory
 - Most class are optimized
