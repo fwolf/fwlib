@@ -6,8 +6,6 @@ use Fwlib\Base\Exception\ExtensionNotLoadedException;
 /**
  * Json class
  *
- * @codeCoverageIgnore
- *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -28,8 +26,6 @@ class Json
 
     /**
      * Dummy decode method using json_decode
-     *
-     * @codeCoverageIgnore
      *
      * @param   string  $json
      * @param   boolean $assoc
@@ -61,8 +57,6 @@ class Json
      *
      * Option JSON_UNESCAPED_UNICODE is NOT included.
      *
-     * @codeCoverageIgnore
-     *
      * @param   mixed   $val
      * @param   int     $option     Use if only some of HEX option needed
      * @return  string
@@ -83,8 +77,6 @@ class Json
 
     /**
      * Encode with JSON_UNESCAPED_UNICODE option on
-     *
-     * @codeCoverageIgnore
      *
      * @param   mixed   $val
      * @param   int     $option         Other original json_encode option

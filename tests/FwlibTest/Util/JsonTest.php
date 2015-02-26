@@ -1,8 +1,9 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\Json;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -10,17 +11,27 @@ use Fwlib\Util\Json;
  */
 class JsonTest extends PHPunitTestCase
 {
-    /** @type bool */
-    public static $extension_loaded = true;
-
+    /** @type int */
     public $dummyForTestEncodeHex = 42;
-    public $dummyForTestEncodeHex2;
-    protected $json;
+
+    /** @type \stdClass */
+    public $dummyForTestEncodeHex2 = null;
+
+    /** @type bool */
+    public static $extensionLoaded = true;
 
 
-    public function __construct()
+    /**
+     * @return MockObject | Json
+     */
+    protected function buildMock()
     {
-        $this->json = new Json;
+        $mock = $this->getMock(
+            'Fwlib\Util\Json',
+            null
+        );
+
+        return $mock;
     }
 
 
@@ -29,7 +40,7 @@ class JsonTest extends PHPunitTestCase
      */
     public function testConstructor()
     {
-        self::$extension_loaded = true;
+        self::$extensionLoaded = true;
 
         new Json;
 
@@ -42,7 +53,7 @@ class JsonTest extends PHPunitTestCase
      */
     public function testConstructorFailed()
     {
-        self::$extension_loaded = false;
+        self::$extensionLoaded = false;
 
         new Json;
     }
@@ -50,103 +61,108 @@ class JsonTest extends PHPunitTestCase
 
     public function testDummy()
     {
-        self::$extension_loaded = true;
+        self::$extensionLoaded = true;
+        $jsonUtil = $this->buildMock();
 
         $x = ['foo' => 'bar'];
         $y = '{"foo":"bar"}';
 
-        $this->assertEquals($y, $this->json->encode($x));
-        $this->assertEqualArray($x, $this->json->decode($y, true));
+        $this->assertEquals($y, $jsonUtil->encode($x));
+        $this->assertEqualArray($x, $jsonUtil->decode($y, true));
 
     }
 
 
     public function testEncodeHex()
     {
-        self::$extension_loaded = true;
+        self::$extensionLoaded = true;
+        $jsonUtil = $this->buildMock();
 
-        $x = ['<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9"];
+        $x = ['<b>', "'bar'", '"baz"', '&Long&', "\xc3\xa9"];
 
         $this->assertEquals(
-            '["<foo>","\'bar\'","\"baz\"","&blong&","\u00e9"]',
-            $this->json->encodeHex($x, 0)
+            '["<b>","\'bar\'","\"baz\"","&Long&","\u00e9"]',
+            $jsonUtil->encodeHex($x, 0)
         );
         $this->assertEquals(
-            '["\u003Cfoo\u003E","\'bar\'","\"baz\"","&blong&","\u00e9"]',
-            $this->json->encodeHex($x, JSON_HEX_TAG)
+            '["\u003Cb\u003E","\'bar\'","\"baz\"","&Long&","\u00e9"]',
+            $jsonUtil->encodeHex($x, JSON_HEX_TAG)
         );
         $this->assertEquals(
-            '["<foo>","\u0027bar\u0027","\"baz\"","&blong&","\u00e9"]',
-            $this->json->encodeHex($x, JSON_HEX_APOS)
+            '["<b>","\u0027bar\u0027","\"baz\"","&Long&","\u00e9"]',
+            $jsonUtil->encodeHex($x, JSON_HEX_APOS)
         );
         $this->assertEquals(
-            '["<foo>","\'bar\'","\u0022baz\u0022","&blong&","\u00e9"]',
-            $this->json->encodeHex($x, JSON_HEX_QUOT)
+            '["<b>","\'bar\'","\u0022baz\u0022","&Long&","\u00e9"]',
+            $jsonUtil->encodeHex($x, JSON_HEX_QUOT)
         );
         $this->assertEquals(
-            '["<foo>","\'bar\'","\"baz\"","\u0026blong\u0026","\u00e9"]',
-            $this->json->encodeHex($x, JSON_HEX_AMP)
+            '["<b>","\'bar\'","\"baz\"","\u0026Long\u0026","\u00e9"]',
+            $jsonUtil->encodeHex($x, JSON_HEX_AMP)
         );
         $this->assertEquals(
-            '["\u003Cfoo\u003E","\u0027bar\u0027","\u0022baz\u0022","\u0026blong\u0026","\u00e9"]',
-            $this->json->encodeHex($x)
+            '["\u003Cb\u003E","\u0027bar\u0027","\u0022baz\u0022","\u0026Long\u0026","\u00e9"]',
+            $jsonUtil->encodeHex($x)
         );
 
         $x = ['foo' => 'bar'];
         $this->assertEquals(
             '{"foo":"bar"}',
-            $this->json->encodeHex($x)
+            $jsonUtil->encodeHex($x)
         );
 
         $x = new JsonTest;
         $x->dummyForTestEncodeHex2 = new \stdClass;
         $this->assertEquals(
             '{"dummyForTestEncodeHex":42,"dummyForTestEncodeHex2":{}}',
-            $this->json->encodeHex($x)
+            $jsonUtil->encodeHex($x)
         );
+
+        $this->assertEquals(42, $jsonUtil->encodeHex(42));
     }
 
 
     public function testEncodeUnicode()
     {
-        self::$extension_loaded = true;
+        self::$extensionLoaded = true;
+        $jsonUtil = $this->buildMock();
 
-        $x = ['<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9"];
+        $x = ['<b>', "'bar'", '"baz"', '&Long&', "\xc3\xa9"];
 
         $this->assertEquals(
-            '["<foo>","\'bar\'","\"baz\"","&blong&","é"]',
-            $this->json->encodeUnicode($x, 0)
+            '["<b>","\'bar\'","\"baz\"","&Long&","é"]',
+            $jsonUtil->encodeUnicode($x, 0)
         );
         $this->assertEquals(
-            '["\u003Cfoo\u003E","\'bar\'","\"baz\"","&blong&","é"]',
-            $this->json->encodeUnicode($x, JSON_HEX_TAG)
+            '["\u003Cb\u003E","\'bar\'","\"baz\"","&Long&","é"]',
+            $jsonUtil->encodeUnicode($x, JSON_HEX_TAG)
         );
         $this->assertEquals(
-            '["<foo>","\u0027bar\u0027","\"baz\"","&blong&","é"]',
-            $this->json->encodeUnicode($x, JSON_HEX_APOS)
+            '["<b>","\u0027bar\u0027","\"baz\"","&Long&","é"]',
+            $jsonUtil->encodeUnicode($x, JSON_HEX_APOS)
         );
         $this->assertEquals(
-            '["<foo>","\'bar\'","\u0022baz\u0022","&blong&","é"]',
-            $this->json->encodeUnicode($x, JSON_HEX_QUOT)
+            '["<b>","\'bar\'","\u0022baz\u0022","&Long&","é"]',
+            $jsonUtil->encodeUnicode($x, JSON_HEX_QUOT)
         );
         $this->assertEquals(
-            '["<foo>","\'bar\'","\"baz\"","\u0026blong\u0026","é"]',
-            $this->json->encodeUnicode($x, JSON_HEX_AMP)
+            '["<b>","\'bar\'","\"baz\"","\u0026Long\u0026","é"]',
+            $jsonUtil->encodeUnicode($x, JSON_HEX_AMP)
         );
         $this->assertEquals(
-            '["<foo>","\'bar\'","\"baz\"","&blong&","é"]',
-            $this->json->encodeUnicode($x)
+            '["<b>","\'bar\'","\"baz\"","&Long&","é"]',
+            $jsonUtil->encodeUnicode($x)
         );
 
         $x = ['foo' => 'é'];
         $this->assertEquals(
             '{"foo":"é"}',
-            $this->json->encodeUnicode($x)
+            $jsonUtil->encodeUnicode($x)
         );
 
         $x = ['中文', ['中' => '文']];
         $y = '["中文",{"中":"文"}]';
-        $this->assertEquals($y, $this->json->encodeUnicode($x));
+        $this->assertEquals($y, $jsonUtil->encodeUnicode($x));
         $this->assertEqualArray($x, json_decode($y, true));
     }
 }
@@ -159,5 +175,5 @@ namespace Fwlib\Util;
 function extension_loaded()
 {
     /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    return \FwlibTest\Util\JsonTest::$extension_loaded;
+    return \FwlibTest\Util\JsonTest::$extensionLoaded;
 }
