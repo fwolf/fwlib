@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Db\Diff;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Db\Diff\Executor;
 use Fwlib\Db\Diff\Manager;
 use Fwlib\Db\Diff\Row;

@@ -16,6 +16,9 @@
     "require": {
         "php": ">=5.3.0"
     },
+    "require-dev": {
+        "fwolf/phpunit-wrapper": "1.*"
+    },
     "autoload": {
         "psr-4": {
             "Fwlib\\": "src/Fwlib/"

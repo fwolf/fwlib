@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Cache;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
 use Fwlib\Config\GlobalConfig;
 

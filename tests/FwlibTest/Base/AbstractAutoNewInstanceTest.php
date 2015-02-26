@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Base;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Base\ReturnValue;
 use Fwlib\Test\ServiceContainerTest;
 use Fwlib\Util\UtilContainer;

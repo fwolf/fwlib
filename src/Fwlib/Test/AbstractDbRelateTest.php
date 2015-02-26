@@ -2,7 +2,7 @@
 namespace Fwlib\Test;
 
 use Fwlib\Bridge\Adodb;
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * Parent class for db relate tests

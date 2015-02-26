@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Net\Sms;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Net\Sms\SmsLogger;
 use Fwlib\Util\UtilContainer;
 

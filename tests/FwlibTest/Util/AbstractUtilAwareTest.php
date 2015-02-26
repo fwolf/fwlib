@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\AbstractUtilAware;
 use Fwlib\Util\UtilContainer;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;

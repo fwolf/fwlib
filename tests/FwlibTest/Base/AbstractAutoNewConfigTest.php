@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Base;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf

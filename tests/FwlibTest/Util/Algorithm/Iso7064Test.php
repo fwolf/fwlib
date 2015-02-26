@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Util\Algorithm;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\Algorithm\Iso7064;
 
 /**

@@ -2,7 +2,7 @@
 namespace FwlibTest\Auth;
 
 use Fwlib\Auth\AbstractUserSession;
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2014 Fwolf

@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Html\Ajax;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Html\Ajax\SelectBox;
 
 /**

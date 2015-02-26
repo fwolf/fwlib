@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Util\Code;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
 use Fwlib\Util\UtilContainer;
 

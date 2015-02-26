@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Config;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Config\Config;
 use Fwlib\Util\UtilContainer;
 

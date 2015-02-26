@@ -2,7 +2,7 @@
 namespace FwlibTest\Net\Sms;
 
 use Fwlib\Base\AbstractServiceContainer;
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Net\Sms\SmsSender;
 
 /**

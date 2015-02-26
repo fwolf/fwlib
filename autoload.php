@@ -7,16 +7,15 @@
  */
 
 require __DIR__ . '/src/Fwlib/Base/ClassLoader.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Fwlib\Base\ClassLoader;
 
+// The autoload of composer is main autoloader, this autoloader is for some
+// old libraries.
 $classLoader = ClassLoader::getInstance();
 
-// Add resource lookup path
-$classLoader->addPrefix('Fwlib', __DIR__ . '/src/Fwlib/');
-$classLoader->addPrefix('FwlibTest', __DIR__ . '/tests/FwlibTest/');
-
-// Search include_path at last
+// Search include_path at last, for back compatible
 $classLoader->useIncludePath = true;
 
 // Register autoloader

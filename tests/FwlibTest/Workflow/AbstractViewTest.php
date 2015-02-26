@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Workflow;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Workflow\AbstractView;
 
 /**

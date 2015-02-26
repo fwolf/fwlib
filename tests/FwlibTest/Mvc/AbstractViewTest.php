@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Mvc;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Mvc\AbstractView;
 
 /**

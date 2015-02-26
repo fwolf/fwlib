@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Db;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Db\AbstractSequence;
 
 /**

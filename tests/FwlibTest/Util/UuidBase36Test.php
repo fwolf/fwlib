@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\UuidBase36;
 use Fwlib\Util\UtilContainer;
 

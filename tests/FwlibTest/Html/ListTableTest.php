@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Html;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Bridge\Smarty;
 use Fwlib\Html\ListTable;
 

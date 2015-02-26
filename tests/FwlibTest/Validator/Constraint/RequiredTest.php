@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
-use Fwlib\Bridge\PHPUnitTestCase;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Required;
 
 /**
