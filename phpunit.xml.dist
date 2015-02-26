@@ -27,7 +27,7 @@
 
   <testsuites>
     <testsuite name='Fwlib Test Suite'>
-      <directory phpVersion='5.3.0' phpVersionOperator='>='
+      <directory phpVersion='5.4.0' phpVersionOperator='>='
         >tests/</directory>
     </testsuite>
   </testsuites>
