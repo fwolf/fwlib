@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Util;
 
+use Fwlib\Base\Exception\ExtensionNotLoadedException;
+
 /**
  * Json class
  *
@@ -11,6 +13,19 @@ namespace Fwlib\Util;
  */
 class Json
 {
+    /**
+     * Constructor
+     *
+     * @throws  ExtensionNotLoadedException
+     */
+    public function __construct()
+    {
+        if (!extension_loaded('json')) {
+            throw (new ExtensionNotLoadedException)->setExtension('json');
+        }
+    }
+
+
     /**
      * Dummy decode method using json_decode
      *
@@ -56,12 +71,6 @@ class Json
     {
         if (is_null($option)) {
             $option = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP;
-        }
-
-        // Check json extension
-        if (!extension_loaded('json')) {
-            error_log('Json::encodeHex(): json extension is not loaded.');
-            return null;
         }
 
         if (is_int($val) || is_numeric($val)) {

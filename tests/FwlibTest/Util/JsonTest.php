@@ -10,6 +10,9 @@ use Fwlib\Util\Json;
  */
 class JsonTest extends PHPunitTestCase
 {
+    /** @type bool */
+    public static $extension_loaded = true;
+
     public $dummyForTestEncodeHex = 42;
     public $dummyForTestEncodeHex2;
     protected $json;
@@ -21,8 +24,34 @@ class JsonTest extends PHPunitTestCase
     }
 
 
+    /**
+     * @requires extension json
+     */
+    public function testConstructor()
+    {
+        self::$extension_loaded = true;
+
+        new Json;
+
+        $this->assertTrue(true);
+    }
+
+
+    /**
+     * @expectedException \Fwlib\Base\Exception\ExtensionNotLoadedException
+     */
+    public function testConstructorFailed()
+    {
+        self::$extension_loaded = false;
+
+        new Json;
+    }
+
+
     public function testDummy()
     {
+        self::$extension_loaded = true;
+
         $x = ['foo' => 'bar'];
         $y = '{"foo":"bar"}';
 
@@ -34,6 +63,8 @@ class JsonTest extends PHPunitTestCase
 
     public function testEncodeHex()
     {
+        self::$extension_loaded = true;
+
         $x = ['<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9"];
 
         $this->assertEquals(
@@ -78,6 +109,8 @@ class JsonTest extends PHPunitTestCase
 
     public function testEncodeUnicode()
     {
+        self::$extension_loaded = true;
+
         $x = ['<foo>', "'bar'", '"baz"', '&blong&', "\xc3\xa9"];
 
         $this->assertEquals(
@@ -116,4 +149,15 @@ class JsonTest extends PHPunitTestCase
         $this->assertEquals($y, $this->json->encodeUnicode($x));
         $this->assertEqualArray($x, json_decode($y, true));
     }
+}
+
+namespace Fwlib\Util;
+
+/**
+ * @return bool
+ */
+function extension_loaded()
+{
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+    return \FwlibTest\Util\JsonTest::$extension_loaded;
 }
