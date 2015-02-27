@@ -52,7 +52,7 @@ class ClassLoader
 {
     /**
      * Extension of class file to load
-     * @var string
+     * @type string
      */
     public $fileExtension = '.php';
 
@@ -63,21 +63,21 @@ class ClassLoader
      *
      * Prefix have no leading or tailing \.
      *
-     * @var array
+     * @type array
      */
     public $prefix = [];
 
     /**
      * Namespace separator, default '\'
      *
-     * @var string
+     * @type string
      */
     public $prefixSeparator = '\\';
 
     /**
      * Look for file in include_path as last try
      *
-     * @var boolean
+     * @type boolean
      */
     public $useIncludePath = false;
 
@@ -101,7 +101,7 @@ class ClassLoader
      *
      * @param   string|array    $prefix     Prefix or array of prefix-path
      * @param   string|array    $path
-     * @return  $this
+     * @return  static
      */
     public function addPrefix($prefix, $path = null)
     {
@@ -122,7 +122,7 @@ class ClassLoader
      *
      * @param   string  $prefix
      * @param   string  $fileName       Without namespace
-     * @return  mixed                   Valid file path or false
+     * @return  string|bool             Valid file path or false
      */
     public function findFile($prefix, $fileName)
     {
@@ -155,12 +155,9 @@ class ClassLoader
 
 
             // Match prefix by layer
-            $found = false;
             $pos = strrpos($prefix, $this->prefixSeparator);
-            while (!$found && (0 < strlen($prefix))) {
+            while (0 < strlen($prefix)) {
                 if (isset($this->prefix[$prefix])) {
-                    $found = true;
-
                     foreach ((array)$this->prefix[$prefix] as $path) {
                         // Add tailing / to path
                         if (DIRECTORY_SEPARATOR != substr($path, -1)) {
@@ -212,7 +209,7 @@ class ClassLoader
     /**
      * Get instance of Singleton itself
      *
-     * @return  object
+     * @return  static
      */
     public static function getInstance()
     {
@@ -260,6 +257,7 @@ class ClassLoader
         if (false === $file) {
             return false;
         } else {
+            /** @noinspection PhpIncludeInspection */
             return require($file);
         }
     }
@@ -269,7 +267,7 @@ class ClassLoader
      * Register using spl_autoload_register
      *
      * @param   boolean $prepend
-     * @return  $this
+     * @return  static
      */
     public function register($prepend = false)
     {
@@ -282,7 +280,7 @@ class ClassLoader
     /**
      * Unregister using spl_autoload_unregister
      *
-     * @return  $this
+     * @return  static
      */
     public function unregister()
     {
