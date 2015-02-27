@@ -43,6 +43,8 @@ namespace Fwlib\Base;
  * registered , require AbstractSingleton class need hardcoded relative path.
  * To keep things simple, copy need method here.
  *
+ * @codeCoverageIgnore
+ *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
