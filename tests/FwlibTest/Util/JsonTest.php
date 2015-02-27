@@ -1,6 +1,8 @@
 <?php
 namespace FwlibTest\Util;
 
+use Fwlib\Test\Mock\ExtensionLoadedMockTrait;
+use Fwlib\Test\MockContainer;
 use Fwlib\Util\Json;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -11,14 +13,14 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class JsonTest extends PHPunitTestCase
 {
+    use ExtensionLoadedMockTrait;
+
+
     /** @type int */
     public $dummyForTestEncodeHex = 42;
 
     /** @type \stdClass */
     public $dummyForTestEncodeHex2 = null;
-
-    /** @type bool */
-    public static $extensionLoaded = true;
 
 
     /**
@@ -41,6 +43,7 @@ class JsonTest extends PHPunitTestCase
     public function testConstructor()
     {
         self::$extensionLoaded = true;
+        $this->buildExtensionLoadedMock('Fwlib\Util')->enable();
 
         new Json;
 
@@ -62,6 +65,7 @@ class JsonTest extends PHPunitTestCase
     public function testDummy()
     {
         self::$extensionLoaded = true;
+        $this->buildExtensionLoadedMock('Fwlib\Util')->disable();
         $jsonUtil = $this->buildMock();
 
         $x = ['foo' => 'bar'];
@@ -75,7 +79,6 @@ class JsonTest extends PHPunitTestCase
 
     public function testEncodeHex()
     {
-        self::$extensionLoaded = true;
         $jsonUtil = $this->buildMock();
 
         $x = ['<b>', "'bar'", '"baz"', '&Long&', "\xc3\xa9"];
@@ -124,7 +127,6 @@ class JsonTest extends PHPunitTestCase
 
     public function testEncodeUnicode()
     {
-        self::$extensionLoaded = true;
         $jsonUtil = $this->buildMock();
 
         $x = ['<b>', "'bar'", '"baz"', '&Long&', "\xc3\xa9"];
@@ -165,15 +167,4 @@ class JsonTest extends PHPunitTestCase
         $this->assertEquals($y, $jsonUtil->encodeUnicode($x));
         $this->assertEqualArray($x, json_decode($y, true));
     }
-}
-
-namespace Fwlib\Util;
-
-/**
- * @return bool
- */
-function extension_loaded()
-{
-    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    return \FwlibTest\Util\JsonTest::$extensionLoaded;
 }
