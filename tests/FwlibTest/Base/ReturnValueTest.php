@@ -1,27 +1,15 @@
 <?php
 namespace FwlibTest\Base;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Base\ReturnValue;
-use Fwlib\Util\UtilContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ReturnValueTest extends PHPunitTestCase
 {
-    protected $utilContainer;
-    protected $json;
-
-
-    public function __construct()
-    {
-        $this->utilContainer = UtilContainer::getInstance();
-        $this->json = $this->utilContainer->get('Json');
-    }
-
-
     public function testCommon()
     {
         $rv = new ReturnValue();
@@ -61,7 +49,7 @@ class ReturnValueTest extends PHPunitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage string to load have no
      */
     public function testJsonModeWithInvalidStringToLoad()
