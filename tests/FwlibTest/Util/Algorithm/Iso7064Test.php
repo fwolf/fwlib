@@ -8,7 +8,7 @@ use Fwlib\Util\Algorithm\Iso7064;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Iso7064Test extends PHPunitTestCase
+class Iso7064Test extends PHPUnitTestCase
 {
     protected $iso7064;
 

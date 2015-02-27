@@ -7,7 +7,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractAutoNewConfigTest extends PHPunitTestCase
+class AbstractAutoNewConfigTest extends PHPUnitTestCase
 {
     public $dummy;
 

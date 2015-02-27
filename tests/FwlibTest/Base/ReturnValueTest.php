@@ -8,7 +8,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ReturnValueTest extends PHPunitTestCase
+class ReturnValueTest extends PHPUnitTestCase
 {
     public function testCommon()
     {

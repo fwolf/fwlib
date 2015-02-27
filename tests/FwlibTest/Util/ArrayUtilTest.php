@@ -8,7 +8,7 @@ use Fwlib\Util\ArrayUtil;
  * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ArrayUtilTest extends PHPunitTestCase
+class ArrayUtilTest extends PHPUnitTestCase
 {
     /**
      * @return  ArrayUtil

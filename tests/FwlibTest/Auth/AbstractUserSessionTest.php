@@ -8,7 +8,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  * @copyright   Copyright 2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractUserSessionTest extends PHPunitTestCase
+class AbstractUserSessionTest extends PHPUnitTestCase
 {
     /**
      * @return AbstractUserSession

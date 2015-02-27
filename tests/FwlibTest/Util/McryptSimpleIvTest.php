@@ -10,7 +10,7 @@ use Fwlib\Util\McryptSimpleIv;
  * @copyright   Copyright 2009-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class McryptSimpleIvTest extends PHPunitTestCase
+class McryptSimpleIvTest extends PHPUnitTestCase
 {
     public function testMcryptSimpleIv()
     {

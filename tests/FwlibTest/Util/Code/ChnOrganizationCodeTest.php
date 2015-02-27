@@ -9,7 +9,7 @@ use Fwlib\Util\Code\ChnOrganizationCode;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ChnOrganizationCodeTest extends PHPunitTestCase
+class ChnOrganizationCodeTest extends PHPUnitTestCase
 {
     protected $chnOrgCode;
     protected $utilContainer;

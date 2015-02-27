@@ -9,7 +9,7 @@ use Fwlib\Db\Diff\RowSet;
  * @copyright   Copyright 2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class RowSetTest extends PHPunitTestCase
+class RowSetTest extends PHPUnitTestCase
 {
     public function testAddRow()
     {

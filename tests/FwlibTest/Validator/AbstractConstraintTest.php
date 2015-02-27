@@ -8,7 +8,7 @@ use Fwlib\Validator\AbstractConstraint;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractConstraintTest extends PHPunitTestCase
+class AbstractConstraintTest extends PHPUnitTestCase
 {
     public function testSetMessage()
     {

@@ -8,7 +8,7 @@ use Fwlib\Html\Ajax\SelectBox;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class SelectBoxTest extends PHPunitTestCase
+class SelectBoxTest extends PHPUnitTestCase
 {
     /**
      * Tpl file to write, start from __DIR__ . '/SelectBox/'

@@ -9,7 +9,7 @@ use Fwlib\Net\Sms\SmsSender;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class SmsSenderTest extends PHPunitTestCase
+class SmsSenderTest extends PHPUnitTestCase
 {
     public static $is_executable = true;
     public static $exec_command = '';

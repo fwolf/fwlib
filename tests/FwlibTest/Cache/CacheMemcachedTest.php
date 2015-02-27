@@ -11,7 +11,7 @@ use Fwlib\Config\GlobalConfig;
  * @copyright   Copyright 2012-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class CacheMemcachedTest extends PHPunitTestCase
+class CacheMemcachedTest extends PHPUnitTestCase
 {
     /**
      * Cache object

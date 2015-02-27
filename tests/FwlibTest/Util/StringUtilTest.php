@@ -11,7 +11,7 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2004-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class StringUtilTest extends PHPunitTestCase
+class StringUtilTest extends PHPUnitTestCase
 {
     /**
      * @return  StringUtil

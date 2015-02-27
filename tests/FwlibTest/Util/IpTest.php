@@ -8,7 +8,7 @@ use Fwlib\Util\Ip;
  * @copyright   Copyright 2004-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class IpTest extends PHPunitTestCase
+class IpTest extends PHPUnitTestCase
 {
     protected $ip;
 

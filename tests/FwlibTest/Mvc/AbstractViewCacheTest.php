@@ -10,7 +10,7 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractViewCacheTest extends PHPunitTestCase
+class AbstractViewCacheTest extends PHPUnitTestCase
 {
     protected $view;
     public static $forceRefreshCache = false;

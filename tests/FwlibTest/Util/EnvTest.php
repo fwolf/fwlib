@@ -8,7 +8,7 @@ use Fwlib\Util\Env;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class EnvTest extends PHPunitTestCase
+class EnvTest extends PHPUnitTestCase
 {
     protected $env;
 

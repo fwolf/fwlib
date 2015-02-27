@@ -8,7 +8,7 @@ use Fwlib\Db\Diff\Row;
  * @copyright   Copyright 2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class RowTest extends PHPunitTestCase
+class RowTest extends PHPUnitTestCase
 {
     public function testAccessors()
     {

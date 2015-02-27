@@ -8,7 +8,7 @@ use Fwlib\Bridge\Smarty;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class SmartyTest extends PHPunitTestCase
+class SmartyTest extends PHPUnitTestCase
 {
     private $smarty = null;
 

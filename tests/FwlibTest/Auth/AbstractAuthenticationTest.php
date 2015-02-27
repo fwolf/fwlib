@@ -9,7 +9,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  * @copyright   Copyright 2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractAuthenticationTest extends PHPunitTestCase
+class AbstractAuthenticationTest extends PHPUnitTestCase
 {
     private $authentication;
 

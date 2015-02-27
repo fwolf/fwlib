@@ -9,7 +9,7 @@ use Fwlib\Validator\ConstraintContainer;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ConstraintContainerTest extends PHPunitTestCase
+class ConstraintContainerTest extends PHPUnitTestCase
 {
     protected $constraintContainer;
     protected $utilContainer;

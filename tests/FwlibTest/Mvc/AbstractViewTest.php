@@ -8,7 +8,7 @@ use Fwlib\Mvc\AbstractView;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractViewTest extends PHPunitTestCase
+class AbstractViewTest extends PHPUnitTestCase
 {
     protected $view;
     public static $class_exists = true;

@@ -9,7 +9,7 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2010-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class FileSystemTest extends PHPunitTestCase
+class FileSystemTest extends PHPUnitTestCase
 {
     protected $fileSystem;
     protected $utilContainer;

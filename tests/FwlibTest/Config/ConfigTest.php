@@ -9,7 +9,7 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ConfigTest extends PHPunitTestCase
+class ConfigTest extends PHPUnitTestCase
 {
     public function testAccessors()
     {

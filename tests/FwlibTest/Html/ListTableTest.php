@@ -9,7 +9,7 @@ use Fwlib\Html\ListTable;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ListTableTest extends PHPunitTestCase
+class ListTableTest extends PHPUnitTestCase
 {
     private $lt = null;
 

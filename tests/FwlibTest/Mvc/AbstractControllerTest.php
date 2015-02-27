@@ -8,7 +8,7 @@ use Fwlib\Mvc\AbstractController;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractControllerTest extends PHPunitTestCase
+class AbstractControllerTest extends PHPUnitTestCase
 {
     protected $controller;
     protected $serviceContainer;

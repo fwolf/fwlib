@@ -8,7 +8,7 @@ use Fwlib\Validator\Constraint\NotEmpty;
  * @copyright   Copyright 2013-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class NotEmptyTest extends PHPunitTestCase
+class NotEmptyTest extends PHPUnitTestCase
 {
     public function testValidate()
     {
