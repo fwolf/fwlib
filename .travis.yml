@@ -28,10 +28,6 @@ install:
     - tar xzf adodb.tar.gz
     - mv adodb5 adodb
 
-    # PHPMailer
-    - git clone --depth=10 https://github.com/PHPMailer/PHPMailer.git
-    - mv PHPMailer phpmailer
-
     # Smarty
     - wget http://www.smarty.net/files/Smarty-stable.tar.gz
     - tar xzf Smarty-stable.tar.gz
