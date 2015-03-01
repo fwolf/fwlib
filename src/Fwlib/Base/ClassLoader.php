@@ -192,17 +192,7 @@ class ClassLoader
         }
 
 
-        // Check file existence and try include_path
-        foreach ($arFile as $file) {
-            if (file_exists($file) || ($this->useIncludePath
-                && file_exists(stream_resolve_include_path($file)))
-            ) {
-                return $file;
-            }
-        }
-
-        // All match file not exists
-        return false;
+        return $this->validateFiles($arFile);
     }
 
 
@@ -287,5 +277,27 @@ class ClassLoader
         spl_autoload_unregister([$this, 'loadClass']);
 
         return $this;
+    }
+
+
+    /**
+     * Check file existence and return first valid
+     *
+     * Will also try include_path option.
+     *
+     * @param   string[]    $files
+     * @return  string|bool
+     */
+    protected function validateFiles(array $files)
+    {
+        foreach ($files as $file) {
+            if (file_exists($file) || ($this->useIncludePath&&
+                    file_exists(stream_resolve_include_path($file)))
+            ) {
+                return $file;
+            }
+        }
+
+        return false;
     }
 }
