@@ -46,9 +46,7 @@ if ('Index' != $dv->currentDocumentType) {
     type='text/css' media='all' />
 
   <style type='text/css' media='all'>>
-  /*<![CDATA[*/
   /* Write CSS below */
-  /*]]>*/
   </style>
 </head>
 <body>

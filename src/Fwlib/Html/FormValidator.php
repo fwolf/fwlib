@@ -133,12 +133,11 @@ $js
     protected function applyJsScriptTag($js)
     {
         $js = "<script type='text/javascript'>
-<!--//--><![CDATA[//>
 <!--
 
 $js
 
-//--><!]]>
+-->
 </script>";
 
         return $js;

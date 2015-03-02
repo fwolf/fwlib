@@ -55,9 +55,7 @@ function PrintArea (o_cfg) {
 	if (0 < o_cfg.css_text.length) {
 		s_css += '\
 			<style type=\'text/css\' media=\'print\'>\
-			/*<![CDATA[*/\
 			' + o_cfg.css_text + '\
-			/*]]>*/\
 			</style>\
 		';
 	}

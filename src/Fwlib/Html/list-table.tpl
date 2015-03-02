@@ -110,7 +110,6 @@
 
 {if (0 < strlen($listTableInfo.classPrefix))}
 <script type='text/javascript'>
-<!--//--><![CDATA[//>
 <!--
 (function () {
   /* Write class for coloring rows to header */
@@ -191,6 +190,6 @@
   });
 }) ();
 
-//--><!]]>
+-->
 </script>
 {/if}

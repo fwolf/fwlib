@@ -11,15 +11,12 @@
 
 
 /*
-Inline syntax example (Remove space before last '/'):
-<style type="text/css" media="screen, print, all">
-/*<![CDATA[*/
-
-/*]]>* /
+Inline syntax example:
+<style type='text/css' media='screen, print, all'>
 </style>
 
 Link syntax example:
-<link rel="stylesheet" type="text/css" media="screen, print" href="file.css" />
+<link rel='stylesheet' type='text/css' media='screen, print' href='file.css' />
 */
 
 

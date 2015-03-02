@@ -152,7 +152,6 @@ if (!empty($_POST)) {
     type='text/css' media='all' />
 
   <style type='text/css' media='all'>
-  /*<![CDATA[*/
   /* Write CSS below */
 
   form {
@@ -195,8 +194,6 @@ if (!empty($_POST)) {
     margin-bottom: -2em;
     width: 33em;
   }
-
-  /*]]>*/
   </style>
 
 

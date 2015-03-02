@@ -232,7 +232,6 @@ $bm->mark('Cleanup, test table dropped');
     type='text/css' media='all' />
 
   <style type='text/css' media='all'>
-  /*<![CDATA[*/
   /* Write CSS below */
   .list-table {
     border: 0px solid red;
@@ -253,7 +252,6 @@ $bm->mark('Cleanup, test table dropped');
   pre {
     text-align: left;
   }
-  /*]]>*/
   </style>
 
 
@@ -300,7 +298,6 @@ $bm->display();
 
   <!-- Below js MUST place after html of list table -->
   <script type="text/javascript">
-  <!--//--><![CDATA[//>
   <!--
   // Assign width for col n
 
@@ -319,7 +316,7 @@ $bm->display();
   // may make width raise.
   $("#list-table__2 tr > *:nth-child(2)").css("width", "30%");
 
-  //--><!]]>
+  -->
   </script>
 
 
