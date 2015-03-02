@@ -22,25 +22,15 @@ namespace Fwlib\Base;
  * Dependency Injection: create dependent object and pass via constructor or
  * setter.
  *
+ * The get() method is removed, because it can not hint return type. For Foo
+ * class, there should be a getFoo() method in implement with correct return
+ * type marked, for IDE friendly.
+ *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface ServiceContainerInterface
 {
-    /**
-     * Get service instance by name
-     *
-     * When $forcenew is true, it will ignore exists service and create a new
-     * one-time use service object, which will not be stored in instance
-     * array.
-     *
-     * @param   string  $name
-     * @param   boolean $forcenew
-     * @return  object
-     */
-    public function get($name, $forcenew = false);
-
-
     /**
      * Register service class or instance
      *

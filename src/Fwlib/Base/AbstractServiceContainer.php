@@ -30,7 +30,11 @@ abstract class AbstractServiceContainer implements ServiceContainerInterface
 
 
     /**
-     * {@inheritdoc}
+     * Get service instance by name
+     *
+     * When $forcenew is true, it will ignore exists service and create a new
+     * one-time use service object, which will not be stored in instance
+     * array.
      *
      * $forcenew does not affect child class of Fwlib\Base\AbstractSingleton.
      *
