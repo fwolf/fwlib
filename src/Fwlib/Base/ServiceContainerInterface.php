@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Base;
 
-
 /**
  * Service Container interface
  *
@@ -9,26 +8,21 @@ namespace Fwlib\Base;
  * Cache, make them as service object and store here to use in variant place.
  *
  * Use Dependency Injection on constructor is good but not convenience, create
- * Factory for each class need inject is also complicate, so ServiceContainer
- * can be substitution. If dependent object is not passed in when construct,
- * using these object will trigger newInstanceXxx() method in
- * AbstractAutoNewInstance class, here we can use ServiceContainer to provide
- * real object instance, the only work needed is do setServiceContainer()
- * once. Another similar way is doing outside of the class, create instance by
- * ServiceContainer or other, then use setInstance() method to inject.
+ * Factory for each class need inject is also complicate, so service container
+ * can be substitution. If dependence is not passed in through construct or
+ * setter, working class can retrieve them from service container. This is not
+ * anti-pattern, because service container is the last choice, and should only
+ * use to get common share instances.
  *
- * In short, if Dependency Injection is skipped, get ServiceContainer instance
- * and assign use setter, you will got worked dependent object automatic,
- * without loose visual dependent relationship.
- *
- * In this way, test or inherit ServiceContainer is easy too, just assign
- * another container instance with setter.
+ * Test of service container client is easy too, just inject another container
+ * instance with setter, or replace instance with mock and recover original
+ * value after test using setUpBeforeClass() and tearDownAfterClass().
  *
  * When create class instance(Service) in container, it's also better to use
- * Dependency Injection: create dependent object and pass to constructor. If
- * necessary, assign ServiceContainer instance here for later usage.
+ * Dependency Injection: create dependent object and pass via constructor or
+ * setter.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface ServiceContainerInterface
