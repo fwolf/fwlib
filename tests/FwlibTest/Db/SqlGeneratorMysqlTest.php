@@ -173,13 +173,14 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
             'WHERE'     => 'a.uuidGroup = b.uuid',
             'GROUPBY'   => 'b.uuid',
             'HAVING'    => 'a.age > 42',
-            'ORDRBY'    => 'a.age DESC',
+            'ORDERBY'   => 'a.age DESC',
             'LIMIT'     => 3,
         ];
         $x = $this->sg->get($ar);
         $y = 'SELECT title, age, credit FROM ' . self::$tableUser
             . ' a, ' . self::$tableGroup . ' b WHERE (a.uuidGroup = b.uuid) '
-            . 'GROUP BY b.uuid HAVING (a.age > 42) LIMIT 3';
+            . 'GROUP BY b.uuid HAVING (a.age > 42)'.
+            ' ORDER BY a.age DESC LIMIT 3';
         $this->assertEquals($y, $x);
 
         $this->sg->clear();

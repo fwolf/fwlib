@@ -121,7 +121,7 @@ class Email extends AbstractConstraint implements UtilAwareInterface
         }
 
         // Some network provider will return fake A record if a dns query
-        // return fail, usually disp some ads, so we only check MX record.
+        // return fail, usually display some ads, so we only check MX record.
         if ($valid && $this->dnsCheck &&
             $this->getUtilContainer()->getEnv()->isNixOs() &&
             !checkdnsrr($domain, 'MX')

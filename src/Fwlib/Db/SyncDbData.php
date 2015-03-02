@@ -16,15 +16,15 @@ use Fwlib\Util\UuidBase36;
  * key of define array is fine. Eg:
  *
  * {
- *  tableSrce1: tableDest1,
- *  tableSrce2: [tableDest2a, tableDest2b],
+ *  tableSource1: tableDest1,
+ *  tableSource2: [tableDest2a, tableDest2b],
  * }
  *
- * By default data from srce is directly write to dest, but you can do some
- * convert by define method convertData[TableSrce]To[TableDest](), it's
- * parameter is data array retrieved from srce, and return value should be
+ * By default data from source is directly write to dest, but you can do some
+ * convert by define method convertData[TableSource]To[TableDest](), it's
+ * parameter is data array retrieved from source, and return value should be
  * data array to write to dest. These convert method will automatic be called
- * if exists and fit srce/dest table name.
+ * if exists and fit source/dest table name.
  *
  * When sync job is done for a table, the latest timestamp will save in record
  * table in dest db, next time sync job will start from this timestamp.
@@ -40,14 +40,14 @@ class SyncDbData extends AbstractUtilAware
     /**
      * Number of rows have processed
      *
-     * Shared by syncDelete() and syncOneway().
+     * Shared by syncDelete() and syncOneWay().
      *
      * @var integer
      */
     protected $batchDone = 0;
 
     /**
-     * Maxinum rows to process per run
+     * Maximum rows to process per run
      *
      * If dest table is array, the actual rows synced may exceed this limit.
      *
@@ -60,7 +60,7 @@ class SyncDbData extends AbstractUtilAware
      *
      * @var Fwlib\Bridge\Adodb
      */
-    protected $dbSrce = null;
+    protected $dbSource = null;
 
     /**
      * Destination db connection
@@ -81,7 +81,7 @@ class SyncDbData extends AbstractUtilAware
      *
      * @var string
      */
-    public $lockfile = 'sync-db-data.lock';
+    public $lockFile = 'sync-db-data.lock';
 
     /**
      * Log message array
@@ -113,7 +113,7 @@ class SyncDbData extends AbstractUtilAware
         $this->log('========  ' . date('Y-m-d H:i:s') . '  ========');
 
         try {
-            $this->createLock($this->lockfile);
+            $this->createLock($this->lockFile);
 
         } catch (\Exception $e) {
             $message = "Aborted: {$e->getMessage()}";
@@ -154,7 +154,7 @@ class SyncDbData extends AbstractUtilAware
             // SQL for Create table diffs from several db
 
             if ($db->isDbSybase()) {
-                // Sybase's index was created seperated
+                // Sybase index was created separated
                 $db->Execute(
                     "CREATE TABLE $table (
                         uuid        CHAR(25)    NOT NULL,
@@ -210,23 +210,23 @@ class SyncDbData extends AbstractUtilAware
 
 
     /**
-     * Create lock using lockfile
+     * Create lock using lockFile
      *
-     * @param   string  $lockfile
+     * @param   string  $lockFile
      */
-    protected function createLock($lockfile)
+    protected function createLock($lockFile)
     {
-        $lockfile = sys_get_temp_dir() . "/$lockfile";
-        $lock = fopen($lockfile, 'w+');
+        $lockFile = sys_get_temp_dir() . "/$lockFile";
+        $lock = fopen($lockFile, 'w+');
 
         // LOCK_NB make flock not blocking when obtain LOCK_EX fail
         if (!flock($lock, LOCK_EX | LOCK_NB)) {
-            throw new \Exception('Lockfile check failed.');
+            throw new \Exception('Lock file check failed.');
         }
 
-        // Keep lockfile info for release later
+        // Keep lockFile info for release later
         $this->lock = $lock;
-        $this->lockfile = $lockfile;
+        $this->lockFile = $lockFile;
     }
 
 
@@ -252,7 +252,7 @@ class SyncDbData extends AbstractUtilAware
      */
     protected function getLastTimestamp($dbDest, $table)
     {
-        $dbProf = $this->getDbSrceProfileString();
+        $dbProf = $this->getDbSourceProfileString();
 
         $rs = $dbDest->execute(
             [
@@ -276,13 +276,13 @@ class SyncDbData extends AbstractUtilAware
 
 
     /**
-     * Get profile string of db srce
+     * Get profile string of db source
      *
      * @return  string
      */
-    protected function getDbSrceProfileString()
+    protected function getDbSourceProfileString()
     {
-        return $this->dbSrce->getProfileString();
+        return $this->dbSource->getProfileString();
     }
 
 
@@ -305,33 +305,33 @@ class SyncDbData extends AbstractUtilAware
 
 
     /**
-     * Release lock used lockfile
+     * Release lock used lock file
      *
-     * @param   boolean $deleteLockfile
+     * @param   boolean $deleteLockFile
      */
-    protected function releaseLock($deleteLockfile = true)
+    protected function releaseLock($deleteLockFile = true)
     {
         flock($this->lock, LOCK_UN);
 
         fclose($this->lock);
 
-        if ($deleteLockfile) {
-            unlink($this->lockfile);
+        if ($deleteLockFile) {
+            unlink($this->lockFile);
         }
     }
 
 
     /**
-     * Set srce and dest db connection
+     * Set source and dest db connection
      *
-     * @param   array|Fwlib\Bridge\Adodb    $srce
+     * @param   array|Fwlib\Bridge\Adodb    $source
      * @param   array|Fwlib\Bridge\Adodb    $dest
      */
-    public function setDb($srce, $dest)
+    public function setDb($source, $dest)
     {
-        foreach (['dbSrce' => $srce, 'dbDest' => $dest] as $k => $v) {
+        foreach (['dbSource' => $source, 'dbDest' => $dest] as $k => $v) {
             if (is_array($v)) {
-                // Param is profile, new db and conect
+                // Param is profile, new db and connect
                 $this->$k = new Adodb($v);
                 $this->$k->connect();
 
@@ -354,7 +354,7 @@ class SyncDbData extends AbstractUtilAware
      */
     protected function setLastTimestamp($dbDest, $table, $timestamp)
     {
-        $dbProf = $this->getDbSrceProfileString();
+        $dbProf = $this->getDbSourceProfileString();
 
         try {
             $timestampOld = $this->getLastTimestamp($dbDest, $table);
@@ -401,40 +401,40 @@ class SyncDbData extends AbstractUtilAware
     /**
      * Sync for DELETE
      *
-     * If data had been deleted from srce, delete them from dest too.
+     * If data had been deleted from source, delete them from dest too.
      *
-     * CAUTION: This may delete data in dest not come from srce by sync.
+     * CAUTION: This may delete data in dest not come from source by sync.
      *
      * @param   array   &$config
      * @return  integer Rows deleted
      */
     public function syncDelete(&$config)
     {
-        // syncOneway() should run before syncDelete(), and if it's not fully
+        // syncOneWay() should run before syncDelete(), and if it's not fully
         // complete in this round, syncDelete() should wait for next round.
         if ($this->batchDone >= $this->batchSize) {
-            $this->log('Wait for syncOneway() fully complete, try next round.');
+            $this->log('Wait for syncOneWay() fully complete, try next round.');
             return 0;
         }
 
 
-        $queryCountBeforeSync = $this->dbSrce->getQueryCount() +
+        $queryCountBeforeSync = $this->dbSource->getQueryCount() +
             $this->dbDest->getQueryCount();
         $rowsDeleted = 0;
 
-        foreach ($config as $tableSrce => $tableDest) {
+        foreach ($config as $tableSource => $tableDest) {
             if ($this->batchDone >= $this->batchSize) {
                 $this->log("Reach batchSize limit {$this->batchSize}.");
                 break;
             }
 
-            $i = $this->syncDeleteTable($tableSrce, $tableDest);
+            $i = $this->syncDeleteTable($tableSource, $tableDest);
 
             $this->batchDone += $i;
             $rowsDeleted += $i;
         }
 
-        $queryCount = $this->dbSrce->getQueryCount() +
+        $queryCount = $this->dbSource->getQueryCount() +
             $this->dbDest->getQueryCount() - $queryCountBeforeSync;
         $this->log(
             "syncDelete() done, total {$rowsDeleted} rows deleted," .
@@ -446,20 +446,20 @@ class SyncDbData extends AbstractUtilAware
 
 
     /**
-     * Sync for delete, single srce table
+     * Sync for delete, single source table
      *
      * $tableDest can be array of dest table.
      *
-     * @param   string          $tableSrce
+     * @param   string          $tableSource
      * @param   string|array    $tableDest
      * @return  integer     Number of rows deleted on destination db.
      */
-    protected function syncDeleteTable($tableSrce, $tableDest)
+    protected function syncDeleteTable($tableSource, $tableDest)
     {
         if (is_array($tableDest)) {
             $i = 0;
             foreach ($tableDest as $v) {
-                $i += $this->syncDeleteTable($tableSrce, $v);
+                $i += $this->syncDeleteTable($tableSource, $v);
             }
 
             return $i;
@@ -467,25 +467,25 @@ class SyncDbData extends AbstractUtilAware
 
 
         // If fewer rows in dest, need not do sync
-        $iSrce = $this->dbSrce->getRowCount($tableSrce);
+        $iSource = $this->dbSource->getRowCount($tableSource);
         $iDest = $this->dbDest->getRowCount($tableDest);
-        if ($iSrce >= $iDest) {
+        if ($iSource >= $iDest) {
             return 0;
         }
 
 
-        $log = "syncDelete() check: $tableSrce($iSrce) <- $tableDest($iDest)";
+        $log = "syncDelete() check: $tableSource($iSource) <- $tableDest($iDest)";
 
-        // Find unnecessary PK in dest using compareData[Srce]To[Dest](), it
+        // Find unnecessary PK in dest using compareData[Source]To[Dest](), it
         // should return array of PK for rows to delete in dest db. If PK in
         // dest table has multiple column, the PK value is array of these
         // columns, and the order of these column should same as db schema.
         $stringUtil = $this->getUtil('StringUtil');
-        $compareFunc = 'compareData' . $stringUtil->toStudlyCaps($tableSrce)
+        $compareFunc = 'compareData' . $stringUtil->toStudlyCaps($tableSource)
             . 'To' . $stringUtil->toStudlyCaps($tableDest);
 
         if (!method_exists($this, $compareFunc)) {
-            $message = "Compare method needed: $tableSrce to $tableDest.";
+            $message = "Compare method needed: $tableSource to $tableDest.";
 
             $this->log($message);
 
@@ -550,36 +550,36 @@ class SyncDbData extends AbstractUtilAware
 
 
     /**
-     * Oneway sync for INSERT/UPDATE
+     * One-way sync for INSERT/UPDATE
      *
-     * tableInDest can be array of table name, means tableInSrce's data will
+     * tableInDest can be array of table name, means tableInSource's data will
      * sync to more than 1 table in dest db.
      *
      * @param   array   &$config
      * @return  integer Rows synced, count from dest db
      */
-    public function syncOneway(&$config)
+    public function syncOneWay(&$config)
     {
-        $queryCountBeforeSync = $this->dbSrce->getQueryCount() +
+        $queryCountBeforeSync = $this->dbSource->getQueryCount() +
             $this->dbDest->getQueryCount();
         $rowsSynced = 0;
 
-        foreach ($config as $tblSrce => $tblDest) {
+        foreach ($config as $tblSource => $tblDest) {
             if ($this->batchDone >= $this->batchSize) {
                 $this->log("Reach batchSize limit {$this->batchSize}.");
                 break;
             }
 
-            $i = $this->syncOnewayTable($tblSrce, $tblDest);
+            $i = $this->syncOneWayTable($tblSource, $tblDest);
 
             $this->batchDone += $i;
             $rowsSynced += $i;
         }
 
-        $queryCount = $this->dbSrce->getQueryCount() +
+        $queryCount = $this->dbSource->getQueryCount() +
             $this->dbDest->getQueryCount() - $queryCountBeforeSync;
         $this->log(
-            "syncOneway() done, total {$rowsSynced} rows synced," .
+            "syncOneWay() done, total {$rowsSynced} rows synced," .
             " db query $queryCount times.\n"
         );
 
@@ -588,28 +588,28 @@ class SyncDbData extends AbstractUtilAware
 
 
     /**
-     * Oneway sync for INSERT/UPDATE, single srce table
+     * One-way sync for INSERT/UPDATE, single source table
      *
-     * @param   string  $tableSrce
+     * @param   string  $tableSource
      * @param   mixed   $tableDest
-     * @return  integer     Number of rows synced in srce db.
+     * @return  integer     Number of rows synced in source db.
      */
-    protected function syncOnewayTable($tableSrce, $tableDest)
+    protected function syncOneWayTable($tableSource, $tableDest)
     {
         if (is_array($tableDest)) {
             $i = 0;
             foreach ($tableDest as $v) {
-                $i += $this->syncOnewayTable($tableSrce, $v);
+                $i += $this->syncOneWayTable($tableSource, $v);
             }
 
             return $i;
         }
 
 
-        $timestamp = $this->getLastTimestamp($this->dbDest, $tableSrce);
-        $timestampColumn = $this->dbSrce->getMetaTimestamp($tableSrce);
+        $timestamp = $this->getLastTimestamp($this->dbDest, $tableSource);
+        $timestampColumn = $this->dbSource->getMetaTimestamp($tableSource);
         if (empty($timestampColumn)) {
-            $message = "Table $tableSrce in source db hasn't timestamp column.";
+            $message = "Table $tableSource in source db hasn't timestamp column.";
             $this->log($message);
             throw new \Exception($message);
         }
@@ -618,12 +618,12 @@ class SyncDbData extends AbstractUtilAware
         // Retrieve data from source db
         $sqlConfig = [
             'SELECT'    => '*',
-            'FROM'      => $tableSrce,
+            'FROM'      => $tableSource,
             'ORDERBY'   => "$timestampColumn ASC",
         ];
         if (!empty($timestamp)) {
-            $timestamp = $this->dbSrce->quoteValue(
-                $tableSrce,
+            $timestamp = $this->dbSource->quoteValue(
+                $tableSource,
                 $timestampColumn,
                 $timestamp
             );
@@ -633,15 +633,15 @@ class SyncDbData extends AbstractUtilAware
             // N > $this->batchSize, it will be endless loop, so use '>' when
             // possible by db type.
             // @codeCoverageIgnoreStart
-            if ($this->dbSrce->isTimestampUnique()) {
+            if ($this->dbSource->isTimestampUnique()) {
                 $sqlConfig['WHERE'] = "$timestampColumn > $timestamp";
             } else {
                 $sqlConfig['WHERE'] = "$timestampColumn >= $timestamp";
             }
             // @codeCoverageIgnoreEnd
         }
-        $sql = $this->dbSrce->generateSql($sqlConfig);
-        $rs = $this->dbSrce->SelectLimit($sql, $this->batchSize - $this->batchDone);
+        $sql = $this->dbSource->generateSql($sqlConfig);
+        $rs = $this->dbSource->SelectLimit($sql, $this->batchSize - $this->batchDone);
 
 
         if (empty($rs) || 0 >= $rs->RowCount()) {
@@ -651,7 +651,7 @@ class SyncDbData extends AbstractUtilAware
 
         } else {
             // Got data, prepare
-            $dataSrce = [];
+            $dataSource = [];
             $lastTimestamp = '';
 
             while (!$rs->EOF) {
@@ -659,7 +659,7 @@ class SyncDbData extends AbstractUtilAware
 
                 // Sybase timestamp is binary format, need convert to string
                 // @codeCoverageIgnoreStart
-                if ($this->dbSrce->isDbSybase()) {
+                if ($this->dbSource->isDbSybase()) {
                     $ar[$timestampColumn] = bin2hex($ar[$timestampColumn]);
                 }
                 // @codeCoverageIgnoreEnd
@@ -667,23 +667,23 @@ class SyncDbData extends AbstractUtilAware
                 // Remember timestamp, the last one will write to record table later
                 $lastTimestamp = strval($ar[$timestampColumn]);
 
-                $dataSrce[] = $ar;
+                $dataSource[] = $ar;
             }
-            $dataSrce = $this->dbSrce->convertEncodingResult($dataSrce);
+            $dataSource = $this->dbSource->convertEncodingResult($dataSource);
 
 
             $rowsSynced = 0;
             $stringUtil = $this->getUtil('StringUtil');
             foreach ((array)$tableDest as $table) {
                 // Call data convert method
-                $convertFunc = 'convertData' . $stringUtil->toStudlyCaps($tableSrce)
+                $convertFunc = 'convertData' . $stringUtil->toStudlyCaps($tableSource)
                     . 'To' . $stringUtil->toStudlyCaps($table);
 
                 $dataDest = [];
                 if (method_exists($this, $convertFunc)) {
                     // Convert data from source db to data for destination db.
                     // If convert method return empty, will skip this row.
-                    foreach ($dataSrce as &$row) {
+                    foreach ($dataSource as &$row) {
                         $ar = $this->$convertFunc($row);
                         if (!empty($ar)) {
                             $dataDest[] = $ar;
@@ -692,7 +692,7 @@ class SyncDbData extends AbstractUtilAware
                     unset($row);
 
                 } else {
-                    $dataDest = &$dataSrce;
+                    $dataDest = &$dataSource;
                 }
 
 
@@ -707,7 +707,7 @@ class SyncDbData extends AbstractUtilAware
                     unset($row);
 
                     $this->log(
-                        "syncOnewayTable() $tableSrce -> $table, " .
+                        "syncOneWayTable() $tableSource -> $table, " .
                         count($dataDest) . " rows wrote."
                     );
                 }
@@ -716,7 +716,7 @@ class SyncDbData extends AbstractUtilAware
             // Notice: If a table need to write to 2 table in dest, and one
             // table write successful and another fail, the last timestamp
             // will still set.
-            $this->setLastTimestamp($this->dbDest, $tableSrce, $lastTimestamp);
+            $this->setLastTimestamp($this->dbDest, $tableSource, $lastTimestamp);
 
             return $rowsSynced;
         }

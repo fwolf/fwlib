@@ -14,7 +14,7 @@ class LengthTest extends PHPUnitTestCase
     {
         $constraint = new Length();
 
-        $x = 'abcd';
+        $x = 'test';
 
         $this->assertTrue($constraint->validate($x, '3, 5'));
         $this->assertTrue($constraint->validate($x, '3 and 5'));

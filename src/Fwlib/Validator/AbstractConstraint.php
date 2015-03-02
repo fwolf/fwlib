@@ -105,7 +105,7 @@ class AbstractConstraint implements ConstraintInterface
         // Clear previous message
         $this->message = [];
 
-        // Assign message vairable, maybe assign more in inherit class
+        // Assign message variable, maybe assign more in inherit class
         $this->messageVariable['value'] = $value;
 
         // Other validate treatment in inherit class

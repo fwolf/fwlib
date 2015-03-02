@@ -73,7 +73,7 @@ abstract class AbstractView implements ViewInterface
      * header content in body treatment, but the generated body content is
      * still after header content. For scene like this, we can give each part
      * an integer index, the content generate will follow the index order
-     * accending.
+     * ascending.
      *
      * @var array
      */
@@ -111,7 +111,7 @@ abstract class AbstractView implements ViewInterface
 
 
     /**
-     * Contructor
+     * Constructor
      *
      * @param   string  $pathToRoot
      */
@@ -203,7 +203,7 @@ abstract class AbstractView implements ViewInterface
      * In this implement, output is retrieved from corresponding method, whose
      * name is converted from $action by adding prefix. Eg, action 'foo-bar'
      * will call fetchFooBar() for result. Child class can change
-     * $methodPrefix or use different mechanishm.
+     * $methodPrefix or use different mechanism.
      *
      * @return  string
      */
@@ -381,7 +381,7 @@ abstract class AbstractView implements ViewInterface
 
 
     /**
-     * Format html with tidy extention
+     * Format html with tidy extension
      *
      * @param   string  $html
      * @return  string
@@ -389,7 +389,7 @@ abstract class AbstractView implements ViewInterface
     protected function tidy($html)
     {
         if (!class_exists('tidy')) {
-            // Not critil error, only record with error_log for reminder
+            // Not critical error, only record with error_log for reminder
             error_log('Tidy extension is not installed');
 
             return $html;

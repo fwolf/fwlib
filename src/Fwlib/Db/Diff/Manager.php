@@ -148,7 +148,7 @@ class Manager
 
 
     /**
-     * Check primary key exists as index in data array, or thorw exception
+     * Check primary key exists as index in data array, or throw exception
      *
      * @param   array|string    $primaryKey
      * @param   array           $data
@@ -266,7 +266,7 @@ class Manager
     /**
      * Getter of $rowSet
      *
-     * @return  Rowset
+     * @return  RowSet
      */
     public function getRowSet()
     {

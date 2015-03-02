@@ -18,7 +18,7 @@ use Fwlib\Util\UtilContainer;
  * automatic clear error SQL, or update it.
  *
  * SQL identify by id, so don't change them except you know what you are
- * doing. Id can start from 0 or 1, but can only assign by accending order.
+ * doing. Id can start from 0 or 1, but can only assign by ascending order.
  *
  * If there are too many schema SQL, put altogether in one define file will
  * cost more memory and i/o. In this situation, you can split SQL define file
@@ -126,13 +126,13 @@ CREATE TABLE $table (
                 // @codeCoverageIgnoreStart
                 $this->log(
                     $this->getDbError() . PHP_EOL .
-                    "Log table $table doesn't exists and create fail."
+                    "Log table $table does not exists and create fail."
                 );
                 exit;
                 // @codeCoverageIgnoreEnd
             }
 
-            $this->log("Log table $table doesn't exists, create it, done.");
+            $this->log("Log table $table does not exists, create it, done.");
 
         } else {
             $this->log("Log table $table already exists.");
@@ -188,7 +188,7 @@ CREATE TABLE $table (
             // Some DDL SQL can't use transaction, so do raw execute.
             $this->db->execute($sql);
 
-            // Bad sybase support, select db will got errormsg, eg:
+            // Bad sybase support, select db will got error msg, eg:
             // Changed database context to 'db_name'
             // @codeCoverageIgnoreStart
             if ((0 == $this->db->getErrorCode()

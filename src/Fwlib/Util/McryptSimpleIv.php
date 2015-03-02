@@ -76,7 +76,7 @@ class McryptSimpleIv
     /**
      * Do decrypt
      *
-     * @param   string  $srce                   Source data
+     * @param   string  $source                   Source data
      * @param   string  $key                    Secret key
      * @param   string  $algorithm              Same as mcrypt_module_open()
      * @param   string  $algorithmDirectory     Same as mcrypt_module_open()
@@ -85,7 +85,7 @@ class McryptSimpleIv
      * @return  string
     */
     public function decrypt(
-        $srce,
+        $source,
         $key,
         $algorithm,
         $algorithmDirectory = '',
@@ -94,7 +94,7 @@ class McryptSimpleIv
     ) {
         return self::process(
             1,
-            $srce,
+            $source,
             $key,
             $algorithm,
             $algorithmDirectory,
@@ -107,7 +107,7 @@ class McryptSimpleIv
     /**
      * Do encrypt
      *
-     * @param   string  $srce                   Source data
+     * @param   string  $source                 Source data
      * @param   string  $key                    Secret key
      * @param   string  $algorithm              Same as mcrypt_module_open()
      * @param   string  $algorithmDirectory     Same as mcrypt_module_open()
@@ -116,7 +116,7 @@ class McryptSimpleIv
      * @return  string
     */
     public function encrypt(
-        $srce,
+        $source,
         $key,
         $algorithm,
         $algorithmDirectory = '',
@@ -125,7 +125,7 @@ class McryptSimpleIv
     ) {
         return self::process(
             0,
-            $srce,
+            $source,
             $key,
             $algorithm,
             $algorithmDirectory,
@@ -139,7 +139,7 @@ class McryptSimpleIv
      * Do real process
      *
      * @param   int     $action                 0=encrypt, 1|else=decrypt
-     * @param   string  $srce                   Source data
+     * @param   string  $source                 Source data
      * @param   string  $key                    Secret key
      * @param   string  $algorithm              Same as mcrypt_module_open()
      * @param   string  $algorithmDirectory     Same as mcrypt_module_open()
@@ -149,7 +149,7 @@ class McryptSimpleIv
     */
     public function process(
         $action,
-        $srce,
+        $source,
         $key,
         $algorithm,
         $algorithmDirectory = '',
@@ -178,11 +178,11 @@ class McryptSimpleIv
          * The IV must be unique and must be the same when decrypting/encrypting.
          *
          * But encrypt/decrypt are executed on 2 machine,
-         * randon IV will cause decrypt wrong result
+         * random IV will cause decrypt wrong result
          *
          * So now, I use part/duplicate sha1 value of key as IV
          *
-         * Bad offical example, all put encrypt/decrypt together !
+         * Bad official example, all put encrypt/decrypt together !
          */
 
 
@@ -197,15 +197,15 @@ class McryptSimpleIv
         // @codeCoverageIgnoreEnd
         $iv = substr($iv, 0, $lenIv);
 
-        // Intialize encryption
+        // Initialize encryption
         mcrypt_generic_init($td, $key, $iv);
 
         if (0 == $action) {
             // Encrypt data
-            $encrypted = mcrypt_generic($td, $srce);
+            $encrypted = mcrypt_generic($td, $source);
         } else {
             // Decrypt encrypted string
-            $encrypted = mdecrypt_generic($td, $srce);
+            $encrypted = mdecrypt_generic($td, $source);
         }
 
         // Terminate decryption handle and close module

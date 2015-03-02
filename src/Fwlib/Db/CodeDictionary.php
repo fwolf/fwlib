@@ -15,8 +15,8 @@ use Fwlib\Bridge\Adodb;
  *
  * To support composite primary key, there can extend this class with a
  * generateDictIndex() method, the dict data array will be generated from all
- * primark key column value. In this scenario it is hard for get() and set()
- * method to recoginize array param is key of many rows or primary key array,
+ * primary key column value. In this scenario it is hard for get() and set()
+ * method to recognize array param is key of many rows or primary key array,
  * so more complicated work to do, maybe not suit for code dictionary.
  *
  *
@@ -52,7 +52,7 @@ class CodeDictionary
     /**
      * Primary key column name
      *
-     * Privary key column is used to get or search, MUST exist in $column.
+     * Primary key column is used to get or search, MUST exist in $column.
      *
      * @var string
      */
@@ -83,8 +83,8 @@ class CodeDictionary
     /**
      * Fix dictionary array index
      *
-     * Use primary key value as index of first dimention, and column name as
-     * index of second dimention(column value array).
+     * Use primary key value as index of first dimension, and column name as
+     * index of second dimension(column value array).
      */
     protected function fixDictionaryIndex()
     {
@@ -285,7 +285,7 @@ class CodeDictionary
      * Search for data fit given condition
      *
      * $checkMethod is a function take $row as parameter and return boolean
-     * value, can be anonymouse function or other callable.
+     * value, can be anonymous function or other callable.
      *
      * @param   callable        $condition
      * @param   string|array    $columns
@@ -329,7 +329,7 @@ class CodeDictionary
 
         if (!in_array($this->primaryKey, $this->columns)) {
             throw new \Exception(
-                'Defined columns didn\'nt include primary key'
+                'Defined columns did not include primary key'
             );
         }
 
@@ -347,7 +347,7 @@ class CodeDictionary
                 );
             } catch (\Exception $e) {
                 throw new \Exception(
-                    'Given data didn\'t contain all columns'
+                    'Given data did not contain all columns'
                 );
             }
 

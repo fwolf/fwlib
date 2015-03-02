@@ -47,8 +47,13 @@ class ChnOrganizationCodeTest extends PHPUnitTestCase
 
     public function testValidate()
     {
+        // Length different
         $this->assertEquals(false, $this->chnOrgCode->validate('foo'));
-        $this->assertEquals(false, $this->chnOrgCode->validate('foobarblah'));
+
+        // Same length but has no '-'
+        $this->assertEquals(false, $this->chnOrgCode->validate('fooBarFull'));
+
+        // Algorithm validate
         $this->assertEquals(false, $this->chnOrgCode->validate('D2143569-1'));
 
         $this->assertEquals(true, $this->chnOrgCode->validate('D2143569-X'));

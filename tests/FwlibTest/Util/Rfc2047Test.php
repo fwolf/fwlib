@@ -31,6 +31,7 @@ class Rfc2047Test extends PHPUnitTestCase
 
         // Head and tail with space, will make result difference
         $x = ' 一封来自远方的邮件 ';
+        /** @noinspection SpellCheckingInspection */
         $y = '=?utf-8?B?IOS4gOWwgeadpeiHqui/nOaWueeahOmCruS7tiA=?=';
         $this->assertEquals($y, $this->rfc2047->encode($x));
         $this->assertEquals($x, $this->rfc2047->decode($y));

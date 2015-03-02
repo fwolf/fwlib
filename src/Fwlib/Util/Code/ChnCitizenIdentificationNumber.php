@@ -69,7 +69,7 @@ class ChnCitizenIdentificationNumber extends AbstractUtilAware
         $cin .= sprintf('%03s', mt_rand(1, 200));
 
 
-        // Compute for currect pin
+        // Compute for correct pin
         $cin = $this->to18(substr($cin, 0, 6) . substr($cin, 8), 19);
 
         return $cin;

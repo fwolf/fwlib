@@ -22,7 +22,7 @@ class DbDataExportTest extends AbstractDbRelateTest
 
 
     /**
-     * Contructor may run multiple times(N of testMethod()) because PHPUnit
+     * Constructor may run multiple times(N of testMethod()) because PHPUnit
      * use Reflection on it, so put init script to setUpBeforeClass(), which
      * will only run once. Also, $dbe and $delimiter must be static to share
      * between testMethod().
@@ -54,7 +54,7 @@ class DbDataExportTest extends AbstractDbRelateTest
 
         // Generate temp dir name for exported file
         self::$exportPath = tempnam(sys_get_temp_dir(), 'DbDataExportTest-');
-        // Unlink tmpfile, will create as dir later
+        // Unlink tmpFile, will create as dir later
         unlink(self::$exportPath);
 
         // Insert data for export

@@ -23,24 +23,24 @@ class Iso7064
     /**
      * Encode a string
      *
-     * @param   string  $srce
-     * @param   string  $algo
+     * @param   string  $source
+     * @param   string  $algorithm
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public function encode($srce, $algo = '', $returnFull = false)
+    public function encode($source, $algorithm = '', $returnFull = false)
     {
-        switch ($algo) {
+        switch ($algorithm) {
             case '112':
-                $result = $this->encode112($srce, $returnFull);
+                $result = $this->encode112($source, $returnFull);
                 break;
 
             case '1716':
-                $result = $this->encode1716($srce, $returnFull);
+                $result = $this->encode1716($source, $returnFull);
                 break;
 
             case '3736':
-                $result = $this->encode3736($srce, $returnFull);
+                $result = $this->encode3736($source, $returnFull);
                 break;
 
             default:
@@ -59,18 +59,18 @@ class Iso7064
      *
      * @link http://andrecatita.com/code-snippets/iso-7064-mod-112-php/
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public function encode112($srce, $returnFull = false)
+    public function encode112($source, $returnFull = false)
     {
         $val = 0;
         $mod = 11;
 
-        $j = strlen($srce);
+        $j = strlen($source);
         for ($i = 0; $i < $j; $i ++) {
-            $val += intval($srce{$i});
+            $val += intval($source{$i});
 
             $val *= 2;
         }
@@ -84,7 +84,7 @@ class Iso7064
         }
 
         if ($returnFull) {
-            return $srce . $val;
+            return $source . $val;
         } else {
             return $val;
         }
@@ -104,17 +104,17 @@ class Iso7064
      * @link http://tools.ietf.org/html/rfc4246
      * @link https://zh.wikipedia.org/wiki/ISAN
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public function encode1716($srce, $returnFull = false)
+    public function encode1716($source, $returnFull = false)
     {
-        $srce = strtoupper($srce);
-        $val = $this->encodeModN($srce, 16);
+        $source = strtoupper($source);
+        $val = $this->encodeModN($source, 16);
 
         if ($returnFull) {
-            return $srce . $val;
+            return $source . $val;
         } else {
             return $val;
         }
@@ -129,18 +129,18 @@ class Iso7064
      * Input: AlphaNumeric
      * Output: 1 byte AlphaNumeric
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @param   string  $returnFull     Return full value or only check chars
      * @return  string
      */
-    public function encode3736($srce, $returnFull = false)
+    public function encode3736($source, $returnFull = false)
     {
-        $srce = strtoupper($srce);
-        $val = $this->encodeModN($srce, 36);
+        $source = strtoupper($source);
+        $val = $this->encodeModN($source, 36);
 
 
         if ($returnFull) {
-            return $srce . $val;
+            return $source . $val;
         } else {
             return $val;
         }
@@ -150,11 +150,11 @@ class Iso7064
     /**
      * Encode by mod N
      *
-     * @param   string  $srce
+     * @param   string  $source
      * @param   int     $mod
      * @return  string
      */
-    protected function encodeModN($srce, $mod)
+    protected function encodeModN($source, $mod)
     {
         static $dict = [
             '0' => 0,
@@ -197,9 +197,9 @@ class Iso7064
 
         $val = 0;
 
-        $j = strlen($srce);
+        $j = strlen($source);
         for ($i = 0; $i < $j; $i ++) {
-            $val += $dict[$srce{$i}];
+            $val += $dict[$source{$i}];
 
             if ($val > $mod) {
                 $val -= $mod;
@@ -226,18 +226,18 @@ class Iso7064
     /**
      * Verify a string
      *
-     * @param   string  $srce
-     * @param   string  $algo
+     * @param   string  $source
+     * @param   string  $algorithm
      * @return  string
      */
-    public function verify($srce, $algo = '')
+    public function verify($source, $algorithm = '')
     {
-        switch ($algo) {
+        switch ($algorithm) {
             case '112':
             case '1716':
             case '3736':
-                $s = substr($srce, 0, strlen($srce) - 1);
-                $result = ($srce == $this->encode($s, $algo, true));
+                $s = substr($source, 0, strlen($source) - 1);
+                $result = ($source == $this->encode($s, $algorithm, true));
                 break;
 
             default:

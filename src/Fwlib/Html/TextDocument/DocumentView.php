@@ -381,11 +381,11 @@ class DocumentView extends AbstractAutoNewConfig
         $fileSystem = $this->getUtil('FileSystem');
         foreach ($arDir as $dir) {
             foreach ($fileSystem->listDir($dir) as $file) {
-                $fullpath = $dir . $file['name'];
+                $fullPath = $dir . $file['name'];
 
-                if (is_dir($fullpath) && $this->config['recursive']) {
-                    $arDir[] = $fullpath;
-                } elseif (is_file($fullpath)) {
+                if (is_dir($fullPath) && $this->config['recursive']) {
+                    $arDir[] = $fullPath;
+                } elseif (is_file($fullPath)) {
                     $arFile[] = $file;
                 }
 

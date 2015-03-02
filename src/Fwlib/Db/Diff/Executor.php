@@ -99,7 +99,7 @@ class Executor implements ExecutorInterface
     /**
      * Generate commit sql array
      *
-     * Didn't check execute status of row set.
+     * Did not check execute status of row set.
      *
      * @param   RowSet  $rowSet
      * @return  array
@@ -123,7 +123,7 @@ class Executor implements ExecutorInterface
 
                 case 'DELETE':
                     $sqlConfig['DELETE'] = $table;
-                    // Limit rowcount to 1 for safety
+                    // Limit row count to 1 for safety
                     $sqlConfig['LIMIT'] = 1;
 
                     foreach ((array)$row->getPrimaryKey() as $key) {
@@ -135,7 +135,7 @@ class Executor implements ExecutorInterface
 
                 case 'UPDATE':
                     $sqlConfig['UPDATE'] = $table;
-                    // Limit rowcount to 1 for safety
+                    // Limit row count to 1 for safety
                     $sqlConfig['LIMIT'] = 1;
 
                     $sqlConfig['SET'] = $row->getNewWithoutPrimaryKey();
@@ -161,7 +161,7 @@ class Executor implements ExecutorInterface
     /**
      * Generate rollback sql array
      *
-     * Didn't check execute status of row set.
+     * Did not check execute status of row set.
      *
      * @param   RowSet  $rowSet
      * @return  array
@@ -179,7 +179,7 @@ class Executor implements ExecutorInterface
             switch ($row->getMode()) {
                 case 'INSERT':
                     $sqlConfig['DELETE'] = $table;
-                    // Limit rowcount to 1 for safety
+                    // Limit row count to 1 for safety
                     $sqlConfig['LIMIT'] = 1;
 
                     foreach ((array)$row->getPrimaryKey() as $key) {
@@ -198,7 +198,7 @@ class Executor implements ExecutorInterface
 
                 case 'UPDATE':
                     $sqlConfig['UPDATE'] = $table;
-                    // Limit rowcount to 1 for safety
+                    // Limit row count to 1 for safety
                     $sqlConfig['LIMIT'] = 1;
 
                     $sqlConfig['SET'] = $row->getOldWithoutPrimaryKey();

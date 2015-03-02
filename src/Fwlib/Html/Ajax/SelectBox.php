@@ -198,7 +198,6 @@ class SelectBox
         // Append css using js
         $js = '
 <script type=\'text/javascript\'>
-<!--//--><![CDATA[//>
 <!--
 /* Append css define to <head> */
 (function () {
@@ -208,7 +207,7 @@ class SelectBox
 \'
   );
 }) ();
-//--><!]]>
+-->
 </script>
 ';
 
@@ -243,7 +242,7 @@ class SelectBox
 
         if (true == $this->config->get('query')) {
             $html .= '
-  <div id=\'{clearit}\'></div>
+  <div id=\'{clear-float}\'></div>
 
   <label>{title-query-input}</label>
   <input type=\'text\' id=\'{id}-query\' size=\''
@@ -347,7 +346,6 @@ class SelectBox
 
         $js .= '
 <script type=\'text/javascript\'>
-<!--//--><![CDATA[//>
 <!--
 (function () {
   /* Set bg height and width */
@@ -405,7 +403,7 @@ class SelectBox
         url: $(\'#{id}-url\').val(),
         data: {\'' . $this->config->get('query-param') . '\':
           $(\'#{id}-query\').val()},
-        dataType: \'' . $this->config->get('query-datatype') . '\',
+        dataType: \'' . $this->config->get('query-dataType') . '\',
         success: function(msg) {
           $(\'#{loading}\').hide();
           $(\'.{id}-row\').remove();
@@ -422,7 +420,7 @@ class SelectBox
 ';
         // When select, write selected value
         $list = $this->config->get('list');
-        foreach ($this->config->get('writeback') as $k => $v) {
+        foreach ($this->config->get('writeBack') as $k => $v) {
             $js .= '
                 $("#' . $v . '").val(
                   $(".{id}-col-' . $k . '",
@@ -492,7 +490,7 @@ class SelectBox
     $(\'#{bg}\').hide();
   });
 }) ();
-//--><!]]>
+-->
 </script>
 
 ';
@@ -647,7 +645,7 @@ class SelectBox
                 // with name, can't customize
                 'id-other' => [
                     'bg', 'close-bottom', 'close-top', 'div',
-                    'table', 'title', 'clearit',
+                    'table', 'title', 'clear-float',
                     'empty', 'loading', 'tip',
                     'row-tpl',
                 ],
@@ -672,7 +670,7 @@ class SelectBox
                 'query-when-open' => false,
                 // Param name for value in user input for ajax POST
                 'query-param' => 's',
-                'query-datatype' => 'json',
+                'query-dataType' => 'json',
 
                 // Show switch
                 'show-close-bottom' => true,
@@ -681,12 +679,12 @@ class SelectBox
                 // Data row
                 // Will auto compute later
                 'datarow-col-cnt' => 0,
-                // Hidden input on datarow to store dta for writeback.
+                // Hidden input on datarow to store dta for writeBack.
                 'datarow-col-hidden' => [
                     // [id]
                 ],
-                // When choosen, write these data back
-                'writeback' => [
+                // When chosen, write these data back
+                'writeBack' => [
                     // {'id/class in datarow without prefix': 'id in caller'}
                 ],
 
@@ -780,7 +778,7 @@ result will only show first {pagesize} items.',
                 'css-tr-hover' => '
   background-color: #e3e3de;
 ',
-                'css-clearit' => '
+                'css-clear-float' => '
   clear: both;
 ',
                 'css-empty' => '',

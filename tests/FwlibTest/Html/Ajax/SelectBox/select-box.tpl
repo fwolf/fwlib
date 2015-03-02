@@ -1,6 +1,5 @@
 
 <script type='text/javascript'>
-<!--//--><![CDATA[//>
 <!--
 /* Append css define to <head> */
 (function () {
@@ -70,7 +69,7 @@
   width: 90%;\
 }\
 \
-#fwlib-sel-box-1-clearit {\
+#fwlib-sel-box-1-clear-float {\
   clear: both;\
 }\
 \
@@ -94,7 +93,7 @@
 '
   );
 }) ();
-//--><!]]>
+-->
 </script>
 
 <div id='fwlib-sel-box-1-bg'>
@@ -108,7 +107,7 @@
 
   <div id='fwlib-sel-box-1-close-top'>Close</div>
 
-  <div id='fwlib-sel-box-1-clearit'></div>
+  <div id='fwlib-sel-box-1-clear-float'></div>
 
   <label>Title:</label>
   <input type='text' id='fwlib-sel-box-1-query' size='30' />
@@ -152,7 +151,6 @@ result will only show first 10 items.</td>
 
 
 <script type='text/javascript'>
-<!--//--><![CDATA[//>
 <!--
 (function () {
   /* Set bg height and width */
@@ -250,6 +248,6 @@ result will only show first 10 items.</td>
     $('#fwlib-sel-box-1-bg').hide();
   });
 }) ();
-//--><!]]>
+-->
 </script>
 

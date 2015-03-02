@@ -80,7 +80,7 @@ class UuidBase16 extends AbstractUtilAware
 
 
     /**
-     * Del separator in UUID, shink it to 32 digit
+     * Del separator in UUID, shrink it to 32 digit
      *
      * Please make SURE send in UUID's length is 36.
      *
@@ -102,9 +102,9 @@ class UuidBase16 extends AbstractUtilAware
      *
      * User can combine custom1 and custom2 to sort UUID.
      *
-     * $custom is custom part 1 in UUID, 4 chars long, positioned in 3rd section,
-     * leave empty will fill by '0'. In product envionment, $custom should start
-     * from '0010', '0000'~'0009' is reserved for develop/test.
+     * $custom is custom part 1 in UUID, 4 chars long, positioned in 3rd
+     * section, leave empty will fill by '0'. In product environment, $custom
+     * should start from '0010', '0000'~'0009' is reserved for develop/test.
      *
      * $custom2 is custom part 2 in UUID, 8 chars long, positioned in 4th
      * section and start of 5th section.  If empty given, user client user

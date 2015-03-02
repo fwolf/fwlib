@@ -35,7 +35,7 @@ class EmailTest extends PHPUnitTestCase
         $x = 'dummy.@mail.com';
         $this->assertFalse($constraint->validate($x));
 
-        $x = 'd..ummy@mail.com';
+        $x = 'a..dummy@mail.com';
         $this->assertFalse($constraint->validate($x));
 
         $x = 'dummy.Aa+-0@m-ail.com';

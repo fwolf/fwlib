@@ -8,7 +8,7 @@ namespace Fwlib\Db;
  * Design for profile unique code generate. Use prefix to identify different
  * profile, or profile in different category.
  *
- * Should use db transaction for concurrence, or similar mechanishm for non-db
+ * Should use db transaction for concurrence, or similar mechanism for non-db
  * storage. Even though this class may not suitable for high concurrence
  * system, which should use native db sequence/identity or better others.
  *

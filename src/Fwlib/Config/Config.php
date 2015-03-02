@@ -151,7 +151,7 @@ class Config implements \ArrayAccess, UtilAwareInterface
      * Set config value
      *
      * Multi-dimensional array style setting supported, if $key include
-     * separator, will converte to array by it recurrently.
+     * separator, will convert to array by it recurrently.
      *
      * eg: system.format.time => $this->config['system']['format']['time']
      *
@@ -176,12 +176,12 @@ class Config implements \ArrayAccess, UtilAwareInterface
         if (false === strpos($key, $this->separator)) {
             $this->config[$key] = $val;
         } else {
-            // Recoginize separator
+            // Recognize separator
             $ar = explode($this->separator, $key);
             $j = count($ar) - 1;
             $c = &$this->config;
 
-            // Check and create middle level for mutli-dimension array
+            // Check and create middle level for multi-dimension array
             // $c change every loop, goes deeper to sub array
             for ($i = 0; $i < $j; $i ++) {
                 $currentKey = $ar[$i];

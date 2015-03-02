@@ -76,7 +76,7 @@ class CacheMemcachedTest extends PHPUnitTestCase
         $this->assertEquals($x, $this->ch->get($key));
 
         // Cache expire
-        $this->ch->setConfig('memcachedAutosplit', 1);
+        $this->ch->setConfig('memcachedAutoSplit', 1);
         $this->ch->set($key, $x, 60);
         $this->assertFalse(
             $this->reflectionCall($this->ch, 'isExpired', [$key])
@@ -89,7 +89,7 @@ class CacheMemcachedTest extends PHPUnitTestCase
         $this->assertTrue(
             $this->reflectionCall($this->ch, 'isExpired', [$key])
         );
-        $this->ch->setConfig('memcachedAutosplit', 0);
+        $this->ch->setConfig('memcachedAutoSplit', 0);
         $this->ch->set($key, $x, 60);
         $this->assertFalse(
             $this->reflectionCall($this->ch, 'isExpired', [$key])
@@ -130,11 +130,11 @@ class CacheMemcachedTest extends PHPUnitTestCase
 
 
         // Big value exceed max item size
-        $this->ch->setConfig('memcachedMaxitemsize', 100);
+        $this->ch->setConfig('memcachedMaxItemSize', 100);
 
         $s = str_repeat('0', 300);
-        $this->ch->delete($key);       // Clear previous setted value
-        $this->ch->setConfig('memcachedAutosplit', 1);
+        $this->ch->delete($key);       // Clear previous set value
+        $this->ch->setConfig('memcachedAutoSplit', 1);
         $this->ch->set($key, $s, 3600);
         $this->assertEquals($s, $this->ch->get($key));
         $this->assertFalse(
@@ -150,7 +150,7 @@ class CacheMemcachedTest extends PHPUnitTestCase
         $s = str_repeat('0', 1200000);
         $this->reflectionGet($this->ch, 'memcached')
             ->setOption(\Memcached::OPT_COMPRESSION, false);
-        $this->ch->setConfig('memcachedAutosplit', 0);
+        $this->ch->setConfig('memcachedAutoSplit', 0);
         // Error: Memcache set error 10: SERVER ERROR
         @$this->ch->set($key, $s, 3600);
         $this->assertEquals(null, $this->ch->get($key));

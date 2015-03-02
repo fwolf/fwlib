@@ -24,7 +24,7 @@ class Restructuredtext extends AbstractTextConverter
         'embed-stylesheet',
         //'link-stylesheet',
 
-        // h1 is for title, docment section/title start from h2
+        // h1 is for title, document section/title start from h2
         'initial-header-level=2',
 
         //'no-doc-title',
@@ -33,7 +33,7 @@ class Restructuredtext extends AbstractTextConverter
     ];
 
     /**
-     * Actural path of docutils execute file
+     * Actual path of docutils execute file
      *
      * @var string
      * @see setPathDocutils()
@@ -63,7 +63,7 @@ class Restructuredtext extends AbstractTextConverter
     /**
      * Convert string to html
      *
-     * I had run benchmark to compare pipe and tmpfile before migrate to PSR
+     * I had run benchmark to compare pipe and tmp file before migrate to PSR
      * standard, result is, their speed  are almost same.
      *
      * @param   string  $str
@@ -106,14 +106,14 @@ class Restructuredtext extends AbstractTextConverter
 
         } else {
             // Use tmp file
-            $tmpfile = tempnam(sys_get_temp_dir(), 'fwlib-html-restructuredtext-');
-            file_put_contents($tmpfile, $str);
+            $tmpFile = tempnam(sys_get_temp_dir(), 'fwlib-html-restructuredtext-');
+            file_put_contents($tmpFile, $str);
 
             // Execute cmd, got result
-            $cmd .= " $tmpfile";
+            $cmd .= " $tmpFile";
             exec($cmd, $output);
 
-            unlink($tmpfile);
+            unlink($tmpFile);
             $html = implode("\n", $output);
         }
 
@@ -221,7 +221,7 @@ class Restructuredtext extends AbstractTextConverter
                 break;
             }
 
-            // In some env like my (MT) Centos5, cmd hasn't .py extension
+            // In some env like my (MT) CentOS 5, cmd hasn't .py extension
             if (is_executable($path . 'rst2html')) {
                 $found = true;
                 $this->pathDocutils = $path . 'rst2html';

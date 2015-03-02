@@ -25,7 +25,7 @@
  * Util class are helper class, their client class have dependence on it, but
  * this is different with other object dependence, util class can be replaced
  * by other ways, like function with namespace, like replace with copied
- * private method, so I'm not treat util class as normal dependenct inject (in
+ * private method, so I'm not treat util class as normal dependence inject (in
  * constructor), just declare a protected property $utilContainer and public
  * setter setUtilContainer(), then invoke setter in constructor is enough.
  *

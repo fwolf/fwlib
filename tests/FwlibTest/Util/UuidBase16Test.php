@@ -43,7 +43,7 @@ class UuidBase16Test extends PHPUnitTestCase
         $ar = $this->uuid->parse($this->uuid->generate('0001', '1312.101'));
         $this->assertEquals($ar['custom2'], '1312.101');
 
-        // Parae data
+        // Parse data
         $ar = $this->uuid->parse('4822afd9-861b-0000-8302-650a25cda932');
         $this->assertEquals($ar['timeLow'], 1210232793);
         $this->assertEquals($ar['timeMid'], 34331);

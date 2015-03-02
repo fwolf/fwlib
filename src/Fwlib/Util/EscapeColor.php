@@ -77,7 +77,7 @@ class EscapeColor extends AbstractUtilAware
      *
      * @param   string      $str    String to convert
      * @param   int|string  $attr   Special attribute
-     * @param   int|string  $fg     Forground color
+     * @param   int|string  $fg     Foreground color
      * @param   int|string  $bg     Background color
      * @return  string
      */
@@ -219,7 +219,7 @@ class EscapeColor extends AbstractUtilAware
         // bg colors ??
 
 
-        // Remove un-recoginized colors
+        // Remove un-recognized colors
         $in = preg_replace("/\x1b\[[\d;]*m/", '', $in);
 
         // Merge duplicate <span> markup
@@ -245,7 +245,7 @@ class EscapeColor extends AbstractUtilAware
         // Remove \t
         $in = str_replace("\x07", '', $in);
 
-        // Add losted </span> sometimes
+        // Add lost </span> sometimes
         // this must run twice because the second <span> used in the 1st replace
         // will not be tract as the beginning <span> in remain search
         // it means, it was 'skipped'
@@ -266,6 +266,7 @@ class EscapeColor extends AbstractUtilAware
         );
 
         // Clean escape control chars
+        /** @noinspection SpellCheckingInspection */
         $escapeControl = [
             "/\x1b\\[(\\d+;)?\\d*[ABCDGJKnr]/",
             "/\x1b\\[(\\d+;)?\\d*[fH]/",

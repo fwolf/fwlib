@@ -17,10 +17,10 @@ class Env
      * @codeCoverageIgnore
      *
      * @param   array   $str    Content to echo
-     * @param   boolean $noecho Do not print
+     * @param   boolean $noEcho Do not print
      * @return  string
      */
-    public function ecl($str = '', $noecho = false)
+    public function ecl($str = '', $noEcho = false)
     {
         if ($this->isCli()) {
             $lineEnding = PHP_EOL;
@@ -31,7 +31,7 @@ class Env
         if (is_array($str)) {
             $rs = '';
             foreach ($str as $v) {
-                $rs .= $this->ecl($v, $noecho);
+                $rs .= $this->ecl($v, $noEcho);
             }
             return $rs;
         }
@@ -42,7 +42,7 @@ class Env
         // Add new line
         $str .= $lineEnding;
 
-        if (!$noecho) {
+        if (!$noEcho) {
             echo $str;
         }
 

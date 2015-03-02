@@ -32,16 +32,28 @@ class IpTest extends PHPUnitTestCase
         $this->assertEquals($this->ip->toHex('127.00.00.01'), '');
 
         // Mask address
-        $this->assertEquals($this->ip->toHex('255.255.255.255'), 'ffffffff');
-        $this->assertEquals($this->ip->fromHex('ffffffff'), '255.255.255.255');
+        /** @noinspection SpellCheckingInspection */
+        {
+            $this->assertEquals(
+                $this->ip->toHex('255.255.255.255'),
+                'ffffffff'
+            );
+            $this->assertEquals(
+                $this->ip->fromHex('ffffffff'),
+                '255.255.255.255'
+            );
+        }
 
         // Normal address
         $this->assertEquals($this->ip->toHex('202.99.160.68'), 'ca63a044');
         $this->assertEquals($this->ip->fromHex('ca63a044'), '202.99.160.68');
 
         // Error parameters handel
-        $this->assertEquals($this->ip->toHex('ABCD'), '');
-        $this->assertEquals($this->ip->fromHex('ABCD'), '');
-        $this->assertEquals($this->ip->toHex('1.2.3'), '');
+        /** @noinspection SpellCheckingInspection */
+        {
+            $this->assertEquals($this->ip->toHex('ABCD'), '');
+            $this->assertEquals($this->ip->fromHex('ABCD'), '');
+            $this->assertEquals($this->ip->toHex('1.2.3'), '');
+        }
     }
 }

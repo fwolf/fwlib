@@ -17,7 +17,7 @@
 use Fwlib\Config\GlobalConfig;
 
 if ('config.default.php' == basename(__FILE__)) {
-    // Record running start time, usefull for count total process time cost,
+    // Record running start time, useful for count total process time cost,
     // as of PHP 5.4.0, $_SERVER['REQUEST_TIME_FLOAT'] is build-in.
     if (0 > version_compare(PHP_VERSION, '5.4.0')) {
         list($msec, $sec) = explode(' ', microtime(false));
@@ -55,8 +55,8 @@ $config['group.keyForCompute'] = isset($userConfig['group.keyForCompute'])
  * Assignment need compute with other config value should define in this file
  * rather than user config. But if the compute and assign job is done in user
  * config, it should still leave a default assign in this file, as a fallback
- * for user fogot to do so, or to make code more readable. These assigned
- * value will be overwriten by user config at end by array_merge().
+ * for user forgot to do so, or to make code more readable. These assigned
+ * value will be overwritten by user config at end by array_merge().
  */
 
 
@@ -76,7 +76,7 @@ $config['dbserver.mysql.lang'] = 'utf8';
 $config['dbserver.sybase.type'] = 'sybase_ase';
 $config['dbserver.sybase.host'] = '';
 $config['dbserver.sybase.user'] = 'username';
-$config['dbserver.sybase.pass'] = 'secretpass';
+$config['dbserver.sybase.pass'] = 'secret pass';
 $config['dbserver.sybase.name'] = 'database_name';
 $config['dbserver.sybase.lang'] = 'cp936';
 // Default db is mysql
@@ -140,7 +140,7 @@ if ('config.default.php' == basename(__FILE__)) {
 
     // Adodb, which doesn't use PSR standard
     // Use ADOFetchObj class as dummy, new it will trigger include of
-    // adodb.inc.php, all needed function in it is useable.
+    // adodb.inc.php, all needed function in it is usable.
     $classLoader->addPrefix(
         'ADOFetchObj',
         $config['lib.path.adodb'] . 'adodb.inc.php'

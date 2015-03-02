@@ -46,13 +46,13 @@ class ValidatorTest extends PHPUnitTestCase
      * @expectedException Exception
      * @expectedExceptionMessage Invalid service
      */
-    public function testValidateWithNotRegistedConstraint()
+    public function testValidateWithNotRegisteredConstraint()
     {
         $this->validator = new Validator();
         $this->validator->setConstraintContainer($this->constraintContainer);
 
         $rule = [
-            'notRegisted',
+            'notRegistered',
         ];
 
         $this->validator->validate('dummy', $rule);

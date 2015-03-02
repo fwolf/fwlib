@@ -15,7 +15,7 @@ use Fwlib\Util\UtilContainer;
 class ManagerTest extends PHPUnitTestCase
 {
     /**
-     * A dummy table name for backword compatible, the old test uses db
+     * A dummy table name for backward compatible, the old test uses db
      */
     protected static $tableUser = 'test_user';
 
@@ -214,7 +214,7 @@ class ManagerTest extends PHPUnitTestCase
 
     public function testSetRowSet()
     {
-        // Throuth constructor
+        // Through constructor
         $row = new Row('table', 'uuid', null, ['uuid' => 'value']);
         $rowSet = new RowSet();
         $rowSet->addRow($row);

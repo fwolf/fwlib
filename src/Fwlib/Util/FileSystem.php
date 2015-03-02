@@ -68,13 +68,13 @@ class FileSystem extends AbstractUtilAware
      * Count size of a directory recursive
      *
      * @param   string  $path
-     * @param   boolean $blksize
+     * @param   boolean $blockSize
      * @return  long
      */
-    public function getDirSize($path, $blksize = false)
+    public function getDirSize($path, $blockSize = false)
     {
         if (is_file($path)) {
-            return $this->getFileSize($path, $blksize);
+            return $this->getFileSize($path, $blockSize);
         }
 
         // Dir
@@ -86,11 +86,11 @@ class FileSystem extends AbstractUtilAware
         $files = scandir($path);
         foreach ($files as $file) {
             if (('.' != $file) && ('..' != $file)) {
-                $fullpath = $path . $file;
-                if (is_dir($fullpath)) {
-                    $i += $this->getDirSize($fullpath, $blksize);
+                $fullPath = $path . $file;
+                if (is_dir($fullPath)) {
+                    $i += $this->getDirSize($fullPath, $blockSize);
                 } else {
-                    $i += $this->getFileSize($fullpath, $blksize);
+                    $i += $this->getFileSize($fullPath, $blockSize);
                 }
             }
         }
@@ -126,7 +126,7 @@ class FileSystem extends AbstractUtilAware
      * Get a filename to write as new, skip exists file
      *
      * If file with same name exists, will add -1, -2, -nnn at end of filename
-     * before extention, until get a filename not exists.
+     * before extension, until get a filename not exists.
      *
      * Will also remove special chars in filename.
      *
@@ -164,17 +164,17 @@ class FileSystem extends AbstractUtilAware
     /**
      * Count size of a file
      *
-     * If $blksize = true, return actual block size file occupy.
+     * If $blockSize = true, return actual block size file occupy.
      *
-     * 11 = blksize, blocksize of filesystem IO
+     * 11 = blkSize, block size of filesystem IO
      * 12 = blocks, number of 512 bytes block allocated
      *
      * @link    http://linux.die.net/man/2/stat
      * @param   string  $file
-     * @param   boolean $blksize    Get blksize instead of native filesize
+     * @param   boolean $blockSize  Get block size instead of native file size
      * @return  long
      */
-    public function getFileSize($file, $blksize = false)
+    public function getFileSize($file, $blockSize = false)
     {
         if (is_link($file)) {
             $stat = lstat($file);
@@ -182,7 +182,7 @@ class FileSystem extends AbstractUtilAware
             $stat = stat($file);
         }
 
-        if (!$blksize || -1 == $stat['blksize']) {
+        if (!$blockSize || -1 == $stat['blksize']) {
             return $stat['size'];
         } else {
             return ceil($stat['blocks'] * 512 / $stat['blksize'])
@@ -195,20 +195,20 @@ class FileSystem extends AbstractUtilAware
      * List file with information of a directory
      *
      * @param   string  $dir
-     * @param   string  $sortby     Sort list by: name, mtime, size
+     * @param   string  $sortBy     Sort list by: name, mtime, size
      * @param   string  $order      Sort order: ASC, DESC
      * @return  array
      */
-    public function listDir($dir = './', $sortby = '', $order = 'ASC')
+    public function listDir($dir = './', $sortBy = '', $order = 'ASC')
     {
         // List files
         $dir = realpath($dir);
         if (empty($dir) || !is_dir($dir)) {
             return(null);
         }
-        $dirfiles = scandir($dir);
+        $dirFiles = scandir($dir);
         // @codeCoverageIgnoreStart
-        if (empty($dirfiles)) {
+        if (empty($dirFiles)) {
             return([]);
         }
         // @codeCoverageIgnoreEnd
@@ -217,14 +217,14 @@ class FileSystem extends AbstractUtilAware
 
         // Get file information, ignore '.', '..'
         $arFiles = [];
-        foreach ($dirfiles as $file) {
+        foreach ($dirFiles as $file) {
             if (('.' != $file) && ('..' != $file)) {
-                $fullpath = $dir . $file;
+                $fullPath = $dir . $file;
 
-                if (is_dir($fullpath)) {
-                    $size = $this->getDirSize($fullpath);
+                if (is_dir($fullPath)) {
+                    $size = $this->getDirSize($fullPath);
                 } else {
-                    $size = $this->getFileSize($fullpath);
+                    $size = $this->getFileSize($fullPath);
                 }
 
                 $arFiles[] = [
@@ -237,9 +237,9 @@ class FileSystem extends AbstractUtilAware
 
 
         // Sort result
-        if (!empty($sortby)) {
+        if (!empty($sortBy)) {
             $arrayUtil = $this->getUtil('Array');
-            $arrayUtil->sortByLevel2($arFiles, $sortby, $order);
+            $arrayUtil->sortByLevel2($arFiles, $sortBy, $order);
         }
 
         return $arFiles;

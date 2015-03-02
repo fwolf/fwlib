@@ -8,7 +8,7 @@ use Fwlib\Mvc\ViewInterface;
  * Controller and Router in MVC
  *
  * In application, Controller is common called in index.php as entry, the main
- * perpose is to route user request(via $_GET) to View.
+ * purpose is to route user request(via $_GET) to View.
  *
  * Also, it can delegate request to other Controller, so sub-dir can have their
  * own index too.
@@ -56,7 +56,7 @@ abstract class AbstractController implements ControllerInterface
 
 
     /**
-     * Contructor
+     * Constructor
      *
      * @param   string  $pathToRoot
      */
@@ -128,7 +128,7 @@ abstract class AbstractController implements ControllerInterface
      * Error from Controller include module/action configure error, or wrong
      * request data, eg: user input wrong url. These error are different with
      * other process error like validate fail, they should not exists when
-     * Controller and View are correctly defined/called, and user didn't use
+     * Controller and View are correctly defined/called, and user did not use
      * wrong url or submit wrong request data.
      *
      * Usually, it can use View to show friendly error message in html format,
@@ -165,7 +165,7 @@ abstract class AbstractController implements ControllerInterface
     /**
      * Get class name of Controller by module
      *
-     * By given $module name, use switch or check prefix, to determin which
+     * By given $module name, use switch or check prefix, to determine which
      * Controller should use. Return null if not found.
      *
      * Should extend by child class if need to use module.
@@ -201,7 +201,7 @@ abstract class AbstractController implements ControllerInterface
     /**
      * {@inheritdoc}
      *
-     * @param   array   $request    Defaut $_GET
+     * @param   array   $request    Default $_GET
      * @return  string
      */
     public function getOutput(array $request = null)
@@ -226,7 +226,7 @@ abstract class AbstractController implements ControllerInterface
     /**
      * Get class name of View by action
      *
-     * By given $action string, use switch or check prefix, to determin which
+     * By given $action string, use switch or check prefix, to determine which
      * View should use. Return null if not found.
      *
      * Should extend by child class.

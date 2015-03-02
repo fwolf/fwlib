@@ -38,7 +38,7 @@ class Row
     protected $old = [];
 
     /**
-     * Table primark keys
+     * Table primary keys
      *
      * @var array|string
      */

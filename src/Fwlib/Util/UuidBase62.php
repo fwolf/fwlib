@@ -90,7 +90,7 @@ class UuidBase62 extends AbstractUtilAware
      * If $checkDigit is true, use last byte as check digit,
      * by ISO 7064 Mod 17,16 algorithm.
      *
-     * In product envionment, $group should start from a0, 00-09 is reserved
+     * In product environment, $group should start from a0, 00-09 is reserved
      * for develop/test.
      *
      * @param   string  $group
@@ -111,7 +111,7 @@ class UuidBase62 extends AbstractUtilAware
 
         // Seconds from now(Nov 2013) will fill length 6
         $uuid = $numberUtil->baseConvert($sec, 10, $this->base);
-        // Microsends will fill to length 4
+        // Microseconds will fill to length 4
         $usec = $numberUtil->baseConvert(round($usec * 1000000), 10, $this->base);
         $uuid .= str_pad($usec, 4, '0', STR_PAD_LEFT);
 

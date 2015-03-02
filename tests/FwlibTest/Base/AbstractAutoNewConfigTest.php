@@ -26,7 +26,7 @@ class AbstractAutoNewConfigTest extends PHPUnitTestCase
     }
 
 
-    public function testContruct()
+    public function testConstruct()
     {
         $this->dummy = new AbstractAutoNewConfigDummy(
             [
@@ -47,12 +47,12 @@ class AbstractAutoNewConfigTest extends PHPUnitTestCase
     {
         // Problem:
         // If use phpunit exception, coverage will lose because after exception
-        // is catched when trigger_error, following code will not be executed.
+        // is caught when trigger_error, following code will not be executed.
         // If not use phpunit exception by setting false, coverage is ok but got
         // error log print, which not pass in strict mode.
         //
         // Solution:
-        // After funtional test
+        // After unit test
         // 1. Suppress error print using '@'
         // 2. Remove expectedException annotation
 

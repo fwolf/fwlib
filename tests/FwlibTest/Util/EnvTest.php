@@ -24,12 +24,12 @@ class EnvTest extends PHPUnitTestCase
         $y = PHP_EOL;
         $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
 
-        $x = ['foo', 'bar'];
-        $y = "foo\nbar" . PHP_EOL;
+        $x = ['Foo', 'Bar'];
+        $y = "Foo\nBar" . PHP_EOL;
         $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
 
-        $x = "  foo\r\nbar\r\n";
-        $y = "  foo" . PHP_EOL . PHP_EOL . "bar" . PHP_EOL;
+        $x = "  Foo\r\nBar\r\n";
+        $y = "  Foo" . PHP_EOL . PHP_EOL . "Bar" . PHP_EOL;
         $this->assertEquals($y, strip_tags($this->env->ecl($x, true)));
     }
 }

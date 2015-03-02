@@ -23,7 +23,7 @@ class Curl extends AbstractUtilAware
     protected $cookieFile = '';
 
     /**
-     * Debug mode, will log more infomation
+     * Debug mode, will log more information
      *
      * @var boolean
      */
@@ -37,7 +37,7 @@ class Curl extends AbstractUtilAware
     public $handle;
 
     /**
-     * Result read from webserver
+     * Result read from web server
      *
      * @var string
      */
@@ -92,7 +92,7 @@ class Curl extends AbstractUtilAware
     {
         curl_setopt($this->handle, CURLOPT_HTTPGET, true);
 
-        // Remove endding '?" from url
+        // Remove tailing '?" from url
         if ('?' == substr($url, -1, 1)) {
             $url = substr($url, 0, strlen($url) - 1);
         }
@@ -185,7 +185,7 @@ class Curl extends AbstractUtilAware
      * result), use carefully and remind which value you use it for.
      *
      * @param   string  $preg
-     * @param   string  $str    If obmitted, use $this->html
+     * @param   string  $str    If omitted, use $this->html
      * @return  mixed
      */
     public function match($preg, $str = '')
@@ -280,7 +280,7 @@ class Curl extends AbstractUtilAware
             curl_setopt($this->handle, CURLOPT_FOLLOWLOCATION, true);
         }
 
-        // Return result restead of display it.
+        // Return result instead of display it.
         curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->handle, CURLOPT_CONNECTTIMEOUT, 300);
         curl_setopt($this->handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
@@ -318,30 +318,30 @@ class Curl extends AbstractUtilAware
     /**
      * Set proxy option
      *
-     * @param   int     $ptype  0-no proxy, 1-http, 2-socks5
-     * @param   string  $phost
-     * @param   int     $pport
-     * @param   string  $pauth  [username]:[password]
+     * @param   int     $type  0-no proxy, 1-http, 2-socks5
+     * @param   string  $host
+     * @param   int     $port
+     * @param   string  $auth  [username]:[password]
      */
-    public function setoptProxy($ptype, $phost, $pport, $pauth = '')
+    public function setoptProxy($type, $host, $port, $auth = '')
     {
-        if (0 == $ptype) {
+        if (0 == $type) {
             // Some server refuse http proxy tunnel, it's useless settings.
             //curl_setopt($this->handle, CURLOPT_HTTPPROXYTUNNEL, false);
         } else {
             //curl_setopt($this->handle, CURLOPT_HTTPPROXYTUNNEL, true);
 
-            curl_setopt($this->handle, CURLOPT_PROXY, $phost);
+            curl_setopt($this->handle, CURLOPT_PROXY, $host);
 
             curl_setopt(
                 $this->handle,
                 CURLOPT_PROXYTYPE,
-                (1 == $ptype) ? CURLPROXY_HTTP : CURLPROXY_SOCKS5
+                (1 == $type) ? CURLPROXY_HTTP : CURLPROXY_SOCKS5
             );
 
-            curl_setopt($this->handle, CURLOPT_PROXYPORT, $pport);
-            if (!empty($pauth)) {
-                curl_setopt($this->handle, CURLOPT_PROXYUSERPWD, $pauth);
+            curl_setopt($this->handle, CURLOPT_PROXYPORT, $port);
+            if (!empty($auth)) {
+                curl_setopt($this->handle, CURLOPT_PROXYUSERPWD, $auth);
             }
         }
     }

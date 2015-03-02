@@ -32,9 +32,12 @@ class NumberUtilTest extends PHPUnitTestCase
         $this->assertEquals('15', $this->numberUtil->baseConvert('f', 62, 10));
 
 
-        $x = 'abcdef00001234567890';
-        $y = '3o47re02jzqisvio';
-        $z = '43tpyVgFkHFsZO';
+        /** @noinspection SpellCheckingInspection */
+        {
+            $x = 'abcdef00001234567890';
+            $y = '3o47re02jzqisvio';
+            $z = '43tpyVgFkHFsZO';
+        }
 
         $this->assertEquals('0', $this->numberUtil->baseConvertBcmath(null, 10, 62));
         if (extension_loaded('bcmath')) {

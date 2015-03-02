@@ -32,7 +32,7 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
         $this->assertFalse(self::$db->isTableExist(self::$logTable));
 
         $this->expectOutputRegex(
-            '/Log table \w+ doesn\'t exists, create it, done\./'
+            '/Log table \w+ does not exists, create it, done\./'
         );
 
         self::$sds = new SyncDbSchema(

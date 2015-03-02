@@ -33,7 +33,7 @@ abstract class AbstractServiceContainer extends AbstractSingleton implements
     /**
      * {@inheritdoc}
      *
-     * $forcenew doesn't affect child class of Fwlib\Base\AbstractSingleton.
+     * $forcenew does not affect child class of Fwlib\Base\AbstractSingleton.
      *
      * @param   string  $name
      * @param   boolean $forcenew

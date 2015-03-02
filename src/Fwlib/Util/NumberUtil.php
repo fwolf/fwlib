@@ -141,7 +141,7 @@ class NumberUtil
 
         $number = ltrim($number, '0');  // GMP treat leading 0 different.
 
-        // Convert using BC Math or GMP, sort by benchmarked speed
+        // Convert using BC Math or GMP, sort by benchmark speed
         // @codeCoverageIgnoreStart
         if (extension_loaded('gmp') && version_compare(PHP_VERSION, '5.3.2', '>=')) {
             // In PHP 5.3.2, base was extended to 2~62

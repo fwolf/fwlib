@@ -179,7 +179,7 @@ class AbstractViewTest extends PHPUnitTestCase
         $css = $this->reflectionGet($view, 'css');
         $this->assertArrayNotHasKey('reset', $css);
 
-        $this->reflectionCall($view, 'removejs', ['jquery']);
+        $this->reflectionCall($view, 'removeJs', ['jquery']);
         $js = $this->reflectionGet($view, 'js');
         $this->assertArrayNotHasKey('jquery', $js);
     }

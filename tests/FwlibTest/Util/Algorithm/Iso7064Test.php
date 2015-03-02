@@ -67,6 +67,7 @@ class Iso7064Test extends PHPUnitTestCase
         $this->assertEquals(null, $this->iso7064->encode(null));
 
         // Value from https://en.wikipedia.org/wiki/Global_Release_Identifier
+        /** @noinspection SpellCheckingInspection */
         $x = 'A12425GABC1234002';
         $this->assertEquals(
             'M',
@@ -102,10 +103,13 @@ class Iso7064Test extends PHPUnitTestCase
         $x = '11010519491231002X';
         $this->assertTrue($this->iso7064->verify($x, '112'));
 
-        $x = 'A12425GABC1234002M';
-        $this->assertTrue($this->iso7064->verify($x, '3736'));
+        /** @noinspection SpellCheckingInspection */
+        {
+            $x1 = 'A12425GABC1234002M';
+            $x2 = 'A12425GABC1234008M';
+        }
+        $this->assertTrue($this->iso7064->verify($x1, '3736'));
 
-        $x = 'A12425GABC1234008M';
-        $this->assertFalse($this->iso7064->verify($x, '3736'));
+        $this->assertFalse($this->iso7064->verify($x2, '3736'));
     }
 }

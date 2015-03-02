@@ -232,7 +232,7 @@ if (!empty($_POST)) {
 
     <br />
 
-    <!-- Hidden's value may not equals its puppet input -->
+    <!-- Hidden element value may not equals its puppet input -->
     <label for='puppetOfHidden'>Hidden Value:</label>
     <input type='text' name='hiddenValue' id='hiddenValue'
       value='<?php echo $hiddenValue; ?>' readonly='readonly' />
@@ -265,7 +265,7 @@ if (!empty($_POST)) {
     <input type='checkbox' name='frontendCheck' id='frontendCheck'
     value='1' <?php echo $frontendCheck; ?> />
     <label for='frontendCheck' class='right-side-label'>
-      Enable frontend validate, uncheck to see backend validate.
+      Enable frontend validate, un-check to see backend validate.
     </label>
 
     <div class='submit'>
@@ -279,7 +279,6 @@ if (!empty($_POST)) {
 
 
   <script type="text/javascript">
-  <!--//--><![CDATA[//>
   <!--
 
   /* Attach event for frontendCheck option */
@@ -302,7 +301,7 @@ if (!empty($_POST)) {
       .trigger('change');
   }) (window);
 
-  //--><!]]>
+  -->
   </script>
 
 

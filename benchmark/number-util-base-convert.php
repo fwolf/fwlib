@@ -15,6 +15,7 @@ $bm->start("Compute $count times");
 
 
 // Length 20 > 11, will lose precision if use build-in base_convert()
+/** @noinspection SpellCheckingInspection */
 $x = 'abcdef00001234567890';
 
 

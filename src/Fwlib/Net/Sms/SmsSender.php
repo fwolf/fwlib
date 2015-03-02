@@ -172,7 +172,7 @@ class SmsSender extends AbstractAutoNewConfig
     /**
      * Send SMS using gammu smsd inject method
      *
-     * Notice: On webserver, need assign user www-data to gammu group, and
+     * Notice: On web server, need assign user www-data to gammu group, and
      * make /var/log/gammu-smsd.log g+w.
      *
      * Modem server need not, only conn to db is required.
@@ -244,6 +244,7 @@ class SmsSender extends AbstractAutoNewConfig
         $this->config['path.gammuSmsdInject'] = '';
 
         // Cmd template of gammu-smsd-inject cmd
+        /** @noinspection SpellCheckingInspection */
         $this->config['cmd.gammuSmsdInject']
             = '[cmd] TEXT [dest] -autolen 600 -report -validity MAX -unicode -textutf8 "[sms]"';
     }

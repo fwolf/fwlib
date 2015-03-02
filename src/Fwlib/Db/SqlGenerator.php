@@ -202,25 +202,25 @@ class SqlGenerator implements UtilAwareInterface
 
 
     /**
-     * Generate SQL part, convert param array to string with seperator
+     * Generate SQL part, convert param array to string with separator
      *
      * @param mixed     $param
-     * @param string    $seperator  Should have space included
+     * @param string    $separator  Should have space included
      * @return string
      */
-    protected function genSqlArray($param, $seperator = ', ')
+    protected function genSqlArray($param, $separator = ', ')
     {
         $sql = '';
         if (!empty($param) && is_array($param)) {
             // Key of param array is not used
             foreach ($param as $v) {
-                $sql .= "$seperator$v";
+                $sql .= "$separator$v";
             }
         } else {
-            $sql .= "$seperator$param";
+            $sql .= "$separator$param";
         }
-        // Remove heading seperator and space
-        $sql = substr($sql, strlen($seperator));
+        // Remove heading separator and space
+        $sql = substr($sql, strlen($separator));
 
         return $sql;
     }
@@ -241,7 +241,7 @@ class SqlGenerator implements UtilAwareInterface
      *                              table can have many alias, so use unique
      *                              alias as key in param array. Also this
      *                              will make define code pretty and short,
-     *                              expecially when mixed items with/without
+     *                              especially when mixed items with/without
      *                              alias.  Eg: {tbl1, a: tbl2}
      * @return string
      */
@@ -264,7 +264,7 @@ class SqlGenerator implements UtilAwareInterface
                     $split = ($quote) ? "'" : '';
                     $as = ($useAs) ? 'AS ' : '';
 
-                    // Reverse as is only usefull for particular db type
+                    // Reverse as is only useful for particular db type
                     // @codeCoverageIgnoreStart
                     if ($reverse) {
                         $sql .= ", $v $as$split{$k}$split";
@@ -286,7 +286,7 @@ class SqlGenerator implements UtilAwareInterface
 
 
     /**
-     * Generate SQL part, SET subparse of UPDATE
+     * Generate SQL part, SET sub-parse of UPDATE
      *
      * @param array $param  Array only, string will use original value.
      *                      Array($k=>$v) means 'SET $k = $v, ' in sql,
@@ -301,7 +301,7 @@ class SqlGenerator implements UtilAwareInterface
             }
             $sql = ' SET ' . substr($sql, 2);
         } else {
-            // String param, add 'SET ' if user fogot
+            // String param, add 'SET ' if user forgot
             if ('SET ' != substr(strtoupper(trim($param)), 0, 4)) {
                 $sql .= ' SET ';
             }
@@ -313,7 +313,7 @@ class SqlGenerator implements UtilAwareInterface
 
 
     /**
-     * Generate SQL part, VALUES subparse of INSERT
+     * Generate SQL part, VALUES sub-parse of INSERT
      *
      * @param array $param  Array only, string will use original value.
      *                      Array($k=>$v) means '($k) VALUES ($v)' in sql.
@@ -388,7 +388,7 @@ class SqlGenerator implements UtilAwareInterface
      * simultaneously, system will select the first occurs by raw order.
      *
      * @param   array   $config     {SELECT: , FROM: ...}
-     *                              If obmit, use $this->paramPart
+     *                              If omit, use $this->paramPart
      * @param   string  $part       SELECT/UPDATE ... etc
      * @return  string
      */
@@ -400,7 +400,7 @@ class SqlGenerator implements UtilAwareInterface
         // Got real action
         if (empty($part)) {
             foreach ($this->paramPart as $key => $val) {
-                // SELECT/UPDATE/INSERT/DELETE ? Use the 1st occured one
+                // SELECT/UPDATE/INSERT/DELETE ? Use the 1st occurred one
                 if (in_array(
                     $key,
                     ['SELECT', 'UPDATE', 'INSERT', 'DELETE']
@@ -416,7 +416,7 @@ class SqlGenerator implements UtilAwareInterface
             return '';
         }
 
-        // Call seperate func to generate sql
+        // Call separate func to generate sql
         $part = ucfirst(strtolower($part));
         $sql = $this->{'gen' . $part}(array_keys($config));
 
@@ -647,7 +647,7 @@ class SqlGenerator implements UtilAwareInterface
 
         $this->sqlPart['INSERT'] = 'INSERT INTO ' . $param;
 
-        // Retrieve table schema, so VALUES can detimine how to quote
+        // Retrieve table schema, so VALUES can determine how to quote
         $this->db->getMetaColumn($param);
 
         return $this->sqlPart['INSERT'];
@@ -740,7 +740,7 @@ class SqlGenerator implements UtilAwareInterface
 
         $this->sqlPart['UPDATE'] = 'UPDATE ' . $param;
 
-        // Retrieve table schema, so SET can detimine how to quote
+        // Retrieve table schema, so SET can determine how to quote
         $this->db->getMetaColumn($param);
 
         return $this->sqlPart['UPDATE'];

@@ -157,7 +157,7 @@ $config = [
     ],
 ];
 
-// Updata totalRows
+// Update totalRows
 $listTable->setTotalRows(
     $db->execute(
         array_merge($config, ['SELECT' => 'COUNT(1) as c'])

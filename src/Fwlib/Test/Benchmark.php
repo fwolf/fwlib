@@ -10,7 +10,6 @@ use Fwlib\Util\AbstractUtilAware;
  *
  * Reference:
  * http://pear.php.net/package/Benchmark
- * http://www.mdsjack.bo.it/index.php?page=kwikemark
  * http://www.phpclasses.org/browse/package/2244.html
  *
  * @codeCoverageIgnore
@@ -179,7 +178,7 @@ EOF;
 
 
     /**
-     * Get current time, mesured by microsecond
+     * Get current time, measured by microsecond
      *
      * @return  float
      */

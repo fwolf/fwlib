@@ -171,6 +171,7 @@ class CodeDictionaryTest extends PHPUnitTestCase
         self::$isConnected = true;
         self::$isDbMysql = true;
 
+        /** @noinspection SpellCheckingInspection */
         $sqlExpected = 'SET NAMES \'{PROFILELANG}\'{sqlDelimiter}
 {sqlTransBegin}
 TRUNCATE TABLE code_dictionary{sqlDelimiter}

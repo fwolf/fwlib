@@ -43,7 +43,7 @@ class AbstractAutoNewConfigDummy extends AbstractAutoNewConfig
     /**
      * New self instance
      *
-     * For test AbstractAutoNewInstance compative with newObjXxx().
+     * For test AbstractAutoNewInstance compatible with newObjXxx().
      *
      * @return  Fwlib\Base\Test\AbstractAutoNewConfigDummy
      */

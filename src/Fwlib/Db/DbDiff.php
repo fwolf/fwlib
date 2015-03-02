@@ -161,7 +161,7 @@ class DbDiff extends AbstractUtilAware
      * If old array is null, will read its value from db by Pk in new array.
      *
      * Row index in new/old array must match, it is used to connect same row
-     * in new and old data, so either use a meanful row index, or use default
+     * in new and old data, so either use a meaningful row index, or use default
      * integer index and keep same data order in new and old.
      *
      * @param   array   $dataNew
@@ -499,7 +499,7 @@ class DbDiff extends AbstractUtilAware
 
                     case 'DELETE':
                         $sqlConfig['DELETE'] = $table;
-                        // Limit rowcount to 1 for safety
+                        // Limit row count to 1 for safety
                         $sqlConfig['LIMIT'] = 1;
 
                         foreach ($row['pk'] as $k => $v) {
@@ -511,7 +511,7 @@ class DbDiff extends AbstractUtilAware
 
                     case 'UPDATE':
                         $sqlConfig['UPDATE'] = $table;
-                        // Limit rowcount to 1 for safety
+                        // Limit row count to 1 for safety
                         $sqlConfig['LIMIT'] = 1;
 
                         foreach ($row['column'] as $k => $v) {
@@ -554,7 +554,7 @@ class DbDiff extends AbstractUtilAware
                 switch ($row['mode']) {
                     case 'INSERT':
                         $sqlConfig['DELETE'] = $table;
-                        // Limit rowcount to 1 for safety
+                        // Limit row count to 1 for safety
                         $sqlConfig['LIMIT'] = 1;
 
                         foreach ($row['pk'] as $k => $v) {
@@ -576,7 +576,7 @@ class DbDiff extends AbstractUtilAware
 
                     case 'UPDATE':
                         $sqlConfig['UPDATE'] = $table;
-                        // Limit rowcount to 1 for safety
+                        // Limit row count to 1 for safety
                         $sqlConfig['LIMIT'] = 1;
 
                         foreach ($row['column'] as $k => $v) {

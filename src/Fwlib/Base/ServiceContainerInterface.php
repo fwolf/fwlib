@@ -8,7 +8,7 @@ namespace Fwlib\Base;
  * For avoid of multiple create instance of some common class, such as Db,
  * Cache, make them as service object and store here to use in variant place.
  *
- * Use Dependency Injection on constructor is good but not conveniency, create
+ * Use Dependency Injection on constructor is good but not convenience, create
  * Factory for each class need inject is also complicate, so ServiceContainer
  * can be substitution. If dependent object is not passed in when construct,
  * using these object will trigger newInstanceXxx() method in
@@ -61,7 +61,7 @@ interface ServiceContainerInterface
      * Register service class
      *
      * For class implement Fwlib\Base\AbstractSingleton or similar, can be
-     * instanced simplely by find class name in serviceClass array and call
+     * instanced simply by find class name in serviceClass array and call
      * its getInstance() method, avoid define of newServiceXxx() method.
      *
      * @param   string  $name

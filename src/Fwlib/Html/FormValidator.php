@@ -346,7 +346,7 @@ global.$id.markFailed(global.$id.getInput('$name'));
                 $this->rules[$singleName]['check'] = $ruleAr['check'];
             }
 
-            // Other part will be overwrited
+            // Other part will be overwritten
             $partAr = [
                 'title', 'tip', 'checkOnBlur', 'checkOnKeyup',
                 'puppet'

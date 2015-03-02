@@ -4,7 +4,7 @@ require __DIR__ . '/../config.default.php';
 
 use Fwlib\Test\Benchmark;
 
-$bm = new Benchmark('autostart');
+$bm = new Benchmark();
 
 
 // Group #0

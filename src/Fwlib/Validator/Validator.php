@@ -87,7 +87,7 @@ class Validator
     /**
      * Do validate
      *
-     * $rule include constraunt name and data(optional), with format
+     * $rule include constraint name and data(optional), with format
      * 'constraintName[: constraintData]'. constraintData is needed for some
      * constraint, eg: an 'length' constraint need a value to compare with,
      * the rule string is like 'length: 42', the '42' is $constraintData.

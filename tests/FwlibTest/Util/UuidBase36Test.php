@@ -42,7 +42,8 @@ class UuidBase36Test extends PHPUnitTestCase
         $ar = $this->uuid->parse($this->uuid->generate('', '000'));
         $this->assertEquals('000', substr($ar['custom'], -3));
 
-        // Parae data
+        // Parse data
+        /** @noinspection SpellCheckingInspection */
         $ar = $this->uuid->parse('mvqtti07x4a01a93alw6tz9qp');
         $this->assertEquals(1383575670, $ar['second']);
         $this->assertEquals(10264, $ar['microsecond']);
@@ -59,14 +60,18 @@ class UuidBase36Test extends PHPUnitTestCase
         $x = '';
         $this->assertFalse($this->uuid->verify($x));
 
-        $x = 'mvqwzsaypm00sa2t8f0i9ooky';
-        $this->assertTrue($this->uuid->verify($x, true));
+        /** @noinspection SpellCheckingInspection */
+        {
+            $x1 = 'mvqwzsaypm00sa2t8f0i9ooky';
+            $x2 = 'mvqwzsaypm00sa2t8f0i9ook+';
+            $x3 = 'mvqwzsaypm00sa2t8f0i9ookx';
+        }
 
-        $x = 'mvqwzsaypm00sa2t8f0i9ook+';
-        $this->assertFalse($this->uuid->verify($x));
+        $this->assertTrue($this->uuid->verify($x1, true));
 
-        $x = 'mvqwzsaypm00sa2t8f0i9ookx';
-        $this->assertFalse($this->uuid->verify($x, true));
+        $this->assertFalse($this->uuid->verify($x2));
+
+        $this->assertFalse($this->uuid->verify($x3, true));
 
         $x = $this->uuid->generate(null, null, true);
         $this->assertTrue($this->uuid->verify($x, true));

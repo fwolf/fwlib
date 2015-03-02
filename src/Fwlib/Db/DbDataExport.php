@@ -22,7 +22,7 @@ class DbDataExport extends AbstractDbClient
      *
      * @var array
      */
-    public $columnExclude = ['lasttime'];
+    public $columnExclude = [];
 
     /**
      * Where to save exported sql files
@@ -286,7 +286,7 @@ class DbDataExport extends AbstractDbClient
 
             // Save this step to file
             $sql = $db->convertEncodingResult($sql);
-            // Save to seperated file, first check about how many files will
+            // Save to separated file, first check about how many files will
             // be used. File number start from 1.
             if ($rowCount > $this->maxRowPerFile) {
                 $i = strlen(strval(ceil($rowCount / $this->maxRowPerFile)));
@@ -311,7 +311,7 @@ class DbDataExport extends AbstractDbClient
             $this->log();
         }
 
-        // SQL tailer
+        // SQL tail
         // @codeCoverageIgnoreStart
         if ($this->needIdentityInsert()) {
             $sql .= 'set identity_insert ' . $tbl . ' off' . $this->lineEnding;
@@ -420,7 +420,7 @@ class DbDataExport extends AbstractDbClient
 
 
     /**
-     * Determin if current db driver need set identity_insert tbl on/off
+     * Determine if current db driver need set identity_insert tbl on/off
      *
      * @return  boolean
      */
@@ -456,7 +456,7 @@ class DbDataExport extends AbstractDbClient
     /**
      * Set where to save sql files exported
      *
-     * If directory doesn't exists, create it.
+     * If directory does not exists, create it.
      *
      * @param   string  $path
      * @return  boolean

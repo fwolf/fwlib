@@ -57,7 +57,7 @@ class CacheMemcached extends Cache
     {
         $memcached = $this->getMemcached();
 
-        if (1 == $this->getConfig('memcachedAutosplit')) {
+        if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
             $total = $memcached->get($this->getKey($key . '[split]'));
             if (false === $total) {
@@ -99,9 +99,9 @@ class CacheMemcached extends Cache
 
         $val = $memcached->get($this->getKey($key));
 
-        // Unknown item size, try again for autosplit
+        // Unknown item size, try again for auto split
         if ((\Memcached::RES_SUCCESS != $memcached->getResultCode())
-            && (1 == $this->getConfig('memcachedAutosplit'))
+            && (1 == $this->getConfig('memcachedAutoSplit'))
         ) {
             $val = $memcached->get($this->getKey($key . '[split]'));
         }
@@ -117,7 +117,7 @@ class CacheMemcached extends Cache
     /**
      * Read cache and return value
      *
-     * Lifetime setted when write cache.
+     * Lifetime set when write cache.
      * Return null when fail or expire.
      *
      * @param   string  $key
@@ -130,7 +130,7 @@ class CacheMemcached extends Cache
 
         $memcached = $this->getMemcached();
 
-        if (1 == $this->getConfig('memcachedAutosplit')) {
+        if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
             $keySplitted = $this->getKey($key . '[split]');
             $total = $memcached->get($keySplitted);
@@ -148,7 +148,7 @@ class CacheMemcached extends Cache
                         == $memcached->getResultCode(),
                 ];
             } else {
-                // Splited string
+                // Splitted string
                 $val = '';
                 for ($i = 1; $i <= $total; $i++) {
                     $keySplitted = $this->getKey(
@@ -288,13 +288,13 @@ class CacheMemcached extends Cache
         $lifetime = $this->getExpireTime($lifetime);
 
         // Auto split large string val
-        if ((1 == $this->getConfig('memcachedAutosplit'))
+        if ((1 == $this->getConfig('memcachedAutoSplit'))
             && is_string($val) && (strlen($val)
-            > $this->getConfig('memcachedMaxitemsize'))
+            > $this->getConfig('memcachedMaxItemSize'))
         ) {
             $ar = str_split(
                 $val,
-                $this->getConfig('memcachedMaxitemsize')
+                $this->getConfig('memcachedMaxItemSize')
             );
             $total = count($ar);
 
@@ -373,11 +373,11 @@ class CacheMemcached extends Cache
 
         // Auto split store item larger than max item size
         // 0/off, 1/on, when off, large item store will fail.
-        $this->setConfig('memcachedAutosplit', 0);
+        $this->setConfig('memcachedAutoSplit', 0);
 
         // Max item size, STRING val exceed this will auto split
         //   and store automatic, user need only care other val type.
-        $this->setConfig('memcachedMaxitemsize', 1024000);
+        $this->setConfig('memcachedMaxItemSize', 1024000);
 
         // Memcached default option, set when new memcached obj
         $this->setConfig('memcachedOptionDefault', $memcachedOptions);

@@ -92,30 +92,30 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
 
 
     /**
-     * Need before testSyncOneway(), which create timestamp column
+     * Need before testSyncOneWay(), which create timestamp column
      *
      * @expectedException Exception
      * @expectedExceptionMessage Table test_user in source db hasn't timestamp column.
      */
-    public function testSyncOnewayWithSrceHasNoTimestampColumn()
+    public function testSyncOneWayWithSourceHasNoTimestampColumn()
     {
         $sdd = new SyncDbData;
         $sdd->setDb(self::$dbMysql, self::$dbMysql);
         $config = [
             self::$tableUser => self::$tableUserDest,
         ];
-        $sdd->syncOneway($config);
+        $sdd->syncOneWay($config);
     }
 
 
-    public function testSyncOneway()
+    public function testSyncOneWay()
     {
         $tableUser = self::$tableUser;
         $tableUserDest = self::$tableUserDest;
         $tableNotExist = 'test_not_exist';
 
 
-        // Add timestamp column in srce db
+        // Add timestamp column in source db
         self::$dbMysql->Execute(
             "ALTER TABLE {$tableUser}
                 ADD COLUMN ts TIMESTAMP NOT NULL
@@ -132,7 +132,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         );
 
 
-        // Prepare dummy date in srce table
+        // Prepare dummy date in source table
         $data = [];
         for ($i = 0; $i < $this->totalRows; $i ++) {
             $data[] = [
@@ -143,7 +143,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             ];
         }
         self::$dbMysql->write($tableUser, $data, 'I');
-        $rowsSrce = self::$dbMysql->getRowCount($tableUser);
+        $rowsSource = self::$dbMysql->getRowCount($tableUser);
 
 
         // Prepare SyncDbData instance
@@ -184,7 +184,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         );
 
         // Run sync again will sync nothing, because batchSize limit
-        $this->assertEquals(0, $sdd->syncOneway($config));
+        $this->assertEquals(0, $sdd->syncOneWay($config));
 
 
         // Second sync round, full sync, not reach batchSize limit
@@ -198,9 +198,9 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             ->will($this->returnValue(null));
 
         // Change age column through convert data method
-        $callback = function ($arSrce) {
-            $arSrce['age'] = 42;
-            return $arSrce;
+        $callback = function ($sourceAr) {
+            $sourceAr['age'] = 42;
+            return $sourceAr;
         };
         $sdd->expects($this->any())
             ->method($convertForUserDest)
@@ -212,7 +212,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         $sdd->batchSize = 200;
         //self::$dbMysql->Execute('TRUNCATE TABLE ' . self::$tableUserDest);
 
-        $this->assertEquals($this->totalRows, $sdd->syncOneway($config));
+        $this->assertEquals($this->totalRows, $sdd->syncOneWay($config));
         $this->assertEquals(
             $this->totalRows,
             self::$dbMysql->getRowCount($tableUserDest)
@@ -229,7 +229,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
 
 
     /**
-     * Need after testSyncOneway()
+     * Need after testSyncOneWay()
      */
     public function testSyncDelete()
     {
@@ -256,16 +256,16 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         );
         $db = self::$dbMysql;
         $callback = function () use ($db, $tableUser, $tableUserDest) {
-            $countSrce = $db->getRowCount($tableUser);
+            $countSource = $db->getRowCount($tableUser);
             $countDest = $db->getRowCount($tableUserDest);
 
-            if (1 >= ($countDest - $countSrce)) {
+            if (1 >= ($countDest - $countSource)) {
                 return null;
 
             } else {
                 $rs = $db->SelectLimit(
                     "SELECT uuid FROM $tableUserDest",
-                    $countDest - $countSrce
+                    $countDest - $countSource
                 );
                 return $rs->GetArray();
             }
@@ -342,7 +342,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
      * Put last avoid influence other tests
      *
      * @expectedException Exception
-     * @expectedExceptionMessage Aborted: Lockfile check failed.
+     * @expectedExceptionMessage Aborted: Lock file check failed.
      */
     public function testLockException()
     {

@@ -59,7 +59,7 @@ class DatetimeUtil
      * No week and month in result, Because 12m != 1y, it can't convert month
      * and year by solid ratio, so do week.
      *
-     * One year are 365 days, no consider of 366 days, because it didn't know
+     * One year are 365 days, no consider of 366 days, because it did not know
      * which year it is.
      *
      * @param   int     $second
@@ -115,7 +115,7 @@ class DatetimeUtil
     /**
      * Convert string to seconds it means
      *
-     * Month and week are allowed here, with solid convertion ratio:
+     * Month and week are allowed here, with solid conversion ratio:
      *
      * 1month = 30days
      * 1week = 7days
@@ -140,6 +140,7 @@ class DatetimeUtil
         $string = strtolower($string);
         $string = strtr($string, $this->timeUnitSymbol);
 
+        /** @noinspection SpellCheckingInspection */
         $i = preg_match_all('/([+-]?\s*)(\d+)([cymwdhis])/', $string, $match);
         if (0 < $i) {
             $second = 0;

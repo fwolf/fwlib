@@ -194,10 +194,10 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
      * Compute expiration time
      *
      * @param   int     $lifetime
-     * @param   int     $starttime      Base start time, 0 use time()
+     * @param   int     $startTime      Base start time, 0 use time()
      * @return  int                     In unix time
      */
-    protected function getExpireTime($lifetime = null, $starttime = 0)
+    protected function getExpireTime($lifetime = null, $startTime = 0)
     {
         // If not set, use config
         if (is_null($lifetime)) {
@@ -209,16 +209,16 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
             return 0;
         }
 
-        if (0 == $starttime) {
-            $starttime = time();
+        if (0 == $startTime) {
+            $startTime = time();
         }
 
         // If smaller than 30 days
         if (2592000 >= $lifetime) {
-            return $starttime + $lifetime;
+            return $startTime + $lifetime;
         }
 
-        // Larger than 30days, it's unix timestamp, ignore $starttime
+        // Larger than 30days, it's unix timestamp, ignore $startTime
         return $lifetime;
     }
 
