@@ -34,23 +34,22 @@ interface ServiceContainerInterface
     /**
      * Register service class or instance
      *
-     * @param   string  $name
-     * @param   string|object   $service
-     * @return  ServiceContainerInterface
+     * @param   string        $name
+     * @param   string|object $service
+     * @return  static
      */
     public function register($name, $service);
 
 
     /**
-     * Register service class
+     * Register service class with static factory method
      *
-     * For class implement Fwlib\Base\AbstractSingleton or similar, can be
-     * instanced simply by find class name in serviceClass array and call
-     * its getInstance() method, avoid define of newServiceXxx() method.
+     * Eg: For class uses Fwlib\Base\SingleInstanceTrait, can be instanced
+     * with its getInstance() method.
      *
      * @param   string  $name
      * @param   string  $className  Full qualified name without leading '\'
-     * @return  ServiceContainerInterface
+     * @return  static
      */
     public function registerClass($name, $className);
 
@@ -58,11 +57,11 @@ interface ServiceContainerInterface
     /**
      * Register service instance
      *
-     * Registered instance can directly use without newServiceXxx() method.
+     * Registered instance can directly use, not need container to create it.
      *
      * @param   string  $name
      * @param   object  $instance
-     * @return  ServiceContainerInterface
+     * @return  static
      */
     public function registerInstance($name, $instance);
 }
