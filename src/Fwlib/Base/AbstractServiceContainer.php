@@ -1,20 +1,19 @@
 <?php
 namespace Fwlib\Base;
 
-use Fwlib\Base\AbstractSingleton;
-use Fwlib\Base\ServiceContainerInterface;
-
 /**
  * Service Container
  *
  * Usually only one container instance is need, so use Singleton pattern.
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-abstract class AbstractServiceContainer extends AbstractSingleton implements
-    ServiceContainerInterface
+abstract class AbstractServiceContainer implements ServiceContainerInterface
 {
+    use SingletonTrait;
+
+
     /**
      * Class name for call Class::getInstance()
      *
