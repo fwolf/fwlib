@@ -1,9 +1,9 @@
 <?php
 namespace FwlibTest\Base;
 
-use Fwlib\Test\TestServiceContainer;
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Base\AbstractServiceContainer;
+use FwlibTest\Aide\TestServiceContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf

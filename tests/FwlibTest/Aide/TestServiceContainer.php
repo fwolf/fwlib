@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Test;
+namespace FwlibTest\Aide;
 
 use Fwlib\Base\ServiceContainer;
 use Fwlib\Bridge\Adodb;
@@ -10,8 +10,6 @@ use Fwlib\Config\GlobalConfig;
  *
  * Include environment requirement like db for running test, should not use in
  * production.
- *
- * @codeCoverageIgnore
  *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -42,9 +40,7 @@ class TestServiceContainer extends ServiceContainer
 
         } else {
             // Connect fail
-            // @codeCoverageIgnoreStart
             return null;
-            // @codeCoverageIgnoreEnd
         }
     }
 

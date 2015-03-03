@@ -2,7 +2,7 @@
 namespace FwlibTest\Base;
 
 use Fwlib\Base\ServiceContainerTrait;
-use Fwlib\Test\TestServiceContainer;
+use FwlibTest\Aide\TestServiceContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 

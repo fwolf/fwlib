@@ -2,13 +2,13 @@
 namespace Fwlib\Validator;
 
 use Fwlib\Base\AbstractServiceContainer;
-use Fwlib\Test\TestServiceContainer;
 use Fwlib\Util\UtilContainer;
+use FwlibTest\Aide\TestServiceContainer;
 
 /**
  * Validate constraint container
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ConstraintContainer extends AbstractServiceContainer

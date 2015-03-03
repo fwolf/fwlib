@@ -1,14 +1,14 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Validator\Constraint\Url;
-use Fwlib\Test\TestServiceContainer;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Validator\Constraint\Url;
+use FwlibTest\Aide\TestServiceContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class UrlTest extends PHPUnitTestCase

@@ -5,9 +5,9 @@ require __DIR__ . "/{$pathToRoot}config.default.php";
 use Fwlib\Bridge\Smarty;
 use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\ListTable;
-use Fwlib\Test\AbstractDbRelateTest;    // Use $tableUser
+use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Test\Benchmark;
-use Fwlib\Test\TestServiceContainer;
+use FwlibTest\Aide\TestServiceContainer;
 
 /***************************************
  * Prepare benchmark
@@ -41,11 +41,11 @@ $bm->mark('ListTable object prepared');
  **************************************/
 $db = TestServiceContainer::getInstance()->get('db');
 
-$ref = new \ReflectionProperty('Fwlib\Test\AbstractDbRelateTest', 'tableUser');
+$ref = new \ReflectionProperty(AbstractDbRelateTest::class, 'tableUser');
 $ref->setAccessible(true);
-$tableUser = $ref->getValue('Fwlib\Test\AbstractDbRelateTest');
+$tableUser = $ref->getValue(AbstractDbRelateTest::class);
 
-$ref = new \ReflectionMethod('Fwlib\Test\AbstractDbRelateTest', 'createTable');
+$ref = new \ReflectionMethod(AbstractDbRelateTest::class, 'createTable');
 $ref->setAccessible(true);
 $ref->invokeArgs(null, [$db]);
 
@@ -213,7 +213,7 @@ $bm->mark('List3 generated');
 /***************************************
  * Cleanup test db
  **************************************/
-$ref = new \ReflectionMethod('Fwlib\Test\AbstractDbRelateTest', 'dropTable');
+$ref = new \ReflectionMethod(AbstractDbRelateTest::class, 'dropTable');
 $ref->setAccessible(true);
 $ref->invokeArgs(null, [$db]);
 

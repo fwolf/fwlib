@@ -1,9 +1,9 @@
 <?php
 namespace FwlibTest\Db;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Config\GlobalConfig;
-use Fwlib\Test\TestServiceContainer;
+use FwlibTest\Aide\TestServiceContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf

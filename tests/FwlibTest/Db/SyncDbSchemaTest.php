@@ -3,10 +3,10 @@ namespace FwlibTest\Db;
 
 use Fwlib\Db\SyncDbSchema;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Test\TestServiceContainer;
+use FwlibTest\Aide\TestServiceContainer;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SyncDbSchemaTest extends AbstractDbRelateTest
