@@ -1,52 +1,25 @@
 <?php
 namespace Fwlib\Test;
 
-use Fwlib\Base\AbstractServiceContainer;
+use Fwlib\Base\ServiceContainer;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Config\GlobalConfig;
-use Fwlib\Html\ListTable;
 
 /**
  * Service Container for test case
+ *
+ * Include environment requirement like db for running test, should not use in
+ * production.
  *
  * @codeCoverageIgnore
  *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class TestServiceContainer extends AbstractServiceContainer
+class TestServiceContainer extends ServiceContainer
 {
     /**
-     * @var GlobalConfig
-     */
-    protected $globalConfig = null;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $serviceClass = [
-        'Curl'          => 'Fwlib\Net\Curl',
-        'GlobalConfig'  => 'Fwlib\Config\GlobalConfig',
-        'Smarty'        => 'Fwlib\Bridge\Smarty',
-        'Util'          => 'Fwlib\Util\UtilContainer',
-        'UtilContainer' => 'Fwlib\Util\UtilContainer',
-        'Validator'     => 'Fwlib\Validator\Validator',
-    ];
-
-
-    /**
-     * {@inheritdoc}
-     *
-     * Create common used instance, to be used when create other instances.
-     */
-    protected function __construct()
-    {
-        $this->globalConfig = GlobalConfig::getInstance();
-    }
-
-
-    /**
-     * New db instance and do connect
+     * Create db instance and do connect
      *
      * $fetchMode:
      * 0 ADODB_FETCH_DEFAULT
@@ -77,51 +50,67 @@ class TestServiceContainer extends AbstractServiceContainer
 
 
     /**
-     * New Adodb service object, default db
+     * Create Adodb service object, default db
      *
      * @return  Adodb
      */
-    protected function newDb()
+    protected function createDb()
     {
         return $this->connectDb(
-            $this->globalConfig->get('dbserver.default')
+            GlobalConfig::getInstance()->get('dbserver.default')
         );
     }
 
 
     /**
-     * New Adodb service object, Mysql db
+     * Create Adodb service object, Mysql db
      *
      * @return  Adodb
      */
-    protected function newDbMysql()
+    protected function createMysqlDb()
     {
         return $this->connectDb(
-            $this->globalConfig->get('dbserver.mysql')
+            GlobalConfig::getInstance()->get('dbserver.mysql')
         );
     }
 
 
     /**
-     * New Adodb service object, Sybase db
+     * Create Adodb service object, Sybase db
      *
      * @return  Adodb
      */
-    protected function newDbSybase()
+    protected function createSybaseDb()
     {
         return $this->connectDb(
-            $this->globalConfig->get('dbserver.sybase')
+            GlobalConfig::getInstance()->get('dbserver.sybase')
         );
     }
 
 
     /**
-     * New ListTable service instance
-     *
-     * @return  ListTable
+     * @return  Adodb
      */
-    protected function newListTable()
+    public function getDb()
     {
-        return new ListTable($this->get('Smarty'));
+        return $this->get('Db');
+    }
+
+
+    /**
+     * @return  Adodb
+     */
+    public function getMysqlDb()
+    {
+        return $this->get('MysqlDb');
+    }
+
+
+    /**
+     * @return  Adodb
+     */
+    public function getSybaseDb()
+    {
+        return $this->get('SybaseDb');
     }
 }
