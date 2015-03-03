@@ -26,6 +26,13 @@ namespace Fwlib\Base;
  * class, there should be a getFoo() method in implement with correct return
  * type marked, for IDE friendly.
  *
+ * As this interface lacks of actual getFoo() methods, use it as type hint
+ * with caution. A working plan is use interface to hint service container
+ * setter parameter, while hint getter return value with actual container
+ * instance class name. If service container is used as property in trait, it
+ * can only hint with interface, as trait property can not be re-declared.
+ * @see ServiceContainerAwareTrait
+ *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
