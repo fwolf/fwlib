@@ -96,7 +96,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
         }
 
         // Get db connection from ServiceContainer
-        $sc = ServiceContainerTest::getInstance();
+        $sc = TestServiceContainer::getInstance();
         foreach ($dbName as $name) {
             /** @var Adodb $db */
             $db = &self::${$name};

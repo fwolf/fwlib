@@ -3,7 +3,7 @@ namespace FwlibTest\Db;
 
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Config\GlobalConfig;
-use Fwlib\Test\ServiceContainerTest as ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -18,7 +18,7 @@ class AbstractDbClientTest extends PHPUnitTestCase
             $this->markTestSkipped();
         }
 
-        $sc = ServiceContainerTest::getInstance();
+        $sc = TestServiceContainer::getInstance();
 
         // With ServiceContainer
         $o = new AbstractDbClientDummy();

@@ -3,12 +3,12 @@ namespace Fwlib\Base;
 
 use Fwlib\Base\ServiceContainerAwareInterface;
 use Fwlib\Base\ServiceContainerInterface;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 
 /**
  * Class uses ServiceContainer
  *
- * The ServiceContainerTest should be replaced in production environment.
+ * The TestServiceContainer should be replaced in production environment.
  *
  * @copyright   Copyright 2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -49,7 +49,7 @@ class AbstractServiceContainerAware implements ServiceContainerAwareInterface
         ServiceContainerInterface $serviceContainer = null
     ) {
         if (is_null($serviceContainer)) {
-            $this->serviceContainer = ServiceContainerTest::getInstance();
+            $this->serviceContainer = TestServiceContainer::getInstance();
         } else {
             $this->serviceContainer = $serviceContainer;
         }

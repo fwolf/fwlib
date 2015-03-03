@@ -7,7 +7,7 @@ use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\ListTable;
 use Fwlib\Test\AbstractDbRelateTest;    // Use $tableUser
 use Fwlib\Test\Benchmark;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 
 /***************************************
  * Prepare benchmark
@@ -39,7 +39,7 @@ $bm->mark('ListTable object prepared');
 /***************************************
  * Prepare db and test table
  **************************************/
-$db = ServiceContainerTest::getInstance()->get('db');
+$db = TestServiceContainer::getInstance()->get('db');
 
 $ref = new \ReflectionProperty('Fwlib\Test\AbstractDbRelateTest', 'tableUser');
 $ref->setAccessible(true);

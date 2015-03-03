@@ -3,7 +3,7 @@ namespace FwlibTest\Base;
 
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Base\AbstractServiceContainerAware;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 
 /**
  * @copyright   Copyright 2014 Fwolf
@@ -42,7 +42,7 @@ class AbstractServiceContainerAwareTest extends PHPUnitTestCase
         $serviceContainerAware = $this->buildMock();
 
         $serviceContainerAware->setServiceContainer(
-            ServiceContainerTest::getInstance()
+            TestServiceContainer::getInstance()
         );
 
         $this->assertInstanceOf(

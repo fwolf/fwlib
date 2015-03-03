@@ -4,7 +4,7 @@ namespace FwlibTest\Db;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Db\DbDataExport;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -82,7 +82,7 @@ class DbDataExportTest extends AbstractDbRelateTest
     public function testConstructWithServiceContainer()
     {
         $dbe = new DbDataExport();
-        $dbe->setServiceContainer(ServiceContainerTest::getInstance());
+        $dbe->setServiceContainer(TestServiceContainer::getInstance());
         $this->assertInstanceOf(
             'Fwlib\Bridge\Adodb',
             $this->reflectionCall($dbe, 'getDb')

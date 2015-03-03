@@ -6,7 +6,7 @@ use Fwlib\Base\ReturnValue;
 use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\FormValidator;
 use Fwlib\Net\Curl;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\ConstraintContainer;
 use Fwlib\Validator\Validator;
@@ -54,7 +54,7 @@ if ('checkAge' == $action) {
  **************************************/
 $curl = new Curl;
 $curl->setoptSslverify(false);
-$serviceContainer = ServiceContainerTest::getInstance();
+$serviceContainer = TestServiceContainer::getInstance();
 $serviceContainer->register('Curl', $curl);
 
 $constraintContainer = ConstraintContainer::getInstance();

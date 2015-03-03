@@ -2,7 +2,7 @@
 namespace Fwlib\Validator;
 
 use Fwlib\Base\AbstractServiceContainer;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -50,7 +50,7 @@ class ConstraintContainer extends AbstractServiceContainer
         // :TODO: Make a service container for Fwlib
         if (method_exists($service, 'setServiceContainer')) {
             $service->setServiceContainer(
-                ServiceContainerTest::getInstance()
+                TestServiceContainer::getInstance()
             );
         }
 

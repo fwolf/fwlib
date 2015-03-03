@@ -3,7 +3,7 @@ namespace FwlibTest\Base;
 
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Base\ReturnValue;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -20,7 +20,7 @@ class AbstractAutoNewInstanceTest extends PHPUnitTestCase
     {
         $this->dummy = new AbstractAutoNewConfigDummy;
 
-        $this->serviceContainer = ServiceContainerTest::getInstance();
+        $this->serviceContainer = TestServiceContainer::getInstance();
     }
 
 
@@ -56,7 +56,7 @@ class AbstractAutoNewInstanceTest extends PHPUnitTestCase
     public function testCheckServiceContainer()
     {
         $this->dummy->setServiceContainer(
-            ServiceContainerTest::getInstance()
+            TestServiceContainer::getInstance()
         );
         $this->assertTrue($this->dummy->checkServiceContainer());
 

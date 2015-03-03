@@ -2,6 +2,7 @@
 namespace FwlibTest\Base;
 
 use Fwlib\Base\ServiceContainerTrait;
+use Fwlib\Test\TestServiceContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -17,7 +18,7 @@ class ServiceContainerTraitTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $serviceContainer = $this->getMockBuilder(
-            'Fwlib\Base\ServiceContainerTrait'
+            ServiceContainerTrait::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['createFoo'])
@@ -41,18 +42,18 @@ class ServiceContainerTraitTest extends PHPUnitTestCase
 
         // Create instance with getInstance()
         $serviceContainer->register(
-            'ServiceContainerTest',
-            'Fwlib\Test\ServiceContainerTest'
+            'TestServiceContainer',
+            TestServiceContainer::class
         );
 
         $serviceContainerTest = $this->reflectionCall(
             $serviceContainer,
             'get',
-            ['ServiceContainerTest']
+            ['TestServiceContainer']
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Test\ServiceContainerTest',
+            TestServiceContainer::class,
             $serviceContainerTest
         );
 

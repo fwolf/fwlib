@@ -1,11 +1,12 @@
 <?php
 namespace FwlibTest\Base;
 
+use Fwlib\Test\TestServiceContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Base\AbstractServiceContainer;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AbstractServiceContainerTest extends PHPUnitTestCase
@@ -13,7 +14,7 @@ class AbstractServiceContainerTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $serviceContainer = $this->getMockBuilder(
-            'Fwlib\Base\AbstractServiceContainer'
+            AbstractServiceContainer::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['newFoo'])
@@ -32,14 +33,14 @@ class AbstractServiceContainerTest extends PHPUnitTestCase
         $serviceContainer = $this->buildMock();
 
         $serviceContainer->register(
-            'ServiceContainerTest',
-            'Fwlib\Test\ServiceContainerTest'
+            'TestServiceContainer',
+            TestServiceContainer::class
         );
 
-        $serviceContainerTest = $serviceContainer->get('ServiceContainerTest');
+        $serviceContainerTest = $serviceContainer->get('TestServiceContainer');
 
         $this->assertInstanceOf(
-            'Fwlib\Test\ServiceContainerTest',
+            TestServiceContainer::class,
             $serviceContainerTest
         );
     }

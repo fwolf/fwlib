@@ -3,7 +3,7 @@ namespace FwlibTest\Validator\Constraint;
 
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Url;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
 
@@ -46,7 +46,7 @@ class UrlTest extends PHPUnitTestCase
                 return UrlTest::$curlResult;
             }));
 
-        $serviceContainer = ServiceContainerTest::getInstance();
+        $serviceContainer = TestServiceContainer::getInstance();
         $serviceContainer->register('Curl', $curl);
 
         $constraint = new Url();

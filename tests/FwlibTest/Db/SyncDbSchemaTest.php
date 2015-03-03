@@ -3,7 +3,7 @@ namespace FwlibTest\Db;
 
 use Fwlib\Db\SyncDbSchema;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Test\ServiceContainerTest;
+use Fwlib\Test\TestServiceContainer;
 
 /**
  * @copyright   Copyright 2013-2014 Fwolf
@@ -36,7 +36,7 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
         );
 
         self::$sds = new SyncDbSchema(
-            ServiceContainerTest::getInstance()->get('Db'),
+            TestServiceContainer::getInstance()->get('Db'),
             self::$logTable
         );
 
@@ -51,7 +51,7 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
     {
         $this->expectOutputRegex('/Log table \w+ already exists\./');
         $sds = new SyncDbSchema(
-            ServiceContainerTest::getInstance()->get('Db'),
+            TestServiceContainer::getInstance()->get('Db'),
             self::$logTable
         );
         unset($sds);

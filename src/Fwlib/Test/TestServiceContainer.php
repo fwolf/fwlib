@@ -7,14 +7,14 @@ use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\ListTable;
 
 /**
- * Service Container example, also for test case
+ * Service Container for test case
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ServiceContainerTest extends AbstractServiceContainer
+class TestServiceContainer extends AbstractServiceContainer
 {
     /**
      * @var GlobalConfig
