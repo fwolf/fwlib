@@ -11,6 +11,7 @@ namespace Fwlib\Base;
  * In production, if ServiceContainer class is extended, should extend a trait
  * too, to change getServiceContainer() method with new default return value
  * and correct return type hint.
+ * @see \FwlibTest\Aide\TestServiceContainerAwareTrait
  *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
