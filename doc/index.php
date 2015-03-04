@@ -64,7 +64,7 @@ echo $html;
 <footer>
   <hr />
   <div id='copyright'>
-    <p>Copyright 2009-2013 Fwolf, All Rights Reserved.</p>
+    <p>Copyright 2009-<?php echo date('Y'); ?> Fwolf, All Rights Reserved.</p>
     <p>Distributed under the
       <a href='http://opensource.org/licenses/mit-license'>MIT License</a>.
   </p>
