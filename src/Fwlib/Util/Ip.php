@@ -1,16 +1,17 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\AbstractUtilAware;
-
 /**
  * Ip util
  *
- * @copyright   Copyright 2006-2014 Fwolf
+ * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Ip extends AbstractUtilAware
+class Ip
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Convert ip from hex string
      *
@@ -46,7 +47,7 @@ class Ip extends AbstractUtilAware
 
         // @codeCoverageIgnoreStart
         if (empty($ip)) {
-            $ip = $this->getUtil('HttpUtil')->getClientIp();
+            $ip = $this->getUtilContainer()->getHttp()->getClientIp();
         }
         // @codeCoverageIgnoreEnd
 
