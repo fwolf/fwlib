@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\AbstractUtilAware;
-
 /**
  * UUID generator using base-62 character (0-9a-zA-Z)
  *
@@ -30,11 +28,14 @@ use Fwlib\Util\AbstractUtilAware;
  * Notice: Mix of a-zA-Z may not suit for Mysql UUID, because Mysql default
  * compare string CASE INSENSITIVE.
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class UuidBase62 extends AbstractUtilAware
+class UuidBase62
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Number base
      */
@@ -77,7 +78,8 @@ class UuidBase62 extends AbstractUtilAware
     {
         $uuid = substr($uuid, 0, $this->length - 1);
         $uuid .= strtolower(
-            $this->getUtil('Iso7064')->encode($uuid, '3736', false)
+            $this->getUtilContainer()->getIso7064()
+                ->encode($uuid, '3736', false)
         );
 
         return $uuid;
@@ -105,9 +107,9 @@ class UuidBase62 extends AbstractUtilAware
     ) {
         list($usec, $sec) = explode(' ', microtime());
 
-        $numberUtil = $this->getUtil('NumberUtil');
-        $httpUtil = $this->getUtil('HttpUtil');
-        $stringUtil = $this->getUtil('StringUtil');
+        $numberUtil = $this->getUtilContainer()->getNumber();
+        $httpUtil = $this->getUtilContainer()->getHttp();
+        $stringUtil = $this->getUtilContainer()->getString();
 
         // Seconds from now(Nov 2013) will fill length 6
         $uuid = $numberUtil->baseConvert($sec, 10, $this->base);
@@ -159,7 +161,7 @@ class UuidBase62 extends AbstractUtilAware
      */
     public function parse($uuid)
     {
-        $numberUtil = $this->getUtil('NumberUtil');
+        $numberUtil = $this->getUtilContainer()->getNumber();
 
         if ($this->length == strlen($uuid)) {
             $sec = $numberUtil->baseConvert(substr($uuid, 0, 6), $this->base, 10);
