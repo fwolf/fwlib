@@ -62,17 +62,33 @@ trait ConfigAwareTrait
 
 
     /**
-     * Set config value
+     * Set single config value
      *
-     * @param   string|array $key
+     * @param   string       $key
      * @param   mixed        $val
      * @return  static
      */
-    public function setConfig($key, $val = null)
+    public function setConfig($key, $val)
     {
         $configInstance = $this->getConfigInstance();
 
         $configInstance->set($key, $val);
+
+        return $this;
+    }
+
+
+    /**
+     * Batch set config values
+     *
+     * @param   array   $configs
+     * @return  static
+     */
+    public function setConfigs(array $configs)
+    {
+        $configInstance = $this->getConfigInstance();
+
+        $configInstance->set($configs);
 
         return $this;
     }
