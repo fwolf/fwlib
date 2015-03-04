@@ -1,28 +1,42 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use Fwlib\Util\Algorithm\Iso7064;
+use Fwlib\Util\ArrayUtil;
+use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
+use Fwlib\Util\Code\ChnOrganizationCode;
+use Fwlib\Util\DatetimeUtil;
+use Fwlib\Util\Env;
+use Fwlib\Util\EscapeColor;
+use Fwlib\Util\FileSystem;
+use Fwlib\Util\HttpUtil;
+use Fwlib\Util\Ip;
+use Fwlib\Util\Json;
+use Fwlib\Util\McryptSimpleIv;
+use Fwlib\Util\NumberUtil;
+use Fwlib\Util\Rfc2047;
+use Fwlib\Util\StringUtil;
+use Fwlib\Util\UuidBase16;
+use Fwlib\Util\UuidBase36;
+use Fwlib\Util\UuidBase62;
 use Fwlib\Util\UtilContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ *
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class UtilContainerTest extends PHPUnitTestCase
 {
     /**
-     * @return  UtilContainer
+     * @return MockObject | UtilContainer
      */
     protected function buildMock()
     {
-        $utilContainer = $this->getMockBuilder(
-            'Fwlib\Util\UtilContainer'
-        )
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-
-        return $utilContainer;
+        return UtilContainer::getInstance();
     }
 
 
@@ -32,96 +46,96 @@ class UtilContainerTest extends PHPUnitTestCase
 
         $this->assertEquals(
             42,
-            $utilContainer->get('Array')->getIdx([], 'foo', 42)
+            $utilContainer->getArray()->getIdx([], 'foo', 42)
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\ArrayUtil',
+            ArrayUtil::class,
             $utilContainer->getArray()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\DatetimeUtil',
+            DatetimeUtil::class,
             $utilContainer->getDatetime()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\Env',
+            Env::class,
             $utilContainer->getEnv()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\EscapeColor',
+            EscapeColor::class,
             $utilContainer->getEscapeColor()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\FileSystem',
+            FileSystem::class,
             $utilContainer->getFileSystem()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\HttpUtil',
+            HttpUtil::class,
             $utilContainer->getHttp()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\Ip',
+            Ip::class,
             $utilContainer->getIp()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\Json',
+            Json::class,
             $utilContainer->getJson()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\McryptSimpleIv',
+            McryptSimpleIv::class,
             $utilContainer->getMcryptSimpleIv()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\NumberUtil',
+            NumberUtil::class,
             $utilContainer->getNumber()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\Rfc2047',
+            Rfc2047::class,
             $utilContainer->getRfc2047()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\StringUtil',
+            StringUtil::class,
             $utilContainer->getString()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\UuidBase16',
+            UuidBase16::class,
             $utilContainer->getUuidBase16()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\UuidBase36',
+            UuidBase36::class,
             $utilContainer->getUuidBase36()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\UuidBase62',
+            UuidBase62::class,
             $utilContainer->getUuidBase62()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\Algorithm\Iso7064',
+            Iso7064::class,
             $utilContainer->getIso7064()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\Code\ChnCitizenIdentificationNumber',
+            ChnCitizenIdentificationNumber::class,
             $utilContainer->getChnCin()
         );
 
         $this->assertInstanceOf(
-            'Fwlib\Util\Code\ChnOrganizationCode',
+            ChnOrganizationCode::class,
             $utilContainer->getChnOrganizationCode()
         );
     }
