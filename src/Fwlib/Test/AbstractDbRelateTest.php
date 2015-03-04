@@ -2,6 +2,8 @@
 namespace Fwlib\Test;
 
 use Fwlib\Bridge\Adodb;
+use FwlibTest\Aide\TestServiceContainer;
+use FwlibTest\Aide\TestServiceContainerAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -14,6 +16,9 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 abstract class AbstractDbRelateTest extends PHPunitTestCase
 {
+    use TestServiceContainerAwareTrait;
+
+
     /**
      * Db connection, default
      *
@@ -27,6 +32,17 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
      * @var Adodb
      */
     protected static $dbMysql = null;
+
+    /**
+     * Service name of db profiles
+     *
+     * @var string[]    Index by db profile name
+     */
+    protected static $dbServiceNames = [
+        'db'       => 'Db',
+        'dbMysql'  => 'MysqlDb',
+        'dbSybase' => 'SybaseDb',
+    ];
 
     /**
      * Db connection, Sybase
@@ -102,7 +118,8 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             $db = &self::${$name};
 
             if (is_null($db)) {
-                $db = $sc->get($name);
+                $method = 'get' . self::$dbServiceNames[$name];
+                $db = $sc->$method();
 
                 if (is_null($db) || !$db->isConnected()) {
                     self::markTestSkipped("Db $name can't connect.");

@@ -36,7 +36,7 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
         );
 
         self::$sds = new SyncDbSchema(
-            TestServiceContainer::getInstance()->get('Db'),
+            $this->getServiceContainer()->getDb(),
             self::$logTable
         );
 
@@ -51,7 +51,7 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
     {
         $this->expectOutputRegex('/Log table \w+ already exists\./');
         $sds = new SyncDbSchema(
-            TestServiceContainer::getInstance()->get('Db'),
+            $this->getServiceContainer()->getDb(),
             self::$logTable
         );
         unset($sds);
