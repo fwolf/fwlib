@@ -1,18 +1,20 @@
 <?php
 namespace FwlibTest\Net\Sms;
 
+use Fwlib\Util\UtilContainerAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Net\Sms\SmsLogger;
-use Fwlib\Util\UtilContainer;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SmsLoggerTest extends PHPUnitTestCase
 {
+    use UtilContainerAwareTrait;
+
+
     private $smsLogger = null;
-    protected $utilContainer;
 
 
     public function __construct()
@@ -22,8 +24,6 @@ class SmsLoggerTest extends PHPUnitTestCase
             ->getMock();
 
         $this->smsLogger = new SmsLogger($db);
-
-        $this->utilContainer = UtilContainer::getInstance();
     }
 
 
@@ -43,7 +43,7 @@ class SmsLoggerTest extends PHPUnitTestCase
 
     public function testCountPart()
     {
-        $stringUtil = $this->utilContainer->get('StringUtil');
+        $stringUtil = $this->getUtilContainer()->getString();
 
         $x = '';
         $this->assertEquals(0, $this->smsLogger->countPart($x));

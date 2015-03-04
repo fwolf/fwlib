@@ -1,9 +1,8 @@
 <?php
 namespace Fwlib\Net\Sms;
 
-use Fwlib\Db\AbstractDbClient;
-use Fwlib\Util\UtilContainer;
-use Fwlib\Util\UuidBase36;
+use Fwlib\Db\AdodbAwareTrait;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * SMS sent logger
@@ -14,8 +13,12 @@ use Fwlib\Util\UuidBase36;
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  * @see sms-log.sql
  */
-class SmsLogger extends AbstractDbClient
+class SmsLogger
 {
+    use AdodbAwareTrait;
+    use UtilContainerAwareTrait;
+
+
     /**
      * Log table name
      *
@@ -126,6 +129,6 @@ class SmsLogger extends AbstractDbClient
      */
     protected function generateUuid()
     {
-        return $this->getUtil('UuidBase36')->generate();
+        return $this->getUtilContainer()->getUuidBase36()->generate();
     }
 }
