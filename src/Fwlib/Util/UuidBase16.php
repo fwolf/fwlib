@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\AbstractUtilAware;
-
 /**
  * UUID generator using hex(0-9a-f)
  *
@@ -24,11 +22,14 @@ use Fwlib\Util\AbstractUtilAware;
  *
  * @link        http://us.php.net/uniqid
  *
- * @copyright   Copyright 2008-2014 Fwolf
+ * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class UuidBase16 extends AbstractUtilAware
+class UuidBase16
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Add check digit to an Uuid
      *
@@ -45,7 +46,7 @@ class UuidBase16 extends AbstractUtilAware
             $uuid = $this->delSeparator($uuid);
         }
 
-        $uuid = $this->getUtil('Iso7064')->encode(
+        $uuid = $this->getUtilContainer()->getIso7064()->encode(
             substr($uuid, 0, 31),
             '1716',
             true
@@ -143,7 +144,7 @@ class UuidBase16 extends AbstractUtilAware
 
         // custom2: 8 chars, split to 2 parts
         if (empty($custom2)) {
-            $custom2 = $this->getUtil('Ip')->toHex();
+            $custom2 = $this->getUtilContainer()->getIp()->toHex();
         }
         if (8 != strlen($custom2)) {
             $custom2 .= sprintf('%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff));
@@ -226,7 +227,7 @@ class UuidBase16 extends AbstractUtilAware
                 'time'    => date('Y-m-d H:i:s', $timeLow),
                 'custom1' => substr($uuid, 12, 4),
                 'custom2' => $custom2,
-                'ip'      => $this->getUtil('Ip')->fromHex($custom2),
+                'ip'      => $this->getUtilContainer()->getIp()->fromHex($custom2),
                 'random1' => substr($uuid, 24, 4),
                 'random2' => substr($uuid, 28, 4)
             ];
