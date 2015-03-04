@@ -5,15 +5,15 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
 
 /**
- * @copyright   Copyright 2012-2014 Fwolf
+ * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class CacheTest extends PHPUnitTestCase
 {
     /**
-     * Cache object
+     * Cache instance
      *
-     * @var Fwlib\Cache\Cache
+     * @var Cache
      */
     protected $ch = null;
 
@@ -61,14 +61,15 @@ class CacheTest extends PHPUnitTestCase
         // Decoded object s stdClass, not original __CLASS__, array property
         // in it need convert back from stdClass too.
         $this->ch->setConfig('storeMethod', 2);
-        $x = new Cache;
+        // Need config value, or json conversion will drop non-public property
+        $x = ['foo' => 'bar'];
         $y = $this->reflectionCall($this->ch, 'encodeValue', [$x]);
         $y = $this->reflectionCall($this->ch, 'decodeValue', [$y]);
-        $this->assertObjectHasAttribute('config', $y);
-        $this->assertObjectHasAttribute('config', $y->config);
-        $this->assertInstanceOf('stdClass', $y->config->config);
-        // Convert stdClass back to array
-        $this->assertEqualArray($x->config->config, (array)$y->config->config);
+        $this->assertObjectHasAttribute('foo', $y);
+        $this->assertInstanceOf('stdClass', $y);
+
+
+        $this->assertEmpty($this->ch->getErrorMessage());
     }
 
 
@@ -119,9 +120,10 @@ class CacheTest extends PHPUnitTestCase
         );
 
         $x = time() + 2592000;
+        $this->ch->setConfig('lifetime', 2592000);
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'getExpireTime', [2592000])
+            $this->reflectionCall($this->ch, 'getExpireTime', [null])
         );
     }
 

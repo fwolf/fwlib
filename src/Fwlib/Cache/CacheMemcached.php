@@ -82,39 +82,6 @@ class CacheMemcached extends Cache
 
 
     /**
-     * Is cache data expire ?
-     *
-     * Memcached expire when get fail, usually call get() and check if result
-     * is null or check resultCode is enough.
-     *
-     * @param   string  $key
-     * @param   int     $lifetime
-     * @return  boolean                 True means it IS expired
-     */
-    protected function isExpired($key, $lifetime = null)
-    {
-        // Lifetime is handle by memcached
-
-        $memcached = $this->getMemcached();
-
-        $val = $memcached->get($this->getKey($key));
-
-        // Unknown item size, try again for auto split
-        if ((\Memcached::RES_SUCCESS != $memcached->getResultCode())
-            && (1 == $this->getConfig('memcachedAutoSplit'))
-        ) {
-            $val = $memcached->get($this->getKey($key . '[split]'));
-        }
-
-        if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-
-    /**
      * Read cache and return value
      *
      * Lifetime set when write cache.
@@ -180,6 +147,57 @@ class CacheMemcached extends Cache
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultConfigs()
+    {
+        $configs = parent::getDefaultConfigs();
+
+
+        // Memcached server
+
+        $memcachedOptions = [
+            // Better for multi server
+            \Memcached::OPT_DISTRIBUTION    =>
+                \Memcached::DISTRIBUTION_CONSISTENT,
+            // Better for multi app use one memcached
+            \Memcached::OPT_PREFIX_KEY  => 'fw',
+        ];
+
+        // @codeCoverageIgnoreStart
+        // Use json is better for debug
+        if (\Memcached::HAVE_JSON) {
+            $memcachedOptions[\Memcached::OPT_SERIALIZER] =
+                \Memcached::SERIALIZER_JSON;
+        }
+        // @codeCoverageIgnoreEnd
+
+        // Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
+        $configs['memcachedLifetime'] = 86400;
+
+        // Auto split store item larger than max item size
+        // 0/off, 1/on, when off, large item store will fail.
+        $configs['memcachedAutoSplit'] = 0;
+
+        // Max item size, STRING val exceed this will auto split
+        //   and store automatic, user need only care other val type.
+        $configs['memcachedMaxItemSize'] = 1024000;
+
+        // Memcached default option, set when new memcached obj
+        $configs['memcachedOptionDefault'] = $memcachedOptions;
+
+        // Memcached option, user set, replace default above
+        $configs['memcachedOption'] = [];
+
+        // After change server cfg, you should unset $oMemcached.
+        // or use setConfigServer()
+        $configs['memcachedServer'] = [];
+
+        return $configs;
     }
 
 
@@ -271,6 +289,39 @@ class CacheMemcached extends Cache
 
 
     /**
+     * Is cache data expire ?
+     *
+     * Memcached expire when get fail, usually call get() and check if result
+     * is null or check resultCode is enough.
+     *
+     * @param   string  $key
+     * @param   int     $lifetime
+     * @return  boolean                 True means it IS expired
+     */
+    protected function isExpired($key, $lifetime = null)
+    {
+        // Lifetime is handle by memcached
+
+        $memcached = $this->getMemcached();
+
+        $val = $memcached->get($this->getKey($key));
+
+        // Unknown item size, try again for auto split
+        if ((\Memcached::RES_SUCCESS != $memcached->getResultCode())
+            && (1 == $this->getConfig('memcachedAutoSplit'))
+        ) {
+            $val = $memcached->get($this->getKey($key . '[split]'));
+        }
+
+        if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    /**
      * Write data to cache
      *
      * Lifetime is set when write.
@@ -335,66 +386,6 @@ class CacheMemcached extends Cache
 
             // @codeCoverageIgnoreEnd
         }
-
-        return $this;
-    }
-
-
-    /**
-     * Set default config
-     *
-     * @return  this
-     */
-    protected function setConfigDefault()
-    {
-        parent::setConfigDefault();
-
-
-        // Memcached server
-
-        $memcachedOptions = [
-            // Better for multi server
-            \Memcached::OPT_DISTRIBUTION    =>
-                \Memcached::DISTRIBUTION_CONSISTENT,
-            // Better for multi app use one memcached
-            \Memcached::OPT_PREFIX_KEY  => 'fw',
-        ];
-
-        // @codeCoverageIgnoreStart
-        // Use json is better for debug
-        if (\Memcached::HAVE_JSON) {
-            $memcachedOptions[\Memcached::OPT_SERIALIZER] =
-                \Memcached::SERIALIZER_JSON;
-        }
-        // @codeCoverageIgnoreEnd
-
-        // Default cache lifetime, 60s * 60m * 24h = 86400s(1d)
-        $this->setConfig('memcachedLifetime', 86400);
-
-        // Auto split store item larger than max item size
-        // 0/off, 1/on, when off, large item store will fail.
-        $this->setConfig('memcachedAutoSplit', 0);
-
-        // Max item size, STRING val exceed this will auto split
-        //   and store automatic, user need only care other val type.
-        $this->setConfig('memcachedMaxItemSize', 1024000);
-
-        // Memcached default option, set when new memcached obj
-        $this->setConfig('memcachedOptionDefault', $memcachedOptions);
-
-        // Memcached option, user set, replace default above
-        $this->setConfig(
-            'memcachedOption',
-            []
-        );
-
-        // After change server cfg, you should unset $oMemcached.
-        // or use setConfigServer()
-        $this->setConfig(
-            'memcachedServer',
-            []
-        );
-
 
         return $this;
     }

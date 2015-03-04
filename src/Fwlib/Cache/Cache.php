@@ -1,11 +1,10 @@
 <?php
 namespace Fwlib\Cache;
 
-use Fwlib\Base\AbstractAutoNewConfig;
 use Fwlib\Cache\CacheFile;
-use Fwlib\Cache\CacheInterface;
 use Fwlib\Cache\CacheMemcached;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Config\ConfigAwareTrait;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Base class for k-v cache system
@@ -22,8 +21,11 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Cache extends AbstractAutoNewConfig implements CacheInterface
+class Cache implements CacheInterface
 {
+    use ConfigAwareTrait;
+    use UtilContainerAwareTrait;
+
 
     /**
      * Cache data for cache type ''
@@ -144,7 +146,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
         if (1 == $this->getConfig('storeMethod')
             || 2 == $this->getConfig('storeMethod')
         ) {
-            return $this->getUtil('Json')->encodeUnicode($val);
+            return $this->getUtilContainer()->getJson()->encodeUnicode($val);
 
         } else {
             // Raw
@@ -165,7 +167,7 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
         $key = $this->getKey($key);
 
         // Ignored lifetime
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
         $val = $this->decodeValue(
             $arrayUtil->getIdx($this->cacheData, $key, null),
             0
@@ -176,6 +178,33 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
             'success'   => !is_null($val),
         ];
         return $val;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultConfigs()
+    {
+        $configs = [];
+
+        // Cache store method
+        // 0: Raw string or other value.
+        //  User should determine the value DO suite cache type.
+        // 1: Json, decode to array.
+        // 2: Json, decode to object.
+        $configs['storeMethod'] =  1;
+
+        // Default cache lifetime, in second
+        // Can be overwrite by param when get/set.
+        // Default/Max 30days:
+        //   60sec * 60min = 3600s * 24h = 86400s * 30 = 2592000s
+        // Larger than 30days, must assign unix time like memcached,
+        //   which is number of seconds since 1970-1-1 as an integer.
+        // 0 means forever.
+        $configs['lifetime'] = 2592000;
+
+        return $configs;
     }
 
 
@@ -320,33 +349,6 @@ class Cache extends AbstractAutoNewConfig implements CacheInterface
     {
         // Lifetime is useless.
         $this->cacheData[$this->getKey($key)] = $this->encodeValue($val, 0);
-
-        return $this;
-    }
-
-
-    /**
-     * Set default config
-     *
-     * @return  Cache
-     */
-    protected function setConfigDefault()
-    {
-        // Cache store method
-        // 0: Raw string or other value.
-        //  User should determine the value DO suite cache type.
-        // 1: Json, decode to array.
-        // 2: Json, decode to object.
-        $this->setConfig('storeMethod', 1);
-
-        // Default cache lifetime, in second
-        // Can be overwrite by param when get/set.
-        // Default/Max 30days:
-        //   60sec * 60min = 3600s * 24h = 86400s * 30 = 2592000s
-        // Larger than 30days, must assign unix time like memcached,
-        //   which is number of seconds since 1970-1-1 as an integer.
-        // 0 means forever.
-        $this->setConfig('lifetime', 2592000);
 
         return $this;
     }

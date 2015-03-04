@@ -1,14 +1,15 @@
 <?php
 namespace FwlibTest\Cache;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
+use Fwlib\Cache\CacheMemcached;
 use Fwlib\Config\GlobalConfig;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @requires extension memcached
  *
- * @copyright   Copyright 2012-2014 Fwolf
+ * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class CacheMemcachedTest extends PHPUnitTestCase
@@ -16,9 +17,10 @@ class CacheMemcachedTest extends PHPUnitTestCase
     /**
      * Cache object
      *
-     * @var Fwlib\Cache\CacheMemcached
+     * @var CacheMemcached
      */
     protected $ch = null;
+
 
     public function __construct()
     {
@@ -204,9 +206,11 @@ class CacheMemcachedTest extends PHPUnitTestCase
             ],
         ];
         $this->ch->setConfigServer($x);
+
+        $memcached = $this->reflectionGet($this->ch, 'memcached');
         $this->assertEquals(
             [$x[1]],
-            $this->ch->memcached->getServerList()
+            $memcached->getServerList()
         );
     }
 }

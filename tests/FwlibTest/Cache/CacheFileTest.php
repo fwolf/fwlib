@@ -1,32 +1,33 @@
 <?php
 namespace FwlibTest\Cache;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Cache\CacheFile;
+use Fwlib\Util\UtilContainerAwareTrait;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * Some test file/path environment is for *nix only.
  *
- * @copyright   Copyright 2012-2014 Fwolf
+ * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class CacheFileTest extends PHPUnitTestCase
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Cache object
      *
-     * @var Fwlib\Cache\CacheFile
+     * @var CacheFile
      */
     protected $ch = null;
-
-    protected $utilContainer = null;
 
 
     public function __construct()
     {
         $this->ch = Cache::create('file');
-        $this->utilContainer = UtilContainer::getInstance();
     }
 
 
@@ -41,7 +42,7 @@ class CacheFileTest extends PHPUnitTestCase
         $x = $this->ch->getFilePath($key);
 
         // Clean test dir
-        $fileSystem = $this->utilContainer->get('FileSystem');
+        $fileSystem = $this->getUtilContainer()->getFileSystem();
         $y = $fileSystem->getDirName($x);
         if (file_exists($y)) {
             $fileSystem->del($y);

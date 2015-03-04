@@ -1,31 +1,16 @@
 <?php
 namespace Fwlib\Cache;
 
-use Fwlib\Cache\Cache;
-
 /**
  * Key-value cache system, data store in file
  *
  * Notice: Expired cache file is not deleted automatic.
  *
- * @copyright   Copyright 2010-2014 Fwolf
+ * @copyright   Copyright 2010-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class CacheFile extends Cache
 {
-    /**
-     * Constructor
-     *
-     * @param   array   $config
-     */
-    public function __construct($config)
-    {
-        parent::__construct($config);
-
-        $this->checkConfig();
-    }
-
-
     /**
      * Check if cache is ready for use
      *
@@ -299,7 +284,7 @@ class CacheFile extends Cache
         $cache = $this->encodeValue($val);
 
         // Create each level dir if not exists
-        $dir = $this->getUtil('FileSystem')->getDirName($file);
+        $dir = $this->getUtilContainer()->getFileSystem()->getDirName($file);
         if (!file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
@@ -312,17 +297,15 @@ class CacheFile extends Cache
 
 
     /**
-     * Set default config
-     *
-     * @return  this
+     * {@inheritdoc}
      */
-    protected function setConfigDefault()
+    protected function getDefaultConfigs()
     {
-        parent::setConfigDefault();
+        $configs = parent::getDefaultConfigs();
 
 
         // Dir where data file store
-        $this->setConfig('fileDir', '/tmp/cache/');
+        $configs['fileDir'] = '/tmp/cache/';
 
         /**
          * Cache file store rule
@@ -336,9 +319,9 @@ class CacheFile extends Cache
          * 5n   crc32, n=0..3, 16 * 16 = 256
          * Join these str with '/', got full path of cache file.
          */
-        $this->setConfig('fileRule', '10');
+        $configs['fileRule'] = '10';
 
 
-        return $this;
+        return $configs;
     }
 }
