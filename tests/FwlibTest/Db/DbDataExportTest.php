@@ -12,30 +12,24 @@ use FwlibTest\Aide\TestServiceContainer;
  */
 class DbDataExportTest extends AbstractDbRelateTest
 {
-    protected static $dbe = null;
     protected static $dbUsing = 'default';
+
+    /** @var DbDataExport */
+    protected static $dbe = null;
+
     protected static $delimiter = '';
     protected static $exportPath = '';
     protected static $insertCount = 23;
+
+    /** @var UtilContainer */
     protected static $utilContainer = null;
-
-
-    /**
-     * Constructor may run multiple times(N of testMethod()) because PHPUnit
-     * use Reflection on it, so put init script to setUpBeforeClass(), which
-     * will only run once. Also, $dbe and $delimiter must be static to share
-     * between testMethod().
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
 
     public function setUp()
     {
         if (is_null(self::$dbe)) {
-            self::$dbe = new DbDataExport(self::$db);
+            self::$dbe = (new DbDataExport())
+                ->setDb(self::$db);
 
             self::$delimiter = $this->reflectionGet(self::$dbe, 'db')
                 ->getSqlDelimiter('');
@@ -57,7 +51,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         unlink(self::$exportPath);
 
         // Insert data for export
-        $uuidUtil = self::$utilContainer->get('UuidBase16');
+        $uuidUtil = self::$utilContainer->getUuidBase16();
         for ($i = 0; $i < self::$insertCount; $i ++) {
             self::$db->write(
                 self::$tableUser,
@@ -74,18 +68,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         parent::tearDownAfterClass();
 
         // Remove export path
-        self::$utilContainer->get('FileSystem')->del(self::$exportPath);
-    }
-
-
-    public function testConstructWithServiceContainer()
-    {
-        $dbe = new DbDataExport();
-        $dbe->setServiceContainer(TestServiceContainer::getInstance());
-        $this->assertInstanceOf(
-            'Fwlib\Bridge\Adodb',
-            $this->reflectionCall($dbe, 'getDb')
-        );
+        self::$utilContainer->getFileSystem()->del(self::$exportPath);
     }
 
 
@@ -131,7 +114,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         $this->assertEquals($y, $ar[$i++]);
 
         // Clean
-        self::$utilContainer->get('FileSystem')->del(
+        self::$utilContainer->getFileSystem()->del(
             self::$exportPath . DIRECTORY_SEPARATOR . self::$tableUser . '.sql'
         );
     }
@@ -176,7 +159,7 @@ class DbDataExportTest extends AbstractDbRelateTest
         $this->assertEquals($y, $ar[$i++]);
 
         // Clean
-        self::$utilContainer->get('FileSystem')->del(
+        self::$utilContainer->getFileSystem()->del(
             self::$exportPath . DIRECTORY_SEPARATOR . self::$tableUser . '.sql'
         );
     }

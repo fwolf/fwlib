@@ -1,8 +1,8 @@
 <?php
 namespace Fwlib\Db;
 
-use Fwlib\Db\AbstractDbClient;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Bridge\Adodb;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Db data backup tool, result is pure SQL
@@ -11,10 +11,15 @@ use Fwlib\Util\UtilContainer;
  *
  * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
- * @uses        Fwlib\Bridge\Adodb
  */
-class DbDataExport extends AbstractDbClient
+class DbDataExport
 {
+    use AdodbAwareTrait {
+        setDb as setDbInstance;
+    }
+    use UtilContainerAwareTrait;
+
+
     /**
      * Columns will be exclude from export
      *
@@ -103,21 +108,6 @@ class DbDataExport extends AbstractDbClient
      * @var boolean
      */
     public $withTruncate = true;
-
-
-    /**
-     * Constructor
-     *
-     * @param   object  $db
-     */
-    public function __construct($db = null)
-    {
-        parent::__construct($db);
-
-        if (!is_null($db)) {
-            $this->lineEnding = $db->getSqlDelimiter();
-        }
-    }
 
 
     /**
@@ -355,23 +345,6 @@ class DbDataExport extends AbstractDbClient
 
 
     /**
-     * Get Db instance
-     *
-     * @return  Adodb
-     */
-    protected function getDb()
-    {
-        if (is_null($this->db)) {
-            $this->db = parent::getDb();
-
-            $this->lineEnding = $this->db->getSqlDelimiter();
-        }
-
-        return $this->db;
-    }
-
-
-    /**
      * Retrieve table list from db
      *
      * @see $table
@@ -405,7 +378,7 @@ class DbDataExport extends AbstractDbClient
     public function log($msg = '', $newline = true)
     {
         if ($newline) {
-            $msg = $this->getUtil('Env')->ecl($msg, true);
+            $msg = $this->getUtilContainer()->getEnv()->ecl($msg, true);
         }
 
         $logFile = $this->exportPath . '/'  . $this->logFile;
@@ -454,6 +427,18 @@ class DbDataExport extends AbstractDbClient
 
 
     /**
+     * @param   Adodb   $db
+     * @return  static
+     */
+    public function setDb(Adodb $db)
+    {
+        $this->lineEnding = $db->getSqlDelimiter();
+
+        return $this->setDbInstance($db);
+    }
+
+
+    /**
      * Set where to save sql files exported
      *
      * If directory does not exists, create it.
@@ -467,8 +452,10 @@ class DbDataExport extends AbstractDbClient
 
         // Check and create
         if (file_exists($path) && !is_dir($path)) {
-            $this->getUtil('Env')->ecl('Export target path is a file.');
+            $this->getUtilContainer()->getEnv()
+                ->ecl('Export target path is a file.');
             return false;
+
         } elseif (!file_exists($path)) {
             return mkdir($path, 0700, true);
         }
