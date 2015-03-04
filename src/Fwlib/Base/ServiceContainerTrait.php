@@ -43,7 +43,7 @@ trait ServiceContainerTrait
      */
     protected function __construct()
     {
-        $this->initializeServiceClassMap();
+        $this->serviceClassMap = $this->getInitialServiceClassMap();
     }
 
 
@@ -123,17 +123,15 @@ trait ServiceContainerTrait
 
 
     /**
-     * Initialize service class map
+     * Return initial service class map
      *
      * Dummy for inherit and extend by child class.
      *
      * @return  string[]
      */
-    protected function initializeServiceClassMap()
+    protected function getInitialServiceClassMap()
     {
         $classMap = [];
-
-        $this->serviceClassMap = $classMap;
 
         return $classMap;
     }

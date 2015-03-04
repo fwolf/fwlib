@@ -51,6 +51,22 @@ class ServiceContainer implements ServiceContainerInterface
 
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getInitialServiceClassMap()
+    {
+        $classMap = [
+            'CachedCaller'  => CachedCaller::class,
+            'Curl'          => Curl::class,
+            'Smarty'        => Smarty::class,
+            'Validator'     => Validator::class,
+        ];
+
+        return $classMap;
+    }
+
+
+    /**
      * @return  ListTable
      */
     public function getListTable()
@@ -74,23 +90,5 @@ class ServiceContainer implements ServiceContainerInterface
     public function getValidator()
     {
         return $this->get('Validator');
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initializeServiceClassMap()
-    {
-        $classMap = [
-            'CachedCaller'  => CachedCaller::class,
-            'Curl'          => Curl::class,
-            'Smarty'        => Smarty::class,
-            'Validator'     => Validator::class,
-        ];
-
-        $this->serviceClassMap = $classMap;
-
-        return $classMap;
     }
 }

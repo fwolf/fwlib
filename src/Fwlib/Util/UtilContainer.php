@@ -92,6 +92,38 @@ class UtilContainer implements UtilContainerInterface
 
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getInitialServiceClassMap()
+    {
+        $classMap = [
+            'ArrayUtil'         => ArrayUtil::class,
+            'DatetimeUtil'      => DatetimeUtil::class,
+            'Env'               => Env::class,
+            'EscapeColor'       => EscapeColor::class,
+            'FileSystem'        => FileSystem::class,
+            'HttpUtil'          => HttpUtil::class,
+            'Ip'                => Ip::class,
+            'Json'              => Json::class,
+            'McryptSimpleIv'    => McryptSimpleIv::class,
+            'NumberUtil'        => NumberUtil::class,
+            'Rfc2047'           => Rfc2047::class,
+            'StringUtil'        => StringUtil::class,
+            'UuidBase16'        => UuidBase16::class,
+            'UuidBase36'        => UuidBase36::class,
+            'UuidBase62'        => UuidBase62::class,
+
+            'Iso7064'           => Iso7064::class,
+
+            'ChnCin'                => ChnCitizenIdentificationNumber::class,
+            'ChnOrganizationCode'   => ChnOrganizationCode::class,
+        ];
+
+        return $classMap;
+    }
+
+
+    /**
      * @return  Ip
      */
     public function getIp()
@@ -178,39 +210,5 @@ class UtilContainer implements UtilContainerInterface
     public function getUuidBase62()
     {
         return $this->get('UuidBase62');
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initializeServiceClassMap()
-    {
-        $classMap = [
-            'ArrayUtil'         => ArrayUtil::class,
-            'DatetimeUtil'      => DatetimeUtil::class,
-            'Env'               => Env::class,
-            'EscapeColor'       => EscapeColor::class,
-            'FileSystem'        => FileSystem::class,
-            'HttpUtil'          => HttpUtil::class,
-            'Ip'                => Ip::class,
-            'Json'              => Json::class,
-            'McryptSimpleIv'    => McryptSimpleIv::class,
-            'NumberUtil'        => NumberUtil::class,
-            'Rfc2047'           => Rfc2047::class,
-            'StringUtil'        => StringUtil::class,
-            'UuidBase16'        => UuidBase16::class,
-            'UuidBase36'        => UuidBase36::class,
-            'UuidBase62'        => UuidBase62::class,
-
-            'Iso7064'           => Iso7064::class,
-
-            'ChnCin'                => ChnCitizenIdentificationNumber::class,
-            'ChnOrganizationCode'   => ChnOrganizationCode::class,
-        ];
-
-        $this->serviceClassMap = $classMap;
-
-        return $classMap;
     }
 }
