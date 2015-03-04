@@ -1,53 +1,63 @@
 <?php
 namespace FwlibTest\Validator;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Validator\Constraint\Email;
+use Fwlib\Validator\Constraint\Ipv4;
+use Fwlib\Validator\Constraint\Length;
+use Fwlib\Validator\Constraint\NotEmpty;
+use Fwlib\Validator\Constraint\Regex;
+use Fwlib\Validator\Constraint\Required;
+use Fwlib\Validator\Constraint\Url;
 use Fwlib\Validator\ConstraintContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ConstraintContainerTest extends PHPUnitTestCase
 {
-    protected $constraintContainer;
-    protected $utilContainer;
-
-
-    public function __construct()
+    /**
+     * @return MockObject | ConstraintContainer
+     */
+    protected function buildMock()
     {
-        $this->constraintContainer = ConstraintContainer::getInstance();
-        $this->utilContainer = UtilContainer::getInstance();
+        return ConstraintContainer::getInstance();
     }
 
 
-    public function testGet()
+    public function testGetMethods()
     {
-        $urlConstraint = $this->constraintContainer->get('Url');
+        $constraintContainer = $this->buildMock();
+
         $this->assertInstanceOf(
-            'Fwlib\Validator\Constraint\Url',
-            $urlConstraint
+            Email::class,
+            $constraintContainer->getEmail()
         );
         $this->assertInstanceOf(
-            'Fwlib\Util\UtilContainer',
-            $this->reflectionGet($urlConstraint, 'utilContainer')
+            Ipv4::class,
+            $constraintContainer->getIpv4()
         );
-    }
-
-
-    public function testSetUtilContainer()
-    {
-        $this->constraintContainer->setUtilContainer(null);
         $this->assertInstanceOf(
-            'Fwlib\Util\UtilContainer',
-            $this->reflectionGet($this->constraintContainer, 'utilContainer')
+            Length::class,
+            $constraintContainer->getLength()
         );
-
-        $this->constraintContainer->setUtilContainer($this->utilContainer);
         $this->assertInstanceOf(
-            'Fwlib\Util\UtilContainer',
-            $this->reflectionGet($this->constraintContainer, 'utilContainer')
+            NotEmpty::class,
+            $constraintContainer->getNotEmpty()
+        );
+        $this->assertInstanceOf(
+            Required::class,
+            $constraintContainer->getRequired()
+        );
+        $this->assertInstanceOf(
+            Regex::class,
+            $constraintContainer->getRegex()
+        );
+        $this->assertInstanceOf(
+            Url::class,
+            $constraintContainer->getUrl()
         );
     }
 }

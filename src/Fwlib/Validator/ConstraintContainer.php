@@ -1,9 +1,14 @@
 <?php
 namespace Fwlib\Validator;
 
-use Fwlib\Base\AbstractServiceContainer;
-use Fwlib\Util\UtilContainer;
-use FwlibTest\Aide\TestServiceContainer;
+use Fwlib\Base\ServiceContainerTrait;
+use Fwlib\Validator\Constraint\Email;
+use Fwlib\Validator\Constraint\Ipv4;
+use Fwlib\Validator\Constraint\Length;
+use Fwlib\Validator\Constraint\NotEmpty;
+use Fwlib\Validator\Constraint\Regex;
+use Fwlib\Validator\Constraint\Required;
+use Fwlib\Validator\Constraint\Url;
 
 /**
  * Validate constraint container
@@ -11,75 +16,87 @@ use FwlibTest\Aide\TestServiceContainer;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ConstraintContainer extends AbstractServiceContainer
+class ConstraintContainer implements ConstraintContainerInterface
 {
-    /**
-     * {@inheritdoc}
-     *
-     * @var array
-     */
-    protected $serviceClass = [
-        'Email'     => 'Fwlib\Validator\Constraint\Email',
-        'Ipv4'      => 'Fwlib\Validator\Constraint\Ipv4',
-        'Length'    => 'Fwlib\Validator\Constraint\Length',
-        'NotEmpty'  => 'Fwlib\Validator\Constraint\NotEmpty',
-        'Required'  => 'Fwlib\Validator\Constraint\Required',
-        'Regex'     => 'Fwlib\Validator\Constraint\Regex',
-        'Url'       => 'Fwlib\Validator\Constraint\Url',
-    ];
-
-    /**
-     * @var UtilContainer
-     */
-    protected $utilContainer = null;
+    use ServiceContainerTrait;
 
 
     /**
-     * {@inheritdoc}
-     *
-     * Inject ServiceContainer, UtilContainer to Constraint instance.
-     *
-     * @param   string  $name
-     * @return  AbstractConstraint
+     * @return  Email
      */
-    protected function newService($name)
+    public function getEmail()
     {
-        $service = parent::newService($name);
-
-        // Fix: parent will set ConstraintContainer as ServiceContainer
-        // :TODO: Make a service container for Fwlib
-        if (method_exists($service, 'setServiceContainer')) {
-            $service->setServiceContainer(
-                TestServiceContainer::getInstance()
-            );
-        }
-
-        if (method_exists($service, 'setUtilContainer')) {
-            if (is_null($this->utilContainer)) {
-                $this->setUtilContainer(null);
-            }
-
-            $service->setUtilContainer($this->utilContainer);
-        }
-
-        return $service;
+        return $this->get('Email');
     }
 
 
     /**
-     * Setter of UtilContainer instance
-     *
-     * @param   UtilContainer   $utilContainer
-     * @return  ConstraintContainer
+     * {@inheritdoc}
      */
-    public function setUtilContainer(UtilContainer $utilContainer = null)
+    protected function getInitialServiceClassMap()
     {
-        if (is_null($utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        } else {
-            $this->utilContainer = $utilContainer;
-        }
+        return [
+            'Email'     => Email::class,
+            'Ipv4'      => Ipv4::class,
+            'Length'    => Length::class,
+            'NotEmpty'  => NotEmpty::class,
+            'Required'  => Required::class,
+            'Regex'     => Regex::class,
+            'Url'       => Url::class,
+        ];
+    }
 
-        return $this;
+
+    /**
+     * @return  Ipv4
+     */
+    public function getIpv4()
+    {
+        return $this->get('Ipv4');
+    }
+
+
+    /**
+     * @return  Length
+     */
+    public function getLength()
+    {
+        return $this->get('Length');
+    }
+
+
+    /**
+     * @return  NotEmpty
+     */
+    public function getNotEmpty()
+    {
+        return $this->get('NotEmpty');
+    }
+
+
+    /**
+     * @return  Regex
+     */
+    public function getRegex()
+    {
+        return $this->get('Regex');
+    }
+
+
+    /**
+     * @return  Required
+     */
+    public function getRequired()
+    {
+        return $this->get('Required');
+    }
+
+
+    /**
+     * @return  Url
+     */
+    public function getUrl()
+    {
+        return $this->get('Url');
     }
 }
