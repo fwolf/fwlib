@@ -1,16 +1,19 @@
 <?php
 namespace Fwlib\Base;
 
-use Fwlib\Util\AbstractUtilAware;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Return value object
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ReturnValue extends AbstractUtilAware
+class ReturnValue
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Return code
      *
@@ -100,13 +103,11 @@ class ReturnValue extends AbstractUtilAware
      */
     public function getJson()
     {
-        return $this->getUtil('Json')->encodeUnicode(
-            [
-                'code'    => $this->code,
-                'message' => $this->message,
-                'data'    => $this->data,
-            ]
-        );
+        return $this->getUtilContainer()->getJson()->encodeUnicode([
+            'code'    => $this->code,
+            'message' => $this->message,
+            'data'    => $this->data,
+        ]);
     }
 
 
@@ -131,7 +132,7 @@ class ReturnValue extends AbstractUtilAware
      */
     public function loadJson($json)
     {
-        $ar = $this->getUtil('Json')->decode($json, true);
+        $ar = $this->getUtilContainer()->getJson()->decode($json, true);
 
         foreach (['code', 'message'] as $v) {
             if (!isset($ar[$v])) {
@@ -139,7 +140,7 @@ class ReturnValue extends AbstractUtilAware
             }
         }
 
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
         $this->code    = $ar['code'];
         $this->message = $ar['message'];
         $this->data    = $arrayUtil->getIdx($ar, 'data', null);
