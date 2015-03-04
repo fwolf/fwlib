@@ -10,6 +10,18 @@ namespace Fwlib\Config;
 trait ConfigAwareTrait
 {
     /**
+     * Config instance
+     *
+     * This property used to named as $config, and as it implements
+     * ArrayAccess, it can used same style of array. When reform to trait, the
+     * constructor is removed, and loading of default configs also changed, from
+     * load in constructor, to trigger by getter of Config instance. If keep
+     * using Config instance directly, the loading can not be triggered.
+     *
+     * So, do NOT use this property to retrieve config value, use getConfig()
+     * instead, which will call Config instance getter and check/load default
+     * configs.
+     *
      * @var Config
      */
     protected $configInstance = null;
