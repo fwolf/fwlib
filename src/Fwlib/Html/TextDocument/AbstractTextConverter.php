@@ -70,8 +70,7 @@ abstract class AbstractTextConverter
             }
         }
 
-        $stringUtil = $this->getUtilContainer()->getString();
-        return "<pre>\n" . $stringUtil->encodeHtml($source) . "\n</pre>\n";
+        return "<pre>\n" . $source . "\n</pre>\n";
     }
 
 
