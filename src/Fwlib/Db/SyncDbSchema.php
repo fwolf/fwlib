@@ -1,9 +1,8 @@
 <?php
 namespace Fwlib\Db;
 
-use Fwlib\Db\AbstractDbClient;
-use Fwlib\Util\Env;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Bridge\Adodb;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Db schema synchronize & update tools
@@ -31,8 +30,14 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class SyncDbSchema extends AbstractDbClient
+class SyncDbSchema
 {
+    use AdodbAwareTrait {
+        setDb as setDbInstance;
+    }
+    use UtilContainerAwareTrait;
+
+
     /**
      * Last schema SQL id
      *
@@ -57,25 +62,7 @@ class SyncDbSchema extends AbstractDbClient
      *
      * @var string
      */
-    public $logTable = 'log_sync_db_schema';
-
-
-    /**
-     * Constructor
-     *
-     * @param   object  $db
-     * @param   string  $logTable
-     */
-    public function __construct($db = null, $logTable = null)
-    {
-        parent::__construct($db);
-
-        if (!empty($logTable)) {
-            $this->logTable = $logTable;
-        }
-
-        $this->checkLogTable();
-    }
+    protected $logTable = 'log_sync_db_schema';
 
 
     /**
@@ -84,12 +71,12 @@ class SyncDbSchema extends AbstractDbClient
     public function checkLogTable()
     {
         $table = &$this->logTable;
+        $db = $this->getDb();
 
-        if (! $this->db->isTableExist($table)) {
-
+        if (! $db->isTableExist($table)) {
             // SQL for Create table diffs by db type
             // @codeCoverageIgnoreStart
-            if ($this->db->isDbSybase()) {
+            if ($db->isDbSybase()) {
                 $sql = "
 CREATE TABLE $table (
     id      INT NOT NULL,
@@ -99,7 +86,7 @@ CREATE TABLE $table (
     CONSTRAINT PK_$table PRIMARY KEY (id)
 )
 ";
-            } elseif ($this->db->isDbMysql()) {
+            } elseif ($db->isDbMysql()) {
                 $sql = "
 CREATE TABLE $table (
     id      INT(8) NOT NULL,
@@ -121,8 +108,8 @@ CREATE TABLE $table (
             }
             // @codeCoverageIgnoreEnd
 
-            $this->db->execute($sql);
-            if (0 < $this->db->getErrorCode()) {
+            $db->execute($sql);
+            if (0 < $db->getErrorCode()) {
                 // @codeCoverageIgnoreStart
                 $this->log(
                     $this->getDbError() . PHP_EOL .
@@ -152,17 +139,19 @@ CREATE TABLE $table (
      */
     public function deleteErrorSql()
     {
+        $db = $this->getDb();
+
         $sql = "SELECT id FROM $this->logTable WHERE done=-1 ORDER BY id ASC";
-        $rs = $this->db->SelectLimit($sql, 1);
+        $rs = $db->SelectLimit($sql, 1);
 
         if (!$rs->EOF) {
             // Del SQL and SQL after it
             $id = $rs->fields['id'];
             $sql = "DELETE FROM {$this->logTable} WHERE id >= $id";
-            $rs = $this->db->Execute($sql);
+            $rs = $db->Execute($sql);
 
             // Check result, should be greater than 0
-            $i = $this->db->Affected_Rows();
+            $i = $db->Affected_Rows();
             $this->log("Clear $i SQL start from failed SQL $id.");
         }
     }
@@ -176,9 +165,10 @@ CREATE TABLE $table (
         // Clear previous failed SQL
         $this->deleteErrorSql();
 
+        $db = $this->getDb();
 
         $sql = "SELECT id, sqltext FROM $this->logTable WHERE done<>1 ORDER BY id ASC";
-        $rs = $this->db->Execute($sql);
+        $rs = $db->Execute($sql);
 
         $cntDone = 0;
         while (!$rs->EOF) {
@@ -186,15 +176,15 @@ CREATE TABLE $table (
             $sql = stripslashes($rs->fields['sqltext']);
 
             // Some DDL SQL can't use transaction, so do raw execute.
-            $this->db->execute($sql);
+            $db->execute($sql);
 
             // Bad sybase support, select db will got error msg, eg:
             // Changed database context to 'db_name'
             // @codeCoverageIgnoreStart
-            if ((0 == $this->db->getErrorCode()
-                    && 0 == strlen($this->db->getErrorMessage()))
+            if ((0 == $db->getErrorCode()
+                    && 0 == strlen($db->getErrorMessage()))
                 || ('Changed database context t' ==
-                    substr($this->db->getErrorMessage(), 0, 26))
+                    substr($db->getErrorMessage(), 0, 26))
             // @codeCoverageIgnoreEnd
             ) {
                 $this->log("Execute SQL $id successful.");
@@ -229,8 +219,10 @@ CREATE TABLE $table (
      */
     protected function getDbError()
     {
-        return 'Error ' . $this->db->getErrorCode() .
-            ': '  . $this->db->getErrorMessage();
+        $db = $this->getDb();
+
+        return 'Error ' . $db->getErrorCode() .
+            ': '  . $db->getErrorMessage();
     }
 
 
@@ -241,8 +233,10 @@ CREATE TABLE $table (
      */
     public function getLastId()
     {
+        $db = $this->getDb();
+
         $sql = "SELECT id FROM $this->logTable ORDER BY id DESC";
-        $rs = $this->db->SelectLimit($sql, 1);
+        $rs = $db->SelectLimit($sql, 1);
 
         if ($rs->EOF) {
             $id = -1;
@@ -262,8 +256,10 @@ CREATE TABLE $table (
      */
     public function getLastIdDone()
     {
+        $db = $this->getDb();
+
         $sql = "SELECT id FROM $this->logTable WHERE done=1 ORDER BY id DESC";
-        $rs = $this->db->SelectLimit($sql, 1);
+        $rs = $db->SelectLimit($sql, 1);
 
         if ($rs->EOF) {
             $id = -1;
@@ -277,6 +273,17 @@ CREATE TABLE $table (
 
 
     /**
+     * Getter of $logTable
+     *
+     * @return  string
+     */
+    public function getLogTable()
+    {
+        return $this->logTable;
+    }
+
+
+    /**
      * Print log message
      *
      * @param   string  $msg
@@ -285,10 +292,36 @@ CREATE TABLE $table (
     public function log($msg = '', $newline = true)
     {
         if ($newline) {
-            $msg = $this->getUtil('Env')->ecl($msg, true);
+            $msg = $this->getUtilContainer()->getEnv()->ecl($msg, true);
         }
 
         echo $msg;
+    }
+
+
+    /**
+     * @param   Adodb   $db
+     * @return  static
+     */
+    public function setDb(Adodb $db)
+    {
+        $this->setDbInstance($db);
+
+        $this->checkLogTable();
+
+        return $this;
+    }
+
+
+    /**
+     * @param   string  $logTable
+     * @return  static
+     */
+    public function setLogTable($logTable)
+    {
+        $this->logTable = $logTable;
+
+        return $this;
     }
 
 
@@ -304,6 +337,8 @@ CREATE TABLE $table (
      */
     public function setSql($id, $sqltext)
     {
+        $db = $this->getDb();
+
         if (-1 == $this->lastId) {
             $this->getLastId();
         }
@@ -311,13 +346,13 @@ CREATE TABLE $table (
         // Will not overwrite exists id.
         if ($id > $this->lastId) {
             $sqltext = addslashes($sqltext);
-            $sqltext = $this->db->convertEncodingSql($sqltext);
+            $sqltext = $db->convertEncodingSql($sqltext);
 
             $sql = "INSERT INTO $this->logTable (id, sqltext)
 VALUES ($id, '$sqltext')";
-            $this->db->Execute($sql);
+            $db->Execute($sql);
 
-            if (0 != $this->db->getErrorCode()) {
+            if (0 != $db->getErrorCode()) {
                 // Should not occur
                 // @codeCoverageIgnoreStart
                 $this->log($this->getDbError());
@@ -340,7 +375,9 @@ VALUES ($id, '$sqltext')";
      */
     protected function setSqlStatus($id, $status)
     {
+        $db = $this->getDb();
+
         $sql = "UPDATE $this->logTable SET done=$status WHERE id=$id";
-        $this->db->Execute($sql);
+        $db->Execute($sql);
     }
 }

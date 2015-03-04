@@ -3,7 +3,6 @@ namespace FwlibTest\Db;
 
 use Fwlib\Db\SyncDbSchema;
 use Fwlib\Test\AbstractDbRelateTest;
-use FwlibTest\Aide\TestServiceContainer;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -13,6 +12,8 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
 {
     protected static $dbUsing = 'default';
     private static $logTable = 'log_sync_db_schema';
+
+    /** @var SyncDbSchema */
     private static $sds = null;
 
 
@@ -35,12 +36,11 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
             '/Log table \w+ does not exists, create it, done\./'
         );
 
-        self::$sds = new SyncDbSchema(
-            $this->getServiceContainer()->getDb(),
-            self::$logTable
-        );
+        self::$sds = (new SyncDbSchema)
+            ->setLogTable(self::$logTable)
+            ->setDb($this->getServiceContainer()->getDb());
 
-        $this->assertEquals(self::$logTable, self::$sds->logTable);
+        $this->assertEquals(self::$logTable, self::$sds->getLogTable());
         $this->assertTrue(self::$db->isTableExist(self::$logTable));
 
         self::$sds->charsetPhp = 'UTF-8';
@@ -50,10 +50,9 @@ class SyncDbSchemaTest extends AbstractDbRelateTest
     public function testConstruct2()
     {
         $this->expectOutputRegex('/Log table \w+ already exists\./');
-        $sds = new SyncDbSchema(
-            $this->getServiceContainer()->getDb(),
-            self::$logTable
-        );
+        $sds = (new SyncDbSchema)
+            ->setLogTable(self::$logTable)
+            ->setDb($this->getServiceContainer()->getDb());
         unset($sds);
     }
 
