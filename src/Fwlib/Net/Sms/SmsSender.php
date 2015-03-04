@@ -1,9 +1,8 @@
 <?php
 namespace Fwlib\Net\Sms;
 
-use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Net\Sms\SmsLogger;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Config\ConfigAwareTrait;
+use Fwlib\Db\AdodbAwareTrait;
 
 /**
  * SMS Sender
@@ -14,8 +13,12 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2010-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class SmsSender extends AbstractAutoNewConfig
+class SmsSender
 {
+    use AdodbAwareTrait;
+    use ConfigAwareTrait;
+
+
     /**
      * SMS logger object
      *
@@ -25,22 +28,52 @@ class SmsSender extends AbstractAutoNewConfig
 
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultConfigs()
+    {
+        $configs = [];
+
+        // SMS send method
+        $configs['method'] = 'gammuSmsdInject';
+
+        // Possible bin path
+        $configs['path.bin'] = [
+            '/usr/bin/',
+            '/usr/local/bin/',
+            '/bin/',
+        ];
+
+        // Path of gammu-smsd-inject, leave empty to find in path.bin.
+        // Set this will bypass inject cmd search in path.bin.
+        $configs['path.gammuSmsdInject'] = '';
+
+        // Cmd template of gammu-smsd-inject cmd
+        /** @noinspection SpellCheckingInspection */
+        $configs['cmd.gammuSmsdInject']
+            = '[cmd] TEXT [dest] -autolen 600 -report -validity MAX -unicode -textutf8 "[sms]"';
+
+        return $configs;
+    }
+
+
+    /**
      * Find path of gammu smsd inject cmd
      *
      * If find in $path fail, will try path in $this->config['path.bin'].  The
      * exe filename is hardcoded 'gammu-smsd-inject'.
      *
-     * @param   $path   Manual additional path
-     * @return  mixed   Path of inject cmd, false when fail.
+     * @param   string  $path   Manual additional path
+     * @return  mixed           Path of inject cmd, false when fail
      */
     public function getPathOfGammuSmsdInject($path = '')
     {
-        if (!empty($this->config['path.gammuSmsdInject'])) {
-            return $this->config['path.gammuSmsdInject'];
+        if (!empty($this->getConfig('path.gammuSmsdInject'))) {
+            return $this->getConfig('path.gammuSmsdInject');
         }
 
 
-        $arPath = $this->config['path.bin'];
+        $arPath = $this->getConfig('path.bin');
         if (!empty($path)) {
             array_unshift($arPath, $path);
         }
@@ -72,7 +105,7 @@ class SmsSender extends AbstractAutoNewConfig
     {
         if (is_null($this->smsLogger)) {
             $this->smsLogger =
-                new SmsLogger($this->getService('Db'));
+                new SmsLogger($this->getDb());
         }
 
         return $this->smsLogger;
@@ -154,9 +187,9 @@ class SmsSender extends AbstractAutoNewConfig
         }
 
 
-        $method = $this->config['method'];
+        $method = $this->getConfig('method');
         if (isset($map[$method])) {
-            $func = $map[$this->config['method']];
+            $func = $map[$this->getConfig('method')];
             $i = $this->$func($destNumber, $sms);
 
             $this->getSmsLogger()->log($destNumber, $sms, $cat);
@@ -196,8 +229,8 @@ class SmsSender extends AbstractAutoNewConfig
         // Prepare cmd to sent
         $cmd = str_replace(
             ['[cmd]', '[sms]'],
-            [$this->config['path.gammuSmsdInject'], addslashes($sms)],
-            $this->config['cmd.gammuSmsdInject']
+            [$this->getConfig('path.gammuSmsdInject'), addslashes($sms)],
+            $this->getConfig('cmd.gammuSmsdInject')
         );
         $i = strpos($cmd, '[dest]');
         if (1 > $i) {
@@ -221,31 +254,5 @@ class SmsSender extends AbstractAutoNewConfig
         }
 
         return count($destNumber);
-    }
-
-
-    /**
-     * Set default config
-     */
-    public function setConfigDefault()
-    {
-        // SMS send method
-        $this->config['method'] = 'gammuSmsdInject';
-
-        // Possible bin path
-        $this->config['path.bin'] = [
-            '/usr/bin/',
-            '/usr/local/bin/',
-            '/bin/',
-        ];
-
-        // Path of gammu-smsd-inject, leave empty to find in path.bin.
-        // Set this will bypass inject cmd search in path.bin.
-        $this->config['path.gammuSmsdInject'] = '';
-
-        // Cmd template of gammu-smsd-inject cmd
-        /** @noinspection SpellCheckingInspection */
-        $this->config['cmd.gammuSmsdInject']
-            = '[cmd] TEXT [dest] -autolen 600 -report -validity MAX -unicode -textutf8 "[sms]"';
     }
 }

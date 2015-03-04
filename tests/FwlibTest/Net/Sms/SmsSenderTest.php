@@ -1,9 +1,10 @@
 <?php
 namespace FwlibTest\Net\Sms;
 
-use Fwlib\Base\AbstractServiceContainer;
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use Fwlib\Bridge\Adodb;
+use Fwlib\Net\Sms\SmsLogger;
 use Fwlib\Net\Sms\SmsSender;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -27,7 +28,7 @@ class SmsSenderTest extends PHPUnitTestCase
 
     public function testGetPathOfGammuSmsdInject()
     {
-        $this->smsSender->config['path.gammuSmsdInject'] = '';
+        $this->smsSender->setConfig('path.gammuSmsdInject', '');
 
 
         // Found
@@ -46,7 +47,8 @@ class SmsSenderTest extends PHPUnitTestCase
 
 
         // Use config inject path
-        $this->smsSender->config['path.gammuSmsdInject'] = 'dummy/executable-file';
+        $this->smsSender
+            ->setConfig('path.gammuSmsdInject', 'dummy/executable-file');
 
         $this->assertEquals(
             'dummy/executable-file',
@@ -57,27 +59,14 @@ class SmsSenderTest extends PHPUnitTestCase
 
     public function testGetSmsLogger()
     {
-        // Directly mock AbstractServiceContainer is difficult because it use
-        // Singleton and forbid __construct() and __wakeup(), so use dummy.
-        $db = $this->getMockBuilder('Fwlib\Bridge\Adodb')
+        $db = $this->getMockBuilder(Adodb::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $sc = $this->getMockBuilder('Fwlib\Base\AbstractServiceContainer')
-            ->disableOriginalConstructor()
-            ->getMock(
-                'Fwlib\Base\AbstractServiceContainer',
-                ['get']
-            );
-        $sc->expects($this->once())
-            ->method('get')
-            ->will($this->returnValue($db));
-
-        $smsSender = new SmsSender();
-        $smsSender->setServiceContainer($sc);
+        $smsSender = (new SmsSender())->setDb($db);
 
         $this->assertObjectHasAttribute('smsLogger', $smsSender);
         $this->assertInstanceOf(
-            'Fwlib\Net\Sms\SmsLogger',
+            SmsLogger::class,
             $this->reflectionCall($smsSender, 'getSmsLogger')
         );
     }
@@ -114,7 +103,8 @@ class SmsSenderTest extends PHPUnitTestCase
             ->method('sendUsingGammuSmsdInject')
             ->will($this->returnValue(1));
 
-        $smsSender->config['method'] = 'gammuSmsdInject';
+        /** @var $smsSender SmsSender */
+        $smsSender->setConfig('method', 'gammuSmsdInject');
         $x = $smsSender->send('13912345678', 'test');
 
         $this->assertEquals(1, $x);
@@ -122,19 +112,19 @@ class SmsSenderTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Method invalidMethod not supported.
      */
     public function testSendWithInvalidMethod()
     {
-        $this->smsSender->config['method'] = 'invalidMethod';
+        $this->smsSender->setConfig('method', 'invalidMethod');
 
         $this->smsSender->send('13912345678', 'test');
     }
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage No valid number to sent.
      */
     public function testSendWithNoDestNumber()
@@ -161,7 +151,8 @@ class SmsSenderTest extends PHPUnitTestCase
         // Fake exec() result
         self::$exec_returnValue = 0;
 
-        $smsSender->config['method'] = 'gammuSmsdInject';
+        /** @var $smsSender SmsSender */
+        $smsSender->setConfig('method', 'gammuSmsdInject');
         $i = $smsSender->send('13912345678', 'test');
 
         $this->assertEquals(1, $i);
@@ -169,7 +160,7 @@ class SmsSenderTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Gammu inject error: output_1
      */
     public function testSendUsingGammuSmsdInjectWithExecError()
@@ -186,13 +177,14 @@ class SmsSenderTest extends PHPUnitTestCase
         self::$exec_output = [null, 'output_1'];
         self::$exec_returnValue = -1;
 
-        $smsSender->config['method'] = 'gammuSmsdInject';
+        /** @var $smsSender SmsSender */
+        $smsSender->setConfig('method', 'gammuSmsdInject');
         $smsSender->send('13912345678', 'test');
     }
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Can't find gammu smsd inject execute file.
      */
     public function testSendUsingGammuSmsdInjectWithGetPathFail()
@@ -205,13 +197,14 @@ class SmsSenderTest extends PHPUnitTestCase
             ->method('getPathOfGammuSmsdInject')
             ->will($this->returnValue(false));
 
-        $smsSender->config['method'] = 'gammuSmsdInject';
+        /** @var $smsSender SmsSender */
+        $smsSender->setConfig('method', 'gammuSmsdInject');
         $smsSender->send('13912345678', 'test');
     }
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Command template of gammu smsd inject error.
      */
     public function testSendUsingGammuSmsdInjectWithWrongCmdTemplate()
@@ -225,9 +218,10 @@ class SmsSenderTest extends PHPUnitTestCase
             ->will($this->returnValue('dummy'));
 
         // No [path] in cmd template
-        $smsSender->config['cmd.gammuSmsdInject'] = '';
+        /** @var $smsSender SmsSender */
+        $smsSender->setConfig('cmd.gammuSmsdInject', '');
 
-        $smsSender->config['method'] = 'gammuSmsdInject';
+        $smsSender->setConfig('method', 'gammuSmsdInject');
         $smsSender->send('13912345678', 'test');
     }
 }
