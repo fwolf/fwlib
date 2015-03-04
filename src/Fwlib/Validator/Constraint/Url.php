@@ -1,12 +1,10 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
-use Fwlib\Base\AbstractServiceContainer;
 use Fwlib\Base\ReturnValue;
+use Fwlib\Base\ServiceContainerAwareTrait;
+use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Validator\AbstractConstraint;
-use Fwlib\Util\UtilAwareInterface;
-use Fwlib\Util\UtilContainer;
-use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Constraint Url
@@ -33,111 +31,10 @@ use Fwlib\Util\UtilContainerInterface;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Url extends AbstractConstraint implements UtilAwareInterface
+class Url extends AbstractConstraint
 {
-    /***************
-     * Copy from Fwlib\Base\AbstractAutoNewInstance, can change to trait after
-     * PHP 5.4.
-     ***************/
-
-    public $serviceContainer = null;
-    protected $utilContainer = null;
-
-    // Removed newObjXxx(), useless here
-    public function __get($name)
-    {
-        $method = 'newInstance' . ucfirst($name);
-
-        // @codeCoverageIgnoreStart
-        if (method_exists($this, $method)) {
-            $this->$name = $this->$method();
-            return $this->$name;
-
-        } else {
-            $trace = debug_backtrace();
-            trigger_error(
-                'Undefined property via __get(): ' . $name .
-                ' in ' . $trace[0]['file'] .
-                ' on line ' . $trace[0]['line'],
-                E_USER_NOTICE
-            );
-
-            // trigger_error will terminate program run, below will not exec
-            return null;
-
-        }
-        // @codeCoverageIgnoreEnd
-    }
-
-    public function checkServiceContainer($throwExceptionWhenFail = true)
-    {
-        if (is_null($this->serviceContainer)) {
-            if ($throwExceptionWhenFail) {
-                throw new \Exception('Need valid ServiceContainer.');
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
-
-    protected function getService($name)
-    {
-        $this->checkServiceContainer(true);
-
-        return $this->serviceContainer->get($name);
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUtilContainer()
-    {
-        if (is_null($this->utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        }
-
-        return $this->utilContainer;
-    }
-
-
-    public function setInstance($instance, $className = null)
-    {
-        if (empty($className)) {
-            $className = get_class($instance);
-            $className = implode('', array_slice(explode('\\', $className), -1));
-        }
-
-        $className = lcfirst($className);
-
-        $this->$className = $instance;
-
-        return $this;
-    }
-
-    public function setServiceContainer(
-        AbstractServiceContainer $serviceContainer = null
-    ) {
-        $this->serviceContainer = $serviceContainer;
-    }
-
-    public function setUtilContainer(
-        UtilContainerInterface $utilContainer = null
-    ) {
-        if (is_null($utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        } else {
-            $this->utilContainer = $utilContainer;
-        }
-
-        return $this;
-    }
-
-    /***************
-     * End of copied part
-     ***************/
+    use ServiceContainerAwareTrait;
+    use UtilContainerAwareTrait;
 
 
     /**
@@ -163,7 +60,7 @@ class Url extends AbstractConstraint implements UtilAwareInterface
             return $url;
         }
 
-        $httpUtil = UtilContainer::getInstance()->getHttp();
+        $httpUtil = $this->getUtilContainer()->getHttp();
         $selfUrl = $httpUtil->getSelfUrlWithoutParameter();
 
         if ('.' == $url[0]) {
@@ -222,7 +119,7 @@ class Url extends AbstractConstraint implements UtilAwareInterface
         }
 
         try {
-            $curl = $this->getService('Curl');
+            $curl = $this->getServiceContainer()->getCurl();
             $curl->setoptSslVerify(false);
 
             $rs = $curl->post($url, $postData);
