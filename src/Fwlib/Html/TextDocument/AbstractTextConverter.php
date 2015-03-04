@@ -1,18 +1,21 @@
 <?php
 namespace Fwlib\Html\TextDocument;
 
-use Fwlib\Util\AbstractUtilAware;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Markup text converter to html
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-abstract class AbstractTextConverter extends AbstractUtilAware
+abstract class AbstractTextConverter
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Convert string or file to html
      *
@@ -61,13 +64,13 @@ abstract class AbstractTextConverter extends AbstractUtilAware
                 $source = file_get_contents($source);
             } catch (\Exception $e) {
                 trigger_error(
-                    "File $filename read fail: {$e->getMessage()}",
+                    "File $source read fail: {$e->getMessage()}",
                     E_USER_ERROR
                 );
             }
         }
 
-        $stringUtil = $this->getUtil('StringUtil');
+        $stringUtil = $this->getUtilContainer()->getString();
         return "<pre>\n" . $stringUtil->encodeHtml($source) . "\n</pre>\n";
     }
 

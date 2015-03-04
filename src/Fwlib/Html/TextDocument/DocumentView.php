@@ -1,14 +1,8 @@
 <?php
 namespace Fwlib\Html\TextDocument;
 
-use Fwlib\Base\AbstractAutoNewConfig;
-use Fwlib\Html\TextDocument\Markdown;
-use Fwlib\Html\TextDocument\Restructuredtext;
-use Fwlib\Html\TextDocument\UnknownMarkup;
-use Fwlib\Util\HttpUtil;
-use Fwlib\Util\NumberUtil;
-use Fwlib\Util\StringUtil;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Config\ConfigAwareTrait;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Viewer of text document
@@ -36,8 +30,19 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class DocumentView extends AbstractAutoNewConfig
+class DocumentView
 {
+    use ConfigAwareTrait;
+    use UtilContainerAwareTrait;
+
+
+    /**
+     * Converter instances
+     *
+     * @var AbstractTextConverter[]     Index by converter base class name
+     */
+    protected $converters = [];
+
     /**
      * Current document type
      * Index for index page, Unknown for unknown type.
@@ -47,20 +52,6 @@ class DocumentView extends AbstractAutoNewConfig
     public $currentDocumentType = 'Index';
 
     /**
-     * Markdown converter
-     *
-     * @var Markdown
-     */
-    protected $markdown = null;
-
-    /**
-     * Restructuredtext converter
-     *
-     * @var Restructuredtext
-     */
-    protected $restructuredtext = null;
-
-    /**
      * Html title
      *
      * Generate when display.
@@ -68,13 +59,6 @@ class DocumentView extends AbstractAutoNewConfig
      * @var string
      */
     public $title = '';
-
-    /**
-     * UnknownMarkup converter
-     *
-     * @var UnknownMarkup
-     */
-    protected $unknownMarkup = null;
 
 
     /**
@@ -90,9 +74,9 @@ class DocumentView extends AbstractAutoNewConfig
             return null;
         }
 
-        $html = '';
-        $file = $this->getUtil('HttpUtil')
-            ->getGet($this->config['paramFile']);
+        $file = $this->getUtilContainer()->getHttp()
+            ->getGet($this->getConfig('paramFile'));
+
         if (empty($file)) {
             $html = $this->displayIndex($arFile, $returnOnly);
         } else {
@@ -118,15 +102,15 @@ class DocumentView extends AbstractAutoNewConfig
 
         $this->title = $converter->getTitle($file);
 
-        $view = $this->getUtil('HttpUtil')
-            ->getGet($this->config['paramRaw']);
+        $view = $this->getUtilContainer()->getHttp()
+            ->getGet($this->getConfig('paramRaw'));
         if ('raw' == $view) {
             $html = $converter->convertRaw($file);
         } else {
             $html = $converter->convert($file);
         }
 
-        $html = "<article class='{$this->config['className']}'>\n\n$html
+        $html = "<article class='{$this->getConfig('className')}'>\n\n$html
 </article>\n";
 
         if (!$returnOnly) {
@@ -146,11 +130,11 @@ class DocumentView extends AbstractAutoNewConfig
     public function displayIndex($arFile, $returnOnly = false)
     {
         $this->currentDocumentType = 'Index';
-        $this->title = $this->config['titleTail'];
+        $this->title = $this->getConfig('titleTail');
 
-        $numberUtil = $this->getUtil('NumberUtil');
+        $numberUtil = $this->getUtilContainer()->getNumber();
 
-        $html = "<div class='{$this->config['className']}'>
+        $html = "<div class='{$this->getConfig('className')}'>
   <table class='index'>
     <thead>
       <tr>";
@@ -159,7 +143,7 @@ class DocumentView extends AbstractAutoNewConfig
             $html .= "
         <th>$v</th>";
         }
-        if ($this->config['showFileSize']) {
+        if ($this->getConfig('showFileSize')) {
             $html .= "
         <th>File Size</th>";
         }
@@ -177,13 +161,13 @@ class DocumentView extends AbstractAutoNewConfig
       <tr>";
 
             $filename = $file['name'];
-            $link = "?{$this->config['paramFile']}=" . addslashes($filename);
+            $link = "?{$this->getConfig('paramFile')}=" . addslashes($filename);
             $title = $this->getDocumentTitle($filename);
-            $time = date($this->config['timeFormat'], $file['mtime']);
+            $time = date($this->getConfig('timeFormat'), $file['mtime']);
             $size = strtolower($numberUtil->toHumanSize($file['size']));
 
-            if ($this->config['rawView']) {
-                $linkRaw = $link . '&' . $this->config['paramRaw'] . '=raw';
+            if ($this->getConfig('rawView')) {
+                $linkRaw = $link . '&' . $this->getConfig('paramRaw') . '=raw';
                 $html .= "
         <td class='document-filename'><a href='$linkRaw'>$filename</a></td>";
             } else {
@@ -195,7 +179,7 @@ class DocumentView extends AbstractAutoNewConfig
         <td class='document-title'><a href='$link'>$title</a></td>
         <td class='document-mtime'>$time</td>";
 
-            if ($this->config['showFileSize']) {
+            if ($this->getConfig('showFileSize')) {
                 $html .= "
         <td class='document-size'>$size</td>";
             }
@@ -227,10 +211,10 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function excludeFile($arFile)
     {
-        $stringUtil = $this->getUtil('StringUtil');
+        $stringUtil = $this->getUtilContainer()->getString();
 
         foreach ($arFile as $k => $v) {
-            foreach ((array)$this->config['exclude'] as $rule) {
+            foreach ((array)$this->getConfig('exclude') as $rule) {
                 if ($stringUtil->matchWildcard($v['name'], $rule)) {
                     unset($arFile[$k]);
                     break;
@@ -243,10 +227,31 @@ class DocumentView extends AbstractAutoNewConfig
 
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultConfigs()
+    {
+        $configs = [
+            'className'     => 'document-view',
+            'exclude'       => ['^\.*'],
+            'paramFile'     => 'f',
+            'paramRaw'      => 'view',
+            'rawView'       => false,
+            'recursive'     => true,
+            'showFileSize'  => false,
+            'timeFormat'    => 'Y-m-d H:i:s',
+            'titleTail'     => 'Document in Fwlib',
+        ];
+
+        return $configs;
+    }
+
+
+    /**
      * Get document converter object by type
      *
      * @param   string  $type
-     * @return  Fwlib\Html\TextDocument\AbstractTextConverter
+     * @return  AbstractTextConverter
      */
     public function getDocumentConverter($type)
     {
@@ -303,9 +308,9 @@ class DocumentView extends AbstractAutoNewConfig
             'txt'      => 'Markdown',
         ];
 
-        $ext = $this->getUtil('FileSystem')->getFileExt($filename);
+        $ext = $this->getUtilContainer()->getFileSystem()->getFileExt($filename);
 
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
         return $arrayUtil->getIdx($ar, $ext, 'Unknown');
     }
 
@@ -317,11 +322,11 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function getMarkdown()
     {
-        if (is_null($this->markdown)) {
-            $this->markdown = $this->getService('Markdown');
+        if (is_null($this->converters['Markdown'])) {
+            $this->converters['Markdown'] = new Markdown();
         }
 
-        return $this->markdown;
+        return $this->converters['Markdown'];
     }
 
 
@@ -332,11 +337,11 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function getRestructuredtext()
     {
-        if (is_null($this->restructuredtext)) {
-            $this->restructuredtext = $this->getService('Restructuredtext');
+        if (is_null($this->converters['Restructuredtext'])) {
+            $this->converters['Restructuredtext'] = new Restructuredtext();
         }
 
-        return $this->restructuredtext;
+        return $this->converters['Restructuredtext'];
     }
 
 
@@ -347,24 +352,11 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function getUnknownMarkup()
     {
-        if (is_null($this->unknownMarkup)) {
-            $this->unknownMarkup = $this->getService('UnknownMarkup');
+        if (is_null($this->converters['UnknownMarkup'])) {
+            $this->converters['UnknownMarkup'] = new UnknownMarkup();
         }
 
-        return $this->unknownMarkup;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUtilContainer()
-    {
-        if (is_null($this->utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        }
-
-        return $this->utilContainer;
+        return $this->converters['UnknownMarkup'];
     }
 
 
@@ -377,13 +369,13 @@ class DocumentView extends AbstractAutoNewConfig
     {
         $arFile = [];
 
-        $arDir = (array)$this->config['dir'];
-        $fileSystem = $this->getUtil('FileSystem');
+        $arDir = (array)$this->getConfig('dir');
+        $fileSystem = $this->getUtilContainer()->getFileSystem();
         foreach ($arDir as $dir) {
             foreach ($fileSystem->listDir($dir) as $file) {
                 $fullPath = $dir . $file['name'];
 
-                if (is_dir($fullPath) && $this->config['recursive']) {
+                if (is_dir($fullPath) && $this->getConfig('recursive')) {
                     $arDir[] = $fullPath;
                 } elseif (is_file($fullPath)) {
                     $arFile[] = $file;
@@ -400,35 +392,25 @@ class DocumentView extends AbstractAutoNewConfig
 
 
     /**
-     * Set default config
-     */
-    protected function setConfigDefault()
-    {
-        $this->setConfig(
-            [
-                'className'     => 'document-view',
-                'exclude'       => ['^\.*'],
-                'paramFile'     => 'f',
-                'paramRaw'      => 'view',
-                'rawView'       => false,
-                'recursive'     => true,
-                'showFileSize'  => false,
-                'timeFormat'    => 'Y-m-d H:i:s',
-                'titleTail'     => 'Document in Fwlib',
-            ]
-        );
-    }
-
-
-    /**
-     * Set document converter object
+     * Setter of $converter
      *
-     * @param   string  $type
-     * @param   object  $converter
+     * @param   AbstractTextConverter   $converter
+     * @param   string                  $baseClassName
+     * @return  static
      */
-    public function setConverter($type, $converter = null)
-    {
-        $this->{$type . 'Converter'} = $converter;
+    public function setConverter(
+        AbstractTextConverter $converter,
+        $baseClassName = ''
+    ) {
+        if (empty($baseClassName)) {
+            $className = get_class($converter);
+            $baseClassName =
+                implode('', array_slice(explode('\\', $className), -1));
+        }
+
+        $this->converters[$baseClassName] = $converter;
+
+        return $this;
     }
 
 
@@ -440,7 +422,8 @@ class DocumentView extends AbstractAutoNewConfig
      */
     protected function sortFile($arFile)
     {
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
+
         return $arrayUtil->sortByLevel2($arFile, 'name', 'ASC');
     }
 }

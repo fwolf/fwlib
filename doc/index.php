@@ -6,21 +6,20 @@ use Fwlib\Html\TextDocument\Markdown;
 use Fwlib\Html\TextDocument\Restructuredtext;
 use Fwlib\Html\TextDocument\UnknownMarkup;
 
-$dv = new DocumentView(
-    [
-        'className' => 'document-view article',
-        'dir'       => __DIR__ . '/',
-        'exclude'   => ['^\.*', 'index.php'],
-        'rawView'   => true,
-        'showFileSize'  => true,
-    ]
-);
-$dv->setInstance(new Markdown, 'Markdown');
+$dv = (new DocumentView)->setConfigs([
+    'className' => 'document-view article',
+    'dir'       => __DIR__ . '/',
+    'exclude'   => ['^\.*', 'index.php'],
+    'rawView'   => true,
+    'showFileSize'  => true,
+]);
+
+$dv->setConverter(new Markdown, 'Markdown');
 // Disable css from rst2html
 $rest = new Restructuredtext;
 $rest->cmdOption[] = 'stylesheet=""';
-$dv->setInstance($rest, 'Restructuredtext');
-$dv->setInstance(new UnknownMarkup, 'UnknownMarkup');
+$dv->setConverter($rest, 'Restructuredtext');
+$dv->setConverter(new UnknownMarkup, 'UnknownMarkup');
 $html = $dv->display(true);
 $title = $dv->title;
 ?>
@@ -33,7 +32,7 @@ $title = $dv->title;
 <?php
 echo $title;
 if ('Index' != $dv->currentDocumentType) {
-    echo ' - ' . $dv->config['titleTail'];
+    echo ' - ' . $dv->getConfig('titleTail');
 }
 ?>
   </title>
