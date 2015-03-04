@@ -1,12 +1,12 @@
 <?php
 namespace FwlibTest\Validator;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Validator\ConstraintContainer;
 use Fwlib\Validator\Validator;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ValidatorTest extends PHPUnitTestCase
@@ -43,8 +43,7 @@ class ValidatorTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid service
+     * @expectedException \Fwlib\Base\Exception\ServiceInstanceCreationFailException
      */
     public function testValidateWithNotRegisteredConstraint()
     {

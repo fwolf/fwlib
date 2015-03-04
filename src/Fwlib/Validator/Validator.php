@@ -1,19 +1,18 @@
 <?php
 namespace Fwlib\Validator;
 
-use Fwlib\Base\AbstractServiceContainer;
-use Fwlib\Validator\ConstraintContainer;
+use Fwlib\Base\Exception\ServiceInstanceCreationFailException;
 
 /**
  * Validate data and got fail message
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Validator
 {
     /**
-     * @var ConstraintContainer
+     * @var ConstraintContainerInterface
      */
     protected $constraintContainer = null;
 
@@ -28,10 +27,10 @@ class Validator
     /**
      * Constructor
      *
-     * @param   ConstraintContainer $constraintContainer
+     * @param   ConstraintContainerInterface $constraintContainer
      */
     public function __construct(
-        ConstraintContainer $constraintContainer = null
+        ConstraintContainerInterface $constraintContainer = null
     ) {
         $this->constraintContainer = $constraintContainer;
     }
@@ -41,15 +40,32 @@ class Validator
      * Get constraint instance
      *
      * @param   string  $name
-     * @return  Fwlib\Validator\ConstraintInterface
+     * @return  ConstraintInterface
      */
     protected function getConstraint($name)
     {
-        if (is_null($this->constraintContainer)) {
-            $this->setConstraintContainer(null);
-        }
+        $constraintContainer = $this->getConstraintContainer();
 
-        return $this->constraintContainer->get($name);
+        $method = "get{$name}";
+
+        if (method_exists($constraintContainer, $method)) {
+            return $constraintContainer->$method();
+
+        } else {
+            throw (new ServiceInstanceCreationFailException)
+                ->setServiceName($name);
+        }
+    }
+
+
+    /**
+     * @return  ConstraintContainer
+     */
+    protected function getConstraintContainer()
+    {
+        return is_null($this->constraintContainer)
+            ? ConstraintContainer::getInstance()
+            : $this->constraintContainer;
     }
 
 
@@ -69,16 +85,13 @@ class Validator
     /**
      * Set constraint container instance
      *
-     * @param   ConstraintContainer $constraintContainer
-     * @return  Validator
+     * @param   ConstraintContainerInterface $constraintContainer
+     * @return  static
      */
-    public function setConstraintContainer($constraintContainer = null)
-    {
-        if (is_null($constraintContainer)) {
-            $this->constraintContainer = ConstraintContainer::getInstance();
-        } else {
-            $this->ConstraintContainer = $constraintContainer;
-        }
+    public function setConstraintContainer(
+        ConstraintContainerInterface $constraintContainer = null
+    ) {
+        $this->ConstraintContainer = $constraintContainer;
 
         return $this;
     }
