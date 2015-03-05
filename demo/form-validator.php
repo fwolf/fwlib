@@ -43,7 +43,7 @@ if ('checkAge' == $action) {
         $rv = new ReturnValue(-1, 'fail');
     }
 
-    echo $rv->getJson();
+    echo $rv->toJson();
     exit;
 }
 

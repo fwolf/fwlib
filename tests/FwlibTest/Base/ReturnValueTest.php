@@ -44,7 +44,7 @@ class ReturnValueTest extends PHPUnitTestCase
         $json = '{"code":42,"message":"foo","data":null}';
 
         $rv = new ReturnValue($json);
-        $this->assertEquals($json, $rv->getJson());
+        $this->assertEquals($json, $rv->toJson());
     }
 
 

@@ -57,8 +57,38 @@ class ReturnValue
             $this->data    = $data;
 
         } else {
-            $this->loadJson($code);
+            $this->fromJson($code);
         }
+    }
+
+
+    /**
+     * Import json
+     *
+     * Input json string MUST include code and message, data is optional.
+     *
+     * @param   string  $json
+     * @return  static
+     * @throws  LoadFromJsonFailException
+     */
+    public function fromJson($json)
+    {
+        $ar = $this->getUtilContainer()->getJson()->decode($json, true);
+
+        foreach (['code', 'message'] as $v) {
+            if (!isset($ar[$v])) {
+                throw new LoadFromJsonFailException(
+                    "Json to load have no $v information"
+                );
+            }
+        }
+
+        $arrayUtil = $this->getUtilContainer()->getArray();
+        $this->code    = $ar['code'];
+        $this->message = $ar['message'];
+        $this->data    = $arrayUtil->getIdx($ar, 'data', null);
+
+        return $this;
     }
 
 
@@ -98,21 +128,6 @@ class ReturnValue
 
 
     /**
-     * Get json encoded info string
-     *
-     * @return  string
-     */
-    public function getJson()
-    {
-        return $this->getUtilContainer()->getJson()->encodeUnicode([
-            'code'    => $this->code,
-            'message' => $this->message,
-            'data'    => $this->data,
-        ]);
-    }
-
-
-    /**
      * Is result means error ?
      *
      * @return  boolean
@@ -120,36 +135,6 @@ class ReturnValue
     public function isError()
     {
         return 0 > $this->code;
-    }
-
-
-    /**
-     * Load info from json encoded string
-     *
-     * Input json string MUST include code and message, data can be optional.
-     *
-     * @param   string  $json
-     * @return  static
-     * @throws  LoadFromJsonFailException
-     */
-    public function loadJson($json)
-    {
-        $ar = $this->getUtilContainer()->getJson()->decode($json, true);
-
-        foreach (['code', 'message'] as $v) {
-            if (!isset($ar[$v])) {
-                throw new LoadFromJsonFailException(
-                    "Json to load have no $v information"
-                );
-            }
-        }
-
-        $arrayUtil = $this->getUtilContainer()->getArray();
-        $this->code    = $ar['code'];
-        $this->message = $ar['message'];
-        $this->data    = $arrayUtil->getIdx($ar, 'data', null);
-
-        return $this;
     }
 
 
@@ -192,5 +177,20 @@ class ReturnValue
         $this->message = $message;
 
         return $this;
+    }
+
+
+    /**
+     * Export with json encoded
+     *
+     * @return  string
+     */
+    public function toJson()
+    {
+        return $this->getUtilContainer()->getJson()->encodeUnicode([
+            'code'    => $this->code,
+            'message' => $this->message,
+            'data'    => $this->data,
+        ]);
     }
 }
