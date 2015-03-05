@@ -1,8 +1,7 @@
 <?php
-namespace Fwlib\Util\Test;
+namespace Fwlib\Dummy;
 
-
-class UtilContainerBenchmarkDummy
+class ArrayUtil
 {
     public static function getIdx($ar, $key, $default = null)
     {

@@ -32,13 +32,13 @@
  * @see \Fwlib\Util\UtilContainerAwareTrait
  */
 
+use Fwlib\Dummy\ArrayUtil;
 use Fwlib\Test\Benchmark;
 use Fwlib\Util\UtilContainer;
-use Fwlib\Util\Test\UtilContainerBenchmarkDummy as ArrayUtil;
 
 require __DIR__ . '/../autoload.php';
 
-require __DIR__ . '/Dummy/UtilContainerBenchmarkDummy.php';
+require __DIR__ . '/dummy/ArrayUtil.php';
 
 
 // Instance ArrayUtil, will reuse in below get
