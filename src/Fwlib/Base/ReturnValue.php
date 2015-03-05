@@ -128,7 +128,7 @@ class ReturnValue
      * Input json string MUST include code and message, data can be optional.
      *
      * @param   string  $json
-     * @return  ReturnValue
+     * @return  static
      */
     public function loadJson($json)
     {
@@ -153,7 +153,7 @@ class ReturnValue
      * Setter of code
      *
      * @param   int     $code
-     * @return  ReturnValue
+     * @return  static
      */
     public function setCode($code)
     {
@@ -167,7 +167,7 @@ class ReturnValue
      * Setter of data
      *
      * @param   mixed   $data
-     * @return  ReturnValue
+     * @return  static
      */
     public function setData($data)
     {
@@ -181,7 +181,7 @@ class ReturnValue
      * Setter of message
      *
      * @param   string  $message
-     * @return  ReturnValue
+     * @return  static
      */
     public function setMessage($message)
     {
