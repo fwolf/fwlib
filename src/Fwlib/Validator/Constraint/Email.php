@@ -1,9 +1,8 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
+use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Validator\AbstractConstraint;
-use Fwlib\Util\UtilContainer;
-use Fwlib\Util\UtilContainerInterface;
 
 /**
  * Constraint Email
@@ -13,6 +12,9 @@ use Fwlib\Util\UtilContainerInterface;
  */
 class Email extends AbstractConstraint
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Check email domain through dns
      *
@@ -26,39 +28,6 @@ class Email extends AbstractConstraint
     public $messageTemplate = [
         'default'   => 'The input should be valid email address'
     ];
-
-    /**
-     * @var UtilContainer
-     */
-    protected $utilContainer = null;
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUtilContainer()
-    {
-        if (is_null($this->utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        }
-
-        return $this->utilContainer;
-    }
-
-
-    /**
-     * Setter of UtilContainer instance
-     *
-     * @param   UtilContainerInterface  $utilContainer
-     * @return  static
-     */
-    public function setUtilContainer(
-        UtilContainerInterface $utilContainer = null
-    ) {
-        $this->utilContainer = $utilContainer;
-
-        return $this;
-    }
 
 
     /**
