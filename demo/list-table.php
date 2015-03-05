@@ -39,7 +39,7 @@ $bm->mark('ListTable object prepared');
 /***************************************
  * Prepare db and test table
  **************************************/
-$db = TestServiceContainer::getInstance()->get('db');
+$db = TestServiceContainer::getInstance()->getDb();
 
 $ref = new \ReflectionProperty(AbstractDbRelateTest::class, 'tableUser');
 $ref->setAccessible(true);
