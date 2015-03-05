@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Html;
 
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Validator\Validator;
 
 /**
@@ -14,11 +14,14 @@ use Fwlib\Validator\Validator;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2011-2014 Fwolf
+ * @copyright   Copyright 2011-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class FormValidator
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Do check when input blur
      *
@@ -113,7 +116,7 @@ class FormValidator
      */
     protected function applyJsClosure($js)
     {
-        $js = UtilContainer::getInstance()->getString()
+        $js = $this->getUtilContainer()->getString()
             ->indent($js, 2);
 
         $js = "(function (global) {
@@ -286,7 +289,7 @@ global.$id.markFailed(global.$id.getInput('$name'));
      */
     protected function jsonEncode($value)
     {
-        return UtilContainer::getInstance()->get('Json')
+        return $this->getUtilContainer()->getJson()
             ->encodeUnicode($value);
     }
 
