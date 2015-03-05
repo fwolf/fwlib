@@ -4,27 +4,23 @@ namespace FwlibTest\Bridge;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Config\GlobalConfig;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AdodbMysqlTest extends AbstractDbRelateTest
 {
+    use UtilContainerAwareTrait;
+
+
     protected static $dbUsing = 'mysql';
-    protected $utilContainer;
-
-
-    public function __construct()
-    {
-        $this->utilContainer = UtilContainer::getInstance();
-    }
 
 
     public function generateUuid()
     {
-        return $this->utilContainer->get('UuidBase16')->generate();
+        return $this->getUtilContainer()->getUuidBase16()->generate();
     }
 
 

@@ -5,7 +5,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\EscapeColor;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class EscapeColorTest extends PHPUnitTestCase
@@ -15,7 +15,6 @@ class EscapeColorTest extends PHPUnitTestCase
     public function __construct()
     {
         $this->escapeColor = new EscapeColor;
-        $this->escapeColor->setUtilContainer();
     }
 
 

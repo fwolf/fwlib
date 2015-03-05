@@ -2,7 +2,7 @@
 namespace Fwlib\Db;
 
 use Fwlib\Bridge\Adodb;
-use Fwlib\Util\AbstractUtilAware;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Compare db data before and after write
@@ -23,8 +23,11 @@ use Fwlib\Util\AbstractUtilAware;
  * @copyright   Copyright 2012-2014 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class DbDiff extends AbstractUtilAware
+class DbDiff
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Counter of DbDiff changed rows
      *
@@ -33,7 +36,7 @@ class DbDiff extends AbstractUtilAware
     protected $rowCount = 0;
 
     /**
-     * @var Fwlib\Bridge\Adodb
+     * @var Adodb
      */
     protected $db = null;
 
@@ -460,7 +463,7 @@ class DbDiff extends AbstractUtilAware
      */
     public function export()
     {
-        $json = $this->getUtil('Json');
+        $json = $this->getUtilContainer()->getJson();
 
         return $json->encodeUnicode(
             [
@@ -636,7 +639,7 @@ class DbDiff extends AbstractUtilAware
     {
         $this->reset();
 
-        $info = $this->getUtil('Json')
+        $info = $this->getUtilContainer()->getJson()
             ->decode($json, true);
 
         try {

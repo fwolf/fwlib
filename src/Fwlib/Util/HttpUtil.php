@@ -13,8 +13,11 @@ namespace Fwlib\Util;
  * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class HttpUtil extends AbstractUtilAware
+class HttpUtil
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Add slashes to user input contents recursive
      *

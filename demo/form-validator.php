@@ -14,7 +14,7 @@ use FwlibTest\Aide\TestServiceContainer;
  * Read post data
  **************************************/
 $utilContainer = UtilContainer::getInstance();
-$httpUtil = $utilContainer->get('HttpUtil');
+$httpUtil = $utilContainer->getHttp();
 
 $userTitle = $httpUtil->getPost('userTitle');
 $userAge = $httpUtil->getPost('userAge');
@@ -57,11 +57,9 @@ $serviceContainer = TestServiceContainer::getInstance();
 $serviceContainer->register('Curl', $curl);
 
 $constraintContainer = ConstraintContainer::getInstance();
-$constraintContainer->setUtilContainer($utilContainer);
-$urlConstraint = $constraintContainer->get('Url');
-$urlConstraint->setServiceContainer($serviceContainer);
+$urlConstraint = $constraintContainer->getUrl();
 
-$validator = $serviceContainer->get('Validator');
+$validator = $serviceContainer->getValidator();
 $validator->setConstraintContainer($constraintContainer);
 
 $formValidator = new FormValidator;

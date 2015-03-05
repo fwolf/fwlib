@@ -3,14 +3,17 @@ namespace FwlibTest\Db;
 
 use Fwlib\Db\SqlGenerator;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 {
+    use UtilContainerAwareTrait;
+
+
     protected static $dbUsing = 'mysql';
     protected $sg = null;
 
@@ -32,7 +35,7 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
         $prop->setAccessible(true);
         $db = $prop->getValue($sg);
 
-        $json = UtilContainer::getInstance()->get('Json');
+        $json = $this->getUtilContainer()->getJson();
 
         $this->assertJsonStringEqualsJsonString(
             $json->encode(self::$dbMysql),
@@ -43,8 +46,6 @@ class SqlGeneratorMysqlTest extends AbstractDbRelateTest
 
     public function testEmpty()
     {
-        $this->sg->setUtilContainer(UtilContainer::getInstance());
-
         // Error config will got empty result
         $this->sg->clear();
         $ar = ['foo' => 'bar'];

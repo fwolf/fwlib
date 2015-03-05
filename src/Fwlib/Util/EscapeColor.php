@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\AbstractUtilAware;
-
 /**
  * Escape color for bash shell
  *
@@ -10,12 +8,15 @@ use Fwlib\Util\AbstractUtilAware;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2006-2014 Fwolf
+ * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  * @link http://linuxgazette.net/issue65/padala.html
  */
-class EscapeColor extends AbstractUtilAware
+class EscapeColor
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Dict: attr
      */
@@ -153,7 +154,7 @@ class EscapeColor extends AbstractUtilAware
         }
         $output .= "---------------------------------------------------------------------\n";
 
-        $output = $this->getUtil('Env')->ecl($output, true);
+        $output = $this->getUtilContainer()->getEnv()->ecl($output, true);
         if (!$export) {
             echo $output;
         }

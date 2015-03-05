@@ -2,8 +2,7 @@
 namespace Fwlib\Db;
 
 use Fwlib\Bridge\Adodb;
-use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\UuidBase36;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Sync data between 2 db source with same schema
@@ -32,11 +31,14 @@ use Fwlib\Util\UuidBase36;
  * Avoid concurrence run by file lock.
  * @link http://stackoverflow.com/questions/16048648
  *
- * @copyright   Copyright 2008-2014 Fwolf
+ * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class SyncDbData extends AbstractUtilAware
+class SyncDbData
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Number of rows have processed
      *
@@ -58,14 +60,14 @@ class SyncDbData extends AbstractUtilAware
     /**
      * Source db connection
      *
-     * @var Fwlib\Bridge\Adodb
+     * @var Adodb
      */
     protected $dbSource = null;
 
     /**
      * Destination db connection
      *
-     * @var Fwlib\Bridge\Adodb
+     * @var Adodb
      */
     protected $dbDest = null;
 
@@ -137,7 +139,7 @@ class SyncDbData extends AbstractUtilAware
     /**
      * Check and create record table if not exists
      *
-     * @param   Fwlib\Bridge\Adodb  $db
+     * @param   Adodb  $db
      * @param   string  $table
      */
     protected function checkTableRecord($db, $table)
@@ -239,7 +241,7 @@ class SyncDbData extends AbstractUtilAware
      */
     protected function generateUuid()
     {
-        return $this->getUtil('UuidBase36')->generate();
+        return $this->getUtilContainer()->getUuidBase36()->generate();
     }
 
 
@@ -298,7 +300,7 @@ class SyncDbData extends AbstractUtilAware
 
         // @codeCoverageIgnoreStart
         if ($this->verbose) {
-            $this->getUtil('Env')->ecl($msg);
+            $this->getUtilContainer()->getEnv()->ecl($msg);
         }
         // @codeCoverageIgnoreEnd
     }
@@ -324,8 +326,8 @@ class SyncDbData extends AbstractUtilAware
     /**
      * Set source and dest db connection
      *
-     * @param   array|Fwlib\Bridge\Adodb    $source
-     * @param   array|Fwlib\Bridge\Adodb    $dest
+     * @param   array|Adodb    $source
+     * @param   array|Adodb    $dest
      */
     public function setDb($source, $dest)
     {
@@ -480,7 +482,7 @@ class SyncDbData extends AbstractUtilAware
         // should return array of PK for rows to delete in dest db. If PK in
         // dest table has multiple column, the PK value is array of these
         // columns, and the order of these column should same as db schema.
-        $stringUtil = $this->getUtil('StringUtil');
+        $stringUtil = $this->getUtilContainer()->getString();
         $compareFunc = 'compareData' . $stringUtil->toStudlyCaps($tableSource)
             . 'To' . $stringUtil->toStudlyCaps($tableDest);
 
@@ -673,7 +675,7 @@ class SyncDbData extends AbstractUtilAware
 
 
             $rowsSynced = 0;
-            $stringUtil = $this->getUtil('StringUtil');
+            $stringUtil = $this->getUtilContainer()->getString();
             foreach ((array)$tableDest as $table) {
                 // Call data convert method
                 $convertFunc = 'convertData' . $stringUtil->toStudlyCaps($tableSource)

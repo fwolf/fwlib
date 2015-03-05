@@ -1,17 +1,20 @@
 <?php
 namespace Fwlib\Util\Code;
 
-use Fwlib\Util\AbstractUtilAware;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * China organization code
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
- * @link    http://zh.wikisource.org/zh/GB_11714-1997_全国组织机构代码编制规则
+ * @see http://zh.wikisource.org/zh/GB_11714-1997_全国组织机构代码编制规则
  */
-class ChnOrganizationCode extends AbstractUtilAware
+class ChnOrganizationCode
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Generate org code
      *
@@ -24,7 +27,8 @@ class ChnOrganizationCode extends AbstractUtilAware
 
         if (empty($codeBase)) {
             // Gen random if empty
-            $codeBase = $this->getUtil('StringUtil')->random(8, '0A');
+            $codeBase = $this->getUtilContainer()->getString()
+                ->random(8, '0A');
 
         } elseif (8 != strlen($codeBase)) {
             // Length check

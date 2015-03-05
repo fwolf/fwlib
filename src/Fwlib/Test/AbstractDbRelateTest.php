@@ -11,7 +11,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractDbRelateTest extends PHPunitTestCase
@@ -111,7 +111,7 @@ abstract class AbstractDbRelateTest extends PHPunitTestCase
             }
         }
 
-        // Get db connection from ServiceContainer
+        // Get db connection from service container
         $sc = TestServiceContainer::getInstance();
         foreach ($dbName as $name) {
             /** @var Adodb $db */

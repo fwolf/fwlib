@@ -3,16 +3,18 @@ namespace FwlibTest\Db;
 
 use Fwlib\Db\DbDiff;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
- * @copyright   Copyright 2012-2014 Fwolf
+ * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class DbDiffTest extends AbstractDbRelateTest
 {
+    use UtilContainerAwareTrait;
+
+
     protected static $dbUsing = 'default';
-    protected $utilContainer;
     protected $uuidUtil;
 
     protected $uuid1;
@@ -24,8 +26,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
     public function __construct()
     {
-        $this->utilContainer = UtilContainer::getInstance();
-        $this->uuidUtil = $this->utilContainer->get('UuidBase36');
+        $this->uuidUtil = $this->getUtilContainer()->getUuidBase36();
 
         $this->uuid1 = $this->generateUuid();
         $this->uuid2 = $this->generateUuid();
@@ -36,7 +37,6 @@ class DbDiffTest extends AbstractDbRelateTest
     protected function buildMock()
     {
         $dbDiff = new DbDiff(self::$db);
-        $dbDiff->setUtilContainer($this->utilContainer);
 
         return $dbDiff;
     }
@@ -68,7 +68,6 @@ class DbDiffTest extends AbstractDbRelateTest
             }));
 
         $dbDiff = new DbDiff($db);
-        $dbDiff->setUtilContainer($this->utilContainer);
 
         return $dbDiff;
     }

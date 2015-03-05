@@ -7,8 +7,11 @@ namespace Fwlib\Util;
  * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class ArrayUtil extends AbstractUtilAware
+class ArrayUtil
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Return default if array key is not set or empty
      *

@@ -260,7 +260,7 @@ abstract class AbstractView extends BaseView
 
         $viewAction = $this->getViewAction($workflowAction);
 
-        $stringUtil = UtilContainer::getInstance()->get('StringUtil');
+        $stringUtil = $this->getUtilContainer()->getString();
         $fetchMethod = $this->methodPrefix .
             $stringUtil->toStudlyCaps($viewAction);
 

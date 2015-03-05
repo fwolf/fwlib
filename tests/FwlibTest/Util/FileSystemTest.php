@@ -1,25 +1,25 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\FileSystem;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2010-2014 Fwolf
+ * @copyright   Copyright 2010-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class FileSystemTest extends PHPUnitTestCase
 {
+    use UtilContainerAwareTrait;
+
+
     protected $fileSystem;
-    protected $utilContainer;
 
 
     public function __construct()
     {
-        $this->utilContainer = UtilContainer::getInstance();
         $this->fileSystem = new FileSystem;
-        $this->fileSystem->setUtilContainer($this->utilContainer);
     }
 
 
@@ -120,7 +120,7 @@ class FileSystemTest extends PHPUnitTestCase
     {
         // Prepare a filename
         $name = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
-        $name .= $this->utilContainer->get('StringUtil')->random(8);
+        $name .= $this->getUtilContainer()->getString()->random(8);
         $ext = 'ext';
         $file = $name . '.' . $ext;
 

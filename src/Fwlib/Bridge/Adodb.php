@@ -2,8 +2,7 @@
 namespace Fwlib\Bridge;
 
 use Fwlib\Db\SqlGenerator;
-use Fwlib\Util\AbstractUtilAware;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Extended ADOdb class
@@ -31,8 +30,10 @@ use Fwlib\Util\UtilContainer;
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Adodb extends AbstractUtilAware
+class Adodb
 {
+    use UtilContainerAwareTrait;
+
 
     /**
      * PHP script charset
@@ -1105,19 +1106,6 @@ class Adodb extends AbstractUtilAware
     public function getSqlTransRollback()
     {
         return 'ROLLBACK' . $this->GetSqlDelimiter();
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUtilContainer()
-    {
-        if (is_null($this->utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        }
-
-        return $this->utilContainer;
     }
 
 

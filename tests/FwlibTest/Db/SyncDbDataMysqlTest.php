@@ -3,7 +3,6 @@ namespace FwlibTest\Db;
 
 use Fwlib\Db\SyncDbData;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Util\UuidBase36;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -19,6 +18,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
     public static $dbUsing = 'mysql';
     public static $tableUserDest = 'test_user_dest';
 
+    /** @var UtilContainer */
     protected static $utilContainer;
 
     /**
@@ -29,7 +29,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
 
     protected static function generateUuid()
     {
-        return self::$utilContainer->get('UuidBase36')->generate();
+        return self::$utilContainer->getUuidBase36()->generate();
     }
 
 
@@ -154,7 +154,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $tableUser => [$tableUserDest, $tableNotExist],
         ];
 
-        $stringUtil = self::$utilContainer->get('StringUtil');
+        $stringUtil = self::$utilContainer->getString();
 
         // Mock instance with 2 additional convert method
         $convertForNotExist = 'convertData' .
@@ -244,7 +244,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $tableUser => [$tableUserDest, $tableUserDest],
         ];
 
-        $stringUtil = self::$utilContainer->get('StringUtil');
+        $stringUtil = self::$utilContainer->getString();
 
         // Mock instance with 2 additional convert method
         $compareForUserDest = 'compareData' .

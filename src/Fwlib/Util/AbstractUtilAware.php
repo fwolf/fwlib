@@ -25,7 +25,9 @@ class AbstractUtilAware implements UtilAwareInterface
      */
     protected function getUtil($name)
     {
-        return $this->getUtilContainer()->get($name);
+        $method = "get{$name}";
+
+        return $this->getUtilContainer()->$method();
     }
 
 

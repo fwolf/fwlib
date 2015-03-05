@@ -9,7 +9,7 @@ use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Util\UtilContainer;
 
 /**
- * @copyright   Copyright 2012-2014 Fwolf
+ * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ExecutorTest extends AbstractDbRelateTest
@@ -93,7 +93,7 @@ class ExecutorTest extends AbstractDbRelateTest
 
     protected function generateUuid()
     {
-        return UtilContainer::getInstance()->get('UuidBase36')->generate();
+        return UtilContainer::getInstance()->getUuidBase36()->generate();
     }
 
 

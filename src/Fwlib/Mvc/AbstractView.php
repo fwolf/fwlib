@@ -1,19 +1,21 @@
 <?php
 namespace Fwlib\Mvc;
 
-use Fwlib\Mvc\ViewInterface;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * View in MVC
  *
  * Receive request from Controller and generate output.
  *
- * @copyright   Copyright 2008-2014 Fwolf
+ * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractView implements ViewInterface
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Current action string
      *
@@ -213,7 +215,7 @@ abstract class AbstractView implements ViewInterface
             return '';
         }
 
-        $stringUtil = UtilContainer::getInstance()->get('StringUtil');
+        $stringUtil = $this->getUtilContainer()->getString();
 
         $method = $this->methodPrefix . $stringUtil->toStudlyCaps($this->action);
         if (!method_exists($this, $method)) {

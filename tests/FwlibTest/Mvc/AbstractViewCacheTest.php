@@ -7,7 +7,7 @@ use Fwlib\Mvc\AbstractViewCache;
 use Fwlib\Util\UtilContainer;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AbstractViewCacheTest extends PHPUnitTestCase
@@ -35,7 +35,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
         $view->expects($this->any())
             ->method('getOutputBody')
             ->will($this->returnCallback(function () {
-                $datetimeUtil = UtilContainer::getInstance()->get('DatetimeUtil');
+                $datetimeUtil = UtilContainer::getInstance()->getDatetime();
                 return $datetimeUtil->getMicroTime();
             }));
 
@@ -73,7 +73,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
         $view->expects($this->any())
             ->method('getOutputBody')
             ->will($this->returnCallback(function () {
-                $datetimeUtil = UtilContainer::getInstance()->get('DatetimeUtil');
+                $datetimeUtil = UtilContainer::getInstance()->getDatetime();
                 return $datetimeUtil->getMicroTime();
             }));
 

@@ -3,7 +3,7 @@ namespace Fwlib\Html;
 
 use Fwlib\Bridge\Adodb;
 use Fwlib\Bridge\Smarty;
-use Fwlib\Util\UtilContainer;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Html generator: list table
@@ -14,11 +14,14 @@ use Fwlib\Util\UtilContainer;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2003-2014 Fwolf
+ * @copyright   Copyright 2003-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ListTable
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * If column in data and title does not match, fitMode option will
      * determine which columns will be used, its value defines here.
@@ -390,21 +393,6 @@ class ListTable
 
 
     /**
-     * Get Util instance
-     *
-     * @param   string  $name
-     * @return  object
-     */
-    protected function getUtil($name)
-    {
-        /** @var UtilContainer $utilContainer */
-        $utilContainer =  UtilContainer::getInstance();
-
-        return $utilContainer->get($name);
-    }
-
-
-    /**
      * Read http param and parse
      *
      * @param   boolean $forcenew
@@ -412,7 +400,7 @@ class ListTable
      */
     protected function readRequest($forcenew = false)
     {
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
 
         // Avoid duplicate
         if (!empty($this->url['base']) && !$forcenew) {
@@ -436,7 +424,7 @@ class ListTable
         $_SERVER['SCRIPT_NAME'] = str_replace($ar, '/', $_SERVER['SCRIPT_NAME']);
         */
 
-        $httpUtil = $this->getUtil('HttpUtil');
+        $httpUtil = $this->getUtilContainer()->getHttp();
         $this->url['base'] = $httpUtil->getSelfUrl(false);
 
         $page = $arrayUtil->getIdx($this->param, $this->configs['pageParam'], 1);
@@ -822,7 +810,7 @@ class ListTable
      */
     protected function setPage($page = null)
     {
-        $arrayUtil = $this->getUtil('Array');
+        $arrayUtil = $this->getUtilContainer()->getArray();
 
         if (is_null($page)) {
             $page = $arrayUtil->getIdx(

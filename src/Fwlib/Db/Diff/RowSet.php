@@ -1,17 +1,19 @@
 <?php
 namespace Fwlib\Db\Diff;
 
-use Fwlib\Db\Diff\Row;
-use Fwlib\Util\AbstractUtilAware;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Collection of db row change record
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class RowSet extends AbstractUtilAware
+class RowSet
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Execute status code
      */
@@ -74,7 +76,7 @@ class RowSet extends AbstractUtilAware
      */
     protected function fromJson($json)
     {
-        $info = $this->getUtil('Json')->decode($json, true);
+        $info = $this->getUtilContainer()->getJson()->decode($json, true);
 
         try {
             foreach ($info['rows'] as $row) {
@@ -185,7 +187,7 @@ class RowSet extends AbstractUtilAware
      */
     public function toJson()
     {
-        $json = $this->getUtil('Json');
+        $json = $this->getUtilContainer()->getJson();
 
         $rows = [];
         foreach ($this->rows as $row) {

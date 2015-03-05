@@ -1,16 +1,17 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\AbstractUtilAware;
-
 /**
  * FileSystem util
  *
- * @copyright   Copyright 2006-2014 Fwolf
+ * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class FileSystem extends AbstractUtilAware
+class FileSystem
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Delete a dir or file recursive
      *
@@ -238,7 +239,7 @@ class FileSystem extends AbstractUtilAware
 
         // Sort result
         if (!empty($sortBy)) {
-            $arrayUtil = $this->getUtil('Array');
+            $arrayUtil = $this->getUtilContainer()->getArray();
             $arrayUtil->sortByLevel2($arFiles, $sortBy, $order);
         }
 

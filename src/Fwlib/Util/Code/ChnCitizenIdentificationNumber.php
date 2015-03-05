@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Util\Code;
 
-use Fwlib\Util\AbstractUtilAware;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * China citizen identification number
@@ -9,12 +9,15 @@ use Fwlib\Util\AbstractUtilAware;
  * Abbr: Cin, CinCode
  * Synonym: Resident Identity number
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
- * @link    https://zh.wikisource.org/wiki/GB_11643-1999_公民身份号码
+ * @see https://zh.wikisource.org/wiki/GB_11643-1999_公民身份号码
  */
-class ChnCitizenIdentificationNumber extends AbstractUtilAware
+class ChnCitizenIdentificationNumber
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Title of genders
      *
@@ -142,7 +145,8 @@ class ChnCitizenIdentificationNumber extends AbstractUtilAware
 
         $s = substr($cin, 0, 6) . strval($prefix) . substr($cin, 6);
 
-        $check = $this->getUtil('Iso7064')->encode($s, '112', false);
+        $check = $this->getUtilContainer()->getIso7064()
+            ->encode($s, '112', false);
 
         return $s . $check;
     }

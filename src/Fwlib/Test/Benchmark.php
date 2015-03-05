@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Test;
 
-use Fwlib\Util\AbstractUtilAware;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Benchmark tool for program execute time
@@ -14,11 +14,14 @@ use Fwlib\Util\AbstractUtilAware;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2009-2014 Fwolf
+ * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Benchmark extends AbstractUtilAware
+class Benchmark
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Define color for groups, from fast to slow
      *
@@ -76,7 +79,7 @@ class Benchmark extends AbstractUtilAware
      */
     public function display($options = '', $return = false)
     {
-        if ($this->getUtil('Env')->isCli()) {
+        if ($this->getUtilContainer()->getEnv()->isCli()) {
             $result = $this->resultCli($options);
         } else {
             $result = $this->resultWeb($options);
@@ -246,7 +249,7 @@ EOF;
 
         $output = '';
 
-        $escapeColor = $this->getUtil('EscapeColor');
+        $escapeColor = $this->getUtilContainer()->getEscapeColor();
         if (0 <= $this->groupId) {
             foreach ($this->group as $groupId => $ar_group) {
                 $this->formatColor($groupId);

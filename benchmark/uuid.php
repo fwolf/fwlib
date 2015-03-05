@@ -15,9 +15,9 @@ $bm->start('Gen ' . $count . ' UUID');
 $speed = 0;
 
 
-$uuidBase16 = $utilContainer->get('UuidBase16');
-$uuidBase36 = $utilContainer->get('UuidBase36');
-$uuidBase62 = $utilContainer->get('UuidBase62');
+$uuidBase16 = $utilContainer->getUuidBase16();
+$uuidBase36 = $utilContainer->getUuidBase36();
+$uuidBase62 = $utilContainer->getUuidBase62();
 
 $arSpeed = [];
 foreach (['UuidBase16', 'UuidBase36', 'UuidBase62'] as $k => $v) {
@@ -48,7 +48,7 @@ $rs = str_replace(array_keys($arSpeed), $arSpeed, $rs);
 echo $rs;
 
 
-$env = $utilContainer->get('Env');
+$env = $utilContainer->getEnv();
 $env->ecl('$uuidBase16 without check digit: ' . $uuidBase16->generate('10', null, false));
 $env->ecl('$uuidBase16 with    check digit: ' . $uuidBase16->generate('10', null, true));
 

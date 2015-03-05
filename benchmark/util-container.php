@@ -2,7 +2,7 @@
 /**
  * UtilContainer is common used like this:
  *
- * $arrayUtil = UtilContainer::getInstance()->get('Array');
+ * $arrayUtil = UtilContainer::getInstance()->getArray();
  * $arrayUtil->getIdx();
  *
  * Will this be slower than Class::method() ? How slow ?
@@ -29,7 +29,7 @@
  * constructor), just declare a protected property $utilContainer and public
  * setter setUtilContainer(), then invoke setter in constructor is enough.
  *
- * @see Fwlib\Util\AbstractUtilAware
+ * @see \Fwlib\Util\UtilContainerAwareTrait
  */
 
 use Fwlib\Test\Benchmark;
@@ -42,7 +42,7 @@ require __DIR__ . '/Dummy/UtilContainerBenchmarkDummy.php';
 
 
 // Instance ArrayUtil, will reuse in below get
-UtilContainer::getInstance()->get('Array');
+UtilContainer::getInstance()->getArray();
 
 
 $bench = new Benchmark;
@@ -62,13 +62,13 @@ $bench->mark('ArrayUtil::getIdx()');
 // Use UtilContainer instance
 $utilContainer = UtilContainer::getInstance();
 for ($i = 0; $i < $loopCount; $i ++) {
-    $utilContainer->get('Array')->getIdx([], 'foo', 'bar');
+    $utilContainer->getArray()->getIdx([], 'foo', 'bar');
 }
-$bench->mark('$utilContainer->get(\'Array\')->getIdx()');
+$bench->mark('$utilContainer->getArray()->getIdx()');
 
 
 // Use util instance
-$arrayUtil = $utilContainer->get('Array');
+$arrayUtil = $utilContainer->getArray();
 for ($i = 0; $i < $loopCount; $i ++) {
     $arrayUtil->getIdx([], 'foo', 'bar');
 }
