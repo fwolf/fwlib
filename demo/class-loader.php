@@ -27,7 +27,7 @@ $envUtil->ecl('Load class with namespace success!');
 
 $classLoader->addPrefix(
     'ClassLoaderDummy',
-    __DIR__ . '/ClassLoaderDummy.php'
+    __DIR__ . '/dummy/ClassLoaderDummy.php'
 );
 
 new \ClassLoaderDummy;
