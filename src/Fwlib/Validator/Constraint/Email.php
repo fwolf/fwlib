@@ -2,7 +2,6 @@
 namespace Fwlib\Validator\Constraint;
 
 use Fwlib\Validator\AbstractConstraint;
-use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UtilContainerInterface;
 
@@ -12,7 +11,7 @@ use Fwlib\Util\UtilContainerInterface;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Email extends AbstractConstraint implements UtilAwareInterface
+class Email extends AbstractConstraint
 {
     /**
      * Check email domain through dns

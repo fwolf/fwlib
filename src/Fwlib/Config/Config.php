@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Config;
 
-use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UtilContainerInterface;
 
@@ -13,7 +12,7 @@ use Fwlib\Util\UtilContainerInterface;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Config implements \ArrayAccess, UtilAwareInterface
+class Config implements \ArrayAccess
 {
     /**
      * Config data array

@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Db;
 
-use Fwlib\Util\UtilAwareInterface;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UtilContainerInterface;
 use Fwlib\Bridge\Adodb;
@@ -35,7 +34,7 @@ use Fwlib\Bridge\Adodb;
  * @copyright   Copyright 2003-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class SqlGenerator implements UtilAwareInterface
+class SqlGenerator
 {
     /**
      * Db connection
