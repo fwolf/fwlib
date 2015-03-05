@@ -49,7 +49,7 @@ abstract class AbstractManager implements ManagerInterface
      *
      * @var string
      */
-    protected $modelClass = 'Fwlib\Workflow\ModelInterface';
+    protected $modelClass = ModelInterface::class;
 
     /**
      * Workflow nodes schema array

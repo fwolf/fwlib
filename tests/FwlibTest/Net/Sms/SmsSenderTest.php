@@ -90,10 +90,10 @@ class SmsSenderTest extends PHPUnitTestCase
 
     public function testSend()
     {
-        $smsLogger = $this->getMock('Fwlib\Net\Sms\SmsLogger');
+        $smsLogger = $this->getMock(SmsLogger::class);
 
         $smsSender = $this->getMock(
-            'Fwlib\Net\Sms\SmsSender',
+            SmsSender::class,
             ['getSmsLogger', 'sendUsingGammuSmsdInject']
         );
         $smsSender->expects($this->once())
@@ -135,10 +135,10 @@ class SmsSenderTest extends PHPUnitTestCase
 
     public function testSendUsingGammuSmsdInject()
     {
-        $smsLogger = $this->getMock('Fwlib\Net\Sms\SmsLogger');
+        $smsLogger = $this->getMock(SmsLogger::class);
 
         $smsSender = $this->getMock(
-            'Fwlib\Net\Sms\SmsSender',
+            SmsSender::class,
             ['getPathOfGammuSmsdInject', 'getSmsLogger']
         );
         $smsSender->expects($this->once())
@@ -166,7 +166,7 @@ class SmsSenderTest extends PHPUnitTestCase
     public function testSendUsingGammuSmsdInjectWithExecError()
     {
         $smsSender = $this->getMock(
-            'Fwlib\Net\Sms\SmsSender',
+            SmsSender::class,
             ['getPathOfGammuSmsdInject']
         );
         $smsSender->expects($this->once())
@@ -190,7 +190,7 @@ class SmsSenderTest extends PHPUnitTestCase
     public function testSendUsingGammuSmsdInjectWithGetPathFail()
     {
         $smsSender = $this->getMock(
-            'Fwlib\Net\Sms\SmsSender',
+            SmsSender::class,
             ['getPathOfGammuSmsdInject']
         );
         $smsSender->expects($this->once())
@@ -210,7 +210,7 @@ class SmsSenderTest extends PHPUnitTestCase
     public function testSendUsingGammuSmsdInjectWithWrongCmdTemplate()
     {
         $smsSender = $this->getMock(
-            'Fwlib\Net\Sms\SmsSender',
+            SmsSender::class,
             ['getPathOfGammuSmsdInject']
         );
         $smsSender->expects($this->once())

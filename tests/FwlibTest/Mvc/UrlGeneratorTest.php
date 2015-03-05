@@ -24,7 +24,7 @@ class UrlGeneratorTest extends PHPUnitTestCase
         ];
 
         $urlGenerator = $this->getMock(
-            'Fwlib\Mvc\UrlGenerator',
+            UrlGenerator::class,
             null
         );
 

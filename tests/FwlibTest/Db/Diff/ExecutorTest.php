@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Db\Diff;
 
+use Fwlib\Bridge\Adodb;
 use Fwlib\Db\Diff\Executor;
 use Fwlib\Db\Diff\Manager;
 use Fwlib\Db\Diff\Row;
@@ -49,10 +50,10 @@ class ExecutorTest extends AbstractDbRelateTest
 
     protected function buildMockWithFakeDb()
     {
-        $db = $this->getMockBuilder('Fwlib\Bridge\Adodb')
+        $db = $this->getMockBuilder(Adodb::class)
             ->disableOriginalConstructor()
             ->getMock(
-                'Fwlib\Bridge\Adodb',
+                Adodb::class,
                 [
                     'BeginTrans', 'CommitTrans', 'RollbackTrans',
                     'getErrorCode', 'getErrorMessage',

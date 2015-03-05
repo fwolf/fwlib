@@ -3,10 +3,11 @@ namespace FwlibTest\Auth;
 
 use Fwlib\Auth\AbstractAccessControl;
 use Fwlib\Auth\AbstractUserSession;
+use Fwlib\Auth\UserSessionInterface;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AbstractAccessControlTest extends PHPUnitTestCase
@@ -18,11 +19,11 @@ class AbstractAccessControlTest extends PHPUnitTestCase
     {
         /** @type AbstractUserSession $userSession */
         $userSession = $this->getMockForAbstractClass(
-            'Fwlib\Auth\AbstractUserSession'
+            AbstractUserSession::class
         );
 
         $accessControl = $this->getMockBuilder(
-            'Fwlib\Auth\AbstractAccessControl'
+            AbstractAccessControl::class
         )
         ->setConstructorArgs([$userSession])
         ->getMockForAbstractClass();
@@ -36,7 +37,7 @@ class AbstractAccessControlTest extends PHPUnitTestCase
         $accessControl = $this->buildMock();
 
         $this->assertInstanceOf(
-            'Fwlib\Auth\UserSessionInterface',
+            UserSessionInterface::class,
             $this->reflectionGet($accessControl, 'userSession')
         );
     }

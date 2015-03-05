@@ -176,7 +176,7 @@ class CacheMemcachedTest extends PHPUnitTestCase
         $this->assertEquals($ar, []);
 
         $this->assertInstanceOf(
-            'Fwlib\Cache\CacheMemcached',
+            CacheMemcached::class,
             $this->ch->setConfigServer()
         );
     }

@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Workflow;
 
+use Fwlib\Workflow\ModelInterface;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Workflow\AbstractManager;
 
@@ -31,7 +32,7 @@ class AbstractManagerTest extends PHPUnitTestCase
         $this->assertNotEmpty($workflow->getCurrentNodeTitle());
         $this->assertNotEmpty($workflow->getModelClass());
         $this->assertInstanceOf(
-            'Fwlib\Workflow\ModelInterface',
+            ModelInterface::class,
             $workflow->getModel()
         );
 
@@ -53,7 +54,7 @@ class AbstractManagerTest extends PHPUnitTestCase
         $workflowModel = $workflow->getModel();
         $workflow->setModel($workflowModel);
         $this->assertInstanceOf(
-            'Fwlib\Workflow\ModelInterface',
+            ModelInterface::class,
             $workflow->getModel()
         );
     }

@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Db;
 
+use Fwlib\Bridge\Adodb;
 use Fwlib\Db\DbDiff;
 use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Util\UtilContainerAwareTrait;
@@ -44,10 +45,10 @@ class DbDiffTest extends AbstractDbRelateTest
 
     protected function buildMockWithFakeDb()
     {
-        $db = $this->getMockBuilder('Fwlib\Bridge\Adodb')
+        $db = $this->getMockBuilder(Adodb::class)
             ->disableOriginalConstructor()
             ->getMock(
-                'Fwlib\Bridge\Adodb',
+                Adodb::class,
                 [
                     'BeginTrans', 'CommitTrans', 'RollbackTrans',
                     'getErrorCode', 'getErrorMessage',

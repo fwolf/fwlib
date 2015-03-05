@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Db\Diff;
 
+use Fwlib\Db\Diff\ExecutorInterface;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Db\Diff\Executor;
 use Fwlib\Db\Diff\Manager;
@@ -196,7 +197,7 @@ class ManagerTest extends PHPUnitTestCase
         $this->assertNull($this->reflectionGet($manager, 'executor'));
 
         $this->assertInstanceOf(
-            'Fwlib\Db\Diff\ExecutorInterface',
+            ExecutorInterface::class,
             $this->reflectionCall($manager, 'getExecutor')
         );
     }

@@ -76,7 +76,7 @@ class CacheTest extends PHPUnitTestCase
     public function testCreate()
     {
         $ch = Cache::create('');
-        $this->assertInstanceOf('Fwlib\Cache\Cache', $ch);
+        $this->assertInstanceOf(Cache::class, $ch);
     }
 
 

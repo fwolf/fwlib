@@ -29,7 +29,7 @@ class JsonTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $mock = $this->getMock(
-            'Fwlib\Util\Json',
+            Json::class,
             null
         );
 

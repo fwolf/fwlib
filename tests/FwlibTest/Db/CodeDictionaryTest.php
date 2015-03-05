@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Base;
 
+use Fwlib\Bridge\Adodb;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Db\CodeDictionary;
 
@@ -20,7 +21,7 @@ class CodeDictionaryTest extends PHPUnitTestCase
     protected function buildDbMock()
     {
         $db = $this->getMockBuilder(
-            'Fwlib\Bridge\Adodb'
+            Adodb::class
         )
         ->setMethods(
             [

@@ -25,7 +25,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     protected function buildMock($pathToRoot)
     {
         $controller = $this->getMock(
-            'Fwlib\Mvc\AbstractController',
+            AbstractController::class,
             [
                 'createController', 'createView',
                 'getControllerClass', 'getViewClass'
@@ -74,7 +74,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     protected function buildMockBasis($pathToRoot)
     {
         $controller = $this->getMock(
-            'Fwlib\Mvc\AbstractController',
+            AbstractController::class,
             ['getViewClass'],
             [$pathToRoot]
         );
@@ -96,7 +96,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     protected function buildMockWithGetControllerClass($pathToRoot)
     {
         $controller = $this->getMock(
-            'Fwlib\Mvc\AbstractController',
+            AbstractController::class,
             ['getControllerClass', 'getViewClass'],
             [$pathToRoot]
         );

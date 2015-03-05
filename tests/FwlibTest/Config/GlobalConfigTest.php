@@ -53,7 +53,7 @@ class GlobalConfigTest extends PHPUnitTestCase
         // reason unknown, assign any method will fix it, so use constructor
         // in parent class.
         $globalConfig = $this->getMock(
-            'Fwlib\Config\GlobalConfig',
+            GlobalConfig::class,
             ['__construct']
         );
 

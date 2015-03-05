@@ -13,7 +13,7 @@ class AbstractConstraintTest extends PHPUnitTestCase
     public function testSetMessage()
     {
         $constraint = $this->getMockForAbstractClass(
-            'Fwlib\Validator\AbstractConstraint'
+            AbstractConstraint::class
         );
 
 
@@ -47,7 +47,7 @@ class AbstractConstraintTest extends PHPUnitTestCase
     public function testSetMessageWithInvalidMessageKey()
     {
         $constraint = $this->getMockForAbstractClass(
-            'Fwlib\Validator\AbstractConstraint'
+            AbstractConstraint::class
         );
 
         $this->reflectionCall($constraint, 'setMessage', ['notExist']);

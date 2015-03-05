@@ -164,7 +164,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $stringUtil->toStudlyCaps($tableUser) .
             'To' . $stringUtil->toStudlyCaps($tableUserDest);
         $sdd = $this->getMock(
-            'Fwlib\Db\SyncDbData',
+            SyncDbData::class,
             [$convertForNotExist]
         );
         $sdd->expects($this->any())
@@ -190,7 +190,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
         // Second sync round, full sync, not reach batchSize limit
 
         $sdd = $this->getMock(
-            'Fwlib\Db\SyncDbData',
+            SyncDbData::class,
             [$convertForNotExist, $convertForUserDest]
         );
         $sdd->expects($this->any())
@@ -251,7 +251,7 @@ class SyncDbDataMysqlTest extends AbstractDbRelateTest
             $stringUtil->toStudlyCaps($tableUser) .
             'To' . $stringUtil->toStudlyCaps($tableUserDest);
         $sdd = $this->getMock(
-            'Fwlib\Db\SyncDbData',
+            SyncDbData::class,
             [$compareForUserDest]
         );
         $db = self::$dbMysql;

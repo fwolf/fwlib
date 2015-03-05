@@ -16,7 +16,7 @@ class AbstractSequenceTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $sequence = $this->getMockBuilder(
-            'Fwlib\Db\AbstractSequence'
+            AbstractSequence::class
         )->setMethods([
             'increase',
             'initialize',

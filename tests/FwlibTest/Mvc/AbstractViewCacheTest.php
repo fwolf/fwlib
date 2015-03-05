@@ -19,7 +19,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
     protected function buildMock($pathToRoot)
     {
         $view = $this->getMock(
-            'Fwlib\Mvc\AbstractViewCache',
+            AbstractViewCache::class,
             ['getCache', 'getOutputBody', 'newInstanceCache'],
             [$pathToRoot]
         );
@@ -51,7 +51,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
     protected function buildMockWithForceRefreshCache($pathToRoot)
     {
         $view = $this->getMock(
-            'Fwlib\Mvc\AbstractViewCache',
+            AbstractViewCache::class,
             ['forceRefreshCache', 'getCache', 'getOutputBody'],
             [$pathToRoot]
         );

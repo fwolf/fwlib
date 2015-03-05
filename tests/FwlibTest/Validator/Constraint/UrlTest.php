@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
+use Fwlib\Net\Curl;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Constraint\Url;
@@ -37,7 +38,7 @@ class UrlTest extends PHPUnitTestCase
 
     public function buildMock()
     {
-        $curl = $this->getMock('Fwlib\Net\Curl', ['post']);
+        $curl = $this->getMock(Curl::class, ['post']);
         $curl->expects($this->any())
             ->method('post')
             ->will($this->returnCallback(function ($url, $param) {
@@ -63,7 +64,7 @@ class UrlTest extends PHPUnitTestCase
 
         $urlTest = new UrlTest;
         $httpUtil = $urlTest->getMock(
-            'Fwlib\Util\HttpUtil',
+            HttpUtil::class,
             ['getSelfHostUrl', 'getSelfUrlWithoutParameter']
         );
 

@@ -18,7 +18,7 @@ class AbstractCachedCallerAwareTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $model = $this->getMock(
-            'Fwlib\Cache\AbstractCachedCallerAware',
+            AbstractCachedCallerAware::class,
             ['callMe', 'getCacheLifetime']
         );
 

@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Net\Sms;
 
+use Fwlib\Bridge\Adodb;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Net\Sms\SmsLogger;
@@ -19,7 +20,7 @@ class SmsLoggerTest extends PHPUnitTestCase
 
     public function __construct()
     {
-        $db = $this->getMockBuilder('Fwlib\Bridge\Adodb')
+        $db = $this->getMockBuilder(Adodb::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -61,7 +62,7 @@ class SmsLoggerTest extends PHPUnitTestCase
 
     public function testLog()
     {
-        $db = $this->getMockBuilder('Fwlib\Bridge\Adodb')
+        $db = $this->getMockBuilder(Adodb::class)
             ->disableOriginalConstructor()
             ->getMock();
 

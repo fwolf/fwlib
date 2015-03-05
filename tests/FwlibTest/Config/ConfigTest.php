@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Config;
 
+use Fwlib\Util\UtilContainerInterface;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Config\Config;
 use Fwlib\Util\UtilContainer;
@@ -17,7 +18,7 @@ class ConfigTest extends PHPUnitTestCase
 
         $utilContainer = $config->getUtilContainer();
         $this->assertInstanceOf(
-            'Fwlib\Util\UtilContainerInterface',
+            UtilContainerInterface::class,
             $utilContainer
         );
     }

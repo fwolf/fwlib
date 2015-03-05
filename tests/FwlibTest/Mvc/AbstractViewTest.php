@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Mvc;
 
+use Fwlib\Bridge\Smarty;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Mvc\AbstractView;
 
@@ -19,7 +20,7 @@ class AbstractViewTest extends PHPUnitTestCase
     protected function buildMock($pathToRoot)
     {
         $view = $this->getMock(
-            'Fwlib\Mvc\AbstractView',
+            AbstractView::class,
             ['fetchTestAction'],
             [$pathToRoot]
         );
@@ -31,7 +32,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
         // Mock a smarty instance
         $smarty = $this->getMock(
-            'Fwlib\Bridge\Smarty',
+            Smarty::class,
             ['fetch', 'assignByRef']
         );
 

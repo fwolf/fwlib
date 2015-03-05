@@ -13,7 +13,7 @@ class AbstractViewTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $view = $this->getMockBuilder(
-            'Fwlib\Workflow\AbstractView'
+            AbstractView::class
         )
         ->setMethods(
             [
@@ -70,7 +70,7 @@ class AbstractViewTest extends PHPUnitTestCase
     public function testBuildQueryUrl()
     {
         $view = $this->getMockBuilder(
-            'Fwlib\Workflow\AbstractView'
+            AbstractView::class
         )
         ->getMockForAbstractClass();
 

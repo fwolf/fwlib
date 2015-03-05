@@ -238,7 +238,7 @@ class HttpUtilTest extends PHPUnitTestCase
     public function testSetUnsetCookie()
     {
         $httpUtil = $this->getMock(
-            'Fwlib\Util\HttpUtil',
+            HttpUtil::class,
             ['getCookie']
         );
         $httpUtil->expects($this->any())

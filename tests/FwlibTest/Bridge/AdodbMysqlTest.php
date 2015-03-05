@@ -3,6 +3,7 @@ namespace FwlibTest\Bridge;
 
 use Fwlib\Bridge\Adodb;
 use Fwlib\Config\GlobalConfig;
+use Fwlib\Db\SqlGenerator;
 use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Util\UtilContainerAwareTrait;
 
@@ -225,7 +226,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
 
         // SqlGenerator is instanced now
         $this->assertInstanceOf(
-            'Fwlib\Db\SqlGenerator',
+            SqlGenerator::class,
             $this->reflectionGet(self::$dbMysql, 'sqlGenerator')
         );
 

@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Cache;
 
+use Fwlib\Cache\Cache;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\CacheInterface;
 use Fwlib\Cache\CachedCaller;
@@ -23,7 +24,7 @@ class CachedCallerTest extends PHPUnitTestCase
     protected function buildCacheHandlerMock()
     {
         $cache = $this->getMock(
-            'Fwlib\Cache\Cache',
+            Cache::class,
             null
         );
 
@@ -37,7 +38,7 @@ class CachedCallerTest extends PHPUnitTestCase
     protected function buildCachedCallerAwareMock()
     {
         $dummy = $this->getMock(
-            'Fwlib\Cache\CachedCallerAwareInterface',
+            CachedCallerAwareInterface::class,
             [
                 'callMe',
                 'getCacheKey',
@@ -79,7 +80,7 @@ class CachedCallerTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $cachedCaller = $this->getMock(
-            'Fwlib\Cache\CachedCaller',
+            CachedCaller::class,
             null
         );
 

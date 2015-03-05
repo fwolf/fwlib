@@ -17,7 +17,7 @@ class SingleInstanceTraitTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $mock = $this->getMockBuilder(
-            'Fwlib\Base\SingleInstanceTrait'
+            SingleInstanceTrait::class
         )
             ->setMethods(null)
             ->getMockForTrait();

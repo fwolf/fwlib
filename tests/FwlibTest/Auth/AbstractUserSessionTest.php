@@ -16,7 +16,7 @@ class AbstractUserSessionTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $userSession = $this->getMockBuilder(
-            'Fwlib\Auth\AbstractUserSession'
+            AbstractUserSession::class
         )
         ->setMethods(['__construct', 'load', 'save'])
         ->getMockForAbstractClass();

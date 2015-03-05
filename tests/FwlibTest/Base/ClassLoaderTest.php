@@ -17,7 +17,7 @@ class ClassLoaderTest extends PHPUnitTestCase
     protected function buildMock()
     {
         $mock = $this->getMock(
-            'Fwlib\Base\ClassLoader',
+            ClassLoader::class,
             null
         );
 

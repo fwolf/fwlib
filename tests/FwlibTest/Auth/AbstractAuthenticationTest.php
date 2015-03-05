@@ -27,7 +27,7 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
     protected function buildMock($userSession)
     {
         $authentication = $this->getMockBuilder(
-            'Fwlib\Auth\AbstractAuthentication'
+            AbstractAuthentication::class
         )
         ->setConstructorArgs([$userSession])
         ->getMockForAbstractClass();
@@ -42,7 +42,7 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
     protected function buildMockUserSession()
     {
         $userSession = $this->getMockBuilder(
-            'Fwlib\Auth\AbstractUserSession'
+            AbstractUserSession::class
         )
         ->getMockForAbstractClass();
 
@@ -62,7 +62,7 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
         $authentication = $this->buildMock($this->buildMockUserSession());
 
         $this->assertInstanceOf(
-            'Fwlib\Auth\AbstractUserSession',
+            AbstractUserSession::class,
             $this->reflectionGet($authentication, 'userSession')
         );
     }
