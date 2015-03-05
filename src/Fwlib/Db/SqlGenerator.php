@@ -1,9 +1,8 @@
 <?php
 namespace Fwlib\Db;
 
-use Fwlib\Util\UtilContainer;
-use Fwlib\Util\UtilContainerInterface;
 use Fwlib\Bridge\Adodb;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * SQL Generator
@@ -36,6 +35,9 @@ use Fwlib\Bridge\Adodb;
  */
 class SqlGenerator
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Db connection
      *
@@ -56,11 +58,6 @@ class SqlGenerator
      * @var string
      */
     protected $sqlPart = [];
-
-    /**
-     * @var UtilContainer
-     */
-    protected $utilContainer = null;
 
 
     /**
@@ -513,19 +510,6 @@ class SqlGenerator
 
 
     /**
-     * {@inheritdoc}
-     */
-    public function getUtilContainer()
-    {
-        if (is_null($this->utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        }
-
-        return $this->utilContainer;
-    }
-
-
-    /**
      * Set param
      *
      * Un-recognized clause is ignored.
@@ -779,20 +763,5 @@ class SqlGenerator
             . $this->genSqlArray($param, ') AND (') . ')';
 
         return $this->sqlPart['WHERE'];
-    }
-
-
-    /**
-     * Setter of UtilContainer
-     *
-     * @param   UtilContainerInterface  $utilContainer
-     * @return  static
-     */
-    public function setUtilContainer(
-        UtilContainerInterface $utilContainer = null
-    ) {
-        $this->utilContainer = $utilContainer;
-
-        return $this;
     }
 }
