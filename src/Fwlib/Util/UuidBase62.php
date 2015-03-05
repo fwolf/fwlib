@@ -49,17 +49,17 @@ class UuidBase62
     /**
      * Length of custom part
      */
-    protected $lengthCustom = 6;
+    protected $lengthOfCustom = 6;
 
     /**
      * Length of group part
      */
-    protected $lengthGroup = 2;
+    protected $lengthOfGroup = 2;
 
     /**
      * Length of random part
      */
-    protected $lengthRandom = 6;
+    protected $lengthOfRandom = 6;
 
     /**
      * Mode when call StringUtil::random()
@@ -118,10 +118,10 @@ class UuidBase62
         $uuid .= str_pad($usec, 4, '0', STR_PAD_LEFT);
 
 
-        if (empty($group) || $this->lengthGroup > strlen($group)) {
-            $group = str_pad((string)$group, $this->lengthGroup, '0', STR_PAD_LEFT);
+        if (empty($group) || $this->lengthOfGroup > strlen($group)) {
+            $group = str_pad((string)$group, $this->lengthOfGroup, '0', STR_PAD_LEFT);
         } else {
-            $group = substr($group, -1 * $this->lengthGroup);
+            $group = substr($group, -1 * $this->lengthOfGroup);
         }
         $uuid .= $group;
 
@@ -133,16 +133,16 @@ class UuidBase62
                 $this->base
             );
         }
-        if ($this->lengthCustom != strlen($custom)) {
+        if ($this->lengthOfCustom != strlen($custom)) {
             $custom = $stringUtil->random(
-                $this->lengthCustom,
+                $this->lengthOfCustom,
                 $this->randomMode
             ) . (string)$custom;
-            $custom = substr($custom, -1 * $this->lengthCustom);
+            $custom = substr($custom, -1 * $this->lengthOfCustom);
         }
         $uuid .= $custom;
 
-        $uuid .= $stringUtil->random($this->lengthRandom, $this->randomMode);
+        $uuid .= $stringUtil->random($this->lengthOfRandom, $this->randomMode);
 
 
         if ($checkDigit) {
@@ -166,13 +166,13 @@ class UuidBase62
         if ($this->length == strlen($uuid)) {
             $sec = $numberUtil->baseConvert(substr($uuid, 0, 6), $this->base, 10);
             $usec = $numberUtil->baseConvert(substr($uuid, 6, 4), $this->base, 10);
-            $custom = substr($uuid, 10 + $this->lengthGroup, $this->lengthCustom);
-            $random = substr($uuid, -1 * $this->lengthRandom);
+            $custom = substr($uuid, 10 + $this->lengthOfGroup, $this->lengthOfCustom);
+            $random = substr($uuid, -1 * $this->lengthOfRandom);
             return [
                 'second' => $sec,
                 'microsecond' => $usec,
                 'time'    => date('Y-m-d H:i:s', $sec),
-                'group' => substr($uuid, 10, $this->lengthGroup),
+                'group' => substr($uuid, 10, $this->lengthOfGroup),
                 'custom' => $custom,
                 'ip'      => long2ip(
                     $numberUtil->baseConvert($custom, $this->base, 10)

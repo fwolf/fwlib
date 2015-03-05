@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Util;
 
-use Fwlib\Util\UuidBase62;
-
 /**
  * UUID generator using base-36 character (0-9a-z)
  *
@@ -26,7 +24,7 @@ use Fwlib\Util\UuidBase62;
  *
  * Length of UUID is 25 bytes, no separator.
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class UuidBase36 extends UuidBase62
@@ -44,17 +42,17 @@ class UuidBase36 extends UuidBase62
     /**
      * Length of custom part
      */
-    protected $lengthCustom = 7;
+    protected $lengthOfCustom = 7;
 
     /**
      * Length of group part
      */
-    protected $lengthGroup = 2;
+    protected $lengthOfGroup = 2;
 
     /**
      * Length of random part
      */
-    protected $lengthRandom = 6;
+    protected $lengthOfRandom = 6;
 
     /**
      * Mode when call StringUtil::random()
