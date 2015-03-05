@@ -60,4 +60,17 @@ class ConstraintContainerTest extends PHPUnitTestCase
             $constraintContainer->getUrl()
         );
     }
+
+
+    public function testGetInitialServiceClassMap()
+    {
+        $constraintContainer = $this->buildMock();
+
+        $this->assertNotEmpty(
+            $this->reflectionCall(
+                $constraintContainer,
+                'getInitialServiceClassMap'
+            )
+        );
+    }
 }

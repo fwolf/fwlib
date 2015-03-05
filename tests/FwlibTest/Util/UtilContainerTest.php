@@ -139,4 +139,14 @@ class UtilContainerTest extends PHPUnitTestCase
             $utilContainer->getChnOrganizationCode()
         );
     }
+
+
+    public function testGetInitialServiceClassMap()
+    {
+        $utilContainer = $this->buildMock();
+
+        $this->assertNotEmpty(
+            $this->reflectionCall($utilContainer, 'getInitialServiceClassMap')
+        );
+    }
 }
