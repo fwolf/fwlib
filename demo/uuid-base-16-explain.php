@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../config.default.php';
 
-use Fwlib\Util\UuidBase16;
+use Fwlib\Util\Uuid\Base16;
 
 if (!isset($argc)) {
     exit('Can only run in cli mode.');
@@ -17,7 +17,7 @@ EOF;
     exit;
 }
 
-$uuidBase16 = new UuidBase16;
+$uuidBase16 = new Base16;
 $info = $uuidBase16->parse($argv[1]);
 
 echo "Uuid: {$argv[1]}" . PHP_EOL;

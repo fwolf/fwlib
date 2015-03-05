@@ -1,25 +1,21 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Uuid;
 
+use Fwlib\Util\Uuid\Base36;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Util\UuidBase36;
-use Fwlib\Util\UtilContainer;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class UuidBase36Test extends PHPUnitTestCase
+class Base36Test extends PHPUnitTestCase
 {
-    protected $utilContainer;
     protected $uuid;
 
 
     public function __construct()
     {
-        $this->utilContainer = UtilContainer::getInstance();
-        $this->uuid = new UuidBase36;
-        $this->uuid->setUtilContainer($this->utilContainer);
+        $this->uuid = new Base36;
     }
 
 

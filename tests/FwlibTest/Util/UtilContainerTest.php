@@ -16,10 +16,9 @@ use Fwlib\Util\McryptSimpleIv;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\Rfc2047;
 use Fwlib\Util\StringUtil;
-use Fwlib\Util\UuidBase16;
-use Fwlib\Util\UuidBase36;
-use Fwlib\Util\UuidBase62;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Util\Uuid\Base16;
+use Fwlib\Util\Uuid\Base36;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -110,17 +109,17 @@ class UtilContainerTest extends PHPUnitTestCase
         );
 
         $this->assertInstanceOf(
-            UuidBase16::class,
+            Base16::class,
             $utilContainer->getUuidBase16()
         );
 
         $this->assertInstanceOf(
-            UuidBase36::class,
+            Base36::class,
             $utilContainer->getUuidBase36()
         );
 
         $this->assertInstanceOf(
-            UuidBase62::class,
+            \Fwlib\Util\Uuid\Base62::class,
             $utilContainer->getUuidBase62()
         );
 

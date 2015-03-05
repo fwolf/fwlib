@@ -1,5 +1,7 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Uuid;
+
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * UUID generator using hex(0-9a-f)
@@ -25,7 +27,7 @@ namespace Fwlib\Util;
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class UuidBase16
+class Base16
 {
     use UtilContainerAwareTrait;
 

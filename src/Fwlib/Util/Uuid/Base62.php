@@ -1,5 +1,7 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Uuid;
+
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * UUID generator using base-62 character (0-9a-zA-Z)
@@ -31,7 +33,7 @@ namespace Fwlib\Util;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class UuidBase62
+class Base62
 {
     use UtilContainerAwareTrait;
 

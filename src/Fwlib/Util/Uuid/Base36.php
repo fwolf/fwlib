@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Uuid;
 
 /**
  * UUID generator using base-36 character (0-9a-z)
@@ -27,7 +27,7 @@ namespace Fwlib\Util;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class UuidBase36 extends UuidBase62
+class Base36 extends Base62
 {
     /**
      * Number base

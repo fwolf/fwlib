@@ -5,6 +5,9 @@ use Fwlib\Base\ServiceContainerTrait;
 use Fwlib\Util\Algorithm\Iso7064;
 use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
 use Fwlib\Util\Code\ChnOrganizationCode;
+use Fwlib\Util\Uuid\Base16;
+use Fwlib\Util\Uuid\Base36;
+use Fwlib\Util\Uuid\Base62;
 
 /**
  * Util class container
@@ -109,9 +112,9 @@ class UtilContainer implements UtilContainerInterface
             'NumberUtil'        => NumberUtil::class,
             'Rfc2047'           => Rfc2047::class,
             'StringUtil'        => StringUtil::class,
-            'UuidBase16'        => UuidBase16::class,
-            'UuidBase36'        => UuidBase36::class,
-            'UuidBase62'        => UuidBase62::class,
+            'UuidBase16'        => Base16::class,
+            'UuidBase36'        => Base36::class,
+            'UuidBase62'        => Base62::class,
 
             'Iso7064'           => Iso7064::class,
 
@@ -187,7 +190,7 @@ class UtilContainer implements UtilContainerInterface
 
 
     /**
-     * @return  UuidBase16
+     * @return  Base16
      */
     public function getUuidBase16()
     {
@@ -196,7 +199,7 @@ class UtilContainer implements UtilContainerInterface
 
 
     /**
-     * @return  UuidBase36
+     * @return  Base36
      */
     public function getUuidBase36()
     {
@@ -205,7 +208,7 @@ class UtilContainer implements UtilContainerInterface
 
 
     /**
-     * @return  UuidBase62
+     * @return  Base62
      */
     public function getUuidBase62()
     {

@@ -20,9 +20,9 @@ $uuidBase36 = $utilContainer->getUuidBase36();
 $uuidBase62 = $utilContainer->getUuidBase62();
 
 $arSpeed = [];
-foreach (['UuidBase16', 'UuidBase36', 'UuidBase62'] as $k => $v) {
-    $class = 'Fwlib\\Util\\' . $v;
-    $instanceName = lcfirst($v);
+foreach (['Base16', 'Base36', 'Base62'] as $k => $v) {
+    $class = 'Fwlib\\Util\\Uuid\\' . $v;
+    $instanceName = 'uuid' . $v;
     $instance = $$instanceName;
 
     $v = str_pad($v, 10, ' ', STR_PAD_RIGHT);   // For display later
@@ -49,14 +49,14 @@ echo $rs;
 
 
 $env = $utilContainer->getEnv();
-$env->ecl('$uuidBase16 without check digit: ' . $uuidBase16->generate('10', null, false));
-$env->ecl('$uuidBase16 with    check digit: ' . $uuidBase16->generate('10', null, true));
+$env->ecl('Base16 without check digit: ' . $uuidBase16->generate('10', null, false));
+$env->ecl('Base16 with    check digit: ' . $uuidBase16->generate('10', null, true));
 
-$env->ecl('$uuidBase16 without check digit: ' . $uuidBase16->generateWithSeparator('10', null, false));
-$env->ecl('$uuidBase16 with    check digit: ' . $uuidBase16->generateWithSeparator('10', null, true));
+$env->ecl('Base16 without check digit: ' . $uuidBase16->generateWithSeparator('10', null, false));
+$env->ecl('Base16 with    check digit: ' . $uuidBase16->generateWithSeparator('10', null, true));
 
-$env->ecl('$uuidBase36 without check digit: ' . $uuidBase36->generate('10', null, false));
-$env->ecl('$uuidBase36 with    check digit: ' . $uuidBase36->generate('10', null, true));
+$env->ecl('Base36 without check digit: ' . $uuidBase36->generate('10', null, false));
+$env->ecl('Base36 with    check digit: ' . $uuidBase36->generate('10', null, true));
 
-$env->ecl('$uuidBase62 without check digit: ' . $uuidBase62->generate('10', null, false));
-$env->ecl('$uuidBase62 with    check digit: ' . $uuidBase62->generate('10', null, true));
+$env->ecl('Base62 without check digit: ' . $uuidBase62->generate('10', null, false));
+$env->ecl('Base62 with    check digit: ' . $uuidBase62->generate('10', null, true));
