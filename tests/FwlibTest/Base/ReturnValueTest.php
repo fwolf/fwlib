@@ -49,8 +49,7 @@ class ReturnValueTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage string to load have no
+     * @expectedException \Fwlib\Base\Exception\LoadFromJsonFailException
      */
     public function testJsonModeWithInvalidStringToLoad()
     {

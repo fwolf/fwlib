@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Base;
 
+use Fwlib\Base\Exception\LoadFromJsonFailException;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
@@ -129,6 +130,7 @@ class ReturnValue
      *
      * @param   string  $json
      * @return  static
+     * @throws  LoadFromJsonFailException
      */
     public function loadJson($json)
     {
@@ -136,7 +138,9 @@ class ReturnValue
 
         foreach (['code', 'message'] as $v) {
             if (!isset($ar[$v])) {
-                throw new \Exception("Json string to load have no $v info");
+                throw new LoadFromJsonFailException(
+                    "Json to load have no $v information"
+                );
             }
         }
 
