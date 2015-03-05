@@ -36,7 +36,7 @@ class CacheFileTest extends PHPUnitTestCase
      */
     public function testCache()
     {
-        $this->ch->setConfig(['fileRule' => '55']);
+        $this->ch->setConfigs(['fileRule' => '55']);
         $key = 'site/index';
         // '/tmp/cache/89/3ed0dc6e'
         $x = $this->ch->getFilePath($key);
@@ -146,36 +146,36 @@ class CacheFileTest extends PHPUnitTestCase
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
-        $this->ch->setConfig(['fileRule' => '']);
+        $this->ch->setConfigs(['fileRule' => '']);
         $x = '/tmp/cache/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
-        $this->ch->setConfig(['fileRule' => '1131']);
+        $this->ch->setConfigs(['fileRule' => '1131']);
         $x = '/tmp/cache/d0/te/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Notice: Directly use key's part as path may cause wrong
-        $this->ch->setConfig(['fileRule' => '2342']);
+        $this->ch->setConfigs(['fileRule' => '2342']);
         $x = '/tmp/cache/57//i/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage
-        $this->ch->setConfig(['fileRule' => '1011']);
+        $this->ch->setConfigs(['fileRule' => '1011']);
         $x = '/tmp/cache/3e/d0/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage 2
-        $this->ch->setConfig(['fileRule' => '2021']);
+        $this->ch->setConfigs(['fileRule' => '2021']);
         $x = '/tmp/cache/b6/9c/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
 
         // Common usage 3
-        $this->ch->setConfig(['fileRule' => '55']);
+        $this->ch->setConfigs(['fileRule' => '55']);
         $x = '/tmp/cache/89/3ed0dc6e';
         $y = $this->ch->getFilePath($key);
         $this->assertEquals($x, $y);
