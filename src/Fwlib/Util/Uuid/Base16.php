@@ -27,7 +27,7 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Base16
+class Base16 implements GeneratorInterface
 {
     use UtilContainerAwareTrait;
 

@@ -27,7 +27,7 @@ namespace Fwlib\Util\Uuid;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Base36 extends Base62
+class Base36 extends Base62 implements GeneratorInterface
 {
     /**
      * Number base
