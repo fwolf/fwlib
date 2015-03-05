@@ -3,6 +3,10 @@ require __DIR__ . '/../config.default.php';
 
 use Fwlib\Util\UuidBase16;
 
+if (!isset($argc)) {
+    exit('Can only run in cli mode.');
+}
+
 if (2 > $argc) {
     $basename = basename(__FILE__);
     echo <<<EOF
