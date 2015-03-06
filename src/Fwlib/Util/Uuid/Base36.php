@@ -27,35 +27,29 @@ namespace Fwlib\Util\Uuid;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Base36 extends Base62 implements GeneratorInterface
+class Base36 implements GeneratorInterface
 {
-    /**
-     * Number base
-     */
+    use TimeBasedGeneratorTrait;
+
+
+    /** @var int */
     protected $base = 36;
 
-    /**
-     * UUID length
-     */
+    /** @var string */
+    protected $checkDigitMode = '3736';
+
+    /** @var int */
     protected $length = 25;
 
-    /**
-     * Length of custom part
-     */
+    /** @var int */
     protected $lengthOfCustom = 7;
 
-    /**
-     * Length of group part
-     */
+    /** @var int */
     protected $lengthOfGroup = 2;
 
-    /**
-     * Length of random part
-     */
+    /** @var int */
     protected $lengthOfRandom = 6;
 
-    /**
-     * Mode when call StringUtil::random()
-     */
+    /** @var string */
     protected $randomMode = 'a0';
 }
