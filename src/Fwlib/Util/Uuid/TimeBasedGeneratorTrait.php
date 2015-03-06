@@ -59,6 +59,28 @@ trait TimeBasedGeneratorTrait
 
 
     /**
+     * Convert number base
+     *
+     * @param   string|int  $source
+     * @param   int         $fromBase
+     * @param   int         $toBase
+     * @return  string
+     */
+    protected function convertBase($source, $fromBase, $toBase)
+    {
+        if (36 >= $fromBase && 36 >= $toBase) {
+            $result = base_convert($source, $fromBase, $toBase);
+
+        } else {
+            $numberUtil = $this->getUtilContainer()->getNumber();
+            $result = $numberUtil->baseConvert($source, $fromBase, $toBase);
+        }
+
+        return $result;
+    }
+
+
+    /**
      * @see GeneratorInterface::generate()
      *
      * @param   string  $group
@@ -73,14 +95,13 @@ trait TimeBasedGeneratorTrait
     ) {
         list($usec, $sec) = explode(' ', microtime());
 
-        $numberUtil = $this->getUtilContainer()->getNumber();
         $httpUtil = $this->getUtilContainer()->getHttp();
         $stringUtil = $this->getUtilContainer()->getString();
 
         // Seconds from now(Nov 2013) will fill length 6
-        $uuid = $numberUtil->baseConvert($sec, 10, $this->base);
+        $uuid = $this->convertBase($sec, 10, $this->base);
         // Microseconds will fill to length 4
-        $usec = $numberUtil->baseConvert(round($usec * 1000000), 10, $this->base);
+        $usec = $this->convertBase(round($usec * 1000000), 10, $this->base);
         $uuid .= str_pad($usec, 4, '0', STR_PAD_LEFT);
 
 
@@ -93,7 +114,7 @@ trait TimeBasedGeneratorTrait
 
 
         if (empty($custom)) {
-            $custom = $numberUtil->baseConvert(
+            $custom = $this->convertBase(
                 sprintf('%u', ip2long($httpUtil->getClientIp())),
                 10,
                 $this->base
@@ -127,11 +148,9 @@ trait TimeBasedGeneratorTrait
      */
     public function parse($uuid)
     {
-        $numberUtil = $this->getUtilContainer()->getNumber();
-
         if ($this->length == strlen($uuid)) {
-            $sec = $numberUtil->baseConvert(substr($uuid, 0, 6), $this->base, 10);
-            $usec = $numberUtil->baseConvert(substr($uuid, 6, 4), $this->base, 10);
+            $sec = $this->convertBase(substr($uuid, 0, 6), $this->base, 10);
+            $usec = $this->convertBase(substr($uuid, 6, 4), $this->base, 10);
             $custom = substr($uuid, 10 + $this->lengthOfGroup, $this->lengthOfCustom);
             $random = substr($uuid, -1 * $this->lengthOfRandom);
             return [
@@ -141,7 +160,7 @@ trait TimeBasedGeneratorTrait
                 'group' => substr($uuid, 10, $this->lengthOfGroup),
                 'custom' => $custom,
                 'ip'      => long2ip(
-                    $numberUtil->baseConvert($custom, $this->base, 10)
+                    $this->convertBase($custom, $this->base, 10)
                 ),
                 'random'  => $random,
             ];
