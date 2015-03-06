@@ -83,60 +83,136 @@ trait TimeBasedGeneratorTrait
     /**
      * @see GeneratorInterface::generate()
      *
-     * @param   string  $group
-     * @param   string  $custom
-     * @param   boolean $checkDigit
+     * @param   int|string $groupId
+     * @param   string     $custom
+     * @param   boolean    $checkDigit
      * @return  string
      */
     public function generate(
-        $group = '10',
+        $groupId = '10',
         $custom = '',
         $checkDigit = false
     ) {
-        list($usec, $sec) = explode(' ', microtime());
-
-        $httpUtil = $this->getUtilContainer()->getHttp();
-        $stringUtil = $this->getUtilContainer()->getString();
-
-        // Seconds from now(Nov 2013) will fill length 6
-        $uuid = $this->convertBase($sec, 10, $this->base);
-        // Microseconds will fill to length 4
-        $usec = $this->convertBase(round($usec * 1000000), 10, $this->base);
-        $uuid .= str_pad($usec, 4, '0', STR_PAD_LEFT);
-
-
-        if (empty($group) || $this->lengthOfGroup > strlen($group)) {
-            $group = str_pad((string)$group, $this->lengthOfGroup, '0', STR_PAD_LEFT);
-        } else {
-            $group = substr($group, -1 * $this->lengthOfGroup);
-        }
-        $uuid .= $group;
-
-
-        if (empty($custom)) {
-            $custom = $this->convertBase(
-                sprintf('%u', ip2long($httpUtil->getClientIp())),
-                10,
-                $this->base
-            );
-        }
-        if ($this->lengthOfCustom != strlen($custom)) {
-            $custom = $stringUtil->random(
-                $this->lengthOfCustom,
-                $this->randomMode
-            ) . (string)$custom;
-            $custom = substr($custom, -1 * $this->lengthOfCustom);
-        }
-        $uuid .= $custom;
-
-        $uuid .= $stringUtil->random($this->lengthOfRandom, $this->randomMode);
-
+        $uuid = $this->generateTime() .
+            $this->generateGroup($groupId) .
+            $this->generateCustom($custom) .
+            $this->generateRandom();
 
         if ($checkDigit) {
             $uuid = $this->addCheckDigit($uuid, true);
         }
 
         return $uuid;
+    }
+
+
+    /**
+     * Generate custom part
+     *
+     * If given string exceed length limit, leading part will be trimmed.
+     *
+     * @param   string  $custom
+     * @return  string
+     */
+    protected function generateCustom($custom)
+    {
+        if (empty($custom)) {
+            $httpUtil = $this->getUtilContainer()->getHttp();
+
+            $custom = $this->convertBase(
+                sprintf('%u', ip2long($httpUtil->getClientIp())),
+                10,
+                $this->base
+            );
+        }
+
+        $lengthDiff = $this->lengthOfCustom - strlen($custom);
+        if (0 < $lengthDiff) {
+            $stringUtil = $this->getUtilContainer()->getString();
+
+            $custom = $stringUtil->random($lengthDiff, $this->randomMode) .
+                $custom;
+
+        } elseif (0 > $lengthDiff) {
+            $custom = substr($custom, -1 * $this->lengthOfCustom);
+        }
+
+        return $custom;
+    }
+
+
+    /**
+     * Generate group part
+     *
+     * If given group exceed length of group, the leading part will be trimmed.
+     *
+     * @param   int|string  $groupId
+     * @return  string
+     */
+    protected function generateGroup($groupId)
+    {
+        $groupId = strval($groupId);
+        $length = $this->lengthOfGroup;
+
+        if (empty($groupId) || $length > strlen($groupId)) {
+            $groupId = str_pad($groupId, $length, '0', STR_PAD_LEFT);
+
+        } else {
+            $groupId = substr($groupId, -1 * $length);
+        }
+
+        return $groupId;
+    }
+
+
+    /**
+     * @param   float   $microSecond
+     * @return  string  Length: 4
+     */
+    protected function generateMicroSecond($microSecond)
+    {
+        $second = round($microSecond * 1000000);
+
+        $result = $this->convertBase($second, 10, $this->base);
+
+        $result = str_pad($result, 4, '0', STR_PAD_LEFT);
+
+        return $result;
+    }
+
+
+    /**
+     * @return  string
+     */
+    protected function generateRandom()
+    {
+        $stringUtil = $this->getUtilContainer()->getString();
+
+        return $stringUtil->random($this->lengthOfRandom, $this->randomMode);
+    }
+
+
+    /**
+     * @param   int     $second
+     * @return  string  Timestamp to base 36 is 6 digit since Nov 2013.
+     */
+    protected function generateSecond($second)
+    {
+        return $this->convertBase($second, 10, $this->base);
+    }
+
+
+    /**
+     * Generate time part, include second and microsecond
+     *
+     * @return  string
+     */
+    protected function generateTime()
+    {
+        list($microSecond, $second) = explode(' ', microtime());
+
+        return $this->generateSecond($second) .
+            $this->generateMicroSecond($microSecond);
     }
 
 

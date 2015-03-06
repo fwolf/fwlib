@@ -23,9 +23,9 @@ interface GeneratorInterface
      * Normally group below 10(what ever base) should reserve for develop/test
      * environment.
      *
-     * @param   string  $group
-     * @param   string  $custom
-     * @param   boolean $checkDigit
+     * @param   int|string $groupId
+     * @param   string     $custom
+     * @param   boolean    $checkDigit
      * @return  string
      */
     public function generate($group = '10', $custom = '', $checkDigit = false);
