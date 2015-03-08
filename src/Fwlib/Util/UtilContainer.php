@@ -7,6 +7,7 @@ use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
 use Fwlib\Util\Code\ChnOrganizationCode;
 use Fwlib\Util\Uuid\Base16;
 use Fwlib\Util\Uuid\Base36;
+use Fwlib\Util\Uuid\Base36Short;
 use Fwlib\Util\Uuid\Base62;
 
 /**
@@ -114,6 +115,7 @@ class UtilContainer implements UtilContainerInterface
             'StringUtil'        => StringUtil::class,
             'UuidBase16'        => Base16::class,
             'UuidBase36'        => Base36::class,
+            'UuidBase36Short'   => Base36Short::class,
             'UuidBase62'        => Base62::class,
 
             'Iso7064'           => Iso7064::class,
@@ -204,6 +206,15 @@ class UtilContainer implements UtilContainerInterface
     public function getUuidBase36()
     {
         return $this->get('UuidBase36');
+    }
+
+
+    /**
+     * @return  Base36Short
+     */
+    public function getUuidBase36Short()
+    {
+        return $this->get('UuidBase36Short');
     }
 
 
