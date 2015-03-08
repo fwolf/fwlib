@@ -86,8 +86,10 @@ class Base36 implements GeneratorInterface
     {
         list($microSecond, $second) = explode(' ', microtime());
 
-        $timestamp = $second - self::TIMESTAMP_OFFSET .
-            round($microSecond * 1000000);
+        $microSecond = round($microSecond * 1000000);
+        $microSecond = str_pad($microSecond, 6, '0', STR_PAD_LEFT);
+
+        $timestamp = $second - self::TIMESTAMP_OFFSET . $microSecond;
 
         return $this->convertBase($timestamp, 10, $this->base);
     }
