@@ -24,12 +24,37 @@ namespace Fwlib\Util\Uuid;
  *
  * Length of UUID is 25 bytes, no separator.
  *
+ *
+ * Change: For wider time range than 2038, we can start count timestamp from
+ * not year 1970. For more, compute second and microsecond together to use
+ * lflr~z{4} part. After this, the usable years raised to about 110 years.
+ *      Offset time: 2012-07-11, 1341957600
+ *      Lifetime start: base36 of 10{6 + 4 - 1} / 10^6 + offset timestamp =
+ *          1443517557 = 2015-09-29 11:05:57
+ *      Lifetime end: base36 of z{6 + 4} / 10^6 + offset timestamp =
+ *          4998116040 = 2128-05-20 14:34:00
+ * Notice in above example: start time is in future of its written time :-).
+ *
+ * @see http://3v4l.org/YPTHo       Find best start date
+ * @see https://gist.github.com/fwolf/5f3e44343a3bebf36953
+ * @see http://3v4l.org/FMINm       Estimate lifetime
+ * @see https://gist.github.com/fwolf/b5b10173b00086d5f33c
+ *
+ *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Base36 implements GeneratorInterface
 {
     use TimeBasedGeneratorTrait;
+
+
+    /**
+     * Start offset of timestamp
+     *
+     * @var int
+     */
+    const TIMESTAMP_OFFSET = 1293840000;    // 2011-01-01
 
 
     /** @var int */
@@ -52,4 +77,18 @@ class Base36 implements GeneratorInterface
 
     /** @var string */
     protected $randomMode = 'a0';
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function generateTime()
+    {
+        list($microSecond, $second) = explode(' ', microtime());
+
+        $timestamp = $second - self::TIMESTAMP_OFFSET .
+            round($microSecond * 1000000);
+
+        return $this->convertBase($timestamp, 10, $this->base);
+    }
 }
