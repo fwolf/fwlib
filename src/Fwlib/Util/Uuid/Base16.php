@@ -40,6 +40,7 @@ class Base16 implements GeneratorInterface
      * Origin separator will kept.
      *
      * @param   string  $uuid
+     * @return  string
      */
     public function addCheckDigit($uuid)
     {

@@ -28,7 +28,11 @@ interface GeneratorInterface
      * @param   boolean    $checkDigit
      * @return  string
      */
-    public function generate($group = '10', $custom = '', $checkDigit = false);
+    public function generate(
+        $groupId = '10',
+        $custom = '',
+        $checkDigit = false
+    );
 
 
     /**
