@@ -2,7 +2,7 @@
 namespace FwlibTest\Util;
 
 use Fwlib\Util\Json;
-use FwlibTest\Aide\Mock\ExtensionLoadedMockTrait;
+use FwlibTest\Aide\FunctionMockFactory;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -12,9 +12,6 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class JsonTest extends PHPUnitTestCase
 {
-    use ExtensionLoadedMockTrait;
-
-
     /** @type int */
     public $dummyForTestEncodeHex = 42;
 
@@ -41,12 +38,17 @@ class JsonTest extends PHPUnitTestCase
      */
     public function testConstructor()
     {
-        self::$extensionLoaded = true;
-        $this->buildExtensionLoadedMock('Fwlib\Util')->enable();
+        $factory = FunctionMockFactory::getInstance();
+        $extensionLoadedMock =
+            $factory->get('Fwlib\Util', 'extension_loaded', true);
+
+        $extensionLoadedMock->setResult(true);
 
         new Json;
 
         $this->assertTrue(true);
+
+        $extensionLoadedMock->disable();
     }
 
 
@@ -55,16 +57,26 @@ class JsonTest extends PHPUnitTestCase
      */
     public function testConstructorFailed()
     {
-        self::$extensionLoaded = false;
+        $factory = FunctionMockFactory::getInstance();
+        $extensionLoadedMock =
+            $factory->get('Fwlib\Util', 'extension_loaded', true);
+
+        $extensionLoadedMock->setResult(false);
 
         new Json;
+
+        $extensionLoadedMock->disable();
     }
 
 
     public function testDummy()
     {
-        self::$extensionLoaded = true;
-        $this->buildExtensionLoadedMock('Fwlib\Util')->disable();
+        $factory = FunctionMockFactory::getInstance();
+        $extensionLoadedMock =
+            $factory->get('Fwlib\Util', 'extension_loaded', true);
+
+        $extensionLoadedMock->setResult(true);
+
         $jsonUtil = $this->buildMock();
 
         $x = ['foo' => 'bar'];
@@ -73,6 +85,7 @@ class JsonTest extends PHPUnitTestCase
         $this->assertEquals($y, $jsonUtil->encode($x));
         $this->assertEqualArray($x, $jsonUtil->decode($y, true));
 
+        $extensionLoadedMock->disable();
     }
 
 

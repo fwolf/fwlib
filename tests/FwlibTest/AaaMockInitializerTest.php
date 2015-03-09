@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest;
 
-use FwlibTest\Aide\Mock\ExtensionLoadedMockTrait;
+use FwlibTest\Aide\FunctionMockFactory;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -22,9 +22,6 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class AaaMockInitializerTest extends PHPUnitTestCase
 {
-    use ExtensionLoadedMockTrait;
-
-
     /**
      * Register PHP native function mock here (with define)
      *
@@ -32,11 +29,13 @@ class AaaMockInitializerTest extends PHPUnitTestCase
      */
     public function testMockRegister()
     {
-        $this->buildExtensionLoadedMock('Fwlib\Util');
+        $factory = FunctionMockFactory::getInstance();
 
-        $this->buildSessionStatusMock('Fwlib\Util');
-        $this->buildSessionStartMock('Fwlib\Util');
-        $this->buildSessionDestroyMock('Fwlib\Util');
+        $factory->get('Fwlib\Util', 'extension_loaded');
+
+        $factory->get('Fwlib\Util', 'session_status');
+        $factory->get('Fwlib\Util', 'session_start');
+        $factory->get('Fwlib\Util', 'session_destroy');
 
         $this->assertTrue(true);
     }
@@ -44,14 +43,14 @@ class AaaMockInitializerTest extends PHPUnitTestCase
 
     public function testMockSuccessful()
     {
-        $extensionLoadedMock = $this->buildExtensionLoadedMock('FwlibTest');
+        $factory = FunctionMockFactory::getInstance();
+        $extensionLoadedMock =
+            $factory->get('FwlibTest', 'extension_loaded', true);
 
-        $extensionLoadedMock->enable();
-
-        self::$extensionLoaded = false;
+        $extensionLoadedMock->setResult(false);
         $this->assertFalse(extension_loaded('pcre'));
 
-        self::$extensionLoaded = true;
+        $extensionLoadedMock->setResult(true);
         $this->assertTrue(extension_loaded('pcre'));
 
         $extensionLoadedMock->disable();

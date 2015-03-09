@@ -3,7 +3,7 @@ namespace FwlibTest\Util;
 
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
-use FwlibTest\Aide\Mock\ExtensionLoadedMockTrait;
+use FwlibTest\Aide\FunctionMockFactory;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -15,9 +15,6 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class HttpUtilTest extends PHPUnitTestCase
 {
-    use ExtensionLoadedMockTrait;
-
-
     /**
      * Backup of globals
      *
@@ -280,26 +277,27 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $sessionStatusMock = $this->buildSessionStatusMock('Fwlib\Util');
-        $sessionStatusMock->enable();
-        $sessionStartMock = $this->buildSessionStartMock('Fwlib\Util');
-        $sessionStartMock->enable();
-        $sessionDestroyMock = $this->buildSessionDestroyMock('Fwlib\Util');
-        $sessionDestroyMock->enable();
+        $factory = FunctionMockFactory::getInstance();
+        $sessionStatusMock =
+            $factory->get('Fwlib\Util', 'session_status', true);
+        $sessionStartMock =
+            $factory->get('Fwlib\Util', 'session_start', true);
+        $sessionDestroyMock =
+            $factory->get('Fwlib\Util', 'session_destroy', true);
 
 
-        self::$sessionStatus = PHP_SESSION_NONE;
-        self::$sessionStart = false;
+        $sessionStatusMock->setResult(PHP_SESSION_NONE);
+        $sessionStartMock->setResult(false);
         $httpUtil->startSession();
-        $this->assertTrue(self::$sessionStart);
+        $this->assertTrue($sessionStartMock->getResult());
 
 
-        self::$sessionStatus = PHP_SESSION_ACTIVE;
-        self::$sessionStart = false;
-        self::$sessionDestroy = false;
+        $sessionStatusMock->setResult(PHP_SESSION_ACTIVE);
+        $sessionStartMock->setResult(false);
+        $sessionDestroyMock->setResult(false);
         $httpUtil->startSession(true);
-        $this->assertTrue(self::$sessionDestroy);
-        $this->assertTrue(self::$sessionStart);
+        $this->assertTrue($sessionStartMock->getResult());
+        $this->assertTrue($sessionDestroyMock->getResult());
 
         $sessionStatusMock->disableAll();
     }
