@@ -6,19 +6,11 @@ namespace Fwlib\Auth;
  *
  * Provide user and session info to ACL, or directly use as a simple ACL.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface UserSessionInterface
 {
-    /**
-     * Constructor
-     *
-     * Start session, try to load session from storage.
-     */
-    public function __construct();
-
-
     /**
      * Clear session data, include storage
      *
