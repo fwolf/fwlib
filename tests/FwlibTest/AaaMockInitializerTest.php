@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest;
 
-use Fwlib\Test\Mock\ExtensionLoadedMockTrait;
+use FwlibTest\Aide\Mock\ExtensionLoadedMockTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**

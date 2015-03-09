@@ -1,10 +1,10 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwlib\Test\Mock\ExtensionLoadedMockTrait;
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
+use FwlibTest\Aide\Mock\ExtensionLoadedMockTrait;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @SuppressWarnings(PHPMD.Superglobals)

@@ -1,9 +1,8 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwlib\Test\Mock\ExtensionLoadedMockTrait;
-use Fwlib\Test\MockContainer;
 use Fwlib\Util\Json;
+use FwlibTest\Aide\Mock\ExtensionLoadedMockTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 

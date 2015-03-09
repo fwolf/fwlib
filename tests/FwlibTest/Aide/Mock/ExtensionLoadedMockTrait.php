@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Test\Mock;
+namespace FwlibTest\Aide\Mock;
 
 use Fwlib\Util\UtilContainer;
 use malkusch\phpmock\Mock;
