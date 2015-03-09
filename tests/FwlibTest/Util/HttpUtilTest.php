@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
+use Fwlib\Test\Mock\ExtensionLoadedMockTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
@@ -14,6 +15,9 @@ use Fwlib\Util\UtilContainer;
  */
 class HttpUtilTest extends PHPUnitTestCase
 {
+    use ExtensionLoadedMockTrait;
+
+
     /**
      * Backup of globals
      *
@@ -276,21 +280,28 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        if (0 != $httpUtil->getSessionId()) {
-            \Fwlib\Util\session_destroy();
-        }
+        $sessionStatusMock = $this->buildSessionStatusMock('Fwlib\Util');
+        $sessionStatusMock->enable();
+        $sessionStartMock = $this->buildSessionStartMock('Fwlib\Util');
+        $sessionStartMock->enable();
+        $sessionDestroyMock = $this->buildSessionDestroyMock('Fwlib\Util');
+        $sessionDestroyMock->enable();
 
-        self::$sessionId = '';
-        $sessionId = $httpUtil->getSessionId();
-        $this->assertEmpty($sessionId);
 
+        self::$sessionStatus = PHP_SESSION_NONE;
+        self::$sessionStart = false;
         $httpUtil->startSession();
-        $sessionId = $httpUtil->getSessionId();
-        $this->assertNotEmpty($sessionId);
+        $this->assertTrue(self::$sessionStart);
 
+
+        self::$sessionStatus = PHP_SESSION_ACTIVE;
+        self::$sessionStart = false;
+        self::$sessionDestroy = false;
         $httpUtil->startSession(true);
-        $newSessionId = $httpUtil->getSessionId();
-        $this->assertNotEquals($sessionId, $newSessionId);
+        $this->assertTrue(self::$sessionDestroy);
+        $this->assertTrue(self::$sessionStart);
+
+        $sessionStatusMock->disableAll();
     }
 }
 
@@ -304,16 +315,6 @@ function header($headerString)
 {
     /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     \FwlibTest\Util\HttpUtilTest::$header = $headerString;
-}
-
-
-/**
- * Mock
- */
-function session_destroy()
-{
-    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    \FwlibTest\Util\HttpUtilTest::$sessionId = '';
 }
 
 
@@ -333,18 +334,6 @@ function session_id()
  * Mock
  */
 function session_regenerate_id()
-{
-    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    \FwlibTest\Util\HttpUtilTest::$sessionId = UtilContainer::getInstance()
-        ->getString()
-        ->random(10, 'a0');
-}
-
-
-/**
- * Mock
- */
-function session_start()
 {
     /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     \FwlibTest\Util\HttpUtilTest::$sessionId = UtilContainer::getInstance()

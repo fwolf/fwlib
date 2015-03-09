@@ -597,30 +597,16 @@ class HttpUtil
      */
     public function startSession($forcenew = false)
     {
-        static $started = false;
-
-        if (0 < strlen(session_id())) {
-            $started = true;
-        }
-
-        if (false === ob_get_length()) {
-            if ($forcenew && $started) {
-                session_destroy();
-            }
-
-            if ($forcenew || !$started) {
-                session_start();
-            }
+        if (PHP_SESSION_NONE == session_status()) {
+            session_start();
 
         } else {
-            // Fix PHPUnit start session without id, but the id regeneration
-            // not work, still need mock session method in test case.
-            if (0 == strlen(session_id()) || $forcenew) {
-                session_regenerate_id();
+            // Session is already started
+            if ($forcenew) {
+                session_destroy();
+                session_start();
             }
         }
-
-        $started = true;
     }
 
 

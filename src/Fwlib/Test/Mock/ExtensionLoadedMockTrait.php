@@ -16,6 +16,25 @@ trait ExtensionLoadedMockTrait
     /** @type Mock */
     private $extensionLoadedMock = null;
 
+    /** @type bool */
+    public static $sessionDestroy = true;
+
+    /** @type Mock */
+    private $sessionDestroyMock = null;
+
+    /** @type bool */
+    public static $sessionStart = true;
+
+    /** @type Mock */
+    private $sessionStartMock = null;
+
+    /** @type bool */
+    public static $sessionStatus = true;
+
+    /** @type Mock */
+    private $sessionStatusMock = null;
+
+
     /**
      * @param   string  $namespace
      * @return  Mock
@@ -40,6 +59,93 @@ trait ExtensionLoadedMockTrait
             $mock->define();
 
             $this->extensionLoadedMock = $mock;
+        }
+
+        return $mock;
+    }
+
+
+    /**
+     * @param   string  $namespace
+     * @return  Mock
+     */
+    public function buildSessionDestroyMock($namespace)
+    {
+        $function = 'session_destroy';
+        $mock = $this->sessionDestroyMock;
+
+        if (is_null($mock)) {
+            $callback = function() {
+                self::$sessionDestroy = true;
+            };
+
+            $mock = (new MockBuilder())
+                ->setNamespace($namespace)
+                ->setName($function)
+                ->setFunction($callback)
+                ->build();
+
+            $mock->define();
+
+            $this->sessionDestroyMock = $mock;
+        }
+
+        return $mock;
+    }
+
+
+    /**
+     * @param   string  $namespace
+     * @return  Mock
+     */
+    public function buildSessionStartMock($namespace)
+    {
+        $function = 'session_start';
+        $mock = $this->sessionStartMock;
+
+        if (is_null($mock)) {
+            $callback = function() {
+                self::$sessionStart = true;
+            };
+
+            $mock = (new MockBuilder())
+                ->setNamespace($namespace)
+                ->setName($function)
+                ->setFunction($callback)
+                ->build();
+
+            $mock->define();
+
+            $this->sessionStartMock = $mock;
+        }
+
+        return $mock;
+    }
+
+
+    /**
+     * @param   string  $namespace
+     * @return  Mock
+     */
+    public function buildSessionStatusMock($namespace)
+    {
+        $function = 'session_status';
+        $mock = $this->sessionStatusMock;
+
+        if (is_null($mock)) {
+            $callback = function() {
+                return self::$sessionStatus;
+            };
+
+            $mock = (new MockBuilder())
+                ->setNamespace($namespace)
+                ->setName($function)
+                ->setFunction($callback)
+                ->build();
+
+            $mock->define();
+
+            $this->sessionStatusMock = $mock;
         }
 
         return $mock;

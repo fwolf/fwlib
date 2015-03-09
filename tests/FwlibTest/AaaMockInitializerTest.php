@@ -26,11 +26,17 @@ class AaaMockInitializerTest extends PHPUnitTestCase
 
 
     /**
-     * Register PHP native function mock here
+     * Register PHP native function mock here (with define)
+     *
+     * If all test case constructor are empty, this can be deleted.
      */
     public function testMockRegister()
     {
         $this->buildExtensionLoadedMock('Fwlib\Util');
+
+        $this->buildSessionStatusMock('Fwlib\Util');
+        $this->buildSessionStartMock('Fwlib\Util');
+        $this->buildSessionDestroyMock('Fwlib\Util');
 
         $this->assertTrue(true);
     }
