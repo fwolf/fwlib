@@ -51,4 +51,17 @@ class FunctionMockFactory
 
         return $this->instances[$functionClassName];
     }
+
+
+    /**
+     * Helper method to get namespace from full qualified class name
+     *
+     * @param   string  $fullName
+     * @return  string
+     */
+    public function getNamespace($fullName)
+    {
+        return $this->getUtilContainer()->getObject()
+            ->getNamespace($fullName);
+    }
 }
