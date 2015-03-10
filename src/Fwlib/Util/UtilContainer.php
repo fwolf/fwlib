@@ -111,6 +111,7 @@ class UtilContainer implements UtilContainerInterface
             'Json'              => Json::class,
             'McryptSimpleIv'    => McryptSimpleIv::class,
             'NumberUtil'        => NumberUtil::class,
+            'ObjectUtil'        => ObjectUtil::class,
             'Rfc2047'           => Rfc2047::class,
             'StringUtil'        => StringUtil::class,
             'UuidBase16'        => Base16::class,
@@ -170,6 +171,15 @@ class UtilContainer implements UtilContainerInterface
     public function getNumber()
     {
         return $this->get('NumberUtil');
+    }
+
+
+    /**
+     * @return  ObjectUtil
+     */
+    public function getObject()
+    {
+        return $this->get('ObjectUtil');
     }
 
 
