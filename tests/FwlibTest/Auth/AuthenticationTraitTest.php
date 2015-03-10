@@ -1,39 +1,43 @@
 <?php
 namespace FwlibTest\Auth;
 
-use Fwlib\Auth\AbstractAuthentication;
-use Fwlib\Auth\AbstractUserSession;
+use Fwlib\Auth\AuthenticationInterface;
+use Fwlib\Auth\AuthenticationTrait;
+use Fwlib\Auth\UserSessionInterface;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractAuthenticationTest extends PHPUnitTestCase
+class AuthenticationTraitTest extends PHPUnitTestCase
 {
     /**
-     * @param   AbstractUserSession $userSession
-     * @return  AbstractAuthentication
+     * @param   UserSessionInterface    $userSession
+     * @return  MockObject | AuthenticationInterface
      */
     protected function buildMock($userSession)
     {
-        $authentication = $this->getMockBuilder(
-            AbstractAuthentication::class
+        $mock = $this->getMockBuilder(
+            AuthenticationTrait::class
         )
-            ->setConstructorArgs([$userSession])
-            ->getMockForAbstractClass();
+            ->getMockForTrait();
 
-        return $authentication;
+        /** @var AuthenticationInterface $mock */
+        $mock->setUserSession($userSession);
+
+        return $mock;
     }
 
 
     /**
-     * @return  AbstractUserSession
+     * @return  MockObject | UserSessionInterface
      */
     protected function buildMockUserSession()
     {
         $userSession = $this->getMockBuilder(
-            AbstractUserSession::class
+            UserSessionInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -42,20 +46,20 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
     }
 
 
-    public function testConstructor()
+    public function testSetGetUserSession()
     {
         $authentication = $this->buildMock(null);
 
         $this->assertNull(
-            $this->reflectionGet($authentication, 'userSession')
+            $authentication->getUserSession()
         );
 
 
         $authentication = $this->buildMock($this->buildMockUserSession());
 
         $this->assertInstanceOf(
-            AbstractUserSession::class,
-            $this->reflectionGet($authentication, 'userSession')
+            UserSessionInterface::class,
+            $authentication->getUserSession()
         );
     }
 

@@ -2,23 +2,15 @@
 namespace Fwlib\Auth;
 
 /**
- * Do authenticate and save user session if successful
+ * Do authenticate and update user session if successful
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface AuthenticationInterface
 {
     /**
-     * Constructor
-     *
-     * @param   UserSessionInterface    $userSession
-     */
-    public function __construct(UserSessionInterface $userSession = null);
-
-
-    /**
-     * Do authenticate, got identity and save session
+     * Do authenticate, got identity and update user session
      *
      * @return  boolean
      */
@@ -31,4 +23,17 @@ interface AuthenticationInterface
      * @return  string
      */
     public function getIdentity();
+
+
+    /**
+     * @return  UserSessionInterface
+     */
+    public function getUserSession();
+
+
+    /**
+     * @param   UserSessionInterface    $userSession
+     * @return  static
+     */
+    public function setUserSession($userSession);
 }
