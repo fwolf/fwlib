@@ -39,13 +39,6 @@ class HttpUtilTest extends PHPUnitTestCase
      */
     public static $header = '';
 
-    /**
-     * Mocked result of native session methods
-     *
-     * @type string
-     */
-    public static $sessionId = '';
-
 
     /**
      * @return HttpUtil
@@ -61,11 +54,6 @@ class HttpUtilTest extends PHPUnitTestCase
         self::$backups['get'] = $_GET;
         self::$backups['post'] = $_POST;
         self::$backups['request'] = $_REQUEST;
-
-        if (isset($_SESSION)) {
-            self::$backups['session'] = $_SESSION;
-        }
-
         self::$backups['cookie'] = $_COOKIE;
     }
 
@@ -75,11 +63,6 @@ class HttpUtilTest extends PHPUnitTestCase
         $_GET = self::$backups['get'];
         $_POST = self::$backups['post'];
         $_REQUEST = self::$backups['request'];
-
-        if (isset(self::$backups['session'])) {
-            $_SESSION = self::$backups['session'];
-        }
-
         $_COOKIE = self::$backups['cookie'];
     }
 
@@ -228,18 +211,6 @@ class HttpUtilTest extends PHPUnitTestCase
     }
 
 
-    public function testSetGetClearSession()
-    {
-        $httpUtil = $this->buildMock();
-
-        $httpUtil->setSession('foo', 'bar');
-        $this->assertEquals('bar', $httpUtil->getSession('foo'));
-
-        $httpUtil->clearSession();
-        $this->assertArrayNotHasKey('foo', $_SESSION);
-    }
-
-
     /**
      * Please notice that normal cookie set will only be available till next
      * page load, here in test we are using mocked cookie method.
@@ -268,35 +239,5 @@ class HttpUtilTest extends PHPUnitTestCase
 
 
         $setcookieMock->disable();
-    }
-
-
-    public function testStartSession()
-    {
-        $httpUtil = $this->buildMock();
-
-        $factory = $this->getFunctionMockFactory();
-        $sessionStatusMock =
-            $factory->get('Fwlib\Util', 'session_status', true);
-        $sessionStartMock =
-            $factory->get('Fwlib\Util', 'session_start', true);
-        $sessionDestroyMock =
-            $factory->get('Fwlib\Util', 'session_destroy', true);
-
-
-        $sessionStatusMock->setResult(PHP_SESSION_NONE);
-        $sessionStartMock->setResult(false);
-        $httpUtil->startSession();
-        $this->assertTrue($sessionStartMock->getResult());
-
-
-        $sessionStatusMock->setResult(PHP_SESSION_ACTIVE);
-        $sessionStartMock->setResult(false);
-        $sessionDestroyMock->setResult(false);
-        $httpUtil->startSession(true);
-        $this->assertTrue($sessionStartMock->getResult());
-        $this->assertTrue($sessionDestroyMock->getResult());
-
-        $sessionStatusMock->disableAll();
     }
 }

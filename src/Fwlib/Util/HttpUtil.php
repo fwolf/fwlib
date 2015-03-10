@@ -4,6 +4,9 @@ namespace Fwlib\Util;
 /**
  * Http util
  *
+ * Notice: For session relate operate, use
+ * {@see \Fwlib\Auth\SessionHandler\PhpSession}.
+ *
  * @codeCoverageIgnore
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -36,15 +39,6 @@ class HttpUtil
         }
 
         return $input;
-    }
-
-
-    /**
-     * Clear all session content, but still keep it started
-     */
-    public function clearSession()
-    {
-        $_SESSION = [];
     }
 
 
@@ -377,34 +371,6 @@ class HttpUtil
 
 
     /**
-     * Get variant from $_SESSION，will also rewrite SESSION to keep it
-     *
-     * @codeCoverageIgnore
-     *
-     * @param   string  $var
-     * @param   mixed   $default
-     * @return  mixed
-     */
-    public function getSession($var, $default = null)
-    {
-        $_SESSION[$var] = $this->getRequest($_SESSION, $var, $default);
-
-        return $_SESSION[$var];
-    }
-
-
-    /**
-     * Get id of PHP session
-     *
-     * @return  string
-     */
-    public function getSessionId()
-    {
-        return session_id();
-    }
-
-
-    /**
      * Get and return modified url param
      *
      * If $k is string, then $v is string too and means add $k=$v.
@@ -568,44 +534,6 @@ class HttpUtil
                 $secure,
                 $httpOnly
             );
-        }
-    }
-
-
-    /**
-     * Set value to session
-     *
-     * @param   string  $name
-     * @param   mixed   $value
-     * @return  HttpUtil
-     */
-    public function setSession($name, $value)
-    {
-        $_SESSION[$name] = $value;
-
-        return $this;
-    }
-
-
-    /**
-     * Start session if its not started
-     *
-     * PHP 5.4.0+ can use session_status() to check if session is started.
-     * If has output before(mostly by PHPUnit), ignore session start.
-     *
-     * @param   boolean $forcenew
-     */
-    public function startSession($forcenew = false)
-    {
-        if (PHP_SESSION_NONE == session_status()) {
-            session_start();
-
-        } else {
-            // Session is already started
-            if ($forcenew) {
-                session_destroy();
-                session_start();
-            }
         }
     }
 
