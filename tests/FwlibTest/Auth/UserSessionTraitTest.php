@@ -1,31 +1,31 @@
 <?php
 namespace FwlibTest\Auth;
 
-use Fwlib\Auth\AbstractUserSession;
+use Fwlib\Auth\UserSessionTrait;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractUserSessionTest extends PHPUnitTestCase
+class UserSessionTraitTest extends PHPUnitTestCase
 {
     /** @var HttpUtil */
     protected static $httpUtilBackup;
 
 
     /**
-     * @return AbstractUserSession
+     * @return UserSessionTrait
      */
     protected function buildMock()
     {
         $userSession = $this->getMockBuilder(
-            AbstractUserSession::class
+            UserSessionTrait::class
         )
-        ->setMethods(['__construct', 'load', 'save'])
-        ->getMockForAbstractClass();
+        ->setMethods(['load', 'save'])
+        ->getMockForTrait();
 
         $userSession->expects($this->once())
             ->method('load');
@@ -33,8 +33,7 @@ class AbstractUserSessionTest extends PHPUnitTestCase
         $userSession->expects($this->never())
             ->method('save');
 
-        /** @type AbstractUserSession $userSession */
-        $userSession->__construct();
+        $this->reflectionCall($userSession, 'initialize');
 
         return $userSession;
     }

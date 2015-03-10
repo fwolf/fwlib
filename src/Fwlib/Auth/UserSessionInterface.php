@@ -14,7 +14,7 @@ interface UserSessionInterface
     /**
      * Clear session data, include storage
      *
-     * @return  UserSessionInterface
+     * @return  static
      */
     public function clear();
 
@@ -30,7 +30,7 @@ interface UserSessionInterface
     /**
      * Load session from storage
      *
-     * @return  UserSessionInterface
+     * @return  static
      */
     public function load();
 
@@ -40,7 +40,7 @@ interface UserSessionInterface
      *
      * Should throw exception if currently is not logged in.
      *
-     * @return  UserSessionInterface
+     * @return  static
      */
     public function save();
 }
