@@ -19,6 +19,8 @@ use Fwlib\Util\StringUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Util\Uuid\Base16;
 use Fwlib\Util\Uuid\Base36;
+use Fwlib\Util\Uuid\Base36Short;
+use Fwlib\Util\Uuid\Base62;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -119,7 +121,12 @@ class UtilContainerTest extends PHPUnitTestCase
         );
 
         $this->assertInstanceOf(
-            \Fwlib\Util\Uuid\Base62::class,
+            Base36Short::class,
+            $utilContainer->getUuidBase36Short()
+        );
+
+        $this->assertInstanceOf(
+            Base62::class,
             $utilContainer->getUuidBase62()
         );
 
