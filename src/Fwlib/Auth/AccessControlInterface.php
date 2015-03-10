@@ -16,15 +16,24 @@ namespace Fwlib\Auth;
  * information, like if current user has specified privilege, to be used in
  * production logic.
  *
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 interface AccessControlInterface
 {
     /**
-     * Constructor
+     * Getter of $userSession
+     *
+     * @return  UserSessionInterface
+     */
+    public function getUserSession();
+
+
+    /**
+     * Setter of $userSession
      *
      * @param   UserSessionInterface    $userSession
+     * @return  static
      */
-    public function __construct(UserSessionInterface $userSession);
+    public function setUserSession(UserSessionInterface $userSession);
 }

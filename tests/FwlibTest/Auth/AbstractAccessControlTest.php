@@ -34,13 +34,13 @@ class AbstractAccessControlTest extends PHPUnitTestCase
     }
 
 
-    public function testConstructor()
+    public function testGetSetUserSession()
     {
         $accessControl = $this->buildMock();
 
         $this->assertInstanceOf(
             UserSessionInterface::class,
-            $this->reflectionGet($accessControl, 'userSession')
+            $accessControl->getUserSession()
         );
     }
 }
