@@ -2,12 +2,12 @@
 namespace Fwlib\Auth;
 
 /**
- * Control access by information from user session
+ * @see AccessControllerInterface
  *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-abstract class AbstractAccessControl implements AccessControlInterface
+trait AccessControllerTrait
 {
     /**
      * @var UserSessionInterface
@@ -16,16 +16,9 @@ abstract class AbstractAccessControl implements AccessControlInterface
 
 
     /**
-     * @param   UserSessionInterface    $userSession
-     */
-    public function __construct(UserSessionInterface $userSession)
-    {
-        $this->setUserSession($userSession);
-    }
-
-
-    /**
-     * {@inheritdoc}
+     * @see AccessControllerInterface::getUserSession()
+     *
+     * @return  UserSessionInterface
      */
     public function getUserSession()
     {
@@ -34,7 +27,10 @@ abstract class AbstractAccessControl implements AccessControlInterface
 
 
     /**
-     * {@inheritdoc}
+     * @see AccessControllerInterface::setUserSession()
+     *
+     * @param   UserSessionInterface    $userSession
+     * @return  static
      */
     public function setUserSession(UserSessionInterface $userSession)
     {
