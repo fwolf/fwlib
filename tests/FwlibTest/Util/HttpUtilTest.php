@@ -81,25 +81,18 @@ class HttpUtilTest extends PHPUnitTestCase
     }
 
 
-    public function testClearGetSetSession()
-    {
-        $httpUtil = $this->buildMock();
-
-        $httpUtil->setSession('foo', 'bar');
-        $this->assertEquals('bar', $httpUtil->getSession('foo'));
-
-        $httpUtil->clearSession();
-        $this->assertArrayNotHasKey('foo', $_SESSION);
-    }
-
-
     public function testDownload()
     {
         $httpUtil = $this->buildMock();
 
+        $factory = FunctionMockFactory::getInstance();
+        $headerMock = $factory->get('Fwlib\Util', 'header', true);
+
         $x = 'Test for download()';
         $this->expectOutputString($x);
         $httpUtil->download($x);
+
+        $headerMock->disable();
     }
 
 
@@ -232,44 +225,46 @@ class HttpUtilTest extends PHPUnitTestCase
     }
 
 
+    public function testSetGetClearSession()
+    {
+        $httpUtil = $this->buildMock();
+
+        $httpUtil->setSession('foo', 'bar');
+        $this->assertEquals('bar', $httpUtil->getSession('foo'));
+
+        $httpUtil->clearSession();
+        $this->assertArrayNotHasKey('foo', $_SESSION);
+    }
+
+
     /**
      * Please notice that normal cookie set will only be available till next
-     * page load, here in test we are using simulated cookie method.
+     * page load, here in test we are using mocked cookie method.
      */
     public function testSetUnsetCookie()
     {
-        $httpUtil = $this->getMock(
-            HttpUtil::class,
-            ['getCookie']
-        );
-        $httpUtil->expects($this->any())
-            ->method('getCookie')
-            ->will($this->returnCallback(function ($name) {
-                $cookies = HttpUtilTest::$cookies;
+        $httpUtil = $this->buildMock();
 
-                if (array_key_exists($name, $cookies)) {
-                    // Did not check expire time
-                    return $cookies[$name];
+        $factory = FunctionMockFactory::getInstance();
+        $setcookieMock = $factory->get('Fwlib\Util', 'setcookie', true);
 
-                } else {
-                    return null;
-                }
-            }));
 
-        /** @type HttpUtil $httpUtil */
         $httpUtil->setCookie('foo', 'bar', time() + 10);
-        $this->assertEquals('bar', $httpUtil->getCookie('foo'));
+        $this->assertEquals('bar', $setcookieMock->getResult()['foo']);
 
         $httpUtil->setCookie('foo', 'bar', time() - 10);
-        $this->assertNull($httpUtil->getCookie('foo'));
+        $this->assertArrayNotHasKey('foo', $setcookieMock->getResult());
 
 
         // For unset
         $httpUtil->setCookie('foo', 'bar', time() + 10);
-        $this->assertEquals('bar', $httpUtil->getCookie('foo'));
+        $this->assertEquals('bar', $setcookieMock->getResult()['foo']);
 
         $httpUtil->unsetCookie('foo');
-        $this->assertNull($httpUtil->getCookie('foo'));
+        $this->assertArrayNotHasKey('foo', $setcookieMock->getResult());
+
+
+        $setcookieMock->disable();
     }
 
 
@@ -300,65 +295,5 @@ class HttpUtilTest extends PHPUnitTestCase
         $this->assertTrue($sessionDestroyMock->getResult());
 
         $sessionStatusMock->disableAll();
-    }
-}
-
-
-namespace Fwlib\Util;
-
-/**
- * @param   string  $headerString
- */
-function header($headerString)
-{
-    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    \FwlibTest\Util\HttpUtilTest::$header = $headerString;
-}
-
-
-/**
- * Mock
- *
- * @return string
- */
-function session_id()
-{
-    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    return \FwlibTest\Util\HttpUtilTest::$sessionId;
-}
-
-
-/**
- * Mock
- */
-function session_regenerate_id()
-{
-    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    \FwlibTest\Util\HttpUtilTest::$sessionId = UtilContainer::getInstance()
-        ->getString()
-        ->random(10, 'a0');
-}
-
-
-/**
- * Mock
- *
- * @param   string  $name
- * @param   string  $value
- * @param   int     $expire
- */
-function setcookie($name, $value, $expire)
-{
-    if (0 == $expire) {
-        $expire = time();
-    }
-
-    if (time() > $expire) {
-        /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        unset(\FwlibTest\Util\HttpUtilTest::$cookies[$name]);
-
-    } else {
-        /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        \FwlibTest\Util\HttpUtilTest::$cookies[$name] = $value;
     }
 }
