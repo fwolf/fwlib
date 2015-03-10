@@ -2,6 +2,8 @@
 namespace FwlibTest\Auth;
 
 use Fwlib\Auth\AbstractUserSession;
+use Fwlib\Util\HttpUtil;
+use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -10,6 +12,10 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class AbstractUserSessionTest extends PHPUnitTestCase
 {
+    /** @var HttpUtil */
+    protected static $httpUtilBackup;
+
+
     /**
      * @return AbstractUserSession
      */
@@ -31,6 +37,24 @@ class AbstractUserSessionTest extends PHPUnitTestCase
         $userSession->__construct();
 
         return $userSession;
+    }
+
+
+    public static function setUpBeforeClass()
+    {
+        $utilContainer = UtilContainer::getInstance();
+        self::$httpUtilBackup = $utilContainer->getHttp();
+
+        $testCase = new self;
+        $httpUtil = $testCase->getMock(HttpUtil::class, ['startSession']);
+        $utilContainer->register('HttpUtil', $httpUtil);
+    }
+
+
+    public static function tearDownAfterClass()
+    {
+        UtilContainer::getInstance()
+            ->register('HttpUtil', self::$httpUtilBackup);
     }
 
 

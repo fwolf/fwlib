@@ -6,20 +6,11 @@ use Fwlib\Auth\AbstractUserSession;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2014 Fwolf
+ * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AbstractAuthenticationTest extends PHPUnitTestCase
 {
-    private $authentication;
-
-
-    public function __construct()
-    {
-        $this->authentication = $this->buildMock(null);
-    }
-
-
     /**
      * @param   AbstractUserSession $userSession
      * @return  AbstractAuthentication
@@ -29,8 +20,8 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
         $authentication = $this->getMockBuilder(
             AbstractAuthentication::class
         )
-        ->setConstructorArgs([$userSession])
-        ->getMockForAbstractClass();
+            ->setConstructorArgs([$userSession])
+            ->getMockForAbstractClass();
 
         return $authentication;
     }
@@ -44,7 +35,8 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
         $userSession = $this->getMockBuilder(
             AbstractUserSession::class
         )
-        ->getMockForAbstractClass();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         return $userSession;
     }
@@ -52,7 +44,7 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
 
     public function testConstructor()
     {
-        $authentication = $this->authentication;
+        $authentication = $this->buildMock(null);
 
         $this->assertNull(
             $this->reflectionGet($authentication, 'userSession')
@@ -70,7 +62,7 @@ class AbstractAuthenticationTest extends PHPUnitTestCase
 
     public function testGetIdentity()
     {
-        $authentication = $this->authentication;
+        $authentication = $this->buildMock(null);
 
         $this->assertEmpty($authentication->getIdentity());
     }

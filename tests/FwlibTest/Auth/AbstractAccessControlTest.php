@@ -18,9 +18,11 @@ class AbstractAccessControlTest extends PHPUnitTestCase
     protected function buildMock()
     {
         /** @type AbstractUserSession $userSession */
-        $userSession = $this->getMockForAbstractClass(
+        $userSession = $this->getMockBuilder(
             AbstractUserSession::class
-        );
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $accessControl = $this->getMockBuilder(
             AbstractAccessControl::class
