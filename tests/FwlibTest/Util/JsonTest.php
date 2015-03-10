@@ -2,7 +2,7 @@
 namespace FwlibTest\Util;
 
 use Fwlib\Util\Json;
-use FwlibTest\Aide\FunctionMockFactory;
+use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -12,6 +12,9 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class JsonTest extends PHPUnitTestCase
 {
+    use FunctionMockFactoryAwareTrait;
+
+
     /** @type int */
     public $dummyForTestEncodeHex = 42;
 
@@ -38,7 +41,7 @@ class JsonTest extends PHPUnitTestCase
      */
     public function testConstructor()
     {
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
         $extensionLoadedMock =
             $factory->get('Fwlib\Util', 'extension_loaded', true);
 
@@ -57,7 +60,7 @@ class JsonTest extends PHPUnitTestCase
      */
     public function testConstructorFailed()
     {
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
         $extensionLoadedMock =
             $factory->get('Fwlib\Util', 'extension_loaded', true);
 
@@ -71,7 +74,7 @@ class JsonTest extends PHPUnitTestCase
 
     public function testDummy()
     {
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
         $extensionLoadedMock =
             $factory->get('Fwlib\Util', 'extension_loaded', true);
 

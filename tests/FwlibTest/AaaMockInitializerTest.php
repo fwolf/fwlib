@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest;
 
-use FwlibTest\Aide\FunctionMockFactory;
+use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -22,6 +22,9 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class AaaMockInitializerTest extends PHPUnitTestCase
 {
+    use FunctionMockFactoryAwareTrait;
+
+
     /**
      * Register PHP native function mock here (with define)
      *
@@ -29,7 +32,7 @@ class AaaMockInitializerTest extends PHPUnitTestCase
      */
     public function testMockRegister()
     {
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
 
         $factory->get('Fwlib\Util', 'extension_loaded');
 
@@ -43,7 +46,7 @@ class AaaMockInitializerTest extends PHPUnitTestCase
 
     public function testMockSuccessful()
     {
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
         $extensionLoadedMock =
             $factory->get('FwlibTest', 'extension_loaded', true);
 

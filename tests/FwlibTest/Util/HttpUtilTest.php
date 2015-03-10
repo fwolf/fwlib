@@ -3,7 +3,7 @@ namespace FwlibTest\Util;
 
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
-use FwlibTest\Aide\FunctionMockFactory;
+use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -15,6 +15,9 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class HttpUtilTest extends PHPUnitTestCase
 {
+    use FunctionMockFactoryAwareTrait;
+
+
     /**
      * Backup of globals
      *
@@ -85,7 +88,7 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
         $headerMock = $factory->get('Fwlib\Util', 'header', true);
 
         $x = 'Test for download()';
@@ -245,7 +248,7 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
         $setcookieMock = $factory->get('Fwlib\Util', 'setcookie', true);
 
 
@@ -272,7 +275,7 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = FunctionMockFactory::getInstance();
+        $factory = $this->getFunctionMockFactory();
         $sessionStatusMock =
             $factory->get('Fwlib\Util', 'session_status', true);
         $sessionStartMock =
