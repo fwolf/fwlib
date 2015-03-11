@@ -5,6 +5,9 @@ use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @SuppressWarnings(PHPMD.Superglobals)
@@ -39,6 +42,11 @@ class HttpUtilTest extends PHPUnitTestCase
      */
     public static $header = '';
 
+    /**
+     * @var vfsStreamDirectory
+     */
+    protected static $vfsRoot = null;
+
 
     /**
      * @return HttpUtil
@@ -55,6 +63,8 @@ class HttpUtilTest extends PHPUnitTestCase
         self::$backups['post'] = $_POST;
         self::$backups['request'] = $_REQUEST;
         self::$backups['cookie'] = $_COOKIE;
+
+        self::$vfsRoot = vfsStream::setup('HttpUtilTest');
     }
 
 
@@ -71,14 +81,83 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $headerMock = $factory->get('Fwlib\Util', 'header', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $headerMock = $factory->get(null, 'header', true);
 
         $x = 'Test for download()';
         $this->expectOutputString($x);
         $httpUtil->download($x);
 
         $headerMock->disable();
+    }
+
+
+    public function testDownloadFileAndCheckHeader()
+    {
+        /** @var MockObject|HttpUtil $httpUtil */
+        $httpUtil = $this->getMock(HttpUtil::class, ['getBrowserType']);
+        $httpUtil->expects($this->any())
+            ->method('getBrowserType')
+            ->will($this->returnValue('trident'));
+
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $headerMock = $factory->get(null, 'header', true);
+
+        $file = vfsStream::newFile('toDownload.txt')->at(self::$vfsRoot);
+
+
+        // Not assign download file name
+        $headerMock->setResult([]);
+        $httpUtil->downloadFile($file->url());
+        $headers = $headerMock->getResult();
+        $headerString = implode(', ', $headers);
+        $this->assertRegExp("/filename=\"toDownload\\.txt\"/", $headerString);
+
+        // Assign download file name
+        // Filename is fixed for IE
+        $headerMock->setResult([]);
+        $httpUtil->downloadFile($file->url(), 'foo.bar.txt');
+        $headers = $headerMock->getResult();
+        $headerString = implode(', ', $headers);
+        /** @noinspection SpellCheckingInspection */
+        $this->assertRegExp("/filename=\"foo%2ebar\\.txt\"/", $headerString);
+
+
+        $headerMock->disableAll();
+    }
+
+
+    public function testDownloadFileWithInvalidPath()
+    {
+        $httpUtil = $this->buildMock();
+
+        $this->assertFalse(
+            $httpUtil->downloadFile(__DIR__ . '/not-exist-file')
+        );
+    }
+
+
+    public function testFilterInput()
+    {
+        $httpUtil = $this->buildMock();
+
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $filterInputMock = $factory->get(null, 'filter_input', true);
+
+
+        $filterInputMock->setResult('bar');
+        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
+        $this->assertEquals('bar', $y);
+
+        $filterInputMock->setResult(null);
+        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
+        $this->assertEquals('foo', $y);
+
+
+        $filterInputMock->disableAll();
     }
 
 
@@ -165,28 +244,6 @@ class HttpUtilTest extends PHPUnitTestCase
         $this->assertEquals($y, $x);
 
         $_GET = [];
-    }
-
-
-    public function testFilterInput()
-    {
-        $httpUtil = $this->buildMock();
-
-        $factory = $this->getFunctionMockFactory()
-            ->setNamespace(HttpUtil::class);
-        $filterInputMock = $factory->get(null, 'filter_input', true);
-
-
-        $filterInputMock->setResult('bar');
-        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
-        $this->assertEquals('bar', $y);
-
-        $filterInputMock->setResult(null);
-        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
-        $this->assertEquals('foo', $y);
-
-
-        $filterInputMock->disableAll();
     }
 
 
