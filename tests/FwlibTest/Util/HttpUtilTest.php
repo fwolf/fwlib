@@ -117,17 +117,26 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
+        $factory = $this->getFunctionMockFactory();
+        $ns = $factory->getNamespace(HttpUtil::class);
+        $filterInputArrayMock = $factory->get($ns, 'filter_input_array', true);
+
         $dummy = [
             'foo' => "It's hot",
         ];
+        $filterInputArrayMock->setResult($dummy);
 
-        $_GET = $dummy;
+
+        // Get Post is not addslashes anymore
         $getParams = $httpUtil->getGets();
-        $this->assertEquals("It\\'s hot", $getParams['foo']);
+        $this->assertEquals("It's hot", $getParams['foo']);
 
-        $_POST = $dummy;
+
         $getParams = $httpUtil->getPosts();
-        $this->assertEquals("It\\'s hot", $getParams['foo']);
+        $this->assertEquals("It's hot", $getParams['foo']);
+
+
+        $filterInputArrayMock->disableAll();
     }
 
 
@@ -155,19 +164,29 @@ class HttpUtilTest extends PHPUnitTestCase
         $y = '?a=2&c=3&1=a';
         $this->assertEquals($y, $x);
 
+        $_GET = [];
     }
 
 
-    public function testGetRequest()
+    public function testFilterInput()
     {
         $httpUtil = $this->buildMock();
 
-        $_REQUEST = [
-            'a' => 'foo',
-            'b' => ['foo', 'bar'],
-        ];
+        $factory = $this->getFunctionMockFactory();
+        $ns = $factory->getNamespace(HttpUtil::class);
+        $filterInputMock = $factory->get($ns, 'filter_input', true);
 
-        $this->assertEquals('foo', $httpUtil->getRequest($_REQUEST, 'a'));
+
+        $filterInputMock->setResult('bar');
+        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
+        $this->assertEquals('bar', $y);
+
+        $filterInputMock->setResult(null);
+        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
+        $this->assertEquals('foo', $y);
+
+
+        $filterInputMock->disableAll();
     }
 
 
@@ -193,21 +212,29 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
+        $factory = $this->getFunctionMockFactory();
+        $ns = $factory->getNamespace(HttpUtil::class);
+        $filterInputArrayMock = $factory->get($ns, 'filter_input_array', true);
+
         $dummy = [
             'a' => '0',
             'b' => '1',
         ];
+        $filterInputArrayMock->setResult($dummy);
 
-        $_GET = $dummy;
+
         $params = $httpUtil->pickGets(['a', 'b'], true);
         $this->assertEqualArray(['b' => '1'], $params);
 
-        $_POST = $dummy;
+
         $callback = function ($value) {
             return 10 * $value;
         };
         $params = $httpUtil->pickPosts(['a', 'b'], false, $callback);
         $this->assertEqualArray(['a' => 0, 'b' => 10], $params);
+
+
+        $filterInputArrayMock->disableAll();
     }
 
 

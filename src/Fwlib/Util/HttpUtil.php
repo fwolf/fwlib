@@ -7,6 +7,18 @@ namespace Fwlib\Util;
  * Notice: For session relate operate, use
  * {@see \Fwlib\Auth\SessionHandler\PhpSession}.
  *
+ *
+ * PHP 5.4 removed get_magic_quotes_gpc(), so we do not add slashes to
+ * requests anymore.
+ *
+ * If still want magic quotes, consider {@see filter_input()} with
+ * FILTER_SANITIZE_MAGIC_QUOTES filter, this function is also wrapped here as
+ * {@see filterInput()}, same with empty filter in default.
+ *
+ * DO remember to addslashes to them when not using PDO to access DB, or use
+ * proper filter.
+ *
+ *
  * @codeCoverageIgnore
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -19,27 +31,6 @@ namespace Fwlib\Util;
 class HttpUtil
 {
     use UtilContainerAwareTrait;
-
-
-    /**
-     * Add slashes to user input contents recursive
-     *
-     * @param   array   $input
-     * @return  array
-     */
-    protected function addSlashes($input)
-    {
-        // magic_quotes_gpc is deprecated from php 5.4.0
-        if (version_compare(PHP_VERSION, '5.4.0', '>=')
-            || !get_magic_quotes_gpc()
-        ) {
-            $stringUtil = $this->getUtilContainer()->getString();
-
-            $input = $stringUtil->addSlashesRecursive($input);
-        }
-
-        return $input;
-    }
 
 
     /**
@@ -144,6 +135,71 @@ class HttpUtil
 
 
     /**
+     * Get input via filter_input() function
+     *
+     * Compare with original function, added default value.
+     *
+     * @param   int       $type
+     * @param   string    $name
+     * @param   mixed     $default Default value if name is not found in input
+     * @param   int       $filter
+     * @param   int|array $options
+     * @return  string|int
+     */
+    public function filterInput(
+        $type,
+        $name,
+        $default = null,
+        $filter = FILTER_DEFAULT,
+        $options = null
+    ) {
+        $result = filter_input($type, $name, $filter, $options);
+
+        if (is_null($result)) {
+            $result = $default;
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * Get input array via filter_input_array() function
+     *
+     * Compare with original function, added filter replication; always return
+     * array, even empty.
+     *
+     * @param   int       $type
+     * @param   array|int $definition
+     * @param   bool      $addEmpty
+     * @return  array
+     */
+    public function filterInputArray($type, $definition, $addEmpty = true)
+    {
+        $map = [
+            INPUT_GET    => $_GET,
+            INPUT_POST   => $_POST,
+            INPUT_COOKIE => $_COOKIE,
+            INPUT_SERVER => $_SERVER,
+            INPUT_ENV    => $_ENV,
+        ];
+        if (!is_array($definition)) {
+            $keys = array_keys($map[$type]);
+
+            if (!empty($keys)) {
+                $definition = array_fill_keys($keys, $definition);
+            }
+        }
+
+        $result = filter_input_array($type, $definition, $addEmpty);
+
+        $result = is_null($result) ? [] : $result;
+
+        return $result;
+    }
+
+
+    /**
      * User browser type
      *
      * Type is kernel of browser: gecko/trident/webkit
@@ -214,102 +270,104 @@ class HttpUtil
 
 
     /**
-     * Get variant from $_COOKIE
-     *
-     * @codeCoverageIgnore
-     *
-     * @param   string  $var
-     * @param   mixed   $default
-     * @return  mixed
+     * @param   string    $name
+     * @param   mixed     $default Default value if name is not found in input
+     * @param   int       $filter
+     * @param   int|array $options
+     * @return  string|int
      */
-    public function getCookie($var, $default = null)
-    {
-        return $this->getRequest($_COOKIE, $var, $default);
+    public function getCookie(
+        $name,
+        $default = null,
+        $filter = FILTER_DEFAULT,
+        $options = null
+    ) {
+        return $this->filterInput(
+            INPUT_COOKIE,
+            $name,
+            $default,
+            $filter,
+            $options
+        );
     }
 
 
     /**
-     * Get variant from $_GET
-     *
-     * @codeCoverageIgnore
-     *
-     * @param   string  $var
-     * @param   mixed   $default
-     * @return  mixed
+     * @param   array|int $definition
+     * @param   bool      $addEmpty
+     * @return  array
      */
-    public function getGet($var, $default = null)
+    public function getCookies($definition = FILTER_DEFAULT, $addEmpty = true)
     {
-        return $this->getRequest($_GET, $var, $default);
+        return $this->filterInputArray(INPUT_COOKIE, $definition, $addEmpty);
     }
 
 
     /**
-     * Get all get parameters
-     *
-     * @return  string[]
+     * @param   string    $name
+     * @param   mixed     $default Default value if name is not found in input
+     * @param   int       $filter
+     * @param   int|array $options
+     * @return  string|int
      */
-    public function getGets()
-    {
-        $params = $_GET;
-
-        $params = $this->addSlashes($params);
-
-        return $params;
+    public function getGet(
+        $name,
+        $default = null,
+        $filter = FILTER_DEFAULT,
+        $options = null
+    ) {
+        return $this->filterInput(
+            INPUT_GET,
+            $name,
+            $default,
+            $filter,
+            $options
+        );
     }
 
 
     /**
-     * Get variant from $_POST
-     *
-     * @codeCoverageIgnore
-     *
-     * @param   string  $var
-     * @param   mixed   $default
-     * @return  mixed
+     * @param   array|int $definition
+     * @param   bool      $addEmpty
+     * @return  array
      */
-    public function getPost($var, $default = null)
+    public function getGets($definition = FILTER_DEFAULT, $addEmpty = true)
     {
-        return $this->getRequest($_POST, $var, $default);
+        return $this->filterInputArray(INPUT_GET, $definition, $addEmpty);
     }
 
 
     /**
-     * Get all post parameters
-     *
-     * @return  string[]
+     * @param   string    $name
+     * @param   mixed     $default Default value if name is not found in input
+     * @param   int       $filter
+     * @param   int|array $options
+     * @return  string|int
      */
-    public function getPosts()
-    {
-        $params = $_POST;
-
-        $params = $this->addSlashes($params);
-
-        return $params;
+    public function getPost(
+        $name,
+        $default = null,
+        $filter = FILTER_DEFAULT,
+        $options = null
+    ) {
+        return $this->filterInput(
+            INPUT_POST,
+            $name,
+            $default,
+            $filter,
+            $options
+        );
     }
 
 
     /**
-     * Get variant from $_REQUEST
-     *
-     * @codeCoverageIgnore
-     *
-     * @param   array   $request    $_REQUEST, include $_GET/$_POST etc...
-     * @param   string  $var        Name of variant
-     * @param   mixed   $default    If variant is not given, return this
-     * @return  mixed
+     * @param   array|int $definition
+     * @param   bool      $addEmpty
+     * @return  array
      */
-    public function getRequest(&$request, $var, $default = null)
+    public function getPosts($definition = FILTER_DEFAULT, $addEmpty = true)
     {
-        if (isset($request[$var])) {
-            $val = $request[$var];
-
-            $val = $this->addSlashes($val);
-
-            return $val;
-
-        } else {
-            return $default;
-        }
+        return $this->filterInputArray(INPUT_POST, $definition, $addEmpty);
     }
 
 
