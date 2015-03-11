@@ -25,7 +25,7 @@ Fwlib
     :target: https://insight.sensiolabs.com/projects/2cc73a92-0166-440c-a6c7-4e1f58d1bfaa
 
 .. image:: https://scrutinizer-ci.com/g/fwolf/fwlib/badges/quality-score.png?b=master
-:alt: Scrutinizer Code Quality
+    :alt: Scrutinizer Code Quality
     :target: https://scrutinizer-ci.com/g/fwolf/fwlib/?branch=master
 
 
