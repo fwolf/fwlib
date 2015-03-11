@@ -117,9 +117,9 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(HttpUtil::class);
-        $filterInputArrayMock = $factory->get($ns, 'filter_input_array', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $filterInputArrayMock = $factory->get('', 'filter_input_array', true);
 
         $dummy = [
             'foo' => "It's hot",
@@ -172,9 +172,9 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(HttpUtil::class);
-        $filterInputMock = $factory->get($ns, 'filter_input', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $filterInputMock = $factory->get(null, 'filter_input', true);
 
 
         $filterInputMock->setResult('bar');
@@ -212,9 +212,9 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(HttpUtil::class);
-        $filterInputArrayMock = $factory->get($ns, 'filter_input_array', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $filterInputArrayMock = $factory->get('', 'filter_input_array', true);
 
         $dummy = [
             'a' => '0',

@@ -59,9 +59,9 @@ class PhpSessionTest extends PHPUnitTestCase
     {
         $sessionHandler = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(PhpSession::class);
-        $sessionDestroyMock = $factory->get($ns, 'session_destroy', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(PhpSession::class);
+        $sessionDestroyMock = $factory->get(null, 'session_destroy', true);
 
 
         $sessionDestroyMock->setResult(false);
@@ -77,9 +77,9 @@ class PhpSessionTest extends PHPUnitTestCase
     {
         $sessionHandler = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(PhpSession::class);
-        $sessionStatusMock = $factory->get($ns, 'session_status', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(PhpSession::class);
+        $sessionStatusMock = $factory->get(null, 'session_status', true);
 
 
         $sessionStatusMock->setResult(PHP_SESSION_NONE);
@@ -100,10 +100,10 @@ class PhpSessionTest extends PHPUnitTestCase
     {
         $sessionHandler = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(PhpSession::class);
-        $sessionStartMock = $factory->get($ns, 'session_start', true);
-        $sessionStatusMock = $factory->get($ns, 'session_status', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(PhpSession::class);
+        $sessionStartMock = $factory->get(null, 'session_start', true);
+        $sessionStatusMock = $factory->get(null, 'session_status', true);
 
 
         // Open without session id
@@ -139,9 +139,9 @@ class PhpSessionTest extends PHPUnitTestCase
 
         $sessionHandler = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(PhpSession::class);
-        $sessionStatusMock = $factory->get($ns, 'session_status', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(PhpSession::class);
+        $sessionStatusMock = $factory->get(null, 'session_status', true);
 
 
         $sessionStatusMock->setResult(PHP_SESSION_DISABLED);
@@ -156,11 +156,11 @@ class PhpSessionTest extends PHPUnitTestCase
     {
         $sessionHandler = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(PhpSession::class);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(PhpSession::class);
         $sessionRegenerateIdMock =
-            $factory->get($ns, 'session_regenerate_id', true);
-        $sessionIdMock = $factory->get($ns, 'session_id', true);
+            $factory->get(null, 'session_regenerate_id', true);
+        $sessionIdMock = $factory->get(null, 'session_id', true);
 
 
         $sessionRegenerateIdMock->setResult(false);
@@ -201,9 +201,9 @@ class PhpSessionTest extends PHPUnitTestCase
 
         $sessionHandler = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $ns = $factory->getNamespace(PhpSession::class);
-        $sessionStatusMock = $factory->get($ns, 'session_status', true);
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(PhpSession::class);
+        $sessionStatusMock = $factory->get(null, 'session_status', true);
 
 
         $sessionStatusMock->setResult(PHP_SESSION_ACTIVE);
