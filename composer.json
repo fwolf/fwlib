@@ -18,7 +18,8 @@
     },
     "require-dev": {
         "fwolf/phpunit-wrapper": "1.*",
-        "malkusch/php-mock": "0.*"
+        "malkusch/php-mock": "0.*",
+        "phpunit/phpunit": "4.*"
     },
     "autoload": {
         "psr-4": {
