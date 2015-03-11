@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Auth;
 
-use Fwlib\Util\UtilContainer;
-
 /**
  * @see UserSessionInterface
  *
@@ -11,6 +9,9 @@ use Fwlib\Util\UtilContainer;
  */
 trait UserSessionTrait
 {
+    use SessionHandlerAwareTrait;
+
+
     /**
      * @var boolean
      */
@@ -24,7 +25,7 @@ trait UserSessionTrait
      */
     public function clear()
     {
-        $_SESSION = [];
+        $this->getSessionHandler()->clear();
 
         $this->isLoggedIn = false;
 
@@ -39,8 +40,7 @@ trait UserSessionTrait
      */
     protected function initialize()
     {
-        UtilContainer::getInstance()->getHttp()
-            ->startSession();
+        $this->getSessionHandler()->open();
 
         $this->load();
     }

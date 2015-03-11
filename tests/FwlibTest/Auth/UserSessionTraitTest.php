@@ -1,10 +1,10 @@
 <?php
 namespace FwlibTest\Auth;
 
+use Fwlib\Auth\SessionHandlerInterface;
 use Fwlib\Auth\UserSessionTrait;
-use Fwlib\Util\HttpUtil;
-use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2014-2015 Fwolf
@@ -12,52 +12,47 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class UserSessionTraitTest extends PHPUnitTestCase
 {
-    /** @var HttpUtil */
-    protected static $httpUtilBackup;
-
-
     /**
-     * @return UserSessionTrait
+     * @return MockObject | UserSessionTrait
      */
     protected function buildMock()
     {
-        $userSession = $this->getMockBuilder(
+        $mock = $this->getMockBuilder(
             UserSessionTrait::class
         )
         ->setMethods(['load', 'save'])
         ->getMockForTrait();
 
-        $userSession->expects($this->once())
+        $mock->expects($this->once())
             ->method('load');
 
-        $userSession->expects($this->never())
+        $mock->expects($this->never())
             ->method('save');
 
-        $this->reflectionCall($userSession, 'initialize');
+        /** @var UserSessionTrait $mock */
+        $mock->setSessionHandler($this->buildSessionHandlerMock());
 
-        return $userSession;
+        $this->reflectionCall($mock, 'initialize');
+
+        return $mock;
     }
 
 
-    public static function setUpBeforeClass()
+    /**
+     * @return MockObject | SessionHandlerInterface
+     */
+    protected function buildSessionHandlerMock()
     {
-        $utilContainer = UtilContainer::getInstance();
-        self::$httpUtilBackup = $utilContainer->getHttp();
+        $mock = $this->getMock(
+            SessionHandlerInterface::class,
+            []
+        );
 
-        $testCase = new self;
-        $httpUtil = $testCase->getMock(HttpUtil::class, ['startSession']);
-        $utilContainer->register('HttpUtil', $httpUtil);
+        return $mock;
     }
 
 
-    public static function tearDownAfterClass()
-    {
-        UtilContainer::getInstance()
-            ->register('HttpUtil', self::$httpUtilBackup);
-    }
-
-
-    public function testClear()
+    public function testClearAndIsLoggedIn()
     {
         $userSession = $this->buildMock();
 

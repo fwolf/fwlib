@@ -43,4 +43,13 @@ interface UserSessionInterface
      * @return  static
      */
     public function save();
+
+
+    /**
+     * Setter of $sessionHandler
+     *
+     * @param   SessionHandlerInterface $sessionHandler
+     * @return  static
+     */
+    public function setSessionHandler(SessionHandlerInterface $sessionHandler);
 }
