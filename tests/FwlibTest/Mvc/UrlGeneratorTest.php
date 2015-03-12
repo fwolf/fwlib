@@ -1,6 +1,8 @@
 <?php
 namespace FwlibTest\Mvc;
 
+use Fwlib\Util\Common\HttpUtil;
+use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Mvc\UrlGenerator;
 
@@ -11,18 +13,26 @@ use Fwlib\Mvc\UrlGenerator;
 class UrlGeneratorTest extends PHPUnitTestCase
 {
     /**
+     * @var HttpUtil
+     */
+    protected static $httpUtilBackup = null;
+
+    /**
+     * @var string[]
+     */
+    protected static $selfGetParameters = ['foo' => 'bar'];
+
+    /**
+     * @var string
+     */
+    protected static $selfUrl = 'https://domain.tld/index.php?foo=bar';
+
+
+    /**
      * @return  UrlGenerator
      */
     protected function buildMock()
     {
-        $_SERVER['HTTP_HOST'] = 'domain.tld';
-        $_SERVER['HTTPS'] = 'on';
-        $_SERVER['REQUEST_URI'] = '/index.php?foo=bar';
-        $_SERVER['SCRIPT_NAME'] = '/index.php';
-        $_GET = [
-            'foo' => 'bar',
-        ];
-
         $urlGenerator = $this->getMock(
             UrlGenerator::class,
             null
@@ -32,12 +42,42 @@ class UrlGeneratorTest extends PHPUnitTestCase
     }
 
 
+    public static function setUpBeforeClass()
+    {
+        $utilContainer = UtilContainer::getInstance();
+
+        self::$httpUtilBackup = $utilContainer->getHttp();
+
+        $testCase = new self;
+        $httpUtil = $testCase->getMock(
+            HttpUtil::class,
+            ['getSelfUrl', 'getGets']
+        );
+        $httpUtil->expects($testCase->any())
+            ->method('getSelfUrl')
+            ->willReturn(self::$selfUrl);
+        $httpUtil->expects($testCase->any())
+            ->method('getGets')
+            ->willReturn(self::$selfGetParameters);
+
+        $utilContainer->register('HttpUtil', $httpUtil);
+    }
+
+
+    public static function tearDownAfterClass()
+    {
+        $utilContainer = UtilContainer::getInstance();
+
+        $utilContainer->register('HttpUtil', self::$httpUtilBackup);
+    }
+
+
     public function testGetFullUrl()
     {
         $urlGenerator = $this->buildMock();
 
         $this->assertEquals(
-            'https://domain.tld/index.php?foo=bar',
+            self::$selfUrl,
             $urlGenerator->getFullUrl()
         );
 

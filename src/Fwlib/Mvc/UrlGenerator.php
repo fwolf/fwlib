@@ -16,7 +16,7 @@ class UrlGenerator implements UrlGeneratorInterface
     /**
      * Get parameters
      *
-     * Initial value is $_GET.
+     * Initial value is $_GET, read through {@see HttpUtil::getGets()}.
      *
      * @type    string[]
      */
@@ -51,7 +51,7 @@ class UrlGenerator implements UrlGeneratorInterface
 
         $this->urlComponents = parse_url($httpUtil->getSelfUrl(true));
 
-        $this->parameters = $_GET;
+        $this->parameters = $httpUtil->getGets();
     }
 
 
