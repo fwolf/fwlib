@@ -301,7 +301,9 @@ class HttpUtil
 
 
     /**
-     * Get host and before parts of self url
+     * Get plan and host parts of self url
+     *
+     * Without request uri and query string.
      *
      * The host name did not contains tailing '/', eg: http://www.fwolf.com
      *
@@ -310,50 +312,53 @@ class HttpUtil
      */
     public function getSelfHostUrl()
     {
-        if (empty($_SERVER['HTTP_HOST'])) {
+        $envUtil = $this->getUtilContainer()->getEnv();
+
+        $host = $envUtil->getServer('HTTP_HOST');
+        if (empty($host)) {
             return '';
         }
 
-        if (!empty($_SERVER['HTTPS']) && 'on' == $_SERVER['HTTPS']) {
-            $ssl = true;
-        } else {
-            $ssl = false;
-        }
-        $url = ($ssl) ? 'https' : 'http';
-        $url .= '://';
+        $url = ($this->isHttps() ? 'https' : 'http') . '://' . $host;
 
-        return $url . $_SERVER['HTTP_HOST'];
+        return $url;
     }
 
 
     /**
-     * Get self url which user visit, with get parameter
+     * Get self url, with or without query string
      *
-     * @param   boolean $withGetParameter   For back compatible
+     * @param   boolean $withQueryString For back compatible
      * @return  string
      */
-    public function getSelfUrl($withGetParameter = true)
+    public function getSelfUrl($withQueryString = true)
     {
-        if (!$withGetParameter) {
-            return $this->getSelfUrlWithoutParameter();
+        if (!$withQueryString) {
+            return $this->getSelfUrlWithoutQueryString();
         }
 
         $url = $this->getSelfHostUrl();
 
-        return empty($url) ? '' : $url . $_SERVER['REQUEST_URI'];
+        $envUtil = $this->getUtilContainer()->getEnv();
+
+        return empty($url) ? '' : $url . $envUtil->getServer('REQUEST_URI');
     }
 
 
     /**
-     * Get self url without get parameter
+     * Get self url without query string
+     *
+     * Old name: getSelfUrlWithoutParameter()
      *
      * @return  string
      */
-    public function getSelfUrlWithoutParameter()
+    public function getSelfUrlWithoutQueryString()
     {
         $url = $this->getSelfHostUrl();
 
-        return empty($url) ? '' : $url . $_SERVER['SCRIPT_NAME'];
+        $envUtil = $this->getUtilContainer()->getEnv();
+
+        return empty($url) ? '' : $url . $envUtil->getServer('SCRIPT_NAME');
     }
 
 
@@ -364,7 +369,11 @@ class HttpUtil
      * if $k is array, then $v is array to, and k-v/values in $k/$v is
      * added/removed to/from url param.
      *
+     * Notice: Will not addslashes anymore.
+     *
      * Notice: Use UrlGenerator instead.
+     * @see \Fwlib\Mvc\UrlGenerator
+     * @deprecated
      *
      * @param   string|array $k           Key of url param,
      *                                    or array of keys/values to add
@@ -378,17 +387,15 @@ class HttpUtil
         $v = null,
         $fullUrl = false
     ) {
-        $params = $this->getUtilContainer()->getString()
-            ->addSlashesRecursive($_GET);
+        $params = $this->getGets();
 
         // $k is string
         if (is_string($k) && !empty($k)) {
-            $params[addslashes($k)] = addslashes($v);
+            $params[$k] = $v;
 
         } else {
             // Add
             if (!empty($k)) {
-                $k = array_map('addslashes', $k);
                 foreach ($k as $key => $value) {
                     $params[$key] = $value;
                 }
@@ -402,30 +409,30 @@ class HttpUtil
         }
 
         // Combine param
-        $s = '';
-        foreach ((array)$params as $key => $val) {
-            $s .= '&' . $key . '=' . $val;
+        $url = '';
+        foreach ($params as $key => $val) {
+            $url .= '&' . $key . '=' . $val;
         }
-        if (!empty($s)) {
-            $s{0} = '?';
+        if (!empty($url)) {
+            $url{0} = '?';
         }
 
         // Add self url
         if ($fullUrl) {
-            $s = $this->getSelfUrl(false) . $s;
+            $url = $this->getSelfUrlWithoutQueryString() . $url;
         }
 
-        return $s;
+        return $url;
     }
 
 
     /**
      * Get url plan from url or self
      *
-     * eg: http://www.google.com/, plan = http
+     * eg: http://domain.tld/, plan = http
      *
      * @param   string  $url    Default: self url
-     * @return  string
+     * @return  string          Always lower cased
      */
     public function getUrlPlan($url = '')
     {

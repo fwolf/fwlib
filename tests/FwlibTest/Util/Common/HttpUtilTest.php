@@ -248,43 +248,155 @@ class HttpUtilTest extends PHPUnitTestCase
     }
 
 
-    public function testGetParam()
+    public function testGetSelfHostUrl()
     {
-        $httpUtil = $this->buildMock();
+        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil->expects($this->any())
+            ->method('getServer')
+            ->willReturnOnConsecutiveCalls('', 'domain.tld');
+        UtilContainer::getInstance()->register('Env', $envUtil);
 
-        $_GET = ['a' => 1];
-        $x = $httpUtil->getUrlParam();
-        $y = '?a=1';
-        $this->assertEquals($y, $x);
+        /** @var MockObject|HttpUtil $httpUtil */
+        $httpUtil = $this->getMock(HttpUtil::class, ['isHttps']);
+        $httpUtil->expects($this->any())
+            ->method('isHttps')
+            ->willReturn(true);
 
-        $_GET = ['a' => 1];
-        $x = $httpUtil->getUrlParam('b', 2);
-        $y = '?a=1&b=2';
-        $this->assertEquals($y, $x);
 
-        $_GET = ['a' => 1, 'b' => '', 'c' => 3];
-        $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], ['b', 'c']);
-        $y = '?a=2&1=a';
-        $this->assertEquals($y, $x);
+        // No host
+        $this->assertEquals('', $httpUtil->getSelfHostUrl());
 
-        $_GET = ['a' => 1, 'b' => '', 'c' => 3];
-        $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], 'b');
-        $y = '?a=2&c=3&1=a';
-        $this->assertEquals($y, $x);
+        $this->assertEquals(
+            'https://domain.tld',
+            $httpUtil->getSelfHostUrl()
+        );
+    }
 
-        $_GET = [];
+
+    public function testGetSelfUrl()
+    {
+        $selfHostUrl = 'http://domain.tld';
+        $requestUri = '/foo.php?p=42';
+        $urlWithoutQueryString = 'http://domain.tld/bar.php';
+
+        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil->expects($this->any())
+            ->method('getServer')
+            ->willReturn($requestUri);
+        UtilContainer::getInstance()->register('Env', $envUtil);
+
+        /** @var MockObject|HttpUtil $httpUtil */
+        $httpUtil = $this->getMock(
+            HttpUtil::class,
+            ['getSelfHostUrl', 'getSelfUrlWithoutQueryString']
+        );
+        $httpUtil->expects($this->any())
+            ->method('getSelfHostUrl')
+            ->willReturn($selfHostUrl);
+        $httpUtil->expects($this->any())
+            ->method('getSelfUrlWithoutQueryString')
+            ->willReturn($urlWithoutQueryString);
+
+
+        $this->assertEquals(
+            $selfHostUrl . $requestUri,
+            $httpUtil->getSelfUrl(true)
+        );
+        $this->assertEquals(
+            $urlWithoutQueryString,
+            $httpUtil->getSelfUrl(false)
+        );
+    }
+
+
+    public function testGetSelfUrlWithoutQueryString()
+    {
+        $selfHostUrl = 'http://domain.tld';
+        $scriptName = '/foo.php';
+
+        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil->expects($this->any())
+            ->method('getServer')
+            ->willReturn($scriptName);
+        UtilContainer::getInstance()->register('Env', $envUtil);
+
+        /** @var MockObject|HttpUtil $httpUtil */
+        $httpUtil = $this->getMock(
+            HttpUtil::class,
+            ['getSelfHostUrl']
+        );
+        $httpUtil->expects($this->any())
+            ->method('getSelfHostUrl')
+            ->willReturnOnConsecutiveCalls('', $selfHostUrl);
+
+
+        $this->assertEquals(
+            '',
+            $httpUtil->getSelfUrlWithoutQueryString()
+        );
+        $this->assertEquals(
+            $selfHostUrl . $scriptName,
+            $httpUtil->getSelfUrlWithoutQueryString()
+        );
+    }
+
+
+    public function testGetUrlParam()
+    {
+        $selfUrl = 'http://domain.tld/foo.php';
+
+        /** @var MockObject|HttpUtil $httpUtil */
+        $httpUtil = $this->getMock(
+            HttpUtil::class,
+            ['getGets', 'getSelfUrlWithoutQueryString']
+        );
+        $httpUtil->expects($this->any())
+            ->method('getGets')
+            ->willReturnOnConsecutiveCalls(
+                ['a' => 1],
+                ['a' => 1],
+                ['a' => 1, 'b' => '', 'c' => 3],
+                ['a' => 1, 'b' => '', 'c' => 3]
+            );
+        $httpUtil->expects($this->once())
+            ->method('getSelfUrlWithoutQueryString')
+            ->willReturn($selfUrl);
+
+
+        /** @noinspection PhpDeprecationInspection */
+        {
+            $x = $httpUtil->getUrlParam();
+            $this->assertEquals('?a=1', $x);
+
+            $x = $httpUtil->getUrlParam('b', 2);
+            $this->assertEquals('?a=1&b=2', $x);
+
+            $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], ['b', 'c']);
+            $this->assertEquals('?a=2&1=a', $x);
+
+            $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], 'b', true);
+            $this->assertEquals($selfUrl . '?a=2&c=3&1=a', $x);
+        }
     }
 
 
     public function testGetUrlPlan()
     {
-        $httpUtil = $this->buildMock();
+        /** @var MockObject|HttpUtil $httpUtil */
+        $httpUtil = $this->getMock(
+            HttpUtil::class,
+            ['getSelfHostUrl']
+        );
+        $httpUtil->expects($this->any())
+            ->method('getSelfUrl')
+            ->willReturn('https://domain.tld/foo.php?bar=42');
 
-        $url = 'http://www.google.com/?a=https://something';
+
+        $url = 'http://domain.tld/?a=https://something';
         $this->assertEquals('http', $httpUtil->getUrlPlan($url));
 
-        $url = 'https://www.domain.tld/';
-        $this->assertEquals('https', $httpUtil->getUrlPlan($url));
+        $url = 'HTTP://domain.tld/';
+        $this->assertEquals('http', $httpUtil->getUrlPlan($url));
 
         $url = 'ftp://domain.tld/';
         $this->assertEquals('ftp', $httpUtil->getUrlPlan($url));

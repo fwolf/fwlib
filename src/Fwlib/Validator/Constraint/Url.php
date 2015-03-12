@@ -61,7 +61,7 @@ class Url extends AbstractConstraint
         }
 
         $httpUtil = $this->getUtilContainer()->getHttp();
-        $selfUrl = $httpUtil->getSelfUrlWithoutParameter();
+        $selfUrl = $httpUtil->getSelfUrlWithoutQueryString();
 
         if ('.' == $url[0]) {
             // Remove last filename

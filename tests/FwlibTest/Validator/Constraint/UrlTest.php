@@ -65,7 +65,7 @@ class UrlTest extends PHPUnitTestCase
         $urlTest = new UrlTest;
         $httpUtil = $urlTest->getMock(
             HttpUtil::class,
-            ['getSelfHostUrl', 'getSelfUrlWithoutParameter']
+            ['getSelfHostUrl', 'getSelfUrlWithoutQueryString']
         );
 
         $httpUtil->expects($urlTest->any())
@@ -75,7 +75,7 @@ class UrlTest extends PHPUnitTestCase
             });
 
         $httpUtil->expects($urlTest->any())
-            ->method('getSelfUrlWithoutParameter')
+            ->method('getSelfUrlWithoutQueryString')
             ->willReturnCallback(function () {
                 return UrlTest::$selfUrlWithoutParameter;
             });
