@@ -192,6 +192,33 @@ class HttpUtilTest extends PHPUnitTestCase
     }
 
 
+    /**
+     * @see http://ideone.com/mO4Fbm    Will only return if key exists
+     */
+    public function testGetClientIp()
+    {
+        $httpUtil = $this->buildMock();
+
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $filterInputArrayMock = $factory->get('', 'filter_input_array', true);
+
+
+        $filterInputArrayMock->setResult([
+            'REMOTE_ADDR' => '127.0.0.1',
+        ]);
+        $ip = $httpUtil->getClientIp();
+        $this->assertEquals('127.0.0.1', $ip);
+
+        $filterInputArrayMock->setResult([]);
+        $ip = $httpUtil->getClientIp();
+        $this->assertEquals('', $ip);
+
+
+        $filterInputArrayMock->disableAll();
+    }
+
+
     public function testGetGetsAndGetPosts()
     {
         $httpUtil = $this->buildMock();

@@ -252,20 +252,21 @@ class HttpUtil
      */
     public function getClientIp()
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            // Original way: check ip from share internet
-            $rs = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            // Using proxy ?
-            $rs = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
-            // Another way
-            $rs = $_SERVER['REMOTE_ADDR'];
-        } else {
-            $rs = '';
-        }
+        // Sort key by prior order
+        $definition = array_fill_keys(
+            [
+                'HTTP_CLIENT_IP',
+                'HTTP_X_FORWARDED_FOR',
+                'REMOTE_ADDR',
+            ],
+            [
+                'filter' => FILTER_DEFAULT, // Or FILTER_VALIDATE_IP ?
+            ]
+        );
 
-        return $rs;
+        $ips = $this->filterInputArray(INPUT_SERVER, $definition, false);
+
+        return empty($ips) ? '' : array_shift($ips);
     }
 
 
