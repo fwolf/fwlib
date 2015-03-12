@@ -155,8 +155,8 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $this->assertEquals('gecko', $httpUtil->getBrowserType(''));
-        $this->assertEquals(null, $httpUtil->getBrowserType('none', null));
+        $this->assertEquals('', $httpUtil->getBrowserType(''));
+        $this->assertEquals('', $httpUtil->getBrowserType('foo bar'));
 
         // Safari 6.0
         $x = $httpUtil->getBrowserType(

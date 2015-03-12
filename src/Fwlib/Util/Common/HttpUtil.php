@@ -139,10 +139,9 @@ class HttpUtil
      * @link http://www.useragentstring.com/pages/Browserlist/
      *
      * @param   string  $agentStr   Custom agent string
-     * @param   string  $default
-     * @return  string
+     * @return  string              Or empty string if fail or not found
      */
-    public function getBrowserType($agentStr = null, $default = 'gecko')
+    public function getBrowserType($agentStr = null)
     {
         $arrayUtil = $this->getUtilContainer()->getArray();
 
@@ -153,7 +152,7 @@ class HttpUtil
         // @codeCoverageIgnoreEnd
 
         if (empty($agentStr)) {
-            return $default;
+            return '';
         }
 
         $arAgent = [
@@ -168,7 +167,7 @@ class HttpUtil
             }
         }
 
-        return $default;
+        return '';
     }
 
 
