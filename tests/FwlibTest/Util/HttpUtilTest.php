@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
+use Fwlib\Util\Env;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
@@ -36,6 +37,11 @@ class HttpUtilTest extends PHPUnitTestCase
     public static $cookies = [];
 
     /**
+     * @var Env
+     */
+    protected static $envUtilBackup = null;
+
+    /**
      * Mocked result of native header()
      *
      * @type string
@@ -65,6 +71,9 @@ class HttpUtilTest extends PHPUnitTestCase
         self::$backups['cookie'] = $_COOKIE;
 
         self::$vfsRoot = vfsStream::setup('HttpUtilTest');
+
+        $utilContainer = UtilContainer::getInstance();
+        self::$envUtilBackup = $utilContainer->getEnv();
     }
 
 
@@ -74,6 +83,9 @@ class HttpUtilTest extends PHPUnitTestCase
         $_POST = self::$backups['post'];
         $_REQUEST = self::$backups['request'];
         $_COOKIE = self::$backups['cookie'];
+
+        $utilContainer = UtilContainer::getInstance();
+        $utilContainer->register('Env', self::$envUtilBackup);
     }
 
 
@@ -279,6 +291,27 @@ class HttpUtilTest extends PHPUnitTestCase
 
         $url = '';
         $this->assertRegExp('/(https?)?/i', $httpUtil->getUrlPlan($url));
+    }
+
+
+    public function testIsHttps()
+    {
+        $envUtil = $this->getMock(
+            Env::class,
+            ['getServer']
+        );
+        $envUtil->expects($this->any())
+            ->method('getServer')
+            ->willReturnOnConsecutiveCalls(null, 'off', 'on');
+
+        $utilContainer = UtilContainer::getInstance();
+        $utilContainer->register('Env', $envUtil);
+
+        $httpUtil = $this->buildMock();
+
+        $this->assertFalse($httpUtil->isHttps());
+        $this->assertFalse($httpUtil->isHttps());
+        $this->assertTrue($httpUtil->isHttps());
     }
 
 

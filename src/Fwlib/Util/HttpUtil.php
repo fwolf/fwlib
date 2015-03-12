@@ -441,6 +441,21 @@ class HttpUtil
 
 
     /**
+     * Is current using https:// protocol ?
+     *
+     * @return  bool
+     */
+    public function isHttps()
+    {
+        $envUtil = $this->getUtilContainer()->getEnv();
+
+        $plan = $envUtil->getServer('HTTPS');
+
+        return 'on' == $plan;
+    }
+
+
+    /**
      * Pick values from all get parameters
      *
      * @param   string[]    $keys
