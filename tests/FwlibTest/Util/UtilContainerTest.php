@@ -1,27 +1,7 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwlib\Util\Algorithm\Iso7064;
-use Fwlib\Util\Algorithm\McryptSimpleIv;
-use Fwlib\Util\Algorithm\Rfc2047;
-use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
-use Fwlib\Util\Code\ChnOrganizationCode;
-use Fwlib\Util\Common\ArrayUtil;
-use Fwlib\Util\Common\DatetimeUtil;
-use Fwlib\Util\Common\Env;
-use Fwlib\Util\Common\EscapeColor;
-use Fwlib\Util\Common\FileSystem;
-use Fwlib\Util\Common\HttpUtil;
-use Fwlib\Util\Common\Ip;
-use Fwlib\Util\Common\Json;
-use Fwlib\Util\Common\NumberUtil;
-use Fwlib\Util\Common\ObjectUtil;
-use Fwlib\Util\Common\StringUtil;
 use Fwlib\Util\UtilContainer;
-use Fwlib\Util\Uuid\Base16;
-use Fwlib\Util\Uuid\Base36;
-use Fwlib\Util\Uuid\Base36Short;
-use Fwlib\Util\Uuid\Base62;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -51,105 +31,19 @@ class UtilContainerTest extends PHPUnitTestCase
             $utilContainer->getArray()->getIdx([], 'foo', 42)
         );
 
-        $this->assertInstanceOf(
-            ArrayUtil::class,
-            $utilContainer->getArray()
+        $classMap = $this->reflectionCall(
+            $utilContainer,
+            'getInitialServiceClassMap'
         );
 
-        $this->assertInstanceOf(
-            DatetimeUtil::class,
-            $utilContainer->getDatetime()
-        );
+        foreach ($classMap as $simpleName => $fullName) {
+            $method = "get{$simpleName}";
+            if ('Util' == substr($method, -4)) {
+                $method = substr($method, 0, strlen($method) - 4);
+            }
 
-        $this->assertInstanceOf(
-            Env::class,
-            $utilContainer->getEnv()
-        );
-
-        $this->assertInstanceOf(
-            EscapeColor::class,
-            $utilContainer->getEscapeColor()
-        );
-
-        $this->assertInstanceOf(
-            FileSystem::class,
-            $utilContainer->getFileSystem()
-        );
-
-        $this->assertInstanceOf(
-            HttpUtil::class,
-            $utilContainer->getHttp()
-        );
-
-        $this->assertInstanceOf(
-            Ip::class,
-            $utilContainer->getIp()
-        );
-
-        $this->assertInstanceOf(
-            Json::class,
-            $utilContainer->getJson()
-        );
-
-        $this->assertInstanceOf(
-            McryptSimpleIv::class,
-            $utilContainer->getMcryptSimpleIv()
-        );
-
-        $this->assertInstanceOf(
-            NumberUtil::class,
-            $utilContainer->getNumber()
-        );
-
-        $this->assertInstanceOf(
-            ObjectUtil::class,
-            $utilContainer->getObject()
-        );
-
-        $this->assertInstanceOf(
-            Rfc2047::class,
-            $utilContainer->getRfc2047()
-        );
-
-        $this->assertInstanceOf(
-            StringUtil::class,
-            $utilContainer->getString()
-        );
-
-        $this->assertInstanceOf(
-            Base16::class,
-            $utilContainer->getUuidBase16()
-        );
-
-        $this->assertInstanceOf(
-            Base36::class,
-            $utilContainer->getUuidBase36()
-        );
-
-        $this->assertInstanceOf(
-            Base36Short::class,
-            $utilContainer->getUuidBase36Short()
-        );
-
-        $this->assertInstanceOf(
-            Base62::class,
-            $utilContainer->getUuidBase62()
-        );
-
-        $this->assertInstanceOf(
-            Iso7064::class,
-            $utilContainer->getIso7064()
-        );
-
-        $this->assertInstanceOf(
-            ChnCitizenIdentificationNumber::class,
-            $utilContainer->getChnCin()
-        );
-
-        $this->assertInstanceOf(
-            ChnOrganizationCode::class,
-            $utilContainer->getChnOrganizationCode()
-        );
+            $this->assertInstanceOf($fullName, $utilContainer->$method());
+        }
     }
 
 
