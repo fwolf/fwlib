@@ -97,6 +97,10 @@ class UtilContainer implements UtilContainerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * ArrayUtil can not be renamed to Array, because its reserved word, other
+     * utils with 'Util' in name, is to identify to other common class name, and
+     * avoid IDE type hint confusion.
      */
     protected function getInitialServiceClassMap()
     {
