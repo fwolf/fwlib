@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Common;
 
 /**
  * String util

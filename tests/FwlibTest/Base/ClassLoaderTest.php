@@ -35,12 +35,12 @@ class ClassLoaderTest extends PHPUnitTestCase
         // Normal class with namespace, PSR-4 style
         $classLoader->addPrefix('Fwlib', "{$pathToFwlib}");
         $this->assertEquals(
-            "{$pathToFwlib}/Util/DatetimeUtil.php",
-            $classLoader->findFile('Fwlib\Util', 'DatetimeUtil')
+            "{$pathToFwlib}/Util/Common/DatetimeUtil.php",
+            $classLoader->findFile('Fwlib\Util\Common', 'DatetimeUtil')
         );
 
         $this->assertFalse(
-            $classLoader->findFile('Fwlib\Util', 'NotExistsClass')
+            $classLoader->findFile('Fwlib\Util\Common', 'NotExistsClass')
         );
 
 

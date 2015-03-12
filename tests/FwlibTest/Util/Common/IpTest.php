@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\Ip;
+use Fwlib\Util\Common\Ip;
 use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 

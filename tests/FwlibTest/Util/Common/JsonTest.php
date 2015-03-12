@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\Json;
+use Fwlib\Util\Common\Json;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -41,9 +41,8 @@ class JsonTest extends PHPUnitTestCase
      */
     public function testConstructor()
     {
-        $factory = $this->getFunctionMockFactory();
-        $extensionLoadedMock =
-            $factory->get('Fwlib\Util', 'extension_loaded', true);
+        $factory = $this->getFunctionMockFactory(Json::class);
+        $extensionLoadedMock = $factory->get(null, 'extension_loaded', true);
 
         $extensionLoadedMock->setResult(true);
 
@@ -60,9 +59,8 @@ class JsonTest extends PHPUnitTestCase
      */
     public function testConstructorFailed()
     {
-        $factory = $this->getFunctionMockFactory();
-        $extensionLoadedMock =
-            $factory->get('Fwlib\Util', 'extension_loaded', true);
+        $factory = $this->getFunctionMockFactory(Json::class);
+        $extensionLoadedMock = $factory->get(null, 'extension_loaded', true);
 
         $extensionLoadedMock->setResult(false);
 
@@ -74,9 +72,8 @@ class JsonTest extends PHPUnitTestCase
 
     public function testDummy()
     {
-        $factory = $this->getFunctionMockFactory();
-        $extensionLoadedMock =
-            $factory->get('Fwlib\Util', 'extension_loaded', true);
+        $factory = $this->getFunctionMockFactory(Json::class);
+        $extensionLoadedMock = $factory->get(null, 'extension_loaded', true);
 
         $extensionLoadedMock->setResult(true);
 

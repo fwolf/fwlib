@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\Env;
+use Fwlib\Util\Common\Env;
 use Fwlib\Util\UtilContainer;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;

@@ -2,7 +2,7 @@
 // Run with php, not phpunit
 
 use Fwlib\Base\ClassLoader;
-use Fwlib\Util\Env;
+use Fwlib\Util\Common\Env;
 
 require __DIR__ . '/../src/Fwlib/Base/ClassLoader.php';
 // In this demo we did not use autoload, which is more convenience, like:
@@ -18,7 +18,7 @@ $classLoader->register();
 $classLoader->addPrefix('Fwlib\Util', __DIR__ . '/../src/Fwlib/Util/');
 
 // Use full qualified class name works but not convenient
-new \Fwlib\Util\Env;
+new \Fwlib\Util\Common\Env;
 
 $envUtil = new Env;
 

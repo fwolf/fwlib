@@ -1,8 +1,8 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
+use Fwlib\Util\Common\ArrayUtil;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Util\ArrayUtil;
 
 /**
  * @copyright   Copyright 2009-2015 Fwolf

@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Common;
 
 /**
  * Trait for using {@see filter_input()} and {@see filter_input_array()}

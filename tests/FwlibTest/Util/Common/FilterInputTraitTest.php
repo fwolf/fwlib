@@ -1,8 +1,8 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\FilterInputTrait;
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\Common\FilterInputTrait;
+use Fwlib\Util\Common\HttpUtil;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -17,7 +17,7 @@ class FilterInputTraitTest extends PHPUnitTestCase
 
 
     /**
-     * @return MockObject | FilterInputTrait
+     * @return MockObject | \Fwlib\Util\Common\FilterInputTrait
      */
     protected function buildMock()
     {
@@ -35,8 +35,7 @@ class FilterInputTraitTest extends PHPUnitTestCase
     {
         $filterInputTrait = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory()
-            ->setNamespace(HttpUtil::class);
+        $factory = $this->getFunctionMockFactory(HttpUtil::class);
         $filterInputMock = $factory->get(null, 'filter_input', true);
 
 
@@ -57,8 +56,7 @@ class FilterInputTraitTest extends PHPUnitTestCase
     {
         $filterInputTrait = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory()
-            ->setNamespace(HttpUtil::class);
+        $factory = $this->getFunctionMockFactory(HttpUtil::class);
         $filterInputArrayMock =
             $factory->get(null, 'filter_input_array', true);
 

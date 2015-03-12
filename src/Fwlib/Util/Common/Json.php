@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Common;
 
 use Fwlib\Base\Exception\ExtensionNotLoadedException;
 

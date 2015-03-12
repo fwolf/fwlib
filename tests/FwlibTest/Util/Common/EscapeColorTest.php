@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\EscapeColor;
+use Fwlib\Util\Common\EscapeColor;
 use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 

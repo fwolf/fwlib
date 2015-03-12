@@ -1,9 +1,9 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Util\StringUtil;
+use Fwlib\Util\Common\StringUtil;
 use Fwlib\Util\UtilContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)

@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\ObjectUtil;
+use Fwlib\Util\Common\ObjectUtil;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -40,7 +40,7 @@ class ObjectUtilTest extends PHPUnitTestCase
         $objectUtil = $this->buildMock();
 
         $this->assertEquals(
-            'Fwlib\Util',
+            'Fwlib\Util\Common',
             $objectUtil->getNamespace(ObjectUtil::class)
         );
     }

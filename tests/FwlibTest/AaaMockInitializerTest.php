@@ -34,11 +34,12 @@ class AaaMockInitializerTest extends PHPUnitTestCase
     {
         $factory = $this->getFunctionMockFactory();
 
-        $factory->get('Fwlib\Util', 'extension_loaded');
-        $factory->get('Fwlib\Util', 'filter_input_array');
-        $factory->get('Fwlib\Util', 'session_status');
-        $factory->get('Fwlib\Util', 'session_start');
-        $factory->get('Fwlib\Util', 'session_destroy');
+        $factory->setNamespace('Fwlib\Util\Common');
+        $factory->get(null, 'extension_loaded');
+        $factory->get(null, 'filter_input_array');
+        $factory->get(null, 'session_status');
+        $factory->get(null, 'session_start');
+        $factory->get(null, 'session_destroy');
 
         $this->assertTrue(true);
     }

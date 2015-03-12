@@ -2,7 +2,7 @@
 namespace FwlibTest\Validator\Constraint;
 
 use Fwlib\Net\Curl;
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Constraint\Url;
 use FwlibTest\Aide\TestServiceContainer;

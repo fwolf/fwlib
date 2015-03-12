@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\DatetimeUtil;
+use Fwlib\Util\Common\DatetimeUtil;
 use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
@@ -12,7 +12,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 class DatetimeUtilTest extends PHPUnitTestCase
 {
     /**
-     * @return DatetimeUtil
+     * @return \Fwlib\Util\Common\DatetimeUtil
      */
     protected function buildMock()
     {

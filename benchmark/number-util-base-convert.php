@@ -2,7 +2,7 @@
 require __DIR__ . '/../autoload.php';
 
 use Fwlib\Test\Benchmark;
-use Fwlib\Util\NumberUtil;
+use Fwlib\Util\Common\NumberUtil;
 use Fwlib\Util\UtilContainer;
 
 // Test duplicate times

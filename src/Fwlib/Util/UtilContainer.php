@@ -7,6 +7,17 @@ use Fwlib\Util\Algorithm\McryptSimpleIv;
 use Fwlib\Util\Algorithm\Rfc2047;
 use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
 use Fwlib\Util\Code\ChnOrganizationCode;
+use Fwlib\Util\Common\ArrayUtil;
+use Fwlib\Util\Common\DatetimeUtil;
+use Fwlib\Util\Common\Env;
+use Fwlib\Util\Common\EscapeColor;
+use Fwlib\Util\Common\FileSystem;
+use Fwlib\Util\Common\HttpUtil;
+use Fwlib\Util\Common\Ip;
+use Fwlib\Util\Common\Json;
+use Fwlib\Util\Common\NumberUtil;
+use Fwlib\Util\Common\ObjectUtil;
+use Fwlib\Util\Common\StringUtil;
 use Fwlib\Util\Uuid\Base16;
 use Fwlib\Util\Uuid\Base36;
 use Fwlib\Util\Uuid\Base36Short;
@@ -107,6 +118,16 @@ class UtilContainer implements UtilContainerInterface
     protected function getInitialServiceClassMap()
     {
         $classMap = [
+            // Algorithm
+            'Iso7064'           => Iso7064::class,
+            'McryptSimpleIv'    => McryptSimpleIv::class,
+            'Rfc2047'           => Rfc2047::class,
+
+            // Code
+            'ChnCin'                => ChnCitizenIdentificationNumber::class,
+            'ChnOrganizationCode'   => ChnOrganizationCode::class,
+
+            // Common
             'ArrayUtil'         => ArrayUtil::class,
             'DatetimeUtil'      => DatetimeUtil::class,
             'Env'               => Env::class,
@@ -118,15 +139,6 @@ class UtilContainer implements UtilContainerInterface
             'NumberUtil'        => NumberUtil::class,
             'ObjectUtil'        => ObjectUtil::class,
             'StringUtil'        => StringUtil::class,
-
-            // Algorithm
-            'Iso7064'           => Iso7064::class,
-            'McryptSimpleIv'    => McryptSimpleIv::class,
-            'Rfc2047'           => Rfc2047::class,
-
-            // Code
-            'ChnCin'                => ChnCitizenIdentificationNumber::class,
-            'ChnOrganizationCode'   => ChnOrganizationCode::class,
 
             // Uuid
             'UuidBase16'        => Base16::class,

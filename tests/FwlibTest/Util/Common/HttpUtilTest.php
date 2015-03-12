@@ -1,8 +1,8 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Common;
 
-use Fwlib\Util\Env;
-use Fwlib\Util\HttpUtil;
+use Fwlib\Util\Common\Env;
+use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
@@ -353,8 +353,8 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $factory = $this->getFunctionMockFactory();
-        $setcookieMock = $factory->get('Fwlib\Util', 'setcookie', true);
+        $factory = $this->getFunctionMockFactory(HttpUtil::class);
+        $setcookieMock = $factory->get(null, 'setcookie', true);
 
 
         $httpUtil->setCookie('foo', 'bar', time() + 10);

@@ -1,11 +1,10 @@
 <?php
-namespace Fwlib\Util;
-
+namespace Fwlib\Util\Common;
 
 /**
  * Number util
  *
- * @copyright   Copyright 2006-2014 Fwolf
+ * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class NumberUtil
@@ -275,7 +274,7 @@ class NumberUtil
     /**
      * Convert size to human readable format string
      *
-     * @param   long    $size
+     * @param   int     $size
      * @param   int     $precision
      * @param   int     $step       Compute by 1024 or 1000 ?
      * @return  string

@@ -1,5 +1,7 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Common;
+
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * FileSystem util
@@ -70,7 +72,7 @@ class FileSystem
      *
      * @param   string  $path
      * @param   boolean $blockSize
-     * @return  long
+     * @return  int
      */
     public function getDirSize($path, $blockSize = false)
     {
@@ -173,7 +175,7 @@ class FileSystem
      * @link    http://linux.die.net/man/2/stat
      * @param   string  $file
      * @param   boolean $blockSize  Get block size instead of native file size
-     * @return  long
+     * @return  int
      */
     public function getFileSize($file, $blockSize = false)
     {

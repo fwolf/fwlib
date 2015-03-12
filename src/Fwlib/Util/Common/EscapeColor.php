@@ -1,5 +1,7 @@
 <?php
-namespace Fwlib\Util;
+namespace Fwlib\Util\Common;
+
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Escape color for bash shell
