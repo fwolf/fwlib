@@ -18,7 +18,7 @@ trait FunctionMockFactoryAwareTrait
 
 
     /**
-     * @param   $namespace
+     * @param   string  $namespace  Namespace or any full class name in it
      * @return  FunctionMockFactory
      */
     protected function getFunctionMockFactory($namespace = null)
