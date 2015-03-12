@@ -14,6 +14,7 @@ use Fwlib\Util\Ip;
 use Fwlib\Util\Json;
 use Fwlib\Util\McryptSimpleIv;
 use Fwlib\Util\NumberUtil;
+use Fwlib\Util\ObjectUtil;
 use Fwlib\Util\Rfc2047;
 use Fwlib\Util\StringUtil;
 use Fwlib\Util\UtilContainer;
@@ -98,6 +99,11 @@ class UtilContainerTest extends PHPUnitTestCase
         $this->assertInstanceOf(
             NumberUtil::class,
             $utilContainer->getNumber()
+        );
+
+        $this->assertInstanceOf(
+            ObjectUtil::class,
+            $utilContainer->getObject()
         );
 
         $this->assertInstanceOf(
