@@ -42,6 +42,37 @@ class EnvTest extends PHPUnitTestCase
     }
 
 
+    public function testForceHttps()
+    {
+        $factory = $this->getFunctionMockFactory(Env::class);
+        $headerMock = $factory->get(null, 'header', true);
+        $headerMock->setResult([]);
+
+        $env = $this->getMock(
+            Env::class,
+            ['getServer']
+        );
+        $env->expects($this->any())
+            ->method('getServer')
+            ->will($this->onConsecutiveCalls(
+                'off',
+                'domain.tld',
+                '/index.php'
+            ));
+
+
+        /** @var Env $env */
+        $env->forceHttps();
+        $this->assertEquals(
+            'Location: https://domain.tld/index.php',
+            $headerMock->getResult()[0]
+        );
+
+
+        $headerMock->disableAll();
+    }
+
+
     public function testGetInput()
     {
         $env = $this->buildMock();

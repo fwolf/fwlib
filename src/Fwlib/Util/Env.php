@@ -56,13 +56,17 @@ class Env
     /**
      * Force page visit through https only
      *
-     * @codeCoverageIgnore
+     * Better solution is use rewrite feature of web server.
      */
     public function forceHttps()
     {
-        if (!isset($_SERVER['HTTPS']) || 'on' != $_SERVER['HTTPS']) {
-            $s = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-            header('Location: ' . $s);
+        $plan = $this->getServer('HTTPS');
+
+        if (empty($plan) || 'on' != $plan) {
+            $url = 'https://' . $this->getServer('HTTP_HOST') .
+                $this->getServer('REQUEST_URI');
+
+            header("Location: $url");
         }
     }
 
