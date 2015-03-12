@@ -11,7 +11,6 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
- * @SuppressWarnings(PHPMD.Superglobals)
  * @SuppressWarnings(PHPMD.TooManyMethods)
  *
  * @copyright   Copyright 2004-2015 Fwolf
@@ -23,30 +22,9 @@ class HttpUtilTest extends PHPUnitTestCase
 
 
     /**
-     * Backup of globals
-     *
-     * @type    array[]
-     */
-    protected static $backups = [];
-
-    /**
-     * Mocked result of native cookie methods
-     *
-     * @type array
-     */
-    public static $cookies = [];
-
-    /**
      * @var Env
      */
     protected static $envUtilBackup = null;
-
-    /**
-     * Mocked result of native header()
-     *
-     * @type string
-     */
-    public static $header = '';
 
     /**
      * @var vfsStreamDirectory
@@ -65,11 +43,6 @@ class HttpUtilTest extends PHPUnitTestCase
 
     public static function setUpBeforeClass()
     {
-        self::$backups['get'] = $_GET;
-        self::$backups['post'] = $_POST;
-        self::$backups['request'] = $_REQUEST;
-        self::$backups['cookie'] = $_COOKIE;
-
         self::$vfsRoot = vfsStream::setup('HttpUtilTest');
 
         $utilContainer = UtilContainer::getInstance();
@@ -79,11 +52,6 @@ class HttpUtilTest extends PHPUnitTestCase
 
     public static function tearDownAfterClass()
     {
-        $_GET = self::$backups['get'];
-        $_POST = self::$backups['post'];
-        $_REQUEST = self::$backups['request'];
-        $_COOKIE = self::$backups['cookie'];
-
         $utilContainer = UtilContainer::getInstance();
         $utilContainer->register('Env', self::$envUtilBackup);
     }
