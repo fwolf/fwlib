@@ -114,15 +114,19 @@ class UtilContainer implements UtilContainerInterface
             'ObjectUtil'        => ObjectUtil::class,
             'Rfc2047'           => Rfc2047::class,
             'StringUtil'        => StringUtil::class,
+
+            // Algorithm
+            'Iso7064'           => Iso7064::class,
+
+            // Code
+            'ChnCin'                => ChnCitizenIdentificationNumber::class,
+            'ChnOrganizationCode'   => ChnOrganizationCode::class,
+
+            // Uuid
             'UuidBase16'        => Base16::class,
             'UuidBase36'        => Base36::class,
             'UuidBase36Short'   => Base36Short::class,
             'UuidBase62'        => Base62::class,
-
-            'Iso7064'           => Iso7064::class,
-
-            'ChnCin'                => ChnCitizenIdentificationNumber::class,
-            'ChnOrganizationCode'   => ChnOrganizationCode::class,
         ];
 
         return $classMap;
