@@ -157,7 +157,40 @@ class HttpUtilTest extends PHPUnitTestCase
         $this->assertEquals('foo', $y);
 
 
+        // For coverage
+        $filterInputMock->setResult(null);
+        $this->assertNull($httpUtil->getCookie('dummy', null));
+        $this->assertNull($httpUtil->getGet('dummy', null));
+        $this->assertNull($httpUtil->getPost('dummy', null));
+
+
         $filterInputMock->disableAll();
+    }
+
+
+    public function testFilterInputArray()
+    {
+        $httpUtil = $this->buildMock();
+
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $filterInputArrayMock =
+            $factory->get(null, 'filter_input_array', false);
+
+
+        $env = $httpUtil->filterInputArray(INPUT_ENV, FILTER_DEFAULT);
+        $this->assertArrayHasKey('PWD', $env);
+
+
+        // For coverage
+        $filterInputArrayMock->enable()->setResult([]);
+
+        $this->assertEmpty($httpUtil->getCookies());
+        $this->assertEmpty($httpUtil->getGets());
+        $this->assertEmpty($httpUtil->getPosts());
+
+
+        $filterInputArrayMock->disableAll();
     }
 
 

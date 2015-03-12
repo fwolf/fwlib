@@ -19,8 +19,6 @@ namespace Fwlib\Util;
  * proper filter.
  *
  *
- * @codeCoverageIgnore
- *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.Superglobals)
  * @SuppressWarnings(PHPMD.TooManyMethods)
@@ -35,8 +33,6 @@ class HttpUtil
 
     /**
      * Download content as a file
-     *
-     * @codeCoverageIgnore
      *
      * @param   string  $content    Content to download
      * @param   string  $filename   Download file name, send to client, not path on server.
@@ -73,8 +69,6 @@ class HttpUtil
 
     /**
      * Download a file
-     *
-     * @codeCoverageIgnore
      *
      * @param   string  $filePath   Full path to download file.
      * @param   string  $filename   Download file name, send to client, not path on server.
@@ -206,8 +200,6 @@ class HttpUtil
      * @link https://en.wikipedia.org/wiki/Web_browser_engine
      * @link http://www.useragentstring.com/pages/Browserlist/
      *
-     * @codeCoverageIgnore
-     *
      * @param   string  $agentStr   Custom agent string
      * @param   string  $default
      * @return  string
@@ -244,8 +236,6 @@ class HttpUtil
 
     /**
      * Get ip of client
-     *
-     * @codeCoverageIgnore
      *
      * @return  string
      * @link http://roshanbh.com.np/2007/12/getting-real-ip-address-in-php.html
@@ -437,8 +427,6 @@ class HttpUtil
      * added/removed to/from url param.
      *
      * Notice: Use UrlGenerator instead.
-     *
-     * @codeCoverageIgnore
      *
      * @param   string|array $k           Key of url param,
      *                                    or array of keys/values to add
