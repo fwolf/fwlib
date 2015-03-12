@@ -28,6 +28,7 @@ namespace Fwlib\Util;
  */
 class HttpUtil
 {
+    use FilterInputTrait;
     use UtilContainerAwareTrait;
 
 
@@ -125,71 +126,6 @@ class HttpUtil
         fclose($fp);
 
         return true;
-    }
-
-
-    /**
-     * Get input via filter_input() function
-     *
-     * Compare with original function, added default value.
-     *
-     * @param   int       $type
-     * @param   string    $name
-     * @param   mixed     $default Default value if name is not found in input
-     * @param   int       $filter
-     * @param   int|array $options
-     * @return  string|int
-     */
-    public function filterInput(
-        $type,
-        $name,
-        $default = null,
-        $filter = FILTER_DEFAULT,
-        $options = null
-    ) {
-        $result = filter_input($type, $name, $filter, $options);
-
-        if (is_null($result)) {
-            $result = $default;
-        }
-
-        return $result;
-    }
-
-
-    /**
-     * Get input array via filter_input_array() function
-     *
-     * Compare with original function, added filter replication; always return
-     * array, even empty.
-     *
-     * @param   int       $type
-     * @param   array|int $definition
-     * @param   bool      $addEmpty
-     * @return  array
-     */
-    public function filterInputArray($type, $definition, $addEmpty = true)
-    {
-        $map = [
-            INPUT_GET    => $_GET,
-            INPUT_POST   => $_POST,
-            INPUT_COOKIE => $_COOKIE,
-            INPUT_SERVER => $_SERVER,
-            INPUT_ENV    => $_ENV,
-        ];
-        if (!is_array($definition)) {
-            $keys = array_keys($map[$type]);
-
-            if (!empty($keys)) {
-                $definition = array_fill_keys($keys, $definition);
-            }
-        }
-
-        $result = filter_input_array($type, $definition, $addEmpty);
-
-        $result = is_null($result) ? [] : $result;
-
-        return $result;
     }
 
 

@@ -51,7 +51,7 @@ class HttpUtilTest extends PHPUnitTestCase
     /**
      * @return HttpUtil
      */
-    public function buildMock()
+    protected function buildMock()
     {
         return UtilContainer::getInstance()->getHttp();
     }
@@ -139,61 +139,6 @@ class HttpUtilTest extends PHPUnitTestCase
     }
 
 
-    public function testFilterInput()
-    {
-        $httpUtil = $this->buildMock();
-
-        $factory = $this->getFunctionMockFactory()
-            ->setNamespace(HttpUtil::class);
-        $filterInputMock = $factory->get(null, 'filter_input', true);
-
-
-        $filterInputMock->setResult('bar');
-        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
-        $this->assertEquals('bar', $y);
-
-        $filterInputMock->setResult(null);
-        $y = $httpUtil->filterInput(INPUT_GET, 'dummy', 'foo');
-        $this->assertEquals('foo', $y);
-
-
-        // For coverage
-        $filterInputMock->setResult(null);
-        $this->assertNull($httpUtil->getCookie('dummy', null));
-        $this->assertNull($httpUtil->getGet('dummy', null));
-        $this->assertNull($httpUtil->getPost('dummy', null));
-
-
-        $filterInputMock->disableAll();
-    }
-
-
-    public function testFilterInputArray()
-    {
-        $httpUtil = $this->buildMock();
-
-        $factory = $this->getFunctionMockFactory()
-            ->setNamespace(HttpUtil::class);
-        $filterInputArrayMock =
-            $factory->get(null, 'filter_input_array', false);
-
-
-        $env = $httpUtil->filterInputArray(INPUT_ENV, FILTER_DEFAULT);
-        $this->assertArrayHasKey('PWD', $env);
-
-
-        // For coverage
-        $filterInputArrayMock->enable()->setResult([]);
-
-        $this->assertEmpty($httpUtil->getCookies());
-        $this->assertEmpty($httpUtil->getGets());
-        $this->assertEmpty($httpUtil->getPosts());
-
-
-        $filterInputArrayMock->disableAll();
-    }
-
-
     public function testGetBrowserType()
     {
         $httpUtil = $this->buildMock();
@@ -252,27 +197,39 @@ class HttpUtilTest extends PHPUnitTestCase
     }
 
 
-    public function testGetGetsAndGetPosts()
+    public function testGetInput()
     {
         $httpUtil = $this->buildMock();
 
         $factory = $this->getFunctionMockFactory()
             ->setNamespace(HttpUtil::class);
-        $filterInputArrayMock = $factory->get('', 'filter_input_array', true);
-
-        $dummy = [
-            'foo' => "It's hot",
-        ];
-        $filterInputArrayMock->setResult($dummy);
+        $filterInputMock = $factory->get(null, 'filter_input', true);
 
 
-        // Get Post is not addslashes anymore
-        $getParams = $httpUtil->getGets();
-        $this->assertEquals("It's hot", $getParams['foo']);
+        $filterInputMock->setResult(null);
+        $this->assertNull($httpUtil->getCookie('dummy', null));
+        $this->assertNull($httpUtil->getGet('dummy', null));
+        $this->assertNull($httpUtil->getPost('dummy', null));
 
 
-        $getParams = $httpUtil->getPosts();
-        $this->assertEquals("It's hot", $getParams['foo']);
+        $filterInputMock->disableAll();
+    }
+
+
+    public function testGetInputs()
+    {
+        $httpUtil = $this->buildMock();
+
+        $factory = $this->getFunctionMockFactory()
+            ->setNamespace(HttpUtil::class);
+        $filterInputArrayMock =
+            $factory->get(null, 'filter_input_array', true);
+
+
+        $filterInputArrayMock->setResult([]);
+        $this->assertEmpty($httpUtil->getCookies());
+        $this->assertEmpty($httpUtil->getGets());
+        $this->assertEmpty($httpUtil->getPosts());
 
 
         $filterInputArrayMock->disableAll();
