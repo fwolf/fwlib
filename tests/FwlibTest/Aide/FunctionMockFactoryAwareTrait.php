@@ -18,13 +18,20 @@ trait FunctionMockFactoryAwareTrait
 
 
     /**
+     * @param   $namespace
      * @return  FunctionMockFactory
      */
-    protected function getFunctionMockFactory()
+    protected function getFunctionMockFactory($namespace = null)
     {
-        return is_null($this->functionMockFactory)
+        $factory = is_null($this->functionMockFactory)
             ? FunctionMockFactory::getInstance()
             : $this->functionMockFactory;
+
+        if (!empty($namespace)) {
+            $factory->setNamespace($namespace);
+        }
+
+        return $factory;
     }
 
 
