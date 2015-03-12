@@ -143,13 +143,11 @@ class HttpUtil
      */
     public function getBrowserType($agentStr = null)
     {
-        $arrayUtil = $this->getUtilContainer()->getArray();
-
-        // @codeCoverageIgnoreStart
         if (is_null($agentStr)) {
-            $agentStr = $arrayUtil->getIdx($_SERVER, 'HTTP_USER_AGENT');
+            $envUtil = $this->getUtilContainer()->getEnv();
+
+            $agentStr = $envUtil->getServer('HTTP_USER_AGENT');
         }
-        // @codeCoverageIgnoreEnd
 
         if (empty($agentStr)) {
             return '';

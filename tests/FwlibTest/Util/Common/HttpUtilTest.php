@@ -155,8 +155,18 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $this->assertEquals('', $httpUtil->getBrowserType(''));
+        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil->expects($this->any())
+            ->method('getServer')
+            ->willReturnOnConsecutiveCalls('', 'foo bar');
+        UtilContainer::getInstance()->register('Env', $envUtil);
+
+
+        $this->assertEquals('', $httpUtil->getBrowserType(null));
         $this->assertEquals('', $httpUtil->getBrowserType('foo bar'));
+
+        // Not use consecutive return value anymore
+        $this->assertEquals('', $httpUtil->getBrowserType(''));
 
         // Safari 6.0
         $x = $httpUtil->getBrowserType(
