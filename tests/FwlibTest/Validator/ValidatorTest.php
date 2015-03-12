@@ -11,34 +11,39 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class ValidatorTest extends PHPUnitTestCase
 {
-    protected $constraintContainer;
-    protected $validator;
-
-
-    public function __construct()
+    /**
+     * @return Validator
+     */
+    protected function buildMock()
     {
-        $this->constraintContainer = ConstraintContainer::getInstance();
+        $constraintContainer = ConstraintContainer::getInstance();
+
+        $validator = new Validator($constraintContainer);
+
+        return $validator;
     }
 
 
     public function testValidate()
     {
-        $this->validator = new Validator($this->constraintContainer);
+        $validator = $this->buildMock();
+
+        $validator->setConstraintContainer(ConstraintContainer::getInstance());
 
         $rule = [
             'notEmpty',
             'length: 3',
         ];
 
-        $this->assertTrue($this->validator->validate('foobar', $rule));
+        $this->assertTrue($validator->validate('foobar', $rule));
 
-        $this->assertFalse($this->validator->validate('', $rule));
+        $this->assertFalse($validator->validate('', $rule));
         // Each constraint return a message, total 2.
-        $this->assertEquals(2, count($this->validator->getMessage()));
+        $this->assertEquals(2, count($validator->getMessage()));
 
 
         // $rule can also be string
-        $this->assertTrue($this->validator->validate('foobar', 'notEmpty'));
+        $this->assertTrue($validator->validate('foobar', 'notEmpty'));
     }
 
 
@@ -47,13 +52,12 @@ class ValidatorTest extends PHPUnitTestCase
      */
     public function testValidateWithNotRegisteredConstraint()
     {
-        $this->validator = new Validator();
-        $this->validator->setConstraintContainer($this->constraintContainer);
+        $validator = $this->buildMock();
 
         $rule = [
             'notRegistered',
         ];
 
-        $this->validator->validate('dummy', $rule);
+        $validator->validate('dummy', $rule);
     }
 }

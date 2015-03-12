@@ -1,36 +1,34 @@
 <?php
 namespace FwlibTest\Bridge;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Bridge\Smarty;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SmartyTest extends PHPUnitTestCase
 {
-    private $smarty = null;
-
-
-    public function __construct()
+    /**
+     * @return Smarty
+     */
+    protected function buildMock()
     {
-        $this->smarty = new Smarty;
+        return new Smarty;
     }
 
 
     public function testAddConfigDirPrepend()
     {
-        // For code coverage
-        $this->smarty = new Smarty;
+        $smarty = $this->buildMock();
 
-
-        $dir = $this->smarty->getConfigDir();
+        $dir = $smarty->getConfigDir();
         $i = count($dir);
 
-        $this->smarty->addConfigDirPrepend('foo/');
+        $smarty->addConfigDirPrepend('foo/');
 
-        $dir = $this->smarty->getConfigDir();
+        $dir = $smarty->getConfigDir();
         $this->assertEquals($i + 1, count($dir));
         $this->assertEquals('foo/', $dir['']);
     }
@@ -38,12 +36,14 @@ class SmartyTest extends PHPUnitTestCase
 
     public function testAddPluginsDirPrepend()
     {
-        $dir = $this->smarty->getPluginsDir();
+        $smarty = $this->buildMock();
+
+        $dir = $smarty->getPluginsDir();
         $i = count($dir);
 
-        $this->smarty->addPluginsDirPrepend('foo/');
+        $smarty->addPluginsDirPrepend('foo/');
 
-        $dir = $this->smarty->getPluginsDir();
+        $dir = $smarty->getPluginsDir();
         $this->assertEquals($i + 1, count($dir));
         $this->assertEquals('foo/', $dir['']);
     }
@@ -51,12 +51,14 @@ class SmartyTest extends PHPUnitTestCase
 
     public function testAddTemplateDirPrepend()
     {
-        $dir = $this->smarty->getTemplateDir();
+        $smarty = $this->buildMock();
+
+        $dir = $smarty->getTemplateDir();
         $i = count($dir);
 
-        $this->smarty->addTemplateDirPrepend('foo/');
+        $smarty->addTemplateDirPrepend('foo/');
 
-        $dir = $this->smarty->getTemplateDir();
+        $dir = $smarty->getTemplateDir();
         $this->assertEquals($i + 1, count($dir));
         $this->assertEquals('foo/', $dir['']);
     }

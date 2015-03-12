@@ -3,6 +3,7 @@ namespace FwlibTest\Config;
 
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Config\GlobalConfig;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -36,16 +37,7 @@ class GlobalConfigTest extends PHPUnitTestCase
 
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->globalConfig = $this->buildMock();
-    }
-
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject | GlobalConfig
+     * @return MockObject | GlobalConfig
      */
     protected function buildMock()
     {
@@ -77,7 +69,7 @@ class GlobalConfigTest extends PHPUnitTestCase
 
     public function testCheckServerId()
     {
-        $globalConfig = $this->globalConfig;
+        $globalConfig = $this->buildMock();
 
         $globalConfig->set(self::KEY_SERVER_ID, 'dummy');
         $this->assertTrue(
@@ -97,7 +89,7 @@ class GlobalConfigTest extends PHPUnitTestCase
      */
     public function testCheckServerIdWithException()
     {
-        $globalConfig = $this->globalConfig;
+        $globalConfig = $this->buildMock();
 
         // TODO: Need an unset ?
         unset($globalConfig->config['server']['id']);
@@ -108,7 +100,7 @@ class GlobalConfigTest extends PHPUnitTestCase
 
     public function testLimitServerId()
     {
-        $globalConfig = $this->globalConfig;
+        $globalConfig = $this->buildMock();
 
         $globalConfig->set(self::KEY_SERVER_ID, 'dummy');
         $globalConfig->limitServerId('dummy', self::KEY_SERVER_ID);
@@ -126,7 +118,7 @@ class GlobalConfigTest extends PHPUnitTestCase
      */
     public function testLimitServerIdWithException()
     {
-        $globalConfig = $this->globalConfig;
+        $globalConfig = $this->buildMock();
 
         $globalConfig->set(self::KEY_SERVER_ID, 'dummy');
         $globalConfig->limitServerId('foo', self::KEY_SERVER_ID);
@@ -135,7 +127,7 @@ class GlobalConfigTest extends PHPUnitTestCase
 
     public function testLoad()
     {
-        $globalConfig = $this->globalConfig;
+        $globalConfig = $this->buildMock();
 
         // Empty config value
         $globalConfig->load(null);

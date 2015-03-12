@@ -1,55 +1,62 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\DatetimeUtil;
+use Fwlib\Util\UtilContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2009-2014 Fwolf
+ * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class DatetimeUtilTest extends PHPUnitTestCase
 {
-    protected $datetimeUtil;
-
-    public function __construct()
+    /**
+     * @return DatetimeUtil
+     */
+    protected function buildMock()
     {
-        $this->datetimeUtil = new DatetimeUtil;
+        return UtilContainer::getInstance()->getDatetime();
     }
 
 
+    /**
+     * @return string
+     */
     public function testConvertSecondToString()
     {
+        $datetimeUtil = $this->buildMock();
+
         $this->assertEquals(
             '12s',
-            $this->datetimeUtil->convertSecondToString(12)
+            $datetimeUtil->convertSecondToString(12)
         );
         $this->assertEquals(
             '2i',
-            $this->datetimeUtil->convertSecondToString(120)
+            $datetimeUtil->convertSecondToString(120)
         );
         $this->assertEquals(
             '',
-            $this->datetimeUtil->convertSecondToString('a')
+            $datetimeUtil->convertSecondToString('a')
         );
 
         $i = 65831316;
         $this->assertEquals(
-            $this->datetimeUtil->convertStringToSecond(
-                $this->datetimeUtil->convertSecondToString($i, false)
+            $datetimeUtil->convertStringToSecond(
+                $datetimeUtil->convertSecondToString($i, false)
             ),
             $i
         );
 
         $i = 65831316985649;
         $this->assertEquals(
-            $this->datetimeUtil->convertStringToSecond(
-                $this->datetimeUtil->convertSecondToString($i, false)
+            $datetimeUtil->convertStringToSecond(
+                $datetimeUtil->convertSecondToString($i, false)
             ),
             $i
         );
 
-        return $this->datetimeUtil->convertSecondToString(62);
+        return $datetimeUtil->convertSecondToString(62);
     }
 
 
@@ -61,13 +68,15 @@ class DatetimeUtilTest extends PHPUnitTestCase
      */
     public function testConvertStringToSecond($str)
     {
+        $datetimeUtil = $this->buildMock();
+
         // Test result from testConvertSecondToString
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond($str), '62');
+        $this->assertEquals($datetimeUtil->convertStringToSecond($str), '62');
 
         $s = '2years 31days 22hours 28minutes 36seconds';
         $this->assertEquals(
-            $this->datetimeUtil->convertSecondToString(
-                $this->datetimeUtil->convertStringToSecond($s),
+            $datetimeUtil->convertSecondToString(
+                $datetimeUtil->convertStringToSecond($s),
                 false
             ),
             $s
@@ -75,53 +84,55 @@ class DatetimeUtilTest extends PHPUnitTestCase
 
         $s = '20874centuries 97years 134days 4hours 27minutes 29seconds';
         $this->assertEquals(
-            $this->datetimeUtil->convertSecondToString(
-                $this->datetimeUtil->convertStringToSecond($s),
+            $datetimeUtil->convertSecondToString(
+                $datetimeUtil->convertStringToSecond($s),
                 false
             ),
             $s
         );
 
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond(''), 0);
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond('foobar'), 0);
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond(100), 100);
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond('100'), 100);
+        $this->assertEquals($datetimeUtil->convertStringToSecond(''), 0);
+        $this->assertEquals($datetimeUtil->convertStringToSecond('foobar'), 0);
+        $this->assertEquals($datetimeUtil->convertStringToSecond(100), 100);
+        $this->assertEquals($datetimeUtil->convertStringToSecond('100'), 100);
 
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond('3s'), 3);
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond('2i 3s'), 123);
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond('2I- 3s'), 117);
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond('3I - 1i 3s'), 123);
+        $this->assertEquals($datetimeUtil->convertStringToSecond('3s'), 3);
+        $this->assertEquals($datetimeUtil->convertStringToSecond('2i 3s'), 123);
+        $this->assertEquals($datetimeUtil->convertStringToSecond('2I- 3s'), 117);
+        $this->assertEquals($datetimeUtil->convertStringToSecond('3I - 1i 3s'), 123);
         $this->assertEquals(
-            $this->datetimeUtil->convertStringToSecond('2H- 118i -3s'),
+            $datetimeUtil->convertStringToSecond('2H- 118i -3s'),
             117
         );
-        $this->assertEquals($this->datetimeUtil->convertStringToSecond('-118i2H-3s'), 117);
+        $this->assertEquals($datetimeUtil->convertStringToSecond('-118i2H-3s'), 117);
 
         $this->assertEquals(
-            $this->datetimeUtil->convertStringToSecond(
+            $datetimeUtil->convertStringToSecond(
                 '2centuries - 199Year-364DAY+ 4month
                 -17w+2d-3d-24h1h-1hour+1h-58i2min-2minutes3s'
             ),
             123
         );
         $this->assertEquals(
-            $this->datetimeUtil->convertStringToSecond(
+            $datetimeUtil->convertStringToSecond(
                 '3s-2i2i-58i1h-1h1h-24h-3d2d
                 -17w4m-364d-199y2c'
             ),
             123
         );
 
-        return $this->datetimeUtil->convertStringToSecond('1m2s');
+        return $datetimeUtil->convertStringToSecond('1m2s');
     }
 
 
     public function testConvertTimeFromSybase()
     {
+        $datetimeUtil = $this->buildMock();
+
         $t1 = date('Y-m-d H:i:s');
         $t2 = $t1 . ':789';
         $this->assertEquals(
-            $this->datetimeUtil->convertTimeFromSybase($t2),
+            $datetimeUtil->convertTimeFromSybase($t2),
             strtotime($t1)
         );
     }
@@ -133,7 +144,9 @@ class DatetimeUtilTest extends PHPUnitTestCase
      */
     public function testGetMicroTime()
     {
-        $microTime = $this->datetimeUtil->getMicroTime();
+        $datetimeUtil = $this->buildMock();
+
+        $microTime = $datetimeUtil->getMicroTime();
 
         $this->assertEquals(19, strlen($microTime));
     }

@@ -4,6 +4,7 @@ namespace FwlibTest\Db;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Db\DbDiff;
 use Fwlib\Test\AbstractDbRelateTest;
+use Fwlib\Util\UtilContainer;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
@@ -16,23 +17,13 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     protected static $dbUsing = 'default';
-    protected $uuidUtil;
 
-    protected $uuid1;
-    protected $uuid2;
-    protected $uuid3;
+    protected static $uuid1;
+    protected static $uuid2;
+    protected static $uuid3;
 
     public static $getErrorCode;
     public static $getErrorMessage;
-
-    public function __construct()
-    {
-        $this->uuidUtil = $this->getUtilContainer()->getUuidBase36();
-
-        $this->uuid1 = $this->generateUuid();
-        $this->uuid2 = $this->generateUuid();
-        $this->uuid3 = $this->generateUuid();
-    }
 
 
     protected function buildMock()
@@ -43,6 +34,9 @@ class DbDiffTest extends AbstractDbRelateTest
     }
 
 
+    /**
+     * @return DbDiff
+     */
     protected function buildMockWithFakeDb()
     {
         $db = $this->getMockBuilder(Adodb::class)
@@ -74,14 +68,20 @@ class DbDiffTest extends AbstractDbRelateTest
     }
 
 
-    protected function generateUuid()
+    public static function setUpBeforeClass()
     {
-        return $this->uuidUtil->generate();
+        parent::setUpBeforeClass();
+
+        $uuidGenerator = UtilContainer::getInstance()->getUuidBase36();
+
+        self::$uuid1 = $uuidGenerator->generate();
+        self::$uuid2 = $uuidGenerator->generate();
+        self::$uuid3 = $uuidGenerator->generate();
     }
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage can't commit again
      */
     public function testCommitAgain()
@@ -108,7 +108,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Db execute fail
      */
     public function testCommitWithDbFail()
@@ -117,7 +117,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
         $dataNew = [
             self::$tableUser => [
-                'uuid'  => $this->uuid1,
+                'uuid'  => self::$uuid1,
             ],
         ];
 
@@ -133,7 +133,7 @@ class DbDiffTest extends AbstractDbRelateTest
                         "mode": "INSERT",
                         "pk": {
                             "uuid": {
-                                "new": "' . $this->uuid1 . '",
+                                "new": "' . self::$uuid1 . '",
                                 "old": null
                             }
                         },
@@ -149,7 +149,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Invalid mode
      */
     public function testCommitWithInvalidMode()
@@ -176,7 +176,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage No diff data
      */
     public function testCommitWithoutDiffData()
@@ -196,7 +196,7 @@ class DbDiffTest extends AbstractDbRelateTest
         ];
         $dataOld = [
             self::$tableUser => [
-                'uuid'  => $this->uuid1,
+                'uuid'  => self::$uuid1,
                 'title' => 'User Title The Third',
                 'age'   => 4200,
                 'credit'    => '42',
@@ -214,7 +214,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage all null
      */
     public function testCompareWithNullPkInBothDataNewAndOld()
@@ -235,7 +235,7 @@ class DbDiffTest extends AbstractDbRelateTest
         $dbDiff = $this->buildMock();
         $dataNew = [
             self::$tableUser => [
-                'uuid'  => $this->uuid1,
+                'uuid'  => self::$uuid1,
                 'title' => 'User Title The Third',
                 'age'   => 4200,
                 'credit'    => '42',
@@ -256,7 +256,7 @@ class DbDiffTest extends AbstractDbRelateTest
         // Normal insert
         $dataNew1 = [
             self::$tableUser => [
-                'uuid'  => $this->uuid1,
+                'uuid'  => self::$uuid1,
                 'title' => 'User Title',
                 'age'   => 42,
                 'credit'    => '0.42',
@@ -279,7 +279,7 @@ class DbDiffTest extends AbstractDbRelateTest
         // Insert with PK column only
         $dataNew2 = [
             self::$tableUser => [
-                'uuid'  => $this->uuid2,
+                'uuid'  => self::$uuid2,
             ],
         ];
 
@@ -296,7 +296,7 @@ class DbDiffTest extends AbstractDbRelateTest
             self::$tableUser => [
                 // Modify from $dataNew1
                 [
-                    'uuid'  => $this->uuid1,
+                    'uuid'  => self::$uuid1,
                     'title' => 'User Title Changed',
                     'age'   => 420,
                     'credit'    => '4.2',
@@ -318,7 +318,7 @@ class DbDiffTest extends AbstractDbRelateTest
         $this->assertEquals(2, $dbDiff->getRowCount());
         $this->assertEquals(
             420,
-            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, self::$uuid1, 'age', 'uuid')
         );
         $this->assertEquals(1, self::$db->getRowCount(self::$tableUser));
 
@@ -329,7 +329,7 @@ class DbDiffTest extends AbstractDbRelateTest
         $this->assertTrue($dbDiff->isRollbacked());
         $this->assertEquals(
             42,
-            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, self::$uuid1, 'age', 'uuid')
         );
         $this->assertEquals(2, self::$db->getRowCount(self::$tableUser));
 
@@ -340,14 +340,14 @@ class DbDiffTest extends AbstractDbRelateTest
         $this->assertTrue($dbDiff->isCommitted());
         $this->assertEquals(
             420,
-            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, self::$uuid1, 'age', 'uuid')
         );
         $this->assertEquals(1, self::$db->getRowCount(self::$tableUser));
     }
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage can't execute again
      */
     public function testExecuteAgain()
@@ -379,11 +379,11 @@ class DbDiffTest extends AbstractDbRelateTest
 
         $dataNew = [
             self::$tableUser => [
-                'uuid'  => $this->uuid3,
+                'uuid'  => self::$uuid3,
             ],
         ];
 
-        $condition = "WHERE uuid = '{$this->uuid3}'";
+        $condition = "WHERE uuid = '" . self::$uuid3 . "'";
 
 
         // Insert
@@ -408,7 +408,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage empty
      */
     public function testExecuteWithEmptyDataNew()
@@ -419,7 +419,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage PK not all assigned
      */
     public function testExecuteWithNotEnoughPkInDataNew()
@@ -438,7 +438,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage must have PK
      */
     public function testExecuteWithTableHaveNoPk()
@@ -457,7 +457,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Invalid json
      */
     public function testImportInvalidJson()
@@ -469,7 +469,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage can't rollback again
      */
     public function testRollbackAgain()
@@ -496,7 +496,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Db execute fail
      */
     public function testRollbackWithDbFail()
@@ -505,7 +505,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
         $dataNew = [
             self::$tableUser => [
-                'uuid'  => $this->uuid1,
+                'uuid'  => self::$uuid1,
             ],
         ];
 
@@ -521,7 +521,7 @@ class DbDiffTest extends AbstractDbRelateTest
                         "mode": "INSERT",
                         "pk": {
                             "uuid": {
-                                "new": "' . $this->uuid1 . '",
+                                "new": "' . self::$uuid1 . '",
                                 "old": null
                             }
                         },
@@ -537,7 +537,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Invalid mode
      */
     public function testRollbackWithInvalidMode()
@@ -564,7 +564,7 @@ class DbDiffTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage No diff data
      */
     public function testRollbackWithoutDiffData()

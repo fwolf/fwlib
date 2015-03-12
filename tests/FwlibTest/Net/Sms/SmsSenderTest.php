@@ -17,18 +17,21 @@ class SmsSenderTest extends PHPUnitTestCase
     public static $exec_output = '';
     public static $exec_returnValue = null;
 
-    private $smsSender = null;
 
-
-    public function __construct()
+    /**
+     * @return SmsSender
+     */
+    protected function buildMock()
     {
-        $this->smsSender = new SmsSender();
+        return new SmsSender();
     }
 
 
     public function testGetPathOfGammuSmsdInject()
     {
-        $this->smsSender->setConfig('path.gammuSmsdInject', '');
+        $smsSender = $this->buildMock();
+
+        $smsSender->setConfig('path.gammuSmsdInject', '');
 
 
         // Found
@@ -36,23 +39,23 @@ class SmsSenderTest extends PHPUnitTestCase
 
         $this->assertEquals(
             'dummy/gammu-smsd-inject',
-            $this->smsSender->getPathOfGammuSmsdInject('dummy/')
+            $smsSender->getPathOfGammuSmsdInject('dummy/')
         );
 
 
         // Not found
         self::$is_executable = false;
 
-        $this->assertFalse($this->smsSender->getPathOfGammuSmsdInject());
+        $this->assertFalse($smsSender->getPathOfGammuSmsdInject());
 
 
         // Use config inject path
-        $this->smsSender
+        $smsSender
             ->setConfig('path.gammuSmsdInject', 'dummy/executable-file');
 
         $this->assertEquals(
             'dummy/executable-file',
-            $this->smsSender->getPathOfGammuSmsdInject()
+            $smsSender->getPathOfGammuSmsdInject()
         );
     }
 
@@ -74,6 +77,8 @@ class SmsSenderTest extends PHPUnitTestCase
 
     public function testParsePhoneNumber()
     {
+        $smsSender = $this->buildMock();
+
         $x = [
             '+8613912345678',
             '008613912345678',
@@ -84,7 +89,7 @@ class SmsSenderTest extends PHPUnitTestCase
             '13912345678',
             '10086',
         ];
-        $this->assertEquals($y, $this->smsSender->parsePhoneNumber($x));
+        $this->assertEquals($y, $smsSender->parsePhoneNumber($x));
     }
 
 
@@ -117,9 +122,11 @@ class SmsSenderTest extends PHPUnitTestCase
      */
     public function testSendWithInvalidMethod()
     {
-        $this->smsSender->setConfig('method', 'invalidMethod');
+        $smsSender = $this->buildMock();
 
-        $this->smsSender->send('13912345678', 'test');
+        $smsSender->setConfig('method', 'invalidMethod');
+
+        $smsSender->send('13912345678', 'test');
     }
 
 
@@ -129,7 +136,9 @@ class SmsSenderTest extends PHPUnitTestCase
      */
     public function testSendWithNoDestNumber()
     {
-        $this->smsSender->send('', 'test');
+        $smsSender = $this->buildMock();
+
+        $smsSender->send('', 'test');
     }
 
 

@@ -1,8 +1,8 @@
 <?php
 namespace FwlibTest\Cache;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2012-2015 Fwolf
@@ -11,15 +11,11 @@ use Fwlib\Cache\Cache;
 class CacheTest extends PHPUnitTestCase
 {
     /**
-     * Cache instance
-     *
-     * @var Cache
+     * @return Cache
      */
-    protected $ch = null;
-
-    public function __construct()
+    protected function buildMock()
     {
-        $this->ch = Cache::create('');
+        return Cache::create('');
     }
 
 
@@ -28,48 +24,50 @@ class CacheTest extends PHPUnitTestCase
      */
     public function testCache()
     {
+        $cache = $this->buildMock();
+
         $key = 'key';
         $val = 'val';
-        $this->ch->set($key, $val);
-        $this->assertEquals($val, $this->ch->get($key));
-        $log = $this->ch->getLog();
+        $cache->set($key, $val);
+        $this->assertEquals($val, $cache->get($key));
+        $log = $cache->getLog();
         $log = array_pop($log);
         $this->assertTrue($log['success']);
 
-        $this->ch->delete($key);
-        $this->assertEquals(null, $this->ch->get($key));
-        $log = $this->ch->getLog();
+        $cache->delete($key);
+        $this->assertEquals(null, $cache->get($key));
+        $log = $cache->getLog();
         $log = array_pop($log);
         $this->assertFalse($log['success']);
 
 
         // Val encode and decode
         $x = 'This is string.';
-        $y = $this->reflectionCall($this->ch, 'encodeValue', [$x]);
-        $y = $this->reflectionCall($this->ch, 'decodeValue', [$y]);
+        $y = $this->reflectionCall($cache, 'encodeValue', [$x]);
+        $y = $this->reflectionCall($cache, 'decodeValue', [$y]);
         $this->assertEquals($x, $y);
 
         // Encode/decode for array
-        $this->ch->setConfig('storeMethod', 1);
+        $cache->setConfig('storeMethod', 1);
         $x = ['a' => 'b'];
-        $y = $this->reflectionCall($this->ch, 'encodeValue', [$x]);
-        $y = $this->reflectionCall($this->ch, 'decodeValue', [$y]);
+        $y = $this->reflectionCall($cache, 'encodeValue', [$x]);
+        $y = $this->reflectionCall($cache, 'decodeValue', [$y]);
         $this->assertEquals($x, $y);
 
 
         // JSON decode to object
         // Decoded object s stdClass, not original __CLASS__, array property
         // in it need convert back from stdClass too.
-        $this->ch->setConfig('storeMethod', 2);
+        $cache->setConfig('storeMethod', 2);
         // Need config value, or json conversion will drop non-public property
         $x = ['foo' => 'bar'];
-        $y = $this->reflectionCall($this->ch, 'encodeValue', [$x]);
-        $y = $this->reflectionCall($this->ch, 'decodeValue', [$y]);
+        $y = $this->reflectionCall($cache, 'encodeValue', [$x]);
+        $y = $this->reflectionCall($cache, 'decodeValue', [$y]);
         $this->assertObjectHasAttribute('foo', $y);
         $this->assertInstanceOf('stdClass', $y);
 
 
-        $this->assertEmpty($this->ch->getErrorMessage());
+        $this->assertEmpty($cache->getErrorMessage());
     }
 
 
@@ -82,62 +80,68 @@ class CacheTest extends PHPUnitTestCase
 
     public function testEncodeValue()
     {
+        $cache = $this->buildMock();
+
         // Encode/decode raw
-        $this->ch->setConfig('storeMethod', 0);
+        $cache->setConfig('storeMethod', 0);
         $x = 'test string';
 
-        $y = $this->reflectionCall($this->ch, 'encodeValue', [$x]);
+        $y = $this->reflectionCall($cache, 'encodeValue', [$x]);
         $this->assertInternalType('string', $y);
 
-        $y = $this->reflectionCall($this->ch, 'decodeValue', [$y]);
+        $y = $this->reflectionCall($cache, 'decodeValue', [$y]);
         $this->assertEquals($x, $y);
     }
 
 
     public function testExpire()
     {
+        $cache = $this->buildMock();
+
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', ['any'])
+            $this->reflectionCall($cache, 'isExpired', ['any'])
         );
 
 
         $x = 0;
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'getExpireTime', [$x])
+            $this->reflectionCall($cache, 'getExpireTime', [$x])
         );
 
         $x = time() + 2592000;
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'getExpireTime', [2592000])
+            $this->reflectionCall($cache, 'getExpireTime', [2592000])
         );
 
         $x = 2592001;
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'getExpireTime', [2592001])
+            $this->reflectionCall($cache, 'getExpireTime', [2592001])
         );
 
         $x = time() + 2592000;
-        $this->ch->setConfig('lifetime', 2592000);
+        $cache->setConfig('lifetime', 2592000);
         $this->assertEquals(
             $x,
-            $this->reflectionCall($this->ch, 'getExpireTime', [null])
+            $this->reflectionCall($cache, 'getExpireTime', [null])
         );
     }
 
 
     public function testVersion()
     {
+        $cache = $this->buildMock();
+
         $key = 'test-ver';
 
-        $this->assertEquals(1, $this->ch->getVersion($key));
+        $this->assertEquals(1, $cache->getVersion($key));
 
-        $this->ch->increaseVersion($key, 1);
-        $this->assertEquals(2, $this->ch->getVersion($key));
+        $cache->increaseVersion($key, 1);
+        $this->assertEquals(2, $cache->getVersion($key));
 
-        $this->ch->increaseVersion($key, 65534, 65535);
-        $this->assertEquals(1, $this->ch->getVersion($key));
+        $cache->increaseVersion($key, 65534, 65535);
+        $this->assertEquals(1, $cache->getVersion($key));
     }
 }

@@ -1,30 +1,34 @@
 <?php
 namespace FwlibTest\Html;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Bridge\Smarty;
 use Fwlib\Html\ListTable;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class ListTableTest extends PHPUnitTestCase
 {
-    private $lt = null;
-
-
-    public function __construct()
+    /**
+     * @return ListTable
+     */
+    protected function buildMock()
     {
-        $tpl = new Smarty;
+        $smarty = new Smarty;
 
-        $this->lt = new ListTable($tpl);
+        $listTable = new ListTable($smarty);
+
+        return $listTable;
     }
 
 
     public function testFitDataWithTitle()
     {
-        $this->lt->setConfig('fitEmpty', '&nbsp;');
+        $listTable = $this->buildMock();
+
+        $listTable->setConfig('fitEmpty', '&nbsp;');
         $data = [
             [
                 'uuid'  => '1',
@@ -49,8 +53,8 @@ class ListTableTest extends PHPUnitTestCase
         ];
 
 
-        $this->lt->setConfig('fitMode', ListTable::FIT_TO_TITLE);
-        $this->lt->setData($data, $title);
+        $listTable->setConfig('fitMode', ListTable::FIT_TO_TITLE);
+        $listTable->setData($data, $title);
         $x = [
             [
                 'title' => 'tom',
@@ -68,21 +72,21 @@ class ListTableTest extends PHPUnitTestCase
                 'credit'    => '&nbsp;',
             ],
         ];
-        $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listData'));
+        $this->assertEqualArray($x, $this->reflectionGet($listTable, 'listData'));
 
 
-        $this->lt->setConfig('fitMode', ListTable::FIT_TO_DATA);
-        $this->lt->setData($data, $title);
+        $listTable->setConfig('fitMode', ListTable::FIT_TO_DATA);
+        $listTable->setData($data, $title);
         $x = [
             'title' => 'Name',
             'age'   => 'Current Age',
             'uuid'  => 'uuid',  // Add later, so on last position
         ];
-        $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listTitle'));
+        $this->assertEqualArray($x, $this->reflectionGet($listTable, 'listTitle'));
 
 
-        $this->lt->setConfig('fitMode', ListTable::FIT_INTERSECTION);
-        $this->lt->setData($data, $title);
+        $listTable->setConfig('fitMode', ListTable::FIT_INTERSECTION);
+        $listTable->setData($data, $title);
         $x = [
             [
                 'title' => 'tom',
@@ -101,12 +105,12 @@ class ListTableTest extends PHPUnitTestCase
             'title' => 'Name',
             'age'   => 'Current Age',
         ];
-        $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listData'));
-        $this->assertEqualArray($y, $this->reflectionGet($this->lt, 'listTitle'));
+        $this->assertEqualArray($x, $this->reflectionGet($listTable, 'listData'));
+        $this->assertEqualArray($y, $this->reflectionGet($listTable, 'listTitle'));
 
 
-        $this->lt->setConfig('fitMode', ListTable::FIT_UNION);
-        $this->lt->setData($data, $title);
+        $listTable->setConfig('fitMode', ListTable::FIT_UNION);
+        $listTable->setData($data, $title);
         $x = [
             [
                 'uuid'  => '1',
@@ -133,7 +137,7 @@ class ListTableTest extends PHPUnitTestCase
             'credit'    => 'Money',
             'uuid'  => 'uuid',
         ];
-        $this->assertEqualArray($x, $this->reflectionGet($this->lt, 'listData'));
-        $this->assertEqualArray($y, $this->reflectionGet($this->lt, 'listTitle'));
+        $this->assertEqualArray($x, $this->reflectionGet($listTable, 'listData'));
+        $this->assertEqualArray($y, $this->reflectionGet($listTable, 'listTitle'));
     }
 }

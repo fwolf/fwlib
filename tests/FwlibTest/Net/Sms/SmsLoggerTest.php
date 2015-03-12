@@ -2,9 +2,9 @@
 namespace FwlibTest\Net\Sms;
 
 use Fwlib\Bridge\Adodb;
+use Fwlib\Net\Sms\SmsLogger;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Net\Sms\SmsLogger;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -15,21 +15,25 @@ class SmsLoggerTest extends PHPUnitTestCase
     use UtilContainerAwareTrait;
 
 
-    private $smsLogger = null;
-
-
-    public function __construct()
+    /**
+     * @return SmsLogger
+     */
+    protected function buildMock()
     {
         $db = $this->getMockBuilder(Adodb::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->smsLogger = new SmsLogger($db);
+        $smsLogger = new SmsLogger($db);
+
+        return $smsLogger;
     }
 
 
     public function testCountDestCompany()
     {
+        $smsLogger = $this->buildMock();
+
         $arDest = [
             '13912345678', '13012345678', '18012345678',
         ];
@@ -38,30 +42,33 @@ class SmsLoggerTest extends PHPUnitTestCase
             'cu' => 1,
             'ct' => 1,
         ];
-        $this->assertEqualArray($y, $this->smsLogger->countDestCompany($arDest));
+        $this->assertEqualArray($y, $smsLogger->countDestCompany($arDest));
     }
 
 
     public function testCountPart()
     {
+        $smsLogger = $this->buildMock();
         $stringUtil = $this->getUtilContainer()->getString();
 
         $x = '';
-        $this->assertEquals(0, $this->smsLogger->countPart($x));
+        $this->assertEquals(0, $smsLogger->countPart($x));
 
         $x = $stringUtil->random(140);
-        $this->assertEquals(1, $this->smsLogger->countPart($x));
+        $this->assertEquals(1, $smsLogger->countPart($x));
 
         $x = $stringUtil->random(150);
-        $this->assertEquals(2, $this->smsLogger->countPart($x));
+        $this->assertEquals(2, $smsLogger->countPart($x));
 
         $x = '中' . $stringUtil->random(137);
-        $this->assertEquals(2, $this->smsLogger->countPart($x));
+        $this->assertEquals(2, $smsLogger->countPart($x));
     }
 
 
     public function testLog()
     {
+        $smsLogger = $this->buildMock();
+
         $db = $this->getMockBuilder(Adodb::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -79,9 +86,9 @@ class SmsLoggerTest extends PHPUnitTestCase
                 $this->equalTo('I')
             );
 
-        $this->reflectionSet($this->smsLogger, 'db', $db);
+        $this->reflectionSet($smsLogger, 'db', $db);
 
-        $this->smsLogger->log(
+        $smsLogger->log(
             ['13912345678'],
             'Test sms message.',
             0

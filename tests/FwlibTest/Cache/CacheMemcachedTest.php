@@ -15,16 +15,11 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 class CacheMemcachedTest extends PHPUnitTestCase
 {
     /**
-     * Cache object
-     *
-     * @var CacheMemcached
+     * @return CacheMemcached
      */
-    protected $ch = null;
-
-
-    public function __construct()
+    protected function buildMock()
     {
-        $this->ch = Cache::create('memcached');
+        return Cache::create('memcached');
     }
 
 
@@ -33,6 +28,8 @@ class CacheMemcachedTest extends PHPUnitTestCase
      */
     public function testCache()
     {
+        $cache = $this->buildMock();
+
         // This should be a valid server
         $ms = GlobalConfig::getInstance()->get('memcached.server');
 
@@ -48,9 +45,9 @@ class CacheMemcachedTest extends PHPUnitTestCase
             'port' => $ms[0]['port'],
             'weight' => $ms[0]['weight'],
         ];
-        $this->ch->setConfigServer($x);
-        $this->ch->get('any key');
-        $serverList = $this->reflectionGet($this->ch, 'memcached')
+        $cache->setConfigServer($x);
+        $cache->get('any key');
+        $serverList = $this->reflectionGet($cache, 'memcached')
             ->getServerList();
         // Memcached::getServerList() result may not include weight
         $this->assertEquals($y['host'], $serverList[0]['host']);
@@ -58,10 +55,10 @@ class CacheMemcachedTest extends PHPUnitTestCase
 
 
         // Set server cfg, writable, $memcached is reset to null now
-        $this->ch->setConfigServer($ms);
+        $cache->setConfigServer($ms);
         // Do an operate to trigger memcached instance creation
-        $this->ch->get('any key');
-        $serverList = $this->reflectionGet($this->ch, 'memcached')
+        $cache->get('any key');
+        $serverList = $this->reflectionGet($cache, 'memcached')
             ->getServerList();
         $this->assertEquals($ms[0]['host'], $serverList[0]['host']);
         $this->assertEquals($ms[0]['port'], $serverList[0]['port']);
@@ -70,96 +67,96 @@ class CacheMemcachedTest extends PHPUnitTestCase
         // Cache write
         $key = str_repeat('test', 8);
         $x = 'blah';
-        $this->ch->set($key, $x, 60);
-        $this->assertEquals($x, $this->ch->get($key));
+        $cache->set($key, $x, 60);
+        $this->assertEquals($x, $cache->get($key));
 
         $x = ['blah', ['foo' => 'boo']];
-        $this->ch->set($key, $x, 60);
-        $this->assertEquals($x, $this->ch->get($key));
+        $cache->set($key, $x, 60);
+        $this->assertEquals($x, $cache->get($key));
 
         // Cache expire
-        $this->ch->setConfig('memcachedAutoSplit', 1);
-        $this->ch->set($key, $x, 60);
+        $cache->setConfig('memcachedAutoSplit', 1);
+        $cache->set($key, $x, 60);
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', [$key])
+            $this->reflectionCall($cache, 'isExpired', [$key])
         );
-        $this->ch->delete($key);
+        $cache->delete($key);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', [$key])
+            $this->reflectionCall($cache, 'isExpired', [$key])
         );
-        $this->ch->set($key, $x, -10);
+        $cache->set($key, $x, -10);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', [$key])
+            $this->reflectionCall($cache, 'isExpired', [$key])
         );
-        $this->ch->setConfig('memcachedAutoSplit', 0);
-        $this->ch->set($key, $x, 60);
+        $cache->setConfig('memcachedAutoSplit', 0);
+        $cache->set($key, $x, 60);
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', [$key])
+            $this->reflectionCall($cache, 'isExpired', [$key])
         );
-        $this->ch->set($key, $x, -10);
+        $cache->set($key, $x, -10);
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', [$key])
+            $this->reflectionCall($cache, 'isExpired', [$key])
         );
 
         // Cache delete
-        $this->ch->delete($key);
-        $this->assertEquals(null, $this->ch->get($key));
+        $cache->delete($key);
+        $this->assertEquals(null, $cache->get($key));
 
         // Long key
         $key = str_repeat('-', 300);
         $x = 'blah';
-        $this->ch->set($key, $x, 60);
-        $this->assertEquals($x, $this->ch->get($key));
-        $this->ch->delete($key);
-        $this->assertEquals(null, $this->ch->get($key));
+        $cache->set($key, $x, 60);
+        $this->assertEquals($x, $cache->get($key));
+        $cache->delete($key);
+        $this->assertEquals(null, $cache->get($key));
 
         // Empty key
         $key = '';
         $x = 'blah';
-        $this->ch->set($key, $x, 60);
-        $this->assertEquals($x, $this->ch->get($key));
+        $cache->set($key, $x, 60);
+        $this->assertEquals($x, $cache->get($key));
 
         // Cache get with expire
         $key = str_repeat('test', 8);
-        $this->ch->set($key, $x, -10);
-        $this->assertEquals(null, $this->ch->get($key));
-        $this->ch->set($key, $x, 0);
-        $this->assertEquals($x, $this->ch->get($key));
-        $this->ch->set($key, $x, 5);
-        $this->assertEquals($x, $this->ch->get($key));
-        $this->ch->set($key, $x, null);
-        $this->assertEquals($x, $this->ch->get($key));
+        $cache->set($key, $x, -10);
+        $this->assertEquals(null, $cache->get($key));
+        $cache->set($key, $x, 0);
+        $this->assertEquals($x, $cache->get($key));
+        $cache->set($key, $x, 5);
+        $this->assertEquals($x, $cache->get($key));
+        $cache->set($key, $x, null);
+        $this->assertEquals($x, $cache->get($key));
 
 
         // Big value exceed max item size
-        $this->ch->setConfig('memcachedMaxItemSize', 100);
+        $cache->setConfig('memcachedMaxItemSize', 100);
 
         $s = str_repeat('0', 300);
-        $this->ch->delete($key);       // Clear previous set value
-        $this->ch->setConfig('memcachedAutoSplit', 1);
-        $this->ch->set($key, $s, 3600);
-        $this->assertEquals($s, $this->ch->get($key));
+        $cache->delete($key);       // Clear previous set value
+        $cache->setConfig('memcachedAutoSplit', 1);
+        $cache->set($key, $s, 3600);
+        $this->assertEquals($s, $cache->get($key));
         $this->assertFalse(
-            $this->reflectionCall($this->ch, 'isExpired', [$key])
+            $this->reflectionCall($cache, 'isExpired', [$key])
         );
-        $this->ch->delete($key);
-        $this->assertEquals(null, $this->ch->get($key));
+        $cache->delete($key);
+        $this->assertEquals(null, $cache->get($key));
         $this->assertTrue(
-            $this->reflectionCall($this->ch, 'isExpired', [$key])
+            $this->reflectionCall($cache, 'isExpired', [$key])
         );
 
         // Big value size is computed AFTER compress if compress on
         $s = str_repeat('0', 1200000);
-        $this->reflectionGet($this->ch, 'memcached')
+        $this->reflectionGet($cache, 'memcached')
             ->setOption(\Memcached::OPT_COMPRESSION, false);
-        $this->ch->setConfig('memcachedAutoSplit', 0);
+        $cache->setConfig('memcachedAutoSplit', 0);
         // Error: Memcache set error 10: SERVER ERROR
-        @$this->ch->set($key, $s, 3600);
-        $this->assertEquals(null, $this->ch->get($key));
-        $this->reflectionGet($this->ch, 'memcached')
+        @$cache->set($key, $s, 3600);
+        $this->assertEquals(null, $cache->get($key));
+        $this->reflectionGet($cache, 'memcached')
             ->setOption(\Memcached::OPT_COMPRESSION, true);
-        $this->ch->set($key, $s, 3600);
-        $this->assertEquals($s, $this->ch->get($key));
+        $cache->set($key, $s, 3600);
+        $this->assertEquals($s, $cache->get($key));
     }
 
 
@@ -168,16 +165,16 @@ class CacheMemcachedTest extends PHPUnitTestCase
      */
     public function testCreate()
     {
-        $ch = Cache::create('memcached');
+        $cache = Cache::create('memcached');
 
         // Server list is empty now
-        $this->ch->get('any key');
-        $ar = $this->reflectionGet($this->ch, 'memcached')->getServerList();
+        $cache->get('any key');
+        $ar = $this->reflectionGet($cache, 'memcached')->getServerList();
         $this->assertEquals($ar, []);
 
         $this->assertInstanceOf(
             CacheMemcached::class,
-            $this->ch->setConfigServer()
+            $cache->setConfigServer()
         );
     }
 
@@ -187,6 +184,8 @@ class CacheMemcachedTest extends PHPUnitTestCase
      */
     public function tesSetConfigServer()
     {
+        $cache = $this->buildMock();
+
         // This should be a valid server
         $ms = GlobalConfig::getInstance()->get('memcached.server');
 
@@ -205,9 +204,9 @@ class CacheMemcachedTest extends PHPUnitTestCase
                 'weight'    => 33
             ],
         ];
-        $this->ch->setConfigServer($x);
+        $cache->setConfigServer($x);
 
-        $memcached = $this->reflectionGet($this->ch, 'memcached');
+        $memcached = $this->reflectionGet($cache, 'memcached');
         $this->assertEquals(
             [$x[1]],
             $memcached->getServerList()

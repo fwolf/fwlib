@@ -17,19 +17,12 @@ class ExecutorTest extends AbstractDbRelateTest
 {
     protected static $dbUsing = 'default';
 
-    protected $uuid1;
-    protected $uuid2;
-    protected $uuid3;
+    protected static $uuid1;
+    protected static $uuid2;
+    protected static $uuid3;
 
     public static $getErrorCode;
     public static $getErrorMessage;
-
-    public function __construct()
-    {
-        $this->uuid1 = $this->generateUuid();
-        $this->uuid2 = $this->generateUuid();
-        $this->uuid3 = $this->generateUuid();
-    }
 
 
     protected function buildMock()
@@ -92,9 +85,15 @@ class ExecutorTest extends AbstractDbRelateTest
     }
 
 
-    protected function generateUuid()
+    public static function setUpBeforeClass()
     {
-        return UtilContainer::getInstance()->getUuidBase36()->generate();
+        parent::setUpBeforeClass();
+
+        $uuidGenerator = UtilContainer::getInstance()->getUuidBase36();
+
+        self::$uuid1 = $uuidGenerator->generate();
+        self::$uuid2 = $uuidGenerator->generate();
+        self::$uuid3 = $uuidGenerator->generate();
     }
 
 
@@ -113,7 +112,7 @@ class ExecutorTest extends AbstractDbRelateTest
                 "primaryKey": "uuid",
                 "old": null,
                 "new": {
-                    "uuid": "' . $this->uuid1 . '"
+                    "uuid": "' . self::$uuid1 . '"
                 }
             }]
         }';
@@ -122,7 +121,7 @@ class ExecutorTest extends AbstractDbRelateTest
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Db execute fail
      */
     public function testCommitWithDbFail()
@@ -140,7 +139,7 @@ class ExecutorTest extends AbstractDbRelateTest
                 "primaryKey": "uuid",
                 "old": null,
                 "new": {
-                    "uuid": "' . $this->uuid1 . '"
+                    "uuid": "' . self::$uuid1 . '"
                 }
             }]
         }';
@@ -177,7 +176,7 @@ class ExecutorTest extends AbstractDbRelateTest
 
         // Normal insert
         $dataNew1 = [
-            'uuid'  => $this->uuid1,
+            'uuid'  => self::$uuid1,
             'title' => 'User Title',
             'age'   => 42,
             'credit'    => '0.42',
@@ -198,7 +197,7 @@ class ExecutorTest extends AbstractDbRelateTest
 
         // Insert with PK column only
         $dataNew2 = [
-            'uuid'  => $this->uuid2,
+            'uuid'  => self::$uuid2,
         ];
         $manager->renew()->addRow(self::$tableUser, null, $dataNew2);
         $executor->execute($manager->getRowSet());
@@ -210,7 +209,7 @@ class ExecutorTest extends AbstractDbRelateTest
 
         // Update row with $uuid1, and delete row with $uuid2
         $dataNew1Changed = [
-            'uuid'  => $this->uuid1,
+            'uuid'  => self::$uuid1,
             'title' => 'User Title Changed',
             'age'   => 420,
             'credit'    => '4.2',
@@ -225,7 +224,7 @@ class ExecutorTest extends AbstractDbRelateTest
         $this->assertEquals(2, $rowSet->getRowCount());
         $this->assertEquals(
             420,
-            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, self::$uuid1, 'age', 'uuid')
         );
         $this->assertEquals(1, self::$db->getRowCount(self::$tableUser));
 
@@ -236,7 +235,7 @@ class ExecutorTest extends AbstractDbRelateTest
         $this->assertTrue($rowSet->isRollbacked());
         $this->assertEquals(
             42,
-            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, self::$uuid1, 'age', 'uuid')
         );
         $this->assertEquals(2, self::$db->getRowCount(self::$tableUser));
 
@@ -247,7 +246,7 @@ class ExecutorTest extends AbstractDbRelateTest
         $this->assertTrue($rowSet->isCommitted());
         $this->assertEquals(
             420,
-            self::$db->getByKey(self::$tableUser, $this->uuid1, 'age', 'uuid')
+            self::$db->getByKey(self::$tableUser, self::$uuid1, 'age', 'uuid')
         );
         $this->assertEquals(1, self::$db->getRowCount(self::$tableUser));
     }
@@ -268,7 +267,7 @@ class ExecutorTest extends AbstractDbRelateTest
                 "primaryKey": "uuid",
                 "old": null,
                 "new": {
-                    "uuid": "' . $this->uuid1 . '"
+                    "uuid": "' . self::$uuid1 . '"
                 }
             }]
         }';
@@ -282,9 +281,9 @@ class ExecutorTest extends AbstractDbRelateTest
         $manager = $this->buildMockManager();
 
         $dataNew = [
-            'uuid'  => $this->uuid3,
+            'uuid'  => self::$uuid3,
         ];
-        $condition = "WHERE uuid = '{$this->uuid3}'";
+        $condition = "WHERE uuid = '" . self::$uuid3 . "'";
 
 
         // Insert
@@ -335,7 +334,7 @@ class ExecutorTest extends AbstractDbRelateTest
                 "primaryKey": "uuid",
                 "old": null,
                 "new": {
-                    "uuid": "' . $this->uuid1 . '"
+                    "uuid": "' . self::$uuid1 . '"
                 }
             }]
         }';
@@ -352,7 +351,7 @@ class ExecutorTest extends AbstractDbRelateTest
         $executor = $this->buildMockWithFakeDb();
 
         $dataNew = [
-            'uuid'  => $this->uuid1,
+            'uuid'  => self::$uuid1,
         ];
 
         self::$getErrorCode = -1;
@@ -366,7 +365,7 @@ class ExecutorTest extends AbstractDbRelateTest
                 "primaryKey": "uuid",
                 "old": null,
                 "new": {
-                    "uuid": "' . $this->uuid1 . '"
+                    "uuid": "' . self::$uuid1 . '"
                 }
             }]
         }';

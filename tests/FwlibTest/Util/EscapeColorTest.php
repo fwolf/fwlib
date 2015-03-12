@@ -1,8 +1,9 @@
 <?php
 namespace FwlibTest\Util;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Util\EscapeColor;
+use Fwlib\Util\UtilContainer;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -10,56 +11,63 @@ use Fwlib\Util\EscapeColor;
  */
 class EscapeColorTest extends PHPUnitTestCase
 {
-    protected $escapeColor;
-
-    public function __construct()
+    /**
+     * @return EscapeColor
+     */
+    protected function buildMock()
     {
-        $this->escapeColor = new EscapeColor;
+        return UtilContainer::getInstance()->getEscapeColor();
     }
 
 
     public function testPaint()
     {
+        $escapeColor = $this->buildMock();
+
         $x = 'foo';
         $this->assertEquals(
             17,
-            strlen($this->escapeColor->paint($x, 'bright', 'blue', 'yellow'))
+            strlen($escapeColor->paint($x, 'bright', 'blue', 'yellow'))
         );
         $this->assertEquals(
             17,
-            strlen($this->escapeColor->paint($x, 1, 34, 43))
+            strlen($escapeColor->paint($x, 1, 34, 43))
         );
         $this->assertEquals(
             3,
-            strlen($this->escapeColor->paint($x, 'a', 'b', 'c'))
+            strlen($escapeColor->paint($x, 'a', 'b', 'c'))
         );
 
-        $this->escapeColor->enabled = false;
+        $escapeColor->enabled = false;
         $this->assertEquals(
             3,
-            strlen($this->escapeColor->paint($x, 'bright', 'blue', 'yellow'))
+            strlen($escapeColor->paint($x, 'bright', 'blue', 'yellow'))
         );
-        $this->escapeColor->enabled = true;
+        $escapeColor->enabled = true;
     }
 
 
     public function testPrintTable()
     {
-        $x = $this->escapeColor->printTable(true);
+        $escapeColor = $this->buildMock();
+
+        $x = $escapeColor->printTable(true);
         $this->assertEquals(true, 0 < strlen($x));
 
         $this->expectOutputRegex('/.+/');
-        $this->escapeColor->printTable();
+        $escapeColor->printTable();
     }
 
 
     public function testToHtml()
     {
+        $escapeColor = $this->buildMock();
+
         $x = 'foo';
-        $y = $this->escapeColor->paint($x, 'bright', 'blue', 'white');
+        $y = $escapeColor->paint($x, 'bright', 'blue', 'white');
         $this->assertEquals(
             '<span style="font-weight: bold; color: blue;">foo</span>',
-            $this->escapeColor->toHtml($y)
+            $escapeColor->toHtml($y)
         );
     }
 }

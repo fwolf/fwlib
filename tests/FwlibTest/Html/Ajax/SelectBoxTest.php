@@ -5,7 +5,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Html\Ajax\SelectBox;
 
 /**
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class SelectBoxTest extends PHPUnitTestCase
@@ -17,20 +17,25 @@ class SelectBoxTest extends PHPUnitTestCase
      */
     protected $outputFile = 'select-box.tpl';
 
-    protected $selectBox = null;
 
-
-    public function __construct()
+    /**
+     * @return SelectBox
+     */
+    public function buildMock()
     {
         $this->outputFile = __DIR__ . '/SelectBox/' . $this->outputFile;
 
-        $this->selectBox = new SelectBox();
+        $selectBox = new SelectBox();
+
+        return $selectBox;
     }
 
 
     public function testGet()
     {
-        $html = $this->selectBox->get();
+        $selectBox = $this->buildMock();
+
+        $html = $selectBox->get();
         //$this->selectBox->write($this->outputFile);
         $this->assertStringEqualsFile(
             $this->outputFile,

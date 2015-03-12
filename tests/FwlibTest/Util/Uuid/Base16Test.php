@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Util\Uuid;
 
+use Fwlib\Util\UtilContainer;
 use Fwlib\Util\Uuid\Base16;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
@@ -10,71 +11,79 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class Base16Test extends PHPUnitTestCase
 {
-    protected $uuid;
-
-
-    public function __construct()
+    /**
+     * @return Base16
+     */
+    protected function buildMock()
     {
-        $this->uuid = new Base16;
+        return UtilContainer::getInstance()->getUuidBase16();
     }
 
 
     public function testAddCheckDigit()
     {
-        $y = $this->uuid->generateWithSeparator(null, null, true, '-');
-        $this->assertEquals($y, $this->uuid->addCheckDigit($y));
+        $uuidGenerator = $this->buildMock();
+
+        $y = $uuidGenerator->generateWithSeparator(null, null, true, '-');
+        $this->assertEquals($y, $uuidGenerator->addCheckDigit($y));
     }
 
 
     public function testParse()
     {
+        $uuidGenerator = $this->buildMock();
+
         // Generate and parse data back
         // '0010' is from default value
-        $ar = $this->uuid->parse($this->uuid->generate());
+        $ar = $uuidGenerator->parse($uuidGenerator->generate());
         $this->assertEquals('0010', $ar['custom1']);
 
         // Custom field
-        $ar = $this->uuid->parse($this->uuid->generate('1'));
+        $ar = $uuidGenerator->parse($uuidGenerator->generate('1'));
         $this->assertEquals($ar['custom1'], '0001');
-        $ar = $this->uuid->parse($this->uuid->generate('0001', '1312.101'));
+        $ar = $uuidGenerator->parse(
+            $uuidGenerator->generate('0001', '1312.101')
+        );
         $this->assertEquals($ar['custom2'], '1312.101');
 
         // Parse data
-        $ar = $this->uuid->parse('4822afd9-861b-0000-8302-650a25cda932');
+        $ar = $uuidGenerator->parse('4822afd9-861b-0000-8302-650a25cda932');
         $this->assertEquals($ar['timeLow'], 1210232793);
         $this->assertEquals($ar['timeMid'], 34331);
         $this->assertEquals($ar['custom1'], '0000');
         $this->assertEquals($ar['custom2'], '8302650a');
         $this->assertEquals($ar['ip'], '131.2.101.10');
-        $ar = $this->uuid->parse('4822afd9861b00008302650a25cda932');
+        $ar = $uuidGenerator->parse('4822afd9861b00008302650a25cda932');
         $this->assertEquals($ar['timeLow'], 1210232793);
         $this->assertEquals($ar['timeMid'], 34331);
         $this->assertEquals($ar['custom1'], '0000');
         $this->assertEquals($ar['custom2'], '8302650a');
         $this->assertEquals($ar['ip'], '131.2.101.10');
 
-        $this->assertNull($this->uuid->parse(null));
+        $this->assertNull($uuidGenerator->parse(null));
     }
 
 
     public function testVerify()
     {
+        $uuidGenerator = $this->buildMock();
+
         $x = '';
-        $this->assertFalse($this->uuid->verify($x));
+        $this->assertFalse($uuidGenerator->verify($x));
 
         $x = '4822afd9-861b-0000+8302-650a25cda932';
-        $this->assertFalse($this->uuid->verify($x));
+        $this->assertFalse($uuidGenerator->verify($x));
 
         $x = '4822afd9-861b-0000-83026-50a25cda932';
-        $this->assertFalse($this->uuid->verify($x));
+        $this->assertFalse($uuidGenerator->verify($x));
 
         $x = '4822afd9-861b-0000-8302-650a25cda93U';
-        $this->assertFalse($this->uuid->verify($x));
+        $this->assertFalse($uuidGenerator->verify($x));
 
         $x = '4822afd9-861b-0000-8302-650a25cda932';
-        $this->assertFalse($this->uuid->verify($x, true));
+        $this->assertFalse($uuidGenerator->verify($x, true));
 
-        $x = $this->uuid->generate(null, null, true);
-        $this->assertTrue($this->uuid->verify($x, true));
+        $x = $uuidGenerator->generate(null, null, true);
+        $this->assertTrue($uuidGenerator->verify($x, true));
     }
 }
