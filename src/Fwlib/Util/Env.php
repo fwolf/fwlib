@@ -11,16 +11,16 @@ namespace Fwlib\Util;
  */
 class Env
 {
-    /*
+    /**
      * Smart 'echo line', end with \n or <br /> according to run mod
      *
      * @codeCoverageIgnore
      *
-     * @param   array   $str    Content to echo
-     * @param   boolean $noEcho Do not print
+     * @param   string|array $str     Content to echo
+     * @param   boolean      $noPrint Return instead of print
      * @return  string
      */
-    public function ecl($str = '', $noEcho = false)
+    public function ecl($str = '', $noPrint = false)
     {
         if ($this->isCli()) {
             $lineEnding = PHP_EOL;
@@ -31,7 +31,7 @@ class Env
         if (is_array($str)) {
             $rs = '';
             foreach ($str as $v) {
-                $rs .= $this->ecl($v, $noEcho);
+                $rs .= $this->ecl($v, $noPrint);
             }
             return $rs;
         }
@@ -42,7 +42,7 @@ class Env
         // Add new line
         $str .= $lineEnding;
 
-        if (!$noEcho) {
+        if (!$noPrint) {
             echo $str;
         }
 
