@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Algorithm;
 
-use Fwlib\Util\Rfc2047;
+use Fwlib\Util\Algorithm\Rfc2047;
 use Fwlib\Util\UtilContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 

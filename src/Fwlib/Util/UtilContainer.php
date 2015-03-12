@@ -3,6 +3,8 @@ namespace Fwlib\Util;
 
 use Fwlib\Base\ServiceContainerTrait;
 use Fwlib\Util\Algorithm\Iso7064;
+use Fwlib\Util\Algorithm\McryptSimpleIv;
+use Fwlib\Util\Algorithm\Rfc2047;
 use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
 use Fwlib\Util\Code\ChnOrganizationCode;
 use Fwlib\Util\Uuid\Base16;
@@ -113,14 +115,14 @@ class UtilContainer implements UtilContainerInterface
             'HttpUtil'          => HttpUtil::class,
             'Ip'                => Ip::class,
             'Json'              => Json::class,
-            'McryptSimpleIv'    => McryptSimpleIv::class,
             'NumberUtil'        => NumberUtil::class,
             'ObjectUtil'        => ObjectUtil::class,
-            'Rfc2047'           => Rfc2047::class,
             'StringUtil'        => StringUtil::class,
 
             // Algorithm
             'Iso7064'           => Iso7064::class,
+            'McryptSimpleIv'    => McryptSimpleIv::class,
+            'Rfc2047'           => Rfc2047::class,
 
             // Code
             'ChnCin'                => ChnCitizenIdentificationNumber::class,

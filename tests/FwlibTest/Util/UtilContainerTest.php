@@ -2,6 +2,8 @@
 namespace FwlibTest\Util;
 
 use Fwlib\Util\Algorithm\Iso7064;
+use Fwlib\Util\Algorithm\McryptSimpleIv;
+use Fwlib\Util\Algorithm\Rfc2047;
 use Fwlib\Util\ArrayUtil;
 use Fwlib\Util\Code\ChnCitizenIdentificationNumber;
 use Fwlib\Util\Code\ChnOrganizationCode;
@@ -12,10 +14,8 @@ use Fwlib\Util\FileSystem;
 use Fwlib\Util\HttpUtil;
 use Fwlib\Util\Ip;
 use Fwlib\Util\Json;
-use Fwlib\Util\McryptSimpleIv;
 use Fwlib\Util\NumberUtil;
 use Fwlib\Util\ObjectUtil;
-use Fwlib\Util\Rfc2047;
 use Fwlib\Util\StringUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Util\Uuid\Base16;

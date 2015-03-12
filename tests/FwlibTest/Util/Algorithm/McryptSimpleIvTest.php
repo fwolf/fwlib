@@ -1,13 +1,13 @@
 <?php
-namespace FwlibTest\Util;
+namespace FwlibTest\Util\Algorithm;
 
+use Fwlib\Util\Algorithm\McryptSimpleIv;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Util\McryptSimpleIv;
 
 /**
  * @requires    extension mcrypt
  *
- * @copyright   Copyright 2009-2014 Fwolf
+ * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class McryptSimpleIvTest extends PHPUnitTestCase

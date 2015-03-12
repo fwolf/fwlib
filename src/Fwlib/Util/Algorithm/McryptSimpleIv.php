@@ -1,6 +1,5 @@
 <?php
-namespace Fwlib\Util;
-
+namespace Fwlib\Util\Algorithm;
 
 /**
  * Simple mcrypt
@@ -37,7 +36,7 @@ namespace Fwlib\Util;
  *
  * @codeCoverageIgnore
  *
- * @copyright   Copyright 2009-2014 Fwolf
+ * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class McryptSimpleIv
