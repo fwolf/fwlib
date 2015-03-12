@@ -11,6 +11,9 @@ namespace Fwlib\Util;
  */
 class Env
 {
+    use FilterInputTrait;
+
+
     /**
      * Smart 'echo line', end with \n or <br /> according to run mod
      *
@@ -61,6 +64,74 @@ class Env
             $s = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
             header('Location: ' . $s);
         }
+    }
+
+
+    /**
+     * @param   string    $name
+     * @param   mixed     $default Default value if name is not found in input
+     * @param   int       $filter
+     * @param   int|array $options
+     * @return  string|int
+     */
+    public function getEnv(
+        $name,
+        $default = null,
+        $filter = FILTER_DEFAULT,
+        $options = null
+    ) {
+        return $this->filterInput(
+            INPUT_ENV,
+            $name,
+            $default,
+            $filter,
+            $options
+        );
+    }
+
+
+    /**
+     * @param   array|int $definition
+     * @param   bool      $addEmpty
+     * @return  array
+     */
+    public function getEnvs($definition = FILTER_DEFAULT, $addEmpty = true)
+    {
+        return $this->filterInputArray(INPUT_ENV, $definition, $addEmpty);
+    }
+
+
+    /**
+     * @param   string    $name
+     * @param   mixed     $default Default value if name is not found in input
+     * @param   int       $filter
+     * @param   int|array $options
+     * @return  string|int
+     */
+    public function getServer(
+        $name,
+        $default = null,
+        $filter = FILTER_DEFAULT,
+        $options = null
+    ) {
+        return $this->filterInput(
+            INPUT_SERVER,
+            $name,
+            $default,
+            $filter,
+            $options
+        );
+    }
+
+
+    /**
+     * @param   array|int $definition
+     * @param   bool      $addEmpty
+     * @return  array
+     */
+    public function getServers($definition = FILTER_DEFAULT, $addEmpty = true)
+    {
+        return $this->filterInputArray(INPUT_SERVER, $definition, $addEmpty);
     }
 
 
