@@ -38,9 +38,6 @@ class UtilContainerTest extends PHPUnitTestCase
 
         foreach ($classMap as $simpleName => $fullName) {
             $method = "get{$simpleName}";
-            if ('Util' == substr($method, -4)) {
-                $method = substr($method, 0, strlen($method) - 4);
-            }
 
             $this->assertInstanceOf($fullName, $utilContainer->$method());
         }

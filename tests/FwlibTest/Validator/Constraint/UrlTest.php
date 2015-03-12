@@ -80,7 +80,7 @@ class UrlTest extends PHPUnitTestCase
                 return UrlTest::$selfUrlWithoutParameter;
             });
 
-        $utilContainer->register('HttpUtil', $httpUtil);
+        $utilContainer->register('Http', $httpUtil);
     }
 
 
@@ -88,7 +88,7 @@ class UrlTest extends PHPUnitTestCase
     {
         $utilContainer = UtilContainer::getInstance();
 
-        $utilContainer->register('HttpUtil', self::$originalHttpUtil);
+        $utilContainer->register('Http', self::$originalHttpUtil);
     }
 
 

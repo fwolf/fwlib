@@ -60,7 +60,7 @@ class UrlGeneratorTest extends PHPUnitTestCase
             ->method('getGets')
             ->willReturn(self::$selfGetParameters);
 
-        $utilContainer->register('HttpUtil', $httpUtil);
+        $utilContainer->register('Http', $httpUtil);
     }
 
 
@@ -68,7 +68,7 @@ class UrlGeneratorTest extends PHPUnitTestCase
     {
         $utilContainer = UtilContainer::getInstance();
 
-        $utilContainer->register('HttpUtil', self::$httpUtilBackup);
+        $utilContainer->register('Http', self::$httpUtilBackup);
     }
 
 

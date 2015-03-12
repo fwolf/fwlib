@@ -41,7 +41,7 @@ class UtilContainer implements UtilContainerInterface
      */
     public function getArray()
     {
-        return $this->get('ArrayUtil');
+        return $this->get('Array');
     }
 
 
@@ -68,7 +68,7 @@ class UtilContainer implements UtilContainerInterface
      */
     public function getDatetime()
     {
-        return $this->get('DatetimeUtil');
+        return $this->get('Datetime');
     }
 
 
@@ -104,16 +104,20 @@ class UtilContainer implements UtilContainerInterface
      */
     public function getHttp()
     {
-        return $this->get('HttpUtil');
+        return $this->get('Http');
     }
 
 
     /**
      * {@inheritdoc}
      *
-     * ArrayUtil can not be renamed to Array, because its reserved word, other
-     * utils with 'Util' in name, is to identify to other common class name, and
-     * avoid IDE type hint confusion.
+     * Some util class name end with 'Util', is ugly but have to. ArrayUtil
+     * can not be renamed to Array, because its reserved word, others need to
+     * keep for identify with other common class name, and avoid IDE type hint
+     * confusion.
+     *
+     * But for convenience, all key of util class have no 'Util' suffix,
+     * easier to remember, especially for using {@see register()}.
      */
     protected function getInitialServiceClassMap()
     {
@@ -128,17 +132,17 @@ class UtilContainer implements UtilContainerInterface
             'ChnOrganizationCode'   => ChnOrganizationCode::class,
 
             // Common
-            'ArrayUtil'         => ArrayUtil::class,
-            'DatetimeUtil'      => DatetimeUtil::class,
+            'Array'             => ArrayUtil::class,
+            'Datetime'          => DatetimeUtil::class,
             'Env'               => Env::class,
             'EscapeColor'       => EscapeColor::class,
             'FileSystem'        => FileSystem::class,
-            'HttpUtil'          => HttpUtil::class,
+            'Http'              => HttpUtil::class,
             'Ip'                => Ip::class,
             'Json'              => Json::class,
-            'NumberUtil'        => NumberUtil::class,
-            'ObjectUtil'        => ObjectUtil::class,
-            'StringUtil'        => StringUtil::class,
+            'Number'            => NumberUtil::class,
+            'Object'            => ObjectUtil::class,
+            'String'            => StringUtil::class,
 
             // Uuid
             'UuidBase16'        => Base16::class,
@@ -192,7 +196,7 @@ class UtilContainer implements UtilContainerInterface
      */
     public function getNumber()
     {
-        return $this->get('NumberUtil');
+        return $this->get('Number');
     }
 
 
@@ -201,7 +205,7 @@ class UtilContainer implements UtilContainerInterface
      */
     public function getObject()
     {
-        return $this->get('ObjectUtil');
+        return $this->get('Object');
     }
 
 
@@ -219,7 +223,7 @@ class UtilContainer implements UtilContainerInterface
      */
     public function getString()
     {
-        return $this->get('StringUtil');
+        return $this->get('String');
     }
 
 
