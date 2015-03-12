@@ -472,12 +472,12 @@ class HttpUtilTest extends PHPUnitTestCase
         $httpUtil->setCookie('foo', 'bar', time() + 10);
         $this->assertEquals('bar', $setcookieMock->getResult()['foo']);
 
-        $httpUtil->setCookie('foo', 'bar', time() - 10);
+        $httpUtil->setCookie('foo', 'bar', time() - 10, '/path/');
         $this->assertArrayNotHasKey('foo', $setcookieMock->getResult());
 
 
         // For unset
-        $httpUtil->setCookie('foo', 'bar', time() + 10);
+        $httpUtil->setCookie('foo', 'bar', time() + 10, '/path', 'domain.tld');
         $this->assertEquals('bar', $setcookieMock->getResult()['foo']);
 
         $httpUtil->unsetCookie('foo');
