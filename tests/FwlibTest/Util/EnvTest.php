@@ -5,6 +5,7 @@ use Fwlib\Util\Env;
 use Fwlib\Util\UtilContainer;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -39,6 +40,33 @@ class EnvTest extends PHPUnitTestCase
         $x = "  Foo\r\nBar\r\n";
         $y = "  Foo" . PHP_EOL . PHP_EOL . "Bar" . PHP_EOL;
         $this->assertEquals($y, strip_tags($env->ecl($x, true)));
+    }
+
+
+    public function testEclWithNotCli()
+    {
+        /** @var MockObject|Env $env */
+        $env = $this->getMock(Env::class, ['isCli']);
+        $env->expects($this->any())
+            ->method('isCli')
+            ->willReturnOnConsecutiveCalls(true, false);
+        // Do not test on array, avoid recursion, keep consecutive order
+
+        $x = 'foo';
+        $y = 'foo' . PHP_EOL;
+        $this->assertEquals($y, $env->ecl($x, true));
+
+        $y = 'foo<br />' . PHP_EOL;
+        $this->assertEquals($y, $env->ecl($x, true));
+    }
+
+
+    public function testEclWithPrint()
+    {
+        $env = $this->buildMock();
+
+        $env->ecl('foo');
+        $this->expectOutputString('foo' . PHP_EOL);
     }
 
 
@@ -94,5 +122,19 @@ class EnvTest extends PHPUnitTestCase
 
 
         $filterInputMock->disableAll();
+    }
+
+
+    /**
+     * Most for coverage
+     */
+    public function testIsMethods()
+    {
+        $env = $this->buildMock();
+
+        $env->isCli();
+        $env->isNixOs();
+
+        $this->assertTrue(true);
     }
 }

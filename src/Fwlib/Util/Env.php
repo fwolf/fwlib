@@ -4,8 +4,6 @@ namespace Fwlib\Util;
 /**
  * Runtime or server environment
  *
- * @codeCoverageIgnore
- *
  * @copyright   Copyright 2006-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -16,8 +14,6 @@ class Env
 
     /**
      * Smart 'echo line', end with \n or <br /> according to run mod
-     *
-     * @codeCoverageIgnore
      *
      * @param   string|array $str     Content to echo
      * @param   boolean      $noPrint Return instead of print
@@ -142,8 +138,6 @@ class Env
     /**
      * Check if is running under cli mod
      *
-     * @codeCoverageIgnore
-     *
      * @return  boolean
      */
     public function isCli()
@@ -154,8 +148,6 @@ class Env
 
     /**
      * Check if is running in *nix host
-     *
-     * @codeCoverageIgnore
      *
      * @return boolean
      */
