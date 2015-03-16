@@ -30,7 +30,7 @@ use Fwlib\Bridge\Adodb;
  * also change column value array to associate array index by column name, so
  * the dict array define are as simple as param of set().
  *
- * @copyright   Copyright 2011-2014 Fwolf
+ * @copyright   Copyright 2011-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class CodeDictionary

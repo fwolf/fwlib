@@ -13,7 +13,7 @@ use Fwlib\Mvc\ViewInterface;
  * Also, it can delegate request to other Controller, so sub-dir can have their
  * own index too.
  *
- * @copyright   Copyright 2008-2014 Fwolf
+ * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractController implements ControllerInterface

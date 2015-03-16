@@ -10,7 +10,7 @@ namespace Fwlib\Bridge;
  * autoload original Smarty class, need add prefix to ClassLoader in
  * config.default.php footer part, or require Smarty.class.php somewhere.
  *
- * @copyright   Copyright 2013-2014 Fwolf
+ * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Smarty extends \Smarty
