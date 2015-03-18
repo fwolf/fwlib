@@ -174,15 +174,20 @@ trait UrlGeneratorTrait
 
 
     /**
-     * Reset stored information
+     * Reset all stored information
      *
+     * @param   bool    $reInitialize
      * @return  static
      */
-    protected function reset()
+    public function reset($reInitialize = false)
     {
         $this->parameters = [];
 
         $this->urlComponents = [];
+
+        if ($reInitialize) {
+            $this->initialize();
+        }
 
         return $this;
     }

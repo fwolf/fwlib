@@ -49,6 +49,15 @@ interface UrlGeneratorInterface
 
 
     /**
+     * Reset all stored information
+     *
+     * @param   bool    $reInitialize
+     * @return  static
+     */
+    public function reset($reInitialize = false);
+
+
+    /**
      * Set base url, will not touch stored query parameters and fragment
      *
      * This is useful when want to change scheme/host/path parts and keep

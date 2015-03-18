@@ -158,5 +158,11 @@ class UrlGeneratorTraitTest extends PHPUnitTestCase
 
         $urlGenerator->unsetAllParameters();
         $this->assertEmpty($urlGenerator->getUrl());
+
+        $urlGenerator->reset(true);
+        $this->assertEquals(
+            '?foo=bar',
+            $urlGenerator->getUrl()
+        );
     }
 }
