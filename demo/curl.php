@@ -1,16 +1,11 @@
 <?php
-/**
- * @copyright   Copyright 2013-2015 Fwolf
- * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
- */
-
 use Fwlib\Net\Curl;
 use Fwlib\Util\UtilContainer;
 
-require_once __DIR__ . '/../../../config.default.php';
+require_once __DIR__ . '/../config.default.php';
 
 $ch = new Curl;
-$env = UtilContainer::getInstance()->get('Env');
+$env = UtilContainer::getInstance()->getEnv();
 
 
 // HTTP, Baidu
