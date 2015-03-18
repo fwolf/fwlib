@@ -4,23 +4,22 @@ use Fwlib\Util\UtilContainer;
 
 require_once __DIR__ . '/../config.default.php';
 
-$ch = new Curl;
+$curl = new Curl;
 $env = UtilContainer::getInstance()->getEnv();
 
 
-// HTTP, Baidu
-$html = $ch->get('http://www.baidu.com/');
-$env->ecl('Baidu HTTP get: ' . $ch->getLastCode());
-$env->ecl('Title: ' . $ch->match('/<title>(.*?)<\/title>/', $html));
+/** @noinspection SpellCheckingInspection */
+$testSite = 'www.httpbin.org';
 
 
-// HTTPS, Alipay
-$html = $ch->post('http://www.alipay.com/');
-$charset = $ch->match('<meta charset="(.*?)">', $html);
-$title = $ch->match('/<title>(.*?)<\/title>/', $html);
-$title = mb_convert_encoding($title, 'utf-8', $charset);
-$env->ecl('Alipay HTTPS get: ' . $ch->getLastCode());
-$env->ecl('Title: ' . $title);
+// HTTP
+$response = $curl->get("http://$testSite/");
+$env->ecl('HTTP get: ' . $curl->getLastCode());
+$env->ecl('Title: ' . $curl->match('/<title>(.*?)<\/title>/', $response));
 
+$env->ecl();
 
-unset($ch);
+// HTTPS
+$response = $curl->post("http://$testSite/post", ['q' => 'fwlib']);
+$env->ecl('HTTPS post: ' . $curl->getLastCode());
+$env->ecl('Post data: ' . var_export(json_decode($response, true)['form'], true));
