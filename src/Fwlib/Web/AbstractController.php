@@ -1,8 +1,5 @@
 <?php
-namespace Fwlib\Mvc;
-
-use Fwlib\Mvc\ControllerInterface;
-use Fwlib\Mvc\ViewInterface;
+namespace Fwlib\Web;
 
 /**
  * Controller and Router in MVC

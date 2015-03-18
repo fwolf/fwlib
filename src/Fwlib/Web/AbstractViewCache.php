@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Mvc;
+namespace Fwlib\Web;
 
 use Fwlib\Cache\CacheInterface;
 

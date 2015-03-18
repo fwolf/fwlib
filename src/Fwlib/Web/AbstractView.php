@@ -1,6 +1,7 @@
 <?php
-namespace Fwlib\Mvc;
+namespace Fwlib\Web;
 
+use Fwlib\Bridge\Smarty;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**

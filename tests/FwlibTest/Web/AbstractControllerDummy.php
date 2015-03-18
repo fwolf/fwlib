@@ -1,5 +1,5 @@
 <?php
-namespace FwlibTest\Mvc;
+namespace FwlibTest\Web;
 
 /**
  * Test dummy for Controller and View

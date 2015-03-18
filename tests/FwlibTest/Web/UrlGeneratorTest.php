@@ -1,10 +1,10 @@
 <?php
-namespace FwlibTest\Mvc;
+namespace FwlibTest\Web;
 
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Web\UrlGenerator;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Mvc\UrlGenerator;
 
 /**
  * @copyright   Copyright 2014-2015 Fwolf

@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Mvc;
+namespace FwlibTest\Web;
 
-use Fwlib\Mvc\AbstractController;
+use Fwlib\Web\AbstractController;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -153,7 +153,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     public function testDisplayWithActualView()
     {
         $controller = $this->buildMockWithGetControllerClass(null);
-        self::$viewClass = 'FwlibTest\Mvc\AbstractControllerDummy';
+        self::$viewClass = 'FwlibTest\Web\AbstractControllerDummy';
 
         $output = $controller->getOutput(null);
         $this->assertEquals('Output from dummy', $output);
@@ -209,7 +209,7 @@ class AbstractControllerTest extends PHPUnitTestCase
         ];
         $controller = $this->buildMockWithGetControllerClass(null);
 
-        self::$controllerClass = 'FwlibTest\Mvc\AbstractControllerDummy';
+        self::$controllerClass = 'FwlibTest\Web\AbstractControllerDummy';
 
         $output = $controller->getOutput();
         $this->assertEquals('Output from dummy', $output);

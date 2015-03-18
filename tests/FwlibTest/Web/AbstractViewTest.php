@@ -1,9 +1,9 @@
 <?php
-namespace FwlibTest\Mvc;
+namespace FwlibTest\Web;
 
 use Fwlib\Bridge\Smarty;
+use Fwlib\Web\AbstractView;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Mvc\AbstractView;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -80,7 +80,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage View fetch method for action
      */
     public function testGetOutputWithInvalidAction()
@@ -92,7 +92,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage View method for part
      */
     public function testGetOutputWithInvalidPart()
@@ -188,16 +188,15 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
 // Fake function for test
-namespace Fwlib\Mvc;
-
+namespace Fwlib\Web;
 
 function class_exists()
 {
-    return \FwlibTest\Mvc\AbstractViewTest::$class_exists;
+    return \FwlibTest\Web\AbstractViewTest::$class_exists;
 }
 
 
 function error_log($message)
 {
-    \FwlibTest\Mvc\AbstractViewTest::$error_log = $message;
+    \FwlibTest\Web\AbstractViewTest::$error_log = $message;
 }

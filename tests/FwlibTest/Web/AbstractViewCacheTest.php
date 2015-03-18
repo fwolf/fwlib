@@ -1,10 +1,10 @@
 <?php
-namespace FwlibTest\Mvc;
+namespace FwlibTest\Web;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\Cache;
-use Fwlib\Mvc\AbstractViewCache;
 use Fwlib\Util\UtilContainer;
+use Fwlib\Web\AbstractViewCache;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf

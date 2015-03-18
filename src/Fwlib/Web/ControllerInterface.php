@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Mvc;
+namespace Fwlib\Web;
 
 /**
  * Controller interface
