@@ -138,6 +138,18 @@ trait ServiceContainerTrait
 
 
     /**
+     * @see ServiceContainerInterface::getRegistered()
+     *
+     * @param   string  $name
+     * @return  object
+     */
+    public function getRegistered($name)
+    {
+        return $this->get($name, false);
+    }
+
+
+    /**
      * @see ServiceContainerInterface::register()
      *
      * @param   string        $name

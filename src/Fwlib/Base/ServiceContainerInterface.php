@@ -39,6 +39,21 @@ namespace Fwlib\Base;
 interface ServiceContainerInterface
 {
     /**
+     * Get registered instance
+     *
+     * Service instance need retrieve method, pre defined class should have
+     * custom getter custom method, dynamic registered instance use this one.
+     *
+     * Although this method can also be used to retrieve instance of pre
+     * defined class, its not encouraged, as bad practice.
+     *
+     * @param   string  $name
+     * @return  object
+     */
+    public function getRegistered($name);
+
+
+    /**
      * Register service class or instance
      *
      * @param   string        $name

@@ -78,16 +78,19 @@ class ServiceContainerTraitTest extends PHPUnitTestCase
             42,
             $this->reflectionCall($serviceContainer, 'get', ['Foo'])
         );
+        // Get again will not create new instance
         $this->assertEquals(
             42,
             $this->reflectionCall($serviceContainer, 'get', ['Foo'])
         );
+        // Except with force new parameter
         $this->assertEquals(
             43,
             $this->reflectionCall($serviceContainer, 'get', ['Foo', true])
         );
 
 
+        // Dynamic register and get
         $bar = new \stdClass;
         $bar->property = 'dummy';
 
@@ -95,7 +98,7 @@ class ServiceContainerTraitTest extends PHPUnitTestCase
 
         $this->assertEquals(
             $bar,
-            $this->reflectionCall($serviceContainer, 'get', ['Bar'])
+            $serviceContainer->getRegistered('Bar')
         );
     }
 
