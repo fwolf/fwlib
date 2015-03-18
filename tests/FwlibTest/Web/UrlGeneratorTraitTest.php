@@ -3,14 +3,15 @@ namespace FwlibTest\Web;
 
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
-use Fwlib\Web\UrlGenerator;
+use Fwlib\Web\UrlGeneratorTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class UrlGeneratorTest extends PHPUnitTestCase
+class UrlGeneratorTraitTest extends PHPUnitTestCase
 {
     /**
      * @var HttpUtil
@@ -29,14 +30,12 @@ class UrlGeneratorTest extends PHPUnitTestCase
 
 
     /**
-     * @return  UrlGenerator
+     * @return MockObject | UrlGeneratorTrait
      */
     protected function buildMock()
     {
-        $urlGenerator = $this->getMock(
-            UrlGenerator::class,
-            null
-        );
+        $urlGenerator = $this->getMockBuilder(UrlGeneratorTrait::class)
+            ->getMockForTrait();
 
         return $urlGenerator;
     }
