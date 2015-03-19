@@ -1,14 +1,42 @@
 <?php
 namespace Fwlib\Web;
 
+use Fwlib\Web\Helper\GetControllerClassByNamespaceTrait;
+use Fwlib\Web\Helper\GetViewClassByNamespaceTrait;
+
 /**
+ * Abstract controller
+ *
+ * Trait of controller and view make this class usable after inherit and
+ * overwrite some property, all abstract method are implemented in trait.
+ *
+ * As empty property will not suit any application, kept this as abstract.
+ *
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractController implements ControllerInterface
 {
-    use ControllerTrait;
+    use ControllerTrait, GetControllerClassByNamespaceTrait {
+        GetControllerClassByNamespaceTrait::getControllerClass
+            insteadof ControllerTrait;
+    }
+    use GetViewClassByNamespaceTrait;
 
+
+    /**
+     * Search controller class in this namespace, ending \\ included
+     *
+     * @type    string
+     */
+    protected $controllerNamespace = '';
+
+    /**
+     * View to show when empty action given, FQN
+     *
+     * @type    string
+     */
+    protected $defaultView = '';
 
     /**
      * Module name
@@ -21,4 +49,11 @@ abstract class AbstractController implements ControllerInterface
      * @var string
      */
     protected $module = '';
+
+    /**
+     * Search view class in this namespace, ending \\ included
+     *
+     * @type    string
+     */
+    protected $viewNamespace = '';
 }
