@@ -67,5 +67,8 @@ class HtmlHelperTest extends \PHPUnit_Framework_TestCase
         $rootPath = 'foo/bar/';
         $helper->setRootPath($rootPath);
         $this->assertEquals($rootPath, $helper->getRootPath());
+
+        $helper->setRootPath('bar/foo');
+        $this->assertEquals('bar/foo/', $helper->getRootPath());
     }
 }

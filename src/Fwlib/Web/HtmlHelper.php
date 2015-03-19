@@ -178,6 +178,12 @@ class HtmlHelper
      */
     public function setRootPath($rootPath)
     {
+        if (!empty($rootPath) &&
+            DIRECTORY_SEPARATOR != substr($rootPath, -1)
+        ) {
+            $rootPath .= DIRECTORY_SEPARATOR;
+        }
+
         $this->rootPath = $rootPath;
 
         return $this;
