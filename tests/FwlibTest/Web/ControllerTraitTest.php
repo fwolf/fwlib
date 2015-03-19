@@ -198,7 +198,7 @@ class ControllerTraitTest extends PHPUnitTestCase
     public function testDisplayWithActualView()
     {
         $controller = $this->buildMockWithGetControllerClass(null);
-        self::$viewClass = 'FwlibTest\Web\ControllerTraitDummy';
+        self::$viewClass = ControllerAndViewDummy::class;
 
         $output = $controller->getOutput(null);
         $this->assertEquals('Output from dummy', $output);
@@ -235,7 +235,7 @@ class ControllerTraitTest extends PHPUnitTestCase
         $this->getModule = 'testModule';
         $controller = $this->buildMockWithGetControllerClass(null);
 
-        self::$controllerClass = 'FwlibTest\Web\ControllerTraitDummy';
+        self::$controllerClass = ControllerAndViewDummy::class;
 
         $output = $controller->getOutput();
         $this->assertEquals('Output from dummy', $output);

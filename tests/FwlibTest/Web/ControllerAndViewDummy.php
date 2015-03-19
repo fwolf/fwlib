@@ -2,15 +2,15 @@
 namespace FwlibTest\Web;
 
 /**
- * Test dummy for Controller and View
+ * Test dummy as a Controller and View
  *
  * Not implements interface because there are some method with same name with
  * different parameter.
  */
-class ControllerTraitDummy
+class ControllerAndViewDummy
 {
     /**
-     * Param 1 is array in Controller, and string in View, so remove type hint.
+     * Param 1 is array in Controller, and string in View, so type hint removed.
      */
     public function getOutput()
     {
