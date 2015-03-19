@@ -2,6 +2,7 @@
 namespace FwlibTest\Web;
 
 use Fwlib\Web\AbstractController;
+use Fwlib\Web\Request;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -15,6 +16,21 @@ class AbstractControllerTest extends PHPUnitTestCase
      * @var string
      */
     public static $controllerClass;
+
+    /**
+     * @var string
+     */
+    protected $getAction;
+
+    /**
+     * @var string
+     */
+    protected $getModule;
+
+    /**
+     * @var Request
+     */
+    protected $requestMock;
 
     /**
      * @var string
@@ -65,6 +81,8 @@ class AbstractControllerTest extends PHPUnitTestCase
             ->method('createView')
             ->will($this->returnValue($mock));
 
+        /** @var AbstractController $controller */
+        $controller->setRequest($this->buildRequestMock());
 
         return $controller;
     }
@@ -88,6 +106,8 @@ class AbstractControllerTest extends PHPUnitTestCase
                 return AbstractControllerTest::$viewClass;
             }));
 
+        /** @var AbstractController $controller */
+        $controller->setRequest($this->buildRequestMock());
 
         return $controller;
     }
@@ -117,8 +137,40 @@ class AbstractControllerTest extends PHPUnitTestCase
                 return AbstractControllerTest::$viewClass;
             }));
 
+        /** @var AbstractController $controller */
+        $controller->setRequest($this->buildRequestMock());
 
         return $controller;
+    }
+
+
+    /**
+     * @return MockObject | Request
+     */
+    protected function buildRequestMock()
+    {
+        if (is_null($this->requestMock)) {
+            $mock = $this->getMockBuilder(Request::class)
+                ->disableOriginalConstructor()
+                ->setMethods(['getAction', 'getModule'])
+                ->getMock();
+
+            $mock->expects($this->any())
+                ->method('getAction')
+                ->willReturnCallback(function() {
+                    return $this->getAction;
+                });
+
+            $mock->expects($this->any())
+                ->method('getModule')
+                ->willReturnCallback(function() {
+                    return $this->getModule;
+                });
+
+            $this->requestMock = $mock;
+        }
+
+        return $this->requestMock;
     }
 
 
@@ -126,9 +178,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     {
         $controller = $this->buildMock();
 
-        $_GET = [
-            'a' => 'test-action',
-        ];
+        $this->getAction = 'test-action';
         // Need a dummy view class name, empty will throw exception
         self::$viewClass = 'Dummy';
 
@@ -136,7 +186,7 @@ class AbstractControllerTest extends PHPUnitTestCase
         $this->assertEquals('Dummy Output', $output);
 
         // Action can be empty, need View allow output without action.
-        $_GET = [];
+        $this->getAction = '';
         $output = $controller->getOutput();
         $this->assertEquals('Dummy Output', $output);
     }
@@ -156,9 +206,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     {
         $controller = $this->buildMock();
 
-        $_GET = [
-            'action' => 'test-action',
-        ];
+        $this->getAction = 'test-action';
         self::$viewClass = '';
 
         $output = $controller->getOutput();
@@ -170,9 +218,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     {
         $controller = $this->buildMock();
 
-        $_GET = [
-            'm' => 'testModule',
-        ];
+        $this->getModule = 'testModule';
         // Need a dummy view class name, or will throw exception
         self::$controllerClass = 'Dummy';
 
@@ -183,9 +229,7 @@ class AbstractControllerTest extends PHPUnitTestCase
 
     public function testTransferWithActualController()
     {
-        $_GET = [
-            'm' => 'testModule',
-        ];
+        $this->getModule = 'testModule';
         $controller = $this->buildMockWithGetControllerClass(null);
 
         self::$controllerClass = 'FwlibTest\Web\AbstractControllerDummy';
@@ -197,9 +241,7 @@ class AbstractControllerTest extends PHPUnitTestCase
 
     public function testTransferWithEmptyControllerClass()
     {
-        $_GET = [
-            'm' => 'testModule',
-        ];
+        $this->getModule = 'testModule';
         $controller = $this->buildMockBasis(null);
 
         $output = $controller->getOutput();

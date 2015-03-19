@@ -12,7 +12,7 @@ class AbstractControllerDummy
     /**
      * Param 1 is array in Controller, and string in View, so remove type hint.
      */
-    public function getOutput($request = null)
+    public function getOutput()
     {
         return 'Output from dummy';
     }
@@ -27,10 +27,5 @@ class AbstractControllerDummy
     public function setModule($module)
     {
         return $this;
-    }
-
-
-    public function setPathToRoot($pathToRoot)
-    {
     }
 }

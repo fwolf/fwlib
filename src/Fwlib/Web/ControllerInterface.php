@@ -15,10 +15,16 @@ interface ControllerInterface
      * Will transfer request to another Controller, or instance View to get
      * output.
      *
-     * $request can be $_REQUEST, $_GET, $_POST.
-     *
-     * @param   array   $request
      * @return  string
      */
-    public function getOutput(array $request = null);
+    public function getOutput();
+
+
+    /**
+     * Setter of request instance
+     *
+     * @param   RequestInterface    $request
+     * @return  static
+     */
+    public function setRequest(RequestInterface $request);
 }

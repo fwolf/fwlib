@@ -5,22 +5,18 @@ namespace Fwlib\Web;
  * Controller and Router in MVC
  *
  * In application, Controller is common called in index.php as entry, the main
- * purpose is to route user request(via $_GET) to View.
+ * purpose is to route user request(via {@see \Fwlib\Web\Request}) to View.
  *
- * Also, it can delegate request to other Controller, so sub-dir can have their
- * own index too.
+ * Also, it can delegate request to other controller, so every module can have
+ * their own index too, although this is not common case.
  *
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractController implements ControllerInterface
 {
-    /**
-     * Request param of action
-     *
-     * @var string
-     */
-    protected $actionParameter = 'a';
+    use RequestAwareTrait;
+
 
     /**
      * Module name
@@ -28,18 +24,11 @@ abstract class AbstractController implements ControllerInterface
      * If module parsed from user request equals this, will call corresponding
      * View to get output.
      *
-     * Root Controller use empty string as module name.
+     * Root controller can use empty string as module name.
      *
      * @var string
      */
     protected $module = '';
-
-    /**
-     * Request param of module
-     *
-     * @var string
-     */
-    protected $moduleParameter = 'm';
 
 
     /**
@@ -120,25 +109,6 @@ abstract class AbstractController implements ControllerInterface
 
 
     /**
-     * Get action from user request
-     *
-     * @param   array   $request
-     * @return  string
-     */
-    protected function getActionFromRequest(array $request)
-    {
-        if (isset($request[$this->actionParameter])) {
-            $action = trim($request[$this->actionParameter]);
-
-        } else {
-            $action = '';
-        }
-
-        return $action;
-    }
-
-
-    /**
      * Get class name of Controller by module
      *
      * By given $module name, use switch or check prefix, to determine which
@@ -156,42 +126,20 @@ abstract class AbstractController implements ControllerInterface
 
 
     /**
-     * Get module name from user request
-     *
-     * @param   array   $request
-     * @return  string
-     */
-    protected function getModuleFromRequest(array $request)
-    {
-        if (isset($request[$this->moduleParameter])) {
-            $module = trim($request[$this->moduleParameter]);
-
-        } else {
-            $module = $this->module;
-        }
-
-        return $module;
-    }
-
-
-    /**
      * {@inheritdoc}
      *
-     * @param   array   $request    Default $_GET
      * @return  string
      */
-    public function getOutput(array $request = null)
+    public function getOutput()
     {
-        if (is_null($request)) {
-            $request = $_GET;
-        }
+        $request = $this->getRequest();
 
-        $module = $this->getModuleFromRequest($request);
+        $module = $request->getModule();
         if ($module != $this->module) {
             $output = $this->transfer($module);
 
         } else {
-            $action = $this->getActionFromRequest($request);
+            $action = $request->getAction();
             $output = $this->display($action);
         }
 
