@@ -111,18 +111,22 @@ abstract class AbstractController implements ControllerInterface
 
 
     /**
-     * Get class name of Controller by module
+     * Get class name of controller by module
      *
-     * By given $module name, use switch or check prefix, to determine which
-     * Controller should use. Return null if not found.
+     * By given $module name, determine which controller class should use.
+     * Return null if not found.
      *
-     * Should extend by child class if need to use module.
+     * Should extend by child class if need to use module, or leave it for
+     * small application did not have module.
      *
      * @param   string  $module
      * @return  string
      */
     protected function getControllerClass($module)
     {
+        // Dummy for coverage
+        true || $module;
+
         return null;
     }
 
@@ -150,12 +154,12 @@ abstract class AbstractController implements ControllerInterface
 
 
     /**
-     * Get class name of View by action
+     * Get class name of view by action
      *
-     * By given $action string, use switch or check prefix, to determine which
-     * View should use. Return null if not found.
+     * By given action string, determine which view should use. Return null if
+     * not found.
      *
-     * Should extend by child class.
+     * Must extend by child class.
      *
      * @param   string  $action
      * @return  string
@@ -164,7 +168,7 @@ abstract class AbstractController implements ControllerInterface
 
 
     /**
-     * Transfer request to another Controller
+     * Transfer request to another controller
      *
      * @param   string  $module
      * @return  string
