@@ -20,12 +20,12 @@ class SessionStart implements FunctionMockWrapperInterface
     /**
      * {@inheritdoc}
      */
-    public function build($namespace, $enabled = false)
+    public function build($namespace)
     {
         $callback = function() use ($namespace) {
             self::$results[$namespace] = true;
         };
 
-        return $this->buildFunctionMock($namespace, $callback, $enabled);
+        return $this->buildFunctionMock($namespace, $callback);
     }
 }

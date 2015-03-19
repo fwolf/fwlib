@@ -20,12 +20,12 @@ class Header implements FunctionMockWrapperInterface
     /**
      * {@inheritdoc}
      */
-    public function build($namespace, $enabled = false)
+    public function build($namespace)
     {
         $callback = function($headerString) use ($namespace) {
             self::$results[$namespace][] = $headerString;
         };
 
-        return $this->buildFunctionMock($namespace, $callback, $enabled);
+        return $this->buildFunctionMock($namespace, $callback);
     }
 }

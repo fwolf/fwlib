@@ -20,7 +20,7 @@ class Setcookie implements FunctionMockWrapperInterface
     /**
      * {@inheritdoc}
      */
-    public function build($namespace, $enabled = false)
+    public function build($namespace)
     {
         $callback = function($name, $value, $expire) use ($namespace) {
             if (time() > $expire) {
@@ -31,6 +31,6 @@ class Setcookie implements FunctionMockWrapperInterface
             }
         };
 
-        return $this->buildFunctionMock($namespace, $callback, $enabled);
+        return $this->buildFunctionMock($namespace, $callback);
     }
 }

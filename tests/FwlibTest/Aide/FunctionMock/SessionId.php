@@ -20,7 +20,7 @@ class SessionId implements FunctionMockWrapperInterface
     /**
      * {@inheritdoc}
      */
-    public function build($namespace, $enabled = false)
+    public function build($namespace)
     {
         $callback = function($id = '') use ($namespace) {
             if (empty($id)) {
@@ -35,6 +35,6 @@ class SessionId implements FunctionMockWrapperInterface
             }
         };
 
-        return $this->buildFunctionMock($namespace, $callback, $enabled);
+        return $this->buildFunctionMock($namespace, $callback);
     }
 }
