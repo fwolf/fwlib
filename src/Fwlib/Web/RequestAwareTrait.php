@@ -10,10 +10,30 @@ namespace Fwlib\Web;
 trait RequestAwareTrait
 {
     /**
+     * @var RequestInterface
+     */
+    protected $request = null;
+
+
+    /**
      * @return  RequestInterface
      */
     public function getRequest()
     {
-        return Request::getInstance();
+        return is_null($this->request)
+            ? Request::getInstance()
+            : $this->request;
+    }
+
+
+    /**
+     * @param   RequestInterface    $request
+     * @return  static
+     */
+    public function setRequest(RequestInterface $request)
+    {
+        $this->request = $request;
+
+        return $this;
     }
 }

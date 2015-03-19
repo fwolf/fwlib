@@ -10,10 +10,30 @@ namespace Fwlib\Web;
 trait ResponseAwareTrait
 {
     /**
+     * @var ResponseInterface
+     */
+    protected $response = null;
+
+
+    /**
      * @return  ResponseInterface
      */
     public function getResponse()
     {
-        return Response::getInstance();
+        return is_null($this->response)
+            ? Response::getInstance()
+            : $this->response;
+    }
+
+
+    /**
+     * @param   ResponseInterface   $response
+     * @return  static
+     */
+    public function setResponse(ResponseInterface $response)
+    {
+        $this->response = $response;
+
+        return $this;
     }
 }

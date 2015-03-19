@@ -24,13 +24,16 @@ class RequestAwareTraitTest extends PHPUnitTestCase
     }
 
 
-    public function testGetRequest()
+    public function testSetGetRequest()
     {
         $requestAware = $this->buildMock();
 
-        $this->assertInstanceOf(
-            RequestInterface::class,
-            $this->reflectionCall($requestAware, 'getRequest')
-        );
+        $request = $this->reflectionCall($requestAware, 'getRequest');
+        $this->assertInstanceOf(RequestInterface::class, $request);
+        $this->assertNull($this->reflectionGet($requestAware, 'request'));
+
+        $requestAware->setRequest($request);
+        $this->assertInstanceOf(RequestInterface::class, $request);
+        $this->assertNotNull($this->reflectionGet($requestAware, 'request'));
     }
 }

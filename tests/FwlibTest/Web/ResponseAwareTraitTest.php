@@ -24,13 +24,16 @@ class ResponseAwareTraitTest extends PHPUnitTestCase
     }
 
 
-    public function testGetResponse()
+    public function testSetGetResponse()
     {
-        $requestAware = $this->buildMock();
+        $responseAware = $this->buildMock();
 
-        $this->assertInstanceOf(
-            ResponseInterface::class,
-            $this->reflectionCall($requestAware, 'getResponse')
-        );
+        $response = $this->reflectionCall($responseAware, 'getResponse');
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertNull($this->reflectionGet($responseAware, 'response'));
+
+        $responseAware->setResponse($response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertNotNull($this->reflectionGet($responseAware, 'response'));
     }
 }
