@@ -21,11 +21,6 @@ class AbstractControllerTest extends PHPUnitTestCase
      */
     public static $viewClass;
 
-    /**
-     * @var string
-     */
-    protected $pathToRoot = 'path/to/root';
-
 
     /**
      * @return  MockObject | AbstractController
@@ -37,8 +32,7 @@ class AbstractControllerTest extends PHPUnitTestCase
             [
                 'createController', 'createView',
                 'getControllerClass', 'getViewClass'
-            ],
-            [$this->pathToRoot]
+            ]
         );
 
         $controller->expects($this->any())
@@ -85,8 +79,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     {
         $controller = $this->getMock(
             AbstractController::class,
-            ['getViewClass'],
-            [$this->pathToRoot]
+            ['getViewClass']
         );
 
         $controller->expects($this->any())
@@ -109,8 +102,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     {
         $controller = $this->getMock(
             AbstractController::class,
-            ['getControllerClass', 'getViewClass'],
-            [$this->pathToRoot]
+            ['getControllerClass', 'getViewClass']
         );
 
         $controller->expects($this->any())
@@ -171,19 +163,6 @@ class AbstractControllerTest extends PHPUnitTestCase
 
         $output = $controller->getOutput();
         $this->assertStringStartsWith('Error: View for action', $output);
-    }
-
-
-    public function testSetPathToRoot()
-    {
-        $controller = $this->buildMock();
-
-        $controller->setPathToRoot('path/to/root');
-
-        $this->assertEquals(
-            'path/to/root/',
-            $this->reflectionGet($controller, 'pathToRoot')
-        );
     }
 
 

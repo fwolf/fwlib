@@ -41,27 +41,6 @@ abstract class AbstractController implements ControllerInterface
      */
     protected $moduleParameter = 'm';
 
-    /**
-     * Path to root
-     *
-     * External resource in application local storage will retrieve by
-     * relative path to this path.
-     *
-     * @var string
-     */
-    protected $pathToRoot = '../../';
-
-
-    /**
-     * Constructor
-     *
-     * @param   string  $pathToRoot
-     */
-    public function __construct($pathToRoot = null)
-    {
-        $this->setPathToRoot($pathToRoot);
-    }
-
 
     /**
      * Create controller instance
@@ -71,7 +50,7 @@ abstract class AbstractController implements ControllerInterface
      */
     protected function createController($className)
     {
-        $controller = new $className($this->pathToRoot);
+        $controller = new $className();
 
         return $controller;
     }
@@ -85,7 +64,7 @@ abstract class AbstractController implements ControllerInterface
      */
     protected function createView($className)
     {
-        $view = new $className($this->pathToRoot);
+        $view = new $className();
 
         $view->setModule($this->module);
 
@@ -232,26 +211,6 @@ abstract class AbstractController implements ControllerInterface
      * @return  string
      */
     abstract protected function getViewClass($action);
-
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param   string  $pathToRoot
-     * @return  AbstractController
-     */
-    public function setPathToRoot($pathToRoot)
-    {
-        if (!is_null($pathToRoot)) {
-            if (DIRECTORY_SEPARATOR != substr($pathToRoot, -1)) {
-                $pathToRoot .= DIRECTORY_SEPARATOR;
-            }
-
-            $this->pathToRoot = $pathToRoot;
-        }
-
-        return $this;
-    }
 
 
     /**

@@ -21,13 +21,4 @@ interface ControllerInterface
      * @return  string
      */
     public function getOutput(array $request = null);
-
-
-    /**
-     * Setter of $pathToRoot
-     *
-     * @param   string  $pathToRoot
-     * @return  ControllerInterface
-     */
-    public function setPathToRoot($pathToRoot);
 }
