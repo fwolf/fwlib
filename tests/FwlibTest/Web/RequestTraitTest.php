@@ -81,14 +81,4 @@ class RequestTraitTest extends PHPUnitTestCase
         self::$getGet = 'bar';
         $this->assertEquals('bar', $request->getModule());
     }
-
-
-    public function testSetGetRootPath()
-    {
-        $request = $this->buildMock();
-
-        $rootPath = 'foo/bar/';
-        $request->setRootPath($rootPath);
-        $this->assertEquals($rootPath, $request->getRootPath());
-    }
 }

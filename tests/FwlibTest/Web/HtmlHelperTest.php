@@ -58,4 +58,14 @@ class HtmlHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($helper->getJs('foo'));
         $this->assertEmpty($helper->getJs());
     }
+
+
+    public function testSetGetRootPath()
+    {
+        $helper = $this->buildMock();
+
+        $rootPath = 'foo/bar/';
+        $helper->setRootPath($rootPath);
+        $this->assertEquals($rootPath, $helper->getRootPath());
+    }
 }

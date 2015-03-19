@@ -11,6 +11,9 @@ use Fwlib\Base\SingleInstanceTrait;
  * shared css and js collection, then output them in result html. This class
  * only provide accessors, no html generation here.
  *
+ * Root path should set at application beginning, is a path to public root,
+ * used for generate path of other resources, these path usually used in url.
+ *
  *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -29,6 +32,11 @@ class HtmlHelper
      * @var string[]
      */
     protected $js = [];
+
+    /**
+     * @var string
+     */
+    protected $rootPath = '';
 
 
     /**
@@ -128,6 +136,15 @@ class HtmlHelper
 
 
     /**
+     * @return  string
+     */
+    public function getRootPath()
+    {
+        return $this->rootPath;
+    }
+
+
+    /**
      * Remove a css reference
      *
      * @param   string  $name
@@ -150,6 +167,18 @@ class HtmlHelper
     public function removeJs($name)
     {
         unset($this->js[$name]);
+
+        return $this;
+    }
+
+
+    /**
+     * @param   string  $rootPath
+     * @return  static
+     */
+    public function setRootPath($rootPath)
+    {
+        $this->rootPath = $rootPath;
 
         return $this;
     }

@@ -19,12 +19,6 @@ trait RequestTrait
 
 
     /**
-     * @var string
-     */
-    protected $rootPath = '';
-
-
-    /**
      * @see RequestInterface::getAction()
      *
      * @return  string
@@ -45,30 +39,5 @@ trait RequestTrait
     {
         return UtilContainer::getInstance()->getHttp()
             ->getGet($this->moduleParameter);
-    }
-
-
-    /**
-     * @see RequestInterface::getRootPath()
-     *
-     * @return  string
-     */
-    public function getRootPath()
-    {
-        return $this->rootPath;
-    }
-
-
-    /**
-     * @see RequestInterface::setRootPath()
-     *
-     * @param   string  $rootPath
-     * @return  static
-     */
-    public function setRootPath($rootPath)
-    {
-        $this->rootPath = $rootPath;
-
-        return $this;
     }
 }
