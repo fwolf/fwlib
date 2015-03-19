@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Web;
 
+use Fwlib\Web\Exception\ViewNotDefinedException;
+
 /**
  * Controller and Router in MVC
  *
@@ -72,8 +74,8 @@ abstract class AbstractController implements ControllerInterface
         try {
             $viewClass = $this->getViewClass($action);
             if (empty($viewClass)) {
-                throw new \Exception(
-                    "View for action $action not defined"
+                throw new ViewNotDefinedException(
+                    "View for action \"$action\" not defined"
                 );
             }
 
@@ -81,7 +83,7 @@ abstract class AbstractController implements ControllerInterface
 
             return $view->setAction($action)->getOutput();
 
-        } catch (\Exception $e) {
+        } catch (ViewNotDefinedException $e) {
             return $this->displayError($e->getMessage());
         }
     }
