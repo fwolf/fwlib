@@ -18,14 +18,28 @@ class ControllerAndViewDummy
     }
 
 
+    /**
+     * @param   string  $action
+     * @return  static
+     */
     public function setAction($action)
     {
+        // Dummy for inspection
+        true || $action;
+
         return $this;
     }
 
 
+    /**
+     * @param   string  $module
+     * @return  static
+     */
     public function setModule($module)
     {
+        // Dummy for inspection
+        true || $module;
+
         return $this;
     }
 }
