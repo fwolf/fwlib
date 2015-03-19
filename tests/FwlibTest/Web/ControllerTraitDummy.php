@@ -7,7 +7,7 @@ namespace FwlibTest\Web;
  * Not implements interface because there are some method with same name with
  * different parameter.
  */
-class AbstractControllerDummy
+class ControllerTraitDummy
 {
     /**
      * Param 1 is array in Controller, and string in View, so remove type hint.

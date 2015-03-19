@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Web;
 
-use Fwlib\Web\AbstractController;
+use Fwlib\Web\ControllerTrait;
 use Fwlib\Web\Request;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -10,7 +10,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractControllerTest extends PHPUnitTestCase
+class ControllerTraitTest extends PHPUnitTestCase
 {
     /**
      * @var string
@@ -39,28 +39,27 @@ class AbstractControllerTest extends PHPUnitTestCase
 
 
     /**
-     * @return  MockObject | AbstractController
+     * @return  MockObject | ControllerTrait
      */
     protected function buildMock()
     {
-        $controller = $this->getMock(
-            AbstractController::class,
-            [
+        $controller = $this->getMockBuilder(ControllerTrait::class)
+            ->setMethods([
                 'createController', 'createView',
                 'getControllerClass', 'getViewClass'
-            ]
-        );
+            ])
+            ->getMockForTrait();
 
         $controller->expects($this->any())
             ->method('getViewClass')
             ->will($this->returnCallback(function () {
-                return AbstractControllerTest::$viewClass;
+                return ControllerTraitTest::$viewClass;
             }));
 
         $controller->expects($this->any())
             ->method('getControllerClass')
             ->will($this->returnCallback(function () {
-                return AbstractControllerTest::$controllerClass;
+                return ControllerTraitTest::$controllerClass;
             }));
 
 
@@ -81,8 +80,10 @@ class AbstractControllerTest extends PHPUnitTestCase
             ->method('createView')
             ->will($this->returnValue($mock));
 
-        /** @var AbstractController $controller */
+        /** @var ControllerTrait $controller */
         $controller->setRequest($this->buildRequestMock());
+
+        $controller->module = '';
 
         return $controller;
     }
@@ -91,23 +92,24 @@ class AbstractControllerTest extends PHPUnitTestCase
     /**
      * Build a mock, implements abstract method only
      *
-     * @return  MockObject | AbstractController
+     * @return  MockObject | ControllerTrait
      */
     protected function buildMockBasis()
     {
-        $controller = $this->getMock(
-            AbstractController::class,
-            ['getViewClass']
-        );
+        $controller = $this->getMockBuilder(ControllerTrait::class)
+            ->setMethods(['getViewClass'])
+            ->getMockForTrait();
 
         $controller->expects($this->any())
             ->method('getViewClass')
             ->will($this->returnCallback(function () {
-                return AbstractControllerTest::$viewClass;
+                return ControllerTraitTest::$viewClass;
             }));
 
-        /** @var AbstractController $controller */
+        /** @var ControllerTrait $controller */
         $controller->setRequest($this->buildRequestMock());
+
+        $controller->module = '';
 
         return $controller;
     }
@@ -116,29 +118,30 @@ class AbstractControllerTest extends PHPUnitTestCase
     /**
      * Build a mock, with getControllerClass() method
      *
-     * @return  MockObject | AbstractController
+     * @return  MockObject | ControllerTrait
      */
     protected function buildMockWithGetControllerClass()
     {
-        $controller = $this->getMock(
-            AbstractController::class,
-            ['getControllerClass', 'getViewClass']
-        );
+        $controller = $this->getMockBuilder(ControllerTrait::class)
+            ->setMethods(['getControllerClass', 'getViewClass'])
+            ->getMockForTrait();
 
         $controller->expects($this->any())
             ->method('getControllerClass')
             ->will($this->returnCallback(function () {
-                return AbstractControllerTest::$controllerClass;
+                return ControllerTraitTest::$controllerClass;
             }));
 
         $controller->expects($this->any())
             ->method('getViewClass')
             ->will($this->returnCallback(function () {
-                return AbstractControllerTest::$viewClass;
+                return ControllerTraitTest::$viewClass;
             }));
 
-        /** @var AbstractController $controller */
+        /** @var ControllerTrait $controller */
         $controller->setRequest($this->buildRequestMock());
+
+        $controller->module = '';
 
         return $controller;
     }
@@ -195,7 +198,7 @@ class AbstractControllerTest extends PHPUnitTestCase
     public function testDisplayWithActualView()
     {
         $controller = $this->buildMockWithGetControllerClass(null);
-        self::$viewClass = 'FwlibTest\Web\AbstractControllerDummy';
+        self::$viewClass = 'FwlibTest\Web\ControllerTraitDummy';
 
         $output = $controller->getOutput(null);
         $this->assertEquals('Output from dummy', $output);
@@ -232,7 +235,7 @@ class AbstractControllerTest extends PHPUnitTestCase
         $this->getModule = 'testModule';
         $controller = $this->buildMockWithGetControllerClass(null);
 
-        self::$controllerClass = 'FwlibTest\Web\AbstractControllerDummy';
+        self::$controllerClass = 'FwlibTest\Web\ControllerTraitDummy';
 
         $output = $controller->getOutput();
         $this->assertEquals('Output from dummy', $output);
