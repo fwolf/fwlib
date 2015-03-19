@@ -17,12 +17,11 @@ class AbstractViewTest extends PHPUnitTestCase
     public static $error_log = '';
 
 
-    protected function buildMock($pathToRoot)
+    protected function buildMock()
     {
         $view = $this->getMock(
             AbstractView::class,
-            ['fetchTestAction'],
-            [$pathToRoot]
+            ['fetchTestAction']
         );
 
         $view->expects($this->any())
@@ -53,7 +52,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
     public function testAccessors()
     {
-        $view = $this->buildMock('path/to/root');
+        $view = $this->buildMock();
 
         $view->setModule('Module');
         $this->assertEquals('Module', $this->reflectionGet($view, 'module'));
@@ -65,7 +64,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
     public function testGetOutput()
     {
-        $view = $this->buildMock('path/to/root/');
+        $view = $this->buildMock();
 
         $this->assertEquals(
             '<!-- header --><!-- footer -->',
@@ -85,7 +84,7 @@ class AbstractViewTest extends PHPUnitTestCase
      */
     public function testGetOutputWithInvalidAction()
     {
-        $view = $this->buildMock('path/to/root/');
+        $view = $this->buildMock();
 
         $view->setAction('test-action-not-exist')->getOutput();
     }
@@ -97,7 +96,7 @@ class AbstractViewTest extends PHPUnitTestCase
      */
     public function testGetOutputWithInvalidPart()
     {
-        $view = $this->buildMock('path/to/root/');
+        $view = $this->buildMock();
 
         $view->setOutputParts(['NotExist']);
         $view->getOutput();
@@ -106,7 +105,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
     public function testGetOutputWithoutTidyExtension()
     {
-        $view = $this->buildMock('path/to/root/');
+        $view = $this->buildMock();
 
         self::$class_exists = false;
         $view->setUseTidy(true);
@@ -126,7 +125,7 @@ class AbstractViewTest extends PHPUnitTestCase
      */
     public function testGetOutputWithTidy()
     {
-        $view = $this->buildMock('path/to/root/');
+        $view = $this->buildMock();
 
         self::$class_exists = false;
         $view->setUseTidy(false);
@@ -147,7 +146,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
     public function testRemoveCssAndJs()
     {
-        $view = $this->buildMock('path/to/root/');
+        $view = $this->buildMock();
 
         $this->reflectionCall(
             $view,

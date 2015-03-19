@@ -114,17 +114,6 @@ abstract class AbstractView implements ViewInterface
 
 
     /**
-     * Constructor
-     *
-     * @param   string  $pathToRoot
-     */
-    public function __construct($pathToRoot = null)
-    {
-        $this->setPathToRoot($pathToRoot);
-    }
-
-
-    /**
      * Add content to $js
      *
      * @param   string  $name
@@ -330,26 +319,6 @@ abstract class AbstractView implements ViewInterface
     public function setOutputParts($outputParts)
     {
         $this->outputParts = $outputParts;
-
-        return $this;
-    }
-
-
-    /**
-     * Setter of $pathToRoot
-     *
-     * @param   string  $pathToRoot
-     * @return  AbstractView
-     */
-    public function setPathToRoot($pathToRoot)
-    {
-        if (!is_null($pathToRoot)) {
-            if (DIRECTORY_SEPARATOR != substr($pathToRoot, -1)) {
-                $pathToRoot .= DIRECTORY_SEPARATOR;
-            }
-
-            $this->pathToRoot = $pathToRoot;
-        }
 
         return $this;
     }

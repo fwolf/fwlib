@@ -16,12 +16,11 @@ class AbstractViewCacheTest extends PHPUnitTestCase
     public static $forceRefreshCache = false;
 
 
-    protected function buildMock($pathToRoot)
+    protected function buildMock()
     {
         $view = $this->getMock(
             AbstractViewCache::class,
-            ['getCache', 'getOutputBody', 'newInstanceCache'],
-            [$pathToRoot]
+            ['getCache', 'getOutputBody', 'newInstanceCache']
         );
 
         $view->expects($this->any())
@@ -48,12 +47,11 @@ class AbstractViewCacheTest extends PHPUnitTestCase
     }
 
 
-    protected function buildMockWithForceRefreshCache($pathToRoot)
+    protected function buildMockWithForceRefreshCache()
     {
         $view = $this->getMock(
             AbstractViewCache::class,
-            ['forceRefreshCache', 'getCache', 'getOutputBody'],
-            [$pathToRoot]
+            ['forceRefreshCache', 'getCache', 'getOutputBody']
         );
 
         $view->expects($this->any())
@@ -84,7 +82,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
 
     public function testGetOutput()
     {
-        $view = $this->buildMock('path/to/root/');
+        $view = $this->buildMock();
         $view->setUseCache(false);
         $this->assertFalse($view->getUseCache());
 
@@ -112,7 +110,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
 
     public function testForceRefreshCache()
     {
-        $view = $this->buildMockWithForceRefreshCache('path/to/root/');
+        $view = $this->buildMockWithForceRefreshCache();
         $view->setUseCache(true);
 
         $x = $view->getOutput();
