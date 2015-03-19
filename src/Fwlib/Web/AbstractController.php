@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Web;
 
+use Fwlib\Web\Exception\ControllerNotDefinedException;
 use Fwlib\Web\Exception\ViewNotDefinedException;
 
 /**
@@ -178,8 +179,8 @@ abstract class AbstractController implements ControllerInterface
         try {
             $controllerClass = $this->getControllerClass($module);
             if (empty($controllerClass)) {
-                throw new \Exception(
-                    "Controller for module $module not defined"
+                throw new ControllerNotDefinedException(
+                    "Controller for module \"$module\" not defined"
                 );
             }
 
@@ -187,7 +188,7 @@ abstract class AbstractController implements ControllerInterface
 
             return $controller->getOutput();
 
-        } catch (\Exception $e) {
+        } catch (ControllerNotDefinedException $e) {
             return $this->displayError($e->getMessage());
         }
     }
