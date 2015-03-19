@@ -87,7 +87,9 @@ class FunctionMockFactory
      */
     public function setNamespace($namespace)
     {
-        if (class_exists($namespace)) {
+        if (class_exists($namespace) || interface_exists($namespace) ||
+            trait_exists($namespace)
+        ) {
             // Is actually full qualified class name
             $namespace = $this->findNamespace($namespace);
         }
