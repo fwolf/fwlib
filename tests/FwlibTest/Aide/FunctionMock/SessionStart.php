@@ -2,7 +2,6 @@
 namespace FwlibTest\Aide\FunctionMock;
 
 use FwlibTest\Aide\FunctionMockWrapperInterface;
-use FwlibTest\Aide\FunctionMockWrapperTrait;
 
 /**
  * @copyright   Copyright 2015 Fwolf
@@ -10,22 +9,9 @@ use FwlibTest\Aide\FunctionMockWrapperTrait;
  */
 class SessionStart implements FunctionMockWrapperInterface
 {
-    use FunctionMockWrapperTrait;
+    use CheckCalledTrait;
 
 
     /** @type string */
     public $function = 'session_start';
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function build($namespace)
-    {
-        $callback = function() use ($namespace) {
-            self::$results[$namespace] = true;
-        };
-
-        return $this->buildFunctionMock($namespace, $callback);
-    }
 }
