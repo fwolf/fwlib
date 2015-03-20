@@ -120,7 +120,8 @@ abstract class AbstractView extends BaseView
             unset($params[$key]);
         }
 
-        $url = $this->pathToRoot . '?' . http_build_query($params);
+        $url = $this->getHtmlHelper()->getRootPath() .
+            '?' . http_build_query($params);
 
         return $url;
     }

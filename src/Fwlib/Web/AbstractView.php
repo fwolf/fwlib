@@ -15,6 +15,7 @@ use Fwlib\Util\UtilContainerAwareTrait;
 abstract class AbstractView implements ViewInterface
 {
     use UtilContainerAwareTrait;
+    use HtmlHelperAwareTrait;
 
 
     /**
@@ -67,16 +68,6 @@ abstract class AbstractView implements ViewInterface
         0 => 'body',
         2 => 'footer',
     ];
-
-    /**
-     * Path to root
-     *
-     * External resource in application local storage will retrieve by
-     * relative path to this path.
-     *
-     * @var string
-     */
-    protected $pathToRoot = '../../';
 
     /**
      * Switch for format output with tidy extension
