@@ -37,9 +37,11 @@ class HtmlHelper
     protected $css = [];
 
     /**
+     * Javascript references
+     *
      * @var string[]
      */
-    protected $js = [];
+    protected $javascript = [];
 
     /**
      * @var string
@@ -75,7 +77,7 @@ class HtmlHelper
      */
     public function addJs($name, $path)
     {
-        $this->js[$name] = $path;
+        $this->javascript[$name] = $path;
 
         return $this;
     }
@@ -101,7 +103,7 @@ class HtmlHelper
      */
     public function clearJs()
     {
-        $this->js = [];
+        $this->javascript = [];
 
         return $this;
     }
@@ -136,10 +138,10 @@ class HtmlHelper
     public function getJs($name = '*')
     {
         if ('*' == $name) {
-            return $this->js;
+            return $this->javascript;
 
-        } elseif (array_key_exists($name, $this->js)) {
-            return $this->js[$name];
+        } elseif (array_key_exists($name, $this->javascript)) {
+            return $this->javascript[$name];
 
         } else {
             return null;
@@ -178,7 +180,7 @@ class HtmlHelper
      */
     public function removeJs($name)
     {
-        unset($this->js[$name]);
+        unset($this->javascript[$name]);
 
         return $this;
     }
