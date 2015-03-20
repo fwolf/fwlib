@@ -3,7 +3,9 @@ namespace FwlibTest\Web;
 
 use Fwlib\Bridge\Smarty;
 use Fwlib\Web\AbstractView;
+use Fwlib\Web\Request;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -14,7 +16,25 @@ class AbstractViewTest extends PHPUnitTestCase
     protected $view;
     public static $assignByRef = [];
 
+    /**
+     * @var string
+     */
+    protected $getAction;
 
+    /**
+     * @var string
+     */
+    protected $getModule;
+
+    /**
+     * @var Request
+     */
+    protected $requestMock;
+
+
+    /**
+     * @return MockObject | AbstractView
+     */
     protected function buildMock()
     {
         $view = $this->getMock(
@@ -43,8 +63,40 @@ class AbstractViewTest extends PHPUnitTestCase
                 AbstractViewTest::$assignByRef[$name] = $value;
             }));
 
+        /** @var AbstractView $view */
+        $view->setRequest($this->buildRequestMock());
 
         return $view;
+    }
+
+
+    /**
+     * @return MockObject | Request
+     */
+    protected function buildRequestMock()
+    {
+        if (is_null($this->requestMock)) {
+            $mock = $this->getMockBuilder(Request::class)
+                ->disableOriginalConstructor()
+                ->setMethods(['getAction', 'getModule'])
+                ->getMock();
+
+            $mock->expects($this->any())
+                ->method('getAction')
+                ->willReturnCallback(function() {
+                    return $this->getAction;
+                });
+
+            $mock->expects($this->any())
+                ->method('getModule')
+                ->willReturnCallback(function() {
+                    return $this->getModule;
+                });
+
+            $this->requestMock = $mock;
+        }
+
+        return $this->requestMock;
     }
 
 
@@ -52,10 +104,7 @@ class AbstractViewTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
-        $view->setModule('Module');
-        $this->assertEquals('Module', $this->reflectionGet($view, 'module'));
-
-        $view->setTitle('Title');
+        $this->reflectionCall($view, 'setTitle', ['Title']);
         $this->assertEquals('Title', $this->reflectionGet($view, 'title'));
     }
 
@@ -69,9 +118,10 @@ class AbstractViewTest extends PHPUnitTestCase
             $view->getOutput()
         );
 
+        $this->getAction = 'test-action';
         $this->assertEquals(
             '<!-- header --><body for test action><!-- footer -->',
-            $view->setAction('test-action')->getOutput()
+            $view->getOutput()
         );
     }
 
@@ -84,7 +134,8 @@ class AbstractViewTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
-        $view->setAction('test-action-not-exist')->getOutput();
+        $this->getAction = 'test-action-not-exist';
+        $view->getOutput();
     }
 
 
@@ -96,7 +147,7 @@ class AbstractViewTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
-        $view->setOutputParts(['NotExist']);
+        $this->reflectionSet($view, 'outputParts', ['NotExist']);
         $view->getOutput();
     }
 }

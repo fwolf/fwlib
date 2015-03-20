@@ -5,25 +5,24 @@ use Fwlib\Bridge\Smarty;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
- * View in MVC
+ * View
  *
- * Receive request from Controller and generate output.
+ * Called by controller and generate output.
+ *
+ * Commonly, one view will be defined for one request. But sometimes we need a
+ * view to hold more than one request, in this case we use methods with same
+ * prefix as {@see $methodPrefix}, and call them in {@see getOutputBody()}. If
+ * need not this feature, just overwrite {@see getOutputBody()}.
  *
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractView implements ViewInterface
 {
-    use UtilContainerAwareTrait;
     use HtmlHelperAwareTrait;
+    use RequestAwareTrait;
+    use UtilContainerAwareTrait;
 
-
-    /**
-     * Current action string
-     *
-     * @var string
-     */
-    protected $action = '';
 
     /**
      * Prefix of method to generate output
@@ -32,13 +31,6 @@ abstract class AbstractView implements ViewInterface
      * @see getOutputBody()
      */
     protected $methodPrefix = 'fetch';
-
-    /**
-     * Current module, used to generate urls
-     *
-     * @var string
-     */
-    protected $module = '';
 
     /**
      * Use Smarty to build html from template
@@ -129,16 +121,18 @@ abstract class AbstractView implements ViewInterface
      */
     protected function getOutputBody()
     {
-        if (empty($this->action)) {
+        $action = $this->getRequest()->getAction();
+
+        if (empty($action)) {
             return '';
         }
 
         $stringUtil = $this->getUtilContainer()->getString();
 
-        $method = $this->methodPrefix . $stringUtil->toStudlyCaps($this->action);
+        $method = $this->methodPrefix . $stringUtil->toStudlyCaps($action);
         if (!method_exists($this, $method)) {
             throw new \Exception(
-                "View {$this->methodPrefix} method for action {$this->action} is not defined"
+                "View {$this->methodPrefix} method for action {$action} is not defined"
             );
         }
 
@@ -169,54 +163,12 @@ abstract class AbstractView implements ViewInterface
 
 
     /**
-     * Setter of $action
-     *
-     * @param   string  $action
-     * @return  AbstractView
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-
-        return $this;
-    }
-
-
-    /**
-     * Setter of module
-     *
-     * @param   string  $module
-     * @return  AbstractView
-     */
-    public function setModule($module)
-    {
-        $this->module = $module;
-
-        return $this;
-    }
-
-
-    /**
-     * Setter of $outputParts
-     *
-     * @param   array   $outputParts
-     * @return  AbstractView
-     */
-    public function setOutputParts($outputParts)
-    {
-        $this->outputParts = $outputParts;
-
-        return $this;
-    }
-
-
-    /**
      * Set title of view
      *
      * @param   string  $title
-     * @return  AbstractView
+     * @return  static
      */
-    public function setTitle($title)
+    protected function setTitle($title)
     {
         $this->title = $title;
 

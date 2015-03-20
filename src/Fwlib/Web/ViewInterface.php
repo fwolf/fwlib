@@ -15,4 +15,13 @@ interface ViewInterface
      * @return  string
      */
     public function getOutput();
+
+
+    /**
+     * Setter of request instance
+     *
+     * @param   RequestInterface    $request
+     * @return  static
+     */
+    public function setRequest(RequestInterface $request);
 }
