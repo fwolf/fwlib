@@ -100,19 +100,12 @@ trait ControllerTrait
      * By given $module name, determine which controller class should use.
      * Return null if not found.
      *
-     * Should extend by child class if need to use module, or leave it for
-     * small application did not have module.
+     * Must extend by child class. Small application can have no module.
      *
      * @param   string  $module
      * @return  string
      */
-    protected function getControllerClass($module)
-    {
-        // Dummy for coverage
-        true || $module;
-
-        return null;
-    }
+    abstract protected function getControllerClass($module);
 
 
     /**

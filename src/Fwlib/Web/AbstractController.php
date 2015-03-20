@@ -17,10 +17,8 @@ use Fwlib\Web\Helper\GetViewClassByNamespaceTrait;
  */
 abstract class AbstractController implements ControllerInterface
 {
-    use ControllerTrait, GetControllerClassByNamespaceTrait {
-        GetControllerClassByNamespaceTrait::getControllerClass
-            insteadof ControllerTrait;
-    }
+    use ControllerTrait;
+    use GetControllerClassByNamespaceTrait;
     use GetViewClassByNamespaceTrait;
 
 
