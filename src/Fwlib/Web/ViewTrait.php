@@ -1,9 +1,7 @@
 <?php
 namespace Fwlib\Web;
 
-use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Web\Exception\InvalidOutputPartException;
-use Fwlib\Web\Exception\ViewMethodNotDefinedException;
 
 /**
  * Trait for common view
@@ -35,20 +33,6 @@ use Fwlib\Web\Exception\ViewMethodNotDefinedException;
  */
 trait ViewTrait
 {
-    use HtmlHelperAwareTrait;
-    use RequestAwareTrait;
-    use UtilContainerAwareTrait;
-
-
-    /**
-     * Prefix of method to generate output
-     *
-     * @var string
-     * @see getOutputBody()
-     */
-    protected $methodPrefix = 'fetch';
-
-
     /**
      * @see ViewInterface::getOutput()
      *
@@ -89,32 +73,9 @@ trait ViewTrait
     /**
      * Get output of body part
      *
-     * In this implement, output is retrieved from corresponding method, whose
-     * name is converted from $action by adding prefix. Eg, action 'foo-bar'
-     * will call fetchFooBar() for result. Child class can change
-     * $methodPrefix or use different mechanism.
-     *
      * @return  string
-     * @throws  ViewMethodNotDefinedException
      */
-    protected function getOutputBody()
-    {
-        $action = $this->getRequest()->getAction();
-        if (empty($action)) {
-            return '';
-        }
-
-        $stringUtil = $this->getUtilContainer()->getString();
-
-        $method = $this->methodPrefix . $stringUtil->toStudlyCaps($action);
-        if (!method_exists($this, $method)) {
-            throw new ViewMethodNotDefinedException(
-                "View {$this->methodPrefix} method for action {$action} is not defined"
-            );
-        }
-
-        return $this->$method();
-    }
+    abstract protected function getOutputBody();
 
 
     /**

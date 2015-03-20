@@ -1,7 +1,6 @@
 <?php
 namespace FwlibTest\Web;
 
-use Fwlib\Bridge\Smarty;
 use Fwlib\Web\ViewTrait;
 use FwlibTest\Aide\ObjectMockBuilder\FwlibWebRequestTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
@@ -16,51 +15,24 @@ class ViewTraitTest extends PHPUnitTestCase
     use FwlibWebRequestTrait;
 
 
-    protected $view;
-    public static $assignByRef = [];
-
-
     /**
      * @return MockObject | ViewTrait
      */
     protected function buildMock()
     {
-        $view = $this->getMockBuilder(ViewTrait::class)
-            ->setMethods(['fetchTestAction'])
+        $mock = $this->getMockBuilder(ViewTrait::class)
+            ->setMethods(['getOutputBody'])
             ->getMockForTrait();
 
-        $view->expects($this->any())
-            ->method('fetchTestAction')
-            ->will($this->returnValue('<body for test action>'));
+        $mock->expects($this->any())
+            ->method('getOutputBody')
+            ->will($this->returnValue('body for test action'));
 
+        // Simulate property
+        /** @noinspection PhpUndefinedFieldInspection */
+        $mock->outputParts = [];
 
-        // Mock a smarty instance
-        $smarty = $this->getMock(
-            Smarty::class,
-            ['fetch', 'assignByRef']
-        );
-
-        $smarty->expects($this->any())
-            ->method('fetch')
-            ->will($this->returnArgument(0));
-
-        $smarty->expects($this->any())
-            ->method('assignByRef')
-            ->will($this->returnCallback(function ($name, $value) {
-                ViewTraitTest::$assignByRef[$name] = $value;
-            }));
-
-        /** @var ViewTrait $view */
-        $view->setRequest($this->buildRequestMock());
-
-        $outputParts = [
-            1 => 'header',
-            0 => 'body',
-            2 => 'footer',
-        ];
-        $view->outputParts = $outputParts;
-
-        return $view;
+        return $mock;
     }
 
 
@@ -77,29 +49,24 @@ class ViewTraitTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
+        $view->outputParts = [
+            1 => 'header',
+            2 => 'footer',
+        ];
         $this->assertEquals(
             '<!-- header --><!-- footer -->',
             $view->getOutput()
         );
 
-        $this->getAction = 'test-action';
+        $view->outputParts = [
+            1 => 'header',
+            0 => 'body',
+            2 => 'footer',
+        ];
         $this->assertEquals(
-            '<!-- header --><body for test action><!-- footer -->',
+            '<!-- header -->body for test action<!-- footer -->',
             $view->getOutput()
         );
-    }
-
-
-    /**
-     * @expectedException \Fwlib\Web\Exception\ViewMethodNotDefinedException
-     * @expectedExceptionMessage View fetch method for action
-     */
-    public function testGetOutputWithInvalidAction()
-    {
-        $view = $this->buildMock();
-
-        $this->getAction = 'test-action-not-exist';
-        $view->getOutput();
     }
 
 
@@ -111,7 +78,7 @@ class ViewTraitTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
-        $this->reflectionSet($view, 'outputParts', ['NotExist']);
+        $view->outputParts = ['NotExist'];
         $view->getOutput();
     }
 }
