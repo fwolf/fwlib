@@ -85,7 +85,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Fwlib\Web\Exception\ViewMethodNotDefinedException
      * @expectedExceptionMessage View fetch method for action
      */
     public function testGetOutputWithInvalidAction()
@@ -98,7 +98,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Fwlib\Web\Exception\ViewMethodNotDefinedException
      * @expectedExceptionMessage View method for part
      */
     public function testGetOutputWithInvalidPart()

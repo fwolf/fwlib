@@ -3,6 +3,7 @@ namespace Fwlib\Web;
 
 use Fwlib\Bridge\Smarty;
 use Fwlib\Util\UtilContainerAwareTrait;
+use Fwlib\Web\Exception\ViewMethodNotDefinedException;
 
 /**
  * View
@@ -77,6 +78,7 @@ abstract class AbstractView implements ViewInterface
      * When $action is empty, only show header and footer.
      *
      * @return  string
+     * @throws  ViewMethodNotDefinedException
      */
     public function getOutput()
     {
@@ -89,7 +91,7 @@ abstract class AbstractView implements ViewInterface
             $method = 'getOutput' . ucfirst($part);
 
             if (!method_exists($this, $method)) {
-                throw new \Exception(
+                throw new ViewMethodNotDefinedException(
                     "View method for part $part is not defined"
                 );
             }
@@ -118,11 +120,11 @@ abstract class AbstractView implements ViewInterface
      * $methodPrefix or use different mechanism.
      *
      * @return  string
+     * @throws  ViewMethodNotDefinedException
      */
     protected function getOutputBody()
     {
         $action = $this->getRequest()->getAction();
-
         if (empty($action)) {
             return '';
         }
@@ -131,7 +133,7 @@ abstract class AbstractView implements ViewInterface
 
         $method = $this->methodPrefix . $stringUtil->toStudlyCaps($action);
         if (!method_exists($this, $method)) {
-            throw new \Exception(
+            throw new ViewMethodNotDefinedException(
                 "View {$this->methodPrefix} method for action {$action} is not defined"
             );
         }
