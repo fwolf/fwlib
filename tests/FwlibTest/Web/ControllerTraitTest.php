@@ -2,7 +2,7 @@
 namespace FwlibTest\Web;
 
 use Fwlib\Web\ControllerTrait;
-use Fwlib\Web\Request;
+use FwlibTest\Aide\ObjectMockBuilder\FwlibWebRequestTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -12,25 +12,13 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class ControllerTraitTest extends PHPUnitTestCase
 {
+    use FwlibWebRequestTrait;
+
+
     /**
      * @var string
      */
     public static $controllerClass;
-
-    /**
-     * @var string
-     */
-    protected $getAction;
-
-    /**
-     * @var string
-     */
-    protected $getModule;
-
-    /**
-     * @var Request
-     */
-    protected $requestMock;
 
     /**
      * @var string
@@ -144,36 +132,6 @@ class ControllerTraitTest extends PHPUnitTestCase
         $controller->module = '';
 
         return $controller;
-    }
-
-
-    /**
-     * @return MockObject | Request
-     */
-    protected function buildRequestMock()
-    {
-        if (is_null($this->requestMock)) {
-            $mock = $this->getMockBuilder(Request::class)
-                ->disableOriginalConstructor()
-                ->setMethods(['getAction', 'getModule'])
-                ->getMock();
-
-            $mock->expects($this->any())
-                ->method('getAction')
-                ->willReturnCallback(function() {
-                    return $this->getAction;
-                });
-
-            $mock->expects($this->any())
-                ->method('getModule')
-                ->willReturnCallback(function() {
-                    return $this->getModule;
-                });
-
-            $this->requestMock = $mock;
-        }
-
-        return $this->requestMock;
     }
 
 

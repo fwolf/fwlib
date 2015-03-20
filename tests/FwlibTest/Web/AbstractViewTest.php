@@ -3,7 +3,7 @@ namespace FwlibTest\Web;
 
 use Fwlib\Bridge\Smarty;
 use Fwlib\Web\AbstractView;
-use Fwlib\Web\Request;
+use FwlibTest\Aide\ObjectMockBuilder\FwlibWebRequestTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -13,23 +13,11 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class AbstractViewTest extends PHPUnitTestCase
 {
+    use FwlibWebRequestTrait;
+
+
     protected $view;
     public static $assignByRef = [];
-
-    /**
-     * @var string
-     */
-    protected $getAction;
-
-    /**
-     * @var string
-     */
-    protected $getModule;
-
-    /**
-     * @var Request
-     */
-    protected $requestMock;
 
 
     /**
@@ -67,36 +55,6 @@ class AbstractViewTest extends PHPUnitTestCase
         $view->setRequest($this->buildRequestMock());
 
         return $view;
-    }
-
-
-    /**
-     * @return MockObject | Request
-     */
-    protected function buildRequestMock()
-    {
-        if (is_null($this->requestMock)) {
-            $mock = $this->getMockBuilder(Request::class)
-                ->disableOriginalConstructor()
-                ->setMethods(['getAction', 'getModule'])
-                ->getMock();
-
-            $mock->expects($this->any())
-                ->method('getAction')
-                ->willReturnCallback(function() {
-                    return $this->getAction;
-                });
-
-            $mock->expects($this->any())
-                ->method('getModule')
-                ->willReturnCallback(function() {
-                    return $this->getModule;
-                });
-
-            $this->requestMock = $mock;
-        }
-
-        return $this->requestMock;
     }
 
 
