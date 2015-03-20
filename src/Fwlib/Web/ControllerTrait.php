@@ -25,7 +25,10 @@ trait ControllerTrait
      */
     protected function createController($className)
     {
+        /** @var ControllerInterface $controller */
         $controller = new $className();
+
+        $controller->setRequest($this->getRequest());
 
         return $controller;
     }
@@ -39,9 +42,10 @@ trait ControllerTrait
      */
     protected function createView($className)
     {
+        /** @var ViewInterface $view */
         $view = new $className();
 
-        $view->setModule($this->module);
+        $view->setRequest($this->getRequest());
 
         return $view;
     }
@@ -65,7 +69,7 @@ trait ControllerTrait
 
             $view = $this->createView($viewClass);
 
-            return $view->setAction($action)->getOutput();
+            return $view->getOutput();
 
         } catch (ViewNotDefinedException $e) {
             return $this->displayError($e->getMessage());
