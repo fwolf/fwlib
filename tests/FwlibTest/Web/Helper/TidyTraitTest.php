@@ -32,6 +32,10 @@ class TidyTraitTest extends PHPUnitTestCase
      */
     public function testTidy()
     {
+        // Prepare function mock but keep disabled
+        $factory = $this->getFunctionMockFactory(TidyTrait::class);
+        $factory->get(null, 'extension_loaded');
+
         $tidyTrait = $this->buildMock();
 
         $html = 'foo bar';
@@ -48,13 +52,13 @@ class TidyTraitTest extends PHPUnitTestCase
     public function testTidyWithoutExtension()
     {
         $factory = $this->getFunctionMockFactory(TidyTrait::class);
-        $classExistsMock = $factory->get(null, 'class_exists', true);
+        $extensionLoadedMock = $factory->get(null, 'extensionLoaded', true);
 
         $tidyTrait = $this->buildMock();
 
-        $classExistsMock->setResult(false);
+        $extensionLoadedMock->setResult(false);
         $this->reflectionCall($tidyTrait, 'tidy', ['foo']);
 
-        $classExistsMock->disableAll();
+        $extensionLoadedMock->disableAll();
     }
 }

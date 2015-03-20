@@ -18,7 +18,7 @@ trait TidyTrait
      */
     protected function tidy($html)
     {
-        if (!class_exists('tidy')) {
+        if (!extension_loaded('tidy')) {
             throw (new ExtensionNotLoadedException)->setExtension('tidy');
 
         } else {
