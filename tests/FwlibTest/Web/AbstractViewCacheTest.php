@@ -30,7 +30,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their
         // value are different each time run.
-        $view->setOutputParts(['body']);
+        $this->reflectionSet($view, 'outputParts', ['body']);
         $view->expects($this->any())
             ->method('getOutputBody')
             ->will($this->returnCallback(function () {
@@ -67,7 +67,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their
         // value are different each time run.
-        $view->setOutputParts(['body']);
+        $this->reflectionSet($view, 'outputParts', ['body']);
         $view->expects($this->any())
             ->method('getOutputBody')
             ->will($this->returnCallback(function () {
