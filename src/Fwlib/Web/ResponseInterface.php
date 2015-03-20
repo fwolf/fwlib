@@ -78,6 +78,9 @@ interface ResponseInterface
     /**
      * Send content out
      *
+     * Tidy or other purify can apply here.
+     * @see \Fwlib\Web\Helper\TidyTrait
+     *
      * @return  static
      */
     public function sendContent();

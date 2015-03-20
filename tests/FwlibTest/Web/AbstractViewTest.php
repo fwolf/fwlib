@@ -12,9 +12,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 class AbstractViewTest extends PHPUnitTestCase
 {
     protected $view;
-    public static $class_exists = true;
     public static $assignByRef = [];
-    public static $error_log = '';
 
 
     protected function buildMock()
@@ -101,60 +99,4 @@ class AbstractViewTest extends PHPUnitTestCase
         $view->setOutputParts(['NotExist']);
         $view->getOutput();
     }
-
-
-    public function testGetOutputWithoutTidyExtension()
-    {
-        $view = $this->buildMock();
-
-        self::$class_exists = false;
-        $view->setUseTidy(true);
-        $this->assertTrue($view->getUseTidy());
-
-        $view->getOutput();
-
-        $this->assertEquals(
-            'Tidy extension is not installed',
-            self::$error_log
-        );
-    }
-
-
-    /**
-     * @requires extension tidy
-     */
-    public function testGetOutputWithTidy()
-    {
-        $view = $this->buildMock();
-
-        self::$class_exists = false;
-        $view->setUseTidy(false);
-        $this->assertFalse($view->getUseTidy());
-        $this->assertEquals(
-            '<!-- header --><body for test action><!-- footer -->',
-            $view->setAction('test-action')->getOutput()
-        );
-
-
-        self::$class_exists = true;
-        $view->setUseTidy(true);
-        $output = $view->setAction('test-action')->getOutput();
-
-        $this->assertStringEndsWith('</html>', $output);
-    }
-}
-
-
-// Fake function for test
-namespace Fwlib\Web;
-
-function class_exists()
-{
-    return \FwlibTest\Web\AbstractViewTest::$class_exists;
-}
-
-
-function error_log($message)
-{
-    \FwlibTest\Web\AbstractViewTest::$error_log = $message;
 }

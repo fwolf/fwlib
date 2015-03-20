@@ -70,13 +70,6 @@ abstract class AbstractView implements ViewInterface
     ];
 
     /**
-     * Switch for format output with tidy extension
-     *
-     * @var bool
-     */
-    protected $useTidy = false;
-
-    /**
      * View title
      *
      * In common, title will present as html page <title>.
@@ -119,10 +112,6 @@ abstract class AbstractView implements ViewInterface
             $output .= $outputParts[$part];
         }
 
-
-        if ($this->useTidy) {
-            $output = $this->tidy($output);
-        }
 
         return $output;
     }
@@ -180,17 +169,6 @@ abstract class AbstractView implements ViewInterface
 
 
     /**
-     * Getter of $useTidy
-     *
-     * @return  boolean
-     */
-    public function getUseTidy()
-    {
-        return $this->useTidy;
-    }
-
-
-    /**
      * Setter of $action
      *
      * @param   string  $action
@@ -243,51 +221,5 @@ abstract class AbstractView implements ViewInterface
         $this->title = $title;
 
         return $this;
-    }
-
-
-    /**
-     * Setter of $useTidy
-     *
-     * @param   boolean $useTidy
-     * @return  AbstractView
-     */
-    public function setUseTidy($useTidy)
-    {
-        $this->useTidy = $useTidy;
-
-        return $this;
-    }
-
-
-    /**
-     * Format html with tidy extension
-     *
-     * @param   string  $html
-     * @return  string
-     */
-    protected function tidy($html)
-    {
-        if (!class_exists('tidy')) {
-            // Not critical error, only record with error_log for reminder
-            error_log('Tidy extension is not installed');
-
-            return $html;
-
-        } else {
-            $config = [
-                'doctype'       => 'strict',
-                'indent'        => true,
-                'indent-spaces' => 2,
-                'output-xhtml'  => true,
-                'wrap'          => 200
-            ];
-
-            $tidy = new \tidy;
-            $tidy->parseString($html, $config, 'utf8');
-            $tidy->cleanRepair();
-
-            return tidy_get_output($tidy);
-        }
     }
 }
