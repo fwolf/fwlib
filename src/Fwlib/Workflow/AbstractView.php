@@ -244,7 +244,8 @@ abstract class AbstractView extends BaseView
      */
     protected function getOutputBody()
     {
-        if (empty($this->action)) {
+        $action = $this->getRequest()->getAction();
+        if (empty($action)) {
             return '';
         }
 
@@ -294,6 +295,7 @@ abstract class AbstractView extends BaseView
 
         // Then read from request
         if (empty($viewAction)) {
+            $viewAction = trim($this->getRequest()->getAction());
             if (is_null($request)) {
                 $request = $_GET;
             }

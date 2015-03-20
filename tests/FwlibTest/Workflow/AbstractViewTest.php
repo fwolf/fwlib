@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Workflow;
 
+use FwlibTest\Aide\ObjectMockBuilder\FwlibWebRequestTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Workflow\AbstractView;
 
@@ -10,6 +11,9 @@ use Fwlib\Workflow\AbstractView;
  */
 class AbstractViewTest extends PHPUnitTestCase
 {
+    use FwlibWebRequestTrait;
+
+
     protected function buildMock()
     {
         $view = $this->getMockBuilder(
@@ -55,13 +59,13 @@ class AbstractViewTest extends PHPUnitTestCase
         $this->reflectionSet(
             $view,
             'workflowClass',
-            'FwlibTest\Workflow\AbstractManagerDummy'
+            AbstractManagerDummy::class
         );
-        $this->reflectionSet(
-            $view,
-            'action',
-            'workflow-dummy'
-        );
+
+        $request = $this->buildRequestMock();
+        /** @var AbstractView $view */
+        $view->setRequest($request);
+        $this->getAction = 'workflow-dummy';
 
         return $view;
     }
@@ -114,7 +118,8 @@ class AbstractViewTest extends PHPUnitTestCase
         $viewActionParameter =
             $this->reflectionGet($view, 'viewActionParameter');
         $_GET[$viewActionParameter] = 'detail';
-        $view->setAction('workflow-dummy')->getOutput();
+        $this->getAction = 'workflow-dummy';
+        $view->getOutput();
 
         $workflowModel = $this->reflectionGet($view, 'workflow')->getModel();
 
@@ -126,7 +131,7 @@ class AbstractViewTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
-        $view->setAction('workflow-dummy');
+        $this->getAction = 'workflow-dummy';
         $uuid = 'workflowUuid';
 
         // Initialize workflow instance
@@ -188,7 +193,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
         // Empty body output for empty action, same with parent view
-        $this->reflectionSet($view, 'action', '');
+        $this->getAction = '';
         $output = $view->getOutput();
         $this->assertEquals(
             '{header}{footer}',
@@ -198,7 +203,7 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage not defined
      */
     public function testGetOutputWithInvalidViewAction()
@@ -210,7 +215,7 @@ class AbstractViewTest extends PHPUnitTestCase
         ];
         $_POST = [];
 
-        $output = $view->setAction($_GET['a'])->getOutput();
+        $view->getOutput();
     }
 
 
