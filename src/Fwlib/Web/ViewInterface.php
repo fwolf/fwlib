@@ -4,6 +4,8 @@ namespace Fwlib\Web;
 /**
  * View interface
  *
+ * Called by controller and generate output content.
+ *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
