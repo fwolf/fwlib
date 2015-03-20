@@ -31,7 +31,7 @@ class HtmlHelperTest extends \PHPUnit_Framework_TestCase
         $helper->addCss('foo', 'path/foo/');
         $helper->addCss('bar', 'path/bar/');
         $this->assertEquals(2, count($helper->getCss()));
-        $this->assertEquals('path/foo/', $helper->getCss('foo'));
+        $this->assertEquals('path/foo/', $helper->getCss('foo')['href']);
 
         $helper->removeCss('bar');
         $this->assertEquals(1, count($helper->getCss()));

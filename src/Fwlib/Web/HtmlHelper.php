@@ -24,7 +24,15 @@ class HtmlHelper
 
 
     /**
-     * @var string[]
+     * Css references
+     *
+     * Format: {name: {href, media}}
+     *
+     * For media type and query:
+     * @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media
+     * @see https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Media_queries
+     *
+     * @var array
      */
     protected $css = [];
 
@@ -43,12 +51,16 @@ class HtmlHelper
      * Add a css reference
      *
      * @param   string  $name
-     * @param   string  $path
+     * @param   string  $href
+     * @param   string  $media
      * @return  static
      */
-    public function addCss($name, $path)
+    public function addCss($name, $href, $media = 'all')
     {
-        $this->css[$name] = $path;
+        $this->css[$name] = [
+            'href'  => $href,
+            'media' => $media,
+        ];
 
         return $this;
     }
@@ -99,7 +111,7 @@ class HtmlHelper
      * Getter of css reference
      *
      * @param   string  $name   Use '*' for all, or string name for single.
-     * @return  array|string
+     * @return  array
      */
     public function getCss($name = '*')
     {
