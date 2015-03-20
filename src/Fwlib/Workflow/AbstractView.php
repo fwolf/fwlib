@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Workflow;
 
+use Fwlib\Util\UtilContainer;
 use Fwlib\Web\AbstractView as BaseView;
 
 /**
@@ -261,7 +262,7 @@ abstract class AbstractView extends BaseView
 
         $viewAction = $this->getViewAction($workflowAction);
 
-        $stringUtil = $this->getUtilContainer()->getString();
+        $stringUtil = UtilContainer::getInstance()->getString();
         $fetchMethod = $this->methodPrefix .
             $stringUtil->toStudlyCaps($viewAction);
 
