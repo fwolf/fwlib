@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Web;
 
-use Fwlib\Bridge\Smarty;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Web\Exception\InvalidOutputPartException;
 use Fwlib\Web\Exception\ViewMethodNotDefinedException;
@@ -33,13 +32,6 @@ abstract class AbstractView implements ViewInterface
      * @see getOutputBody()
      */
     protected $methodPrefix = 'fetch';
-
-    /**
-     * Use Smarty to build html from template
-     *
-     * @var Smarty
-     */
-    protected $smarty = null;
 
     /**
      * Parts of output
