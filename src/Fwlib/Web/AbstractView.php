@@ -25,24 +25,6 @@ abstract class AbstractView implements ViewInterface
     protected $action = '';
 
     /**
-     * Css to link in output header
-     *
-     * Format: {key: {url, media}}
-     *
-     * @var array
-     */
-    protected $css = [];
-
-    /**
-     * Js to link in output header
-     *
-     * Format: {key: url}
-     *
-     * @var array
-     */
-    protected $js = [];
-
-    /**
      * Prefix of method to generate output
      *
      * @var string
@@ -111,40 +93,6 @@ abstract class AbstractView implements ViewInterface
      * @var string
      */
     protected $title = '';
-
-
-    /**
-     * Add content to $js
-     *
-     * @param   string  $name
-     * @param   string  $url
-     * @param   string  $media
-     * @return  AbstractView
-     */
-    protected function addCss($name, $url, $media = 'screen, print')
-    {
-        $this->css[$name] = [
-            'url'   => $url,
-            'media' => $media,
-        ];
-
-        return $this;
-    }
-
-
-    /**
-     * Add content to $js
-     *
-     * @param   string  $name
-     * @param   string  $url
-     * @return  AbstractView
-     */
-    protected function addJs($name, $url)
-    {
-        $this->js[$name] = $url;
-
-        return $this;
-    }
 
 
     /**
@@ -236,9 +184,6 @@ abstract class AbstractView implements ViewInterface
      */
     protected function getOutputHeader()
     {
-        // Avoid duplicate js, css is 2-dim array, can't do unique on it
-        $this->js = array_unique($this->js);
-
         return '<!-- header -->';
     }
 
@@ -251,34 +196,6 @@ abstract class AbstractView implements ViewInterface
     public function getUseTidy()
     {
         return $this->useTidy;
-    }
-
-
-    /**
-     * Remove css assigned to output
-     *
-     * @param   string  $name
-     * @return  AbstractView
-     */
-    protected function removeCss($name)
-    {
-        unset($this->css[$name]);
-
-        return $this;
-    }
-
-
-    /**
-     * Remove js assigned to output
-     *
-     * @param   string  $name
-     * @return  AbstractView
-     */
-    protected function removeJs($name)
-    {
-        unset($this->js[$name]);
-
-        return $this;
     }
 
 
