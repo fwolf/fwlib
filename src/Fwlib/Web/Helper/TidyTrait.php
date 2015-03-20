@@ -1,6 +1,9 @@
 <?php
 namespace Fwlib\Web\Helper;
 
+use Fwlib\Base\Exception\ExtensionNotLoadedException;
+use tidy;
+
 /**
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -16,10 +19,7 @@ trait TidyTrait
     protected function tidy($html)
     {
         if (!class_exists('tidy')) {
-            // Not critical error, only record with error_log for reminder
-            error_log('Tidy extension is not installed');
-
-            return $html;
+            throw (new ExtensionNotLoadedException)->setExtension('tidy');
 
         } else {
             $config = [
@@ -30,7 +30,7 @@ trait TidyTrait
                 'wrap'          => 200
             ];
 
-            $tidy = new \tidy;
+            $tidy = new tidy;
             $tidy->parseString($html, $config, 'utf8');
             $tidy->cleanRepair();
 

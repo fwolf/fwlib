@@ -15,10 +15,6 @@ class TidyTraitTest extends PHPUnitTestCase
     use FunctionMockFactoryAwareTrait;
 
 
-    public static $class_exists = true;
-    public static $error_log = '';
-
-
     /**
      * @return MockObject | TidyTrait
      */
@@ -39,26 +35,26 @@ class TidyTraitTest extends PHPUnitTestCase
         $tidyTrait = $this->buildMock();
 
         $html = 'foo bar';
-
-        self::$class_exists = false;
-        $this->assertEquals(
-            $html,
-            $this->reflectionCall($tidyTrait, 'tidy', [$html])
-        );
-
-        self::$class_exists = true;
         $this->assertStringEndsWith(
             '</html>',
             $this->reflectionCall($tidyTrait, 'tidy', [$html])
         );
     }
-}
 
 
-// Fake function for test
-namespace Fwlib\Web\Helper;
+    /**
+     * @expectedException   \Fwlib\Base\Exception\ExtensionNotLoadedException
+     */
+    public function testTidyWithoutExtension()
+    {
+        $factory = $this->getFunctionMockFactory(TidyTrait::class);
+        $classExistsMock = $factory->get(null, 'class_exists', true);
 
-function class_exists()
-{
-    return \FwlibTest\Web\Helper\TidyTraitTest::$class_exists;
+        $tidyTrait = $this->buildMock();
+
+        $classExistsMock->setResult(false);
+        $this->reflectionCall($tidyTrait, 'tidy', ['foo']);
+
+        $classExistsMock->disableAll();
+    }
 }
