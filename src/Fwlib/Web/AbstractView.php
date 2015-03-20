@@ -34,4 +34,26 @@ abstract class AbstractView implements ViewInterface
      * @var string
      */
     protected $title = '';
+
+
+    /**
+     * Get output of footer part
+     *
+     * @return  string
+     */
+    protected function getOutputFooter()
+    {
+        return '<!-- footer -->';
+    }
+
+
+    /**
+     * Get output of header part
+     *
+     * @return  string
+     */
+    protected function getOutputHeader()
+    {
+        return '<!-- header -->';
+    }
 }

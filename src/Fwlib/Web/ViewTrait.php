@@ -71,36 +71,6 @@ trait ViewTrait
 
 
     /**
-     * Get output of body part
-     *
-     * @return  string
-     */
-    abstract protected function getOutputBody();
-
-
-    /**
-     * Get output of footer part
-     *
-     * @return  string
-     */
-    protected function getOutputFooter()
-    {
-        return '<!-- footer -->';
-    }
-
-
-    /**
-     * Get output of header part
-     *
-     * @return  string
-     */
-    protected function getOutputHeader()
-    {
-        return '<!-- header -->';
-    }
-
-
-    /**
      * Set title of view
      *
      * @param   string  $title

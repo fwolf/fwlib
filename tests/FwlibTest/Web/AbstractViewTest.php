@@ -26,6 +26,7 @@ class AbstractViewTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
-        $this->assertTrue(true || $view);
+        $this->assertNotEmpty($this->reflectionCall($view, 'getOutputHeader'));
+        $this->assertNotEmpty($this->reflectionCall($view, 'getOutputFooter'));
     }
 }

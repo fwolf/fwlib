@@ -49,22 +49,15 @@ class ViewTraitTest extends PHPUnitTestCase
     {
         $view = $this->buildMock();
 
-        $view->outputParts = [
-            1 => 'header',
-            2 => 'footer',
-        ];
+        $view->outputParts = [];
         $this->assertEquals(
-            '<!-- header --><!-- footer -->',
+            '',
             $view->getOutput()
         );
 
-        $view->outputParts = [
-            1 => 'header',
-            0 => 'body',
-            2 => 'footer',
-        ];
+        $view->outputParts = [0 => 'body',];
         $this->assertEquals(
-            '<!-- header -->body for test action<!-- footer -->',
+            'body for test action',
             $view->getOutput()
         );
     }
