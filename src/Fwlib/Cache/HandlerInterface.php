@@ -40,6 +40,16 @@ interface HandlerInterface
 
 
     /**
+     * Getter of logger instance
+     *
+     * This is public for access logs it records.
+     *
+     * @return  LoggerInterface | null
+     */
+    public function getLogger();
+
+
+    /**
      * Is cache data expire ?
      *
      * @param   string  $key
@@ -60,4 +70,13 @@ interface HandlerInterface
      * @return  static
      */
     public function set($key, $val, $lifetime = null);
+
+
+    /**
+     * Setter of logger instance
+     *
+     * @param   LoggerInterface $logger
+     * @return  static
+     */
+    public function setLogger(LoggerInterface $logger);
 }
