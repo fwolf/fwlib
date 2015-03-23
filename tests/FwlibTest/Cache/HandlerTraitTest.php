@@ -28,15 +28,20 @@ class HandlerTraitTest extends PHPUnitTestCase
     {
         $handler = $this->buildMock();
 
-        $handler->hashAlgorithm = 'crc32b';
         $handler->emptyKeyReplacement = '[emptyKey]';
 
         $this->assertEquals(
             '[emptyKey]',
             $this->reflectionCall($handler, 'hashKey', [''])
         );
+
+        $handler->hashAlgorithm = '';
         $hashedKey = $this->reflectionCall($handler, 'hashKey', ['foo']);
-        $this->assertNotEquals('[emptyKey]', $hashedKey);
+        $this->assertEquals('foo', $hashedKey);
+
+        $handler->hashAlgorithm = 'crc32b';
+        $hashedKey = $this->reflectionCall($handler, 'hashKey', ['foo']);
+        $this->assertNotEquals('foo', $hashedKey);
         $this->assertNotEmpty($hashedKey);
     }
 }

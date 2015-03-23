@@ -18,7 +18,7 @@ trait HandlerTrait
     /**
      * Convert required key to actual key inner used
      *
-     * In some cache system, key may need hash or computed.
+     * In some cache system, key may need manual hashed.
      *
      * @param   string  $key
      * @return  string
@@ -32,6 +32,8 @@ trait HandlerTrait
             return $this->emptyKeyReplacement;
         }
 
-        return hash($this->hashAlgorithm, $key);
+        return empty($this->hashAlgorithm)
+            ? $key
+            : hash($this->hashAlgorithm, $key);
     }
 }
