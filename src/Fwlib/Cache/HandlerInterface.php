@@ -6,6 +6,12 @@ namespace Fwlib\Cache;
  *
  * The unit of lifetime is second.
  *
+ * By default, data are all strings. Please notice in common application, data
+ * is encoded with json for storage, and read from storage is also string, then
+ * convert it to associate array or import with some class, these all should not
+ * be job of cache handler. The exception is backend cache management system can
+ * operate raw PHP type, do that sure exists ?
+ *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -28,7 +34,7 @@ interface HandlerInterface
      *
      * @param   string  $key
      * @param   int     $lifetime
-     * @return  mixed
+     * @return  string
      */
     public function get($key, $lifetime = null);
 
@@ -49,7 +55,7 @@ interface HandlerInterface
      * If cache type not support auto-expire(eg: file), $lifetime can omit.
      *
      * @param   string  $key
-     * @param   mixed   $val
+     * @param   string  $val
      * @param   int     $lifetime
      * @return  static
      */
