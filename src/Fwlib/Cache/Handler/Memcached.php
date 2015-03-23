@@ -1,5 +1,7 @@
 <?php
-namespace Fwlib\Cache;
+namespace Fwlib\Cache\Handler;
+
+use Fwlib\Cache\Cache;
 
 /**
  * Key-value cache system, data store in memcached
@@ -7,7 +9,7 @@ namespace Fwlib\Cache;
  * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class CacheMemcached extends Cache
+class Memcached extends Cache
 {
     /**
      * Memcache instance
@@ -51,7 +53,7 @@ class CacheMemcached extends Cache
      * {@inheritdoc}
      *
      * @param   string  $key
-     * @return  CacheMemcached
+     * @return  Memcached
      */
     public function delete($key)
     {

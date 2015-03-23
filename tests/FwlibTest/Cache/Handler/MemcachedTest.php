@@ -1,8 +1,8 @@
 <?php
-namespace FwlibTest\Cache;
+namespace FwlibTest\Cache\Handler;
 
 use Fwlib\Cache\Cache;
-use Fwlib\Cache\CacheMemcached;
+use Fwlib\Cache\Handler\Memcached as MemcachedHandler;
 use Fwlib\Config\GlobalConfig;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
@@ -12,10 +12,10 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class CacheMemcachedTest extends PHPUnitTestCase
+class MemcachedTest extends PHPUnitTestCase
 {
     /**
-     * @return CacheMemcached
+     * @return MemcachedHandler
      */
     protected function buildMock()
     {
@@ -173,7 +173,7 @@ class CacheMemcachedTest extends PHPUnitTestCase
         $this->assertEquals($ar, []);
 
         $this->assertInstanceOf(
-            CacheMemcached::class,
+            MemcachedHandler::class,
             $cache->setConfigServer()
         );
     }

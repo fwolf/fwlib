@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Cache;
 
-use Fwlib\Cache\CacheFile;
-use Fwlib\Cache\CacheMemcached;
 use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
 use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Util\UtilContainerAwareTrait;
