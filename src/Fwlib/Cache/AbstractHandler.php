@@ -21,7 +21,9 @@ abstract class AbstractHandler implements HandlerInterface
     /**
      * Algorithm when hash cache key
      *
+     * Leave empty to not hash the key.
+     *
      * @var string
      */
-    protected $hashAlgorithm = 'crc32b';
+    protected $hashAlgorithm = '';
 }
