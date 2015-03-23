@@ -4,8 +4,8 @@ namespace Fwlib\Cache;
 /**
  * Shared code of cache handlers
  *
- * @property    string  $hashAlgorithm
  * @property    string  $emptyKeyReplacement
+ * @property    string  $hashAlgorithm
  *
  * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
