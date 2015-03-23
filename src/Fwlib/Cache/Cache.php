@@ -328,9 +328,10 @@ class Cache implements CacheHandlerInterface
      * Is cache data expire ?
      *
      * @param   string  $key
+     * @param   int     $lifetime
      * @return  boolean
      */
-    protected function isExpired($key)
+    public function isExpired($key, $lifetime = null)
     {
         // Inner var never expire,
         // Also, there is no good method to keep var set time.

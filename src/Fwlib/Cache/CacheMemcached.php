@@ -298,7 +298,7 @@ class CacheMemcached extends Cache
      * @param   int     $lifetime
      * @return  boolean                 True means it IS expired
      */
-    protected function isExpired($key, $lifetime = null)
+    public function isExpired($key, $lifetime = null)
     {
         // Lifetime is handle by memcached
 

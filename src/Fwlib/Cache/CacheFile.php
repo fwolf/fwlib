@@ -127,7 +127,7 @@ class CacheFile extends Cache
      * @param   int     $lifetime   Cache lifetime, in second.
      * @return  boolean             True means it IS expired.
      */
-    protected function isExpired($key, $lifetime = null)
+    public function isExpired($key, $lifetime = null)
     {
         $file = $this->getFilePath($key);
 
