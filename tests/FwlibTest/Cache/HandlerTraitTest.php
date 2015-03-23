@@ -24,6 +24,28 @@ class HandlerTraitTest extends PHPUnitTestCase
     }
 
 
+    public function testComputeExpireTime()
+    {
+        $handler = $this->buildMock();
+
+        $expireTime = $this->reflectionCall($handler, 'computeExpireTime');
+        $this->assertEquals(0, $expireTime);
+
+        $expireTime =
+            $this->reflectionCall($handler, 'computeExpireTime', [0]);
+        $this->assertEquals(0, $expireTime);
+
+        $expireTime =
+            $this->reflectionCall($handler, 'computeExpireTime', [10, 300]);
+        $this->assertEquals(310, $expireTime);
+
+        $now = time();
+        $expireTime =
+            $this->reflectionCall($handler, 'computeExpireTime', [30, 0]);
+        $this->assertGreaterThan($now + 20, $expireTime);
+    }
+
+
     public function testHashKey()
     {
         $handler = $this->buildMock();

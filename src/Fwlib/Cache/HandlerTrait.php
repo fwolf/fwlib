@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Cache;
 
+use Fwlib\Config\ConfigAwareTrait;
+
 /**
  * Shared code of cache handlers
  *
@@ -12,7 +14,54 @@ namespace Fwlib\Cache;
  */
 trait HandlerTrait
 {
+    use ConfigAwareTrait;
     use LoggerAwareTrait;
+
+
+    /**
+     * Compute expiration timestamp
+     *
+     * @param   int     $lifetime       Length, in seconds
+     * @param   int     $startTime      Start timestamp, default use time()
+     * @return  int                     End timestamp or 0 for never expire
+     */
+    protected function computeExpireTime($lifetime = null, $startTime = 0)
+    {
+        // If not set, read lifetime from config
+        if (is_null($lifetime)) {
+            $lifetime = $this->getLifetime();
+        }
+
+        // 0 means never expire
+        if (0 == $lifetime) {
+            return 0;
+        }
+
+        if (0 == $startTime) {
+            $startTime = time();
+        }
+
+        return $startTime + $lifetime;
+    }
+
+
+    /**
+     * Get lifetime length, in seconds
+     *
+     * For solid lifetime length, define them in configs.
+     * For dynamic lifetime length, overwrite this method to compute it.
+     *
+     * This implement will return 0 if config not set, means never expire.
+     *
+     * @param   string  $key
+     * @return  int
+     */
+    protected function getLifetime($key = null)
+    {
+        true || $key;
+
+        return $this->getConfig('lifetime', 0);
+    }
 
 
     /**
