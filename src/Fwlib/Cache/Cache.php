@@ -50,48 +50,6 @@ class Cache implements CacheHandlerInterface
      */
     protected $log = [];
 
-    /**
-     * Supported cache type, must have corresponding child class defined
-     *
-     * @var array
-     */
-    private static $supportedType = [
-        '',
-        'file',
-        'memcached',
-    ];
-
-
-    /**
-     * Factory create method
-     *
-     * @param   string  $type           Cache type
-     * @param   array   $config
-     * @return  HandlerInterface
-     */
-    public static function create($type = '', $config = [])
-    {
-        // Supported cache type
-        if (!in_array($type, self::$supportedType)) {
-            // @codeCoverageIgnoreStart
-
-            // $this is not allowed in static func
-            //$this->Log('Cache type ' . $type . ' not supported.', 4);
-            trigger_error(
-                'Cache type ' . $type . ' not supported.',
-                E_USER_ERROR
-            );
-            return null;
-
-            // @codeCoverageIgnoreEnd
-        }
-
-
-        // ClassLoader will do include file, 'use' is defined in file header
-        $classname = 'Fwlib\Cache\Cache' . ucfirst($type);
-        return new $classname($config);
-    }
-
 
     /**
      * Decode val stored in cache

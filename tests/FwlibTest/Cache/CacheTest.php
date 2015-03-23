@@ -71,13 +71,6 @@ class CacheTest extends PHPUnitTestCase
     }
 
 
-    public function testCreate()
-    {
-        $ch = Cache::create('');
-        $this->assertInstanceOf(Cache::class, $ch);
-    }
-
-
     public function testEncodeValue()
     {
         $cache = $this->buildMock();
