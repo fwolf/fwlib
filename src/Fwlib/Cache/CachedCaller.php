@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Cache;
 
+use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
+
 /**
  * Cached caller
  *
@@ -17,7 +19,7 @@ class CachedCaller implements CachedCallerInterface
     /**
      * Cache handler instance
      *
-     * @type    CacheInterface
+     * @var CacheHandlerInterface
      */
     protected $handler = null;
 
@@ -64,7 +66,7 @@ class CachedCaller implements CachedCallerInterface
     /**
      * Getter cache handler instance
      *
-     * @return  CacheInterface
+     * @return  HandlerInterface
      */
     protected function getHandler()
     {
@@ -75,7 +77,7 @@ class CachedCaller implements CachedCallerInterface
     /**
      * {@inheritdoc}
      */
-    public function setHandler(CacheInterface $handler)
+    public function setHandler(HandlerInterface $handler)
     {
         $this->handler = $handler;
 

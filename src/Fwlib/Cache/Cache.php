@@ -3,6 +3,7 @@ namespace Fwlib\Cache;
 
 use Fwlib\Cache\CacheFile;
 use Fwlib\Cache\CacheMemcached;
+use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
 use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Util\UtilContainerAwareTrait;
 
@@ -21,7 +22,7 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Cache implements CacheInterface
+class Cache implements CacheHandlerInterface
 {
     use ConfigAwareTrait;
     use UtilContainerAwareTrait;
@@ -68,7 +69,7 @@ class Cache implements CacheInterface
      *
      * @param   string  $type           Cache type
      * @param   array   $config
-     * @return  CacheInterface
+     * @return  HandlerInterface
      */
     public static function create($type = '', $config = [])
     {

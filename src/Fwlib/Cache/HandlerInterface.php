@@ -2,18 +2,18 @@
 namespace Fwlib\Cache;
 
 /**
- * Cache interface
+ * Cache handler interface
  *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-interface CacheInterface
+interface HandlerInterface
 {
     /**
      * Delete cache data
      *
      * @param   string  $key
-     * @return  CacheInterface
+     * @return  HandlerInterface
      */
     public function delete($key);
 
@@ -50,7 +50,7 @@ interface CacheInterface
      * @param   string  $key
      * @param   mixed   $val
      * @param   int     $lifetime
-     * @return  CacheInterface
+     * @return  HandlerInterface
      */
     public function set($key, $val, $lifetime = null);
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Cache;
 
+use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
+
 /**
  * Cached caller
  *
@@ -50,8 +52,8 @@ interface CachedCallerInterface
     /**
      * Setter of cache handler instance
      *
-     * @param   CacheInterface $handler
+     * @param   CacheHandlerInterface   $handler
      * @return  static
      */
-    public function setHandler(CacheInterface $handler);
+    public function setHandler(CacheHandlerInterface $handler);
 }

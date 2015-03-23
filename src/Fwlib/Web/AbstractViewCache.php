@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Web;
 
-use Fwlib\Cache\CacheInterface;
+use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
 
 /**
  * View with Cache feature
@@ -40,7 +40,7 @@ abstract class AbstractViewCache extends AbstractView
     /**
      * Get Cache instance
      *
-     * @return CacheInterface
+     * @return CacheHandlerInterface
      */
     abstract protected function getCache();
 

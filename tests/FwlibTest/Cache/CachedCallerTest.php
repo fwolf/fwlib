@@ -3,9 +3,9 @@ namespace FwlibTest\Cache;
 
 use Fwlib\Cache\Cache;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Cache\CacheInterface;
 use Fwlib\Cache\CachedCaller;
 use Fwlib\Cache\CachedCallerAwareInterface;
+use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
 
 /**
  * @copyright   Copyright 2015 Fwolf
@@ -19,7 +19,7 @@ class CachedCallerTest extends PHPUnitTestCase
 
 
     /**
-     * @return  CacheInterface
+     * @return  CacheHandlerInterface
      */
     protected function buildCacheHandlerMock()
     {
