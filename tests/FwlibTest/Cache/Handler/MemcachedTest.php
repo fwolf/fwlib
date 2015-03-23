@@ -5,6 +5,7 @@ use Fwlib\Cache\Cache;
 use Fwlib\Cache\Handler\Memcached as MemcachedHandler;
 use Fwlib\Config\GlobalConfig;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @requires extension memcached
@@ -15,11 +16,13 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 class MemcachedTest extends PHPUnitTestCase
 {
     /**
-     * @return MemcachedHandler
+     * @return MockObject | MemcachedHandler
      */
     protected function buildMock()
     {
-        return Cache::create('memcached');
+        $mock = $this->getMock(MemcachedHandler::class, null);
+
+        return $mock;
     }
 
 
@@ -45,7 +48,7 @@ class MemcachedTest extends PHPUnitTestCase
             'port' => $ms[0]['port'],
             'weight' => $ms[0]['weight'],
         ];
-        $cache->setConfigServer($x);
+        $cache->setMemcachedServers($x);
         $cache->get('any key');
         $serverList = $this->reflectionGet($cache, 'memcached')
             ->getServerList();
@@ -55,7 +58,7 @@ class MemcachedTest extends PHPUnitTestCase
 
 
         // Set server cfg, writable, $memcached is reset to null now
-        $cache->setConfigServer($ms);
+        $cache->setMemcachedServers($ms);
         // Do an operate to trigger memcached instance creation
         $cache->get('any key');
         $serverList = $this->reflectionGet($cache, 'memcached')
@@ -104,7 +107,7 @@ class MemcachedTest extends PHPUnitTestCase
 
         // Long key
         $key = str_repeat('-', 300);
-        $x = 'blah';
+        $x = 'foo';
         $cache->set($key, $x, 60);
         $this->assertEquals($x, $cache->get($key));
         $cache->delete($key);
@@ -112,7 +115,7 @@ class MemcachedTest extends PHPUnitTestCase
 
         // Empty key
         $key = '';
-        $x = 'blah';
+        $x = 'foo';
         $cache->set($key, $x, 60);
         $this->assertEquals($x, $cache->get($key));
 
@@ -160,56 +163,80 @@ class MemcachedTest extends PHPUnitTestCase
     }
 
 
-    /**
-     * create()
-     */
-    public function testCreate()
+    public function testGetDefaultConfigsWhenJsonEnabled()
     {
-        $cache = Cache::create('memcached');
-
-        // Server list is empty now
-        $cache->get('any key');
-        $ar = $this->reflectionGet($cache, 'memcached')->getServerList();
-        $this->assertEquals($ar, []);
-
-        $this->assertInstanceOf(
+        $handler = $this->getMock(
             MemcachedHandler::class,
-            $cache->setConfigServer()
+            ['isMemcachedJsonEnabled']
+        );
+
+        $handler->expects($this->once())
+            ->method('isMemcachedJsonEnabled')
+            ->willReturn(true);
+
+        $configs = $this->reflectionCall($handler, 'getDefaultConfigs');
+        $this->assertEquals(
+            \Memcached::SERIALIZER_JSON,
+            $configs['memcachedOptions'][\Memcached::OPT_SERIALIZER]
         );
     }
 
 
-    /**
-     * Disable to eliminate output by error_log()
-     */
-    public function tesSetConfigServer()
+    public function testHashKey()
     {
-        $cache = $this->buildMock();
+        $handler = $this->buildMock();
+
+        $this->assertEquals(
+            'foo',
+            $key = $this->reflectionCall($handler, 'hashKey', ['foo'])
+        );
+
+        // Exceed length limit
+        $key = str_repeat('0', MemcachedHandler::MAX_KEY_LENGTH + 19) . 'A';
+        $key = $this->reflectionCall($handler, 'hashKey', [$key]);
+        $this->assertLessThanOrEqual(
+            MemcachedHandler::MAX_KEY_LENGTH,
+            strlen($key)
+        );
+        $this->assertEquals('0', substr($key, 0, 1));
+        $this->assertEquals('A', substr($key, -1));
+    }
+
+
+    public function testSetMemcachedServer()
+    {
+        $handler = $this->buildMock();
+        $configs = $this->reflectionCall($handler, 'getConfigInstance');
+
+        $handler->setMemcachedServers();
+        $this->assertEquals(0, count($configs->get('memcachedServers')));
 
         // This should be a valid server
         $ms = GlobalConfig::getInstance()->get('memcached.server');
 
-        // Multi server, one of them is dead
+        // Alive one
         $x = [
+            'host'      => $ms[0]['host'],
+            'port'      => $ms[0]['port'],
+            'weight'    => 33
+        ];
+        $handler->setMemcachedServers($x);
+        $this->assertEquals(1, count($configs->get('memcachedServers')));
+
+        $y = [
             // Dead one
             [
                 'host'      => $ms[0]['host'],
                 'port'      => 80,
                 'weight'    => 67,
             ],
-            // Alive one
-            [
-                'host'      => $ms[0]['host'],
-                'port'      => $ms[0]['port'],
-                'weight'    => 33
-            ],
+            $x,
         ];
-        $cache->setConfigServer($x);
+        $handler->setMemcachedServers($y);
+        // Server alive test is not applied yet
+        $this->assertEquals(2, count($configs->get('memcachedServers')));
 
-        $memcached = $this->reflectionGet($cache, 'memcached');
-        $this->assertEquals(
-            [$x[1]],
-            $memcached->getServerList()
-        );
+        $memcached = $this->reflectionGet($handler, 'memcached');
+        $this->assertNull($memcached);
     }
 }
