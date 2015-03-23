@@ -59,22 +59,22 @@ class CacheMemcached extends Cache
 
         if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
-            $total = $memcached->get($this->getKey($key . '[split]'));
+            $total = $memcached->get($this->hashKey($key . '[split]'));
             if (false === $total) {
                 // No split found
-                $memcached->delete($this->getKey($key));
+                $memcached->delete($this->hashKey($key));
 
             } else {
                 // Splitted string
                 for ($i = 1; $i <= $total; $i ++) {
                     $memcached->delete(
-                        $this->getKey($key . '[split-' . $i . '/' . $total . ']')
+                        $this->hashKey($key . '[split-' . $i . '/' . $total . ']')
                     );
                 }
-                $memcached->delete($this->getKey($key . '[split]'));
+                $memcached->delete($this->hashKey($key . '[split]'));
             }
         } else {
-            $memcached->delete($this->getKey($key));
+            $memcached->delete($this->hashKey($key));
         }
 
         return $this;
@@ -99,7 +99,7 @@ class CacheMemcached extends Cache
 
         if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
-            $keySplitted = $this->getKey($key . '[split]');
+            $keySplitted = $this->hashKey($key . '[split]');
             $total = $memcached->get($keySplitted);
             $this->log[] = [
                 'key'   => $keySplitted,
@@ -108,9 +108,9 @@ class CacheMemcached extends Cache
             ];
             if (false === $total) {
                 // No split found
-                $val = $memcached->get($this->getKey($key));
+                $val = $memcached->get($this->hashKey($key));
                 $this->log[] = [
-                    'key'   => $this->getKey($key),
+                    'key'   => $this->hashKey($key),
                     'success'   => \Memcached::RES_SUCCESS
                         == $memcached->getResultCode(),
                 ];
@@ -118,7 +118,7 @@ class CacheMemcached extends Cache
                 // Splitted string
                 $val = '';
                 for ($i = 1; $i <= $total; $i++) {
-                    $keySplitted = $this->getKey(
+                    $keySplitted = $this->hashKey(
                         $key . '[split-' . $i . '/' . $total . ']'
                     );
                     $val .= $memcached->get($keySplitted);
@@ -134,9 +134,9 @@ class CacheMemcached extends Cache
 
         } else {
             // Direct get
-            $val = $memcached->get($this->getKey($key));
+            $val = $memcached->get($this->hashKey($key));
             $this->log[] = [
-                'key'   => $this->getKey($key),
+                'key'   => $this->hashKey($key),
                 'success'   => \Memcached::RES_SUCCESS
                     == $memcached->getResultCode(),
             ];
@@ -202,14 +202,14 @@ class CacheMemcached extends Cache
 
 
     /**
-     * {@inheritdoc}
+     * Convert required key to actual key inner used
      *
      * Memcached limit key length 250, and no control char or whitespace.
      *
      * @param   string  $str
      * @return  string
      */
-    public function getKey($str)
+    protected function hashKey($str)
     {
         // Eliminate white space
         $str = preg_replace('/\s/m', '', $str);
@@ -266,7 +266,7 @@ class CacheMemcached extends Cache
             $obj = new \Memcached();
             $obj->addServers([$svr]);
             // Do set test
-            $obj->set($this->getKey('memcached server alive test'), true);
+            $obj->set($this->hashKey('memcached server alive test'), true);
 
             // @codeCoverageIgnoreStart
             if (0 != $obj->getResultCode()) {
@@ -304,13 +304,13 @@ class CacheMemcached extends Cache
 
         $memcached = $this->getMemcached();
 
-        $val = $memcached->get($this->getKey($key));
+        $val = $memcached->get($this->hashKey($key));
 
         // Unknown item size, try again for auto split
         if ((\Memcached::RES_SUCCESS != $memcached->getResultCode())
             && (1 == $this->getConfig('memcachedAutoSplit'))
         ) {
-            $val = $memcached->get($this->getKey($key . '[split]'));
+            $val = $memcached->get($this->hashKey($key . '[split]'));
         }
 
         if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
@@ -351,7 +351,7 @@ class CacheMemcached extends Cache
 
             // Set split total
             $rs = $memcached->set(
-                $this->getKey($key . '[split]'),
+                $this->hashKey($key . '[split]'),
                 $total,
                 $lifetime
             );
@@ -359,7 +359,7 @@ class CacheMemcached extends Cache
             // Set split trunk
             for ($i = 1; $i <= $total; $i++) {
                 $rs = $memcached->set(
-                    $this->getKey($key . '[split-' . $i . '/' . $total . ']'),
+                    $this->hashKey($key . '[split-' . $i . '/' . $total . ']'),
                     $ar[$i - 1],
                     $lifetime
                 );
@@ -368,7 +368,7 @@ class CacheMemcached extends Cache
         } else {
             // Normal set
             $rs = $memcached->set(
-                $this->getKey($key),
+                $this->hashKey($key),
                 $this->encodeValue($val),
                 $lifetime
             );

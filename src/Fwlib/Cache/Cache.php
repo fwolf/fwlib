@@ -14,7 +14,7 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * This class is also child subclass creator(Factory Mode), so not abstract.
  *
  * Main method:
- * - getKey(), generate/hash or use original key as key in cache system,
+ * - hashKey(), generate/hash or use original key as key in cache system,
  * - set(), write cache data,
  * - get(), read cache data,
  * - delete(), delete cache data.
@@ -165,7 +165,7 @@ class Cache implements CacheHandlerInterface
      */
     public function get($key, $lifetime = null)
     {
-        $key = $this->getKey($key);
+        $key = $this->hashKey($key);
 
         // Ignored lifetime
         $arrayUtil = $this->getUtilContainer()->getArray();
@@ -254,12 +254,14 @@ class Cache implements CacheHandlerInterface
 
 
     /**
-     * {@inheritdoc}
+     * Convert required key to actual key inner used
+     *
+     * In some cache system, key may need hash or computed.
      *
      * @param   string  $str
      * @return  string
      */
-    public function getKey($str)
+    protected function hashKey($str)
     {
         return $str;
     }
@@ -350,7 +352,7 @@ class Cache implements CacheHandlerInterface
     public function set($key, $val, $lifetime = null)
     {
         // Lifetime is useless.
-        $this->cacheData[$this->getKey($key)] = $this->encodeValue($val, 0);
+        $this->cacheData[$this->hashKey($key)] = $this->encodeValue($val, 0);
 
         return $this;
     }

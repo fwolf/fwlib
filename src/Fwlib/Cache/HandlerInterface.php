@@ -34,17 +34,6 @@ interface HandlerInterface
 
 
     /**
-     * Convert param string to key used in cache system
-     *
-     * In some cache system, key may need hash or computed.
-     *
-     * @param   string  $str
-     * @return  string
-     */
-    public function getKey($str);
-
-
-    /**
      * Is cache data expire ?
      *
      * @param   string  $key
