@@ -1,5 +1,7 @@
 <?php
-namespace Fwlib\Cache;
+namespace Fwlib\Cache\Handler;
+
+use Fwlib\Cache\Cache;
 
 /**
  * Key-value cache system, data store in file
@@ -9,7 +11,7 @@ namespace Fwlib\Cache;
  * @copyright   Copyright 2010-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class CacheFile extends Cache
+class File extends Cache
 {
     /**
      * Check if cache is ready for use
@@ -103,7 +105,7 @@ class CacheFile extends Cache
      * {@inheritdoc}
      *
      * @param   string  $key
-     * @return  CacheFile
+     * @return  File
      */
     public function delete($key)
     {

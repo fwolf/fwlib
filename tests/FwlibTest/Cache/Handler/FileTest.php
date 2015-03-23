@@ -1,8 +1,8 @@
 <?php
-namespace FwlibTest\Cache;
+namespace FwlibTest\Cache\Handler;
 
 use Fwlib\Cache\Cache;
-use Fwlib\Cache\CacheFile;
+use Fwlib\Cache\Handler\File as FileHandler;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
@@ -12,13 +12,13 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  * @copyright   Copyright 2012-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class CacheFileTest extends PHPUnitTestCase
+class FileTest extends PHPUnitTestCase
 {
     use UtilContainerAwareTrait;
 
 
     /**
-     * @return CacheFile
+     * @return FileHandler
      */
     protected function buildMock()
     {
@@ -100,7 +100,7 @@ class CacheFileTest extends PHPUnitTestCase
      */
     public function testCreate()
     {
-        /** @var CacheFile $cache */
+        /** @var FileHandler $cache */
         $cache = Cache::create('file');
 
         $cache->setConfig('fileDir', '');
