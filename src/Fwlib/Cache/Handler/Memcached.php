@@ -303,24 +303,18 @@ class Memcached extends AbstractHandler
      */
     public function isExpired($key, $lifetime = null)
     {
-        // Lifetime is handle by memcached
-
         $memcached = $this->getMemcachedInstance();
 
-        $val = $memcached->get($this->hashKey($key));
+        $memcached->get($this->hashKey($key));
 
         // Unknown item size, try again for auto split
-        if ((\Memcached::RES_SUCCESS != $memcached->getResultCode())
-            && (1 == $this->getConfig('memcachedAutoSplit'))
+        if ((\Memcached::RES_SUCCESS != $memcached->getResultCode()) &&
+            (1 == $this->getConfig('memcachedAutoSplit'))
         ) {
-            $val = $memcached->get($this->hashKey($key . '[split]'));
+            $memcached->get($this->hashKey($this->getTotalKey($key)));
         }
 
-        if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(\Memcached::RES_SUCCESS == $memcached->getResultCode());
     }
 
 
