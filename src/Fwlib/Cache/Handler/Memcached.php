@@ -106,14 +106,13 @@ class Memcached extends AbstractHandler
             // Is value splitted ?
             $totalKey = $this->getTotalKey($key);
             $total = $memcached->get($this->hashKey($totalKey));
-            $success = \Memcached::RES_SUCCESS == $memcached->getResultCode();
+            $success = $this->isMemcachedSuccessful($memcached);
             $this->log('get', $totalKey, $success);
 
             if (false === $total) {
                 // No split found
                 $val = $memcached->get($this->hashKey($key));
-                $success = \Memcached::RES_SUCCESS ==
-                    $memcached->getResultCode();
+                $success = $this->isMemcachedSuccessful($memcached);
                 $this->log('get', $key, $success);
 
             } else {
@@ -124,8 +123,7 @@ class Memcached extends AbstractHandler
                     $partKey = $this->getPartKey($key, $i, $total);
                     $val .= $memcached->get($this->hashKey($partKey));
 
-                    $success = \Memcached::RES_SUCCESS
-                        == $memcached->getResultCode();
+                    $success = $this->isMemcachedSuccessful($memcached);
                     $this->log('get', $partKey, $success);
                 }
             }
@@ -133,7 +131,7 @@ class Memcached extends AbstractHandler
         } else {
             // Direct get
             $val = $memcached->get($this->hashKey($key));
-            $success = \Memcached::RES_SUCCESS == $memcached->getResultCode();
+            $success = $this->isMemcachedSuccessful($memcached);
             $this->log('get', $key, $success);
         }
 
@@ -252,7 +250,7 @@ class Memcached extends AbstractHandler
 
             $memcached->set($this->hashKey('memcachedServerAliveTest'), '1');
 
-            if (\Memcached::RES_SUCCESS != $memcached->getResultCode()) {
+            if (!$this->isMemcachedSuccessful($memcached)) {
                 error_log(
                     'Memcache server ' . implode($server, ':')
                     . ' test fail: ' . $memcached->getResultCode()
@@ -308,13 +306,13 @@ class Memcached extends AbstractHandler
         $memcached->get($this->hashKey($key));
 
         // Unknown item size, try again for auto split
-        if ((\Memcached::RES_SUCCESS != $memcached->getResultCode()) &&
+        if (!$this->isMemcachedSuccessful($memcached) &&
             (1 == $this->getConfig('memcachedAutoSplit'))
         ) {
             $memcached->get($this->hashKey($this->getTotalKey($key)));
         }
 
-        return !(\Memcached::RES_SUCCESS == $memcached->getResultCode());
+        return !$this->isMemcachedSuccessful($memcached);
     }
 
 
@@ -326,6 +324,18 @@ class Memcached extends AbstractHandler
     protected function isMemcachedJsonEnabled()
     {
         return \Memcached::HAVE_JSON;
+    }
+
+
+    /**
+     * Is last memcached operate successful ?
+     *
+     * @param   \Memcached  $memcached
+     * @return  bool
+     */
+    protected function isMemcachedSuccessful(\Memcached $memcached)
+    {
+        return \Memcached::RES_SUCCESS == $memcached->getResultCode();
     }
 
 
