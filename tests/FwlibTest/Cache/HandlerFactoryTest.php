@@ -32,7 +32,7 @@ class HandlerFactoryTest extends PHPUnitTestCase
 
         $this->assertInstanceOf(
             CacheHandlerInterface::class,
-            $factory->create('file')
+            $factory->create('File')
         );
     }
 

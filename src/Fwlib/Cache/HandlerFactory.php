@@ -47,9 +47,9 @@ class HandlerFactory
     protected function getClassMap()
     {
         return [
-            'file'      => File::class,
-            'memcached' => Memcached::class,
-            'phpArray'  => '',   // :TODO:
+            'File'      => File::class,
+            'Memcached' => Memcached::class,
+            'PhpArray'  => '',   // :TODO:
         ];
     }
 }
