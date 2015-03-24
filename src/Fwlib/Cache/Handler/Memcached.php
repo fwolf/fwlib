@@ -353,42 +353,44 @@ class Memcached extends AbstractHandler
     {
         $memcached = $this->getMemcachedInstance();
 
-        // Convert expiration time
+        // Convert lifetime to actual expiration timestamp
         $expireTime = $this->computeExpireTime($lifetime);
 
         // Auto split large string val
-        if ((1 == $this->getConfig('memcachedAutoSplit'))
-            && is_string($val) && (strlen($val)
-            > $this->getConfig('memcachedMaxItemSize'))
+        if ((1 == $this->getConfig('memcachedAutoSplit')) &&
+            (strlen($val) > $this->getConfig('memcachedMaxItemSize'))
         ) {
-            $ar = str_split(
-                $val,
-                $this->getConfig('memcachedMaxItemSize')
-            );
-            $total = count($ar);
+            $parts = str_split($val, $this->getConfig('memcachedMaxItemSize'));
+            $total = count($parts);
 
             // Set split total
-            $rs = $memcached->set(
-                $this->hashKey($key . '[split]'),
+            $totalKey = $this->getTotalKey($key);
+            $success = $memcached->set(
+                $this->hashKey($totalKey),
                 $total,
                 $expireTime
             );
+            $this->log('set', $totalKey, $success);
 
-            // Set split trunk
+            // Set split parts, sequence start from 1
             for ($i = 1; $i <= $total; $i++) {
-                $rs = $memcached->set(
-                    $this->hashKey($key . '[split-' . $i . '/' . $total . ']'),
-                    $ar[$i - 1],
+                $partKey = $this->getPartKey($key, $i, $total);
+                $success = $memcached->set(
+                    $this->hashKey($partKey),
+                    $parts[$i - 1],
                     $expireTime
                 );
+                $this->log('set', $partKey, $success);
             }
 
         } else {
             // Normal set
-            $rs = $memcached->set($this->hashKey($key), $val, $expireTime);
+            $success =
+                $memcached->set($this->hashKey($key), $val, $expireTime);
+            $this->log('set', $key, $success);
         }
 
-        if (false == $rs) {
+        if (!$success) {
             // @codeCoverageIgnoreStart
 
             trigger_error(

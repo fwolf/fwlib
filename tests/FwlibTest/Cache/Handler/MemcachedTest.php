@@ -76,10 +76,6 @@ class MemcachedTest extends PHPUnitTestCase
         $cache->set($key, $x, 60);
         $this->assertEquals($x, $cache->get($key));
 
-        $x = ['blah', ['foo' => 'boo']];
-        $cache->set($key, $x, 60);
-        $this->assertEquals($x, $cache->get($key));
-
         // Cache expire
         $cache->setConfig('memcachedAutoSplit', 1);
         $cache->set($key, $x, 60);
