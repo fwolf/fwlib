@@ -2,6 +2,7 @@
 namespace Fwlib\Cache\Handler;
 
 use Fwlib\Cache\AbstractHandler;
+use Fwlib\Cache\OperateType;
 
 /**
  * Cache with PHP array as storage
@@ -31,7 +32,7 @@ class PhpArray extends AbstractHandler
     {
         unset($this->cacheData[$this->hashKey($key)]);
 
-        $this->log('delete', $key, true);
+        $this->log(OperateType::DELETE, $key, true);
 
         return $this;
     }
@@ -48,11 +49,11 @@ class PhpArray extends AbstractHandler
             $this->cacheData[$hashedKey]['expire'] >= time()
         ) {
             $result = $this->cacheData[$hashedKey]['value'];
-            $this->log('get', $key, true);
+            $this->log(OperateType::GET, $key, true);
 
         } else {
             $result = null;
-            $this->log('get', $key, false);
+            $this->log(OperateType::GET, $key, false);
         }
 
         return $result;
@@ -103,6 +104,8 @@ class PhpArray extends AbstractHandler
             'value'  => $val,
             'expire' => $expireTime,
         ];
+
+        $this->log(OperateType::SET, $key, true);
 
         return $this;
     }

@@ -3,6 +3,7 @@ namespace Fwlib\Cache\Handler;
 
 use Fwlib\Cache\AbstractHandler;
 use Fwlib\Cache\Exception\CacheWriteFailException;
+use Fwlib\Cache\OperateType;
 
 /**
  * Key-value cache system, data store in memcached
@@ -60,7 +61,7 @@ class Memcached extends AbstractHandler
             if (false === $total) {
                 // No split found
                 $success = $memcached->delete($this->hashKey($key));
-                $this->log('delete', $key, $success);
+                $this->log(OperateType::DELETE, $key, $success);
 
             } else {
                 // Splitted string
@@ -68,16 +69,16 @@ class Memcached extends AbstractHandler
                 for ($i = 1; $i <= $total; $i ++) {
                     $partKey = $this->getPartKey($key, $i, $total);
                     $success = $memcached->delete($this->hashKey($partKey));
-                    $this->log('delete', $partKey, $success);
+                    $this->log(OperateType::DELETE, $partKey, $success);
                 }
 
                 $success = $memcached->delete($this->hashKey($totalKey));
-                $this->log('delete', $totalKey, $success);
+                $this->log(OperateType::DELETE, $totalKey, $success);
             }
 
         } else {
             $success = $memcached->delete($this->hashKey($key));
-            $this->log('delete', $key, $success);
+            $this->log(OperateType::DELETE, $key, $success);
         }
 
         return $this;
@@ -102,13 +103,13 @@ class Memcached extends AbstractHandler
             $totalKey = $this->getTotalKey($key);
             $total = $memcached->get($this->hashKey($totalKey));
             $success = $this->isMemcachedSuccessful($memcached);
-            $this->log('get', $totalKey, $success);
+            $this->log(OperateType::GET, $totalKey, $success);
 
             if (false === $total) {
                 // No split found
                 $val = $memcached->get($this->hashKey($key));
                 $success = $this->isMemcachedSuccessful($memcached);
-                $this->log('get', $key, $success);
+                $this->log(OperateType::GET, $key, $success);
 
             } else {
                 // Splitted string
@@ -119,7 +120,7 @@ class Memcached extends AbstractHandler
                     $val .= $memcached->get($this->hashKey($partKey));
 
                     $success = $this->isMemcachedSuccessful($memcached);
-                    $this->log('get', $partKey, $success);
+                    $this->log(OperateType::GET, $partKey, $success);
                 }
             }
 
@@ -127,7 +128,7 @@ class Memcached extends AbstractHandler
             // Direct get
             $val = $memcached->get($this->hashKey($key));
             $success = $this->isMemcachedSuccessful($memcached);
-            $this->log('get', $key, $success);
+            $this->log(OperateType::GET, $key, $success);
         }
 
         if ($success) {
@@ -359,7 +360,7 @@ class Memcached extends AbstractHandler
                 $total,
                 $expireTime
             );
-            $this->log('set', $totalKey, $success);
+            $this->log(OperateType::SET, $totalKey, $success);
 
             // Set split parts, sequence start from 1
             for ($i = 1; $i <= $total; $i++) {
@@ -369,14 +370,14 @@ class Memcached extends AbstractHandler
                     $parts[$i - 1],
                     $expireTime
                 );
-                $this->log('set', $partKey, $success);
+                $this->log(OperateType::SET, $partKey, $success);
             }
 
         } else {
             // Normal set
             $success =
                 $memcached->set($this->hashKey($key), $val, $expireTime);
-            $this->log('set', $key, $success);
+            $this->log(OperateType::SET, $key, $success);
         }
 
         if (!$success) {

@@ -2,6 +2,7 @@
 namespace FwlibTest\Cache;
 
 use Fwlib\Cache\Logger;
+use Fwlib\Cache\OperateType;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -29,7 +30,7 @@ class LoggerTest extends PHPUnitTestCase
     {
         $logger = $this->buildMock();
 
-        $logger->log('get', 'cache key', true);
+        $logger->log(OperateType::GET, 'cache key', true);
         $this->assertEquals(1, count($logger->getLogs()));
     }
 }

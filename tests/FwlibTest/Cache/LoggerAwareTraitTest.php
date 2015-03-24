@@ -4,6 +4,7 @@ namespace FwlibTest\Cache;
 use Fwlib\Cache\Logger;
 use Fwlib\Cache\LoggerAwareTrait;
 use Fwlib\Cache\LoggerInterface;
+use Fwlib\Cache\OperateType;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -36,11 +37,19 @@ class LoggerAwareTraitTest extends PHPUnitTestCase
         $loggerAware = $this->buildMock();
 
         // Before logger instance set
-        $this->reflectionCall($loggerAware, 'log', ['get', 'dummy', 'true']);
+        $this->reflectionCall(
+            $loggerAware,
+            'log',
+            [OperateType::GET, 'dummy', 'true']
+        );
 
         // After logger instance set
         $loggerAware->setLogger($logger);
-        $this->reflectionCall($loggerAware, 'log', ['get', 'dummy', 'true']);
+        $this->reflectionCall(
+            $loggerAware,
+            'log',
+            [OperateType::GET, 'dummy', 'true']
+        );
 
         $this->assertInstanceOf(
             LoggerInterface::class,
