@@ -103,30 +103,29 @@ class Memcached extends AbstractHandler
 
         if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
-            $keySplitted = $this->hashKey($key . '[split]');
-            $total = $memcached->get($keySplitted);
+            $totalKey = $key . '[split]';
+            $total = $memcached->get($this->hashKey($totalKey));
             $success = \Memcached::RES_SUCCESS == $memcached->getResultCode();
-            $this->log('get', $keySplitted, $success);
+            $this->log('get', $totalKey, $success);
 
             if (false === $total) {
                 // No split found
                 $val = $memcached->get($this->hashKey($key));
                 $success = \Memcached::RES_SUCCESS ==
                     $memcached->getResultCode();
-                $this->log('get', $this->hashKey($key), $success);
+                $this->log('get', $key, $success);
 
             } else {
                 // Splitted string
                 $val = '';
+                $total = intval($total);
                 for ($i = 1; $i <= $total; $i++) {
-                    $keySplitted = $this->hashKey(
-                        $key . '[split-' . $i . '/' . $total . ']'
-                    );
-                    $val .= $memcached->get($keySplitted);
+                    $partKey = "{$key}[split-{$i}/{$total}]";
+                    $val .= $memcached->get($this->hashKey($partKey));
 
                     $success = \Memcached::RES_SUCCESS
                         == $memcached->getResultCode();
-                    $this->log('get', $keySplitted, $success);
+                    $this->log('get', $partKey, $success);
                 }
             }
 
@@ -134,10 +133,10 @@ class Memcached extends AbstractHandler
             // Direct get
             $val = $memcached->get($this->hashKey($key));
             $success = \Memcached::RES_SUCCESS == $memcached->getResultCode();
-            $this->log('get', $this->hashKey($key), $success);
+            $this->log('get', $key, $success);
         }
 
-        if (\Memcached::RES_SUCCESS == $memcached->getResultCode()) {
+        if ($success) {
             return $val;
         } else {
             return null;
