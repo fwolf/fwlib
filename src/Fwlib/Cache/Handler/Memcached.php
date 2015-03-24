@@ -220,7 +220,6 @@ class Memcached extends AbstractHandler
 
             $memcached->set($this->hashKey('memcachedServerAliveTest'), '1');
 
-            // @codeCoverageIgnoreStart
             if (\Memcached::RES_SUCCESS != $memcached->getResultCode()) {
                 error_log(
                     'Memcache server ' . implode($server, ':')
@@ -228,9 +227,7 @@ class Memcached extends AbstractHandler
                     . ', message: ' . $memcached->getResultMessage()
                 );
                 unset($servers[$k]);
-
             }
-            // @codeCoverageIgnoreEnd
         }
 
         return $servers;

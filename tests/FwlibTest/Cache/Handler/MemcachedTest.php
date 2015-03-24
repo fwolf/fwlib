@@ -3,6 +3,7 @@ namespace FwlibTest\Cache\Handler;
 
 use Fwlib\Cache\Handler\Memcached as MemcachedHandler;
 use Fwlib\Config\GlobalConfig;
+use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -14,6 +15,9 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class MemcachedTest extends PHPUnitTestCase
 {
+    use FunctionMockFactoryAwareTrait;
+
+
     /**
      * @return MockObject | MemcachedHandler
      */
@@ -178,6 +182,35 @@ class MemcachedTest extends PHPUnitTestCase
             \Memcached::SERIALIZER_JSON,
             $configs['memcachedOptions'][\Memcached::OPT_SERIALIZER]
         );
+    }
+
+
+    public function testGetValidMemcachedServers()
+    {
+        $factory = $this->getFunctionMockFactory(MemcachedHandler::class);
+        $errorLogMock = $factory->get(null, 'error_log', true);
+
+        $handler = $this->buildMock();
+
+        // This should be a valid server
+        $servers = GlobalConfig::getInstance()->get('memcached.server');
+
+
+        $handler->setMemcachedServers($servers);
+        $result = $this->reflectionCall($handler, 'getValidMemcachedServers');
+        $this->assertEquals(1, count($result));
+
+
+        $badServers = $servers;
+        $badServers[0]['port'] = 80;
+        $errorLogMock->setResult('');
+        $handler->setMemcachedServers($badServers);
+        $result = $this->reflectionCall($handler, 'getValidMemcachedServers');
+        $this->assertEmpty($result);
+        $this->assertRegExp('/test fail/', $errorLogMock->getResult());
+
+
+        $errorLogMock->disableAll();
     }
 
 
