@@ -57,7 +57,8 @@ class Memcached extends AbstractHandler
 
         if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
-            $total = $memcached->get($this->hashKey($key . '[split]'));
+            $totalKey = $this->getTotalKey($key);
+            $total = $memcached->get($this->hashKey($totalKey));
             if (false === $total) {
                 // No split found
                 $success = $memcached->delete($this->hashKey($key));
@@ -65,13 +66,13 @@ class Memcached extends AbstractHandler
 
             } else {
                 // Splitted string
+                $total = intval($total);
                 for ($i = 1; $i <= $total; $i ++) {
-                    $partKey = "{$key}[split-{$i}/{$total}]";
+                    $partKey = $this->getPartKey($key, $i, $total);
                     $success = $memcached->delete($this->hashKey($partKey));
                     $this->log('delete', $partKey, $success);
                 }
 
-                $totalKey = "{$key}[split]";
                 $success = $memcached->delete($this->hashKey($totalKey));
                 $this->log('delete', $totalKey, $success);
             }
@@ -103,7 +104,7 @@ class Memcached extends AbstractHandler
 
         if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
-            $totalKey = $key . '[split]';
+            $totalKey = $this->getTotalKey($key);
             $total = $memcached->get($this->hashKey($totalKey));
             $success = \Memcached::RES_SUCCESS == $memcached->getResultCode();
             $this->log('get', $totalKey, $success);
@@ -120,7 +121,7 @@ class Memcached extends AbstractHandler
                 $val = '';
                 $total = intval($total);
                 for ($i = 1; $i <= $total; $i++) {
-                    $partKey = "{$key}[split-{$i}/{$total}]";
+                    $partKey = $this->getPartKey($key, $i, $total);
                     $val .= $memcached->get($this->hashKey($partKey));
 
                     $success = \Memcached::RES_SUCCESS
@@ -203,6 +204,32 @@ class Memcached extends AbstractHandler
         }
 
         return $this->memcachedInstance;
+    }
+
+
+    /**
+     * Get key of a part in auto split mode
+     *
+     * @param   string  $originalKey
+     * @param   int     $partSequence
+     * @param   int     $totalParts
+     * @return  string
+     */
+    protected function getPartKey($originalKey, $partSequence, $totalParts)
+    {
+        return "{$originalKey}[split-{$partSequence}/{$totalParts}]";
+    }
+
+
+    /**
+     * Get key of total in auto split mode
+     *
+     * @param   string  $originalKey
+     * @return  string
+     */
+    protected function getTotalKey($originalKey)
+    {
+        return "{$originalKey}[split]";
     }
 
 
