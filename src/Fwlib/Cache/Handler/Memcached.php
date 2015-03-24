@@ -23,7 +23,7 @@ class Memcached extends AbstractHandler
      *
      * @var \Memcached
      */
-    protected $memcached = null;
+    protected $memcachedInstance = null;
 
 
     /**
@@ -53,7 +53,7 @@ class Memcached extends AbstractHandler
      */
     public function delete($key)
     {
-        $memcached = $this->getMemcached();
+        $memcached = $this->getMemcachedInstance();
 
         if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
@@ -93,7 +93,7 @@ class Memcached extends AbstractHandler
     {
         // Lifetime is handle by memcached
 
-        $memcached = $this->getMemcached();
+        $memcached = $this->getMemcachedInstance();
 
         if (1 == $this->getConfig('memcachedAutoSplit')) {
             // Is value splitted ?
@@ -189,14 +189,15 @@ class Memcached extends AbstractHandler
      *
      * @return  \Memcached
      */
-    protected function getMemcached()
+    protected function getMemcachedInstance()
     {
-        if (is_null($this->memcached)) {
+        if (is_null($this->memcachedInstance)) {
             $serverList = $this->getValidMemcachedServer();
-            $this->memcached = $this->connectMemcachedServer($serverList);
+            $this->memcachedInstance =
+                $this->connectMemcachedServer($serverList);
         }
 
-        return $this->memcached;
+        return $this->memcachedInstance;
     }
 
 
@@ -275,7 +276,7 @@ class Memcached extends AbstractHandler
     {
         // Lifetime is handle by memcached
 
-        $memcached = $this->getMemcached();
+        $memcached = $this->getMemcachedInstance();
 
         $val = $memcached->get($this->hashKey($key));
 
@@ -317,7 +318,7 @@ class Memcached extends AbstractHandler
      */
     public function set($key, $val, $lifetime = null)
     {
-        $memcached = $this->getMemcached();
+        $memcached = $this->getMemcachedInstance();
 
         // Convert expiration time
         $expireTime = $this->computeExpireTime($lifetime);

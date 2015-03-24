@@ -1,7 +1,6 @@
 <?php
 namespace FwlibTest\Cache\Handler;
 
-use Fwlib\Cache\Cache;
 use Fwlib\Cache\Handler\Memcached as MemcachedHandler;
 use Fwlib\Config\GlobalConfig;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
@@ -50,7 +49,7 @@ class MemcachedTest extends PHPUnitTestCase
         ];
         $cache->setMemcachedServers($x);
         $cache->get('any key');
-        $serverList = $this->reflectionGet($cache, 'memcached')
+        $serverList = $this->reflectionGet($cache, 'memcachedInstance')
             ->getServerList();
         // Memcached::getServerList() result may not include weight
         $this->assertEquals($y['host'], $serverList[0]['host']);
@@ -61,7 +60,7 @@ class MemcachedTest extends PHPUnitTestCase
         $cache->setMemcachedServers($ms);
         // Do an operate to trigger memcached instance creation
         $cache->get('any key');
-        $serverList = $this->reflectionGet($cache, 'memcached')
+        $serverList = $this->reflectionGet($cache, 'memcachedInstance')
             ->getServerList();
         $this->assertEquals($ms[0]['host'], $serverList[0]['host']);
         $this->assertEquals($ms[0]['port'], $serverList[0]['port']);
@@ -150,13 +149,13 @@ class MemcachedTest extends PHPUnitTestCase
 
         // Big value size is computed AFTER compress if compress on
         $s = str_repeat('0', 1200000);
-        $this->reflectionGet($cache, 'memcached')
+        $this->reflectionGet($cache, 'memcachedInstance')
             ->setOption(\Memcached::OPT_COMPRESSION, false);
         $cache->setConfig('memcachedAutoSplit', 0);
         // Error: Memcache set error 10: SERVER ERROR
         @$cache->set($key, $s, 3600);
         $this->assertEquals(null, $cache->get($key));
-        $this->reflectionGet($cache, 'memcached')
+        $this->reflectionGet($cache, 'memcachedInstance')
             ->setOption(\Memcached::OPT_COMPRESSION, true);
         $cache->set($key, $s, 3600);
         $this->assertEquals($s, $cache->get($key));
