@@ -1,7 +1,7 @@
 <?php
-namespace FwlibTest\Cache\Handler;
+namespace FwlibTest\Cache\Handler\Helper;
 
-use Fwlib\Cache\Handler\WithVersionTrait;
+use Fwlib\Cache\Handler\Helper\WithVersionTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -18,7 +18,7 @@ class WithVersionTraitTest extends PHPUnitTestCase
 
 
     /**
-     * @return MockObject | WithVersionTrait
+     * @return MockObject | \Fwlib\Cache\Handler\Helper\WithVersionTrait
      */
     protected function buildMock()
     {

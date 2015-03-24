@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Cache\Handler;
 
+use Fwlib\Cache\Handler\Helper\WithVersionTrait;
 use Fwlib\Cache\Handler\Memcached as MemcachedHandler;
 
 /**

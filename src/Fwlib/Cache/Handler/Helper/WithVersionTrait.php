@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Cache\Handler;
+namespace Fwlib\Cache\Handler\Helper;
 
 /**
  * Trait for cache store data with version, for batch delete
