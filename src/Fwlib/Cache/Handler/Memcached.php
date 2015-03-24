@@ -60,19 +60,25 @@ class Memcached extends AbstractHandler
             $total = $memcached->get($this->hashKey($key . '[split]'));
             if (false === $total) {
                 // No split found
-                $memcached->delete($this->hashKey($key));
+                $success = $memcached->delete($this->hashKey($key));
+                $this->log('delete', $key, $success);
 
             } else {
                 // Splitted string
                 for ($i = 1; $i <= $total; $i ++) {
-                    $memcached->delete(
-                        $this->hashKey($key . '[split-' . $i . '/' . $total . ']')
-                    );
+                    $partKey = "{$key}[split-{$i}/{$total}]";
+                    $success = $memcached->delete($this->hashKey($partKey));
+                    $this->log('delete', $partKey, $success);
                 }
-                $memcached->delete($this->hashKey($key . '[split]'));
+
+                $totalKey = "{$key}[split]";
+                $success = $memcached->delete($this->hashKey($totalKey));
+                $this->log('delete', $totalKey, $success);
             }
+
         } else {
-            $memcached->delete($this->hashKey($key));
+            $success = $memcached->delete($this->hashKey($key));
+            $this->log('delete', $key, $success);
         }
 
         return $this;
