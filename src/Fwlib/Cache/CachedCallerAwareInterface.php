@@ -49,4 +49,22 @@ interface CachedCallerAwareInterface
      * @return  boolean
      */
     public function isUseCache();
+
+
+    /**
+     * Setter of $forceRefreshCache
+     *
+     * @param   bool    $forceRefreshCache
+     * @return  static
+     */
+    public function setForceRefreshCache($forceRefreshCache);
+
+
+    /**
+     * Setter of $useCache
+     *
+     * @param   bool    $useCache
+     * @return  static
+     */
+    public function setUseCache($useCache);
 }
