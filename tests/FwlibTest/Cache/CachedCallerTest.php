@@ -1,11 +1,11 @@
 <?php
 namespace FwlibTest\Cache;
 
-use Fwlib\Cache\Cache;
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Cache\CachedCaller;
 use Fwlib\Cache\CachedCallerAwareInterface;
+use Fwlib\Cache\Handler\PhpArray as PhpArrayHandler;
 use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2015 Fwolf
@@ -24,7 +24,7 @@ class CachedCallerTest extends PHPUnitTestCase
     protected function buildCacheHandlerMock()
     {
         $cache = $this->getMock(
-            Cache::class,
+            PhpArrayHandler::class,
             null
         );
 

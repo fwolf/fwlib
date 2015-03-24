@@ -2,9 +2,9 @@
 namespace FwlibTest\Cache;
 
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Cache\Cache;
 use Fwlib\Cache\CachedCaller;
 use Fwlib\Cache\AbstractCachedCallerAware;
+use Fwlib\Cache\Handler\PhpArray as PhpArrayCacheHandler;
 
 /**
  * @copyright   Copyright 2014-2015 Fwolf
@@ -43,7 +43,7 @@ class AbstractCachedCallerAwareTest extends PHPUnitTestCase
             ->setForceRefreshCache(false);
 
         $cachedCaller = new CachedCaller;
-        $cachedCaller->setHandler(new Cache);
+        $cachedCaller->setHandler(new PhpArrayCacheHandler);
 
         // The 2nd call should read from cache, callMe() is called only once
         $resultOne = $cachedCaller->call($model, 'callMe', [42]);
