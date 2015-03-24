@@ -48,9 +48,6 @@ class Memcached extends AbstractHandler
 
     /**
      * {@inheritdoc}
-     *
-     * @param   string  $key
-     * @return  static
      */
     public function delete($key)
     {
@@ -88,14 +85,10 @@ class Memcached extends AbstractHandler
 
 
     /**
-     * Read cache and return value
+     * {@inheritdoc}
      *
      * Lifetime set when write cache.
      * Return null when fail or expire.
-     *
-     * @param   string  $key
-     * @param   int     $lifetime
-     * @return  string
      */
     public function get($key, $lifetime = null)
     {
@@ -292,14 +285,10 @@ class Memcached extends AbstractHandler
 
 
     /**
-     * Is cache data expire ?
+     * {@inheritdoc}
      *
      * Memcached expire when get fail, usually call get() and check if result
      * is null or check resultCode is enough.
-     *
-     * @param   string  $key
-     * @param   int     $lifetime
-     * @return  boolean                 True means it IS expired
      */
     public function isExpired($key, $lifetime = null)
     {
@@ -345,14 +334,8 @@ class Memcached extends AbstractHandler
 
 
     /**
-     * Write data to cache
+     * {@inheritdoc}
      *
-     * Lifetime is set when write.
-     *
-     * @param   string  $key
-     * @param   string  $val
-     * @param   int     $lifetime
-     * @return  static
      * @throws  CacheWriteFailException
      */
     public function set($key, $val, $lifetime = null)
