@@ -1,10 +1,11 @@
 <?php
 namespace FwlibTest\Cache\Handler;
 
-use Fwlib\Cache\Cache;
 use Fwlib\Cache\Handler\File as FileHandler;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use org\bovigo\vfs\vfsStream;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Some test file/path environment is for *nix only.
@@ -18,166 +19,147 @@ class FileTest extends PHPUnitTestCase
 
 
     /**
-     * @return FileHandler
+     * @return MockObject | FileHandler
      */
     protected function buildMock()
     {
-        return Cache::create('file');
+        $mock = $this->getMock(FileHandler::class, null);
+
+        return $mock;
+    }
+
+
+    public static function setUpBeforeClass()
+    {
+        vfsStream::setup('FileTest');
     }
 
 
     /**
      * get(), set(), delete(), expire() etc
+     *
+     * Flag LOCK_EX is used when write file, vfs can not mock this.
+     * @see https://github.com/mikey179/vfsStream/wiki/Known-Issues
      */
-    public function testCache()
+    public function test()
     {
-        $cache = $this->buildMock();
+        $handler = $this->buildMock();
 
-        $cache->setConfigs(['fileRule' => '55']);
+        $handler->setConfig('fileDir', '/tmp/cache/');
+        $handler->setConfigs(['fileRule' => '55']);
         $key = 'site/index';
         // '/tmp/cache/89/3ed0dc6e'
-        $x = $cache->getFilePath($key);
+        $filePath = $this->reflectionCall($handler, 'getFilePath', [$key]);
 
         // Clean test dir
         $fileSystem = $this->getUtilContainer()->getFileSystem();
-        $y = $fileSystem->getDirName($x);
-        if (file_exists($y)) {
-            $fileSystem->del($y);
+        $fileDir = $fileSystem->getDirName($filePath);
+        if (file_exists($fileDir)) {
+            $fileSystem->del($fileDir);
         }
 
         // Cache set
-        $v = 'blah';
-        $cache->setConfig('storeMethod', 1);
-        $cache->set($key, $v);
-        $this->assertEquals(json_encode($v), file_get_contents($x));
+        $value = 'blah';
+        $handler->setConfig('storeMethod', 1);
+        $handler->set($key, $value);
+        $this->assertEquals($value, file_get_contents($filePath));
 
         // Cache expire
-        $this->assertTrue(
-            $this->reflectionCall($cache, 'isExpired', [$key, -10])
-        );
-        $this->assertTrue(
-            $this->reflectionCall($cache, 'isExpired', [$key, strtotime('2012-1-1')])
-        );
-
-        $this->assertFalse(
-            $this->reflectionCall($cache, 'isExpired', [$key, 10])
-        );
-        $this->assertFalse(
-            $this->reflectionCall($cache, 'isExpired', [$key, 1])
-        );
-        $this->assertFalse(
-            $this->reflectionCall($cache, 'isExpired', [$key, 0])
-        );
-        $this->assertFalse(
-            $this->reflectionCall($cache, 'isExpired', [$key, null])
-        );
+        $this->assertTrue($handler->isExpired($key, -10));
+        $this->assertFalse($handler->isExpired($key, 10));
+        $this->assertFalse($handler->isExpired($key, 1));
+        $this->assertFalse($handler->isExpired($key, 0));
+        $this->assertFalse($handler->isExpired($key, null));
 
         // Cache get
-        $this->assertEquals($v, $cache->get($key));
-        $this->assertEquals(null, $cache->get($key, -10));
-        $this->assertEquals($v, $cache->get($key, 0));
-        $this->assertEquals($v, $cache->get($key, 5));
-        $this->assertEquals($v, $cache->get($key, null));
+        $this->assertEquals($value, $handler->get($key));
+        $this->assertEquals(null, $handler->get($key, -10));
+        $this->assertEquals($value, $handler->get($key, 0));
+        $this->assertEquals($value, $handler->get($key, 5));
+        $this->assertEquals($value, $handler->get($key, null));
 
-        $v = '你好';
-        $cache->setConfig('storeMethod', 0);
-        $cache->set($key, $v);
-        $this->assertEquals($v, $cache->get($key));
-
-        $v = ['你' => '好'];
-        $cache->setConfig('storeMethod', 1);
-        $cache->set($key, $v);
-        $this->assertEquals($v, $cache->get($key));
+        $value = '你好';
+        $handler->set($key, $value);
+        $this->assertEquals($value, $handler->get($key));
 
         // Cache delete
-        $cache->delete($key);
-        $this->assertEquals(null, $cache->get($key));
+        $handler->delete($key);
+        $this->assertEquals(null, $handler->get($key));
     }
 
 
-    /**
-     * create(), checkConfig()
-     */
-    public function testCreate()
+    public function testCheckConfig()
     {
-        /** @var FileHandler $cache */
-        $cache = Cache::create('file');
+        $handler = $this->buildMock();
 
-        $cache->setConfig('fileDir', '');
-        $this->assertFalse($cache->checkConfig());
-        $this->assertEquals(
-            'No cache file dir defined.',
-            $cache->getErrorMessage()
-        );
+        $handler->setConfig('fileDir', '');
+        $handler->setConfig('fileRule', '');
+        $this->assertFalse($handler->checkConfig());
+        $this->assertEquals(2, count($handler->getErrorMessages()));
 
-        $cache->setConfig('fileRule', '');
-        $this->assertFalse($cache->checkConfig());
-        $this->assertEquals(
-            'No cache file rule defined.',
-            $cache->getErrorMessage()
-        );
 
-        // Wrong config
-        $cache->setConfig('fileDir', '/proc/');
-        $this->assertEquals(false, $cache->checkConfig());
+        $readonlyDir = vfsStream::url('FileTest/readonlyDir/');
+        mkdir($readonlyDir, 0555);
 
-        $cache->setConfig('fileRule', '8');
-        $this->assertEquals(false, $cache->checkConfig());
+        $handler->setConfig('fileDir', $readonlyDir . 'foo/');
+        $handler->setConfig('fileRule', '1');
+        $this->assertFalse($handler->checkConfig());
+        $this->assertEquals(2, count($handler->getErrorMessages()));
 
-        $cache->setConfig('fileRule', '0blah');
-        $this->assertEquals(false, $cache->checkConfig());
 
-        // Create file dir fail
-        $cache->setConfig('fileDir', '/var/log/test-cache-tmp/');
-        // Hide error: mkdir(): Permission denied
-        $this->assertEquals(false, @$cache->checkConfig());
+        $handler->setConfig('fileDir', $readonlyDir);
+        $handler->setConfig('fileRule', '111');
+        $this->assertFalse($handler->checkConfig());
+        $this->assertEquals(2, count($handler->getErrorMessages()));
+
+
+        $writableDir = vfsStream::url('FileTest/writableDir/');
+        mkdir($writableDir, 0755);
+
+        $handler->setConfig('fileDir', $writableDir);
+        $handler->setConfig('fileRule', '10');
+        $this->assertTrue($handler->checkConfig());
+        $this->assertEquals(0, count($handler->getErrorMessages()));
     }
 
 
     public function testGetFilePath()
     {
-        $cache = $this->buildMock();
+        $handler = $this->buildMock();
 
-        $cache->setConfig('fileDir', '/tmp/cache/');
-        $cache->setConfig('fileRule', '1140');
+        $handler->setConfig('fileDir', '/tmp/cache/');
+        $handler->setConfig('fileRule', '1140');
         $key = 'site/index';
 
-        $x = '/tmp/cache/d0/ex/3ed0dc6e';
-        $y = $cache->getFilePath($key);
-        $this->assertEquals($x, $y);
+        $path = $this->reflectionCall($handler, 'getFilePath', [$key]);
+        $this->assertEquals('/tmp/cache/d0/ex/3ed0dc6e', $path);
 
-        $cache->setConfigs(['fileRule' => '']);
-        $x = '/tmp/cache/3ed0dc6e';
-        $y = $cache->getFilePath($key);
-        $this->assertEquals($x, $y);
+        $handler->setConfigs(['fileRule' => '']);
+        $path = $this->reflectionCall($handler, 'getFilePath', [$key]);
+        $this->assertEquals('/tmp/cache/3ed0dc6e', $path);
 
-        $cache->setConfigs(['fileRule' => '1131']);
-        $x = '/tmp/cache/d0/te/3ed0dc6e';
-        $y = $cache->getFilePath($key);
-        $this->assertEquals($x, $y);
+        $handler->setConfigs(['fileRule' => '1131']);
+        $path = $this->reflectionCall($handler, 'getFilePath', [$key]);
+        $this->assertEquals('/tmp/cache/d0/te/3ed0dc6e', $path);
 
         // Notice: Directly use key's part as path may cause wrong
-        $cache->setConfigs(['fileRule' => '2342']);
-        $x = '/tmp/cache/57//i/3ed0dc6e';
-        $y = $cache->getFilePath($key);
-        $this->assertEquals($x, $y);
+        $handler->setConfigs(['fileRule' => '2342']);
+        $path = $this->reflectionCall($handler, 'getFilePath', [$key]);
+        $this->assertEquals('/tmp/cache/57//i/3ed0dc6e', $path);
 
         // Common usage
-        $cache->setConfigs(['fileRule' => '1011']);
-        $x = '/tmp/cache/3e/d0/3ed0dc6e';
-        $y = $cache->getFilePath($key);
-        $this->assertEquals($x, $y);
+        $handler->setConfigs(['fileRule' => '1011']);
+        $path = $this->reflectionCall($handler, 'getFilePath', [$key]);
+        $this->assertEquals('/tmp/cache/3e/d0/3ed0dc6e', $path);
 
         // Common usage 2
-        $cache->setConfigs(['fileRule' => '2021']);
-        $x = '/tmp/cache/b6/9c/3ed0dc6e';
-        $y = $cache->getFilePath($key);
-        $this->assertEquals($x, $y);
+        $handler->setConfigs(['fileRule' => '2021']);
+        $path = $this->reflectionCall($handler, 'getFilePath', [$key]);
+        $this->assertEquals('/tmp/cache/b6/9c/3ed0dc6e', $path);
 
         // Common usage 3
-        $cache->setConfigs(['fileRule' => '55']);
-        $x = '/tmp/cache/89/3ed0dc6e';
-        $y = $cache->getFilePath($key);
-        $this->assertEquals($x, $y);
+        $handler->setConfigs(['fileRule' => '55']);
+        $path = $this->reflectionCall($handler, 'getFilePath', [$key]);
+        $this->assertEquals('/tmp/cache/89/3ed0dc6e', $path);
     }
 }

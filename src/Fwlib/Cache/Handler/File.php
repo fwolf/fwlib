@@ -1,7 +1,9 @@
 <?php
 namespace Fwlib\Cache\Handler;
 
-use Fwlib\Cache\Cache;
+use Fwlib\Cache\AbstractHandler;
+use Fwlib\Cache\OperateType;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Key-value cache system, data store in file
@@ -11,8 +13,19 @@ use Fwlib\Cache\Cache;
  * @copyright   Copyright 2010-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class File extends Cache
+class File extends AbstractHandler
 {
+    use UtilContainerAwareTrait;
+
+
+    /**
+     * Error in config check
+     *
+     * @var string[]
+     */
+    protected $errorMessages = [];
+
+
     /**
      * Check if cache is ready for use
      *
@@ -21,29 +34,32 @@ class File extends Cache
     public function checkConfig()
     {
         $pass = true;
+        $this->errorMessages = [];
 
         $dir = $this->getConfig('fileDir');
         if (empty($dir)) {
-            $this->errorMessage = 'No cache file dir defined.';
+            $this->errorMessages[] = 'No cache file dir defined';
             $pass = false;
 
         } else {
-            $s = $this->checkConfigFileDir($dir);
-            if (!empty($s)) {
-                $this->errorMessage = 'Cache file cfg dir error: ' . $s;
+            $message = $this->checkFileDirConfig($dir);
+            if (!empty($message)) {
+                $this->errorMessages[] =
+                    'Cache file directory config error: ' . $message;
                 $pass = false;
             }
         }
 
         $rule = $this->getConfig('fileRule');
         if (empty($rule)) {
-            $this->errorMessage = 'No cache file rule defined.';
+            $this->errorMessages[] = 'No cache file rule defined';
             $pass = false;
 
         } else {
-            $s = $this->checkConfigFileRule($rule);
-            if (!empty($s)) {
-                $this->errorMessage = 'Cache file cfg rule error: ' . $s;
+            $message = $this->checkFileRuleConfig($rule);
+            if (!empty($message)) {
+                $this->errorMessages[] =
+                    'Cache file rule config error: ' . $message;
                 $pass = false;
             }
         }
@@ -60,22 +76,22 @@ class File extends Cache
      * @param   string  $dir
      * @return  string
      */
-    public function checkConfigFileDir($dir)
+    protected function checkFileDirConfig($dir)
     {
-        $s = '';
+        $message = '';
 
         if (!file_exists($dir)) {
             if (false == mkdir($dir, 0755, true)) {
-                $s = "Fail to create cache dir {$dir}.";
+                $message = "Fail to create cache directory \"{$dir}\"";
             }
 
         } else {
             if (!is_writable($dir)) {
-                $s = "Cache dir {$dir} is not writable.";
+                $message = "Cache directory \"{$dir}\" is not writable.";
             }
         }
 
-        return $s;
+        return $message;
     }
 
 
@@ -87,14 +103,14 @@ class File extends Cache
      * @param   string  $rule
      * @return  string
      */
-    public function checkConfigFileRule($rule)
+    protected function checkFileRuleConfig($rule)
     {
         if (2 > strlen($rule)) {
-            return('Cache rule is not defined or too short.');
+            return('Cache rule is not defined or too short');
         }
 
         if (0 != (strlen($rule) % 2)) {
-            return("Cache rule $rule may not right.");
+            return("Cache rule \"$rule\" may not right");
         }
 
         return '';
@@ -103,198 +119,40 @@ class File extends Cache
 
     /**
      * {@inheritdoc}
-     *
-     * @param   string  $key
-     * @return  File
      */
     public function delete($key)
     {
         $file = $this->getFilePath($key);
 
         if (file_exists($file)) {
-            unlink($file);
+            $success = unlink($file);
+            $this->log(OperateType::DELETE, $key, $success);
         }
+
+        $this->log(OperateType::DELETE, $key, true);
 
         return $this;
     }
 
 
     /**
-     * Is cache data expire ?
-     *
-     * File cache does not keep lifetime in cache, so it need a lifetime from
-     * outside, or use default lifetime config.
-     *
-     * @param   string  $key
-     * @param   int     $lifetime   Cache lifetime, in second.
-     * @return  boolean             True means it IS expired.
-     */
-    public function isExpired($key, $lifetime = null)
-    {
-        $file = $this->getFilePath($key);
-
-        // File doesn't exist
-        if (!file_exists($file)) {
-            return true;
-        }
-
-        if (0 == $lifetime) {
-            return false;
-        }
-
-        // Check file expire time
-        $expireTime = $this->getExpireTime($lifetime, filemtime($file));
-
-        return (time() > $expireTime);
-    }
-
-
-    /**
-     * Read cache and return value
+     * {@inheritdoc}
      *
      * File cache should check lifetime when get, return null when fail.
-     *
-     * @param   string  $key
-     * @param   int     $lifetime       Cache lifetime, 0/no check, null/cfg
-     * @return  mixed
      */
     public function get($key, $lifetime = null)
     {
         if ($this->isExpired($key, $lifetime)) {
-            $this->log[] = [
-                'key'   => $key,
-                'success'   => false,
-            ];
+            $this->log(OperateType::GET, $key, false);
             return null;
         }
 
         // Read from file and parse it.
         $file = $this->getFilePath($key);
-        $cacheContent = file_get_contents($file);
-        $this->log[] = [
-            'key'   => $key,
-            'success'   => !(false === $cacheContent),
-        ];
+        $content = file_get_contents($file);
+        $this->log(OperateType::GET, $key, !(false === $content));
 
-        return $this->decodeValue($cacheContent);
-    }
-
-
-    /**
-     * Compute path of a key's data file
-     *
-     * @param   string  $key
-     * @return  string
-     */
-    public function getFilePath($key)
-    {
-        $path = $this->getConfig('fileDir');
-
-        $ar_rule = str_split($this->getConfig('fileRule'), 2);
-
-        foreach ($ar_rule as $rule) {
-            // Path section may be empty
-            $pathSection = $this->getFilePathSection($rule, $key);
-            if (!empty($pathSection)) {
-                $pathSection .= '/';
-            }
-
-            $path .= $pathSection;
-        }
-
-        // Filename
-        $path .= $this->getFileName($key);
-
-        return $path;
-    }
-
-
-    /**
-     * Compute path of a key by a single rule section
-     *
-     * @param   string  $rule
-     * @param   string  $key
-     * @return  string
-     */
-    protected function getFilePathSection($rule, $key)
-    {
-        $len = 2;
-
-        if ($len > strlen($rule)) {
-            return '';
-        }
-
-        $i = intval($rule{1});
-        if (1 == $rule{0}) {
-            // md5 from start
-            $start = $len * $i;
-            $seed = md5($key);
-
-        } elseif (2 == $rule{0}) {
-            // md5 from end
-            $start = -1 * $len * ($i + 1);
-            $seed = md5($key);
-
-        } elseif (3 == $rule{0}) {
-            // raw from start
-            $start = $len * $i;
-            $seed = $key;
-
-        } elseif (4 == $rule{0}) {
-            // raw from end
-            $start = -1 * $len * ($i + 1);
-            $seed = $key;
-
-        } elseif (5 == $rule{0}) {
-            // crc32
-            if (3 < $i) {
-                $i = $i % 3;
-            }
-            $start = $len * $i;
-            $seed = hash('crc32', $key);
-        }
-
-        return substr($seed, $start, 2);
-    }
-
-
-    /**
-     * Compute name of a key's data file
-     *
-     * @param   string  $key
-     * @return  string
-     */
-    protected function getFileName($key)
-    {
-        return substr(md5($key), 0, 8);
-    }
-
-
-    /**
-     * Write data to cache
-     *
-     * Lifetime is checked when get().
-     *
-     * @param   string  $key
-     * @param   mixed   $val
-     * @param   int     $lifetime
-     * @return  $this
-     */
-    public function set($key, $val, $lifetime = null)
-    {
-        $file = $this->getFilePath($key);
-        $cache = $this->encodeValue($val);
-
-        // Create each level dir if not exists
-        $dir = $this->getUtilContainer()->getFileSystem()->getDirName($file);
-        if (!file_exists($dir)) {
-            mkdir($dir, 0755, true);
-        }
-
-        // Finally write file
-        file_put_contents($file, $cache, LOCK_EX);
-
-        return $this;
+        return $content;
     }
 
 
@@ -325,5 +183,153 @@ class File extends Cache
 
 
         return $configs;
+    }
+
+
+    /**
+     * @return  string[]
+     */
+    public function getErrorMessages()
+    {
+        return $this->errorMessages;
+    }
+
+
+    /**
+     * Compute data file name of a key
+     *
+     * @param   string  $key
+     * @return  string
+     */
+    protected function getFileName($key)
+    {
+        return substr(md5($key), 0, 8);
+    }
+
+
+    /**
+     * Compute data file path of a key
+     *
+     * @param   string  $key
+     * @return  string
+     */
+    protected function getFilePath($key)
+    {
+        $path = $this->getConfig('fileDir');
+
+        $rules = str_split($this->getConfig('fileRule'), 2);
+
+        foreach ($rules as $rule) {
+            // Path section may be empty
+            $pathSection = $this->getFilePathSection($rule, $key);
+            if (!empty($pathSection)) {
+                $pathSection .= '/';
+            }
+
+            $path .= $pathSection;
+        }
+
+        $path .= $this->getFileName($key);
+
+        return $path;
+    }
+
+
+    /**
+     * Compute path of a key by a single rule section
+     *
+     * @param   string  $rule
+     * @param   string  $key
+     * @return  string
+     */
+    protected function getFilePathSection($rule, $key)
+    {
+        $len = 2;
+
+        if ($len > strlen($rule)) {
+            return '';
+        }
+
+        $seed = $key;
+        $start = 0;
+        $seq = intval($rule{1});
+        if (1 == $rule{0}) {
+            // md5 from start
+            $start = $len * $seq;
+            $seed = md5($key);
+
+        } elseif (2 == $rule{0}) {
+            // md5 from end
+            $start = -1 * $len * ($seq + 1);
+            $seed = md5($key);
+
+        } elseif (3 == $rule{0}) {
+            // raw from start
+            $start = $len * $seq;
+            $seed = $key;
+
+        } elseif (4 == $rule{0}) {
+            // raw from end
+            $start = -1 * $len * ($seq + 1);
+            $seed = $key;
+
+        } elseif (5 == $rule{0}) {
+            // crc32
+            if (3 < $seq) {
+                $seq = $seq % 3;
+            }
+            $start = $len * $seq;
+            $seed = hash('crc32', $key);
+        }
+
+        return substr($seed, $start, 2);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     *
+     * File cache does not keep lifetime in cache, so it need a lifetime from
+     * outside, or use default lifetime config.
+     */
+    public function isExpired($key, $lifetime = null)
+    {
+        $file = $this->getFilePath($key);
+
+        // File doesn't exist
+        if (!file_exists($file)) {
+            return true;
+        }
+
+        if (0 == $lifetime) {
+            return false;
+        }
+
+        $expireTime = $this->computeExpireTime($lifetime, filemtime($file));
+
+        return (time() > $expireTime);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function set($key, $val, $lifetime = null)
+    {
+        $file = $this->getFilePath($key);
+
+        // Create each level dir if not exists
+        $fileSystemUtil = $this->getUtilContainer()->getFileSystem();
+        $dir = $fileSystemUtil->getDirName($file);
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        // Finally write file
+        $result = file_put_contents($file, $val, LOCK_EX);
+
+        $this->log(OperateType::SET, $key, false !== $result);
+
+        return $this;
     }
 }
