@@ -146,19 +146,6 @@ class MemcachedTest extends PHPUnitTestCase
         $this->assertTrue(
             $this->reflectionCall($cache, 'isExpired', [$key])
         );
-
-        // Big value size is computed AFTER compress if compress on
-        $s = str_repeat('0', 1200000);
-        $this->reflectionGet($cache, 'memcachedInstance')
-            ->setOption(\Memcached::OPT_COMPRESSION, false);
-        $cache->setConfig('memcachedAutoSplit', 0);
-        // Error: Memcache set error 10: SERVER ERROR
-        @$cache->set($key, $s, 3600);
-        $this->assertEquals(null, $cache->get($key));
-        $this->reflectionGet($cache, 'memcachedInstance')
-            ->setOption(\Memcached::OPT_COMPRESSION, true);
-        $cache->set($key, $s, 3600);
-        $this->assertEquals($s, $cache->get($key));
     }
 
 
@@ -228,6 +215,50 @@ class MemcachedTest extends PHPUnitTestCase
         );
         $this->assertEquals('0', substr($key, 0, 1));
         $this->assertEquals('A', substr($key, -1));
+    }
+
+
+    /**
+     * @expectedException \Fwlib\Cache\Exception\CacheWriteFailException
+     * @expectedExceptionMessage ITEM TOO BIG
+     */
+    public function testSetLargeItemFail()
+    {
+        $handler = $this->buildMock();
+        $handler->setConfig('memcachedAutoSplit', 0);
+
+        // This should be valid memcached server
+        $servers = GlobalConfig::getInstance()->get('memcached.server');
+        $handler->setMemcachedServers($servers);
+        $memcached = $this->reflectionCall($handler, 'getMemcachedInstance');
+
+        // Exceed max item size, without compress on
+        $bigItem = str_repeat('0', 1200000);
+        $memcached->setOption(\Memcached::OPT_COMPRESSION, false);
+
+        // Error: Memcache set error 10: SERVER ERROR
+        $handler->set('foo', $bigItem, 3600);
+    }
+
+
+    public function testSetLargeItemSuccessful()
+    {
+        $handler = $this->buildMock();
+        $handler->setConfig('memcachedAutoSplit', 0);
+
+        // This should be valid memcached server
+        $servers = GlobalConfig::getInstance()->get('memcached.server');
+        $handler->setMemcachedServers($servers);
+        $memcached = $this->reflectionCall($handler, 'getMemcachedInstance');
+
+        // Not exceed max item size, with compress on
+        $bigItem = str_repeat('0', 1200000);
+        $memcached->setOption(\Memcached::OPT_COMPRESSION, true);
+
+        $handler->set('foo', $bigItem, 3600);
+        $this->assertEquals($bigItem, $handler->get('foo'));
+
+
     }
 
 
