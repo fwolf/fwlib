@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Web;
 
-use Fwlib\Cache\Cache;
+use Fwlib\Cache\Handler\PhpArray as PhpArrayCacheHandler;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Web\AbstractViewCache;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
@@ -25,7 +25,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
 
         $view->expects($this->any())
             ->method('getCache')
-            ->will($this->returnValue(Cache::create()));
+            ->will($this->returnValue(new PhpArrayCacheHandler));
 
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their
@@ -40,7 +40,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
 
         $view->expects($this->any())
             ->method('newInstanceCache')
-            ->will($this->returnValue(Cache::create('')));
+            ->will($this->returnValue(new PhpArrayCacheHandler));
 
 
         return $view;
@@ -62,7 +62,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
 
         $view->expects($this->any())
             ->method('getCache')
-            ->will($this->returnValue(Cache::create('')));
+            ->will($this->returnValue(new PhpArrayCacheHandler));
 
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their
