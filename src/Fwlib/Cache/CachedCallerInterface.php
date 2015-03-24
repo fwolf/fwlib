@@ -44,8 +44,8 @@ interface CachedCallerInterface
         CachedCallerAwareInterface $instance,
         $method,
         array $params = [],
-        $readRenderer = null,
-        $writeRenderer = null
+        callable $readRenderer = null,
+        callable $writeRenderer = null
     );
 
 

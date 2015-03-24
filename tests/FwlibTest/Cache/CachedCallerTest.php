@@ -13,9 +13,14 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class CachedCallerTest extends PHPUnitTestCase
 {
-    public static $isForceRefreshCache = false;
-    public static $isUseCache = true;
-    public static $callMe = null;
+    /** @var mixed */
+    protected $callMe = null;
+
+    /** @var bool */
+    protected $isForceRefreshCache = false;
+
+    /** @var bool */
+    protected $isUseCache = true;
 
 
     /**
@@ -23,12 +28,12 @@ class CachedCallerTest extends PHPUnitTestCase
      */
     protected function buildCacheHandlerMock()
     {
-        $cache = $this->getMock(
+        $mock = $this->getMock(
             PhpArrayHandler::class,
             null
         );
 
-        return $cache;
+        return $mock;
     }
 
 
@@ -37,7 +42,7 @@ class CachedCallerTest extends PHPUnitTestCase
      */
     protected function buildCachedCallerAwareMock()
     {
-        $dummy = $this->getMock(
+        $mock = $this->getMock(
             CachedCallerAwareInterface::class,
             [
                 'callMe',
@@ -48,29 +53,29 @@ class CachedCallerTest extends PHPUnitTestCase
             ]
         );
 
-        $dummy->expects($this->any())
+        $mock->expects($this->any())
             ->method('callMe')
             ->will($this->returnCallback(function () {
-                return CachedCallerTest::$callMe;
+                return $this->callMe;
             }));
 
-        $dummy->expects($this->any())
+        $mock->expects($this->any())
             ->method('getCacheKey')
             ->will($this->returnValue('cacheKey'));
 
-        $dummy->expects($this->any())
+        $mock->expects($this->any())
             ->method('isForceRefreshCache')
             ->will($this->returnCallback(function () {
-                return CachedCallerTest::$isForceRefreshCache;
+                return $this->isForceRefreshCache;
             }));
 
-        $dummy->expects($this->any())
+        $mock->expects($this->any())
             ->method('isUseCache')
             ->will($this->returnCallback(function () {
-                return CachedCallerTest::$isUseCache;
+                return $this->isUseCache;
             }));
 
-        return $dummy;
+        return $mock;
     }
 
 
@@ -79,15 +84,15 @@ class CachedCallerTest extends PHPUnitTestCase
      */
     protected function buildMock()
     {
-        $cachedCaller = $this->getMock(
+        $mock = $this->getMock(
             CachedCaller::class,
             null
         );
 
-        /** @type CachedCaller $cachedCaller */
-        $cachedCaller->setHandler($this->buildCacheHandlerMock());
+        /** @type CachedCaller $mock */
+        $mock->setHandler($this->buildCacheHandlerMock());
 
-        return $cachedCaller;
+        return $mock;
     }
 
 
@@ -95,34 +100,34 @@ class CachedCallerTest extends PHPUnitTestCase
     {
         $cachedCaller = $this->buildMock();
         $dummy = $this->buildCachedCallerAwareMock();
-        self::$callMe = 'not cached';
+        $this->callMe = 'not cached';
 
 
         // Call without use cache
-        self::$isUseCache = false;
-        $rs = $cachedCaller->call($dummy, 'callMe');
-        $this->assertEquals('not cached', $rs);
+        $this->isUseCache = false;
+        $result = $cachedCaller->call($dummy, 'callMe');
+        $this->assertEquals('not cached', $result);
 
 
         // Call with force refresh/update
-        self::$isUseCache = true;
-        self::$isForceRefreshCache = true;
+        $this->isUseCache = true;
+        $this->isForceRefreshCache = true;
 
         $cacheHandler = $this->reflectionGet($cachedCaller, 'handler');
         $cacheHandler->set('cacheKey', 'cached');
 
-        $rs = $cachedCaller->call($dummy, 'callMe');
-        $this->assertEquals('not cached', $rs);
+        $result = $cachedCaller->call($dummy, 'callMe');
+        $this->assertEquals('not cached', $result);
 
 
         // Call with read from cache
-        self::$isUseCache = true;
-        self::$isForceRefreshCache = false;
+        $this->isUseCache = true;
+        $this->isForceRefreshCache = false;
 
         $cacheHandler->set('cacheKey', 'cached');
 
-        $rs = $cachedCaller->call($dummy, 'callMe');
-        $this->assertEquals('cached', $rs);
+        $result = $cachedCaller->call($dummy, 'callMe');
+        $this->assertEquals('cached', $result);
     }
 
 
@@ -134,39 +139,39 @@ class CachedCallerTest extends PHPUnitTestCase
         $cachedCaller = $this->buildMock();
         $cacheHandler = $this->reflectionGet($cachedCaller, 'handler');
         $dummy = $this->buildCachedCallerAwareMock();
-        self::$callMe = '2015-01-16 00:50:00';
+        $this->callMe = '2015-01-16 00:50:00';
 
-        $readRenderer = function ($rs) {
-            return date('Y-m-d H:i:s', $rs);
+        $readRenderer = function ($result) {
+            return date('Y-m-d H:i:s', $result);
         };
-        $writeRenderer = function ($rs) {
-            return strtotime($rs);
+        $writeRenderer = function ($result) {
+            return strtotime($result);
         };
 
 
         // Write cache
-        self::$isUseCache = true;
-        self::$isForceRefreshCache = true;
-        $rs = $cachedCaller->call(
+        $this->isUseCache = true;
+        $this->isForceRefreshCache = true;
+        $result = $cachedCaller->call(
             $dummy,
             'callMe',
             [],
             $readRenderer,
             $writeRenderer
         );
-        $this->assertEquals('2015-01-16 00:50:00', $rs);
+        $this->assertEquals('2015-01-16 00:50:00', $result);
         $this->assertEquals(1421340600, $cacheHandler->get('cacheKey'));
 
 
         // Read from cache
-        self::$isForceRefreshCache = false;
-        $rs = $cachedCaller->call(
+        $this->isForceRefreshCache = false;
+        $result = $cachedCaller->call(
             $dummy,
             'callMe',
             [],
             $readRenderer,
             $writeRenderer
         );
-        $this->assertEquals('2015-01-16 00:50:00', $rs);
+        $this->assertEquals('2015-01-16 00:50:00', $result);
     }
 }
