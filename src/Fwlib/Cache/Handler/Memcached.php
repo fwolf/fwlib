@@ -192,7 +192,7 @@ class Memcached extends AbstractHandler
     protected function getMemcachedInstance()
     {
         if (is_null($this->memcachedInstance)) {
-            $serverList = $this->getValidMemcachedServer();
+            $serverList = $this->getValidMemcachedServers();
             $this->memcachedInstance =
                 $this->connectMemcachedServer($serverList);
         }
@@ -204,33 +204,33 @@ class Memcached extends AbstractHandler
     /**
      * Read memcached server from config, test and return valid list
      *
+     * Will check and remove dead server, by do a test set.
+     *
+     * Dead server will print in error log.
+     *
      * @return  array
      */
-    protected function getValidMemcachedServer()
+    protected function getValidMemcachedServers()
     {
         $servers = $this->getConfig('memcachedServers');
 
-        // Check server list and remove dead
+        $memcached = new \Memcached();
         foreach ($servers as $k => $server) {
-            $obj = new \Memcached();
-            $obj->addServers([$server]);
-            // Do set test
-            $obj->set($this->hashKey('memcachedServerAliveTest'), '1');
+            $memcached->addServers([$server]);
+
+            $memcached->set($this->hashKey('memcachedServerAliveTest'), '1');
 
             // @codeCoverageIgnoreStart
-            if (0 != $obj->getResultCode()) {
-                // Got error server, log and remove it
+            if (\Memcached::RES_SUCCESS != $memcached->getResultCode()) {
                 error_log(
                     'Memcache server ' . implode($server, ':')
-                    . ' test fail: ' . $obj->getResultCode()
-                    . ', msg: ' . $obj->getResultMessage()
+                    . ' test fail: ' . $memcached->getResultCode()
+                    . ', message: ' . $memcached->getResultMessage()
                 );
                 unset($servers[$k]);
 
             }
             // @codeCoverageIgnoreEnd
-
-            unset($obj);
         }
 
         return $servers;
