@@ -50,6 +50,8 @@ class CachedCallerTest extends PHPUnitTestCase
                 'getCacheLifetime',
                 'isForceRefreshCache',
                 'isUseCache',
+                'setForceRefreshCache',
+                'setUseCache',
             ]
         );
 
