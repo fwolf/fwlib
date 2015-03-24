@@ -119,27 +119,27 @@ class MemcachedTest extends PHPUnitTestCase
 
         // Cache write
         $key = str_repeat('test', 8);
-        $x = 'blah';
-        $handler->set($key, $x, 60);
-        $this->assertEquals($x, $handler->get($key));
+        $value = 'foo bar';
+        $handler->set($key, $value, 60);
+        $this->assertEquals($value, $handler->get($key));
 
 
         // Cache expire
         $handler->setConfig('memcachedAutoSplit', 1);
-        $handler->set($key, $x, 60);
+        $handler->set($key, $value, 60);
         $this->assertFalse($handler->isExpired($key));
 
         $handler->delete($key);
         $this->assertTrue($handler->isExpired($key));
 
-        $handler->set($key, $x, -10);
+        $handler->set($key, $value, -10);
         $this->assertTrue($handler->isExpired($key));
 
         $handler->setConfig('memcachedAutoSplit', 0);
-        $handler->set($key, $x, 60);
+        $handler->set($key, $value, 60);
         $this->assertFalse($handler->isExpired($key));
 
-        $handler->set($key, $x, -10);
+        $handler->set($key, $value, -10);
         $this->assertTrue($handler->isExpired($key));
 
 
@@ -150,24 +150,24 @@ class MemcachedTest extends PHPUnitTestCase
 
         // Cache get with expire
         $key = str_repeat('test', 8);
-        $handler->set($key, $x, -10);
+        $handler->set($key, $value, -10);
         $this->assertEquals(null, $handler->get($key));
-        $handler->set($key, $x, 0);
-        $this->assertEquals($x, $handler->get($key));
-        $handler->set($key, $x, 5);
-        $this->assertEquals($x, $handler->get($key));
-        $handler->set($key, $x, null);
-        $this->assertEquals($x, $handler->get($key));
+        $handler->set($key, $value, 0);
+        $this->assertEquals($value, $handler->get($key));
+        $handler->set($key, $value, 5);
+        $this->assertEquals($value, $handler->get($key));
+        $handler->set($key, $value, null);
+        $this->assertEquals($value, $handler->get($key));
 
 
         // Big value exceed max item size, will be splitted
         $handler->setConfig('memcachedMaxItemSize', 100);
 
-        $s = str_repeat('0', 300);
+        $bigItem = str_repeat('0', 300);
         $handler->delete($key);       // Clear previous set value
         $handler->setConfig('memcachedAutoSplit', 1);
-        $handler->set($key, $s, 3600);
-        $this->assertEquals($s, $handler->get($key));
+        $handler->set($key, $bigItem, 3600);
+        $this->assertEquals($bigItem, $handler->get($key));
         $this->assertFalse($handler->isExpired($key));
 
         $handler->delete($key);
@@ -216,39 +216,50 @@ class MemcachedTest extends PHPUnitTestCase
 
     public function testSetMemcachedServer()
     {
-        $handler = $this->buildMock();
+        $handler = $this->buildMockWithMemcachedConnected();
+        // Build memcached instance, later set will not trigger this
+        $this->reflectionCall($handler, 'getMemcachedInstance');
         $configs = $this->reflectionCall($handler, 'getConfigInstance');
 
+
+        $this->assertEquals(1, count($configs->get('memcachedServers')));
+        $memcached = $this->reflectionGet($handler, 'memcachedInstance');
+        $this->assertNotNull($memcached);
+
+
+        // Set null will not change current server set
         $handler->setMemcachedServers();
-        $this->assertEquals(0, count($configs->get('memcachedServers')));
-
-        // This should be a valid server
-        $ms = GlobalConfig::getInstance()->get('memcached.server');
-
-        // Alive one
-        $x = [
-            'host'      => $ms[0]['host'],
-            'port'      => $ms[0]['port'],
-            'weight'    => 33
-        ];
-        $handler->setMemcachedServers($x);
         $this->assertEquals(1, count($configs->get('memcachedServers')));
 
-        $y = [
-            // Dead one
-            [
-                'host'      => $ms[0]['host'],
-                'port'      => 80,
-                'weight'    => 67,
-            ],
-            $x,
-        ];
-        $handler->setMemcachedServers($y);
-        // Server alive test is not applied yet
-        $this->assertEquals(2, count($configs->get('memcachedServers')));
 
-        $memcached = $this->reflectionGet($handler, 'memcached');
+        // This should be valid memcached server
+        $servers = GlobalConfig::getInstance()->get('memcached.server');
+
+        $aliveServer1 = [
+            'host'      => $servers[0]['host'],
+            'port'      => $servers[0]['port'],
+            'weight'    => 33
+        ];
+        $aliveServer2 = [
+            'host'      => $servers[0]['host'],
+            'port'      => $servers[0]['port'],
+            'weight'    => 67
+        ];
+        $handler->setMemcachedServers([$aliveServer1, $aliveServer2]);
+        $this->assertEquals(2, count($configs->get('memcachedServers')));
+        // Instance is cleared
+        $memcached = $this->reflectionGet($handler, 'memcachedInstance');
         $this->assertNull($memcached);
+
+
+        $deadServer = [
+            'host'      => $servers[0]['host'],
+            'port'      => 80,
+            'weight'    => 67,
+        ];
+        $handler->setMemcachedServers($deadServer);
+        // Server alive test is not applied yet
+        $this->assertEquals(1, count($configs->get('memcachedServers')));
     }
 
 

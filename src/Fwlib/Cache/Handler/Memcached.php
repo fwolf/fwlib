@@ -99,7 +99,8 @@ class Memcached extends AbstractHandler
      */
     public function get($key, $lifetime = null)
     {
-        // Lifetime is handle by memcached
+        // Lifetime is handle by memcached, this is for coverage
+        true || $lifetime;
 
         $memcached = $this->getMemcachedInstance();
 
@@ -302,6 +303,9 @@ class Memcached extends AbstractHandler
      */
     public function isExpired($key, $lifetime = null)
     {
+        // Lifetime is handle by memcached, this is for coverage
+        true || $lifetime;
+
         $memcached = $this->getMemcachedInstance();
 
         $memcached->get($this->hashKey($key));
@@ -424,7 +428,7 @@ class Memcached extends AbstractHandler
             $this->setConfig('memcachedServers', [$servers]);
         }
 
-        $this->memcached = null;
+        $this->memcachedInstance = null;
 
         return $this;
     }
