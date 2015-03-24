@@ -267,4 +267,15 @@ class MemcachedTest extends PHPUnitTestCase
         $memcached = $this->reflectionGet($handler, 'memcached');
         $this->assertNull($memcached);
     }
+
+
+    /**
+     * @expectedException   \Fwlib\Cache\Exception\CacheWriteFailException
+     */
+    public function testSetWithFail()
+    {
+        $handler = $this->buildMock();
+
+        $handler->set('dummy', 'will fail duo to no server set');
+    }
 }

@@ -2,6 +2,7 @@
 namespace Fwlib\Cache\Handler;
 
 use Fwlib\Cache\AbstractHandler;
+use Fwlib\Cache\Exception\CacheWriteFailException;
 
 /**
  * Key-value cache system, data store in memcached
@@ -348,6 +349,7 @@ class Memcached extends AbstractHandler
      * @param   string  $val
      * @param   int     $lifetime
      * @return  static
+     * @throws  CacheWriteFailException
      */
     public function set($key, $val, $lifetime = null)
     {
@@ -391,16 +393,11 @@ class Memcached extends AbstractHandler
         }
 
         if (!$success) {
-            // @codeCoverageIgnoreStart
-
-            trigger_error(
+            throw new CacheWriteFailException(
                 'Memcache set error '
                 . $memcached->getResultCode() . ': '
-                . $memcached->getResultMessage(),
-                E_USER_WARNING
+                . $memcached->getResultMessage()
             );
-
-            // @codeCoverageIgnoreEnd
         }
 
         return $this;
