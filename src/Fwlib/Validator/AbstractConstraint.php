@@ -9,7 +9,7 @@ use Fwlib\Validator\Exception\MessageTemplateNotDefinedException;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractConstraint implements ConstraintInterface
+abstract class AbstractConstraint implements ConstraintInterface
 {
     /**
      * Validate fail message
