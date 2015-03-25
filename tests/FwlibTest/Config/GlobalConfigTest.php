@@ -81,8 +81,7 @@ class GlobalConfigTest extends PHPUnitTestCase
     {
         $globalConfig = $this->buildMock();
 
-        // TODO: Need an unset ?
-        unset($globalConfig->config['server']['id']);
+        $globalConfig->delete(self::KEY_SERVER_ID);
 
         $globalConfig->checkServerId('dummy', self::KEY_SERVER_ID);
     }
