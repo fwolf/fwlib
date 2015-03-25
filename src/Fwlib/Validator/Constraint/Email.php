@@ -20,7 +20,8 @@ class Email extends AbstractConstraint
      *
      * @var bool
      */
-    public $dnsCheck = false;
+    protected $dnsCheck = false;
+
 
     /**
      * {@inheritdoc}
@@ -28,6 +29,20 @@ class Email extends AbstractConstraint
     protected $messageTemplates = [
         'default'   => 'The input should be valid email address'
     ];
+
+
+    /**
+     * Setter of $dnsCheck
+     *
+     * @param   boolean $dnsCheck
+     * @return  static
+     */
+    public function setDnsCheck($dnsCheck)
+    {
+        $this->dnsCheck = $dnsCheck;
+
+        return $this;
+    }
 
 
     /**

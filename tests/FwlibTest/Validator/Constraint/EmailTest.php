@@ -54,7 +54,7 @@ class EmailTest extends PHPUnitTestCase
         $factory = $this->getFunctionMockFactory(Email::class);
         $checkdnsrrMock = $factory->get(null, 'checkdnsrr', true);
 
-        $constraint->dnsCheck = true;
+        $constraint->setDnsCheck(true);
         $foo = 'dummy@mail.com';
         $checkdnsrrMock->setResult(false);
         $this->assertFalse($constraint->validate($foo));
