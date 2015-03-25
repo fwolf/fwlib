@@ -4,7 +4,7 @@ namespace FwlibTest\Web;
 use Fwlib\Cache\Handler\PhpArray as PhpArrayCacheHandler;
 use Fwlib\Util\Common\Env as EnvUtil;
 use Fwlib\Util\UtilContainer;
-use Fwlib\Web\AbstractViewCache;
+use Fwlib\Web\AbstractViewWithCache;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -12,7 +12,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class AbstractViewCacheTest extends PHPUnitTestCase
+class AbstractViewWithCacheTest extends PHPUnitTestCase
 {
     /**
      * @var EnvUtil
@@ -26,12 +26,12 @@ class AbstractViewCacheTest extends PHPUnitTestCase
 
 
     /**
-     * @return MockObject | AbstractViewCache
+     * @return MockObject | AbstractViewWithCache
      */
     protected function buildMock()
     {
         $mock = $this->getMock(
-            AbstractViewCache::class,
+            AbstractViewWithCache::class,
             ['getCacheLifetime', 'getOutputBody']
         );
 
@@ -51,7 +51,7 @@ class AbstractViewCacheTest extends PHPUnitTestCase
                 return $datetimeUtil->getMicroTime();
             }));
 
-        /** @var AbstractViewCache $mock */
+        /** @var AbstractViewWithCache $mock */
         $mock->setCacheHandler(new PhpArrayCacheHandler);
 
         return $mock;
