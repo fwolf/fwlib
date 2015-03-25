@@ -18,9 +18,10 @@ class Required extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public $messageTemplate = [
+    protected $messageTemplates = [
         'default'   => 'The input is required',
     ];
+
 
     /**
      * {@inheritdoc}

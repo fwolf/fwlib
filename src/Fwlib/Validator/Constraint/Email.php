@@ -25,7 +25,7 @@ class Email extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public $messageTemplate = [
+    protected $messageTemplates = [
         'default'   => 'The input should be valid email address'
     ];
 

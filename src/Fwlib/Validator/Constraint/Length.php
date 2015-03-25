@@ -14,10 +14,11 @@ class Length extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public $messageTemplate = [
+    protected $messageTemplates = [
         'lessThanMin'   => 'The input should be more than %min% characters',
         'moreThanMax'   => 'The input should be less than %max% characters',
     ];
+
 
     /**
      * {@inheritdoc}

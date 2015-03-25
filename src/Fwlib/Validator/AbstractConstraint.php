@@ -19,14 +19,15 @@ class AbstractConstraint implements ConstraintInterface
     /**
      * Validate fail message template
      *
-     * Array key is used as 'name' when set message.
+     * Array key is used as template name, and max one instance per name can
+     * occur in result message, as same key cannot exist in associate array.
      *
      * Array value may use $messageVariable by %messageVariable% format.
      *
      * @var array
      */
-    public $messageTemplate = [
-        'default'   => 'Validate fail message'
+    protected $messageTemplates = [
+        'default'   => 'Validate failed'
     ];
 
     /**
@@ -60,13 +61,13 @@ class AbstractConstraint implements ConstraintInterface
      */
     protected function setMessage($messageKey)
     {
-        if (!isset($this->messageTemplate[$messageKey])) {
+        if (!isset($this->messageTemplates[$messageKey])) {
             throw new \Exception(
                 "Validate fail message $messageKey is not defined"
             );
         }
 
-        $message = $this->messageTemplate[$messageKey];
+        $message = $this->messageTemplates[$messageKey];
 
         // Set fail message with a unique key, so if a messageKey is set
         // multiple times, there will only be one message return.

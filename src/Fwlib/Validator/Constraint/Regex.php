@@ -14,10 +14,11 @@ class Regex extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public $messageTemplate = [
-        'default'   => 'The input must fit given regex',
-        'invalidType'   => 'The input must be able to convert to string'
+    protected $messageTemplates = [
+        'default'     => 'The input must fit given regex',
+        'invalidType' => 'The input must be able to convert to string'
     ];
+
 
     /**
      * {@inheritdoc}
