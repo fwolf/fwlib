@@ -2,9 +2,11 @@
 namespace FwlibTest\Web;
 
 use Fwlib\Cache\Handler\PhpArray as PhpArrayCacheHandler;
+use Fwlib\Util\Common\Env as EnvUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Web\AbstractViewCache;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -12,82 +14,98 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class AbstractViewCacheTest extends PHPUnitTestCase
 {
-    protected $view;
-    public static $forceRefreshCache = false;
+    /**
+     * @var EnvUtil
+     */
+    protected static $envUtilBackup = null;
+
+    /**
+     * @var string
+     */
+    protected static $requestUri = '';
 
 
+    /**
+     * @return MockObject | AbstractViewCache
+     */
     protected function buildMock()
     {
-        $view = $this->getMock(
+        $mock = $this->getMock(
             AbstractViewCache::class,
-            ['getCache', 'getOutputBody', 'newInstanceCache']
+            ['getCacheLifetime', 'getOutputBody']
         );
 
-        $view->expects($this->any())
-            ->method('getCache')
-            ->will($this->returnValue(new PhpArrayCacheHandler));
+        // Long enough lifetime for test
+        $mock->expects($this->any())
+            ->method('getCacheLifetime')
+            ->willReturn(60);
 
         // Mock un-cached output, remove header and footer, only body part
         // left, and use microtime to simulate output content, because their
         // value are different each time run.
-        $this->reflectionSet($view, 'outputParts', ['body']);
-        $view->expects($this->any())
+        $this->reflectionSet($mock, 'outputParts', ['body']);
+        $mock->expects($this->any())
             ->method('getOutputBody')
             ->will($this->returnCallback(function () {
                 $datetimeUtil = UtilContainer::getInstance()->getDatetime();
                 return $datetimeUtil->getMicroTime();
             }));
 
-        $view->expects($this->any())
-            ->method('newInstanceCache')
-            ->will($this->returnValue(new PhpArrayCacheHandler));
+        /** @var AbstractViewCache $mock */
+        $mock->setCacheHandler(new PhpArrayCacheHandler);
 
-
-        return $view;
+        return $mock;
     }
 
 
-    protected function buildMockWithForceRefreshCache()
+    public static function setUpBeforeClass()
     {
-        $view = $this->getMock(
-            AbstractViewCache::class,
-            ['forceRefreshCache', 'getCache', 'getOutputBody']
-        );
+        $utilContainer = UtilContainer::getInstance();
+        self::$envUtilBackup = $utilContainer->getEnv();
 
-        $view->expects($this->any())
-            ->method('forceRefreshCache')
-            ->will($this->returnCallback(function () {
-                return AbstractViewCacheTest::$forceRefreshCache;
-            }));
+        $testCase = new self;
+        $envUtil = $testCase->getMock(EnvUtil::class, ['getServer']);
+        $envUtil->expects($testCase->any())
+            ->method('getServer')
+            ->willReturnCallback(function() {
+                return self::$requestUri;
+            });
 
-        $view->expects($this->any())
-            ->method('getCache')
-            ->will($this->returnValue(new PhpArrayCacheHandler));
-
-        // Mock un-cached output, remove header and footer, only body part
-        // left, and use microtime to simulate output content, because their
-        // value are different each time run.
-        $this->reflectionSet($view, 'outputParts', ['body']);
-        $view->expects($this->any())
-            ->method('getOutputBody')
-            ->will($this->returnCallback(function () {
-                $datetimeUtil = UtilContainer::getInstance()->getDatetime();
-                return $datetimeUtil->getMicroTime();
-            }));
+        $utilContainer->register('Env', $envUtil);
+    }
 
 
-        return $view;
+    public static function tearDownAfterClass()
+    {
+        $utilContainer = UtilContainer::getInstance();
+        $utilContainer->register('Env', self::$envUtilBackup);
+    }
+
+
+    public function testForceRefreshCache()
+    {
+        $view = $this->buildMock();
+        $view->setUseCache(true);
+
+        $view->setForceRefreshCache(false);
+        $x = $view->getOutput();
+        $y = $view->getOutput();
+        $this->assertEquals($x, $y);
+
+        $view->setForceRefreshCache(true);
+        $y = $view->getOutput();
+        $this->assertNotEquals($x, $y);
     }
 
 
     public function testGetOutput()
     {
         $view = $this->buildMock();
-        $view->setUseCache(false);
-        $this->assertFalse($view->getUseCache());
 
-        // Force use $_SERVER['argv'] for cache key
-        unset($_SERVER['REQUEST_URI']);
+        $view->setUseCache(false);
+        $this->assertFalse($view->isUseCache());
+
+        self::$requestUri = '';
 
         // Without cache
         $x = $view->getOutput();
@@ -96,28 +114,13 @@ class AbstractViewCacheTest extends PHPUnitTestCase
 
         // With cache
         $view->setUseCache(true);
-        $this->assertTrue($view->getUseCache());
+        $this->assertTrue($view->isUseCache());
         $x = $view->getOutput();
         $y = $view->getOutput();
         $this->assertEquals($x, $y);
 
         // Change cache key, will got different result
-        $_SERVER['REQUEST_URI'] = 'test.php?a=1&b=';
-        $y = $view->getOutput();
-        $this->assertNotEquals($x, $y);
-    }
-
-
-    public function testForceRefreshCache()
-    {
-        $view = $this->buildMockWithForceRefreshCache();
-        $view->setUseCache(true);
-
-        $x = $view->getOutput();
-        $y = $view->getOutput();
-        $this->assertEquals($x, $y);
-
-        self::$forceRefreshCache = true;
+        self::$requestUri = 'test.php?a=1&b=';
         $y = $view->getOutput();
         $this->assertNotEquals($x, $y);
     }

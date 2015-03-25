@@ -1,110 +1,82 @@
 <?php
 namespace Fwlib\Web;
 
-use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
+use Fwlib\Cache\CachedCallerAwareInterface;
+use Fwlib\Cache\CachedCallerAwareTrait;
+use Fwlib\Cache\HandlerAwareTrait as CacheHandlerAwareTrait;
+use Fwlib\Util\UtilContainer;
 
 /**
- * View with Cache feature
+ * View with cache feature
  *
- * Cache is disabled default, need extend class and set $useCache property to
- * true or call setUseCache() to enable it.
+ * The {@see getOutput()} is adapted to work with cache on its own. But this
+ * class can also work with {@see CachedCaller}, let {@see getOutput()} simply
+ * return output content.
+ *
+ * Cache is disabled default, can be enabled by change {@see $useCache}
+ * property, or call {@see setUseCache()}.
+ *
+ * Sometimes we need temporary disable cache or refresh cache data instantly,
+ * this can be done by overwrite {@see isForceRefreshCache()}, read a special
+ * url or environment variable, then return true for that.
  *
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-abstract class AbstractViewCache extends AbstractView
+abstract class AbstractViewCache extends AbstractView implements
+    CachedCallerAwareInterface
 {
+    use CachedCallerAwareTrait;
+    use CacheHandlerAwareTrait;
+
+
     /**
-     * Should it use Cache to store output for reuse
-     *
+     * @var bool
+     */
+    protected $forceRefreshCache = false;
+
+    /**
      * @var bool
      */
     protected $useCache = false;
 
 
     /**
-     * Force to re-generate cache
+     * {@inheritdoc}
      *
-     * Sometimes we need temporary disable cache or refresh cache data
-     * instantly, this can be done by set a special url or environment, then
-     * extend this method to check and return true.
-     *
-     * @return  bool
+     * Generate key from request uri
      */
-    protected function forceRefreshCache()
+    public function getCacheKey($method, array $params = [])
     {
-        return false;
-    }
+        $envUtil = UtilContainer::getInstance()->getEnv();
+        $requestUri = $envUtil->getServer('REQUEST_URI');
 
-
-    /**
-     * Get Cache instance
-     *
-     * @return CacheHandlerInterface
-     */
-    abstract protected function getCache();
-
-
-    /**
-     * Gen key of cache by request uri
-     *
-     * @return  string
-     */
-    protected function getCacheKey()
-    {
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $key = $_SERVER['REQUEST_URI'];
-        } else {
-            // Maybe cli mode, use argv array
-            $key = implode('/', $_SERVER['argv']);
-        }
-        $key = str_replace(['?', '&', '=', '//'], '/', $key);
+        $key = str_replace(['?', '&', '=', '//'], '/', $requestUri);
 
         // If a special url parameter is used to force refresh cache, it may
         // need to remove it from key here.
 
-        // Remove tailing '/'
-        if ('/' == substr($key, -1)) {
-            $key = substr($key, 0, strlen($key) - 1);
-        }
+        $key = rtrim($key, '/');
 
         return $key;
     }
 
 
     /**
-     * Got cache lifetime, by second
-     *
-     * This implement only return a solid lifetime, child class should extend
-     * to fit application demand.
-     *
-     * @param   string  $key
-     * @return  int
-     */
-    protected function getCacheLifetime($key = null)
-    {
-        // Default 60s * 60m = 3600s
-        return 3600;
-    }
-
-
-    /**
-     * Get output content with cache
-     *
-     * @return  string
+     * {@inheritdoc}
      */
     public function getOutput()
     {
-        $cache = $this->getCache();
+        $cache = $this->getCacheHandler();
 
-        if (!$this->useCache) {
+        if (!$this->isUseCache()) {
             return parent::getOutput();
         }
 
-        $key = $this->getCacheKey();
+        $key = $this->getCacheKey('getOutput');
         $lifetime = $this->getCacheLifetime($key);
 
-        if ($this->forceRefreshCache()) {
+        if ($this->isForceRefreshCache()) {
             $output = parent::getOutput();
 
             $cache->set($key, $output, $lifetime);
@@ -120,30 +92,5 @@ abstract class AbstractViewCache extends AbstractView
         }
 
         return $output;
-    }
-
-
-    /**
-     * Getter of $useCache
-     *
-     * @return  boolean
-     */
-    public function getUseCache()
-    {
-        return $this->useCache;
-    }
-
-
-    /**
-     * Setter of $useCache
-     *
-     * @param   boolean $useCache
-     * @return  AbstractViewCache
-     */
-    public function setUseCache($useCache)
-    {
-        $this->useCache = $useCache;
-
-        return $this;
     }
 }
