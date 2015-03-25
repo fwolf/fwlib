@@ -14,7 +14,7 @@ interface ConstraintInterface
      *
      * @return  array
      */
-    public function getMessage();
+    public function getMessages();
 
 
     /**

@@ -21,18 +21,18 @@ class AbstractConstraintTest extends PHPUnitTestCase
         $this->reflectionCall($constraint, 'setMessage', ['default']);
         // Can't use class name of mocked object, so only check message value
         $x = 'Validate fail message';
-        $this->assertEqualArray($x, current($constraint->getMessage()));
+        $this->assertEqualArray($x, current($constraint->getMessages()));
 
 
         // Call setMessage() method again will affect nothing
         $this->reflectionCall($constraint, 'setMessage', ['default']);
-        $this->assertEqualArray($x, current($constraint->getMessage()));
-        $this->assertEquals(1, count($constraint->getMessage()));
+        $this->assertEqualArray($x, current($constraint->getMessages()));
+        $this->assertEquals(1, count($constraint->getMessages()));
 
 
         // Call validate() will clear messages
         $constraint->validate(42);
-        $this->assertEmpty($constraint->getMessage());
+        $this->assertEmpty($constraint->getMessages());
 
         // %value% is set
         $ar = $this->reflectionGet($constraint, 'messageVariable');

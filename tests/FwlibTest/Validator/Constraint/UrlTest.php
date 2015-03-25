@@ -106,7 +106,7 @@ class UrlTest extends PHPUnitTestCase
         $this->assertFalse($constraint->validate([], ''));
         $this->assertEquals(
             'The input need url target for validate',
-            current($constraint->getMessage())
+            current($constraint->getMessages())
         );
 
 
@@ -134,7 +134,7 @@ class UrlTest extends PHPUnitTestCase
 
         $this->assertEquals(
             'The input must pass validate',
-            current($constraint->getMessage())
+            current($constraint->getMessages())
         );
 
 
@@ -147,7 +147,7 @@ class UrlTest extends PHPUnitTestCase
             ['code' => -1, 'message' => '', 'data' => $failMessage]
         );
         $this->assertFalse($constraint->validate($value, $url));
-        $this->assertEqualArray($failMessage, $constraint->getMessage());
+        $this->assertEqualArray($failMessage, $constraint->getMessages());
 
 
         // Url fix up

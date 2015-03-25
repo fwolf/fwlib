@@ -26,6 +26,6 @@ class NotEmptyTest extends PHPUnitTestCase
             'Fwlib::Validator::Constraint::NotEmpty::default' =>
                 'The input should not be empty or zero',
         ];
-        $this->assertEqualArray($x, $constraint->getMessage());
+        $this->assertEqualArray($x, $constraint->getMessages());
     }
 }

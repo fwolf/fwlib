@@ -101,7 +101,7 @@ class Validator
                 $valid = false;
                 $this->messages = array_merge(
                     $this->messages,
-                    $constraint->getMessage()
+                    $constraint->getMessages()
                 );
             }
         }

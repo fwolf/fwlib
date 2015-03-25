@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Validator;
 
-use Fwlib\Validator\ConstraintInterface;
-
 /**
  * Constraint
  *
@@ -16,7 +14,7 @@ class AbstractConstraint implements ConstraintInterface
      *
      * @var array
      */
-    protected $message = [];
+    protected $messages = [];
 
     /**
      * Validate fail message template
@@ -47,14 +45,14 @@ class AbstractConstraint implements ConstraintInterface
     /**
      * {@inheritdoc}
      */
-    public function getMessage()
+    public function getMessages()
     {
-        return $this->message;
+        return $this->messages;
     }
 
 
     /**
-     * Set a fail message
+     * Set one fail message
      *
      * Will replace %messageVariable% if needed.
      *
@@ -74,7 +72,7 @@ class AbstractConstraint implements ConstraintInterface
         // multiple times, there will only be one message return.
         $messageKey = str_replace('\\', '::', get_class($this)) .
             '::' . $messageKey;
-        if (isset($this->message[$messageKey])) {
+        if (isset($this->messages[$messageKey])) {
             return;
         }
 
@@ -91,7 +89,7 @@ class AbstractConstraint implements ConstraintInterface
             $message = str_replace($search, $replace, $message);
         }
 
-        $this->message[$messageKey] = $message;
+        $this->messages[$messageKey] = $message;
 
         return;
     }
@@ -103,7 +101,7 @@ class AbstractConstraint implements ConstraintInterface
     public function validate($value, $constraintData = null)
     {
         // Clear previous message
-        $this->message = [];
+        $this->messages = [];
 
         // Assign message variable, maybe assign more in inherit class
         $this->messageVariable['value'] = $value;

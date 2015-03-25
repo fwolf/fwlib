@@ -131,7 +131,7 @@ class Url extends AbstractConstraint
                 if (empty($data)) {
                     $this->setMessage('default');
                 } else {
-                    $this->message = (array)$data;
+                    $this->messages = (array)$data;
                 }
 
                 return false;
