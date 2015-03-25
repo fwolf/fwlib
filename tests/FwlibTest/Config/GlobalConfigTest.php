@@ -1,8 +1,8 @@
 <?php
 namespace FwlibTest\Config;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Config\GlobalConfig;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
@@ -17,16 +17,6 @@ class GlobalConfigTest extends PHPUnitTestCase
      * @type    string
      */
     const KEY_SERVER_ID = 'server.id';
-
-    /**
-     * @type    GlobalConfig
-     */
-    private $globalConfig;
-
-    /**
-     * @type string
-     */
-    public static $output = '';
 
     /**
      * Backup of server id
@@ -44,12 +34,12 @@ class GlobalConfigTest extends PHPUnitTestCase
         // Assign array() to param methods here will cause mock to be a stub,
         // reason unknown, assign any method will fix it, so use constructor
         // in parent class.
-        $globalConfig = $this->getMock(
-            GlobalConfig::class,
-            ['__construct']
-        );
+        $mock = $this->getMockBuilder(GlobalConfig::class)
+            ->setMethods(null)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        return $globalConfig;
+        return $mock;
     }
 
 
@@ -122,36 +112,5 @@ class GlobalConfigTest extends PHPUnitTestCase
 
         $globalConfig->set(self::KEY_SERVER_ID, 'dummy');
         $globalConfig->limitServerId('foo', self::KEY_SERVER_ID);
-    }
-
-
-    public function testLoad()
-    {
-        $globalConfig = $this->buildMock();
-
-        // Empty config value
-        $globalConfig->load(null);
-        $this->assertEquals(null, $globalConfig->get('foo'));
-        $this->assertEquals(42, $globalConfig->get('foo', 42));
-
-
-        // Normal get
-        $config = [
-            'a'         => 1,
-            'b.b1'      => 2,
-        ];
-
-        $globalConfig->load($config);
-
-        $this->assertEquals(1, $globalConfig->get('a'));
-        $this->assertEquals(['b1' => 2], $globalConfig->get('b'));
-
-
-        // Set
-        $globalConfig->set('c.c1.c2', 3);
-        $this->assertEquals(
-            ['c1' => ['c2' => 3]],
-            $globalConfig->get('c')
-        );
     }
 }

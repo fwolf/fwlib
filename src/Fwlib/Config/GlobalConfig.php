@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Config;
 
+use Fwlib\Base\SingletonTrait;
 use Fwlib\Config\Exception\ServerIdNotSet;
 use Fwlib\Config\Exception\ServerProhibited;
 
@@ -11,38 +12,12 @@ use Fwlib\Config\Exception\ServerProhibited;
  * special instance to store global config. These config data should be set at
  * beginning(eg: config.default.php), then they are readable anywhere.
  *
- * @codeCoverageIgnore
- *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class GlobalConfig extends Config
 {
-    /**
-     * Prevent clone method
-     */
-    private function __clone()
-    {
-    }
-
-
-    /**
-     * Prevent 'new' operator
-     * Disabled because conflict with parent class.
-     */
-    /*
-    protected function __construct()
-    {
-    }
-    */
-
-
-    /**
-     * Prevent unserialize method
-     */
-    private function __wakeup()
-    {
-    }
+    use SingletonTrait;
 
 
     /**
@@ -68,23 +43,6 @@ class GlobalConfig extends Config
         }
 
         return in_array($serverId, $allowedId);
-    }
-
-
-    /**
-     * Get instance of Singleton itself
-     *
-     * @return  object
-     */
-    public static function getInstance()
-    {
-        static $instance = null;
-
-        if (is_null($instance)) {
-            $instance = new static();
-        }
-
-        return $instance;
     }
 
 
