@@ -15,11 +15,11 @@ class Validator
 
 
     /**
-     * Validate fail message
+     * Validate fail messages
      *
      * @var array
      */
-    protected $message = [];
+    protected $messages = [];
 
 
     /**
@@ -64,9 +64,9 @@ class Validator
      *
      * @return  array
      */
-    public function getMessage()
+    public function getMessages()
     {
-        return $this->message;
+        return $this->messages;
     }
 
 
@@ -87,7 +87,7 @@ class Validator
     public function validate($value, $rule = null)
     {
         // Clear previous message
-        $this->message = [];
+        $this->messages = [];
 
 
         $valid = true;
@@ -111,8 +111,8 @@ class Validator
 
             if (!$constraint->validate($value, $constraintData)) {
                 $valid = false;
-                $this->message = array_merge(
-                    $this->message,
+                $this->messages = array_merge(
+                    $this->messages,
                     $constraint->getMessage()
                 );
             }

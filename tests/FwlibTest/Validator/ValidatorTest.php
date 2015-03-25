@@ -39,7 +39,7 @@ class ValidatorTest extends PHPUnitTestCase
 
         $this->assertFalse($validator->validate('', $rule));
         // Each constraint return a message, total 2.
-        $this->assertEquals(2, count($validator->getMessage()));
+        $this->assertEquals(2, count($validator->getMessages()));
 
 
         // $rule can also be string
