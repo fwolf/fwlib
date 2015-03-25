@@ -23,18 +23,6 @@ class Validator
 
 
     /**
-     * Constructor
-     *
-     * @param   ConstraintContainerInterface $constraintContainer
-     */
-    public function __construct(
-        ConstraintContainerInterface $constraintContainer = null
-    ) {
-        $this->constraintContainer = $constraintContainer;
-    }
-
-
-    /**
      * Get constraint instance
      *
      * @param   string  $name

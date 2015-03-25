@@ -4,6 +4,7 @@ namespace FwlibTest\Validator;
 use Fwlib\Validator\ConstraintContainer;
 use Fwlib\Validator\Validator;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -12,15 +13,13 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 class ValidatorTest extends PHPUnitTestCase
 {
     /**
-     * @return Validator
+     * @return MockObject | Validator
      */
     protected function buildMock()
     {
-        $constraintContainer = ConstraintContainer::getInstance();
+        $mock = $this->getMock(Validator::class, null);
 
-        $validator = new Validator($constraintContainer);
-
-        return $validator;
+        return $mock;
     }
 
 
