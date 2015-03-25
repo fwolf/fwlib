@@ -39,6 +39,7 @@ class Validator
      *
      * @param   string  $name
      * @return  ConstraintInterface
+     * @throws  ServiceInstanceCreationFailException
      */
     protected function getConstraint($name)
     {
