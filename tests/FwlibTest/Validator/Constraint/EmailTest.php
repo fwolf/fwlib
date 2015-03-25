@@ -2,7 +2,6 @@
 namespace FwlibTest\Validator\Constraint;
 
 use Fwlib\Validator\Constraint\Email;
-use Fwlib\Util\UtilContainer;
 use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
@@ -59,9 +58,6 @@ class EmailTest extends PHPUnitTestCase
         $foo = 'dummy@mail.com';
         $checkdnsrrMock->setResult(false);
         $this->assertFalse($constraint->validate($foo));
-
-        // For coverage
-        $constraint->setUtilContainer(UtilContainer::getInstance());
 
         $checkdnsrrMock->setResult(true);
         $this->assertTrue($constraint->validate($foo));
