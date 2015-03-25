@@ -35,6 +35,46 @@ class ConfigTest extends PHPUnitTestCase
     }
 
 
+    public function testDelete()
+    {
+        $config = $this->buildMock();
+
+        $config->set('foo', 'bar');
+        $this->assertEquals('bar', $config->get('foo'));
+
+        $config->delete('foo');
+        $this->assertNull($config->get('foo'));
+
+
+        $config->set('a.b.c', 'foo');
+
+        // Wrong key delete nothing
+        $config->delete('a.d.e');
+        $this->assertEquals('foo', $config->get('a.b.c'));
+
+        // Actual delete
+        $config->delete('a.b.c');
+        $this->assertNull($config->get('a.b.c'));
+
+        // Leave an empty tree
+        $this->assertEqualArray([], $config->get('a.b'));
+        $this->assertEqualArray(['b' => []], $config->get('a'));
+
+
+        // Stored data is array has dot in key
+        $foo = ['c.d' => 'foo'];
+        $config->set('a.b', $foo);
+
+        // Delete fail, not same key
+        $config->delete('a.b.c');
+        $this->assertEqualArray($foo, $config->get('a.b'));
+
+        // Actual delete
+        $config->delete('a.b');
+        $this->assertNull($config->get('a.b'));
+    }
+
+
     public function testSetGet()
     {
         $config = new Config;

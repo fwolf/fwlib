@@ -32,6 +32,41 @@ class Config implements \ArrayAccess
 
 
     /**
+     * Delete config value or sub tree
+     *
+     * After delete leaf node, parent empty tree node will not be deleted.
+     *
+     * @param   string  $key
+     * @return  static
+     */
+    public function delete($key)
+    {
+        if (false === strpos($key, $this->separator)) {
+            unset($this->configs[$key]);
+
+        } else {
+            $sections = explode($this->separator, $key);
+            $configPointer = &$this->configs;
+
+            while (1 < count($sections)) {
+                $currentKey = array_shift($sections);
+
+                if (isset($configPointer[$currentKey])) {
+                    $configPointer = &$configPointer[$currentKey];
+
+                } else {
+                    break;
+                }
+            }
+
+            unset($configPointer[implode($this->separator, $sections)]);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Get config value
      *
      * String with separator store as multi-dimensional array.
@@ -129,7 +164,7 @@ class Config implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        $this->set($offset, null);
+        $this->delete($offset);
     }
 
 
