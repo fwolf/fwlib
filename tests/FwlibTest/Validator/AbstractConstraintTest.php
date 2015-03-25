@@ -41,7 +41,7 @@ class AbstractConstraintTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Fwlib\Validator\Exception\MessageTemplateNotDefinedException
      * @expectedExceptionMessage not defined
      */
     public function testSetMessageWithInvalidMessageKey()

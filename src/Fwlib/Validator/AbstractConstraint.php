@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Validator;
 
+use Fwlib\Validator\Exception\MessageTemplateNotDefinedException;
+
 /**
  * Constraint
  *
@@ -58,11 +60,12 @@ class AbstractConstraint implements ConstraintInterface
      * Will replace %messageVariable% if needed.
      *
      * @param   string  $templateName
+     * @throws  MessageTemplateNotDefinedException
      */
     protected function setMessage($templateName)
     {
         if (!isset($this->messageTemplates[$templateName])) {
-            throw new \Exception(
+            throw new MessageTemplateNotDefinedException(
                 "Message template \"$templateName\" is not defined"
             );
         }
