@@ -54,8 +54,6 @@ class Email extends AbstractConstraint
     {
         parent::validate($value, $constraintData);
 
-        $valid = true;
-
         $atIndex = strrpos($value, '@');
         if (false === $atIndex) {
             return false;
@@ -63,23 +61,38 @@ class Email extends AbstractConstraint
 
         $domain = substr($value, $atIndex + 1);
         $local = substr($value, 0, $atIndex);
-        $localLen = strlen($local);
-        $domainLen = strlen($domain);
 
-        if ($localLen < 1 || $localLen > 64) {
-            // local part length exceeded
+        $valid = $this->validateDomainPart($domain) &&
+            $this->validateLocalPart($local);
+
+        // Some network provider will return fake A record if a dns query
+        // return fail, usually display some ads, so we only check MX record.
+        if ($valid && $this->dnsCheck &&
+            $this->getUtilContainer()->getEnv()->isNixOs() &&
+            !checkdnsrr($domain, 'MX')
+        ) {
             $valid = false;
+        }
 
-        } elseif ($domainLen < 1 || $domainLen > 255) {
+        if (!$valid) {
+            $this->setMessage('default');
+        }
+
+        return $valid;
+    }
+
+
+    /**
+     * @param   string  $domain
+     * @return  bool
+     */
+    protected function validateDomainPart($domain)
+    {
+        $valid = true;
+        $length = strlen($domain);
+
+        if ($length < 1 || $length > 255) {
             // domain part length exceeded
-            $valid = false;
-
-        } elseif ($local[0] == '.' || $local[$localLen-1] == '.') {
-            // local part starts or ends with '.'
-            $valid = false;
-
-        } elseif (preg_match('/\\.\\./', $local)) {
-            // local part has two consecutive dots
             $valid = false;
 
         } elseif (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {
@@ -88,6 +101,32 @@ class Email extends AbstractConstraint
 
         } elseif (preg_match('/\\.\\./', $domain)) {
             // domain part has two consecutive dots
+            $valid = false;
+        }
+
+        return $valid;
+    }
+
+
+    /**
+     * @param   string  $local
+     * @return  bool
+     */
+    protected function validateLocalPart($local)
+    {
+        $valid = true;
+        $length = strlen($local);
+
+        if ($length < 1 || $length > 64) {
+            // local part length exceeded
+            $valid = false;
+
+        } elseif ($local[0] == '.' || $local[$length-1] == '.') {
+            // local part starts or ends with '.'
+            $valid = false;
+
+        } elseif (preg_match('/\\.\\./', $local)) {
+            // local part has two consecutive dots
             $valid = false;
 
         } elseif (!preg_match(
@@ -101,20 +140,6 @@ class Email extends AbstractConstraint
             )) {
                 $valid = false;
             }
-        }
-
-        // Some network provider will return fake A record if a dns query
-        // return fail, usually display some ads, so we only check MX record.
-        if ($valid && $this->dnsCheck &&
-            $this->getUtilContainer()->getEnv()->isNixOs() &&
-            !checkdnsrr($domain, 'MX')
-        ) {
-            $valid = false;
-        }
-
-
-        if (!$valid) {
-            $this->setMessage('default');
         }
 
         return $valid;
