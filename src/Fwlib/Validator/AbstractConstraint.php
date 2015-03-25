@@ -57,22 +57,22 @@ class AbstractConstraint implements ConstraintInterface
      *
      * Will replace %messageVariable% if needed.
      *
-     * @param   string  $messageKey
+     * @param   string  $templateName
      */
-    protected function setMessage($messageKey)
+    protected function setMessage($templateName)
     {
-        if (!isset($this->messageTemplates[$messageKey])) {
+        if (!isset($this->messageTemplates[$templateName])) {
             throw new \Exception(
-                "Validate fail message $messageKey is not defined"
+                "Message template \"$templateName\" is not defined"
             );
         }
 
-        $message = $this->messageTemplates[$messageKey];
+        $message = $this->messageTemplates[$templateName];
 
         // Set fail message with a unique key, so if a messageKey is set
         // multiple times, there will only be one message return.
         $messageKey = str_replace('\\', '::', get_class($this)) .
-            '::' . $messageKey;
+            '::' . $templateName;
         if (isset($this->messages[$messageKey])) {
             return;
         }
