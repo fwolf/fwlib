@@ -16,7 +16,7 @@ class ConfigTest extends PHPUnitTestCase
     {
         $config = new Config;
 
-        $utilContainer = $config->getUtilContainer();
+        $utilContainer = $this->reflectionCall($config, 'getUtilContainer');
         $this->assertInstanceOf(
             UtilContainerInterface::class,
             $utilContainer
@@ -36,8 +36,6 @@ class ConfigTest extends PHPUnitTestCase
         $this->assertEquals('bar2', $config['foo2']);
         unset($config['foo2']);
         $this->assertFalse(isset($config['foo2']));
-
-        $config->setUtilContainer(UtilContainer::getInstance());
 
         // Value with separator turns to array
         $config->set('foo1.bar', 42);

@@ -1,8 +1,7 @@
 <?php
 namespace Fwlib\Config;
 
-use Fwlib\Util\UtilContainer;
-use Fwlib\Util\UtilContainerInterface;
+use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
  * Config class
@@ -14,6 +13,9 @@ use Fwlib\Util\UtilContainerInterface;
  */
 class Config implements \ArrayAccess
 {
+    use UtilContainerAwareTrait;
+
+
     /**
      * Config data array
      *
@@ -27,11 +29,6 @@ class Config implements \ArrayAccess
      * @var string
      */
     public $separator = '.';
-
-    /**
-     * @var UtilContainer
-     */
-    protected $utilContainer = null;
 
 
     /**
@@ -65,19 +62,6 @@ class Config implements \ArrayAccess
             }
             return($c);
         }
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUtilContainer()
-    {
-        if (is_null($this->utilContainer)) {
-            $this->utilContainer = UtilContainer::getInstance();
-        }
-
-        return $this->utilContainer;
     }
 
 
@@ -197,21 +181,6 @@ class Config implements \ArrayAccess
             // At last level, set the value
             $c[$ar[$j]] = $val;
         }
-
-        return $this;
-    }
-
-
-    /**
-     * Setter of UtilContainer instance
-     *
-     * @param   UtilContainerInterface  $utilContainer
-     * @return  static
-     */
-    public function setUtilContainer(
-        UtilContainerInterface $utilContainer = null
-    ) {
-        $this->utilContainer = $utilContainer;
 
         return $this;
     }
