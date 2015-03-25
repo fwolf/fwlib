@@ -21,50 +21,50 @@ class EmailTest extends PHPUnitTestCase
 
         $this->assertTrue($constraint->validate('dummy@mail.com'));
 
-        $x = '12345678';
-        $this->assertFalse($constraint->validate($x));
+        $foo = '12345678';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = str_repeat('a', 65) . '@mail.com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = str_repeat('a', 65) . '@mail.com';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = 'dummy@' . str_repeat('a', 256) . '.com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = 'dummy@' . str_repeat('a', 256) . '.com';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = '.dummy@mail.com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = '.dummy@mail.com';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = 'dummy.@mail.com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = 'dummy.@mail.com';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = 'a..dummy@mail.com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = 'a..dummy@mail.com';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = 'dummy.Aa+-0@m-ail.com';
-        $this->assertTrue($constraint->validate($x));
+        $foo = 'dummy.Aa+-0@m-ail.com';
+        $this->assertTrue($constraint->validate($foo));
 
-        $x = 'dummy.Aa+-0@m_ail.com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = 'dummy.Aa+-0@m_ail.com';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = 'dummy@mail..com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = 'dummy@mail..com';
+        $this->assertFalse($constraint->validate($foo));
 
-        $x = '[dummy]@mail.com';
-        $this->assertFalse($constraint->validate($x));
+        $foo = '[dummy]@mail.com';
+        $this->assertFalse($constraint->validate($foo));
 
 
         $factory = $this->getFunctionMockFactory(Email::class);
         $checkdnsrrMock = $factory->get(null, 'checkdnsrr', true);
 
         $constraint->dnsCheck = true;
-        $x = 'dummy@mail.com';
+        $foo = 'dummy@mail.com';
         $checkdnsrrMock->setResult(false);
-        $this->assertFalse($constraint->validate($x));
+        $this->assertFalse($constraint->validate($foo));
 
         // For coverage
         $constraint->setUtilContainer(UtilContainer::getInstance());
 
         $checkdnsrrMock->setResult(true);
-        $this->assertTrue($constraint->validate($x));
+        $this->assertTrue($constraint->validate($foo));
 
 
         $checkdnsrrMock->disableAll();
