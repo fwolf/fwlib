@@ -29,17 +29,22 @@ class AbstractConstraintTest extends PHPUnitTestCase
     {
         $constraint = $this->buildMock();
 
+        $defaultMessage = 'Validate failed';
 
         // Call setMessage() method
         $this->reflectionCall($constraint, 'setMessage', ['default']);
         // Can't use class name of mocked object, so only check message value
-        $message = 'Validate failed';
-        $this->assertEqualArray($message, current($constraint->getMessages()));
+        $messages = $constraint->getMessages();
+        $this->assertEquals($defaultMessage, current($messages));
+        $this->assertStringEndsWith('#default', key($messages));
 
 
         // Call setMessage() method again will affect nothing
         $this->reflectionCall($constraint, 'setMessage', ['default']);
-        $this->assertEqualArray($message, current($constraint->getMessages()));
+        $this->assertEquals(
+            $defaultMessage,
+            current($constraint->getMessages())
+        );
         $this->assertEquals(1, count($constraint->getMessages()));
 
 

@@ -23,7 +23,7 @@ class NotEmptyTest extends PHPUnitTestCase
 
         // Assert fail message key, which can't do in AbstractConstraint
         $x = [
-            'Fwlib::Validator::Constraint::NotEmpty::default' =>
+            NotEmpty::class . '#default' =>
                 'The input should not be empty or zero',
         ];
         $this->assertEqualArray($x, $constraint->getMessages());
