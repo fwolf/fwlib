@@ -1,9 +1,10 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Email;
 use Fwlib\Util\UtilContainer;
+use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -11,7 +12,7 @@ use Fwlib\Util\UtilContainer;
  */
 class EmailTest extends PHPUnitTestCase
 {
-    public static $checkdnsrr = false;
+    use FunctionMockFactoryAwareTrait;
 
 
     public function testValidate()
@@ -51,23 +52,21 @@ class EmailTest extends PHPUnitTestCase
         $this->assertFalse($constraint->validate($x));
 
 
+        $factory = $this->getFunctionMockFactory(Email::class);
+        $checkdnsrrMock = $factory->get(null, 'checkdnsrr', true);
+
         $constraint->dnsCheck = true;
         $x = 'dummy@mail.com';
-        self::$checkdnsrr = false;
+        $checkdnsrrMock->setResult(false);
         $this->assertFalse($constraint->validate($x));
 
         // For coverage
         $constraint->setUtilContainer(UtilContainer::getInstance());
 
-        self::$checkdnsrr = true;
+        $checkdnsrrMock->setResult(true);
         $this->assertTrue($constraint->validate($x));
+
+
+        $checkdnsrrMock->disableAll();
     }
-}
-
-
-namespace Fwlib\Validator\Constraint;
-
-function checkdnsrr()
-{
-    return \FwlibTest\Validator\Constraint\EmailTest::$checkdnsrr;
 }
