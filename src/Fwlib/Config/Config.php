@@ -21,20 +21,22 @@ class Config implements \ArrayAccess
      *
      * @var array
      */
-    public $config = [];
+    protected $configs = [];
 
     /**
-     * Separator for config key
+     * Separator for config key sections
      *
      * @var string
      */
-    public $separator = '.';
+    protected $separator = '.';
 
 
     /**
      * Get config value
      *
      * String with separator store as multi-dimensional array.
+     *
+     * PHP has copy on write feature, so readonly pointer need use '&'.
      *
      * @param   string  $key
      * @param   mixed   $default        Return this if key not exists
@@ -44,23 +46,24 @@ class Config implements \ArrayAccess
     {
         if (false === strpos($key, $this->separator)) {
             $arrayUtil = $this->getUtilContainer()->getArray();
-            return $arrayUtil->getIdx($this->config, $key, $default);
+            return $arrayUtil->getIdx($this->configs, $key, $default);
 
         } else {
             // Recognize separator
-            $ar = explode($this->separator, $key);
-            $c = &$this->config;
+            $sections = explode($this->separator, $key);
+            $configPointer = $this->configs;
 
             // Loop match value
             // Each loop will go deeper in multi-dimension array
-            foreach ($ar as $val) {
-                if (isset($c[$val])) {
-                    $c = &$c[$val];
+            foreach ($sections as $section) {
+                if (isset($configPointer[$section])) {
+                    $configPointer = $configPointer[$section];
                 } else {
                     return $default;
                 }
             }
-            return($c);
+
+            return($configPointer);
         }
     }
 
@@ -69,11 +72,11 @@ class Config implements \ArrayAccess
      * Reset all config and set new
      *
      * @param   array   $configData
-     * @return  Config
+     * @return  static
      */
     public function load($configData)
     {
-        $this->config = [];
+        $this->configs = [];
 
         if (!is_null($configData)) {
             $this->set($configData);
@@ -143,7 +146,7 @@ class Config implements \ArrayAccess
      *
      * @param   string|array    $key
      * @param   mixed   $val    Should not null except $key is array
-     * @return  $this
+     * @return  static
      */
     public function set($key, $val = null)
     {
@@ -157,29 +160,29 @@ class Config implements \ArrayAccess
 
 
         if (false === strpos($key, $this->separator)) {
-            $this->config[$key] = $val;
+            $this->configs[$key] = $val;
         } else {
             // Recognize separator
-            $ar = explode($this->separator, $key);
-            $j = count($ar) - 1;
-            $c = &$this->config;
+            $sections = explode($this->separator, $key);
+            $parentLevels = count($sections) - 1;
+            $configPointer = &$this->configs;
 
             // Check and create middle level for multi-dimension array
-            // $c change every loop, goes deeper to sub array
-            for ($i = 0; $i < $j; $i ++) {
-                $currentKey = $ar[$i];
+            // Pointer change every loop, goes deeper to sub array
+            for ($i = 0; $i < $parentLevels; $i ++) {
+                $currentKey = $sections[$i];
 
                 // 'a.b.c', if b is not set, create it as an empty array
-                if (!isset($c[$currentKey])) {
-                    $c[$currentKey] = [];
+                if (!isset($configPointer[$currentKey])) {
+                    $configPointer[$currentKey] = [];
                 }
 
                 // Go down to next level
-                $c = &$c[$currentKey];
+                $configPointer = &$configPointer[$currentKey];
             }
 
             // At last level, set the value
-            $c[$ar[$j]] = $val;
+            $configPointer[$sections[$parentLevels]] = $val;
         }
 
         return $this;
