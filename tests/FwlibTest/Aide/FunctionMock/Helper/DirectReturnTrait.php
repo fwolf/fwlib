@@ -1,5 +1,5 @@
 <?php
-namespace FwlibTest\Aide\FunctionMock;
+namespace FwlibTest\Aide\FunctionMock\Helper;
 
 use FwlibTest\Aide\FunctionMockWrapperTrait;
 

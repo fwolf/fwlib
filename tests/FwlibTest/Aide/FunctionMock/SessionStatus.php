@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Aide\FunctionMock;
 
+use FwlibTest\Aide\FunctionMock\Helper\DirectReturnTrait;
 use FwlibTest\Aide\FunctionMockWrapperInterface;
 
 /**

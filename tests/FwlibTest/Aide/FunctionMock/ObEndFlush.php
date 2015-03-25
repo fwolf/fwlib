@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Aide\FunctionMock;
 
+use FwlibTest\Aide\FunctionMock\Helper\CheckCalledTrait;
 use FwlibTest\Aide\FunctionMockWrapperInterface;
 
 /**
