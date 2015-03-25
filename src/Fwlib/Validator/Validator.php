@@ -11,10 +11,8 @@ use Fwlib\Base\Exception\ServiceInstanceCreationFailException;
  */
 class Validator
 {
-    /**
-     * @var ConstraintContainerInterface
-     */
-    protected $constraintContainer = null;
+    use ConstraintContainerAwareTrait;
+
 
     /**
      * Validate fail message
@@ -59,17 +57,6 @@ class Validator
 
 
     /**
-     * @return  ConstraintContainer
-     */
-    protected function getConstraintContainer()
-    {
-        return is_null($this->constraintContainer)
-            ? ConstraintContainer::getInstance()
-            : $this->constraintContainer;
-    }
-
-
-    /**
      * Get last validate fail message
      *
      * Return empty when validate success.
@@ -79,21 +66,6 @@ class Validator
     public function getMessage()
     {
         return $this->message;
-    }
-
-
-    /**
-     * Set constraint container instance
-     *
-     * @param   ConstraintContainerInterface $constraintContainer
-     * @return  static
-     */
-    public function setConstraintContainer(
-        ConstraintContainerInterface $constraintContainer = null
-    ) {
-        $this->ConstraintContainer = $constraintContainer;
-
-        return $this;
     }
 
 
