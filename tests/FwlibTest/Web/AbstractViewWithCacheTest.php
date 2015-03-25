@@ -88,13 +88,13 @@ class AbstractViewWithCacheTest extends PHPUnitTestCase
         $view->setUseCache(true);
 
         $view->setForceRefreshCache(false);
-        $x = $view->getOutput();
-        $y = $view->getOutput();
-        $this->assertEquals($x, $y);
+        $foo = $view->getOutput();
+        $bar = $view->getOutput();
+        $this->assertEquals($foo, $bar);
 
         $view->setForceRefreshCache(true);
-        $y = $view->getOutput();
-        $this->assertNotEquals($x, $y);
+        $bar = $view->getOutput();
+        $this->assertNotEquals($foo, $bar);
     }
 
 
@@ -108,20 +108,20 @@ class AbstractViewWithCacheTest extends PHPUnitTestCase
         self::$requestUri = '';
 
         // Without cache
-        $x = $view->getOutput();
-        $y = $view->getOutput();
-        $this->assertNotEquals($x, $y);
+        $foo = $view->getOutput();
+        $bar = $view->getOutput();
+        $this->assertNotEquals($foo, $bar);
 
         // With cache
         $view->setUseCache(true);
         $this->assertTrue($view->isUseCache());
-        $x = $view->getOutput();
-        $y = $view->getOutput();
-        $this->assertEquals($x, $y);
+        $foo = $view->getOutput();
+        $bar = $view->getOutput();
+        $this->assertEquals($foo, $bar);
 
         // Change cache key, will got different result
         self::$requestUri = 'test.php?a=1&b=';
-        $y = $view->getOutput();
-        $this->assertNotEquals($x, $y);
+        $bar = $view->getOutput();
+        $this->assertNotEquals($foo, $bar);
     }
 }
