@@ -40,13 +40,13 @@ class Length extends AbstractConstraint
         $ar = explode(',', $constraintData);
 
         $min = intval(array_shift($ar));
-        $this->messageVariable['min'] = $min;
+        $this->messageVariables['min'] = $min;
 
         if (empty($ar)) {
             $max = null;
         } else {
             $max = intval(array_shift($ar));
-            $this->messageVariable['max'] = $max;
+            $this->messageVariables['max'] = $max;
         }
 
 
