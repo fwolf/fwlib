@@ -22,10 +22,10 @@ class NotEmptyTest extends PHPUnitTestCase
         $this->assertFalse($constraint->validate([]));
 
         // Assert fail message key, which can't do in AbstractConstraint
-        $x = [
+        $failMessages = [
             NotEmpty::class . '#default' =>
                 'The input should not be empty or zero',
         ];
-        $this->assertEqualArray($x, $constraint->getMessages());
+        $this->assertEqualArray($failMessages, $constraint->getMessages());
     }
 }

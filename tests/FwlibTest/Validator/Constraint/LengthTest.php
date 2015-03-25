@@ -14,19 +14,19 @@ class LengthTest extends PHPUnitTestCase
     {
         $constraint = new Length();
 
-        $x = 'test';
+        $str = 'test';
 
-        $this->assertTrue($constraint->validate($x, '3, 5'));
-        $this->assertTrue($constraint->validate($x, '3 and 5'));
-        $this->assertTrue($constraint->validate($x, '3'));
+        $this->assertTrue($constraint->validate($str, '3, 5'));
+        $this->assertTrue($constraint->validate($str, '3 and 5'));
+        $this->assertTrue($constraint->validate($str, '3'));
 
-        $this->assertFalse($constraint->validate($x, '5, 6'));
+        $this->assertFalse($constraint->validate($str, '5, 6'));
         $this->assertEquals(
             'The input should be more than 5 characters',
             current($constraint->getMessages())
         );
 
-        $this->assertFalse($constraint->validate($x, '2, 3'));
+        $this->assertFalse($constraint->validate($str, '2, 3'));
         $this->assertEquals(
             'The input should be less than 3 characters',
             current($constraint->getMessages())

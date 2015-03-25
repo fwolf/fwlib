@@ -34,10 +34,9 @@ class Regex extends AbstractConstraint
             return false;
         }
 
-        $value = (string)$value;
+        $value = strval($value);
 
-        $i = preg_match($constraintData, $value);
-        if (1 !== $i) {
+        if (1 !== preg_match($constraintData, $value)) {
             $this->setMessage('default');
             return false;
         } else {

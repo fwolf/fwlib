@@ -87,8 +87,8 @@ class Url extends AbstractConstraint
             return false;
         }
 
-        $ar = explode(',', $constraintData);
-        $url = trim(array_shift($ar));
+        $parts = explode(',', $constraintData);
+        $url = trim(array_shift($parts));
 
         if (empty($url)) {
             $this->setMessage('urlEmpty');
@@ -99,7 +99,7 @@ class Url extends AbstractConstraint
         // works well in js ajax, is common used.
         $url = $this->getFullUrl($url);
 
-        if (empty($ar)) {
+        if (empty($parts)) {
             // All value will be posted
             $postData = $value;
 
@@ -107,7 +107,7 @@ class Url extends AbstractConstraint
             // Build post data array
             $postData = [];
             $arrayUtil = $this->getUtilContainer()->getArray();
-            foreach ($ar as $v) {
+            foreach ($parts as $v) {
                 $v = trim($v);
 
                 if (empty($v)) {
@@ -122,12 +122,12 @@ class Url extends AbstractConstraint
             $curl = $this->getServiceContainer()->getCurl();
             $curl->setoptSslVerify(false);
 
-            $rs = $curl->post($url, $postData);
-            $rv = new ReturnValue($rs);
+            $result = $curl->post($url, $postData);
+            $returnValue = new ReturnValue($result);
 
-            if ($rv->isError()) {
+            if ($returnValue->isError()) {
                 // Use return data as fail message
-                $data = $rv->getData();
+                $data = $returnValue->getData();
                 if (empty($data)) {
                     $this->setMessage('default');
                 } else {

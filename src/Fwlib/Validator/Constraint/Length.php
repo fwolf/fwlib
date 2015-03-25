@@ -37,15 +37,15 @@ class Length extends AbstractConstraint
 
         // Get min and max
         $constraintData = str_ireplace('to', ',', $constraintData);
-        $ar = explode(',', $constraintData);
+        $parts = explode(',', $constraintData);
 
-        $min = intval(array_shift($ar));
+        $min = intval(array_shift($parts));
         $this->messageVariables['min'] = $min;
 
-        if (empty($ar)) {
+        if (empty($parts)) {
             $max = null;
         } else {
-            $max = intval(array_shift($ar));
+            $max = intval(array_shift($parts));
             $this->messageVariables['max'] = $max;
         }
 
