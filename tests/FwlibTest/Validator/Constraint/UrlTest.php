@@ -1,12 +1,11 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
-use Fwlib\Base\ServiceContainerInterface;
 use Fwlib\Net\Curl;
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Constraint\Url;
-use FwlibTest\Aide\TestServiceContainer;
+use FwlibTest\Aide\ObjectMockBuilder\FwlibBaseServiceContainerTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -16,6 +15,9 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class UrlTest extends PHPUnitTestCase
 {
+    use FwlibBaseServiceContainerTrait;
+
+
     /** @var string */
     public static $curlResult;
 
@@ -47,20 +49,6 @@ class UrlTest extends PHPUnitTestCase
     public function buildMock()
     {
         $mock = $this->getMock(Url::class, null);
-
-        return $mock;
-    }
-
-
-    /**
-     * @return  MockObject | ServiceContainerInterface
-     */
-    protected function buildServiceContainerMock()
-    {
-        $mock = $this->getMockBuilder(TestServiceContainer::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
 
         return $mock;
     }
