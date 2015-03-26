@@ -10,20 +10,20 @@ use Fwlib\Validator\AbstractConstraint;
  * Constraint Url
  *
  * The validate url is called by HTTP POST, should return a json encoded
- * string, with structure same as Fwlib\Base\ReturnValue::info, code less than
- * 0 means validate fail, and data is array of fail message.
+ * string, with structure fit to load with {@see \Fwlib\Base\ReturnValue}, code
+ * less than 0 means validate fail, and data is array of fail messages.
  *
  * Additional $constraintData is string, the format is:
  *
  * - url
- * - url, [inputName,]
+ * - url, [inputNames,]
  *
- * Validate value should be an array, mostly come from $_POST. For the 1st
- * format, the whole value is thrown to target url; For the 2nd format, it
- * will build a new array, only include index same as inputName in value
- * array, this helps reduce post data size, and raise security.
+ * Validate value should be an array, mostly associated like $_POST. For the
+ * 1st $constraintData format, the whole value is thrown to target url as post
+ * data; For the 2nd format, an array will be build, use only keys in
+ * inputNames, this helps reduce post data size, and raise security.
  *
- * If validate value is empty, the validate totally depends on url result,
+ * Validate value can be empty, validation result will still read from url,
  * this maybe useful in some special situation.
  *
  * @codeCoverageIgnore
