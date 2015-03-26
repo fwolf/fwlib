@@ -1,12 +1,14 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
+use Fwlib\Base\ServiceContainerInterface;
 use Fwlib\Net\Curl;
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Constraint\Url;
 use FwlibTest\Aide\TestServiceContainer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2013-2015 Fwolf
@@ -14,6 +16,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class UrlTest extends PHPUnitTestCase
 {
+    /** @var string */
     public static $curlResult;
 
     /**
@@ -21,6 +24,7 @@ class UrlTest extends PHPUnitTestCase
      */
     protected static $originalHttpUtil;
 
+    /** @var string|array */
     public static $param;
 
     /**
@@ -33,30 +37,54 @@ class UrlTest extends PHPUnitTestCase
      */
     public static $selfUrlWithoutParameter;
 
+    /** @var string */
     public static $url;
 
 
+    /**
+     * @return  MockObject | Url
+     */
     public function buildMock()
     {
-        $curl = $this->getMock(Curl::class, ['post']);
-        $curl->expects($this->any())
+        $mock = $this->getMock(Url::class, null);
+
+        return $mock;
+    }
+
+
+    /**
+     * @return  MockObject | ServiceContainerInterface
+     */
+    protected function buildServiceContainerMock()
+    {
+        $mock = $this->getMockBuilder(TestServiceContainer::class)
+            ->setMethods(null)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        return $mock;
+    }
+
+
+    /**
+     * @return  MockObject | Curl
+     */
+    protected function buildCurlMock()
+    {
+        $mock = $this->getMock(Curl::class, ['post']);
+
+        $mock->expects($this->any())
             ->method('post')
             ->will($this->returnCallback(function ($url, $param) {
-                UrlTest::$url = $url;
-                UrlTest::$param = $param;
-                return UrlTest::$curlResult;
+                self::$url = $url;
+                self::$param = $param;
+                return self::$curlResult;
             }));
 
-        /** @var Curl $curl */
-        $curl->setoptSslVerify(false);
+        /** @var Curl $mock */
+        $mock->setoptSslVerify(false);
 
-        $serviceContainer = TestServiceContainer::getInstance();
-        $serviceContainer->register('Curl', $curl);
-
-        $constraint = new Url();
-        $constraint->setServiceContainer($serviceContainer);
-
-        return $constraint;
+        return $mock;
     }
 
 
@@ -121,6 +149,10 @@ class UrlTest extends PHPUnitTestCase
     public function testValidate()
     {
         $constraint = $this->buildMock();
+        $serviceContainer = $this->buildServiceContainerMock();
+        $serviceContainer->register('Curl', $this->buildCurlMock());
+        $constraint->setServiceContainer($serviceContainer);
+
         $url = 'http://dummy/';
 
 
