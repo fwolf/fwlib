@@ -41,10 +41,10 @@ class Url extends AbstractConstraint
      * {@inheritdoc}
      */
     protected $messageTemplates = [
-        'curlFail'    => 'The input validate url request fail',
-        'default'     => 'The input must pass validate',
-        'invalidType' => 'The input must be Array',
-        'urlEmpty'    => 'The input need url target for validate',
+        'curlFail'    => 'Validate url request fail',
+        'default'     => 'Validate fail',
+        'invalidType' => 'Must be Array or empty',
+        'urlEmpty'    => 'Need url target for validate',
     ];
 
 
