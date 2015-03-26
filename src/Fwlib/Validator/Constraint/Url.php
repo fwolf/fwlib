@@ -51,6 +51,8 @@ class Url extends AbstractConstraint
     /**
      * Get full url for given relative url string
      *
+     * Parameter url can be relative, or absolute path start with '/'.
+     *
      * @param   string  $url
      * @return  string
      */
@@ -61,17 +63,18 @@ class Url extends AbstractConstraint
         }
 
         $httpUtil = $this->getUtilContainer()->getHttp();
-        $selfUrl = $httpUtil->getSelfUrlWithoutQueryString();
+        $baseUrl = $httpUtil->getSelfUrlWithoutQueryString();
 
         if ('.' == $url[0]) {
-            // Remove last filename
-            $selfUrl = substr($selfUrl, 0, strrpos($selfUrl, '/') + 1);
+            // Remove last filename, got path only url
+            $baseUrl = substr($baseUrl, 0, strrpos($baseUrl, '/') + 1);
+
         } elseif ('/' == $url[0]) {
-            // Get url host without any request url or get parameter
-            $selfUrl = $httpUtil->getSelfHostUrl();
+            // Absolute path, use host only
+            $baseUrl = $httpUtil->getSelfHostUrl();
         }
 
-        return $selfUrl . $url;
+        return $baseUrl . $url;
     }
 
 

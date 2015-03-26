@@ -92,6 +92,29 @@ class UrlTest extends PHPUnitTestCase
     }
 
 
+    public function testGetFullUrl()
+    {
+        $constraint = $this->buildMock();
+
+        self::$selfHostUrl = 'http://domain.tld';
+        self::$selfUrlWithoutParameter = 'http://domain.tld/foo/bar.php';
+
+        $url = '?a=check';
+        $fullUrl = $this->reflectionCall($constraint, 'getFullUrl', [$url]);
+        $this->assertEquals('http://domain.tld/foo/bar.php?a=check', $fullUrl);
+
+
+        // Url start with '.' or '/'
+        $url = './?a=check';
+        $fullUrl = $this->reflectionCall($constraint, 'getFullUrl', [$url]);
+        $this->assertEquals('http://domain.tld/foo/./?a=check', $fullUrl);
+
+        $url = '/?a=check';
+        $fullUrl = $this->reflectionCall($constraint, 'getFullUrl', [$url]);
+        $this->assertEquals('http://domain.tld/?a=check', $fullUrl);
+    }
+
+
     public function testValidate()
     {
         $constraint = $this->buildMock();
@@ -148,33 +171,5 @@ class UrlTest extends PHPUnitTestCase
         );
         $this->assertFalse($constraint->validate($value, $url));
         $this->assertEqualArray($failMessage, $constraint->getMessages());
-
-
-        // Url fix up
-        self::$selfUrlWithoutParameter = 'http://domain.tld/';
-        $url = '?a=check';
-        $constraint->validate($value, $url);
-        $this->assertEquals(
-            'http://domain.tld/?a=check',
-            self::$url
-        );
-
-
-        // Url start with '.' or '/'
-        self::$selfUrlWithoutParameter = 'http://domain.tld/foo/bar.php';
-        $url = './?a=check';
-        $constraint->validate($value, $url);
-        $this->assertEquals(
-            'http://domain.tld/foo/./?a=check',
-            self::$url
-        );
-
-        self::$selfHostUrl = 'http://domain.tld';
-        $url = '/?a=check';
-        $constraint->validate($value, $url);
-        $this->assertEquals(
-            'http://domain.tld/?a=check',
-            self::$url
-        );
     }
 }
