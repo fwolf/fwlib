@@ -75,7 +75,7 @@ trait FunctionMockAwareTrait
      * @param   FunctionMockFactory $functionMockFactory
      * @return  static
      */
-    public function setUtilContainer(
+    public function setFunctionMockFactory(
         FunctionMockFactory $functionMockFactory
     ) {
         $this->functionMockFactory = $functionMockFactory;
