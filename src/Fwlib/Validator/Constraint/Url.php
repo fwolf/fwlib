@@ -26,8 +26,6 @@ use Fwlib\Validator\AbstractConstraint;
  * Validate value can be empty, validation result will still read from url,
  * this maybe useful in some special situation.
  *
- * @codeCoverageIgnore
- *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */

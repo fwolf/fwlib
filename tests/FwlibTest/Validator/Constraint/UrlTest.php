@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
+use Fwlib\Net\Curl;
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Constraint\Url;
@@ -166,5 +167,25 @@ class UrlTest extends PHPUnitTestCase
         );
         $this->assertFalse($constraint->validate($value, $url));
         $this->assertEqualArray($failMessage, $constraint->getMessages());
+    }
+
+
+    public function testValidateWithCurlException()
+    {
+        $curl = $this->getmock(Curl::class, ['post']);
+        $curl->expects($this->once())
+            ->method('post')
+            ->willThrowException(new \Exception);
+
+        $constraint = $this->buildMock();
+        $serviceContainer = $this->buildServiceContainerMock();
+        $serviceContainer->register('Curl', $curl);
+        $constraint->setServiceContainer($serviceContainer);
+
+        $constraint->validate(null, 'http://dummy/');
+        $this->assertStringEndsWith(
+            '#curlFail',
+            key($constraint->getMessages())
+        );
     }
 }
