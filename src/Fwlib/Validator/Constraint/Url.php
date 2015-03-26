@@ -79,6 +79,35 @@ class Url extends AbstractConstraint
 
 
     /**
+     * @param   array   $value
+     * @param   array   $paramParts
+     * @return  array
+     */
+    protected function getPostData($value, $paramParts)
+    {
+        if (empty($paramParts)) {
+            // All value will be posted
+            return $value;
+
+        } else {
+            $postData = [];
+
+            foreach ($paramParts as $part) {
+                $part = trim($part);
+
+                if (!empty($part)) {
+                    $postData[$part] = array_key_exists($part, $value)
+                        ? $value[$part] : null;
+                }
+            }
+
+            return $postData;
+        }
+
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public function validate($value, $constraintData = null)
@@ -102,24 +131,7 @@ class Url extends AbstractConstraint
         // works well in js ajax, is common used.
         $url = $this->getFullUrl($url);
 
-        if (empty($parts)) {
-            // All value will be posted
-            $postData = $value;
-
-        } else {
-            // Build post data array
-            $postData = [];
-            $arrayUtil = $this->getUtilContainer()->getArray();
-            foreach ($parts as $v) {
-                $v = trim($v);
-
-                if (empty($v)) {
-                    continue;
-                }
-
-                $postData[$v] = $arrayUtil->getIdx($value, $v, null);
-            }
-        }
+        $postData = $this->getPostData($value, $parts);
 
         try {
             $curl = $this->getServiceContainer()->getCurl();
