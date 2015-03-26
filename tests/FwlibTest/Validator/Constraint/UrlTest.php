@@ -47,6 +47,9 @@ class UrlTest extends PHPUnitTestCase
                 return UrlTest::$curlResult;
             }));
 
+        /** @var Curl $curl */
+        $curl->setoptSslVerify(false);
+
         $serviceContainer = TestServiceContainer::getInstance();
         $serviceContainer->register('Curl', $curl);
 

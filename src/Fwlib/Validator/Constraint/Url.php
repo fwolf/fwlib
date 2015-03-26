@@ -123,7 +123,6 @@ class Url extends AbstractConstraint
 
         try {
             $curl = $this->getServiceContainer()->getCurl();
-            $curl->setoptSslVerify(false);
 
             $result = $curl->post($url, $postData);
             $returnValue = new ReturnValue($result);
