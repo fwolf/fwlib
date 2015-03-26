@@ -1,11 +1,11 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
-use Fwlib\Net\Curl;
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Validator\Constraint\Url;
 use FwlibTest\Aide\ObjectMockBuilder\FwlibBaseServiceContainerTrait;
+use FwlibTest\Aide\ObjectMockBuilder\FwlibNetCurlTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -16,18 +16,13 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class UrlTest extends PHPUnitTestCase
 {
     use FwlibBaseServiceContainerTrait;
+    use FwlibNetCurlTrait;
 
-
-    /** @var string */
-    public static $curlResult;
 
     /**
      * @type    HttpUtil
      */
     protected static $originalHttpUtil;
-
-    /** @var string|array */
-    public static $param;
 
     /**
      * @type    string
@@ -39,9 +34,6 @@ class UrlTest extends PHPUnitTestCase
      */
     public static $selfUrlWithoutParameter;
 
-    /** @var string */
-    public static $url;
-
 
     /**
      * @return  MockObject | Url
@@ -49,28 +41,6 @@ class UrlTest extends PHPUnitTestCase
     public function buildMock()
     {
         $mock = $this->getMock(Url::class, null);
-
-        return $mock;
-    }
-
-
-    /**
-     * @return  MockObject | Curl
-     */
-    protected function buildCurlMock()
-    {
-        $mock = $this->getMock(Curl::class, ['post']);
-
-        $mock->expects($this->any())
-            ->method('post')
-            ->will($this->returnCallback(function ($url, $param) {
-                self::$url = $url;
-                self::$param = $param;
-                return self::$curlResult;
-            }));
-
-        /** @var Curl $mock */
-        $mock->setoptSslVerify(false);
 
         return $mock;
     }
@@ -157,9 +127,9 @@ class UrlTest extends PHPUnitTestCase
 
 
         // Curl return success
-        self::$curlResult = json_encode(['code' => 0, 'message' => '']);
+        $this->curlPostResult = json_encode(['code' => 0, 'message' => '']);
         $this->assertTrue($constraint->validate(null, $url));
-        $this->assertEquals($url, self::$url);
+        $this->assertEquals($url, $this->curlPostUrl);
 
 
         // Curl post data
@@ -167,16 +137,16 @@ class UrlTest extends PHPUnitTestCase
             'foo'   => 'Foo',
             'bar'   => 'Bar',
         ];
-        self::$curlResult = json_encode(['code' => -1, 'message' => '']);
+        $this->curlPostResult = json_encode(['code' => -1, 'message' => '']);
 
         $constraint->validate($value, $url);
-        $this->assertEqualArray($value, self::$param);
+        $this->assertEqualArray($value, $this->curlPostParams);
 
         $constraint->validate($value, "$url ,foo");
-        $this->assertEqualArray(['foo' => 'Foo'], self::$param);
+        $this->assertEqualArray(['foo' => 'Foo'], $this->curlPostParams);
 
         $constraint->validate($value, "$url, foo, bar, ");
-        $this->assertEqualArray($value, self::$param);
+        $this->assertEqualArray($value, $this->curlPostParams);
 
         $this->assertEquals(
             'The input must pass validate',
@@ -189,7 +159,7 @@ class UrlTest extends PHPUnitTestCase
             'fail message 1',
             'fail message 2',
         ];
-        self::$curlResult = json_encode(
+        $this->curlPostResult = json_encode(
             ['code' => -1, 'message' => '', 'data' => $failMessage]
         );
         $this->assertFalse($constraint->validate($value, $url));
