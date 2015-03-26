@@ -3,7 +3,7 @@ namespace FwlibTest\Cache\Handler;
 
 use Fwlib\Cache\Handler\Memcached as MemcachedHandler;
 use Fwlib\Config\GlobalConfig;
-use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use FwlibTest\Aide\FunctionMockAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -15,7 +15,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class MemcachedTest extends PHPUnitTestCase
 {
-    use FunctionMockFactoryAwareTrait;
+    use FunctionMockAwareTrait;
 
 
     /**

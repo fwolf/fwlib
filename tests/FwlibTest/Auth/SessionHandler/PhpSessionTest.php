@@ -4,7 +4,7 @@ namespace FwlibTest\Auth\SessionHandler;
 use Fwlib\Auth\SessionHandler\Exception\ChangeOpenedSessionIdException;
 use Fwlib\Auth\SessionHandler\Exception\PhpSessionDisabledException;
 use Fwlib\Auth\SessionHandler\PhpSession;
-use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use FwlibTest\Aide\FunctionMockAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -16,7 +16,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class PhpSessionTest extends PHPUnitTestCase
 {
-    use FunctionMockFactoryAwareTrait;
+    use FunctionMockAwareTrait;
 
 
     /**

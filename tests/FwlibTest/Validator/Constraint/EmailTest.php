@@ -2,7 +2,7 @@
 namespace FwlibTest\Validator\Constraint;
 
 use Fwlib\Validator\Constraint\Email;
-use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use FwlibTest\Aide\FunctionMockAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -11,7 +11,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class EmailTest extends PHPUnitTestCase
 {
-    use FunctionMockFactoryAwareTrait;
+    use FunctionMockAwareTrait;
 
 
     public function testValidate()

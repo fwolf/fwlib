@@ -2,7 +2,7 @@
 namespace FwlibTest\Util\Common;
 
 use Fwlib\Util\Common\Json;
-use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use FwlibTest\Aide\FunctionMockAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -12,7 +12,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class JsonTest extends PHPUnitTestCase
 {
-    use FunctionMockFactoryAwareTrait;
+    use FunctionMockAwareTrait;
 
 
     /** @type int */

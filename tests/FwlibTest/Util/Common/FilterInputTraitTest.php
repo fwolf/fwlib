@@ -3,7 +3,7 @@ namespace FwlibTest\Util\Common;
 
 use Fwlib\Util\Common\FilterInputTrait;
 use Fwlib\Util\Common\HttpUtil;
-use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use FwlibTest\Aide\FunctionMockAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -13,7 +13,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class FilterInputTraitTest extends PHPUnitTestCase
 {
-    use FunctionMockFactoryAwareTrait;
+    use FunctionMockAwareTrait;
 
 
     /**

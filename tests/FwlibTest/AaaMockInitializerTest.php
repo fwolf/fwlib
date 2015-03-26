@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest;
 
-use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use FwlibTest\Aide\FunctionMockAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 
 /**
@@ -22,7 +22,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
  */
 class AaaMockInitializerTest extends PHPUnitTestCase
 {
-    use FunctionMockFactoryAwareTrait;
+    use FunctionMockAwareTrait;
 
 
     /**

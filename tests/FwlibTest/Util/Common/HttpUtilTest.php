@@ -4,7 +4,7 @@ namespace FwlibTest\Util\Common;
 use Fwlib\Util\Common\Env;
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
-use FwlibTest\Aide\FunctionMockFactoryAwareTrait;
+use FwlibTest\Aide\FunctionMockAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -18,7 +18,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class HttpUtilTest extends PHPUnitTestCase
 {
-    use FunctionMockFactoryAwareTrait;
+    use FunctionMockAwareTrait;
 
 
     /**
