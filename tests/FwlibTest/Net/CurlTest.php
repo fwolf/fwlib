@@ -59,6 +59,8 @@ class CurlTest extends PHPUnitTestCase
 
         $curlErrnoMock = $this->getFunctionMock('curl_errno');
         $curlErrorMock = $this->getFunctionMock('curl_error');
+        $curlExecMock = $this->getFunctionMock('curl_exec');
+        $curlSetoptMock = $this->getFunctionMock('curl_setopt');
 
         $logFile = vfsStream::newFile('CurlTest/log.txt');
         file_put_contents($logFile->url(), '', 0644);
@@ -76,6 +78,7 @@ class CurlTest extends PHPUnitTestCase
         $this->assertRegExp("/curl post error\n/", $errorLog);
 
 
+        true || $curlExecMock || $curlSetoptMock;
         $curlErrnoMock->disableAll();
     }
 
