@@ -4,11 +4,7 @@ namespace Fwlib\Net;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
- * Helper class to use curl efficiency
- *
- * Very useful in write a game bot, or an information thief program.
- *
- * @codeCoverageIgnore
+ * Helper class for easy curl usage
  *
  * @copyright   Copyright 2007-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -44,7 +40,7 @@ class Curl
      *
      * @var string
      */
-    public $html = null;
+    protected $html = '';
 
     /**
      * File to save log
@@ -187,37 +183,39 @@ class Curl
      * Return value maybe string(for single result) or array(for multiple
      * result), use carefully and remind which value you use it for.
      *
+     * Regex should surround wih '/', and mark match target with '()'.
+     *
      * @param   string  $preg
-     * @param   string  $str    If omitted, use $this->html
-     * @return  mixed
+     * @param   string  $html   If omitted, use $this->html
+     * @return  string|array
      */
-    public function match($preg, $str = '')
+    public function match($preg, $html = '')
     {
         // Param check
         if (empty($preg)) {
             return null;
         }
-        if (empty($str)) {
-            $str = &$this->html;
+        if (empty($html)) {
+            $html = $this->html;
         }
 
 
-        $i = preg_match_all($preg, $str, $ar, PREG_SET_ORDER);
-        if (0 == $i || false === $i) {
+        $matchCount = preg_match_all($preg, $html, $matches, PREG_SET_ORDER);
+        if (0 == $matchCount || false === $matchCount) {
             // Got none match or Got error
-            $ar = null;
+            $matches = null;
 
-        } elseif (1 == $i) {
+        } elseif (1 == $matchCount) {
             // Got 1 match, return as string or array(2 value in 1 match)
-            $ar = $ar[0];
-            array_shift($ar);
-            if (1 == count($ar)) {
-                $ar = $ar[0];
+            $matches = $matches[0];
+            array_shift($matches);
+            if (1 == count($matches)) {
+                $matches = $matches[0];
             }
 
         } else {
             // Got more than 1 match return array contains string or sub-array
-            foreach ($ar as &$row) {
+            foreach ($matches as &$row) {
                 array_shift($row);
                 if (1 == count($row)) {
                     $row = $row[0];
@@ -225,7 +223,7 @@ class Curl
             }
         }
 
-        return $ar;
+        return $matches;
     }
 
 
@@ -246,7 +244,7 @@ class Curl
             foreach ($param as $key => $val) {
                 $s .= urlencode($key) . '=' . urlencode($val) . '&';
             }
-            $param = $s;
+            $param = substr($s, 0, strlen($s) - 1);
         }
 
         curl_setopt($this->handle, CURLOPT_POSTFIELDS, $param);
@@ -331,6 +329,8 @@ class Curl
         if (0 == $type) {
             // Some server refuse http proxy tunnel, it's useless settings.
             //curl_setopt($this->handle, CURLOPT_HTTPPROXYTUNNEL, false);
+            curl_setopt($this->handle, CURLOPT_PROXY, null);
+
         } else {
             //curl_setopt($this->handle, CURLOPT_HTTPPROXYTUNNEL, true);
 
@@ -372,10 +372,8 @@ class Curl
      */
     public function setoptSslVerify($enable = true)
     {
-        if (false === $enable) {
-            curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, false);
-        }
+        curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, $enable);
+        curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, $enable);
     }
 
 
