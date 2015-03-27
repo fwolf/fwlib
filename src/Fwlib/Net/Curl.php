@@ -31,9 +31,9 @@ class Curl
     /**
      * cURL handle
      *
-     * @var object
+     * @var resource
      */
-    public $handle;
+    protected $handle;
 
     /**
      * Result read from web server
@@ -52,7 +52,6 @@ class Curl
      */
     public $logFile = null;
 
-
     /**
      * User agent profile or raw string
      *
@@ -62,21 +61,11 @@ class Curl
 
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->handle = curl_init();
-        $this->setoptCommon();
-    }
-
-
-    /**
      * Destructor
      */
     public function __destruct()
     {
-        curl_close($this->handle);
+        curl_close($this->getHandle());
     }
 
 
@@ -89,7 +78,9 @@ class Curl
      */
     public function get($url, $param = null)
     {
-        curl_setopt($this->handle, CURLOPT_HTTPGET, true);
+        $handle = $this->getHandle();
+
+        curl_setopt($handle, CURLOPT_HTTPGET, true);
 
         // Remove tailing '?" from url
         if ('?' == substr($url, -1, 1)) {
@@ -111,18 +102,34 @@ class Curl
             $param{0} = $linker;
         }
 
-        curl_setopt($this->handle, CURLOPT_URL, $url . $param);
-        $this->html = curl_exec($this->handle);
+        curl_setopt($handle, CURLOPT_URL, $url . $param);
+        $this->html = curl_exec($handle);
 
         // Log
         if ($this->debug) {
             $this->log('Get: ' . $url . $param);
         }
-        if (0 != curl_errno($this->handle)) {
-            $this->log(curl_error($this->handle));
+        if (0 != curl_errno($handle)) {
+            $this->log(curl_error($handle));
         }
 
         return $this->html;
+    }
+
+
+    /**
+     * Get and initialize curl handle
+     *
+     * @return  resource
+     */
+    protected function getHandle()
+    {
+        if (is_null($this->handle)) {
+            $this->handle = curl_init();
+            $this->setoptCommon($this->handle);
+        }
+
+        return $this->handle;
     }
 
 
@@ -135,7 +142,10 @@ class Curl
      */
     public function getLastCode()
     {
-        $i = curl_getinfo($this->handle, CURLINFO_HTTP_CODE);
+        $handle = $this->getHandle();
+
+        $i = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
         return intval($i);
     }
 
@@ -149,7 +159,10 @@ class Curl
      */
     public function getLastContentType()
     {
-        $s = curl_getinfo($this->handle, CURLINFO_CONTENT_TYPE);
+        $handle = $this->getHandle();
+
+        $s = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
+
         return $s;
     }
 
@@ -236,7 +249,9 @@ class Curl
      */
     public function post($url, $param = '')
     {
-        curl_setopt($this->handle, CURLOPT_POST, true);
+        $handle = $this->getHandle();
+
+        curl_setopt($handle, CURLOPT_POST, true);
 
         // Parse param, convert array to string
         if (is_array($param)) {
@@ -247,16 +262,16 @@ class Curl
             $param = substr($s, 0, strlen($s) - 1);
         }
 
-        curl_setopt($this->handle, CURLOPT_POSTFIELDS, $param);
-        curl_setopt($this->handle, CURLOPT_URL, $url);
-        $this->html = curl_exec($this->handle);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $param);
+        curl_setopt($handle, CURLOPT_URL, $url);
+        $this->html = curl_exec($handle);
 
         // Log
         if ($this->debug) {
             $this->log('Post: ' . $url . substr($param, 0, 80));
         }
-        if (0 != curl_errno($this->handle)) {
-            $this->log(curl_error($this->handle), 4);
+        if (0 != curl_errno($handle)) {
+            $this->log(curl_error($handle), 4);
         }
 
         return $this->html;
@@ -265,35 +280,40 @@ class Curl
 
     /**
      * Set common options using curl_setopt
+     *
+     * @param   resource    $handle
+     * @return  static
      */
-    public function setoptCommon()
+    protected function setoptCommon($handle)
     {
         $this->setoptCookieFile('');
         $this->setoptUserAgent($this->userAgent);
 
-        curl_setopt($this->handle, CURLOPT_AUTOREFERER, true);
+        curl_setopt($handle, CURLOPT_AUTOREFERER, true);
         // If got http error, report.
-        curl_setopt($this->handle, CURLOPT_FAILONERROR, true);
+        curl_setopt($handle, CURLOPT_FAILONERROR, true);
 
         // CURLOPT_FOLLOWLOCATION cannot set when open_basedir is set.
         // Also safe_mode, which are DEPRECATED in 5.3.0 and REMOVED in 5.4.0.
         if ('' == ini_get('open_basedir')) {
-            curl_setopt($this->handle, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
         }
 
         // Return result instead of display it.
-        curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->handle, CURLOPT_CONNECTTIMEOUT, 300);
-        curl_setopt($this->handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($this->handle, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($this->handle, CURLOPT_TIMEOUT, 300);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 300);
+        curl_setopt($handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($handle, CURLOPT_MAXREDIRS, 10);
+        curl_setopt($handle, CURLOPT_TIMEOUT, 300);
 
         // Accept all supported encoding(identity, deflate, gzip)
         // See CURLOPT_ACCEPT_ENCODING in libcurl
         // Set this to get uncompressed html content
-        curl_setopt($this->handle, CURLOPT_ENCODING, '');
+        curl_setopt($handle, CURLOPT_ENCODING, '');
 
-        curl_setopt($this->handle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+        curl_setopt($handle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+
+        return $this;
     }
 
 
@@ -307,11 +327,13 @@ class Curl
      */
     public function setoptCookieFile($cookieFile = '')
     {
+        $handle = $this->getHandle();
+
         $this->cookieFile = $cookieFile;
 
         if (!empty($cookieFile) && (is_writable($cookieFile))) {
-            curl_setopt($this->handle, CURLOPT_COOKIEFILE, $cookieFile);
-            curl_setopt($this->handle, CURLOPT_COOKIEJAR, $cookieFile);
+            curl_setopt($handle, CURLOPT_COOKIEFILE, $cookieFile);
+            curl_setopt($handle, CURLOPT_COOKIEJAR, $cookieFile);
         }
     }
 
@@ -326,25 +348,27 @@ class Curl
      */
     public function setoptProxy($type, $host, $port, $auth = '')
     {
+        $handle = $this->getHandle();
+
         if (0 == $type) {
             // Some server refuse http proxy tunnel, it's useless settings.
-            //curl_setopt($this->handle, CURLOPT_HTTPPROXYTUNNEL, false);
-            curl_setopt($this->handle, CURLOPT_PROXY, null);
+            //curl_setopt($handle, CURLOPT_HTTPPROXYTUNNEL, false);
+            curl_setopt($handle, CURLOPT_PROXY, null);
 
         } else {
-            //curl_setopt($this->handle, CURLOPT_HTTPPROXYTUNNEL, true);
+            //curl_setopt($handle, CURLOPT_HTTPPROXYTUNNEL, true);
 
-            curl_setopt($this->handle, CURLOPT_PROXY, $host);
+            curl_setopt($handle, CURLOPT_PROXY, $host);
 
             curl_setopt(
-                $this->handle,
+                $handle,
                 CURLOPT_PROXYTYPE,
                 (1 == $type) ? CURLPROXY_HTTP : CURLPROXY_SOCKS5
             );
 
-            curl_setopt($this->handle, CURLOPT_PROXYPORT, $port);
+            curl_setopt($handle, CURLOPT_PROXYPORT, $port);
             if (!empty($auth)) {
-                curl_setopt($this->handle, CURLOPT_PROXYUSERPWD, $auth);
+                curl_setopt($handle, CURLOPT_PROXYUSERPWD, $auth);
             }
         }
     }
@@ -357,8 +381,10 @@ class Curl
      */
     public function setoptReferrer($url = null)
     {
+        $handle = $this->getHandle();
+
         if (!empty($url)) {
-            curl_setopt($this->handle, CURLOPT_REFERER, $url);
+            curl_setopt($handle, CURLOPT_REFERER, $url);
         }
     }
 
@@ -372,8 +398,10 @@ class Curl
      */
     public function setoptSslVerify($enable = true)
     {
-        curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, $enable);
-        curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, $enable);
+        $handle = $this->getHandle();
+
+        curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, $enable);
+        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, $enable);
     }
 
 
@@ -390,10 +418,12 @@ class Curl
             'googlebot' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
         ];
 
+        $handle = $this->getHandle();
+
         if (isset($ua[$userAgent])) {
-            curl_setopt($this->handle, CURLOPT_USERAGENT, $ua[$userAgent]);
+            curl_setopt($handle, CURLOPT_USERAGENT, $ua[$userAgent]);
         } else {
-            curl_setopt($this->handle, CURLOPT_USERAGENT, $userAgent);
+            curl_setopt($handle, CURLOPT_USERAGENT, $userAgent);
         }
     }
 }
