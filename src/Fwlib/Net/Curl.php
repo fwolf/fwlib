@@ -62,8 +62,8 @@ class Curl
     /**
      * Http get method
      *
-     * @param   string  $url    Host address
-     * @param   mixed   $param  Get parameter, can be string or array
+     * @param   string          $url    Host address
+     * @param   string|array    $param  Get parameter
      * @return  string
      */
     public function get($url, $param = null)
@@ -81,14 +81,15 @@ class Curl
         $linker = (false === strpos($url, '?')) ? '?' : '&';
 
         // Parse param, join array and fix linker char with url
-        if (is_array($param) && !empty($param)) {
-            $queryString = '';
-            foreach ($param as $k => $v) {
-                $queryString .= '&' . urlencode($k) . '=' . urlencode($v);
-            }
-            $param = $queryString;
-        }
         if (!empty($param)) {
+            if (is_array($param)) {
+                $queryString = '';
+                foreach ($param as $k => $v) {
+                    $queryString .= '&' . urlencode($k) . '=' . urlencode($v);
+                }
+                $param = $queryString;
+            }
+
             $param{0} = $linker;
         }
 
@@ -247,9 +248,9 @@ class Curl
         if (is_array($params)) {
             $queryString = '';
             foreach ($params as $key => $val) {
-                $queryString .= urlencode($key) . '=' . urlencode($val) . '&';
+                $queryString .=  '&' . urlencode($key) . '=' . urlencode($val);
             }
-            $params = substr($queryString, 0, strlen($queryString) - 1);
+            $params = substr($queryString, 1);
         }
 
         curl_setopt($handle, CURLOPT_POSTFIELDS, $params);
