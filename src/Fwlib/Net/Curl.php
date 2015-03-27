@@ -311,9 +311,6 @@ class Curl
      */
     protected function setoptCommon($handle)
     {
-        $this->setoptCookieFile('');
-        $this->setoptUserAgent($this->userAgent);
-
         curl_setopt($handle, CURLOPT_AUTOREFERER, true);
         // If got http error, report.
         curl_setopt($handle, CURLOPT_FAILONERROR, true);
