@@ -199,34 +199,34 @@ class CurlTest extends PHPUnitTestCase
 
         $cookieFile = vfsStream::newFile('CurlTest/cookies.txt');
         file_put_contents($cookieFile->url(), '', 0644);
-        $curl->setoptCookieFile($cookieFile->url());
+        $curl->setCookieFile($cookieFile->url());
         $this->assertArrayHasKey(
             CURLOPT_COOKIEFILE,
             $curlSetoptMock->getResult()
         );
 
 
-        $curl->setoptProxy(2, 'dummy host', '80', 'u:p');
+        $curl->setProxy(2, 'dummy host', '80', 'u:p');
         $options = $curlSetoptMock->getResult();
         $this->assertEquals(80, $options[CURLOPT_PROXYPORT]);
         $this->assertNotEmpty($options[CURLOPT_PROXYUSERPWD]);
 
-        $curl->setoptProxy(0, 'dummy host', '80', 'u:p');
+        $curl->setProxy(0, 'dummy host', '80', 'u:p');
         $options = $curlSetoptMock->getResult();
         $this->assertEmpty($options[CURLOPT_PROXY]);
 
 
-        $curl->setoptReferrer('dummy referrer');
+        $curl->setReferrer('dummy referrer');
         $options = $curlSetoptMock->getResult();
         $this->assertNotEmpty($options[CURLOPT_REFERER]);
 
 
-        $curl->setoptSslVerify(false);
+        $curl->setSslVerify(false);
         $options = $curlSetoptMock->getResult();
         $this->assertFalse($options[CURLOPT_SSL_VERIFYHOST]);
 
 
-        $curl->setoptUserAgent('unknown agent');
+        $curl->setUserAgent('unknown agent');
         $options = $curlSetoptMock->getResult();
         $this->assertEquals('unknown agent', $options[CURLOPT_USERAGENT]);
 

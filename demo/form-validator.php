@@ -52,7 +52,7 @@ if ('checkAge' == $action) {
  * Prepare FormValidator instance
  **************************************/
 $curl = new Curl;
-$curl->setoptSslverify(false);
+$curl->setSslVerify(false);
 $serviceContainer = TestServiceContainer::getInstance();
 $serviceContainer->register('Curl', $curl);
 

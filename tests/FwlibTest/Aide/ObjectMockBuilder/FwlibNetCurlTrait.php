@@ -39,7 +39,7 @@ trait FwlibNetCurlTrait
             }));
 
         /** @var Curl $mock */
-        $mock->setoptSslVerify(false);
+        $mock->setSslVerify(false);
 
         return $mock;
     }

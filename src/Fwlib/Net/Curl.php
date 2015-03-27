@@ -117,7 +117,7 @@ class Curl
     {
         if (is_null($this->handle)) {
             $this->handle = curl_init();
-            $this->setoptCommon($this->handle);
+            $this->setDefaultOptions($this->handle);
         }
 
         return $this->handle;
@@ -270,6 +270,27 @@ class Curl
 
 
     /**
+     * Set cookie option
+     *
+     * If filename is not given, use default,
+     * If file is given, use & set it as default.
+     *
+     * @param   string  $cookieFile
+     */
+    public function setCookieFile($cookieFile = '')
+    {
+        $handle = $this->getHandle();
+
+        $this->cookieFile = $cookieFile;
+
+        if (!empty($cookieFile) && (is_writable($cookieFile))) {
+            curl_setopt($handle, CURLOPT_COOKIEFILE, $cookieFile);
+            curl_setopt($handle, CURLOPT_COOKIEJAR, $cookieFile);
+        }
+    }
+
+
+    /**
      * Setter of $debug
      *
      * @param   boolean $debug
@@ -284,26 +305,12 @@ class Curl
 
 
     /**
-     * Setter of $logFile
-     *
-     * @param   string $logFile
-     * @return  static
-     */
-    public function setLogFile($logFile)
-    {
-        $this->logFile = $logFile;
-
-        return $this;
-    }
-
-
-    /**
-     * Set common options using curl_setopt
+     * Set default options
      *
      * @param   resource    $handle
      * @return  static
      */
-    protected function setoptCommon($handle)
+    protected function setDefaultOptions($handle)
     {
         curl_setopt($handle, CURLOPT_AUTOREFERER, true);
         // If got http error, report.
@@ -334,23 +341,16 @@ class Curl
 
 
     /**
-     * Set cookie option
+     * Setter of $logFile
      *
-     * If filename is not given, use default,
-     * If file is given, use & set it as default.
-     *
-     * @param   string  $cookieFile
+     * @param   string $logFile
+     * @return  static
      */
-    public function setoptCookieFile($cookieFile = '')
+    public function setLogFile($logFile)
     {
-        $handle = $this->getHandle();
+        $this->logFile = $logFile;
 
-        $this->cookieFile = $cookieFile;
-
-        if (!empty($cookieFile) && (is_writable($cookieFile))) {
-            curl_setopt($handle, CURLOPT_COOKIEFILE, $cookieFile);
-            curl_setopt($handle, CURLOPT_COOKIEJAR, $cookieFile);
-        }
+        return $this;
     }
 
 
@@ -362,7 +362,7 @@ class Curl
      * @param   int     $port
      * @param   string  $auth  [username]:[password]
      */
-    public function setoptProxy($type, $host, $port, $auth = '')
+    public function setProxy($type, $host, $port, $auth = '')
     {
         $handle = $this->getHandle();
 
@@ -395,7 +395,7 @@ class Curl
      *
      * @param   string  $url
      */
-    public function setoptReferrer($url = null)
+    public function setReferrer($url = null)
     {
         $handle = $this->getHandle();
 
@@ -412,7 +412,7 @@ class Curl
      *
      * @param   boolean $enable
      */
-    public function setoptSslVerify($enable = true)
+    public function setSslVerify($enable = true)
     {
         $handle = $this->getHandle();
 
@@ -426,7 +426,7 @@ class Curl
      *
      * @param   string  $userAgent
      */
-    public function setoptUserAgent($userAgent = 'curl')
+    public function setUserAgent($userAgent = 'curl')
     {
         $handle = $this->getHandle();
 
