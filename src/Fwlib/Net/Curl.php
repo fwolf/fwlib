@@ -82,11 +82,11 @@ class Curl
 
         // Parse param, join array and fix linker char with url
         if (is_array($param) && !empty($param)) {
-            $s = '';
+            $queryString = '';
             foreach ($param as $k => $v) {
-                $s .= '&' . urlencode($k) . '=' . urlencode($v);
+                $queryString .= '&' . urlencode($k) . '=' . urlencode($v);
             }
-            $param = $s;
+            $param = $queryString;
         }
         if (!empty($param)) {
             $param{0} = $linker;
@@ -134,9 +134,9 @@ class Curl
     {
         $handle = $this->getHandle();
 
-        $i = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        $code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
 
-        return intval($i);
+        return intval($code);
     }
 
 
@@ -151,9 +151,9 @@ class Curl
     {
         $handle = $this->getHandle();
 
-        $s = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
+        $type = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
 
-        return $s;
+        return $type;
     }
 
 
@@ -233,31 +233,31 @@ class Curl
     /**
      * Http post method
      *
-     * @param   string  $url    Host address
-     * @param   mixed   $param  Post parameter, can be string or array
+     * @param   string          $url    Host address
+     * @param   string|array    $params  Post parameter
      * @return  string
      */
-    public function post($url, $param = '')
+    public function post($url, $params = '')
     {
         $handle = $this->getHandle();
 
         curl_setopt($handle, CURLOPT_POST, true);
 
         // Parse param, convert array to string
-        if (is_array($param)) {
-            $s = '';
-            foreach ($param as $key => $val) {
-                $s .= urlencode($key) . '=' . urlencode($val) . '&';
+        if (is_array($params)) {
+            $queryString = '';
+            foreach ($params as $key => $val) {
+                $queryString .= urlencode($key) . '=' . urlencode($val) . '&';
             }
-            $param = substr($s, 0, strlen($s) - 1);
+            $params = substr($queryString, 0, strlen($queryString) - 1);
         }
 
-        curl_setopt($handle, CURLOPT_POSTFIELDS, $param);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $params);
         curl_setopt($handle, CURLOPT_URL, $url);
         $this->html = curl_exec($handle);
 
         if ($this->debug) {
-            $this->log('Post: ' . $url . substr($param, 0, 80));
+            $this->log('Post: ' . $url . substr($params, 0, 80));
         }
 
         if (0 != curl_errno($handle)) {
