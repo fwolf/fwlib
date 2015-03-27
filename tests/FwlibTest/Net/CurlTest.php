@@ -82,6 +82,34 @@ class CurlTest extends PHPUnitTestCase
     }
 
 
+    public function testLog()
+    {
+        $curl = $this->buildMock();
+        $curl->setDebug(true);
+
+        $curlExecMock = $this->getFunctionMock('curl_exec');
+
+
+        $logFile = vfsStream::newFile('CurlTest/log.txt');
+        file_put_contents($logFile->url(), '', 0644);
+        $curl->setLogFile($logFile->url());
+
+        $curl->get('http://dummy.com/');
+        $this->assertStringEndsWith(
+            "Get: http://dummy.com/\n",
+            file_get_contents($logFile->url())
+        );
+
+
+        $curl->setLogFile('');
+        $this->expectOutputRegex("/Get: http:\\/\\/dummy\\.com\\/\\\n$/");
+        $curl->get('http://dummy.com/');
+
+
+        $curlExecMock->disableAll();
+    }
+
+
     public function testMatch()
     {
         $curl = $this->buildMock();

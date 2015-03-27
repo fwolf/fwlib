@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Net;
 
-use Fwlib\Util\UtilContainerAwareTrait;
+use Fwlib\Util\UtilContainer;
 
 /**
  * Helper class for easy curl usage
@@ -11,9 +11,6 @@ use Fwlib\Util\UtilContainerAwareTrait;
  */
 class Curl
 {
-    use UtilContainerAwareTrait;
-
-
     /**
      * File to save cookie
      *
@@ -22,11 +19,11 @@ class Curl
     protected $cookieFile = '';
 
     /**
-     * Debug mode, will log more information
+     * Debug mode, will log more information, like get/post url
      *
      * @var boolean
      */
-    public $debug = false;
+    protected $debug = false;
 
     /**
      * cURL handle
@@ -50,7 +47,7 @@ class Curl
      *
      * @var string
      */
-    public $logFile = null;
+    protected $logFile = null;
 
     /**
      * User agent profile or raw string
@@ -105,10 +102,10 @@ class Curl
         curl_setopt($handle, CURLOPT_URL, $url . $param);
         $this->html = curl_exec($handle);
 
-        // Log
         if ($this->debug) {
             $this->log('Get: ' . $url . $param);
         }
+
         if (0 != curl_errno($handle)) {
             $this->log(curl_error($handle));
         }
@@ -174,12 +171,12 @@ class Curl
      */
     protected function log($msg)
     {
-        // Prepend msg with timestamp, append with newline
+        // Prepend msg with time, append with newline
         $msg = date('[Y-m-d H:i:s] ') . $msg . PHP_EOL;
 
         if (empty($this->logFile)) {
             // Print
-            $this->getUtilContainer()->getEnv()->ecl($msg);
+            UtilContainer::getInstance()->getEnv()->ecl($msg);
 
         } elseif (is_writable($this->logFile)) {
             // Write to log file
@@ -266,15 +263,43 @@ class Curl
         curl_setopt($handle, CURLOPT_URL, $url);
         $this->html = curl_exec($handle);
 
-        // Log
         if ($this->debug) {
             $this->log('Post: ' . $url . substr($param, 0, 80));
         }
+
         if (0 != curl_errno($handle)) {
             $this->log(curl_error($handle), 4);
         }
 
         return $this->html;
+    }
+
+
+    /**
+     * Setter of $debug
+     *
+     * @param   boolean $debug
+     * @return  static
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $logFile
+     *
+     * @param   string $logFile
+     * @return  static
+     */
+    public function setLogFile($logFile)
+    {
+        $this->logFile = $logFile;
+
+        return $this;
     }
 
 
