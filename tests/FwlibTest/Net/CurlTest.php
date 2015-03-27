@@ -3,6 +3,7 @@ namespace FwlibTest\Net;
 
 use Fwlib\Net\Curl;
 use FwlibTest\Aide\FunctionMockAwareTrait;
+use FwlibTest\Aide\FunctionMockFactory;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -30,6 +31,14 @@ class CurlTest extends PHPUnitTestCase
     public static function setUpBeforeClass()
     {
         vfsStream::setup('CurlTest');
+
+        // Define mock before native function usage
+        $factory = FunctionMockFactory::getInstance();
+        $factory->setNamespace(Curl::class);
+        $factory->get(null, 'curl_exec');
+        $factory->get(null, 'curl_setopt');
+        $factory->get(null, 'curl_errno');
+        $factory->get(null, 'curl_error');
     }
 
 
@@ -41,6 +50,33 @@ class CurlTest extends PHPUnitTestCase
 
         // No query yet
         $this->assertFalse($curl->getLastContentType());
+    }
+
+
+    public function testCurlError()
+    {
+        $curl = $this->buildMock();
+
+        $curlErrnoMock = $this->getFunctionMock('curl_errno');
+        $curlErrorMock = $this->getFunctionMock('curl_error');
+
+        $logFile = vfsStream::newFile('CurlTest/log.txt');
+        file_put_contents($logFile->url(), '', 0644);
+        $curl->setLogFile($logFile->url());
+
+
+        $curlErrnoMock->setResult(CURLE_HTTP_NOT_FOUND);
+        $curlErrorMock->setResult('curl get error');
+        $curl->get('dummy');
+        $curlErrorMock->setResult('curl post error');
+        $curl->post('dummy');
+
+        $errorLog = file_get_contents($logFile->url());
+        $this->assertRegExp("/curl get error\n/", $errorLog);
+        $this->assertRegExp("/curl post error\n/", $errorLog);
+
+
+        $curlErrnoMock->disableAll();
     }
 
 
@@ -102,8 +138,8 @@ class CurlTest extends PHPUnitTestCase
 
 
         $curl->setLogFile('');
-        $this->expectOutputRegex("/Get: http:\\/\\/dummy\\.com\\/\\\n$/");
-        $curl->get('http://dummy.com/');
+        $this->expectOutputRegex("/Post: http:\\/\\/dummy\\.com\\/\\\n$/");
+        $curl->post('http://dummy.com/');
 
 
         $curlExecMock->disableAll();
