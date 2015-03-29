@@ -39,6 +39,10 @@ class ListDtoTest extends PHPUnitTestCase
 
         $listDto->setData([]);
         $this->assertEqualArray([], $listDto->getData());
+
+        $this->assertEquals(-1, $listDto->getTotalRows());
+        $listDto->setTotalRows(42);
+        $this->assertEquals(42, $listDto->getTotalRows());
     }
 
 

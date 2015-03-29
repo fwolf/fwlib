@@ -206,4 +206,16 @@ class ListView
 
         return $this;
     }
+
+
+    /**
+     * @param   int     $totalRows
+     * @return  static
+     */
+    public function setTotalRows($totalRows)
+    {
+        $this->getListDto()->setTotalRows($totalRows);
+
+        return $this;
+    }
 }

@@ -32,6 +32,15 @@ class ListDto
      */
     protected $title = [];
 
+    /**
+     * Total rows of whole list, not just this page
+     *
+     * Value -1 means not set yet, 0 means list contains no data.
+     *
+     * @var int
+     */
+    protected $totalRows = -1;
+
 
     /**
      * @return  \array[]
@@ -48,6 +57,17 @@ class ListDto
     public function getTitle()
     {
         return $this->title;
+    }
+
+
+    /**
+     * Getter of $totalRows
+     *
+     * @return  int
+     */
+    public function getTotalRows()
+    {
+        return $this->totalRows;
     }
 
 
@@ -77,6 +97,20 @@ class ListDto
     public function setTitle(array $title)
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $totalRows
+     *
+     * @param   int $totalRows
+     * @return  static
+     */
+    public function setTotalRows($totalRows)
+    {
+        $this->totalRows = $totalRows;
 
         return $this;
     }
