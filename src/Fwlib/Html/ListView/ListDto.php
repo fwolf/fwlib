@@ -1,10 +1,10 @@
 <?php
 namespace Fwlib\Html\ListView;
 
+use Fwlib\Html\ListView\Exception\InvalidDataException;
+
 /**
  * ListDto
- *
- * @codeCoverageIgnore
  *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -51,9 +51,16 @@ class ListDto
     /**
      * @param   \array[] $data
      * @return  static
+     * @throws  InvalidDataException
      */
-    public function setData($data)
+    public function setData(array $data)
     {
+        if (!is_array(current($data))) {
+            throw new InvalidDataException(
+                'Data need to be 2 dimension array'
+            );
+        }
+
         $this->data = $data;
 
         return $this;
@@ -64,7 +71,7 @@ class ListDto
      * @param   array $title
      * @return  static
      */
-    public function setTitle($title)
+    public function setTitle(array $title)
     {
         $this->title = $title;
 
