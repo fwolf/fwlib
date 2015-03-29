@@ -18,7 +18,7 @@ class ListDto
      *
      * @var array[]
      */
-    protected $data = [];
+    protected $data = null;
 
     /**
      * List title
@@ -56,9 +56,9 @@ class ListDto
      * @return  static
      * @throws  InvalidDataException
      */
-    public function setData(array $data)
+    public function setData($data)
     {
-        if (!is_array(current($data))) {
+        if (!empty($data) && !is_array(current($data))) {
             throw new InvalidDataException(
                 'Data need to be 2 dimension array'
             );

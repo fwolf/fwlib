@@ -33,6 +33,12 @@ class ListDtoTest extends PHPUnitTestCase
         $data = [['foo' => 'Foo'], ['bar' => 'Bar']];
         $listDto->setData($data);
         $this->assertEqualArray($data, $listDto->getData());
+
+        $listDto->setData(null);
+        $this->assertNull($listDto->getData());
+
+        $listDto->setData([]);
+        $this->assertEqualArray([], $listDto->getData());
     }
 
 
