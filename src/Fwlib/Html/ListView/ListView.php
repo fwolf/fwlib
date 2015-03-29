@@ -155,6 +155,8 @@ class ListView
 
 
     /**
+     * Data can be empty, so no type hint in parameter list.
+     *
      * @param   array $listData
      * @return  static
      */
@@ -172,7 +174,7 @@ class ListView
      * @param   FitterInterface $fitter
      * @return  static
      */
-    public function setFitter($fitter)
+    public function setFitter(FitterInterface $fitter)
     {
         $this->fitter = $fitter;
 
@@ -198,7 +200,7 @@ class ListView
      * @param   array $listTitle
      * @return  static
      */
-    public function setTitle($listTitle)
+    public function setTitle(array $listTitle)
     {
         $this->getListDto()->setTitle($listTitle);
 
