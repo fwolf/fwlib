@@ -31,9 +31,48 @@ class ListView
 
 
     /**
+     * @var FitterInterface
+     */
+    protected $fitter;
+
+    /**
      * @var ListDto
      */
     protected $listDto;
+
+
+    /**
+     * Fit data and title
+     *
+     * Skip if their key are same, or either is empty.
+     *
+     * After fit, keys of title and data in {@see $listDto} will be same.
+     *
+     * @return  static
+     */
+    protected function fitTitleAndData()
+    {
+        $listDto = $this->getListDto();
+        $listData = $listDto->getData();
+        $listTitle = $listDto->getTitle();
+
+        if (empty($listData) || empty($listTitle)) {
+            return $this;
+        }
+
+        $dataKeys = array_keys(current($listData));
+        $titleKeys = array_keys($listTitle);
+        if ($dataKeys == $titleKeys) {
+            return $this;
+        }
+
+        $this->getFitter()
+            ->setEmptyFiller($this->getConfig('fitEmptyFiller'))
+            ->setMode($this->getConfig('fitMode'))
+            ->fit($this->listDto);
+
+        return $this;
+    }
 
 
     /**
@@ -62,7 +101,30 @@ class ListView
         return [
             'class'             => 'listView',
             'id'                => 1,
+            /**
+             * @see FitMode
+             */
+            'fitMode'           => FitMode::TO_TITLE,
+            /**
+             * If a value in data is empty, display with this value. Not for
+             * title, which will use field name.
+             * @see Fitter::$emptyFiller
+             */
+            'fitEmptyFiller'    => '&nbsp;',
         ];
+    }
+
+
+    /**
+     * @return  FitterInterface
+     */
+    protected function getFitter()
+    {
+        if (is_null($this->fitter)) {
+            $this->fitter = new Fitter();
+        }
+
+        return $this->fitter;
     }
 
 
@@ -117,6 +179,20 @@ class ListView
     public function setData($listData)
     {
         $this->getListDto()->setData($listData);
+
+        return $this;
+    }
+
+
+    /**
+     * Setter of $fitter
+     *
+     * @param   FitterInterface $fitter
+     * @return  static
+     */
+    public function setFitter($fitter)
+    {
+        $this->fitter = $fitter;
 
         return $this;
     }
