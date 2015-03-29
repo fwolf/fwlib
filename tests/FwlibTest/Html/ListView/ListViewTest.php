@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Html\ListView;
 
+use Fwlib\Html\ListView\ListDto;
 use Fwlib\Html\ListView\ListView;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -30,6 +31,17 @@ class ListViewTest extends PHPUnitTestCase
             'class',
             $this->reflectionCall($listView, 'getDefaultConfigs')
         );
+    }
+
+
+    public function testSetData()
+    {
+        $listView = $this->buildMock();
+
+        $listView->setData([['key' => 'foo'], ['key' => 'bar']], true);
+        /** @var ListDto $listDto */
+        $listDto = $this->reflectionCall($listView, 'getListDto');
+        $this->assertEquals(2, $listDto->getTotalRows());
     }
 
 

@@ -157,12 +157,22 @@ class ListView
     /**
      * Data can be empty, so no type hint in parameter list.
      *
+     * In some case, list is not paged, so total rows can be set automatic by
+     * counting list data.
+     *
      * @param   array $listData
+     * @param   bool  $updateTotalRows
      * @return  static
      */
-    public function setData($listData)
+    public function setData($listData, $updateTotalRows = false)
     {
-        $this->getListDto()->setData($listData);
+        $listDto = $this->getListDto();
+
+        $listDto->setData($listData);
+
+        if ($updateTotalRows) {
+            $listDto->setTotalRows(count($listData));
+        }
 
         return $this;
     }
