@@ -31,6 +31,12 @@ class ListView
 
 
     /**
+     * @var ListDto
+     */
+    protected $listDto;
+
+
+    /**
      * Get element class name
      *
      * @param   string  $name   Empty for root element
@@ -78,6 +84,19 @@ class ListView
 
 
     /**
+     * @return  ListDto
+     */
+    protected function getListDto()
+    {
+        if (is_null($this->listDto)) {
+            $this->listDto = new ListDto();
+        }
+
+        return $this->listDto;
+    }
+
+
+    /**
      * Setter of root class
      *
      * @param   string  $class
@@ -92,6 +111,18 @@ class ListView
 
 
     /**
+     * @param   array $listData
+     * @return  static
+     */
+    public function setData($listData)
+    {
+        $this->getListDto()->setData($listData);
+
+        return $this;
+    }
+
+
+    /**
      * Setter of $id
      *
      * @param   int|string  $identity
@@ -100,6 +131,18 @@ class ListView
     public function setId($identity)
     {
         $this->setConfig('id', $identity);
+
+        return $this;
+    }
+
+
+    /**
+     * @param   array $listTitle
+     * @return  static
+     */
+    public function setTitle($listTitle)
+    {
+        $this->getListDto()->setTitle($listTitle);
 
         return $this;
     }
