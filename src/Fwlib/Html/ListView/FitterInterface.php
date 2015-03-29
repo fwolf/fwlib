@@ -15,6 +15,8 @@ interface FitterInterface
     /**
      * Do fit
      *
+     * After fit, keys of title and data in {@see $listDto} will be same.
+     *
      * @param   ListDto $listDto
      * @return  ListDto Fitted dto
      */

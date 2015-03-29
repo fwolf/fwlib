@@ -39,6 +39,8 @@ class Fitter implements FitterInterface
     /**
      * {@inheritdoc}
      *
+     * Skip if their key are same, or either is empty.
+     *
      * @throws  InvalidFitModeException
      */
     public function fit(ListDto $listDto)
@@ -46,8 +48,16 @@ class Fitter implements FitterInterface
         $listData = $listDto->getData();
         $listTitle = $listDto->getTitle();
 
+        if (empty($listData) || empty($listTitle)) {
+            return $listDto;
+        }
+
         $dataKeys = array_keys(current($listData));
         $titleKeys = array_keys($listTitle);
+
+        if ($dataKeys == $titleKeys) {
+            return $listDto;
+        }
 
         switch ($this->mode) {
             case FitMode::TO_TITLE:

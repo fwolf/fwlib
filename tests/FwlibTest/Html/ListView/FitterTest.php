@@ -184,6 +184,44 @@ class FitterTest extends PHPUnitTestCase
     }
 
 
+    public function testFitWithEmptyOrSame()
+    {
+        $fitter = $this->buildMock();
+
+        $listDto = (new ListDto())->setData([])->setTitle([]);
+
+        $fitter->fit($listDto);
+        $this->assertEqualArray([], $listDto->getData());
+        $this->assertEqualArray([], $listDto->getTitle());
+
+
+        $data = [
+            [
+                'title' => 'tom',
+                'age'   => 20,
+            ],
+            [
+                'title' => 'jack',
+                'age'   => 30,
+            ],
+            [
+                'title' => 'smith',
+                'age'   => 40,
+            ],
+        ];
+        // Key 'credit' is removed.
+        $title = [
+            'title' => 'Name',
+            'age'   => 'Current Age',
+        ];
+        $listDto = (new ListDto())->setData($data)->setTitle($title);
+
+        $fitter->fit($listDto);
+        $this->assertEqualArray($data, $listDto->getData());
+        $this->assertEqualArray($title, $listDto->getTitle());
+    }
+
+
     /**
      * @expectedException \Fwlib\Html\ListView\Exception\InvalidFitModeException
      */

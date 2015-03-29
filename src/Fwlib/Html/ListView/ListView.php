@@ -44,32 +44,14 @@ class ListView
     /**
      * Fit data and title
      *
-     * Skip if their key are same, or either is empty.
-     *
-     * After fit, keys of title and data in {@see $listDto} will be same.
-     *
      * @return  static
      */
     protected function fitTitleAndData()
     {
-        $listDto = $this->getListDto();
-        $listData = $listDto->getData();
-        $listTitle = $listDto->getTitle();
-
-        if (empty($listData) || empty($listTitle)) {
-            return $this;
-        }
-
-        $dataKeys = array_keys(current($listData));
-        $titleKeys = array_keys($listTitle);
-        if ($dataKeys == $titleKeys) {
-            return $this;
-        }
-
         $this->getFitter()
             ->setEmptyFiller($this->getConfig('fitEmptyFiller'))
             ->setMode($this->getConfig('fitMode'))
-            ->fit($this->listDto);
+            ->fit($this->getListDto());
 
         return $this;
     }
