@@ -107,7 +107,7 @@ class FitterTest extends PHPUnitTestCase
         $title = [
             'title' => 'Name',
             'age'   => 'Current Age',
-            'id'    => 'id',  // At last position because it added later
+            'id'    => 'Id',  // At last position because it added later
         ];
         $this->assertEqualArray($title, $listDto->getTitle());
     }
@@ -177,7 +177,7 @@ class FitterTest extends PHPUnitTestCase
             'title'  => 'Name',
             'age'    => 'Current Age',
             'credit' => 'Money',
-            'id'     => 'id',
+            'id'     => 'Id',
         ];
         $this->assertEqualArray($data, $listDto->getData());
         $this->assertEqualArray($title, $listDto->getTitle());

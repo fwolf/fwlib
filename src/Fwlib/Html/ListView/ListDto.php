@@ -23,7 +23,10 @@ class ListDto
     /**
      * List title
      *
-     * Have only 1 dimension, integer or assoc indexed.
+     * Have only 1 dimension, should be assoc indexed.
+     *
+     * If title is integer indexed, the 2nd dimension of data should be
+     * integer indexed too and have same order with title, better not do this.
      *
      * @var array
      */

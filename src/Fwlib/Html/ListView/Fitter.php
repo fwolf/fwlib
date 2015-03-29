@@ -127,18 +127,16 @@ class Fitter implements FitterInterface
     {
         $listTitle = $listDto->getTitle();
 
-        // Title index not in key list
-        foreach ($listTitle as $k => $v) {
-            if (!in_array($k, $keys)) {
-                unset($listTitle[$k]);
-            }
-        }
+        // Title index not in keys list
+        $listTitle = array_intersect_key(
+            $listTitle,
+            array_fill_keys($keys, null)
+        );
 
-        // Key not exist in title
-        foreach ($keys as $k) {
-            if (!isset($listTitle[$k])) {
-                // Title value is same as key
-                $listTitle[$k] = $k;
+        // Add keys not exist in title
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $listTitle)) {
+                $listTitle[$key] = ucfirst($key);
             }
         }
 
