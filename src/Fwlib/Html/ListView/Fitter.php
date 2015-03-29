@@ -91,39 +91,24 @@ class Fitter implements FitterInterface
     {
         $listData = $listDto->getData();
 
-        $keysToAdd = [];
-        $keysToDel = [];
         // Use first row in data as sample, need not scan all rows
         $sampleRow = current($listData);
 
-        // Drop keys not in keys list
-        foreach ((array)$sampleRow as $k => $v) {
-            if (!in_array($k, $keys)) {
-                $keysToDel[] = $k;
-            }
-        }
-        // Add key not exists
-        foreach ($keys as $k) {
-            // isset() will return false if array key exists but value is null
-            if (!array_key_exists($k, $sampleRow)) {
-                $keysToAdd[] = $k;
-            }
-        }
+        $keysToDel = array_diff(array_keys($sampleRow), $keys);
+
+        $keysToAdd = array_diff($keys, array_keys($sampleRow));
 
         if (empty($keysToAdd) && empty($keysToDel)) {
             return;
         }
 
-        foreach ($listData as &$sampleRow) {
-            foreach ((array)$keysToDel as $k) {
-                unset($sampleRow[$k]);
-            }
-
-            foreach ((array)$keysToAdd as $k) {
-                $sampleRow[$k] = $this->emptyFiller;
-            }
+        $deleteDummy = array_fill_keys($keys, null);
+        $addDummy = array_fill_keys($keysToAdd, $this->emptyFiller);
+        foreach ($listData as &$row) {
+            $row = array_intersect_key($row, $deleteDummy);
+            $row = array_merge($row, $addDummy);
         }
-        unset($sampleRow);
+        unset($row);
 
         $listDto->setData($listData);
     }
