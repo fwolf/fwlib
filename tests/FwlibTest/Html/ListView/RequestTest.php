@@ -70,24 +70,6 @@ class RequestTest extends PHPUnitTestCase
     }
 
 
-    public function testAccessors()
-    {
-        $request = $this->buildMock();
-
-        $request->setOrderByDirectionParameter('OD');
-        $this->assertEquals('OD', $request->getOrderByDirectionParameter());
-
-        $request->setOrderByParameter('OB');
-        $this->assertEquals('OB', $request->getOrderByParameter());
-
-        $request->setPageParameter('page');
-        $this->assertEquals('page', $request->getPageParameter());
-
-        $request->setPageSizeParameter('pageSize');
-        $this->assertEquals('pageSize', $request->getPageSizeParameter());
-    }
-
-
     public function testGetBaseUrl()
     {
         $request = $this->buildMock();

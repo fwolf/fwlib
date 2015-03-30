@@ -2,6 +2,7 @@
 namespace Fwlib\Html\ListView;
 
 use Fwlib\Html\ListView\Exception\InvalidRequestSourceException;
+use Fwlib\Html\ListView\Helper\RequestParameterTrait;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -10,6 +11,9 @@ use Fwlib\Util\UtilContainer;
  */
 class Request implements RequestInterface
 {
+    use RequestParameterTrait;
+
+
     /**
      * @var string
      */
@@ -80,24 +84,6 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getOrderByDirectionParameter()
-    {
-        return $this->orderByDirParameter;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrderByParameter()
-    {
-        return $this->orderByParameter;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
     public function getPage()
     {
         $page = intval($this->getRequest($this->getPageParameter(), 1));
@@ -113,27 +99,9 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getPageParameter()
-    {
-        return $this->pageParameter;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
     public function getPageSize()
     {
         return intval($this->getRequest($this->getPageSizeParameter(), -1));
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPageSizeParameter()
-    {
-        return $this->pageSizeParameter;
     }
 
 
@@ -183,50 +151,6 @@ class Request implements RequestInterface
     public function setBaseUrl($baseUrl)
     {
         $this->baseUrl = $baseUrl;
-
-        return $this;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setOrderByDirectionParameter($orderByDirParameter)
-    {
-        $this->orderByDirParameter = $orderByDirParameter;
-
-        return $this;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setOrderByParameter($orderByParameter)
-    {
-        $this->orderByParameter = $orderByParameter;
-
-        return $this;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPageParameter($pageParameter)
-    {
-        $this->pageParameter = $pageParameter;
-
-        return $this;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPageSizeParameter($pageSizeParameter)
-    {
-        $this->pageSizeParameter = $pageSizeParameter;
 
         return $this;
     }
