@@ -5,6 +5,8 @@ use Fwlib\Base\SingleInstanceTrait;
 use Fwlib\Cache\Exception\CacheHandlerNotImplementedException;
 use Fwlib\Cache\Handler\File;
 use Fwlib\Cache\Handler\Memcached;
+use Fwlib\Cache\Handler\MemcachedWithVersion;
+use Fwlib\Cache\Handler\PhpArray;
 use Fwlib\Cache\HandlerInterface as CacheHandlerInterface;
 
 /**
@@ -49,8 +51,8 @@ class HandlerFactory
         return [
             'File'                 => File::class,
             'Memcached'            => Memcached::class,
-            'MemcachedWithVersion' => Memcached::class,
-            'PhpArray'             => '',   // :TODO:
+            'MemcachedWithVersion' => MemcachedWithVersion::class,
+            'PhpArray'             => PhpArray::class,
         ];
     }
 }
