@@ -6,7 +6,7 @@ use Fwlib\Config\ConfigAwareTrait;
 /**
  * ListView
  *
- * Migrate from old ListTable.
+ * Migrate from old ListTable class.
  *
  *
  * Config class and id will be used in html, css and js.
@@ -42,11 +42,11 @@ class ListView
 
 
     /**
-     * Fit data and title
+     * Fit list head and body
      *
      * @return  static
      */
-    protected function fitTitleAndData()
+    protected function fitHeadAndBody()
     {
         $this->getFitter()
             ->setEmptyFiller($this->getConfig('fitEmptyFiller'))
@@ -88,8 +88,8 @@ class ListView
              */
             'fitMode'           => FitMode::TO_TITLE,
             /**
-             * If a value in data is empty, display with this value. Not for
-             * title, which will use field name.
+             * If a value in body is empty, display with this value. Not for
+             * head, which will use field name.
              * @see Fitter::$emptyFiller
              */
             'fitEmptyFiller'    => '&nbsp;',
@@ -141,6 +141,30 @@ class ListView
 
 
     /**
+     * List body can be empty, so no type hint in parameter list.
+     *
+     * In some case, list is not paged, so total rows can be set automatic by
+     * counting rows of list body.
+     *
+     * @param   array $listBody
+     * @param   bool  $updateTotalRows
+     * @return  static
+     */
+    public function setBody($listBody, $updateTotalRows = false)
+    {
+        $listDto = $this->getListDto();
+
+        $listDto->setBody($listBody);
+
+        if ($updateTotalRows) {
+            $listDto->setTotalRows(count($listBody));
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Setter of root class
      *
      * @param   string  $class
@@ -149,30 +173,6 @@ class ListView
     public function setClass($class)
     {
         $this->setConfig('class', $class);
-
-        return $this;
-    }
-
-
-    /**
-     * Data can be empty, so no type hint in parameter list.
-     *
-     * In some case, list is not paged, so total rows can be set automatic by
-     * counting list data.
-     *
-     * @param   array $listData
-     * @param   bool  $updateTotalRows
-     * @return  static
-     */
-    public function setData($listData, $updateTotalRows = false)
-    {
-        $listDto = $this->getListDto();
-
-        $listDto->setData($listData);
-
-        if ($updateTotalRows) {
-            $listDto->setTotalRows(count($listData));
-        }
 
         return $this;
     }
@@ -193,6 +193,18 @@ class ListView
 
 
     /**
+     * @param   array $listHead
+     * @return  static
+     */
+    public function setHead(array $listHead)
+    {
+        $this->getListDto()->setHead($listHead);
+
+        return $this;
+    }
+
+
+    /**
      * Setter of $id
      *
      * @param   int|string  $identity
@@ -201,18 +213,6 @@ class ListView
     public function setId($identity)
     {
         $this->setConfig('id', $identity);
-
-        return $this;
-    }
-
-
-    /**
-     * @param   array $listTitle
-     * @return  static
-     */
-    public function setTitle(array $listTitle)
-    {
-        $this->getListDto()->setTitle($listTitle);
 
         return $this;
     }

@@ -12,8 +12,8 @@ class Fitter implements FitterInterface
     /**
      * Empty filler
      *
-     * In data fit process, newly created key will use this as value. This will
-     * not affect title, which will use key as filler.
+     * In body fit process, newly created key will use this as value. This
+     * will not affect head, which will use key as filler.
      *
      * Default value also set in ListView configs with key 'fitEmptyFiller'.
      *
@@ -45,51 +45,51 @@ class Fitter implements FitterInterface
      */
     public function fit(ListDto $listDto)
     {
-        $listData = $listDto->getData();
-        $listTitle = $listDto->getTitle();
+        $listBody = $listDto->getBody();
+        $listHead = $listDto->getHead();
 
-        if (empty($listData) || empty($listTitle)) {
+        if (empty($listBody) || empty($listHead)) {
             return $listDto;
         }
 
-        $dataKeys = array_keys(current($listData));
-        $titleKeys = array_keys($listTitle);
+        $bodyKeys = array_keys(current($listBody));
+        $headKeys = array_keys($listHead);
 
-        if ($dataKeys == $titleKeys) {
+        if ($bodyKeys == $headKeys) {
             return $listDto;
         }
 
         switch ($this->mode) {
             case FitMode::TO_TITLE:
-                $fittedKeys = $titleKeys;
+                $fittedKeys = $headKeys;
                 break;
 
             case FitMode::TO_DATA:
-                $fittedKeys = $dataKeys;
+                $fittedKeys = $bodyKeys;
                 break;
 
             case FitMode::INTERSECTION:
-                $fittedKeys = array_intersect($titleKeys, $dataKeys);
+                $fittedKeys = array_intersect($headKeys, $bodyKeys);
                 break;
 
             case FitMode::UNION:
                 $fittedKeys =
-                    array_unique(array_merge($titleKeys, $dataKeys));
+                    array_unique(array_merge($headKeys, $bodyKeys));
                 break;
 
             default:
                 throw new InvalidFitModeException;
         }
 
-        $this->fitTitle($listDto, $fittedKeys);
-        $this->fitData($listDto, $fittedKeys);
+        $this->fitHead($listDto, $fittedKeys);
+        $this->fitBody($listDto, $fittedKeys);
 
         return $listDto;
     }
 
 
     /**
-     * Fit each row in data with given keys
+     * Fit each row in body with given keys
      *
      * If row index is not in given keys, it will be dropped. If given keys is
      * not in row index, it will be created with filling value.
@@ -97,12 +97,12 @@ class Fitter implements FitterInterface
      * @param   ListDto $listDto
      * @param   array   $keys
      */
-    protected function fitData(ListDto $listDto, array $keys)
+    protected function fitBody(ListDto $listDto, array $keys)
     {
-        $listData = $listDto->getData();
+        $listBody = $listDto->getBody();
 
-        // Use first row in data as sample, need not scan all rows
-        $sampleRow = current($listData);
+        // Use first row in body as sample, need not scan all rows
+        $sampleRow = current($listBody);
 
         $keysToDel = array_diff(array_keys($sampleRow), $keys);
 
@@ -114,43 +114,43 @@ class Fitter implements FitterInterface
 
         $deleteDummy = array_fill_keys($keys, null);
         $addDummy = array_fill_keys($keysToAdd, $this->emptyFiller);
-        foreach ($listData as &$row) {
+        foreach ($listBody as &$row) {
             $row = array_intersect_key($row, $deleteDummy);
             $row = array_merge($row, $addDummy);
         }
         unset($row);
 
-        $listDto->setData($listData);
+        $listDto->setBody($listBody);
     }
 
 
     /**
-     * Fit title with given keys
+     * Fit head with given keys
      *
-     * Drop title value not in given keys, and create new if given keys is not
-     * exists in title array.
+     * Drop head key not in given keys, and create new if given keys is not
+     * exists in head array.
      *
      * @param   ListDto $listDto
      * @param   array   $keys
      */
-    protected function fitTitle(ListDto $listDto, array $keys)
+    protected function fitHead(ListDto $listDto, array $keys)
     {
-        $listTitle = $listDto->getTitle();
+        $listHead = $listDto->getHead();
 
-        // Title index not in keys list
-        $listTitle = array_intersect_key(
-            $listTitle,
+        // Head index not in keys list
+        $listHead = array_intersect_key(
+            $listHead,
             array_fill_keys($keys, null)
         );
 
-        // Add keys not exist in title
+        // Add keys not exist in head
         foreach ($keys as $key) {
-            if (!array_key_exists($key, $listTitle)) {
-                $listTitle[$key] = ucfirst($key);
+            if (!array_key_exists($key, $listHead)) {
+                $listHead[$key] = ucfirst($key);
             }
         }
 
-        $listDto->setTitle($listTitle);
+        $listDto->setHead($listHead);
     }
 
 

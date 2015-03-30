@@ -4,7 +4,7 @@ namespace Fwlib\Html\ListView;
 /**
  * FitterInterface
  *
- * If column in list data and title does not match, they need to fit to same
+ * If column in list head and body does not match, they need to fit to same
  * columns for output.
  *
  * @copyright   Copyright 2015 Fwolf
@@ -15,7 +15,7 @@ interface FitterInterface
     /**
      * Do fit
      *
-     * After fit, keys of title and data in {@see $listDto} will be same.
+     * After fit, keys of head and body rows in {@see $listDto} will be same.
      *
      * @param   ListDto $listDto
      * @return  ListDto Fitted dto

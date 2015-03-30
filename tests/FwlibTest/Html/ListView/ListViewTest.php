@@ -34,11 +34,11 @@ class ListViewTest extends PHPUnitTestCase
     }
 
 
-    public function testSetData()
+    public function testSetBody()
     {
         $listView = $this->buildMock();
 
-        $listView->setData([['key' => 'foo'], ['key' => 'bar']], true);
+        $listView->setBody([['key' => 'foo'], ['key' => 'bar']], true);
         /** @var ListDto $listDto */
         $listDto = $this->reflectionCall($listView, 'getListDto');
         $this->assertEquals(2, $listDto->getTotalRows());

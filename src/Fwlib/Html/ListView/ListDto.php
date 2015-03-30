@@ -1,7 +1,7 @@
 <?php
 namespace Fwlib\Html\ListView;
 
-use Fwlib\Html\ListView\Exception\InvalidDataException;
+use Fwlib\Html\ListView\Exception\InvalidBodyException;
 
 /**
  * ListDto
@@ -12,25 +12,26 @@ use Fwlib\Html\ListView\Exception\InvalidDataException;
 class ListDto
 {
     /**
-     * List data
+     * List body
      *
      * 2 dim array, 2nd dimension must use assoc index.
      *
      * @var array[]
      */
-    protected $data = null;
+    protected $body = null;
 
     /**
-     * List title
+     * List head
      *
      * Have only 1 dimension, should be assoc indexed.
      *
-     * If title is integer indexed, the 2nd dimension of data should be
-     * integer indexed too and have same order with title, better not do this.
+     * If head is integer indexed, the 2nd dimension of {@see $body} should be
+     * integer indexed too and have same order with head. Better not do this,
+     * use associate index for easier understanding.
      *
      * @var array
      */
-    protected $title = [];
+    protected $head = [];
 
     /**
      * Total rows of whole list, not just this page
@@ -45,18 +46,18 @@ class ListDto
     /**
      * @return  \array[]
      */
-    public function getData()
+    public function getBody()
     {
-        return $this->data;
+        return $this->body;
     }
 
 
     /**
      * @return  array
      */
-    public function getTitle()
+    public function getHead()
     {
-        return $this->title;
+        return $this->head;
     }
 
 
@@ -72,31 +73,31 @@ class ListDto
 
 
     /**
-     * @param   \array[] $data
+     * @param   \array[] $body
      * @return  static
-     * @throws  InvalidDataException
+     * @throws  InvalidBodyException
      */
-    public function setData($data)
+    public function setBody($body)
     {
-        if (!empty($data) && !is_array(current($data))) {
-            throw new InvalidDataException(
-                'Data need to be 2 dimension array'
+        if (!empty($body) && !is_array(current($body))) {
+            throw new InvalidBodyException(
+                'List body need to be 2 dimension array'
             );
         }
 
-        $this->data = $data;
+        $this->body = $body;
 
         return $this;
     }
 
 
     /**
-     * @param   array $title
+     * @param   array $head
      * @return  static
      */
-    public function setTitle(array $title)
+    public function setHead(array $head)
     {
-        $this->title = $title;
+        $this->head = $head;
 
         return $this;
     }

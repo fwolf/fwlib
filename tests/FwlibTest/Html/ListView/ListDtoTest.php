@@ -26,19 +26,19 @@ class ListDtoTest extends PHPUnitTestCase
     {
         $listDto = $this->buildMock();
 
-        $title = ['Foo', 'Bar'];
-        $listDto->setTitle($title);
-        $this->assertEqualArray($title, $listDto->getTitle());
+        $head = ['Foo', 'Bar'];
+        $listDto->setHead($head);
+        $this->assertEqualArray($head, $listDto->getHead());
 
-        $data = [['foo' => 'Foo'], ['bar' => 'Bar']];
-        $listDto->setData($data);
-        $this->assertEqualArray($data, $listDto->getData());
+        $body = [['foo' => 'Foo'], ['bar' => 'Bar']];
+        $listDto->setBody($body);
+        $this->assertEqualArray($body, $listDto->getBody());
 
-        $listDto->setData(null);
-        $this->assertNull($listDto->getData());
+        $listDto->setBody(null);
+        $this->assertNull($listDto->getBody());
 
-        $listDto->setData([]);
-        $this->assertEqualArray([], $listDto->getData());
+        $listDto->setBody([]);
+        $this->assertEqualArray([], $listDto->getBody());
 
         $this->assertEquals(-1, $listDto->getTotalRows());
         $listDto->setTotalRows(42);
@@ -47,13 +47,13 @@ class ListDtoTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException \Fwlib\Html\ListView\Exception\InvalidDataException
+     * @expectedException \Fwlib\Html\ListView\Exception\InvalidBodyException
      */
-    public function testSetInvalidData()
+    public function testSetInvalidBody()
     {
         $listDto = $this->buildMock();
 
         // Only 1 dimension, need 2 dimension
-        $listDto->setData(['foo' => 'Foo', 'bar' => 'Bar']);
+        $listDto->setBody(['foo' => 'Foo', 'bar' => 'Bar']);
     }
 }

@@ -34,7 +34,7 @@ class FitterTest extends PHPUnitTestCase
     {
         $listDto = new ListDto();
 
-        $listDto->setData([
+        $listDto->setBody([
             [
                 'id'    => '1',
                 'title' => 'tom',
@@ -52,7 +52,7 @@ class FitterTest extends PHPUnitTestCase
             ],
         ]);
 
-        $listDto->setTitle([
+        $listDto->setHead([
             'title'  => 'Name',
             'age'    => 'Current Age',
             'credit' => 'Money',
@@ -71,7 +71,7 @@ class FitterTest extends PHPUnitTestCase
             ->fit($listDto);
 
         // Key 'id' is removed.
-        $data = [
+        $body = [
             [
                 'title' => 'tom',
                 'age'   => 20,
@@ -86,12 +86,12 @@ class FitterTest extends PHPUnitTestCase
             ],
         ];
         // Key 'credit' is removed.
-        $title = [
+        $head = [
             'title' => 'Name',
             'age'   => 'Current Age',
         ];
-        $this->assertEqualArray($data, $listDto->getData());
-        $this->assertEqualArray($title, $listDto->getTitle());
+        $this->assertEqualArray($body, $listDto->getBody());
+        $this->assertEqualArray($head, $listDto->getHead());
     }
 
 
@@ -104,12 +104,12 @@ class FitterTest extends PHPUnitTestCase
             ->fit($listDto);
 
         // Key 'id' is added, 'credit' is removed.
-        $title = [
+        $head = [
             'title' => 'Name',
             'age'   => 'Current Age',
             'id'    => 'Id',  // At last position because it added later
         ];
-        $this->assertEqualArray($title, $listDto->getTitle());
+        $this->assertEqualArray($head, $listDto->getHead());
     }
 
 
@@ -122,7 +122,7 @@ class FitterTest extends PHPUnitTestCase
             ->fit($listDto);
 
         // Key 'id' is removed, 'credit' is added.
-        $data = [
+        $body = [
             [
                 'title'  => 'tom',
                 'age'    => 20,
@@ -139,7 +139,7 @@ class FitterTest extends PHPUnitTestCase
                 'credit' => '&amp;',
             ],
         ];
-        $this->assertEqualArray($data, $listDto->getData());
+        $this->assertEqualArray($body, $listDto->getBody());
     }
 
 
@@ -152,7 +152,7 @@ class FitterTest extends PHPUnitTestCase
             ->fit($listDto);
 
         // Key 'credit' is added.
-        $data = [
+        $body = [
             [
                 'id'     => '1',
                 'title'  => 'tom',
@@ -173,14 +173,14 @@ class FitterTest extends PHPUnitTestCase
             ],
         ];
         // Key 'id' is added.
-        $title = [
+        $head = [
             'title'  => 'Name',
             'age'    => 'Current Age',
             'credit' => 'Money',
             'id'     => 'Id',
         ];
-        $this->assertEqualArray($data, $listDto->getData());
-        $this->assertEqualArray($title, $listDto->getTitle());
+        $this->assertEqualArray($body, $listDto->getBody());
+        $this->assertEqualArray($head, $listDto->getHead());
     }
 
 
@@ -188,14 +188,14 @@ class FitterTest extends PHPUnitTestCase
     {
         $fitter = $this->buildMock();
 
-        $listDto = (new ListDto())->setData([])->setTitle([]);
+        $listDto = (new ListDto())->setBody([])->setHead([]);
 
         $fitter->fit($listDto);
-        $this->assertEqualArray([], $listDto->getData());
-        $this->assertEqualArray([], $listDto->getTitle());
+        $this->assertEqualArray([], $listDto->getBody());
+        $this->assertEqualArray([], $listDto->getHead());
 
 
-        $data = [
+        $body = [
             [
                 'title' => 'tom',
                 'age'   => 20,
@@ -210,15 +210,15 @@ class FitterTest extends PHPUnitTestCase
             ],
         ];
         // Key 'credit' is removed.
-        $title = [
+        $head = [
             'title' => 'Name',
             'age'   => 'Current Age',
         ];
-        $listDto = (new ListDto())->setData($data)->setTitle($title);
+        $listDto = (new ListDto())->setBody($body)->setHead($head);
 
         $fitter->fit($listDto);
-        $this->assertEqualArray($data, $listDto->getData());
-        $this->assertEqualArray($title, $listDto->getTitle());
+        $this->assertEqualArray($body, $listDto->getBody());
+        $this->assertEqualArray($head, $listDto->getHead());
     }
 
 
