@@ -43,30 +43,4 @@ class ListViewTest extends PHPUnitTestCase
         $listDto = $this->reflectionCall($listView, 'getListDto');
         $this->assertEquals(2, $listDto->getTotalRows());
     }
-
-
-    public function testSetGetClassAndId()
-    {
-        $listView = $this->buildMock();
-
-        $listView->setClass('fooList');
-        $this->assertEquals(
-            'fooList',
-            $this->reflectionCall($listView, 'getClass')
-        );
-        $this->assertEquals(
-            'fooList__pager',
-            $this->reflectionCall($listView, 'getClass', ['pager'])
-        );
-
-        $listView->setId(42);
-        $this->assertEquals(
-            'fooList-42',
-            $this->reflectionCall($listView, 'getId')
-        );
-        $this->assertEquals(
-            'fooList-42__pager',
-            $this->reflectionCall($listView, 'getId', ['pager'])
-        );
-    }
 }
