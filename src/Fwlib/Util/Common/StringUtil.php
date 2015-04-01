@@ -122,13 +122,27 @@ class StringUtil
      * @param   int     $width      Must > 0
      * @param   string  $spacer     Which char is used to indent
      * @param   string  $lineEnding Original string's line ending
+     * @param   bool    $fillEmptyLine  Add spacer to empty line ?
      * @return  string
      */
-    public function indent($str, $width, $spacer = ' ', $lineEnding = "\n")
-    {
+    public function indent(
+        $str,
+        $width,
+        $spacer = ' ',
+        $lineEnding = "\n",
+        $fillEmptyLine = false
+    ) {
         $space = str_repeat($spacer, $width);
 
-        $str = $space . str_replace($lineEnding, $lineEnding . $space, $str);
+        $lines = explode($lineEnding, $str);
+
+        array_walk($lines, function(&$value) use ($fillEmptyLine, $space) {
+            if ($fillEmptyLine || !empty($value)) {
+                $value = $space . $value;
+            }
+        });
+
+        $str = implode($lineEnding, $lines);
 
         return $str;
     }
@@ -146,13 +160,15 @@ class StringUtil
      * @param   int     $width      Must > 0
      * @param   string  $spacer     Which char is used to indent
      * @param   string  $lineEnding Original string's line ending
+     * @param   bool    $fillEmptyLine  Add spacer to empty line ?
      * @return  string
      */
     public function indentHtml(
         $html,
         $width,
         $spacer = ' ',
-        $lineEnding = "\n"
+        $lineEnding = "\n",
+        $fillEmptyLine = false
     ) {
         // Find textarea start point
         $i = stripos($html, '<textarea>');
@@ -168,7 +184,8 @@ class StringUtil
                 $htmlBefore,
                 $width,
                 $spacer,
-                $lineEnding
+                $lineEnding,
+                $fillEmptyLine
             );
 
             // Find textarea end point
@@ -187,10 +204,15 @@ class StringUtil
                     $htmlAfter,
                     $width,
                     $spacer,
-                    $lineEnding
+                    $lineEnding,
+                    $fillEmptyLine
                 );
-                // Remove leading space
-                $htmlAfter = substr($htmlAfter, 2);
+                // Remove leading space except start with new line
+                if ($fillEmptyLine ||
+                    substr($htmlAfter, 0, strlen($lineEnding)) != $lineEnding
+                ) {
+                    $htmlAfter = substr($htmlAfter, $width);
+                }
 
                 $html = substr($html, 0, $i);
             }

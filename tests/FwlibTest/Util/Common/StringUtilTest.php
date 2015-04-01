@@ -122,9 +122,26 @@ class StringUtilTest extends PHPUnitTestCase
     {
         $stringUtil = $this->buildMock();
 
-        $x = "  foo\n  bar";
-        $y = "    foo\n    bar";
-        $this->assertEquals($y, $stringUtil->indent($x, 2));
+        $before = "  foo\n  bar";
+        $after = "    foo\n    bar";
+        $this->assertEquals($after, $stringUtil->indent($before, 2));
+
+        // The empty line will not be inserted space
+        $before = "  foo
+
+  bar";
+        $after = "    foo
+
+    bar";
+        $this->assertEquals($after, $stringUtil->indent($before, 2));
+
+        // The empty line will be inserted space
+        $before = "  foo\n\n  bar";
+        $after = "    foo\n  \n    bar";
+        $this->assertEquals(
+            $after,
+            $stringUtil->indent($before, 2, ' ', "\n", true)
+        );
     }
 
 
@@ -135,12 +152,12 @@ class StringUtilTest extends PHPUnitTestCase
         $x = "  <textarea>
 foo
   bar
-</textarea>
+</textarea> <b></b>
 <hr />";
         $y = "    <textarea>
 foo
   bar
-</textarea>
+</textarea> <b></b>
   <hr />";
         $this->assertEquals($y, $stringUtil->indentHtml($x, 2));
 
