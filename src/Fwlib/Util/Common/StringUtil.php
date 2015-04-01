@@ -115,8 +115,8 @@ class StringUtil
      *
      * Commonly used in generate and combine html, fix indents.
      *
-     * The $indentChar should consider width equals = 1, if not, the real
-     * indent width is mb_strwidth($indentChar) * $width .
+     * The $spacer should have width 1, if not, the real indent width is
+     * mb_strwidth($spacer) * $width .
      *
      * @param   string  $str
      * @param   int     $width      Must > 0
