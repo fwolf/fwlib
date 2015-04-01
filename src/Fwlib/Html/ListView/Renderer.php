@@ -3,6 +3,7 @@ namespace Fwlib\Html\ListView;
 
 use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Html\ListView\Helper\ClassAndIdConfigTrait;
+use Fwlib\Util\UtilContainer;
 
 /**
  * List Renderer
@@ -44,23 +45,30 @@ class Renderer implements RendererInterface
         $class = $this->getClass();
         $rootId = $this->getId();
 
-        $topPager = '<!-- top pager -->';
-        $head = '<!-- head -->';
-        $body = '<!-- body -->';
-        $bottomPager = '<!-- bottom pager -->';
+        $parts = [];
+
+        if ($this->getConfig('showTopPager')) {
+            $parts[] = '<!-- top pager -->';
+        }
+
+        $parts[] = '<!-- head -->';
+        $parts[] = '<!-- body -->';
+
+        if ($this->getConfig('showBottomPager')) {
+            $parts[] = '<!-- bottom pager -->';
+        }
+
+        $partsHtml = implode("\n\n", $parts);
+
+        $stringUtil = UtilContainer::getInstance()->getString();
+        $partsHtml = $stringUtil->indentHtml($partsHtml, 2);
 
         $html = "
 {$this->preContent}
 
 <div class='$class' id='$rootId'>
 
-  $topPager
-
-  $head
-
-  $body
-
-  $bottomPager
+$partsHtml
 
 </div>
 

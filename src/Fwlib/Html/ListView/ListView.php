@@ -54,6 +54,7 @@ class ListView
         return [
             'class'             => 'listView',
             'id'                => 1,
+
             /**
              * @see FitMode
              */
@@ -64,6 +65,9 @@ class ListView
              * @see Fitter::$emptyFiller
              */
             'fitEmptyFiller'    => '&nbsp;',
+
+            'showTopPager'      => false,
+            'showBottomPager'   => true,
         ];
     }
 

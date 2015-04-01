@@ -35,6 +35,8 @@ class RendererTest extends PHPUnitTestCase
 
         $renderer->setPreContent('<!-- pre content -->');
         $renderer->setPostContent('<!-- post content -->');
+        $renderer->setConfig('showTopPager', true);
+        $renderer->setConfig('showBottomPager', true);
 
         $html = "
 <!-- pre content -->
