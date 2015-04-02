@@ -10,6 +10,15 @@ use Fwlib\Html\ListView\Helper\ClassAndIdConfigTrait;
  * Migrate from old ListTable class.
  *
  *
+ * This class is also main injection/config entrance.
+ *
+ * If user need customize fitter, request or even renderer, they can make
+ * different implement and inject in here.
+ *
+ * Some class used here also have their own configs, which can be change here
+ * too. Although these configs are not include in default configs of this class,
+ * they will be set to used class and take action there.
+ *
  * @copyright   Copyright 2003-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
