@@ -82,6 +82,12 @@ trait UrlGeneratorTrait
     {
         $components = $this->urlComponents;
         $arrayUtil = UtilContainer::getInstance()->getArray();
+
+        $host = $arrayUtil->getIdx($components, 'host', '');
+        if (empty($host)) {
+            return '';
+        }
+
         $url = '';
 
         $url .= array_key_exists('scheme', $components)
@@ -95,7 +101,7 @@ trait UrlGeneratorTrait
                 . '@'
             : '';
 
-        $url .= $arrayUtil->getIdx($components, 'host', '');
+        $url .= $host;
 
         $url .= $arrayUtil->getIdx($components, 'path', '/');
 

@@ -101,6 +101,9 @@ class UrlGeneratorTraitTest extends PHPUnitTestCase
         $urlGenerator->setParameter('foo', 'bar');
         $url = 'http://username:password@hostname/path?arg=value&foo=bar#anchor';
         $this->assertEquals($url, $urlGenerator->getFullUrl());
+
+        $urlGenerator->setFullUrl('');
+        $this->assertEquals('', $urlGenerator->getFullUrl());
     }
 
 
