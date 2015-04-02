@@ -71,8 +71,7 @@ class Renderer implements RendererInterface
             $parts[] = $this->getPager('top');
         }
 
-        $parts[] = '<!-- head -->';
-        $parts[] = '<!-- body -->';
+        $parts[] = $this->getListTable();
 
         if ($this->getConfig('showBottomPager')) {
             $parts[] = $this->getPager('bottom');
@@ -92,6 +91,17 @@ $partsHtml
 {$this->postContent}";
 
         return $html;
+    }
+
+
+    /**
+     * Get list html except pager
+     *
+     * @return  string
+     */
+    protected function getListTable()
+    {
+        return '<!-- table -->';
     }
 
 

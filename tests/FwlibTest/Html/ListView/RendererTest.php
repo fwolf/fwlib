@@ -37,8 +37,12 @@ class RendererTest extends PHPUnitTestCase
         /** @var MockObject|Renderer $renderer */
         $renderer = $this->getMock(
             Renderer::class,
-            ['getPager']
+            ['getListTable', 'getPager']
         );
+
+        $renderer->expects($this->any())
+            ->method('getListTable')
+            ->willReturn('<!-- table -->');
 
         $renderer->expects($this->any())
             ->method('getPager')
@@ -60,9 +64,7 @@ class RendererTest extends PHPUnitTestCase
 
   <!-- top pager -->
 
-  <!-- head -->
-
-  <!-- body -->
+  <!-- table -->
 
   <!-- bottom pager -->
 
