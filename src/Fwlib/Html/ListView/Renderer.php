@@ -63,8 +63,6 @@ class Renderer implements RendererInterface
         $rootClass = $this->getClass();
         $rootId = $this->getId();
 
-        $stringUtil = UtilContainer::getInstance()->getString();
-
         $parts = [];
 
         if ($this->getConfig('showTopPager')) {
@@ -77,8 +75,7 @@ class Renderer implements RendererInterface
             $parts[] = $this->getPager('bottom');
         }
 
-        $partsHtml = implode("\n\n", $parts);
-        $partsHtml = $stringUtil->indentHtml($partsHtml, 2);
+        $partsHtml = '  ' . implode("\n\n  ", $parts);
 
         $html = "{$this->preContent}
 
