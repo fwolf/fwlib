@@ -101,7 +101,12 @@ class Request implements RequestInterface
      */
     public function getPageSize()
     {
-        return intval($this->getRequest($this->getPageSizeParameter(), -1));
+        return intval(
+            $this->getRequest(
+                $this->getPageSizeParameter(),
+                ListView::PAGE_SIZE_NOT_SET
+            )
+        );
     }
 
 

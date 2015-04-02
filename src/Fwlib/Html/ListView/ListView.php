@@ -17,6 +17,13 @@ class ListView
 {
     use ClassAndIdConfigTrait;
     use ConfigAwareTrait;
+    use RequestAwareTrait;
+
+
+    /**
+     * Return value for pageSize not set in request
+     */
+    const PAGE_SIZE_NOT_SET = -1;
 
 
     /**
@@ -68,6 +75,9 @@ class ListView
 
             'showTopPager'      => false,
             'showBottomPager'   => true,
+
+            // Default/failsafe, MUST set a positive value
+            'pageSize'          => 10,
         ];
     }
 
@@ -95,6 +105,21 @@ class ListView
         }
 
         return $this->listDto;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     *
+     * Default return a {@see Request} instance.
+     */
+    protected function getRequest()
+    {
+        if (is_null($this->request)) {
+            $this->request = new Request;
+        }
+
+        return $this->request;
     }
 
 

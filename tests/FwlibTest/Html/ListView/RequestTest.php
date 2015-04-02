@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Html\ListView;
 
+use Fwlib\Html\ListView\ListView;
 use Fwlib\Html\ListView\Request;
 use Fwlib\Html\ListView\RequestSource;
 use Fwlib\Util\Common\HttpUtil;
@@ -118,10 +119,13 @@ class RequestTest extends PHPUnitTestCase
 
         $request->expects($this->any())
             ->method('getRequest')
-            ->willReturnOnConsecutiveCalls('20', '-1');
+            ->willReturnOnConsecutiveCalls('20', ListView::PAGE_SIZE_NOT_SET);
 
         $this->assertEquals(20, $request->getPageSize());
-        $this->assertEquals(-1, $request->getPageSize());
+        $this->assertEquals(
+            ListView::PAGE_SIZE_NOT_SET,
+            $request->getPageSize()
+        );
     }
 
 
