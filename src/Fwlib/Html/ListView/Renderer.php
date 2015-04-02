@@ -142,10 +142,8 @@ $partsHtml
         $spacer = $this->getConfig('pagerTextSpacer');
         $linkHtml = '';
         foreach ($pageUrls as $title => $url) {
-            $linkHtml .= "<a href='" . $url . "'>$title</a>" . $spacer . "\n";
+            $linkHtml .= "  <a href='" . $url . "'>$title</a>" . $spacer . "\n";
         }
-        $stringUtil = UtilContainer::getInstance()->getString();
-        $linkHtml = $stringUtil->indent($linkHtml, 2);
 
         $summaryHtml = '  ' . str_replace(
             ['{totalRows}', '{pageSize}', '{page}', '{maxPage}'],
@@ -157,6 +155,7 @@ $partsHtml
             ->getFullUrl();
         $formHtml =
             $this->getPagerJumpForm($formUrl, $page, $maxPage, $pageParameter);
+        $stringUtil = UtilContainer::getInstance()->getString();
         $formHtml = $stringUtil->indent($formHtml, 2);
 
         $pagerClass = $this->getClass("pager");
