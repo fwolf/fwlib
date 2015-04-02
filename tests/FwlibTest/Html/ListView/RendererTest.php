@@ -75,6 +75,38 @@ class RendererTest extends PHPUnitTestCase
     }
 
 
+    public function testGetListTable()
+    {
+        /** @var MockObject|Renderer $renderer */
+        $renderer = $this->getMock(
+            Renderer::class,
+            ['getListHead', 'getListBody']
+        );
+
+        $renderer->expects($this->any())
+            ->method('getListHead')
+            ->willReturn("<thead>\n</thead>");
+
+        $renderer->expects($this->any())
+            ->method('getListBody')
+            ->willReturn("<tbody>\n</tbody>");
+
+        $renderer->setClass('listTable')->setId(1);
+
+        $html = "<table class='listTable__table' id='listTable-1__table'>
+  <thead>
+  </thead>
+
+  <tbody>
+  </tbody>
+</table>";
+        $this->assertEquals(
+            $html,
+            $this->reflectionCall($renderer, 'getListTable')
+        );
+    }
+
+
     public function testGetPager()
     {
         /** @var MockObject|Renderer $renderer */

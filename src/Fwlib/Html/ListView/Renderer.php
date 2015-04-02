@@ -92,13 +92,57 @@ $partsHtml
 
 
     /**
+     * Get body part of list table
+     *
+     * @return  string
+     */
+    protected function getListBody()
+    {
+        $html = "<tbody>
+</tbody>";
+
+        return $html;
+    }
+
+
+    /**
+     * Get head part of list table
+     *
+     * @return  string
+     */
+    protected function getListHead()
+    {
+        $html = "<thead>
+</thead>";
+
+        return $html;
+    }
+
+
+    /**
      * Get list html except pager
      *
      * @return  string
      */
     protected function getListTable()
     {
-        return '<!-- table -->';
+        $tableClass = $this->getClass('table');
+        $tableId = $this->getId('table');
+
+        $head = $this->getListHead();
+        $body = $this->getListBody();
+
+        $stringUtil = UtilContainer::getInstance()->getString();
+        $head = $stringUtil->indent($head, 2);
+        $body = $stringUtil->indent($body, 2);
+
+        $html = "<table class='$tableClass' id='$tableId'>
+$head
+
+$body
+</table>";
+
+        return $html;
     }
 
 
