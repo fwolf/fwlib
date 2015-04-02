@@ -75,6 +75,33 @@ class RendererTest extends PHPUnitTestCase
     }
 
 
+    public function testGetListHead()
+    {
+        $renderer = $this->buildMock();
+
+        $renderer->setConfig('thAppend', ['foo' => 'nowrap']);
+
+        $listDto = (new ListDto())->setHead([
+            'dummy' => 'Dummy',
+            'foo'   => 'Foo',
+            'bar'   => 'Bar',
+        ]);
+        $renderer->setListDto($listDto);
+
+        $html = "<thead>
+  <tr class='listTable__table__head__tr'>
+    <th id='listTable-1__table__head__dummy'>Dummy</th>
+    <th id='listTable-1__table__head__foo' nowrap>Foo</th>
+    <th id='listTable-1__table__head__bar'>Bar</th>
+  </tr>
+</thead>";
+        $this->assertEquals(
+            $html,
+            $this->reflectionCall($renderer, 'getListHead')
+        );
+    }
+
+
     public function testGetListTable()
     {
         /** @var MockObject|Renderer $renderer */

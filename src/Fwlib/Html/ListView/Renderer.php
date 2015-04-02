@@ -48,6 +48,19 @@ class Renderer implements RendererInterface
             'pagerTextJump2'      => '页',
             'pagerTextJumpButton' => '转',
             'pagerTextSpacer'     => " | ",
+
+            /**
+             * Append raw string to td/th/tr tag in list table, eg:
+             * nowrap='nowrap'. Notice the trAppend will only apply to list
+             * body, not list head. The thAppend and tdAppend is assoc indexed
+             * same with head/body, and trAppend is int indexed, match with
+             * the row number in this page, start from 0.
+             *
+             * This for back compatible, if possible, use CSS instead.
+             */
+            'tdAppend' => [],
+            'thAppend' => [],
+            'trAppend' => [],
         ];
     }
 
@@ -112,7 +125,27 @@ $partsHtml
      */
     protected function getListHead()
     {
+        $thHtml = '';
+        $thAppendConfig = $this->getConfig('thAppend');
+
+        foreach ($this->getListDto()->getHead() as $key => $value) {
+            $thId = $this->getId("table__head__$key");
+
+            $thAppend = array_key_exists($key, $thAppendConfig)
+                ? $thAppendConfig[$key] : '';
+
+            if (!empty($thAppend)) {
+                $thAppend = ' ' . ltrim($thAppend);
+            }
+
+            $thHtml .= "    <th id='$thId'{$thAppend}>$value</th>\n";
+        }
+
+        $trClass = $this->getClass('table__head__tr');
+
         $html = "<thead>
+  <tr class='$trClass'>
+$thHtml  </tr>
 </thead>";
 
         return $html;
