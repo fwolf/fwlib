@@ -18,6 +18,7 @@ class Renderer implements RendererInterface
     use ConfigAwareTrait;
     use ListDtoAwareTrait;
     use RequestAwareTrait;
+    use RowRendererAwareTrait;
 
 
     /**
@@ -29,11 +30,6 @@ class Renderer implements RendererInterface
      * @var string
      */
     protected $preContent = null;
-
-    /**
-     * @var callable
-     */
-    protected $rowRenderer = null;
 
 
     /**
@@ -272,17 +268,6 @@ $partsHtml
     public function setPreContent($preContent)
     {
         $this->preContent = $preContent;
-
-        return $this;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setRowRenderer(callable $renderer)
-    {
-        $this->rowRenderer = $renderer;
 
         return $this;
     }
