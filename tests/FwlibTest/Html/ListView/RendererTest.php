@@ -75,6 +75,74 @@ class RendererTest extends PHPUnitTestCase
     }
 
 
+    public function testGetListBody()
+    {
+        $renderer = $this->buildMock();
+
+        $renderer->setConfig('trAppend', [1 => "dir='ltr'"]);
+        $renderer->setConfig('tdAppend', ['foo' => 'nowrap']);
+
+        $listDto = (new ListDto())->setBody([
+            [
+                'dummy' => 'Dummy1',
+                'foo'   => 'Foo1',
+                'bar'   => 'Bar1',
+            ],
+            [
+                'dummy' => 'Dummy2',
+                'foo'   => 'Foo2',
+                'bar'   => 'Bar2',
+            ],
+            [
+                'dummy' => 'Dummy3',
+                'foo'   => 'Foo3',
+                'bar'   => 'Bar3',
+            ],
+        ]);
+        $renderer->setListDto($listDto);
+
+        $html = "<tbody>
+  <tr class='listTable__table__body__tr'>
+    <td class='listTable__table__body__td__dummy' id='listTable-1__table__body__td__dummy--0'>
+      Dummy1
+    </td>
+    <td class='listTable__table__body__td__foo' id='listTable-1__table__body__td__foo--0' nowrap>
+      Foo1
+    </td>
+    <td class='listTable__table__body__td__bar' id='listTable-1__table__body__td__bar--0'>
+      Bar1
+    </td>
+  </tr>
+  <tr class='listTable__table__body__tr' dir='ltr'>
+    <td class='listTable__table__body__td__dummy' id='listTable-1__table__body__td__dummy--1'>
+      Dummy2
+    </td>
+    <td class='listTable__table__body__td__foo' id='listTable-1__table__body__td__foo--1' nowrap>
+      Foo2
+    </td>
+    <td class='listTable__table__body__td__bar' id='listTable-1__table__body__td__bar--1'>
+      Bar2
+    </td>
+  </tr>
+  <tr class='listTable__table__body__tr'>
+    <td class='listTable__table__body__td__dummy' id='listTable-1__table__body__td__dummy--2'>
+      Dummy3
+    </td>
+    <td class='listTable__table__body__td__foo' id='listTable-1__table__body__td__foo--2' nowrap>
+      Foo3
+    </td>
+    <td class='listTable__table__body__td__bar' id='listTable-1__table__body__td__bar--2'>
+      Bar3
+    </td>
+  </tr>
+</tbody>";
+        $this->assertEquals(
+            $html,
+            $this->reflectionCall($renderer, 'getListBody')
+        );
+    }
+
+
     public function testGetListHead()
     {
         $renderer = $this->buildMock();

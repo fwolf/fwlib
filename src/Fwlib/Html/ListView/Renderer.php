@@ -111,7 +111,42 @@ $partsHtml
      */
     protected function getListBody()
     {
+        $trAppendConfig = $this->getConfig('trAppend');
+        $tdAppendConfig = $this->getConfig('tdAppend');
+
+        $trClass = $this->getClass('table__body__tr');
+
+        $stringUtil = UtilContainer::getInstance()->getString();
+
+        $rowsHtml = '';
+        foreach ($this->getListDto()->getBody() as $rowId => $row) {
+            $trAppend = array_key_exists($rowId, $trAppendConfig)
+                ? ' ' . ltrim($trAppendConfig[$rowId]) : '';
+
+            $tdHtml = '';
+            foreach ($row as $key => $value) {
+                $tdClass = $this->getClass("table__body__td__{$key}");
+                $tdId = $this->getId("table__body__td__{$key}--{$rowId}");
+
+                $tdAppend = array_key_exists($key, $tdAppendConfig)
+                    ? ' ' . ltrim($tdAppendConfig[$key]) : '';
+
+                $tdHtml .= "<td class='$tdClass' id='$tdId'" . $tdAppend . ">
+  $value
+</td>
+";
+            }
+
+            $tdHtml = rtrim($stringUtil->indent($tdHtml, 2));
+            $rowsHtml .= "<tr class='$trClass'" . $trAppend . ">
+$tdHtml
+</tr>
+";
+        }
+
+        $rowsHtml = rtrim($stringUtil->indent($rowsHtml, 2));
         $html = "<tbody>
+$rowsHtml
 </tbody>";
 
         return $html;
@@ -138,7 +173,7 @@ $partsHtml
                 $thAppend = ' ' . ltrim($thAppend);
             }
 
-            $thHtml .= "    <th id='$thId'{$thAppend}>$value</th>\n";
+            $thHtml .= "    <th id='$thId'" . $thAppend . ">$value</th>\n";
         }
 
         $trClass = $this->getClass('table__head__tr');
