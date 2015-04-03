@@ -33,11 +33,40 @@ class Renderer implements RendererInterface
 
 
     /**
+     * Add order by text to list head title
+     *
+     * @param   string  $key
+     * @param   string  $value
+     */
+    protected function addOrderByText($key, $value)
+    {
+        $orderBy = $this->getRequest()->getOrderBy();
+
+        if (empty($orderBy) || !isset($orderBy[$key])) {
+            return $value;
+        }
+
+        $orderByDirection = strtoupper($orderBy[$key]);
+        $orderByText = ('ASC' == $orderByDirection)
+            ? $this->getConfig('orderByTextAsc')
+            : $this->getConfig('orderByTextDesc');
+
+        return $value . $orderByText;
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     protected function getDefaultConfigs()
     {
         return [
+            /**
+             * Text display after head title, if order by assigned
+             */
+            'orderByTextAsc'    => '↑',
+            'orderByTextDesc'   => '↓',
+
             'pagerTextFirstPage'  => '首页',
             'pagerTextPrevPage'   => '上一页',
             'pagerTextNextPage'   => '下一页',
@@ -172,6 +201,8 @@ $rowsHtml
             if (!empty($thAppend)) {
                 $thAppend = ' ' . ltrim($thAppend);
             }
+
+            $value = $this->addOrderByText($key, $value);
 
             $thHtml .= "    <th id='$thId'" . $thAppend . ">$value</th>\n";
         }

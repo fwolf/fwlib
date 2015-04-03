@@ -32,6 +32,28 @@ class RendererTest extends PHPUnitTestCase
     }
 
 
+    public function testAddOrderByText()
+    {
+        $renderer = $this->buildMock();
+        $renderer->setConfig('orderByTextAsc', '[Ascending]');
+
+        $request = $this->getMock(Request::class, ['getOrderBy']);
+        $request->expects($this->any())
+            ->method('getOrderBy')
+            ->willReturnOnConsecutiveCalls(null, ['foo' => 'asc']);
+        $renderer->setRequest($request);
+
+        $this->assertEquals(
+            'head',
+            $this->reflectionCall($renderer, 'addOrderByText', ['foo', 'head'])
+        );
+        $this->assertEquals(
+            'head[Ascending]',
+            $this->reflectionCall($renderer, 'addOrderByText', ['foo', 'head'])
+        );
+    }
+
+
     public function testGetHtml()
     {
         /** @var MockObject|Renderer $renderer */
@@ -146,8 +168,10 @@ class RendererTest extends PHPUnitTestCase
     public function testGetListHead()
     {
         $renderer = $this->buildMock();
-
         $renderer->setConfig('thAppend', ['foo' => 'nowrap']);
+
+        $request = $this->getMock(Request::class, []);
+        $renderer->setRequest($request);
 
         $listDto = (new ListDto())->setHead([
             'dummy' => 'Dummy',
