@@ -1,8 +1,8 @@
 <?php
 namespace FwlibTest\Aide;
 
-use malkusch\phpmock\Mock;
-use malkusch\phpmock\MockBuilder;
+use phpmock\Mock;
+use phpmock\MockBuilder;
 
 /**
  * Wrapper of phpmock Mock
