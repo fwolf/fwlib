@@ -114,7 +114,7 @@ $partsHtml
         $trAppendConfig = $this->getConfig('trAppend');
         $tdAppendConfig = $this->getConfig('tdAppend');
 
-        $trClass = $this->getClass('table__body__tr');
+        $trClass = $this->getClass('body__tr');
 
         $stringUtil = UtilContainer::getInstance()->getString();
 
@@ -125,8 +125,8 @@ $partsHtml
 
             $tdHtml = '';
             foreach ($row as $key => $value) {
-                $tdClass = $this->getClass("table__body__td__{$key}");
-                $tdId = $this->getId("table__body__td__{$key}--{$rowId}");
+                $tdClass = $this->getClass("td__{$key}");
+                $tdId = $this->getId("td__{$key}--{$rowId}");
 
                 $tdAppend = array_key_exists($key, $tdAppendConfig)
                     ? ' ' . ltrim($tdAppendConfig[$key]) : '';
@@ -164,7 +164,7 @@ $rowsHtml
         $thAppendConfig = $this->getConfig('thAppend');
 
         foreach ($this->getListDto()->getHead() as $key => $value) {
-            $thId = $this->getId("table__head__$key");
+            $thId = $this->getId("th__$key");
 
             $thAppend = array_key_exists($key, $thAppendConfig)
                 ? $thAppendConfig[$key] : '';
@@ -176,7 +176,7 @@ $rowsHtml
             $thHtml .= "    <th id='$thId'" . $thAppend . ">$value</th>\n";
         }
 
-        $trClass = $this->getClass('table__head__tr');
+        $trClass = $this->getClass('head__tr');
 
         $html = "<thead>
   <tr class='$trClass'>

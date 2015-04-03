@@ -102,36 +102,36 @@ class RendererTest extends PHPUnitTestCase
         $renderer->setListDto($listDto);
 
         $html = "<tbody>
-  <tr class='listTable__table__body__tr'>
-    <td class='listTable__table__body__td__dummy' id='listTable-1__table__body__td__dummy--0'>
+  <tr class='listTable__body__tr'>
+    <td class='listTable__td__dummy' id='listTable-1__td__dummy--0'>
       Dummy1
     </td>
-    <td class='listTable__table__body__td__foo' id='listTable-1__table__body__td__foo--0' nowrap>
+    <td class='listTable__td__foo' id='listTable-1__td__foo--0' nowrap>
       Foo1
     </td>
-    <td class='listTable__table__body__td__bar' id='listTable-1__table__body__td__bar--0'>
+    <td class='listTable__td__bar' id='listTable-1__td__bar--0'>
       Bar1
     </td>
   </tr>
-  <tr class='listTable__table__body__tr' dir='ltr'>
-    <td class='listTable__table__body__td__dummy' id='listTable-1__table__body__td__dummy--1'>
+  <tr class='listTable__body__tr' dir='ltr'>
+    <td class='listTable__td__dummy' id='listTable-1__td__dummy--1'>
       Dummy2
     </td>
-    <td class='listTable__table__body__td__foo' id='listTable-1__table__body__td__foo--1' nowrap>
+    <td class='listTable__td__foo' id='listTable-1__td__foo--1' nowrap>
       Foo2
     </td>
-    <td class='listTable__table__body__td__bar' id='listTable-1__table__body__td__bar--1'>
+    <td class='listTable__td__bar' id='listTable-1__td__bar--1'>
       Bar2
     </td>
   </tr>
-  <tr class='listTable__table__body__tr'>
-    <td class='listTable__table__body__td__dummy' id='listTable-1__table__body__td__dummy--2'>
+  <tr class='listTable__body__tr'>
+    <td class='listTable__td__dummy' id='listTable-1__td__dummy--2'>
       Dummy3
     </td>
-    <td class='listTable__table__body__td__foo' id='listTable-1__table__body__td__foo--2' nowrap>
+    <td class='listTable__td__foo' id='listTable-1__td__foo--2' nowrap>
       Foo3
     </td>
-    <td class='listTable__table__body__td__bar' id='listTable-1__table__body__td__bar--2'>
+    <td class='listTable__td__bar' id='listTable-1__td__bar--2'>
       Bar3
     </td>
   </tr>
@@ -157,10 +157,10 @@ class RendererTest extends PHPUnitTestCase
         $renderer->setListDto($listDto);
 
         $html = "<thead>
-  <tr class='listTable__table__head__tr'>
-    <th id='listTable-1__table__head__dummy'>Dummy</th>
-    <th id='listTable-1__table__head__foo' nowrap>Foo</th>
-    <th id='listTable-1__table__head__bar'>Bar</th>
+  <tr class='listTable__head__tr'>
+    <th id='listTable-1__th__dummy'>Dummy</th>
+    <th id='listTable-1__th__foo' nowrap>Foo</th>
+    <th id='listTable-1__th__bar'>Bar</th>
   </tr>
 </thead>";
         $this->assertEquals(
