@@ -66,9 +66,9 @@ class Request implements RequestInterface
      */
     public function getOrderBy()
     {
-        $orderBy = $this->getRequest($this->getOrderByParameter());
+        $key = $this->getRequest($this->getOrderByParameter());
 
-        if (empty($orderBy)) {
+        if (empty($key)) {
             return null;
         }
 
@@ -77,7 +77,7 @@ class Request implements RequestInterface
 
         $direction = strtoupper($direction);
 
-        return [$orderBy => $direction];
+        return [$key => $direction];
     }
 
 
