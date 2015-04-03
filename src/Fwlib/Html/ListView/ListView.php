@@ -27,6 +27,7 @@ class ListView
     use ClassAndIdConfigTrait;
     use ConfigAwareTrait;
     use RequestAwareTrait;
+    use RowAdjusterAwareTrait;
 
 
     /**

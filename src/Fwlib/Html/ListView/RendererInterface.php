@@ -58,14 +58,12 @@ interface RendererInterface
     public function setPreContent($preContent);
 
     /**
-     * Setter of row renderer
+     * Setter of row adjuster
      *
-     * Most list need different row render style, can transfer in by closure.
+     * $adjuster takes row array as parameter, return adjusted row array.
      *
-     * $renderer takes row array as parameter, return rendered row array.
-     *
-     * @param   callable    $renderer
+     * @param   callable    $adjuster
      * @return  static
      */
-    public function setRowRenderer(callable $renderer);
+    public function setRowAdjuster(callable $adjuster);
 }

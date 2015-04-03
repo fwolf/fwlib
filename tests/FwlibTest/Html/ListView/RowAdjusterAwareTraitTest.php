@@ -1,7 +1,7 @@
 <?php
 namespace FwlibTest\Html\ListView;
 
-use Fwlib\Html\ListView\RowRendererAwareTrait;
+use Fwlib\Html\ListView\RowAdjusterAwareTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -9,14 +9,14 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class RowRendererAwareTraitTest extends PHPUnitTestCase
+class RowAdjusterAwareTraitTest extends PHPUnitTestCase
 {
     /**
-     * @return MockObject | RowRendererAwareTrait
+     * @return MockObject | RowAdjusterAwareTrait
      */
     protected function buildMock()
     {
-        $mock = $this->getMockBuilder(RowRendererAwareTrait::class)
+        $mock = $this->getMockBuilder(RowAdjusterAwareTrait::class)
             ->setMethods(null)
             ->getMockForTrait();
 
@@ -26,11 +26,11 @@ class RowRendererAwareTraitTest extends PHPUnitTestCase
 
     public function test()
     {
-        $rowRendererAware = $this->buildMock();
+        $rowAdjusterAware = $this->buildMock();
 
-        $rowRendererAware->setRowRenderer('substr');
+        $rowAdjusterAware->setRowAdjuster('substr');
         $this->assertTrue(is_callable(
-            $this->reflectionCall($rowRendererAware, 'getRowRenderer')
+            $this->reflectionCall($rowAdjusterAware, 'getRowAdjuster')
         ));
     }
 }

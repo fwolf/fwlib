@@ -18,7 +18,7 @@ class Renderer implements RendererInterface
     use ConfigAwareTrait;
     use ListDtoAwareTrait;
     use RequestAwareTrait;
-    use RowRendererAwareTrait;
+    use RowAdjusterAwareTrait;
 
 
     /**
