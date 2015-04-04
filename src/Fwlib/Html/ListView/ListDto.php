@@ -34,19 +34,19 @@ class ListDto
     protected $head = [];
 
     /**
-     * Total rows of whole list, not just this page
+     * Row count of whole list, not just this page
      *
-     * Value {@see ListView::TOTAL_ROWS_NOT_SET} means not set yet, 0 means
+     * Value {@see ListView::ROW_COUNT_NOT_SET} means not set yet, 0 means
      * list contains no data.
      *
-     * Total rows can set through:
-     *  - {@see ListView::setTotalRows()}
-     *  - {@see setTotalRows()}
-     *  - {@see ListView::setBody()} with $updateTotalRows parameter
+     * Row count can be changed by:
+     *  - {@see setRowCount()}
+     *  - {@see ListView::setRowCount()}
+     *  - {@see ListView::setBody()} with $updateRowCount parameter
      *
      * @var int
      */
-    protected $totalRows = ListView::TOTAL_ROWS_NOT_SET;
+    protected $rowCount = ListView::ROW_COUNT_NOT_SET;
 
 
     /**
@@ -68,13 +68,13 @@ class ListDto
 
 
     /**
-     * Getter of $totalRows
+     * Getter of $rowCount
      *
      * @return  int
      */
-    public function getTotalRows()
+    public function getRowCount()
     {
-        return $this->totalRows;
+        return $this->rowCount;
     }
 
 
@@ -110,14 +110,14 @@ class ListDto
 
 
     /**
-     * Setter of $totalRows
+     * Setter of $rowCount
      *
-     * @param   int $totalRows
+     * @param   int $rowCount
      * @return  static
      */
-    public function setTotalRows($totalRows)
+    public function setRowCount($rowCount)
     {
-        $this->totalRows = $totalRows;
+        $this->rowCount = $rowCount;
 
         return $this;
     }

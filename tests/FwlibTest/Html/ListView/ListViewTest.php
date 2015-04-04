@@ -41,6 +41,6 @@ class ListViewTest extends PHPUnitTestCase
         $listView->setBody([['key' => 'foo'], ['key' => 'bar']], true);
         /** @var ListDto $listDto */
         $listDto = $this->reflectionCall($listView, 'getListDto');
-        $this->assertEquals(2, $listDto->getTotalRows());
+        $this->assertEquals(2, $listDto->getRowCount());
     }
 }

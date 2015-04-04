@@ -250,7 +250,7 @@ class RendererTest extends PHPUnitTestCase
         $renderer->setRequest($request);
 
         $listDto = new ListDto;
-        $listDto->setTotalRows(42);
+        $listDto->setRowCount(42);
         $renderer->setListDto($listDto);
 
         $html = "<div class='listTable__pager' id='listTable-1__pager--top'>

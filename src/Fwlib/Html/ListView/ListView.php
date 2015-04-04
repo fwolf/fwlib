@@ -38,7 +38,7 @@ class ListView
     /**
      * Value for total rows not set
      */
-    const TOTAL_ROWS_NOT_SET = -1;
+    const ROW_COUNT_NOT_SET = -1;
 
 
     /**
@@ -145,17 +145,17 @@ class ListView
      * counting rows of list body.
      *
      * @param   array $listBody
-     * @param   bool  $updateTotalRows
+     * @param   bool  $updateRowCount
      * @return  static
      */
-    public function setBody($listBody, $updateTotalRows = false)
+    public function setBody($listBody, $updateRowCount = false)
     {
         $listDto = $this->getListDto();
 
         $listDto->setBody($listBody);
 
-        if ($updateTotalRows) {
-            $listDto->setTotalRows(count($listBody));
+        if ($updateRowCount) {
+            $listDto->setRowCount(count($listBody));
         }
 
         return $this;
@@ -189,12 +189,12 @@ class ListView
 
 
     /**
-     * @param   int     $totalRows
+     * @param   int     $rowCount
      * @return  static
      */
-    public function setTotalRows($totalRows)
+    public function setRowCount($rowCount)
     {
-        $this->getListDto()->setTotalRows($totalRows);
+        $this->getListDto()->setRowCount($rowCount);
 
         return $this;
     }

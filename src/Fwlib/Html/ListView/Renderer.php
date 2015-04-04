@@ -72,7 +72,7 @@ class Renderer implements RendererInterface
             'pagerTextNextPage'   => '下一页',
             'pagerTextLastPage'   => '尾页',
             'pagerTextSummary'    =>
-                '共{totalRows}条信息，每页显示{pageSize}条，当前为第{page}/{maxPage}页',
+                '共{rowCount}条信息，每页显示{pageSize}条，当前为第{page}/{maxPage}页',
             'pagerTextJump1'      => '转到第',
             'pagerTextJump2'      => '页',
             'pagerTextJumpButton' => '转',
@@ -257,8 +257,8 @@ $body
         $listDto = $this->getListDto();
 
         $pageSize = $this->getSafePageSize();
-        $totalRows = $listDto->getTotalRows();
-        $maxPage = ceil($totalRows / $pageSize);
+        $rowCount = $listDto->getRowCount();
+        $maxPage = ceil($rowCount / $pageSize);
         $page = $this->getSafePage($maxPage);
 
         $urlGenerator = new UrlGenerator();
@@ -292,8 +292,8 @@ $body
         }
 
         $summaryHtml = '  ' . str_replace(
-            ['{totalRows}', '{pageSize}', '{page}', '{maxPage}'],
-            [$totalRows, $pageSize, $page, $maxPage],
+            ['{rowCount}', '{pageSize}', '{page}', '{maxPage}'],
+            [$rowCount, $pageSize, $page, $maxPage],
             $this->getConfig('pagerTextSummary')
         ) . $spacer;
 
