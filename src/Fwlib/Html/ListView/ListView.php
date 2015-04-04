@@ -35,6 +35,11 @@ class ListView
      */
     const PAGE_SIZE_NOT_SET = -1;
 
+    /**
+     * Value for total rows not set
+     */
+    const TOTAL_ROWS_NOT_SET = -1;
+
 
     /**
      * @var FitterInterface

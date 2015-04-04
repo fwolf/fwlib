@@ -36,11 +36,17 @@ class ListDto
     /**
      * Total rows of whole list, not just this page
      *
-     * Value -1 means not set yet, 0 means list contains no data.
+     * Value {@see ListView::TOTAL_ROWS_NOT_SET} means not set yet, 0 means
+     * list contains no data.
+     *
+     * Total rows can set through:
+     *  - {@see ListView::setTotalRows()}
+     *  - {@see setTotalRows()}
+     *  - {@see ListView::setBody()} with $updateTotalRows parameter
      *
      * @var int
      */
-    protected $totalRows = -1;
+    protected $totalRows = ListView::TOTAL_ROWS_NOT_SET;
 
 
     /**
