@@ -56,14 +56,4 @@ interface RendererInterface
      * @return  static
      */
     public function setPreContent($preContent);
-
-    /**
-     * Setter of row adjuster
-     *
-     * $adjuster takes row array as parameter, return adjusted row array.
-     *
-     * @param   callable    $adjuster
-     * @return  static
-     */
-    public function setRowAdjuster(callable $adjuster);
 }

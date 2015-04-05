@@ -4,18 +4,18 @@ namespace Fwlib\Html\ListView;
 /**
  * RowAdjusterAwareTrait
  *
- * List body data are retrieved from model, may need adjust before display,
- * this trait provide a callable to do it. The callable is usually a closure,
- * take single list body row array as parameter, and return modified array.
- * Although html code may be applied to row or cell data, this is different with
- * render from list body to output html, row adjuster will only change value
- * which will be displayed in td of final html.
+ * After list body data are retrieved from backend, they may need adjust
+ * before display, by adjuster. Adjuster take single list body row array as
+ * parameter, and return modified array. Although html code may be applied to
+ * cell value, layout of list structure will not be changed, this is different
+ * with render, which build list structure with adjusted value.
  *
  * @see Renderer::getListBody()
  *
  *
- * Row adjuster is not a class instance, it is used in {@see Renderer} and can
- * also be injected from {@see ListView}.
+ * Row adjuster is usually closure, for convenience, as every list are
+ * different, and implement an interface for that is expensive. Adjuster can
+ * be injected to {@see ListView}.
  *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
