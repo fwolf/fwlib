@@ -283,7 +283,14 @@ class Curl
             curl_close($this->handle);
             $this->handle = null;
 
-            // Initialize job wll be done when {@see getHandle()}.
+            $this->getHandle();
+
+            // Re-assign options
+            if (!is_null($this->cookieFile)) {
+                $this->setCookieFile($this->cookieFile);
+            }
+
+            // More option to set ?
         }
 
         return $this;

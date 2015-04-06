@@ -195,6 +195,7 @@ class CurlTest extends PHPUnitTestCase
         $curlSetoptMock = $this->getFunctionMock('curl_setopt');
 
         $curl = $this->buildMock();
+        $curl->setCookieFile('dummy/cookie/file');
         $oldHandle = $curl->getHandle();
 
         $curl->renewHandle();
