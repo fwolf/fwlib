@@ -270,6 +270,27 @@ class Curl
 
 
     /**
+     * Renew handle
+     *
+     * This is useful when cookie file is used, and want to reload cookies,
+     * eg: after login, reload cookie then they will be used in next operation.
+     *
+     * @return  static
+     */
+    public function renewHandle()
+    {
+        if (!is_null($this->handle)) {
+            curl_close($this->handle);
+            $this->handle = null;
+
+            // Initialize job wll be done when {@see getHandle()}.
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Set cookie option
      *
      * If filename is not given, use default,

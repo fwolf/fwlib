@@ -190,6 +190,22 @@ class CurlTest extends PHPUnitTestCase
     }
 
 
+    public function testRenewHandle()
+    {
+        $curlSetoptMock = $this->getFunctionMock('curl_setopt');
+
+        $curl = $this->buildMock();
+        $oldHandle = $curl->getHandle();
+
+        $curl->renewHandle();
+        $newHandle = $curl->getHandle();
+
+        $this->assertNotEquals($oldHandle, $newHandle);
+
+        $curlSetoptMock->disableAll();
+    }
+
+
     public function testSetOptions()
     {
         $curl = $this->buildMock();
