@@ -113,7 +113,7 @@ class Curl
      *
      * @return  resource
      */
-    protected function getHandle()
+    public function getHandle()
     {
         if (is_null($this->handle)) {
             $this->handle = curl_init();
