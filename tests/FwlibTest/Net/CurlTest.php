@@ -183,7 +183,7 @@ class CurlTest extends PHPUnitTestCase
 
         $options = $curlSetoptMock->getResult();
         $this->assertEquals('http://dummy.com/?Foo=1', $options[CURLOPT_URL]);
-        $this->assertEquals('Bar=2', $options[CURLOPT_POSTFIELDS]);
+        $this->assertEquals(['Bar' => 2], $options[CURLOPT_POSTFIELDS]);
 
 
         $curlExecMock->disableAll();
