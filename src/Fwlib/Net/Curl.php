@@ -257,6 +257,11 @@ class Curl
         curl_setopt($handle, CURLOPT_URL, $url);
         $this->html = curl_exec($handle);
 
+        if (!empty($params)) {
+            $linker = (false === strpos($url, '?')) ? '?' : '&';
+            $params = $linker . $params;
+        }
+
         if ($this->debug) {
             $this->log('Post: ' . $url . substr($params, 0, 80));
         }
