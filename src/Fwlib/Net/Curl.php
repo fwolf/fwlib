@@ -248,7 +248,7 @@ class Curl
         curl_setopt($handle, CURLOPT_URL, $url);
         $this->html = curl_exec($handle);
 
-        if (!empty($params) && is_array($params)) {
+        if (is_array($params)) {
             $params = implode('&', array_keys($params));
         }
         $linker = (false === strpos($url, '?')) ? '?' : '&';
