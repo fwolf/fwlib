@@ -252,7 +252,7 @@ class Curl
             $params = implode('&', array_keys($params));
         }
         $linker = (false === strpos($url, '?')) ? '?' : '&';
-        $params = $linker . ltrim($params, '&');
+        $params = rtrim($linker . ltrim($params, '&'), '?&');
 
         if ($this->debug) {
             $this->log('Post: ' . $url . $params);
