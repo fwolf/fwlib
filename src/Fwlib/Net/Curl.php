@@ -235,35 +235,27 @@ class Curl
      * Http post method
      *
      * @param   string          $url    Host address
-     * @param   string|array    $params  Post parameter
+     * @param   string|array    $params Post parameter, prefer array
      * @return  string
      */
-    public function post($url, $params = '')
+    public function post($url, $params = [])
     {
         $handle = $this->getHandle();
 
         curl_setopt($handle, CURLOPT_POST, true);
 
-        // Parse param, convert array to string
-        if (is_array($params)) {
-            $queryString = '';
-            foreach ($params as $key => $val) {
-                $queryString .=  '&' . urlencode($key) . '=' . urlencode($val);
-            }
-            $params = substr($queryString, 1);
-        }
-
         curl_setopt($handle, CURLOPT_POSTFIELDS, $params);
         curl_setopt($handle, CURLOPT_URL, $url);
         $this->html = curl_exec($handle);
 
-        if (!empty($params)) {
-            $linker = (false === strpos($url, '?')) ? '?' : '&';
-            $params = $linker . $params;
+        if (!empty($params) && is_array($params)) {
+            $params = implode('&', array_keys($params));
         }
+        $linker = (false === strpos($url, '?')) ? '?' : '&';
+        $params = $linker . ltrim($params, '&');
 
         if ($this->debug) {
-            $this->log('Post: ' . $url . substr($params, 0, 80));
+            $this->log('Post: ' . $url . $params);
         }
 
         if (0 != curl_errno($handle)) {
