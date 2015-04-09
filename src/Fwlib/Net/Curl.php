@@ -359,7 +359,13 @@ class Curl
         // Set this to get uncompressed html content
         curl_setopt($handle, CURLOPT_ENCODING, '');
 
-        curl_setopt($handle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+        // Cipher list depends on curl lib use OpenSSL or NSS module
+        // @see https://github.com/PayU/openpayu_php/issues/38
+        // Wrong cipher will got error: Unknown cipher in list: ...
+        $cipher = ('NSS' == substr(curl_version()['ssl_version'], 0, 3))
+            ? 'rsa_aes_128_sha'
+            : 'TLSv1';
+        curl_setopt($handle, CURLOPT_SSL_CIPHER_LIST, $cipher);
 
         return $this;
     }
