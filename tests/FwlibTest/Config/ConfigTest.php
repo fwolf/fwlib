@@ -131,9 +131,6 @@ class ConfigTest extends PHPUnitTestCase
                 ],
             ],
         ];
-        $this->assertEqualArray(
-            $expectedResult,
-            $this->reflectionGet($config, 'configs')
-        );
+        $this->assertEqualArray($expectedResult, $config->getAll());
     }
 }

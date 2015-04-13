@@ -30,13 +30,21 @@ class ConfigAwareTraitTest extends PHPUnitTestCase
     {
         $configAware = $this->buildMock();
 
-        $configAware->setConfigs([ 'prefix.key1'   => 10,]);
+        $configAware->setConfigs(['prefix.key1'   => 10,]);
         $this->assertEquals(10, $configAware->getConfig('prefix.key1'));
 
         $configAware->setConfig('prefix.key2', 20);
         $this->assertEquals(
             ['key1' => 10, 'key2' => 20],
             $configAware->getConfig('prefix')
+        );
+
+        $this->assertEqualArray(
+            ['prefix' => [
+                'key1' => 10,
+                'key2' => 20,
+            ]],
+            $configAware->getConfigs()
         );
     }
 }

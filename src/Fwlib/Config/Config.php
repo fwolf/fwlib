@@ -104,6 +104,19 @@ class Config implements \ArrayAccess
 
 
     /**
+     * Get all configs as array
+     *
+     * Note: Configs maybe parsed to dimensions.
+     *
+     * @return  array
+     */
+    public function getAll()
+    {
+        return $this->configs;
+    }
+
+
+    /**
      * Reset all config and set new
      *
      * @param   array   $configData

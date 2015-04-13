@@ -60,6 +60,17 @@ trait ConfigAwareTrait
 
 
     /**
+     * Get all configs
+     *
+     * @return  array
+     */
+    public function getConfigs()
+    {
+        return $this->getConfigInstance()->getAll();
+    }
+
+
+    /**
      * Get default configs
      *
      * Will be loaded when get config instance, child class can extend to add
