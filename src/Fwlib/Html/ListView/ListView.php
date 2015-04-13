@@ -26,7 +26,9 @@ class ListView
 {
     use ClassAndIdConfigTrait;
     use ConfigAwareTrait;
+    use RendererAwareTrait;
     use RequestAwareTrait;
+    use RetrieverAwareTrait;
     use RowDecoratorAwareTrait;
 
 
@@ -53,16 +55,46 @@ class ListView
 
 
     /**
-     * Fit list head and body
+     * Decorate list rows
      *
+     * @param   ListDto $listDto
      * @return  static
      */
-    protected function fitHeadAndBody()
+    protected function decorateRows(ListDto $listDto)
+    {
+        $rowCount = $listDto->getRowCount();
+
+        if (!(self::ROW_COUNT_NOT_SET == $rowCount || 0 == $rowCount)) {
+            $rowDecorator = $this->getRowDecorator();
+
+            if (!is_null($rowDecorator)) {
+                $rows = $listDto->getBody();
+
+                $newRows = [];
+                foreach ($rows as $row) {
+                    $newRows[] = $rowDecorator($row);
+                }
+
+                $listDto->setBody($newRows);
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Fit list head and body
+     *
+     * @param   ListDto $listDto
+     * @return  static
+     */
+    protected function fitHeadAndBody(ListDto $listDto)
     {
         $this->getFitter()
             ->setEmptyFiller($this->getConfig('fitEmptyFiller'))
             ->setMode($this->getConfig('fitMode'))
-            ->fit($this->getListDto());
+            ->fit($listDto);
 
         return $this;
     }
@@ -98,6 +130,30 @@ class ListView
 
 
     /**
+     * Try fill data and return ListDto
+     *
+     * @return  ListDto
+     */
+    protected function getFilledListDto()
+    {
+        $listDto = $this->getListDto();
+        $configs = $this->getConfigs();
+
+        if (self::ROW_COUNT_NOT_SET == $listDto->getRowCount()) {
+            $retriever = $this->getRetriever();
+            if (!is_null($retriever)) {
+                $retriever->setConfigs($configs);
+
+                $listDto->setBody($retriever->getListBody());
+                $listDto->setRowCount($retriever->getRowCount());
+            }
+        }
+
+        return $listDto;
+    }
+
+
+    /**
      * @return  FitterInterface
      */
     protected function getFitter()
@@ -107,6 +163,23 @@ class ListView
         }
 
         return $this->fitter;
+    }
+
+
+    /**
+     * Get html output
+     *
+     * @return  string
+     */
+    public function getHtml()
+    {
+        $listDto = $this->getFilledListDto();
+
+        $this->fitHeadAndBody($listDto);
+
+        $this->decorateRows($listDto);
+
+        return $this->render($listDto);
     }
 
 
@@ -126,6 +199,21 @@ class ListView
     /**
      * {@inheritdoc}
      *
+     * Default return a {@see Renderer} instance.
+     */
+    protected function getRenderer()
+    {
+        if (is_null($this->renderer)) {
+            $this->renderer = new Renderer;
+        }
+
+        return $this->renderer;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     *
      * Default return a {@see Request} instance.
      */
     protected function getRequest()
@@ -135,6 +223,24 @@ class ListView
         }
 
         return $this->request;
+    }
+
+
+    /**
+     * Render list data to html
+     *
+     * @param   ListDto $listDto
+     * @return  string
+     */
+    protected function render(ListDto $listDto)
+    {
+        $configs = $this->getConfigs();
+
+        $renderer = $this->getRenderer()
+            ->setConfigs($configs)
+            ->setListDto($listDto);
+
+        return $renderer->getHtml();
     }
 
 

@@ -1,8 +1,11 @@
 <?php
 namespace FwlibTest\Html\ListView;
 
+use Fwlib\Html\ListView\AbstractRetriever;
+use Fwlib\Html\ListView\FitMode;
 use Fwlib\Html\ListView\ListDto;
 use Fwlib\Html\ListView\ListView;
+use Fwlib\Html\ListView\Renderer;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -13,11 +16,12 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class ListViewTest extends PHPUnitTestCase
 {
     /**
-     * @return MockObject | ListView
+     * @param   string[]    $methods
+     * @return  MockObject|ListView
      */
-    protected function buildMock()
+    protected function buildMock(array $methods = null)
     {
-        $mock = $this->getMock(ListView::class, null);
+        $mock = $this->getMock(ListView::class, $methods);
 
         return $mock;
     }
@@ -31,6 +35,109 @@ class ListViewTest extends PHPUnitTestCase
             'class',
             $this->reflectionCall($listView, 'getDefaultConfigs')
         );
+    }
+
+
+    public function testDecorateRows()
+    {
+        $listView = $this->buildMock();
+
+        $listDto = new ListDto;
+        $this->reflectionCall($listView, 'decorateRows', [$listDto]);
+        $this->assertEmpty($listDto->getBody());
+
+        // No decorator
+        $listDto->setBody([['a', 'b']])
+            ->setRowCount(1);
+        $this->reflectionCall($listView, 'decorateRows', [$listDto]);
+        $this->assertEqualArray([['a', 'b']], $listDto->getBody());
+
+        $listView->setRowDecorator(function($row) {
+            foreach ($row as &$val) {
+                $val = strtoupper($val);
+            }
+            unset($val);
+
+            return $row;
+        });
+        $this->reflectionCall($listView, 'decorateRows', [$listDto]);
+        $this->assertEqualArray([['A', 'B']], $listDto->getBody());
+    }
+
+
+    public function testFitHeadAndBody()
+    {
+        $listView = $this->buildMock();
+
+        $listView->setConfig('fitMode', FitMode::TO_TITLE);
+        $listView->setConfig('fitEmptyFiller', '-');
+
+        $listView->setHead(['F' => 'Foo', 'B' => 'Bar']);
+        $listView->setBody([['F' => 'foo']]);
+
+        $listDto = $this->reflectionCall($listView, 'getListDto');
+        $this->reflectionCall($listView, 'fitHeadAndBody', [$listDto]);
+
+        $this->assertEqualArray(
+            [['F' => 'foo', 'B' => '-']],
+            $listDto->getBody()
+        );
+    }
+
+
+    public function testGetFilledListDto()
+    {
+        $listView = $this->buildMock();
+
+        $retriever = $this->getMock(
+            AbstractRetriever::class,
+            ['getListBody', 'getRowCount']
+        );
+        $retriever->expects($this->once())
+            ->method('getRowCount')
+            ->willReturn(42);
+        $listView->setRetriever($retriever);
+
+        $listDto = $this->reflectionCall($listView, 'getFilledListDto');
+        $this->assertEquals(42, $listDto->getRowCount());
+    }
+
+
+    public function testGetHtml()
+    {
+        $listView = $this->buildMock(
+            ['fitHeadAndBody', 'decorateRows', 'render']
+        );
+        $listView->expects($this->once())
+            ->method('fitHeadAndBody');
+        $listView->expects($this->once())
+            ->method('decorateRows');
+        $listView->expects($this->once())
+            ->method('render');
+
+        $listView->getHtml();
+    }
+
+
+    public function testRender()
+    {
+        $renderer = $this->getMock(
+            Renderer::class,
+            ['setConfigs', 'setListDto', 'getHtml']
+        );
+        $renderer->expects($this->once())
+            ->method('setConfigs')
+            ->willReturnSelf();
+        $renderer->expects($this->once())
+            ->method('setListDto')
+            ->willReturnSelf();
+        $renderer->expects($this->once())
+            ->method('getHtml');
+
+        $listView = $this->buildMock();
+        $listView->setRenderer($renderer);
+
+        $this->reflectionCall($listView, 'render', [new ListDto()]);
     }
 
 
