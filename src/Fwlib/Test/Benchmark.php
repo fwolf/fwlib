@@ -43,7 +43,7 @@ class Benchmark
      *
      * @var array
      */
-    protected $group = [];
+    protected $groups = [];
 
     /**
      * Current group id
@@ -61,10 +61,10 @@ class Benchmark
      *
      * @var array
      */
-    protected $mark = [];
+    protected $marks = [];
 
     /**
-     * Mark id in group
+     * Mark id in groups
      *
      * @var int
      */
@@ -104,9 +104,9 @@ class Benchmark
     protected function formatColor($groupId)
     {
         // Find max/min marker dur
-        $dur_min = $this->mark[$groupId][0]['dur'];
+        $dur_min = $this->marks[$groupId][0]['dur'];
         $dur_max = $dur_min;
-        foreach ($this->mark[$groupId] as $markId => &$ar_mark) {
+        foreach ($this->marks[$groupId] as $markId => &$ar_mark) {
             if ($ar_mark['dur'] > $dur_max) {
                 $dur_max = $ar_mark['dur'];
             } elseif ($ar_mark['dur'] < $dur_min) {
@@ -134,9 +134,9 @@ class Benchmark
         }
 
         // Compare, assign color
-        foreach ($this->mark[$groupId] as $markId => &$mark) {
+        foreach ($this->marks[$groupId] as $markId => &$mark) {
             // Compute dur percent
-            $mark['pct'] = round(100 * $mark['dur'] / $this->group[$groupId]['dur']);
+            $mark['pct'] = round(100 * $mark['dur'] / $this->groups[$groupId]['dur']);
 
             // Skip user manual set color
             if (!empty($mark['color'])) {
@@ -202,9 +202,9 @@ EOF;
     public function mark($desc = '', $color = '')
     {
         if (0 == $this->markId) {
-            $this->mark[$this->groupId] = [];
+            $this->marks[$this->groupId] = [];
         }
-        $ar = &$this->mark[$this->groupId][$this->markId];
+        $ar = &$this->marks[$this->groupId][$this->markId];
 
         if (empty($desc)) {
             $desc = "Group #{$this->groupId}, Mark #{$this->markId}";
@@ -213,9 +213,9 @@ EOF;
         $ar['desc'] = $desc;
         $ar['time'] = $this->GetTime();
         if (0 == $this->markId) {
-            $ar['dur'] = $ar['time'] - $this->group[$this->groupId]['timeStart'];
+            $ar['dur'] = $ar['time'] - $this->groups[$this->groupId]['timeStart'];
         } else {
-            $ar['dur'] = $ar['time'] - $this->mark[$this->groupId][$this->markId - 1]['time'];
+            $ar['dur'] = $ar['time'] - $this->marks[$this->groupId][$this->markId - 1]['time'];
         }
         if (!empty($color)) {
             $ar['color'] = $color;
@@ -241,8 +241,8 @@ EOF;
         $hr = str_repeat('-', 50);
 
         // Stop last group if it's not stopped
-        if (!isset($this->group[$this->groupId]['timeEnd'])
-            && isset($this->group[$this->groupId]['timeStart'])
+        if (!isset($this->groups[$this->groupId]['timeEnd'])
+            && isset($this->groups[$this->groupId]['timeStart'])
         ) {
             $this->stop();
         }
@@ -251,7 +251,7 @@ EOF;
 
         $escapeColor = $this->getUtilContainer()->getEscapeColor();
         if (0 <= $this->groupId) {
-            foreach ($this->group as $groupId => $ar_group) {
+            foreach ($this->groups as $groupId => $ar_group) {
                 $this->formatColor($groupId);
 
                 $output .= $escapeColor->paint($ar_group['desc'], 'bold') .
@@ -265,8 +265,8 @@ EOF;
                 $output .= $hr . PHP_EOL;
 
                 // Markers
-                if (0 < count($this->mark[$groupId])) {
-                    foreach ($this->mark[$groupId] as $markId => $ar_mark) {
+                if (0 < count($this->marks[$groupId])) {
+                    foreach ($this->marks[$groupId] as $markId => $ar_mark) {
                         $time = $ar_mark['dur'];
 
                         // Format time before add bg color
@@ -331,8 +331,8 @@ EOF;
     public function resultWeb($options = '')
     {
         // Stop last group if it's not stopped
-        if (!isset($this->group[$this->groupId]['timeEnd'])
-            && isset($this->group[$this->groupId]['timeStart'])
+        if (!isset($this->groups[$this->groupId]['timeEnd'])
+            && isset($this->groups[$this->groupId]['timeStart'])
         ) {
             $this->stop();
         }
@@ -382,7 +382,7 @@ EOF;
 
 EOF;
             $html .= "<div class='fwlib-benchmark'>\n";
-            foreach ($this->group as $groupId => $ar_group) {
+            foreach ($this->groups as $groupId => $ar_group) {
                 $this->formatColor($groupId);
 
                 // Stop will create mark, so no 0=mark
@@ -402,9 +402,9 @@ EOF;
 
 EOF;
                 // Markers
-                if (0 < count($this->mark[$groupId])) {
+                if (0 < count($this->marks[$groupId])) {
                     $html .= "\n    <tbody>";
-                    foreach ($this->mark[$groupId] as $markId => $ar_mark) {
+                    foreach ($this->marks[$groupId] as $markId => $ar_mark) {
                         $time = $this->formatTime($ar_mark['dur']);
                         // Bg color
                         if (!empty($ar_mark['color'])) {
@@ -468,9 +468,9 @@ EOF;
      */
     public function start($desc = '')
     {
-        // Stop last group if it's not stopped
-        if (!isset($this->group[$this->groupId]['timeEnd'])
-            && isset($this->group[$this->groupId]['timeStart'])
+        // Stop last groups if it's not stopped
+        if (!isset($this->groups[$this->groupId]['timeEnd'])
+            && isset($this->groups[$this->groupId]['timeStart'])
         ) {
             $this->stop();
         }
@@ -479,8 +479,8 @@ EOF;
             $desc = "Group #{$this->groupId}";
         }
 
-        $this->group[$this->groupId]['timeStart'] = $this->GetTime();
-        $this->group[$this->groupId]['desc'] = $desc;
+        $this->groups[$this->groupId]['timeStart'] = $this->GetTime();
+        $this->groups[$this->groupId]['desc'] = $desc;
     }
 
 
@@ -492,7 +492,7 @@ EOF;
         $this->mark('Stop');
 
         $time = $this->getTime();
-        $ar = &$this->group[$this->groupId];
+        $ar = &$this->groups[$this->groupId];
         $ar['timeEnd'] = $time;
         $ar['dur'] = $time - $ar['timeStart'];
 
