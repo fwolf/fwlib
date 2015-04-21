@@ -37,6 +37,15 @@ class Benchmark
     ];
 
     /**
+     * Current group id
+     *
+     * System will auto start group #0, another start will be group #1.
+     *
+     * @var int
+     */
+    protected $groupId = 0;
+
+    /**
      * Group data
      *
      * {id: {desc, timeStart, timeEnd}}
@@ -46,13 +55,11 @@ class Benchmark
     protected $groups = [];
 
     /**
-     * Current group id
-     *
-     * System will auto start group #0, another start will be group #1.
+     * Mark id in groups
      *
      * @var int
      */
-    protected $groupId = 0;
+    protected $markId = 0;
 
     /**
      * Mark data
@@ -63,33 +70,20 @@ class Benchmark
      */
     protected $marks = [];
 
-    /**
-     * Mark id in groups
-     *
-     * @var int
-     */
-    protected $markId = 0;
-
 
     /**
      * Display benchmark result
      *
      * @param   string  $options
-     * @param   boolean $return     Return result instead echo
+     * @return  string|void
      */
-    public function display($options = '', $return = false)
+    public function display($options = '')
     {
-        if ($this->getUtilContainer()->getEnv()->isCli()) {
-            $result = $this->resultCli($options);
-        } else {
-            $result = $this->resultWeb($options);
-        }
+        $output = $this->getOutput($options);
 
-        if ($return) {
-            return $result;
-        } else {
-            echo $result;
-        }
+        echo $output;
+
+        return null;
     }
 
 
@@ -181,59 +175,12 @@ EOF;
 
 
     /**
-     * Get current time, measured by microsecond
-     *
-     * @return  float
-     */
-    protected function getTime()
-    {
-        list($usec, $sec) = explode(" ", microtime());
-        return ((float)$usec + (float)$sec) * 1000;
-    }
-
-
-    /**
-     * Set a marker
-     *
-     * @param   string  $desc   Marker description
-     * @param   string  $color  Specific color like '#FF0000' or 'red'
-     * @return  float           Dur of this mark
-     */
-    public function mark($desc = '', $color = '')
-    {
-        if (0 == $this->markId) {
-            $this->marks[$this->groupId] = [];
-        }
-        $ar = &$this->marks[$this->groupId][$this->markId];
-
-        if (empty($desc)) {
-            $desc = "Group #{$this->groupId}, Mark #{$this->markId}";
-        }
-
-        $ar['desc'] = $desc;
-        $ar['time'] = $this->GetTime();
-        if (0 == $this->markId) {
-            $ar['dur'] = $ar['time'] - $this->groups[$this->groupId]['timeStart'];
-        } else {
-            $ar['dur'] = $ar['time'] - $this->marks[$this->groupId][$this->markId - 1]['time'];
-        }
-        if (!empty($color)) {
-            $ar['color'] = $color;
-        }
-
-        $this->markId ++;
-
-        return $ar['dur'];
-    }
-
-
-    /**
      * Get result for cli output
      *
      * @param   string  $options
      * @return  string
      */
-    public function resultCli($options = '')
+    protected function getCliOutput($options = '')
     {
         $widthPct = 6;
         $widthDur = 10.3;
@@ -323,12 +270,40 @@ EOF;
 
 
     /**
+     * Get benchmark result output
+     *
+     * @param   string  $options
+     * @return  string
+     */
+    public function getOutput($options = '')
+    {
+        $result = $this->getUtilContainer()->getEnv()->isCli()
+            ? $this->getCliOutput($options)
+            : $this->getWebOutput($options);
+
+        return $result;
+    }
+
+
+    /**
+     * Get current time, measured by microsecond
+     *
+     * @return  float
+     */
+    protected function getTime()
+    {
+        list($usec, $sec) = explode(" ", microtime());
+        return ((float)$usec + (float)$sec) * 1000;
+    }
+
+
+    /**
      * Get result for web output
      *
      * @param   string  $options
      * @return  string
      */
-    public function resultWeb($options = '')
+    protected function getWebOutput($options = '')
     {
         // Stop last group if it's not stopped
         if (!isset($this->groups[$this->groupId]['timeEnd'])
@@ -458,6 +433,41 @@ EOF;
         }
 
         return $html;
+    }
+
+
+    /**
+     * Set a marker
+     *
+     * @param   string  $desc   Marker description
+     * @param   string  $color  Specific color like '#FF0000' or 'red'
+     * @return  float           Dur of this mark
+     */
+    public function mark($desc = '', $color = '')
+    {
+        if (0 == $this->markId) {
+            $this->marks[$this->groupId] = [];
+        }
+        $ar = &$this->marks[$this->groupId][$this->markId];
+
+        if (empty($desc)) {
+            $desc = "Group #{$this->groupId}, Mark #{$this->markId}";
+        }
+
+        $ar['desc'] = $desc;
+        $ar['time'] = $this->GetTime();
+        if (0 == $this->markId) {
+            $ar['dur'] = $ar['time'] - $this->groups[$this->groupId]['timeStart'];
+        } else {
+            $ar['dur'] = $ar['time'] - $this->marks[$this->groupId][$this->markId - 1]['time'];
+        }
+        if (!empty($color)) {
+            $ar['color'] = $color;
+        }
+
+        $this->markId ++;
+
+        return $ar['dur'];
     }
 
 
