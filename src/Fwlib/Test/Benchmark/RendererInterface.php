@@ -19,9 +19,7 @@ interface RendererInterface
     /**
      * Setter of groups
      *
-     * @see Benchmark::$groups
-     *
-     * @param   array   $groups
+     * @param   Group[] $groups
      * @return  static
      */
     public function setGroups(array $groups);
@@ -29,9 +27,7 @@ interface RendererInterface
     /**
      * Setter of markers
      *
-     * @see Benchmark::$markers
-     *
-     * @param   array   $markers
+     * @param   Marker[]    $markers
      * @return  static
      */
     public function setMarkers(array $markers);

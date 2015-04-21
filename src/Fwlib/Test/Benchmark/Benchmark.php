@@ -48,9 +48,7 @@ class Benchmark
     /**
      * Group data
      *
-     * {id: {desc, timeStart, timeEnd}}
-     *
-     * @var array
+     * @var Group[] {groupId: Group}
      */
     protected $groups = [];
 
@@ -64,9 +62,7 @@ class Benchmark
     /**
      * Marker data
      *
-     * {groupId: {markerId: {desc, time, dur, color, pct}}}
-     *
-     * @var array
+     * @var array   {groupId: {markerId: Marker}}
      */
     protected $markers = [];
 
@@ -76,8 +72,10 @@ class Benchmark
      */
     protected function autoStop()
     {
-        if (!isset($this->groups[$this->groupId]['timeEnd'])
-            && isset($this->groups[$this->groupId]['timeStart'])
+        $group = $this->getCurrentGroup();
+
+        if (!empty($group) && !empty($group->getBeginTime() &&
+            empty($group->getEndTime()))
         ) {
             $this->stop();
         }
@@ -109,57 +107,62 @@ class Benchmark
      */
     protected function formatColor($groupId)
     {
-        // Find max/min marker dur
-        $dur_min = $this->markers[$groupId][0]['dur'];
-        $dur_max = $dur_min;
-        foreach ($this->markers[$groupId] as $markId => &$ar_mark) {
-            if ($ar_mark['dur'] > $dur_max) {
-                $dur_max = $ar_mark['dur'];
-            } elseif ($ar_mark['dur'] < $dur_min) {
-                $dur_min = $ar_mark['dur'];
-            }
+        $markers = $this->markers[$groupId];
+
+        // Find max/min marker duration
+        $durations = [];
+        foreach ($markers as $marker) {
+            /** @var Marker $marker */
+            $durations[] = $marker->getDuration();
         }
-        $dur = $dur_max - $dur_min;
-        // Only 1 marker
-        if (0 == $dur) {
-            $dur = $dur_max;
+
+        $minDuration = min($durations);
+        $maxDuration = max($durations);
+
+        $durationPeriod = $maxDuration - $minDuration;
+        // Only 1 marker ?
+        if (0 == $durationPeriod) {
+            $durationPeriod = $maxDuration;
         }
 
         // Amount of color
-        $i_color = count($this->colorMap);
-        if (1 > $i_color) {
+        $colorCount = count($this->colorMap);
+        if (1 > $colorCount) {
             return;
         }
 
-        // Split dur
-        $step = $dur / $i_color;
-        $ar_dur = [];
+        // Split duration by amount of color
+        $step = $durationPeriod / $colorCount;
+        $durationBounds = [];
         // 6 color need 7 bound value
-        for ($i = 0; $i < ($i_color + 1); $i ++) {
-            $ar_dur[$i] = $step * $i;
+        for ($i = 0; $i < ($colorCount + 1); $i ++) {
+            $durationBounds[$i] = $step * $i;
         }
 
-        // Compare, assign color
-        foreach ($this->markers[$groupId] as $markId => &$mark) {
-            // Compute dur percent
-            $mark['pct'] = round(100 * $mark['dur'] / $this->groups[$groupId]['dur']);
+        // Compare and assign color
+        $group = $this->groups[$groupId];
+        foreach ($markers as $markId => $marker) {
+            $markerDuration = $marker->getDuration();
 
-            // Skip user manual set color
-            if (!empty($mark['color'])) {
+            // Compute percent of marker duration vs group duration
+            $percent =
+                round(100 * $markerDuration / $group->getDuration());
+            $marker->setPercent($percent);
+
+            // Skip if user had manual set color
+            if (!empty($marker->getColor())) {
                 continue;
             }
 
-            for ($i = 1; $i < ($i_color + 1); $i ++) {
-                if (($mark['dur'] - $dur_min) <= $ar_dur[$i]) {
-                    // 5.5 < 6, assign color[5]/color no.6
-                    $mark['color'] = $this->colorMap[$i - 1];
+            for ($i = 1; $i < ($colorCount + 1); $i ++) {
+                if (($markerDuration - $minDuration) <= $durationBounds[$i]) {
+                    // Eg: 5.5 < 6, will assign color[5](color no.6)
+                    $marker->setColor($this->colorMap[$i - 1]);
 
-                    // Quit for
-                    $i = $i_color + 1;
+                    // Quit for loop
+                    $i = $colorCount + 1;
                 }
             }
-
-            unset($mark);
         }
     }
 
@@ -193,83 +196,97 @@ EOF;
      */
     protected function getCliOutput()
     {
-        $widthPct = 6;
-        $widthDur = 10.3;
-        $spaceDesc = '    ';
+        $percentWidth = 6;
+        $durationWidth = 10.3;
+        $descriptionSpace = '    ';
         $hr = str_repeat('-', 50);
 
         $output = '';
 
         $escapeColor = $this->getUtilContainer()->getEscapeColor();
-        if (0 <= $this->groupId) {
-            foreach ($this->groups as $groupId => $ar_group) {
-                $this->formatColor($groupId);
+        foreach ($this->groups as $groupId => $group) {
+            $this->formatColor($groupId);
 
-                $output .= $escapeColor->paint($ar_group['desc'], 'bold') .
-                    PHP_EOL;
+            $output .= $escapeColor->paint($group->getDescription(), 'bold') .
+                PHP_EOL;
 
-                $output .= sprintf('%' . $widthPct . 's', '%')
-                    . sprintf('%' . $widthDur . 's', 'Dur Time')
-                    . $spaceDesc
-                    . 'Mark Description'
-                    . PHP_EOL;
-                $output .= $hr . PHP_EOL;
+            $output .= sprintf('%' . $percentWidth . 's', '%') .
+                sprintf('%' . $durationWidth . 's', 'Dur Time') .
+                $descriptionSpace .
+                'Marker Description' .
+                PHP_EOL;
+            $output .= $hr . PHP_EOL;
 
-                // Markers
-                if (0 < count($this->markers[$groupId])) {
-                    foreach ($this->markers[$groupId] as $markId => $ar_mark) {
-                        $time = $ar_mark['dur'];
+            // Markers
+            if (0 < count($this->markers[$groupId])) {
+                /** @var Marker $marker */
+                foreach ($this->markers[$groupId] as $markerId => $marker) {
+                    $duration = $marker->getDuration();
 
-                        // Format time before add bg color
-                        $time = sprintf('%' . $widthDur . 'f', $time);
+                    // Format duration before add background color
+                    $duration = sprintf('%' . $durationWidth . 'f', $duration);
 
-                        // Space need not color
-                        $space = str_repeat(
-                            ' ',
-                            strlen($time) - strlen(trim($time))
+                    // Space need not color
+                    $space = str_repeat(
+                        ' ',
+                        strlen($duration) - strlen(trim($duration))
+                    );
+                    $duration = trim($duration);
+
+                    // Add background color
+                    $color = $marker->getColor();
+                    if (!empty($color)) {
+                        $duration = $escapeColor->paint(
+                            $duration,
+                            '',
+                            '',
+                            $color
                         );
-                        $time = trim($time);
-
-                        // Add bg color
-                        if (!empty($ar_mark['color'])) {
-                            $time = $escapeColor->paint(
-                                $time,
-                                '',
-                                '',
-                                $ar_mark['color']
-                            );
-                        }
-
-                        $time = $space . $time;
-
-                        $output .= sprintf('%' . $widthPct . 's', $ar_mark['pct'])
-                            . $time
-                            . $spaceDesc
-                            . $ar_mark['desc']
-                            . PHP_EOL;
                     }
+
+                    $duration = $space . $duration;
+
+                    $output .=
+                        sprintf("%{$percentWidth}s", $marker->getPercent()) .
+                        $duration .
+                        $descriptionSpace .
+                        $marker->getDescription() .
+                        PHP_EOL;
                 }
-
-                // Stop has already set marker
-
-                $output .= $hr . PHP_EOL;
-
-                // Total
-                $time = sprintf('%' . $widthDur . 'f', $ar_group['dur']);
-                $output .= $escapeColor->paint('Total:', 'bold') . $time .
-                    'ms' . PHP_EOL . PHP_EOL;
-
             }
 
-            // Memory usage
-            if (function_exists('memory_get_usage')) {
-                $memory = number_format(memory_get_usage());
-                $output .= $escapeColor->paint('Memory Usage: ', 'bold') .
-                    $memory . ' bytes' . PHP_EOL;
-            }
+            // Auto stop has already set marker
+
+            $output .= $hr . PHP_EOL;
+
+            // Total
+            $duration = sprintf("%{$durationWidth}f", $group->getDuration());
+            $output .= $escapeColor->paint('Total:', 'bold') . $duration .
+                'ms' . PHP_EOL . PHP_EOL;
+
+        }
+
+        // Memory usage
+        if (function_exists('memory_get_usage')) {
+            $memory = number_format(memory_get_usage());
+            $output .= $escapeColor->paint('Memory Usage: ', 'bold') .
+                $memory . ' bytes' . PHP_EOL;
         }
 
         return $output;
+    }
+
+
+    /**
+     * @return  Group|null
+     */
+    protected function getCurrentGroup()
+    {
+        $groupId = $this->groupId;
+
+        return array_key_exists($groupId, $this->groups)
+            ? $this->groups[$groupId]
+            : null;
     }
 
 
@@ -298,6 +315,7 @@ EOF;
     protected function getTime()
     {
         list($usec, $sec) = explode(" ", microtime());
+
         return ((float)$usec + (float)$sec) * 1000;
     }
 
@@ -310,9 +328,7 @@ EOF;
     protected function getWebOutput()
     {
         $html = '';
-
-        if (0 <= $this->groupId) {
-            $html .= <<<EOF
+        $html .= <<<EOF
 
 <style type="text/css" media="screen, print">
 <!--
@@ -353,81 +369,83 @@ EOF;
 </style>
 
 EOF;
-            $html .= "<div class='fwlib-benchmark'>\n";
-            foreach ($this->groups as $groupId => $ar_group) {
-                $this->formatColor($groupId);
+        $html .= "<div class='fwlib-benchmark'>\n";
+        /** @var Group $group */
+        foreach ($this->groups as $groupId => $group) {
+            $this->formatColor($groupId);
 
-                // Stop will create mark, so no 0=mark
-                $html .= "  <table class='fwlib-benchmark__g{$groupId}'>\n";
-                $html .= "    <caption>{$ar_group['desc']}</caption>\n";
+            // Auto stop will create marker, so no 0=mark
+            $html .= "  <table class='fwlib-benchmark__g{$groupId}'>\n";
+            $html .= "    <caption>{$group->getDescription()}</caption>\n";
 
-                // Th
-                $html .= <<<EOF
+            // Th
+            $html .= <<<EOF
 
     <thead>
     <tr>
       <th>Dur Time</th>
-      <th>Mark Description</th>
+      <th>Marker Description</th>
       <th>%</th>
     </tr>
     </thead>
 
 EOF;
-                // Markers
-                if (0 < count($this->markers[$groupId])) {
-                    $html .= "\n    <tbody>";
-                    foreach ($this->markers[$groupId] as $markId => $ar_mark) {
-                        $time = $this->formatTime($ar_mark['dur']);
-                        // Bg color
-                        if (!empty($ar_mark['color'])) {
-                            $color = ' style="background-color: ' . $ar_mark['color'] . ';"';
-                        } else {
-                            $color = '';
-                        }
-                        $html .= <<<EOF
+            // Markers
+            if (0 < count($this->markers[$groupId])) {
+                $html .= "\n    <tbody>";
+                /** @var Marker $marker */
+                foreach ($this->markers[$groupId] as $markerId => $marker) {
+                    $duration = $this->formatTime($marker->getDuration());
+                    // Bg color
+                    $color = $marker->getColor();
+                    if (!empty($color)) {
+                        $color = ' style="background-color: ' . $color . ';"';
+                    } else {
+                        $color = '';
+                    }
+                    $html .= <<<EOF
 
     <tr>
-      <td{$color}>{$time}      </td>
-      <td class='fwlib-benchmark__mark__desc'>{$ar_mark['desc']}</td>
-      <td class='fwlib-benchmark__mark__pct'>{$ar_mark['pct']}%</td>
+      <td{$color}>{$duration}      </td>
+      <td class='fwlib-benchmark__mark__desc'>{$marker->getDescription()}</td>
+      <td class='fwlib-benchmark__mark__pct'>{$marker->getPercent()}%</td>
     </tr>
 
 EOF;
-                    }
-                    $html .= "</tbody>\n";
                 }
+                $html .= "    </tbody>\n";
+            }
 
-                // Stop has already set marker
+            // Auto stop has already set marker
 
-                // Total
-                $time = $this->formatTime($ar_group['dur']);
-                $html .= <<<EOF
+            // Total
+            $duration = $this->formatTime($group->getDuration());
+            $html .= <<<EOF
 
     <tr class="total">
-      <td>{$time}</td>
+      <td>{$duration}</td>
       <td>Total</td>
       <td>-</td>
     </tr>
 
 EOF;
 
-                $html .= "\t</table>\n";
-            }
+            $html .= "  </table>\n";
+        }
 
-            // Memory usage
-            if (function_exists('memory_get_usage')) {
-                $memory = number_format(memory_get_usage());
-                $html .= <<<EOF
+        // Memory usage
+        if (function_exists('memory_get_usage')) {
+            $memory = number_format(memory_get_usage());
+            $html .= <<<EOF
 
-<div class="fwlib-benchmark__memory-usage">
+  <div class="fwlib-benchmark__memory-usage">
     Memory Usage: $memory
-</div>
+  </div>
 
 EOF;
-            }
-
-            $html .= "</div>\n";
         }
+
+        $html .= "</div>\n";
 
         return $html;
     }
@@ -436,58 +454,69 @@ EOF;
     /**
      * Set a marker
      *
-     * @param   string  $desc   Marker description
-     * @param   string  $color  Specific color like '#FF0000' or 'red'
-     * @return  float           Dur of this mark
+     * @param   string  $description    Marker description
+     * @param   string  $color          Specific color like '#FF0000' or 'red'
+     * @return  float                   Duration of this marker
      */
-    public function mark($desc = '', $color = '')
+    public function mark($description = '', $color = '')
     {
         if (0 == $this->markerId) {
             $this->markers[$this->groupId] = [];
         }
-        $ar = &$this->markers[$this->groupId][$this->markerId];
 
-        if (empty($desc)) {
-            $desc = "Group #{$this->groupId}, Mark #{$this->markerId}";
+        // Marker array of current group
+        $markers = &$this->markers[$this->groupId];
+
+        $marker = new Marker($this->groupId, $this->markerId);
+
+        if (empty($description)) {
+            $description = "Group #{$this->groupId}, Marker #{$this->markerId}";
         }
+        $marker->setDescription($description);
 
-        $ar['desc'] = $desc;
-        $ar['time'] = $this->GetTime();
+        $beginTime = $this->getTime();
+        $marker->setBeginTime($beginTime);
+
         if (0 == $this->markerId) {
-            $ar['dur'] = $ar['time'] - $this->groups[$this->groupId]['timeStart'];
+            $group = $this->getCurrentGroup();
+            $duration = $beginTime - $group->getBeginTime();
         } else {
-            $ar['dur'] = $ar['time'] - $this->markers[$this->groupId][$this->markerId - 1]['time'];
+            /** @var Marker $prevMarker */
+            $prevMarker = $markers[$this->markerId - 1];
+            $duration = $beginTime - $prevMarker->getBeginTime();
         }
+        $marker->setDuration($duration);
+
         if (!empty($color)) {
-            $ar['color'] = $color;
+            $marker->setColor($color);
         }
+
+        $markers[$this->markerId] = $marker;
 
         $this->markerId ++;
 
-        return $ar['dur'];
+        return $duration;
     }
 
 
     /**
      * Start the timer
      *
-     * @param   string  $desc   Group description
+     * @param   string  $description    Group description
      */
-    public function start($desc = '')
+    public function start($description = '')
     {
-        // Stop last groups if it's not stopped
-        if (!isset($this->groups[$this->groupId]['timeEnd'])
-            && isset($this->groups[$this->groupId]['timeStart'])
-        ) {
-            $this->stop();
+        $this->autoStop();
+
+        if (empty($description)) {
+            $description = "Group #{$this->groupId}";
         }
 
-        if (empty($desc)) {
-            $desc = "Group #{$this->groupId}";
-        }
+        $group = new Group($this->groupId);
+        $group->setBeginTime($this->getTime());
+        $group->setDescription($description);
 
-        $this->groups[$this->groupId]['timeStart'] = $this->GetTime();
-        $this->groups[$this->groupId]['desc'] = $desc;
+        $this->groups[$this->groupId] = $group;
     }
 
 
@@ -499,9 +528,9 @@ EOF;
         $this->mark('Stop');
 
         $time = $this->getTime();
-        $ar = &$this->groups[$this->groupId];
-        $ar['timeEnd'] = $time;
-        $ar['dur'] = $time - $ar['timeStart'];
+        $group = $this->getCurrentGroup();
+        $group->setEndTime($time);
+        $group->setDuration($time - $group->getBeginTime());
 
         $this->groupId ++;
         $this->markerId = 0;

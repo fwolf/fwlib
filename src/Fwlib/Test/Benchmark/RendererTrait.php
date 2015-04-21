@@ -10,25 +10,20 @@ namespace Fwlib\Test\Benchmark;
 trait RendererTrait
 {
     /**
-     * @see Benchmark::$groups
-     *
-     * @var array
+     * @var Group[]
      */
     protected $groups = [];
 
     /**
-     * @see Benchmark::$markers
-     *
-     * @var array
+     * @var Marker[]
      */
     protected $markers = [];
 
 
     /**
      * @see RendererInterface::setGroups()
-     * @see Benchmark::$groups
      *
-     * @param   array   $groups
+     * @param   Group[] $groups
      * @return  static
      */
     public function setGroups(array $groups)
@@ -41,9 +36,8 @@ trait RendererTrait
 
     /**
      * @see RendererInterface::setMarkers()
-     * @see Benchmark::$markers
      *
-     * @param   array   $markers
+     * @param   Marker[]    $markers
      * @return  static
      */
     public function setMarkers(array $markers)
