@@ -74,12 +74,11 @@ class Benchmark
     /**
      * Display benchmark result
      *
-     * @param   string  $options
      * @return  string|void
      */
-    public function display($options = '')
+    public function display()
     {
-        $output = $this->getOutput($options);
+        $output = $this->getOutput();
 
         echo $output;
 
@@ -177,10 +176,9 @@ EOF;
     /**
      * Get result for cli output
      *
-     * @param   string  $options
      * @return  string
      */
-    protected function getCliOutput($options = '')
+    protected function getCliOutput()
     {
         $widthPct = 6;
         $widthDur = 10.3;
@@ -272,14 +270,13 @@ EOF;
     /**
      * Get benchmark result output
      *
-     * @param   string  $options
      * @return  string
      */
-    public function getOutput($options = '')
+    public function getOutput()
     {
         $result = $this->getUtilContainer()->getEnv()->isCli()
-            ? $this->getCliOutput($options)
-            : $this->getWebOutput($options);
+            ? $this->getCliOutput()
+            : $this->getWebOutput();
 
         return $result;
     }
@@ -300,10 +297,9 @@ EOF;
     /**
      * Get result for web output
      *
-     * @param   string  $options
      * @return  string
      */
-    protected function getWebOutput($options = '')
+    protected function getWebOutput()
     {
         // Stop last group if it's not stopped
         if (!isset($this->groups[$this->groupId]['timeEnd'])
