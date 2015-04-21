@@ -42,9 +42,6 @@ class MarkerTest extends PHPUnitTestCase
         $marker->setColor('#FFFFFF');
         $this->assertEquals('#FFFFFF', $marker->getColor());
 
-        $marker->setDuration(3.14);
-        $this->assertEquals(3.14, $marker->getDuration());
-
         $marker->setPercent(11.1);
         $this->assertEquals(11.1, $marker->getPercent());
     }

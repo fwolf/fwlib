@@ -3,6 +3,7 @@ namespace Fwlib\Test\Benchmark;
 
 use Fwlib\Test\Benchmark\Helper\BeginAndEndTimePropertyTrait;
 use Fwlib\Test\Benchmark\Helper\DescriptionPropertyTrait;
+use Fwlib\Test\Benchmark\Helper\DurationPropertyTrait;
 use Fwlib\Test\Benchmark\Helper\IdPropertyTrait;
 
 /**
@@ -16,6 +17,7 @@ class Group
     use IdPropertyTrait;
     use DescriptionPropertyTrait;
     use BeginAndEndTimePropertyTrait;
+    use DurationPropertyTrait;
 
 
     /**

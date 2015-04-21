@@ -3,6 +3,7 @@ namespace Fwlib\Test\Benchmark;
 
 use Fwlib\Test\Benchmark\Helper\BeginAndEndTimePropertyTrait;
 use Fwlib\Test\Benchmark\Helper\DescriptionPropertyTrait;
+use Fwlib\Test\Benchmark\Helper\DurationPropertyTrait;
 use Fwlib\Test\Benchmark\Helper\IdPropertyTrait;
 
 /**
@@ -16,6 +17,7 @@ class Marker
     use IdPropertyTrait;
     use DescriptionPropertyTrait;
     use BeginAndEndTimePropertyTrait;
+    use DurationPropertyTrait;
 
 
     /**
@@ -26,13 +28,6 @@ class Marker
      * @var string
      */
     protected $color = '';
-
-    /**
-     * Time duration from previous marker, by microsecond
-     *
-     * @var float
-     */
-    protected $duration = null;
 
     /**
      * @var int
@@ -70,17 +65,6 @@ class Marker
 
 
     /**
-     * Getter of $duration
-     *
-     * @return  float
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-
-    /**
      * Getter of $groupId
      *
      * @return  int
@@ -111,20 +95,6 @@ class Marker
     public function setColor($color)
     {
         $this->color = $color;
-
-        return $this;
-    }
-
-
-    /**
-     * Setter of $duration
-     *
-     * @param   float $duration
-     * @return  static
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
 
         return $this;
     }
