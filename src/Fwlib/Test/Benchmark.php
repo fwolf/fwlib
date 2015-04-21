@@ -55,20 +55,20 @@ class Benchmark
     protected $groups = [];
 
     /**
-     * Mark id in groups
+     * Marker id in groups
      *
      * @var int
      */
-    protected $markId = 0;
+    protected $markerId = 0;
 
     /**
-     * Mark data
+     * Marker data
      *
-     * {groupId: {markId: {desc, time, dur, color, pct}}}
+     * {groupId: {markerId: {desc, time, dur, color, pct}}}
      *
      * @var array
      */
-    protected $marks = [];
+    protected $markers = [];
 
 
     /**
@@ -98,9 +98,9 @@ class Benchmark
     protected function formatColor($groupId)
     {
         // Find max/min marker dur
-        $dur_min = $this->marks[$groupId][0]['dur'];
+        $dur_min = $this->markers[$groupId][0]['dur'];
         $dur_max = $dur_min;
-        foreach ($this->marks[$groupId] as $markId => &$ar_mark) {
+        foreach ($this->markers[$groupId] as $markId => &$ar_mark) {
             if ($ar_mark['dur'] > $dur_max) {
                 $dur_max = $ar_mark['dur'];
             } elseif ($ar_mark['dur'] < $dur_min) {
@@ -128,7 +128,7 @@ class Benchmark
         }
 
         // Compare, assign color
-        foreach ($this->marks[$groupId] as $markId => &$mark) {
+        foreach ($this->markers[$groupId] as $markId => &$mark) {
             // Compute dur percent
             $mark['pct'] = round(100 * $mark['dur'] / $this->groups[$groupId]['dur']);
 
@@ -212,8 +212,8 @@ EOF;
                 $output .= $hr . PHP_EOL;
 
                 // Markers
-                if (0 < count($this->marks[$groupId])) {
-                    foreach ($this->marks[$groupId] as $markId => $ar_mark) {
+                if (0 < count($this->markers[$groupId])) {
+                    foreach ($this->markers[$groupId] as $markId => $ar_mark) {
                         $time = $ar_mark['dur'];
 
                         // Format time before add bg color
@@ -377,9 +377,9 @@ EOF;
 
 EOF;
                 // Markers
-                if (0 < count($this->marks[$groupId])) {
+                if (0 < count($this->markers[$groupId])) {
                     $html .= "\n    <tbody>";
-                    foreach ($this->marks[$groupId] as $markId => $ar_mark) {
+                    foreach ($this->markers[$groupId] as $markId => $ar_mark) {
                         $time = $this->formatTime($ar_mark['dur']);
                         // Bg color
                         if (!empty($ar_mark['color'])) {
@@ -445,27 +445,27 @@ EOF;
      */
     public function mark($desc = '', $color = '')
     {
-        if (0 == $this->markId) {
-            $this->marks[$this->groupId] = [];
+        if (0 == $this->markerId) {
+            $this->markers[$this->groupId] = [];
         }
-        $ar = &$this->marks[$this->groupId][$this->markId];
+        $ar = &$this->markers[$this->groupId][$this->markerId];
 
         if (empty($desc)) {
-            $desc = "Group #{$this->groupId}, Mark #{$this->markId}";
+            $desc = "Group #{$this->groupId}, Mark #{$this->markerId}";
         }
 
         $ar['desc'] = $desc;
         $ar['time'] = $this->GetTime();
-        if (0 == $this->markId) {
+        if (0 == $this->markerId) {
             $ar['dur'] = $ar['time'] - $this->groups[$this->groupId]['timeStart'];
         } else {
-            $ar['dur'] = $ar['time'] - $this->marks[$this->groupId][$this->markId - 1]['time'];
+            $ar['dur'] = $ar['time'] - $this->markers[$this->groupId][$this->markerId - 1]['time'];
         }
         if (!empty($color)) {
             $ar['color'] = $color;
         }
 
-        $this->markId ++;
+        $this->markerId ++;
 
         return $ar['dur'];
     }
@@ -507,6 +507,6 @@ EOF;
         $ar['dur'] = $time - $ar['timeStart'];
 
         $this->groupId ++;
-        $this->markId = 0;
+        $this->markerId = 0;
     }
 }
