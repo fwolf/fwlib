@@ -72,6 +72,19 @@ class Benchmark
 
 
     /**
+     * Stop last group if its not stopped manually
+     */
+    protected function autoStop()
+    {
+        if (!isset($this->groups[$this->groupId]['timeEnd'])
+            && isset($this->groups[$this->groupId]['timeStart'])
+        ) {
+            $this->stop();
+        }
+    }
+
+
+    /**
      * Display benchmark result
      *
      * @return  string|void
@@ -185,13 +198,6 @@ EOF;
         $spaceDesc = '    ';
         $hr = str_repeat('-', 50);
 
-        // Stop last group if it's not stopped
-        if (!isset($this->groups[$this->groupId]['timeEnd'])
-            && isset($this->groups[$this->groupId]['timeStart'])
-        ) {
-            $this->stop();
-        }
-
         $output = '';
 
         $escapeColor = $this->getUtilContainer()->getEscapeColor();
@@ -274,6 +280,8 @@ EOF;
      */
     public function getOutput()
     {
+        $this->autoStop();
+
         $result = $this->getUtilContainer()->getEnv()->isCli()
             ? $this->getCliOutput()
             : $this->getWebOutput();
@@ -301,13 +309,6 @@ EOF;
      */
     protected function getWebOutput()
     {
-        // Stop last group if it's not stopped
-        if (!isset($this->groups[$this->groupId]['timeEnd'])
-            && isset($this->groups[$this->groupId]['timeStart'])
-        ) {
-            $this->stop();
-        }
-
         $html = '';
 
         if (0 <= $this->groupId) {
