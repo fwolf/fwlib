@@ -1,5 +1,5 @@
 <?php
-namespace Fwlib\Test;
+namespace Fwlib\Test\Benchmark;
 
 use Fwlib\Util\UtilContainerAwareTrait;
 

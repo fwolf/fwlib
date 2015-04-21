@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../autoload.php';
 
-use Fwlib\Test\Benchmark;
+use Fwlib\Test\Benchmark\Benchmark;
 use Fwlib\Util\Common\NumberUtil;
 use Fwlib\Util\UtilContainer;
 

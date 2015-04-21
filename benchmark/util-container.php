@@ -33,7 +33,7 @@
  */
 
 use Fwlib\Dummy\ArrayUtil;
-use Fwlib\Test\Benchmark;
+use Fwlib\Test\Benchmark\Benchmark;
 use Fwlib\Util\UtilContainer;
 
 require __DIR__ . '/../autoload.php';

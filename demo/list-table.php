@@ -6,7 +6,7 @@ use Fwlib\Bridge\Smarty;
 use Fwlib\Config\GlobalConfig;
 use Fwlib\Html\ListTable;
 use Fwlib\Test\AbstractDbRelateTest;
-use Fwlib\Test\Benchmark;
+use Fwlib\Test\Benchmark\Benchmark;
 use FwlibTest\Aide\TestServiceContainer;
 
 /***************************************

@@ -2,7 +2,7 @@
 // Usage:
 require __DIR__ . '/../config.default.php';
 
-use Fwlib\Test\Benchmark;
+use Fwlib\Test\Benchmark\Benchmark;
 
 $bm = new Benchmark();
 
