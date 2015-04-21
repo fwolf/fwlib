@@ -3,9 +3,12 @@ namespace FwlibTest\Html\ListView;
 
 use Fwlib\Html\ListView\AbstractRetriever;
 use Fwlib\Html\ListView\FitMode;
+use Fwlib\Html\ListView\Fitter;
 use Fwlib\Html\ListView\ListDto;
 use Fwlib\Html\ListView\ListView;
 use Fwlib\Html\ListView\Renderer;
+use Fwlib\Html\ListView\RendererInterface;
+use Fwlib\Html\ListView\RequestInterface;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -35,6 +38,22 @@ class ListViewTest extends PHPUnitTestCase
             'class',
             $this->reflectionCall($listView, 'getDefaultConfigs')
         );
+
+        $this->assertInstanceOf(
+            RendererInterface::class,
+            $this->reflectionCall($listView, 'getRenderer')
+        );
+
+        $this->assertInstanceOf(
+            RequestInterface::class,
+            $this->reflectionCall($listView, 'getRequest')
+        );
+
+        /** @var MockObject|Fitter $fitter */
+        $fitter = $this->getMock(Fitter::class, []);
+        $listView->setFitter($fitter);
+
+        $listView->setRowCount(42);
     }
 
 
@@ -89,6 +108,7 @@ class ListViewTest extends PHPUnitTestCase
     {
         $listView = $this->buildMock();
 
+        /** @var MockObject|AbstractRetriever $retriever */
         $retriever = $this->getMock(
             AbstractRetriever::class,
             ['getListBody', 'getRowCount']
@@ -121,6 +141,7 @@ class ListViewTest extends PHPUnitTestCase
 
     public function testRender()
     {
+        /** @var MockObject|Renderer $renderer */
         $renderer = $this->getMock(
             Renderer::class,
             ['setConfigs', 'setListDto', 'getHtml']
