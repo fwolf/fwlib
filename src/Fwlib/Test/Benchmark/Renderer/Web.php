@@ -9,6 +9,8 @@ use Fwlib\Util\UtilContainerAwareTrait;
 /**
  * Renderer for web interface
  *
+ * @codeCoverageIgnore
+ *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -16,6 +18,40 @@ class Web implements RendererInterface
 {
     use RendererTrait;
     use UtilContainerAwareTrait;
+
+
+    /**
+     * Formation of single header or body line
+     *
+     * @param   Marker  $marker
+     * @return  string
+     */
+    protected function formatLine(Marker $marker)
+    {
+        $duration = $this->formatTime($marker->getDuration());
+
+        // Bg color
+        $color = $marker->getColor();
+        if (!empty($color)) {
+            $color = ' style="background-color: ' . $color . ';"';
+        } else {
+            $color = '';
+        }
+
+        $html = <<<EOF
+
+    <tr>
+      <td{$color}>
+{$duration}
+      </td>
+      <td class='fwlib-benchmark__mark__desc'>{$marker->getDescription()}</td>
+      <td class='fwlib-benchmark__mark__pct'>{$marker->getPercent()}%</td>
+    </tr>
+
+EOF;
+
+        return $html;
+    }
 
 
     /**
@@ -30,13 +66,54 @@ class Web implements RendererInterface
         $sec = floor($time);
         $usec = substr(strval(round($time - $sec, 3)), 2);
         $html = <<<EOF
-
         <span class='fwlib-benchmark__mark__sec'>{$sec}</span>
         <span class='fwlib-benchmark__mark__dot'>.</span>
         <span class='fwlib-benchmark__mark__usec'>{$usec}</span>
-
 EOF;
         return $html;
+    }
+
+
+    /**
+     * @return  string
+     */
+    protected function getCss()
+    {
+        return <<<EOF
+  .fwlib-benchmark table, .fwlib-benchmark td {
+    border: 1px solid #999;
+    border-collapse: collapse;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+  .fwlib-benchmark table caption, .fwlib-benchmark__memory-usage {
+    margin-top: 0.5em;
+  }
+  .fwlib-benchmark tr.total {
+    background-color: #E5E5E5;
+  }
+
+  .fwlib-benchmark__mark__sec {
+    display: inline-block;
+    text-align: right;
+    width: 4em;
+  }
+  .fwlib-benchmark__mark__dot {
+    display: inline-block;
+  }
+  .fwlib-benchmark__mark__usec {
+    display: inline-block;
+    text-align: left;
+    width: 3em;
+  }
+
+  .fwlib-benchmark__mark__desc {
+  }
+
+  .fwlib-benchmark__mark__pct {
+    text-align: right;
+  }
+EOF;
     }
 
 
@@ -48,43 +125,13 @@ EOF;
     public function getOutput()
     {
         $html = '';
+
+        $css = $this->getCss();
         $html .= <<<EOF
 
 <style type="text/css" media="screen, print">
 <!--
-.fwlib-benchmark table, .fwlib-benchmark td {
-  border: 1px solid #999;
-  border-collapse: collapse;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-}
-.fwlib-benchmark table caption, .fwlib-benchmark__memory-usage {
-  margin-top: 0.5em;
-}
-.fwlib-benchmark tr.total {
-  background-color: #E5E5E5;
-}
-
-.fwlib-benchmark__mark__sec {
-  display: inline-block;
-  text-align: right;
-  width: 4em;
-}
-.fwlib-benchmark__mark__dot {
-  display: inline-block;
-}
-.fwlib-benchmark__mark__usec {
-  display: inline-block;
-  text-align: left;
-  width: 3em;
-}
-
-.fwlib-benchmark__mark__desc {
-}
-
-.fwlib-benchmark__mark__pct {
-  text-align: right;
-}
+{$css}
 -->
 </style>
 
@@ -113,24 +160,8 @@ EOF;
             if (0 < count($this->markers[$groupId])) {
                 $html .= "\n    <tbody>";
                 /** @var Marker $marker */
-                foreach ($this->markers[$groupId] as $markerId => $marker) {
-                    $duration = $this->formatTime($marker->getDuration());
-                    // Bg color
-                    $color = $marker->getColor();
-                    if (!empty($color)) {
-                        $color = ' style="background-color: ' . $color . ';"';
-                    } else {
-                        $color = '';
-                    }
-                    $html .= <<<EOF
-
-    <tr>
-      <td{$color}>{$duration}      </td>
-      <td class='fwlib-benchmark__mark__desc'>{$marker->getDescription()}</td>
-      <td class='fwlib-benchmark__mark__pct'>{$marker->getPercent()}%</td>
-    </tr>
-
-EOF;
+                foreach ($this->markers[$groupId] as $marker) {
+                    $html .= $this->formatLine($marker);
                 }
                 $html .= "    </tbody>\n";
             }
