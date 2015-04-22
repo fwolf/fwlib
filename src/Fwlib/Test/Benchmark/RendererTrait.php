@@ -12,6 +12,8 @@ trait RendererTrait
     /**
      * Define color for markers in group, from fast to slow
      *
+     * Notice: In cli mode, need use named color or escape color id
+     *
      * @var string[]
      */
     public $colorMap = [
@@ -29,16 +31,16 @@ trait RendererTrait
     protected $groups = [];
 
     /**
-     * @var Marker[]
+     * @var array
      */
     protected $markers = [];
 
 
     /**
-     * Format cell bg color
+     * Assign cell background color
      *
-     * Split max/min marker dur by color number, and put each mark in its
-     * color.
+     * Arrange color by max/min marker duration and color map, and assign
+     * color to each marker by its position between max and min duration.
      *
      * @param   int $groupId
      */
@@ -78,7 +80,7 @@ trait RendererTrait
 
         // Compare and assign color
         $group = $this->groups[$groupId];
-        foreach ($markers as $markId => $marker) {
+        foreach ($markers as $marker) {
             $markerDuration = $marker->getDuration();
 
             // Compute percent of marker duration vs group duration
