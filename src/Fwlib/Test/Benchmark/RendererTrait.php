@@ -12,7 +12,8 @@ trait RendererTrait
     /**
      * Define color for markers in group, from fast to slow
      *
-     * Notice: In cli mode, need use named color or escape color id
+     * Notice: In cli mode, need use named color or escape color id, manual
+     * set color also works.
      *
      * @var string[]
      */
@@ -26,12 +27,12 @@ trait RendererTrait
     ];
 
     /**
-     * @var Group[]
+     * @var Group[] {groupId: Group}
      */
     protected $groups = [];
 
     /**
-     * @var array
+     * @var array   {groupId: {markerId: Marker}}
      */
     protected $markers = [];
 
