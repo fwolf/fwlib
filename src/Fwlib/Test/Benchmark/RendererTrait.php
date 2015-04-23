@@ -40,70 +40,93 @@ trait RendererTrait
     /**
      * Assign cell background color
      *
+     * Marker duration percent is also computed and set here.
+     *
      * Arrange color by max/min marker duration and color map, and assign
      * color to each marker by its position between max and min duration.
-     *
-     * @param   int $groupId
      */
-    protected function formatColor($groupId)
+    protected function assignColor()
     {
-        $markers = $this->markers[$groupId];
-
-        // Find max/min marker duration
-        $durations = [];
-        foreach ($markers as $marker) {
-            /** @var Marker $marker */
-            $durations[] = $marker->getDuration();
-        }
-
-        $minDuration = min($durations);
-        $maxDuration = max($durations);
-
-        $durationPeriod = $maxDuration - $minDuration;
-        // Only 1 marker ?
-        if (0 == $durationPeriod) {
-            $durationPeriod = $maxDuration;
-        }
-
         // Amount of color
         $colorCount = count($this->colorMap);
         if (1 > $colorCount) {
             return;
         }
 
-        // Split duration by amount of color
-        $step = $durationPeriod / $colorCount;
-        $durationBounds = [];
-        // 6 color need 7 bound value
-        for ($i = 0; $i < ($colorCount + 1); $i ++) {
-            $durationBounds[$i] = $step * $i;
-        }
-
-        // Compare and assign color
-        $group = $this->groups[$groupId];
-        foreach ($markers as $marker) {
-            $markerDuration = $marker->getDuration();
-
-            // Compute percent of marker duration vs group duration
-            $percent =
-                round(100 * $markerDuration / $group->getDuration());
-            $marker->setPercent($percent);
-
-            // Skip if user had manual set color
-            if (!empty($marker->getColor())) {
+        foreach ($this->groups as $groupId => $group) {
+            if (empty($this->markers[$groupId])) {
                 continue;
             }
+            $markers = $this->markers[$groupId];
 
-            for ($i = 1; $i < ($colorCount + 1); $i ++) {
-                if (($markerDuration - $minDuration) <= $durationBounds[$i]) {
-                    // Eg: 5.5 < 6, will assign color[5](color no.6)
-                    $marker->setColor($this->colorMap[$i - 1]);
+            $durationBounds = $this->getDurationBounds($markers);
 
-                    // Quit for loop
-                    $i = $colorCount + 1;
+            // Compare and assign color
+            /** @var Marker $marker */
+            foreach ($markers as $marker) {
+                $markerDuration = $marker->getDuration();
+
+                // Compute percent of marker duration vs group duration
+                $percent =
+                    round(100 * $markerDuration / $group->getDuration());
+                $marker->setPercent($percent);
+
+                // Skip if user had manual set color
+                if (!empty($marker->getColor())) {
+                    continue;
+                }
+
+                for ($i = 1; $i < ($colorCount + 1); $i ++) {
+                    if ($markerDuration <= $durationBounds[$i]) {
+                        // Eg: 5.5 < 6, will assign color[5](color no.6)
+                        $marker->setColor($this->colorMap[$i - 1]);
+
+                        // Quit for loop
+                        break;
+                    }
                 }
             }
         }
+    }
+
+
+    /**
+     * Get bound array of duration
+     *
+     * Note: Bound count is color count +1, eg: 6 color need 7 bound value
+     *
+     * @param   Marker[]    $markers
+     * @return  float[]
+     */
+    protected function getDurationBounds(array $markers)
+    {
+        $colorCount = count($this->colorMap);
+
+        // Find max/min marker duration
+        $durations = [];
+        /** @var Marker $marker */
+        foreach ($markers as $marker) {
+            $durations[] = $marker->getDuration();
+        }
+
+        $minDuration = min($durations);
+        $maxDuration = max($durations);
+
+        $durationDiff = $maxDuration - $minDuration;
+        // Only 1 marker ?
+        if (0 == $durationDiff) {
+            $durationDiff = $maxDuration;
+        }
+
+        // Split duration by amount of color
+        $step = $durationDiff / $colorCount;
+        $durationBounds = [];
+        // 6 color need 7 bound value
+        for ($i = 0; $i < ($colorCount + 1); $i ++) {
+            $durationBounds[$i] = $step * $i + $minDuration;
+        }
+
+        return $durationBounds;
     }
 
 

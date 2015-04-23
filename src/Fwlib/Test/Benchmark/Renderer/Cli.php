@@ -113,12 +113,12 @@ class Cli implements RendererInterface
      */
     public function getOutput()
     {
+        $this->assignColor();
+
         $output = '';
 
         $escapeColor = $this->getUtilContainer()->getEscapeColor();
         foreach ($this->groups as $groupId => $group) {
-            $this->formatColor($groupId);
-
             // Group description
             $output .= $escapeColor->paint($group->getDescription(), 'bold') .
                 PHP_EOL;

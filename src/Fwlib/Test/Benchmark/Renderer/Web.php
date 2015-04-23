@@ -124,6 +124,8 @@ EOF;
      */
     public function getOutput()
     {
+        $this->assignColor();
+
         $html = '';
 
         $css = $this->getCss();
@@ -138,8 +140,6 @@ EOF;
 EOF;
         $html .= "<div class='fwlib-benchmark'>\n";
         foreach ($this->groups as $groupId => $group) {
-            $this->formatColor($groupId);
-
             // Auto stop will create marker, so no 0=mark
             $html .= "  <table class='fwlib-benchmark__g{$groupId}'>\n";
             $html .= "    <caption>{$group->getDescription()}</caption>\n";
