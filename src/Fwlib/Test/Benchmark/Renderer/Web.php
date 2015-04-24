@@ -40,12 +40,12 @@ class Web implements RendererInterface
 
         $html = <<<EOF
 
-    <tr>
+    <tr class='fwlib-benchmark__marker'>
       <td{$color}>
 {$duration}
       </td>
-      <td class='fwlib-benchmark__mark__desc'>{$marker->getDescription()}</td>
-      <td class='fwlib-benchmark__mark__pct'>{$marker->getPercent()}%</td>
+      <td class='fwlib-benchmark__marker__desc'>{$marker->getDescription()}</td>
+      <td class='fwlib-benchmark__marker__pct'>{$marker->getPercent()}%</td>
     </tr>
 
 EOF;
@@ -66,9 +66,9 @@ EOF;
         $sec = floor($time);
         $usec = substr(strval(round($time - $sec, 3)), 2);
         $html = <<<EOF
-        <span class='fwlib-benchmark__mark__sec'>{$sec}</span>
-        <span class='fwlib-benchmark__mark__dot'>.</span>
-        <span class='fwlib-benchmark__mark__usec'>{$usec}</span>
+        <span class='fwlib-benchmark__marker__sec'>{$sec}</span>
+        <span class='fwlib-benchmark__marker__dot'>.</span>
+        <span class='fwlib-benchmark__marker__usec'>{$usec}</span>
 EOF;
         return $html;
     }
@@ -80,37 +80,37 @@ EOF;
     protected function getCss()
     {
         return <<<EOF
-  .fwlib-benchmark table, .fwlib-benchmark td {
+  .fwlib-benchmark__group, .fwlib-benchmark__group td {
     border: 1px solid #999;
     border-collapse: collapse;
     padding-left: 0.5em;
     padding-right: 0.5em;
   }
-  .fwlib-benchmark table caption, .fwlib-benchmark__memory-usage {
+  .fwlib-benchmark__caption, .fwlib-benchmark__memory-usage {
     margin-top: 0.5em;
   }
-  .fwlib-benchmark tr.total {
+  .fwlib-benchmark__total {
     background-color: #E5E5E5;
   }
 
-  .fwlib-benchmark__mark__sec {
+  .fwlib-benchmark__marker__sec {
     display: inline-block;
     text-align: right;
     width: 4em;
   }
-  .fwlib-benchmark__mark__dot {
+  .fwlib-benchmark__marker__dot {
     display: inline-block;
   }
-  .fwlib-benchmark__mark__usec {
+  .fwlib-benchmark__marker__usec {
     display: inline-block;
     text-align: left;
     width: 3em;
   }
 
-  .fwlib-benchmark__mark__desc {
+  .fwlib-benchmark__marker__desc {
   }
 
-  .fwlib-benchmark__mark__pct {
+  .fwlib-benchmark__marker__pct {
     text-align: right;
   }
 EOF;
@@ -141,14 +141,14 @@ EOF;
         $html .= "<div class='fwlib-benchmark'>\n";
         foreach ($this->groups as $groupId => $group) {
             // Auto stop will create marker, so no 0=mark
-            $html .= "  <table class='fwlib-benchmark__g{$groupId}'>\n";
-            $html .= "    <caption>{$group->getDescription()}</caption>\n";
+            $html .= "  <table class='fwlib-benchmark__group' id='fwlib-benchmark__g{$groupId}'>\n";
+            $html .= "    <caption class='fwlib-benchmark__caption'>{$group->getDescription()}</caption>\n";
 
             // Th
             $html .= <<<EOF
 
     <thead>
-    <tr>
+    <tr class='fwlib-benchmark__header'>
       <th>Dur Time</th>
       <th>Marker Description</th>
       <th>%</th>
@@ -172,7 +172,7 @@ EOF;
             $duration = $this->formatTime($group->getDuration());
             $html .= <<<EOF
 
-    <tr class="total">
+    <tr class='fwlib-benchmark__total'>
       <td>{$duration}</td>
       <td>Total</td>
       <td>-</td>
