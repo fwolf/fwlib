@@ -14,8 +14,6 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * http://pear.php.net/package/Benchmark
  * http://www.phpclasses.org/browse/package/2244.html
  *
- * @codeCoverageIgnore
- *
  * @copyright   Copyright 2009-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -77,16 +75,12 @@ class Benchmark
 
     /**
      * Display benchmark result
-     *
-     * @return  string|void
      */
     public function display()
     {
         $output = $this->getOutput();
 
         echo $output;
-
-        return null;
     }
 
 
@@ -179,13 +173,13 @@ class Benchmark
         $marker->setBeginTime($beginTime);
 
         if (0 == $this->markerId) {
-            $group = $this->getCurrentGroup();
-            $duration = $beginTime - $group->getBeginTime();
+            $prevBeginTime = $this->getCurrentGroup()->getBeginTime();
         } else {
             /** @var Marker $prevMarker */
             $prevMarker = $markers[$this->markerId - 1];
-            $duration = $beginTime - $prevMarker->getBeginTime();
+            $prevBeginTime = $prevMarker->getBeginTime();
         }
+        $duration = $beginTime - $prevBeginTime;
         $marker->setDuration($duration);
 
         if (!empty($color)) {
