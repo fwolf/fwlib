@@ -247,6 +247,19 @@ class ListView
 
 
     /**
+     * Reset list head and body
+     *
+     * @return  static
+     */
+    public function reset()
+    {
+        $this->listDto = null;
+
+        return $this;
+    }
+
+
+    /**
      * List body can be empty, so no type hint in parameter list.
      *
      * In some case, list is not paged, so total rows can be set automatic by

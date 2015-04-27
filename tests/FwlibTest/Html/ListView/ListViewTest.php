@@ -170,5 +170,12 @@ class ListViewTest extends PHPUnitTestCase
         /** @var ListDto $listDto */
         $listDto = $this->reflectionCall($listView, 'getListDto');
         $this->assertEquals(2, $listDto->getRowCount());
+
+        $listView->reset();
+        $listDto = $this->reflectionCall($listView, 'getListDto');
+        $this->assertEquals(
+            ListView::ROW_COUNT_NOT_SET,
+            $listDto->getRowCount()
+        );
     }
 }
