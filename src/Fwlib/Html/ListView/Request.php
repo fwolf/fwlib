@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Html\ListView;
 
+use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Html\ListView\Exception\InvalidRequestSourceException;
 use Fwlib\Html\ListView\Helper\RequestParameterTrait;
 use Fwlib\Util\UtilContainer;
@@ -11,6 +12,7 @@ use Fwlib\Util\UtilContainer;
  */
 class Request implements RequestInterface
 {
+    use ConfigAwareTrait;
     use RequestParameterTrait;
 
 
@@ -63,21 +65,32 @@ class Request implements RequestInterface
 
     /**
      * {@inheritdoc}
+     *
+     * Recognize user config 'orderBy', format {key: direction}, can hold
+     * default value, and can be overwritten by request config.
+     *
+     * User config can define multiple sort order, while request config can
+     * only define one.
      */
     public function getOrderBy()
     {
+        $configOrderBy = $this->getConfig('orderBy', []);
+
         $key = $this->getRequest($this->getOrderByParameter());
 
         if (empty($key)) {
-            return [];
+            $requestOrderBy = [];
+
+        } else {
+            $direction =
+                $this->getRequest($this->getOrderByDirectionParameter(), 'ASC');
+
+            $direction = strtoupper($direction);
+
+            $requestOrderBy = [$key => $direction];
         }
 
-        $direction =
-            $this->getRequest($this->getOrderByDirectionParameter(), 'ASC');
-
-        $direction = strtoupper($direction);
-
-        return [$key => $direction];
+        return array_merge($configOrderBy, $requestOrderBy);
     }
 
 

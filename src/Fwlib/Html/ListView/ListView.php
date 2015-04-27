@@ -143,7 +143,7 @@ class ListView
             $retriever = $this->getRetriever();
             if (!is_null($retriever)) {
                 $retriever->setConfigs($configs)
-                    ->setRequest($this->getRequest());
+                    ->setRequest($this->getRequest()->setconfigs($configs));
 
                 $listDto->setBody($retriever->getListBody());
                 $listDto->setRowCount($retriever->getRowCount());
@@ -237,8 +237,11 @@ class ListView
     {
         $configs = $this->getConfigs();
 
+        $request = $this->getRequest()
+            ->setConfigs($configs);
+
         $renderer = $this->getRenderer()
-            ->setRequest($this->getRequest())
+            ->setRequest($request)
             ->setConfigs($configs)
             ->setListDto($listDto);
 
