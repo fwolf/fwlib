@@ -237,6 +237,7 @@ class ListView
         $configs = $this->getConfigs();
 
         $renderer = $this->getRenderer()
+            ->setRequest($this->getRequest())
             ->setConfigs($configs)
             ->setListDto($listDto);
 
