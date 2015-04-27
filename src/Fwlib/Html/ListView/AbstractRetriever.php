@@ -10,6 +10,7 @@ use Fwlib\Config\ConfigAwareTrait;
 abstract class AbstractRetriever implements RetrieverInterface
 {
     use ConfigAwareTrait;
+    use RequestAwareTrait;
 
 
     /**

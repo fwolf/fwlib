@@ -42,4 +42,12 @@ interface RetrieverInterface
      * @return  static
      */
     public function setConfigs(array $configs);
+
+    /**
+     * Set Request instance, used to know current page, order by etc
+     *
+     * @param   RequestInterface $request
+     * @return  static
+     */
+    public function setRequest(RequestInterface $request);
 }

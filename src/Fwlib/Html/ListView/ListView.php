@@ -142,7 +142,8 @@ class ListView
         if (self::ROW_COUNT_NOT_SET == $listDto->getRowCount()) {
             $retriever = $this->getRetriever();
             if (!is_null($retriever)) {
-                $retriever->setConfigs($configs);
+                $retriever->setConfigs($configs)
+                    ->setRequest($this->getRequest());
 
                 $listDto->setBody($retriever->getListBody());
                 $listDto->setRowCount($retriever->getRowCount());
