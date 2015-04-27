@@ -106,7 +106,7 @@ class ListView
     protected function getDefaultConfigs()
     {
         return [
-            'class'             => 'listView',
+            'class'             => 'list-view',
             'id'                => 1,
 
             /**
