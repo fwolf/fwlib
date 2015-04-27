@@ -18,7 +18,7 @@ trait RequestAwareTrait
     /**
      * @return  RequestInterface
      */
-    protected function getRequest()
+    public function getRequest()
     {
         return $this->request;
     }

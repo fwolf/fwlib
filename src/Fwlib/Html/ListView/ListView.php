@@ -216,7 +216,7 @@ class ListView
      *
      * Default return a {@see Request} instance.
      */
-    protected function getRequest()
+    public function getRequest()
     {
         if (is_null($this->request)) {
             $this->request = new Request;
