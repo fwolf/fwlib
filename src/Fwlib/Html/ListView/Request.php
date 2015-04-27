@@ -69,7 +69,7 @@ class Request implements RequestInterface
         $key = $this->getRequest($this->getOrderByParameter());
 
         if (empty($key)) {
-            return null;
+            return [];
         }
 
         $direction =

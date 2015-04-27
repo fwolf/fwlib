@@ -91,7 +91,7 @@ class RequestTest extends PHPUnitTestCase
             ->method('getRequest')
             ->willReturnOnConsecutiveCalls(null, 'foo', 'desc');
 
-        $this->assertNull($request->getOrderBy());
+        $this->assertEqualArray([], $request->getOrderBy());
 
         $this->assertEqualArray(['foo' => 'DESC'], $request->getOrderBy());
     }
