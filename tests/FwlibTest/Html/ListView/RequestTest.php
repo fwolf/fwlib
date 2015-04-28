@@ -117,15 +117,11 @@ class RequestTest extends PHPUnitTestCase
         /** @var MockObject|Request $request */
         $request = $this->getMock(Request::class, ['getRequest']);
 
-        $request->expects($this->any())
+        $request->expects($this->once())
             ->method('getRequest')
-            ->willReturnOnConsecutiveCalls('20', ListView::PAGE_SIZE_NOT_SET);
+            ->willReturnOnConsecutiveCalls('20');
 
         $this->assertEquals(20, $request->getPageSize());
-        $this->assertEquals(
-            ListView::PAGE_SIZE_NOT_SET,
-            $request->getPageSize()
-        );
     }
 
 

@@ -215,7 +215,7 @@ $body
         $request = $this->getRequest();
         $listDto = $this->getListDto();
 
-        $pageSize = $this->getSafePageSize();
+        $pageSize = $request->getPageSize();
         $rowCount = $listDto->getRowCount();
         $maxPage = ceil($rowCount / $pageSize);
         $page = $this->getSafePage($maxPage);
@@ -340,25 +340,6 @@ $body
         $page = min($page, $maxPage);
 
         return $page;
-    }
-
-
-    /**
-     * Get safe page size
-     *
-     * Try request first, then config.
-     *
-     * :TODO: Move to Request
-     */
-    protected function getSafePageSize()
-    {
-        $pageSize = $this->getRequest()->getPageSize();
-
-        if (ListView::PAGE_SIZE_NOT_SET == $pageSize) {
-            $pageSize = $this->getConfig('pageSize');
-        }
-
-        return $pageSize;
     }
 
 
