@@ -81,9 +81,9 @@ class UrlGeneratorTraitTest extends PHPUnitTestCase
         );
 
         // Without tailing '/', original path '/index.php' will kept
-        $urlGenerator->setBaseUrl('http://net.com');
+        $urlGenerator->setBaseUrl('http://net.com:8080');
         $this->assertEquals(
-            'http://net.com/index.php?foo=bar',
+            'http://net.com:8080/index.php?foo=bar',
             $urlGenerator->getFullUrl()
         );
 

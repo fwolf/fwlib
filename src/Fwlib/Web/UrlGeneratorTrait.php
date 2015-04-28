@@ -103,6 +103,9 @@ trait UrlGeneratorTrait
 
         $url .= $host;
 
+        $url .= array_key_exists('port', $components)
+            ? ':' . $components['port'] : '';
+
         $url .= $arrayUtil->getIdx($components, 'path', '/');
 
         if (!empty($this->parameters)) {
@@ -211,6 +214,9 @@ trait UrlGeneratorTrait
 
         unset($components['query']);
         unset($components['fragment']);
+
+        // Port component may or may not exists
+        unset($this->urlComponents['port']);
 
         $this->urlComponents = array_merge($this->urlComponents, $components);
 
