@@ -11,12 +11,13 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class RequestParameterTraitTest extends PHPUnitTestCase
 {
     /**
-     * @return MockObject | RequestParameterTrait
+     * @param   string[]    $methods
+     * @return  MockObject|RequestParameterTrait
      */
-    protected function buildMock()
+    protected function buildMock(array $methods = null)
     {
         $mock = $this->getMockBuilder(RequestParameterTrait::class)
-            ->setMethods(null)
+            ->setMethods($methods)
             ->getMockForTrait();
 
         return $mock;
@@ -25,7 +26,10 @@ class RequestParameterTraitTest extends PHPUnitTestCase
 
     public function testAccessors()
     {
-        $request = $this->buildMock();
+        $request = $this->buildMock(['getConfig']);
+        $request->expects($this->any())
+            ->method('getConfig')
+            ->willReturnOnConsecutiveCalls(1, 1, 1, 42);
 
         $request->setOrderByDirectionParameter('OD');
         $this->assertEquals('OD', $request->getOrderByDirectionParameter());
@@ -37,6 +41,6 @@ class RequestParameterTraitTest extends PHPUnitTestCase
         $this->assertEquals('page', $request->getPageParameter());
 
         $request->setPageSizeParameter('pageSize');
-        $this->assertEquals('pageSize', $request->getPageSizeParameter());
+        $this->assertEquals('pageSize42', $request->getPageSizeParameter());
     }
 }

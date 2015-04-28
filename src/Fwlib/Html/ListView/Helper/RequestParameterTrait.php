@@ -8,6 +8,7 @@ namespace Fwlib\Html\ListView\Helper;
  * @property    string  $orderByParameter
  * @property    string  $pageParameter
  * @property    string  $pageSizeParameter
+ * @method      string  getConfig($key)
  *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -15,11 +16,29 @@ namespace Fwlib\Html\ListView\Helper;
 trait RequestParameterTrait
 {
     /**
+     * Append id to parameter, to identify multiple list in one page
+     *
+     * Id '1' will omit.
+     *
+     * @param   string  $parameter
+     * @return  string
+     */
+    protected function appendListId($parameter)
+    {
+        $listId = $this->getConfig('id');
+
+        return (1 != $listId)
+            ? $parameter . $listId
+            : $parameter;
+    }
+
+
+    /**
      * @return  string
      */
     public function getOrderByDirectionParameter()
     {
-        return $this->orderByDirParameter;
+        return $this->appendListId($this->orderByDirParameter);
     }
 
 
@@ -28,7 +47,7 @@ trait RequestParameterTrait
      */
     public function getOrderByParameter()
     {
-        return $this->orderByParameter;
+        return $this->appendListId($this->orderByParameter);
     }
 
 
@@ -37,7 +56,7 @@ trait RequestParameterTrait
      */
     public function getPageParameter()
     {
-        return $this->pageParameter;
+        return $this->appendListId($this->pageParameter);
     }
 
 
@@ -46,7 +65,7 @@ trait RequestParameterTrait
      */
     public function getPageSizeParameter()
     {
-        return $this->pageSizeParameter;
+        return $this->appendListId($this->pageSizeParameter);
     }
 
 
