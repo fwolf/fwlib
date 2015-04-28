@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Html\ListView;
 
-use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Html\ListView\Helper\ClassAndIdConfigTrait;
 
 /**
@@ -101,35 +100,6 @@ class ListView
 
 
     /**
-     * @return array
-     */
-    protected function getDefaultConfigs()
-    {
-        return [
-            'class'             => 'list-view',
-            'id'                => 1,
-
-            /**
-             * @see FitMode
-             */
-            'fitMode'           => FitMode::TO_TITLE,
-            /**
-             * If a value in body is empty, display with this value. Not for
-             * head, which will use field name.
-             * @see Fitter::$emptyFiller
-             */
-            'fitEmptyFiller'    => '&nbsp;',
-
-            'showTopPager'      => false,
-            'showBottomPager'   => true,
-
-            // Default/failsafe, MUST set a positive value
-            'pageSize'          => 10,
-        ];
-    }
-
-
-    /**
      * Try fill data and return ListDto
      *
      * @return  ListDto
@@ -137,13 +107,12 @@ class ListView
     protected function getFilledListDto()
     {
         $listDto = $this->getListDto();
-        $configs = $this->getConfigs();
 
         if (self::ROW_COUNT_NOT_SET == $listDto->getRowCount()) {
             $retriever = $this->getRetriever();
             if (!is_null($retriever)) {
-                $retriever->setConfigs($configs)
-                    ->setRequest($this->getRequest()->setconfigs($configs));
+                $retriever->setConfigInstance($this->getConfigInstance())
+                    ->setRequest($this->getRequest());
 
                 $listDto->setBody($retriever->getListBody());
                 $listDto->setRowCount($retriever->getRowCount());
@@ -208,6 +177,8 @@ class ListView
             $this->renderer = new Renderer;
         }
 
+        $this->renderer->setConfigInstance($this->getConfigInstance());
+
         return $this->renderer;
     }
 
@@ -223,6 +194,8 @@ class ListView
             $this->request = new Request;
         }
 
+        $this->request->setConfigInstance($this->getConfigInstance());
+
         return $this->request;
     }
 
@@ -235,14 +208,8 @@ class ListView
      */
     protected function render(ListDto $listDto)
     {
-        $configs = $this->getConfigs();
-
-        $request = $this->getRequest()
-            ->setConfigs($configs);
-
         $renderer = $this->getRenderer()
-            ->setRequest($request)
-            ->setConfigs($configs)
+            ->setRequest($this->getRequest())
             ->setListDto($listDto);
 
         return $renderer->getHtml();

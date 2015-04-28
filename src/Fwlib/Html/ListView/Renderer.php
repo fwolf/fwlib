@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Html\ListView;
 
-use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Html\ListView\Helper\ClassAndIdConfigTrait;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Web\UrlGenerator;
@@ -51,45 +50,6 @@ class Renderer implements RendererInterface
             : $this->getConfig('orderByTextDesc');
 
         return $value . $orderByText;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDefaultConfigs()
-    {
-        return [
-            /**
-             * Text display after head title, if order by assigned
-             */
-            'orderByTextAsc'    => '↑',
-            'orderByTextDesc'   => '↓',
-
-            'pagerTextFirstPage'  => '首页',
-            'pagerTextPrevPage'   => '上一页',
-            'pagerTextNextPage'   => '下一页',
-            'pagerTextLastPage'   => '尾页',
-            'pagerTextSummary'    =>
-                '共{rowCount}条信息，每页显示{pageSize}条，当前为第{page}/{maxPage}页',
-            'pagerTextJump1'      => '转到第',
-            'pagerTextJump2'      => '页',
-            'pagerTextJumpButton' => '转',
-            'pagerTextSpacer'     => " | ",
-
-            /**
-             * Append raw string to td/th/tr tag in list table, eg:
-             * nowrap='nowrap'. Notice the trAppend will only apply to list
-             * body, not list head. The thAppend and tdAppend is assoc indexed
-             * same with head/body, and trAppend is int indexed, match with
-             * the row number in this page, start from 0.
-             *
-             * This for back compatible, if possible, use CSS instead.
-             */
-            'tdAppend' => [],
-            'thAppend' => [],
-            'trAppend' => [],
-        ];
     }
 
 
@@ -387,6 +347,8 @@ $body
      * Get safe page size
      *
      * Try request first, then config.
+     *
+     * :TODO: Move to Request
      */
     protected function getSafePageSize()
     {

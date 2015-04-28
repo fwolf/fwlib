@@ -1,8 +1,6 @@
 <?php
 namespace Fwlib\Html\ListView;
 
-use Fwlib\Config\ConfigAwareInterface;
-
 /**
  * RequestInterface
  *

@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Html\ListView;
 
-use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Html\ListView\Exception\InvalidRequestSourceException;
 use Fwlib\Html\ListView\Helper\RequestParameterTrait;
 use Fwlib\Util\UtilContainer;
@@ -66,8 +65,8 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      *
-     * Recognize user config 'orderBy', format {key: direction}, can hold
-     * default value, and can be overwritten by request config.
+     * Recognize user config 'orderBy', can hold default value, and can be
+     * overwritten by request config.
      *
      * User config can define multiple sort order, while request config can
      * only define one.

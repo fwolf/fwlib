@@ -34,11 +34,6 @@ class ListViewTest extends PHPUnitTestCase
     {
         $listView = $this->buildMock();
 
-        $this->assertArrayHasKey(
-            'class',
-            $this->reflectionCall($listView, 'getDefaultConfigs')
-        );
-
         $this->assertInstanceOf(
             RendererInterface::class,
             $this->reflectionCall($listView, 'getRenderer')
@@ -144,10 +139,10 @@ class ListViewTest extends PHPUnitTestCase
         /** @var MockObject|Renderer $renderer */
         $renderer = $this->getMock(
             Renderer::class,
-            ['setConfigs', 'setListDto', 'getHtml']
+            ['setConfigInstance', 'setListDto', 'getHtml']
         );
         $renderer->expects($this->once())
-            ->method('setConfigs')
+            ->method('setConfigInstance')
             ->willReturnSelf();
         $renderer->expects($this->once())
             ->method('setListDto')
