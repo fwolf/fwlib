@@ -319,31 +319,4 @@ class RendererTest extends PHPUnitTestCase
             $this->reflectionCall($renderer, 'getSafePage', ['2'])
         );
     }
-
-
-    public function testGetSafePageSize()
-    {
-        $renderer = $this->buildMock();
-
-        /** @var MockObject|RequestInterface $request */
-        $request = $this->getMock(Request::class, ['getPageSize']);
-        $request->expects($this->any())
-            ->method('getPageSize')
-            ->willReturnOnConsecutiveCalls(30, -1);
-        $renderer->setRequest($request);
-
-        $renderer->setConfig('pageSize', 20);
-
-        // Use request
-        $this->assertEquals(
-            30,
-            $this->reflectionCall($renderer, 'getSafePageSize')
-        );
-
-        // Use config
-        $this->assertEquals(
-            20,
-            $this->reflectionCall($renderer, 'getSafePageSize')
-        );
-    }
 }
