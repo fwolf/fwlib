@@ -32,24 +32,38 @@ class RendererTest extends PHPUnitTestCase
     }
 
 
+    public function testAddOrderByLink()
+    {
+        $renderer = $this->buildMock();
+
+        /** @var MockObject|Request $request */
+        $request = $this->getMock(Request::class, ['getBaseUrl']);
+        $request->expects($this->any())
+            ->method('getBaseUrl')
+            ->willReturn('http://domain.tld/');
+        $request->setOrderByParameter('ob')
+            ->setOrderByDirectionParameter('od');
+        $renderer->setRequest($request);
+
+        $this->assertEquals(
+            "<a href='http://domain.tld/?ob=foo&od=DESC'>head(asc)</a>",
+            $this->reflectionCall(
+                $renderer,
+                'addOrderByLink',
+                ['foo', 'head(asc)', 'ASC']
+            )
+        );
+    }
+
+
     public function testAddOrderByText()
     {
         $renderer = $this->buildMock();
         $renderer->setConfig('orderByTextAsc', '[Ascending]');
 
-        $request = $this->getMock(Request::class, ['getOrderBy']);
-        $request->expects($this->any())
-            ->method('getOrderBy')
-            ->willReturnOnConsecutiveCalls(null, ['foo' => 'asc']);
-        $renderer->setRequest($request);
-
-        $this->assertEquals(
-            'head',
-            $this->reflectionCall($renderer, 'addOrderByText', ['foo', 'head'])
-        );
         $this->assertEquals(
             'head[Ascending]',
-            $this->reflectionCall($renderer, 'addOrderByText', ['foo', 'head'])
+            $this->reflectionCall($renderer, 'addOrderByText', ['head', 'ASC'])
         );
     }
 
@@ -190,6 +204,40 @@ class RendererTest extends PHPUnitTestCase
         $this->assertEquals(
             $html,
             $this->reflectionCall($renderer, 'getListHead')
+        );
+    }
+
+
+    public function testGetListHeadText()
+    {
+        $renderer = $this->buildMock();
+        $renderer->setConfig('orderByTextAsc', '[Asc]');
+
+        /** @var MockObject|Request $request */
+        $request = $this->getMock(Request::class, ['getBaseUrl', 'getOrderBy']);
+
+        $request->expects($this->any())
+            ->method('getBaseUrl')
+            ->willReturn('http://domain.tld/');
+
+        $request->expects($this->any())
+            ->method('getOrderBy')
+            ->willReturnOnConsecutiveCalls(null, ['foo' => 'asc']);
+
+        $request->setOrderByParameter('ob')
+            ->setOrderByDirectionParameter('od');
+        $renderer->setRequest($request);
+
+
+        // Empty order by
+        $this->assertEquals(
+            "head",
+            $this->reflectionCall($renderer, 'getListHeadText', ['foo', 'head'])
+        );
+
+        $this->assertEquals(
+            "<a href='http://domain.tld/?ob=foo&od=DESC'>head[Asc]</a>",
+            $this->reflectionCall($renderer, 'getListHeadText', ['foo', 'head'])
         );
     }
 

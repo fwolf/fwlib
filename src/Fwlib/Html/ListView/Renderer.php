@@ -31,25 +31,49 @@ class Renderer implements RendererInterface
 
 
     /**
-     * Add order by text to list head title
+     * Change order by list head text to link
+     *
+     * The order by direction in link is reverse of current direction.
      *
      * @param   string  $key
-     * @param   string  $value
+     * @param   string  $text
+     * @param   string  $direction
+     * @return  string
      */
-    protected function addOrderByText($key, $value)
+    protected function addOrderByLink($key, $text, $direction)
     {
-        $orderBy = $this->getRequest()->getOrderBy();
+        $request = $this->getRequest();
 
-        if (empty($orderBy) || !isset($orderBy[$key])) {
-            return $value;
-        }
+        $urlGenerator = new UrlGenerator();
+        $urlGenerator->setFullUrl($request->getBaseUrl());
 
-        $orderByDirection = strtoupper($orderBy[$key]);
-        $orderByText = ('ASC' == $orderByDirection)
+        $orderByParam = $request->getOrderByParameter();
+        $dirParam = $request->getOrderByDirectionParameter();
+
+        $newDirection = ('ASC' == $direction) ? 'DESC' : 'ASC';
+
+        $link = $urlGenerator->setParameter($orderByParam, $key)
+            ->setParameter($dirParam, $newDirection)
+            ->getFullLink($text);
+
+        return $link;
+    }
+
+
+    /**
+     * Add order by text to list head title
+     *
+     * @param   string  $text
+     * @param   string  $direction
+     * @return  string
+     */
+    protected function addOrderByText($text, $direction)
+    {
+        $orderByText = ('ASC' == $direction)
             ? $this->getConfig('orderByTextAsc')
             : $this->getConfig('orderByTextDesc');
 
-        return $value . $orderByText;
+        return $text . $orderByText;
     }
 
 
@@ -151,7 +175,7 @@ $rowsHtml
         $thHtml = '';
         $thAppendConfig = $this->getConfig('thAppend');
 
-        foreach ($this->getListDto()->getHead() as $key => $value) {
+        foreach ($this->getListDto()->getHead() as $key => $thText) {
             $thId = $this->getId("th__$key");
 
             $thAppend = array_key_exists($key, $thAppendConfig)
@@ -161,9 +185,9 @@ $rowsHtml
                 $thAppend = ' ' . ltrim($thAppend);
             }
 
-            $value = $this->addOrderByText($key, $value);
+            $thText = $this->getListHeadText($key, $thText);
 
-            $thHtml .= "    <th id='$thId'" . $thAppend . ">$value</th>\n";
+            $thHtml .= "    <th id='$thId'" . $thAppend . ">$thText</th>\n";
         }
 
         $trClass = $this->getClass('head__tr');
@@ -174,6 +198,31 @@ $thHtml  </tr>
 </thead>";
 
         return $html;
+    }
+
+
+    /**
+     * Get rendered text of a list head cell
+     *
+     * @param   string  $key
+     * @param   string  $text
+     * @return  string
+     */
+    protected function getListHeadText($key, $text)
+    {
+        $orderBys = $this->getRequest()->getOrderBy();
+
+        if (empty($orderBys) || !isset($orderBys[$key])) {
+            return $text;
+        }
+
+        $direction = strtoupper($orderBys[$key]);
+
+        $text = $this->addOrderByText($text, $direction);
+
+        $text = $this->addOrderByLink($key, $text, $direction);
+
+        return $text;
     }
 
 

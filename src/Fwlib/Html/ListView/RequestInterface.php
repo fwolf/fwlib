@@ -14,6 +14,9 @@ interface RequestInterface extends ConfigAwareInterface
      *
      * All link or action from this link will based on this url.
      *
+     * Notice: Different with {@see HttpUtil}, this base url may carry
+     * parameters.
+     *
      * @return  string
      */
     public function getBaseUrl();
