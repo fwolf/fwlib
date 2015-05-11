@@ -1,0 +1,42 @@
+/**
+ * CSS for ListView
+ */
+
+.list-view {
+  border: 0 solid red;
+  margin: auto;
+  width: 70%;
+}
+
+.list-view__pager {
+  text-align: right;
+}
+.list-view form {
+  display: inline-block;
+}
+
+.list-view table {
+  margin: auto;
+  width: 100%;
+}
+.list-view table, .list-view td, .list-view th {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.list-view__head__tr {
+  background-color: #d0dcff;
+}
+
+/* Even, CSS3 */
+.list-view__body__tr:nth-child(2n) {
+  background-color: #eef2ff;
+}
+/* Odd, CSS3 */
+.list-view__body__tr:nth-child(2n + 1) {
+  background-color: #fff;
+}
+/* hover define must after even/odd, CSS3 too */
+.list-view__body__tr:hover {
+  background-color: #e3e3de;
+}
