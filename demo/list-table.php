@@ -1,4 +1,10 @@
 <?php
+/**
+ * @deprecated  Use demo/list-view/list-view.php instead.
+ *
+ * Will remove with ListTable, list-table.tpl,
+ */
+
 $pathToRoot = '../';
 require __DIR__ . "/{$pathToRoot}config.default.php";
 

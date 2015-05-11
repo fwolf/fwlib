@@ -13,6 +13,7 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * Some html/style operation use jQuery.
  *
  * @codeCoverageIgnore
+ * @deprecated  Use ListView instead
  *
  * @copyright   Copyright 2003-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
