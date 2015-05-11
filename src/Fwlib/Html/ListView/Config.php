@@ -60,6 +60,9 @@ class Config extends \Fwlib\Config\Config
         'pagerTextJumpButton' => '转',
         'pagerTextSpacer'     => " | ",
 
+        // Auto select of page number form input
+        'pageNumberInputFocusSelect' => true,
+
         /**
          * Raw string append to td/th/tr tag in list view, eg: nowrap='nowrap'.
          *

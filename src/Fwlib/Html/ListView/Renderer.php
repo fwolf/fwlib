@@ -104,6 +104,8 @@ class Renderer implements RendererInterface
         $stringUtil = UtilContainer::getInstance()->getString();
         $partsHtml = $stringUtil->indent($partsHtml, 2);
 
+        $javascript = $this->getJs();
+
         $html = "{$this->preContent}
 
 <div class='$rootClass' id='$rootId'>
@@ -112,7 +114,47 @@ $partsHtml
 
 </div>
 
+{$javascript}
+
 {$this->postContent}";
+
+        return $html;
+    }
+
+
+    /**
+     * Get js part of list
+     *
+     * @return  string
+     */
+    protected function getJs()
+    {
+        $html = '';
+        $rootId = $this->getId();
+
+        if ($this->getConfig('pageNumberInputFocusSelect')) {
+            $pageParameter = $this->getRequest()->getPageParameter();
+            $html .= "
+$('#{$rootId}').find('input[name={$pageParameter}]').on('mouseover', function() {
+  this.select();
+});
+";
+        }
+
+        if (!empty($html)) {
+            $stringUtil = UtilContainer::getInstance()->getString();
+            $html = $stringUtil->indent($html, 4);
+
+            $html = <<<TAG
+
+<script type='text/javascript'>
+  (function() {
+$html
+  }) ();
+</script>
+
+TAG;
+        }
 
         return $html;
     }

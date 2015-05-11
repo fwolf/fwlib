@@ -9,19 +9,22 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class RendererTest extends PHPUnitTestCase
 {
     /**
-     * @return MockObject | Renderer
+     * @param   string[]    $methods
+     * @return  MockObject | Renderer
      */
-    protected function buildMock()
+    protected function buildMock(array $methods = null)
     {
         $mock = $this->getMock(
             Renderer::class,
-            null
+            $methods
         );
 
         /** @var Renderer $mock */
@@ -73,7 +76,7 @@ class RendererTest extends PHPUnitTestCase
         /** @var MockObject|Renderer $renderer */
         $renderer = $this->getMock(
             Renderer::class,
-            ['getListTable', 'getPager']
+            ['getListTable', 'getPager', 'getJs']
         );
 
         $renderer->expects($this->any())
@@ -86,6 +89,10 @@ class RendererTest extends PHPUnitTestCase
                 '<!-- top pager -->',
                 '<!-- bottom pager -->'
             );
+
+        $renderer->expects($this->any())
+            ->method('getJs')
+            ->willReturn('<!-- js -->');
 
         $renderer->setClass('listTable')->setId(1);
 
@@ -106,8 +113,39 @@ class RendererTest extends PHPUnitTestCase
 
 </div>
 
+<!-- js -->
+
 <!-- post content -->";
         $this->assertEquals($html, $renderer->getHtml());
+    }
+
+
+    public function testGetJs()
+    {
+        $renderer = $this->buildMock();
+        $renderer->setClass('list-view')
+            ->setId(42)
+            ->setConfig('pageNumberInputFocusSelect', true);
+
+        /** @var MockObject|RequestInterface $request */
+        $request = $this->getMock(Request::class, ['getPageParameter']);
+        $request->expects($this->any())
+            ->method('getPageParameter')
+            ->willReturn('pageNumber');
+        $renderer->setRequest($request);
+
+        $html = "
+<script type='text/javascript'>
+  (function() {
+
+    $('#list-view-42').find('input[name=pageNumber]').on('mouseover', function() {
+      this.select();
+    });
+
+  }) ();
+</script>
+";
+        $this->assertEquals($html, $this->reflectionCall($renderer, 'getJs'));
     }
 
 
@@ -184,6 +222,7 @@ class RendererTest extends PHPUnitTestCase
         $renderer = $this->buildMock();
         $renderer->setConfig('thAppend', ['foo' => 'nowrap']);
 
+        /** @var MockObject|Request $request */
         $request = $this->getMock(Request::class, []);
         $renderer->setRequest($request);
 
