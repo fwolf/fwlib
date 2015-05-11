@@ -100,7 +100,9 @@ class Renderer implements RendererInterface
             $parts[] = $this->getPager('bottom');
         }
 
-        $partsHtml = '  ' . implode("\n\n  ", $parts);
+        $partsHtml = implode("\n\n", $parts);
+        $stringUtil = UtilContainer::getInstance()->getString();
+        $partsHtml = $stringUtil->indent($partsHtml, 2);
 
         $html = "{$this->preContent}
 
