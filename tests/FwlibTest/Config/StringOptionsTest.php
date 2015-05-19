@@ -40,6 +40,15 @@ class StringOptionsTest extends PHPUnitTestCase
     }
 
 
+    public function testGet()
+    {
+        $options = $this->buildMock();
+
+        $this->assertNotNull($options->get('notExist'));
+        $this->assertTrue(false === $options->get('notExist'));
+    }
+
+
     public function testImport()
     {
         $options = $this->buildMock();

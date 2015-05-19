@@ -82,6 +82,15 @@ class StringOptions extends Config
 
 
     /**
+     * {@inheritdoc}
+     */
+    public function get($key, $default = false)
+    {
+        return parent::get($key, $default);
+    }
+
+
+    /**
      * Initialize from rule string
      *
      * Will clear present values.
