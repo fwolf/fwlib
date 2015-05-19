@@ -2,6 +2,7 @@
 namespace Fwlib\Validator;
 
 use Fwlib\Base\Exception\ServiceInstanceCreationFailException;
+use Fwlib\Config\StringOptions;
 
 /**
  * Validate data and got fail message
@@ -86,18 +87,18 @@ class Validator
 
             if (0 == $i) {
                 $constraintName = $ruleString;
-                $constraintData = null;
+                $options = null;
 
             } else {
                 $constraintName = $match[1];
-                $constraintData = trim(
+                $options = new StringOptions(
                     substr($ruleString, strlen($constraintName) + 1)
                 );
             }
 
             $constraint = $this->getConstraint(ucfirst($constraintName));
 
-            if (!$constraint->validate($value, $constraintData)) {
+            if (!$constraint->validate($value, $options)) {
                 $valid = false;
                 $this->messages = array_merge(
                     $this->messages,

@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
+use Fwlib\Config\StringOptions;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Regex;
 
@@ -14,11 +15,19 @@ class RegexTest extends PHPUnitTestCase
     {
         $constraint = new Regex();
 
-        $this->assertTrue($constraint->validate(42, '/\d{2}/'));
-        $this->assertTrue($constraint->validate(0, '/\d?/'));
+        $this->assertTrue(
+            $constraint->validate(42, new StringOptions('regex=/\d{2}/'))
+        );
+        $this->assertTrue(
+            $constraint->validate(0, new StringOptions('regex=/\d?/'))
+        );
 
-        $this->assertFalse($constraint->validate('', '/\w+/'));
-        $this->assertFalse($constraint->validate('   ', '/!^\s/'));
+        $this->assertFalse(
+            $constraint->validate('', new StringOptions('regex=/\w+/'))
+        );
+        $this->assertFalse(
+            $constraint->validate('   ', new StringOptions('regex=/!^\s/'))
+        );
         // Invalid type
         $this->assertFalse($constraint->validate(null));
         $this->assertFalse($constraint->validate([]));

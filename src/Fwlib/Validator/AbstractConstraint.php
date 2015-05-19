@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Validator;
 
+use Fwlib\Config\StringOptions;
 use Fwlib\Validator\Exception\MessageTemplateNotDefinedException;
 
 /**
@@ -101,7 +102,7 @@ abstract class AbstractConstraint implements ConstraintInterface
     /**
      * {@inheritdoc}
      */
-    public function validate($value, $constraintData = null)
+    public function validate($value, StringOptions $options = null)
     {
         // Clear previous message
         $this->messages = [];

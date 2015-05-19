@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
+use Fwlib\Config\StringOptions;
 use Fwlib\Validator\AbstractConstraint;
 
 /**
@@ -23,43 +24,36 @@ class Length extends AbstractConstraint
     /**
      * {@inheritdoc}
      *
-     * $constraintData format:
-     * - minLength
-     * - minLength, maxLength
-     * - minLength to maxLength
+     * Options:
+     * - min
+     * - max
      *
-     * If need not check minLength, set it to 0.
+     * Boundary included, eg: min=3, 'abc' is valid.
      */
-    public function validate($value, $constraintData = null)
+    public function validate($value, StringOptions $options = null)
     {
-        parent::validate($value, $constraintData);
-
-
-        // Get min and max
-        $constraintData = str_ireplace('to', ',', $constraintData);
-        $parts = explode(',', $constraintData);
-
-        $min = intval(array_shift($parts));
-        $this->messageVariables['min'] = $min;
-
-        if (empty($parts)) {
-            $max = null;
-        } else {
-            $max = intval(array_shift($parts));
-            $this->messageVariables['max'] = $max;
-        }
-
+        parent::validate($value, $options);
 
         $valid = true;
+
+        $min = $options->get('min', 0);
+        $this->messageVariables['min'] = $min;
 
         if (strlen($value) < $min) {
             $valid = false;
             $this->setMessage('lessThanMin');
         }
 
-        if (!is_null($max) && strlen($value) > $max) {
-            $valid = false;
-            $this->setMessage('moreThanMax');
+
+        $max = $options->get('max');
+        if (false !== $max) {
+            $max = intval($max);
+            $this->messageVariables['max'] = $max;
+
+            if (strlen($value) > $max) {
+                $valid = false;
+                $this->setMessage('moreThanMax');
+            }
         }
 
         return $valid;

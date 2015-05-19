@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
+use Fwlib\Config\StringOptions;
 use Fwlib\Net\Curl;
 use Fwlib\Util\Common\HttpUtil;
 use Fwlib\Util\UtilContainer;
@@ -118,11 +119,13 @@ class UrlTest extends PHPUnitTestCase
 
 
         // Invalid value type
-        $this->assertFalse($constraint->validate('foo', $url));
+        $this->assertFalse(
+            $constraint->validate('foo', new StringOptions("url=$url"))
+        );
 
 
         // Url empty
-        $this->assertFalse($constraint->validate([], ''));
+        $this->assertFalse($constraint->validate([], new StringOptions('')));
         $this->assertEquals(
             'Need url target for validate',
             current($constraint->getMessages())
@@ -131,7 +134,9 @@ class UrlTest extends PHPUnitTestCase
 
         // Curl return success
         $this->curlPostResult = json_encode(['code' => 0, 'message' => '']);
-        $this->assertTrue($constraint->validate(null, $url));
+        $this->assertTrue(
+            $constraint->validate(null, new StringOptions("url=$url"))
+        );
         $this->assertEquals($url, $this->curlPostUrl);
 
 
@@ -142,13 +147,13 @@ class UrlTest extends PHPUnitTestCase
         ];
         $this->curlPostResult = json_encode(['code' => -1, 'message' => '']);
 
-        $constraint->validate($value, $url);
+        $constraint->validate($value, new StringOptions("url=$url"));
         $this->assertEqualArray($value, $this->curlPostParams);
 
-        $constraint->validate($value, "$url ,foo");
+        $constraint->validate($value, new StringOptions("url=$url ,foo"));
         $this->assertEqualArray(['foo' => 'Foo'], $this->curlPostParams);
 
-        $constraint->validate($value, "$url, foo, bar, ");
+        $constraint->validate($value, new StringOptions("url=$url, foo, bar, "));
         $this->assertEqualArray($value, $this->curlPostParams);
 
         $this->assertEquals(
@@ -165,7 +170,9 @@ class UrlTest extends PHPUnitTestCase
         $this->curlPostResult = json_encode(
             ['code' => -1, 'message' => '', 'data' => $failMessage]
         );
-        $this->assertFalse($constraint->validate($value, $url));
+        $this->assertFalse(
+            $constraint->validate($value, new StringOptions("url=$url"))
+        );
         $this->assertEqualArray($failMessage, $constraint->getMessages());
     }
 
@@ -182,7 +189,7 @@ class UrlTest extends PHPUnitTestCase
         $serviceContainer->register('Curl', $curl);
         $constraint->setServiceContainer($serviceContainer);
 
-        $constraint->validate(null, 'http://dummy/');
+        $constraint->validate(null, new StringOptions("url=http://dummy/"));
         $this->assertStringEndsWith(
             '#curlFail',
             key($constraint->getMessages())

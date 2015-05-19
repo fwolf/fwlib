@@ -3,6 +3,7 @@ namespace Fwlib\Validator\Constraint;
 
 use Fwlib\Base\ReturnValue;
 use Fwlib\Base\ServiceContainerAwareTrait;
+use Fwlib\Config\StringOptions;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Validator\AbstractConstraint;
 
@@ -107,23 +108,28 @@ class Url extends AbstractConstraint
 
     /**
      * {@inheritdoc}
+     *
+     * Options:
+     *  - url     :TODO: Change to field
      */
-    public function validate($value, $constraintData = null)
+    public function validate($value, StringOptions $options = null)
     {
-        parent::validate($value, $constraintData);
+        parent::validate($value, $options);
 
         if (!(is_array($value) || empty($value))) {
             $this->setMessage('invalidType');
             return false;
         }
 
-        $parts = explode(',', $constraintData);
-        $url = trim(array_shift($parts));
-
+        $url = $options->get('url');
         if (empty($url)) {
             $this->setMessage('urlEmpty');
             return false;
         }
+
+        $optionArray = $options->getAll();
+        unset($optionArray['url']);
+        $parts = array_keys($optionArray);
 
         // Url must start from 'HTTP', can't use relative '?a=b' style, which
         // works well in js ajax, is common used.

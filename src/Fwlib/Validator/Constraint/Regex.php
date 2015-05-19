@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
+use Fwlib\Config\StringOptions;
 use Fwlib\Validator\AbstractConstraint;
 
 /**
@@ -22,10 +23,13 @@ class Regex extends AbstractConstraint
 
     /**
      * {@inheritdoc}
+     *
+     * Options:
+     *  - regex     :TODO: Change to field
      */
-    public function validate($value, $constraintData = null)
+    public function validate($value, StringOptions $options = null)
     {
-        parent::validate($value, $constraintData);
+        parent::validate($value, $options);
 
         if (!is_scalar($value)
             && !(is_object($value) && method_exists($value, '__toString'))
@@ -36,7 +40,7 @@ class Regex extends AbstractConstraint
 
         $value = strval($value);
 
-        if (1 !== preg_match($constraintData, $value)) {
+        if (1 !== preg_match($options->get('regex'), $value)) {
             $this->setMessage('default');
             return false;
         } else {

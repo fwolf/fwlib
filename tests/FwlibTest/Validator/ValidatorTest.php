@@ -31,7 +31,7 @@ class ValidatorTest extends PHPUnitTestCase
 
         $rule = [
             'notEmpty',
-            'length: 3',
+            'length: min=3',
         ];
 
         $this->assertTrue($validator->validate('foobar', $rule));

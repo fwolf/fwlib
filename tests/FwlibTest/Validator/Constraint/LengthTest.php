@@ -1,6 +1,7 @@
 <?php
 namespace FwlibTest\Validator\Constraint;
 
+use Fwlib\Config\StringOptions;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Validator\Constraint\Length;
 
@@ -16,17 +17,24 @@ class LengthTest extends PHPUnitTestCase
 
         $str = 'test';
 
-        $this->assertTrue($constraint->validate($str, '3, 5'));
-        $this->assertTrue($constraint->validate($str, '3 and 5'));
-        $this->assertTrue($constraint->validate($str, '3'));
+        $this->assertTrue(
+            $constraint->validate($str, new StringOptions('min=3, max=5'))
+        );
+        $this->assertTrue(
+            $constraint->validate($str, new StringOptions('min=3'))
+        );
 
-        $this->assertFalse($constraint->validate($str, '5, 6'));
+        $this->assertFalse(
+            $constraint->validate($str, new StringOptions('min=5, max=6'))
+        );
         $this->assertEquals(
             'The input should be more than 5 characters',
             current($constraint->getMessages())
         );
 
-        $this->assertFalse($constraint->validate($str, '2, 3'));
+        $this->assertFalse(
+            $constraint->validate($str, new StringOptions('min=2, max=3'))
+        );
         $this->assertEquals(
             'The input should be less than 3 characters',
             current($constraint->getMessages())

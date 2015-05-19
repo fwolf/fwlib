@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
+use Fwlib\Config\StringOptions;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Validator\AbstractConstraint;
 
@@ -50,9 +51,9 @@ class Email extends AbstractConstraint
      *
      * @link http://www.linuxjournal.com/article/9585
      */
-    public function validate($value, $constraintData = null)
+    public function validate($value, StringOptions $options = null)
     {
-        parent::validate($value, $constraintData);
+        parent::validate($value, $options);
 
         $atIndex = strrpos($value, '@');
         if (false === $atIndex) {

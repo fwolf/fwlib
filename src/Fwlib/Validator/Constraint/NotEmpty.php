@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
+use Fwlib\Config\StringOptions;
 use Fwlib\Validator\AbstractConstraint;
 
 /**
@@ -24,9 +25,9 @@ class NotEmpty extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public function validate($value, $constraintData = null)
+    public function validate($value, StringOptions $options = null)
     {
-        parent::validate($value, $constraintData);
+        parent::validate($value, $options);
 
         if (!is_array($value)) {
             $value = trim($value);
