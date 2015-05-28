@@ -20,6 +20,24 @@ interface ConstraintInterface
 
 
     /**
+     * Setter of $field
+     *
+     * @param   string $field
+     * @return  static
+     */
+    public function setField($field);
+
+
+    /**
+     * Setter of $optionsInstance
+     *
+     * @param   StringOptions $optionsInstance
+     * @return  static
+     */
+    public function setOptionsInstance($optionsInstance);
+
+
+    /**
      * Do validate on value
      *
      * Validate pass/success will return true, otherwise return false.

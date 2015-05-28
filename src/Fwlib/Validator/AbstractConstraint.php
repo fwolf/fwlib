@@ -3,6 +3,7 @@ namespace Fwlib\Validator;
 
 use Fwlib\Config\StringOptions;
 use Fwlib\Validator\Exception\MessageTemplateNotDefinedException;
+use Fwlib\Validator\Helper\FieldAndOptionsPropertyTrait;
 
 /**
  * Constraint
@@ -12,6 +13,14 @@ use Fwlib\Validator\Exception\MessageTemplateNotDefinedException;
  */
 abstract class AbstractConstraint implements ConstraintInterface
 {
+    use FieldAndOptionsPropertyTrait {
+        getField as protected;
+        getOption as protected;
+        getOptions as protected;
+        getOptionsInstance as protected;
+    }
+
+
     /**
      * Validate fail message
      *
