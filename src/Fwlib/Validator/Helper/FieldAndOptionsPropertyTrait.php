@@ -36,13 +36,14 @@ trait FieldAndOptionsPropertyTrait
 
 
     /**
-     * @param   string      $key
+     * @param   string  $key
+     * @param   mixed   $default
      * @return  string|int|null
      */
-    public function getOption($key)
+    public function getOption($key, $default = false)
     {
-        return is_null($this->optionsInstance) ? false
-            : $this->optionsInstance->get($key);
+        return is_null($this->optionsInstance) ? $default
+            : $this->optionsInstance->get($key, $default);
     }
 
 

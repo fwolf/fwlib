@@ -35,6 +35,10 @@ class FieldAndOptionsPropertyTraitTest extends PHPUnitTestCase
         $trait->setField('dummy field');
         $this->assertEquals('dummy field', $trait->getField());
 
+        // When options instance is null
+        $this->assertFalse($trait->getOption('notExist'));
+        $this->assertEquals(42, $trait->getOption('notExist', 42));
+
         $optionString = 'foo = 42, bar';
         $options = new StringOptions($optionString);
         $trait->setOptionsInstance($options);
@@ -45,5 +49,9 @@ class FieldAndOptionsPropertyTraitTest extends PHPUnitTestCase
             StringOptions::class,
             $trait->getOptionsInstance()
         );
+
+        // When key is not exist in options instance
+        $this->assertFalse($trait->getOption('notExist'));
+        $this->assertEquals(42, $trait->getOption('notExist', 42));
     }
 }
