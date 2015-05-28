@@ -3,6 +3,7 @@ namespace Fwlib\Validator;
 
 use Fwlib\Config\StringOptions;
 use Fwlib\Validator\Exception\InvalidRuleStringException;
+use Fwlib\Validator\Helper\FieldAndOptionsPropertyTrait;
 
 /**
  * Validate Rule
@@ -23,6 +24,9 @@ use Fwlib\Validator\Exception\InvalidRuleStringException;
  */
 class Rule
 {
+    use FieldAndOptionsPropertyTrait;
+
+
     /**
      * Separator between type and field
      */
@@ -35,18 +39,6 @@ class Rule
      */
     const OPTION_SEPARATOR = ': ';
 
-
-    /**
-     * Field, supplement part of type.
-     *
-     * @var string
-     */
-    protected $field = '';
-
-    /**
-     * @var StringOptions
-     */
-    protected $options = null;
 
     /**
      * @var string
@@ -78,8 +70,8 @@ class Rule
     protected function clear()
     {
         $this->type = '';
-        $this->field = '';
-        $this->options = null;
+        $this->setField('');
+        $this->setOptionsInstance(null);
 
         return $this;
     }
@@ -99,42 +91,10 @@ class Rule
         $fieldPart = empty($this->field) ? ''
             : $fieldSeparator . $this->field;
 
-        $optionPart = is_null($this->options) ? ''
-            : $optionSeparator . $this->options->export();
+        $optionPart = is_null($this->optionsInstance) ? ''
+            : $optionSeparator . $this->optionsInstance->export();
 
         return $this->type . $fieldPart . $optionPart;
-    }
-
-
-    /**
-     * @return  string
-     */
-    public function getField()
-    {
-        return $this->field;
-    }
-
-
-    /**
-     * @param   string      $key
-     * @return  string|int|null
-     */
-    public function getOption($key)
-    {
-        return is_null($this->options) ? false
-            : $this->options->get($key);
-    }
-
-
-    /**
-     * Get all options
-     *
-     * @return  array
-     */
-    public function getOptions()
-    {
-        return is_null($this->options) ? []
-            : $this->options->getAll();
     }
 
 
@@ -169,7 +129,7 @@ class Rule
         if (false !== strpos($ruleString, $optionSeparator)) {
             $optionString = strstr($ruleString, $optionSeparator, false);
             $optionString = substr($optionString, strlen($optionSeparator));
-            $this->options = new StringOptions($optionString);
+            $this->setOptionsInstance(new StringOptions($optionString));
 
             $ruleString = strstr($ruleString, $optionSeparator, true);
         }
@@ -177,7 +137,7 @@ class Rule
         if (false !== strpos($ruleString, $fieldSeparator)) {
             $field = strstr($ruleString, $fieldSeparator, false);
             $field = substr($field, strlen($fieldSeparator));
-            $this->field = trim($field);
+            $this->setField(trim($field));
 
             $ruleString = strstr($ruleString, $fieldSeparator, true);
         }
