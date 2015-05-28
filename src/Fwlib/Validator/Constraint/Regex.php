@@ -1,11 +1,12 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
-use Fwlib\Config\StringOptions;
 use Fwlib\Validator\AbstractConstraint;
 
 /**
  * Constraint Regex
+ *
+ * Regex string is in field.
  *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -17,19 +18,17 @@ class Regex extends AbstractConstraint
      */
     protected $messageTemplates = [
         'default'     => 'The input must fit given regex',
+        'emptyRegex'  => 'Empty regex string',
         'invalidType' => 'The input must be able to convert to string'
     ];
 
 
     /**
      * {@inheritdoc}
-     *
-     * Options:
-     *  - regex     :TODO: Change to field
      */
-    public function validate($value, StringOptions $options = null)
+    public function validate($value)
     {
-        parent::validate($value, $options);
+        parent::validate($value);
 
         if (!is_scalar($value)
             && !(is_object($value) && method_exists($value, '__toString'))
@@ -39,8 +38,14 @@ class Regex extends AbstractConstraint
         }
 
         $value = strval($value);
+        $regex = $this->getField();
 
-        if (1 !== preg_match($options->get('regex'), $value)) {
+        if (empty($regex)) {
+            $this->setMessage('emptyRegex');
+            return false;
+        }
+
+        if (1 !== preg_match($regex, $value)) {
             $this->setMessage('default');
             return false;
         } else {

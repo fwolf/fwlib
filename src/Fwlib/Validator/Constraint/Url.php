@@ -3,26 +3,23 @@ namespace Fwlib\Validator\Constraint;
 
 use Fwlib\Base\ReturnValue;
 use Fwlib\Base\ServiceContainerAwareTrait;
-use Fwlib\Config\StringOptions;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Validator\AbstractConstraint;
 
 /**
  * Constraint Url
  *
+ * Url is in field.
+ *
  * The validate url is called by HTTP POST, should return a json encoded
  * string, with structure fit to load with {@see \Fwlib\Base\ReturnValue}, code
  * less than 0 means validate fail, and data is array of fail messages.
  *
- * Additional $constraintData is string, the format is:
- *
- * - url
- * - url, [inputNames,]
- *
- * Validate value should be an array, mostly associated like $_POST. For the
- * 1st $constraintData format, the whole value is thrown to target url as post
- * data; For the 2nd format, an array will be build, use only keys in
- * inputNames, this helps reduce post data size, and raise security.
+ * Validate value should be an array, mostly associated like $_POST. If
+ * options is empty, the whole value array will be thrown to target url as post
+ * data; If options is not empty, an post array will be build, use key of
+ * options and data from validate value with same key, this helps reduce post
+ * data size, and raise security.
  *
  * Validate value can be empty, validation result will still read from url,
  * this maybe useful in some special situation.
@@ -108,28 +105,23 @@ class Url extends AbstractConstraint
 
     /**
      * {@inheritdoc}
-     *
-     * Options:
-     *  - url     :TODO: Change to field
      */
-    public function validate($value, StringOptions $options = null)
+    public function validate($value)
     {
-        parent::validate($value, $options);
+        parent::validate($value);
 
         if (!(is_array($value) || empty($value))) {
             $this->setMessage('invalidType');
             return false;
         }
 
-        $url = $options->get('url');
+        $url = $this->getField();
         if (empty($url)) {
             $this->setMessage('urlEmpty');
             return false;
         }
 
-        $optionArray = $options->getAll();
-        unset($optionArray['url']);
-        $parts = array_keys($optionArray);
+        $parts = array_keys($this->getOptions());
 
         // Url must start from 'HTTP', can't use relative '?a=b' style, which
         // works well in js ajax, is common used.

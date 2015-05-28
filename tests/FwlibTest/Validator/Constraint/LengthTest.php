@@ -17,24 +17,20 @@ class LengthTest extends PHPUnitTestCase
 
         $str = 'test';
 
-        $this->assertTrue(
-            $constraint->validate($str, new StringOptions('min=3, max=5'))
-        );
-        $this->assertTrue(
-            $constraint->validate($str, new StringOptions('min=3'))
-        );
+        $constraint->setOptionsInstance(new StringOptions('min=3, max=5'));
+        $this->assertTrue($constraint->validate($str));
+        $constraint->setOptionsInstance(new StringOptions('min=3'));
+        $this->assertTrue($constraint->validate($str));
 
-        $this->assertFalse(
-            $constraint->validate($str, new StringOptions('min=5, max=6'))
-        );
+        $constraint->setOptionsInstance(new StringOptions('min=5, max=6'));
+        $this->assertFalse($constraint->validate($str));
         $this->assertEquals(
             'The input should be more than 5 characters',
             current($constraint->getMessages())
         );
 
-        $this->assertFalse(
-            $constraint->validate($str, new StringOptions('min=2, max=3'))
-        );
+        $constraint->setOptionsInstance(new StringOptions('min=2, max=3'));
+        $this->assertFalse($constraint->validate($str));
         $this->assertEquals(
             'The input should be less than 3 characters',
             current($constraint->getMessages())

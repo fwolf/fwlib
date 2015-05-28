@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
-use Fwlib\Config\StringOptions;
 use Fwlib\Validator\AbstractConstraint;
 
 /**
@@ -23,9 +22,9 @@ class Ipv4 extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public function validate($value, StringOptions $options = null)
+    public function validate($value)
     {
-        parent::validate($value, $options);
+        parent::validate($value);
 
         if (strcmp(long2ip(sprintf("%u", ip2long($value))), $value)) {
             $this->setMessage('default');

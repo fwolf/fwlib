@@ -62,43 +62,25 @@ class Validator
     /**
      * Do validate
      *
-     * $rule include constraint name and data(optional), with format
-     * 'constraintName[: constraintData]'. constraintData is needed for some
-     * constraint, eg: an 'length' constraint need a value to compare with,
-     * the rule string is like 'length: 42', the '42' is $constraintData.
-     *
-     * $rule can be array of rules.
-     *
-     * @param   mixed   $value
-     * @param   mixed   $rule
+     * @param   mixed       $value
+     * @param   string[]    $rules
      * @return  boolean
      */
-    public function validate($value, $rule = null)
+    public function validate($value, array $rules = [])
     {
         // Clear previous message
         $this->messages = [];
 
-
         $valid = true;
-        foreach ((array)$rule as $ruleString) {
-            // Detect if ruleString include constraintData
-            $ruleString = trim($ruleString);
-            $i = preg_match('/^([\w\d]+):/', $ruleString, $match);
+        foreach ($rules as $ruleString) {
+            $rule = new Rule($ruleString);
 
-            if (0 == $i) {
-                $constraintName = $ruleString;
-                $options = null;
+            $type = $rule->getType();
+            $constraint = $this->getConstraint(ucfirst($type));
+            $constraint->setField($rule->getField())
+                ->setOptionsInstance($rule->getOptionsInstance());
 
-            } else {
-                $constraintName = $match[1];
-                $options = new StringOptions(
-                    substr($ruleString, strlen($constraintName) + 1)
-                );
-            }
-
-            $constraint = $this->getConstraint(ucfirst($constraintName));
-
-            if (!$constraint->validate($value, $options)) {
+            if (!$constraint->validate($value)) {
                 $valid = false;
                 $this->messages = array_merge(
                     $this->messages,

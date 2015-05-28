@@ -111,7 +111,7 @@ abstract class AbstractConstraint implements ConstraintInterface
     /**
      * {@inheritdoc}
      */
-    public function validate($value, StringOptions $options = null)
+    public function validate($value)
     {
         // Clear previous message
         $this->messages = [];

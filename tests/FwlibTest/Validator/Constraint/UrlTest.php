@@ -119,13 +119,13 @@ class UrlTest extends PHPUnitTestCase
 
 
         // Invalid value type
-        $this->assertFalse(
-            $constraint->validate('foo', new StringOptions("url=$url"))
-        );
+        $constraint->setField($url);
+        $this->assertFalse($constraint->validate('foo'));
 
 
         // Url empty
-        $this->assertFalse($constraint->validate([], new StringOptions('')));
+        $constraint->setField('');
+        $this->assertFalse($constraint->validate([]));
         $this->assertEquals(
             'Need url target for validate',
             current($constraint->getMessages())
@@ -134,9 +134,8 @@ class UrlTest extends PHPUnitTestCase
 
         // Curl return success
         $this->curlPostResult = json_encode(['code' => 0, 'message' => '']);
-        $this->assertTrue(
-            $constraint->validate(null, new StringOptions("url=$url"))
-        );
+        $constraint->setField($url);
+        $this->assertTrue($constraint->validate(null));
         $this->assertEquals($url, $this->curlPostUrl);
 
 
@@ -147,13 +146,16 @@ class UrlTest extends PHPUnitTestCase
         ];
         $this->curlPostResult = json_encode(['code' => -1, 'message' => '']);
 
-        $constraint->validate($value, new StringOptions("url=$url"));
+        $constraint->setField($url);
+        $constraint->validate($value);
         $this->assertEqualArray($value, $this->curlPostParams);
 
-        $constraint->validate($value, new StringOptions("url=$url ,foo"));
+        $constraint->setOptionsInstance(new StringOptions('foo'));
+        $constraint->validate($value);
         $this->assertEqualArray(['foo' => 'Foo'], $this->curlPostParams);
 
-        $constraint->validate($value, new StringOptions("url=$url, foo, bar, "));
+        $constraint->setOptionsInstance(new StringOptions('foo, bar, '));
+        $constraint->validate($value);
         $this->assertEqualArray($value, $this->curlPostParams);
 
         $this->assertEquals(
@@ -170,9 +172,9 @@ class UrlTest extends PHPUnitTestCase
         $this->curlPostResult = json_encode(
             ['code' => -1, 'message' => '', 'data' => $failMessage]
         );
-        $this->assertFalse(
-            $constraint->validate($value, new StringOptions("url=$url"))
-        );
+        $constraint->setField($url)
+            ->setOptionsInstance(null);
+        $this->assertFalse($constraint->validate($value));
         $this->assertEqualArray($failMessage, $constraint->getMessages());
     }
 
@@ -189,7 +191,8 @@ class UrlTest extends PHPUnitTestCase
         $serviceContainer->register('Curl', $curl);
         $constraint->setServiceContainer($serviceContainer);
 
-        $constraint->validate(null, new StringOptions("url=http://dummy/"));
+        $constraint->setField('http://dummy/');
+        $constraint->validate(null);
         $this->assertStringEndsWith(
             '#curlFail',
             key($constraint->getMessages())

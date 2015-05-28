@@ -1,7 +1,6 @@
 <?php
 namespace Fwlib\Validator\Constraint;
 
-use Fwlib\Config\StringOptions;
 use Fwlib\Validator\AbstractConstraint;
 
 /**
@@ -30,13 +29,13 @@ class Length extends AbstractConstraint
      *
      * Boundary included, eg: min=3, 'abc' is valid.
      */
-    public function validate($value, StringOptions $options = null)
+    public function validate($value)
     {
-        parent::validate($value, $options);
+        parent::validate($value);
 
         $valid = true;
 
-        $min = $options->get('min', 0);
+        $min = $this->getOption('min', 0);
         $this->messageVariables['min'] = $min;
 
         if (strlen($value) < $min) {
@@ -45,7 +44,7 @@ class Length extends AbstractConstraint
         }
 
 
-        $max = $options->get('max');
+        $max = $this->getOption('max');
         if (false !== $max) {
             $max = intval($max);
             $this->messageVariables['max'] = $max;

@@ -43,8 +43,7 @@ interface ConstraintInterface
      * Validate pass/success will return true, otherwise return false.
      *
      * @param   mixed           $value
-     * @param   StringOptions   $options    Can use {@see StringOptions}
      * @return  boolean
      */
-    public function validate($value, StringOptions $options = null);
+    public function validate($value);
 }

@@ -29,20 +29,20 @@ class ValidatorTest extends PHPUnitTestCase
 
         $validator->setConstraintContainer(ConstraintContainer::getInstance());
 
-        $rule = [
+        $rules = [
             'notEmpty',
             'length: min=3',
         ];
 
-        $this->assertTrue($validator->validate('foobar', $rule));
+        $this->assertTrue($validator->validate('foobar', $rules));
 
-        $this->assertFalse($validator->validate('', $rule));
+        $this->assertFalse($validator->validate('', $rules));
         // Each constraint return a message, total 2.
         $this->assertEquals(2, count($validator->getMessages()));
 
 
         // $rule can also be string
-        $this->assertTrue($validator->validate('foobar', 'notEmpty'));
+        $this->assertTrue($validator->validate('foobar', ['notEmpty']));
     }
 
 
