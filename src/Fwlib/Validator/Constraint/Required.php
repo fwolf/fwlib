@@ -26,10 +26,8 @@ class Required extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public function validate($value)
+    protected function doValidate($value)
     {
-        parent::validate($value);
-
         if (is_array($value)) {
             return true;
         }

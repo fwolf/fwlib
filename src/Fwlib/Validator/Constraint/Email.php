@@ -32,28 +32,12 @@ class Email extends AbstractConstraint
 
 
     /**
-     * Setter of $dnsCheck
-     *
-     * @param   boolean $dnsCheck
-     * @return  static
-     */
-    public function setDnsCheck($dnsCheck)
-    {
-        $this->dnsCheck = $dnsCheck;
-
-        return $this;
-    }
-
-
-    /**
      * {@inheritdoc}
      *
      * @link http://www.linuxjournal.com/article/9585
      */
-    public function validate($value)
+    protected function doValidate($value)
     {
-        parent::validate($value);
-
         $atIndex = strrpos($value, '@');
         if (false === $atIndex) {
             return false;
@@ -79,6 +63,20 @@ class Email extends AbstractConstraint
         }
 
         return $valid;
+    }
+
+
+    /**
+     * Setter of $dnsCheck
+     *
+     * @param   boolean $dnsCheck
+     * @return  static
+     */
+    public function setDnsCheck($dnsCheck)
+    {
+        $this->dnsCheck = $dnsCheck;
+
+        return $this;
     }
 
 

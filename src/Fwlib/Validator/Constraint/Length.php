@@ -29,10 +29,8 @@ class Length extends AbstractConstraint
      *
      * Boundary included, eg: min=3, 'abc' is valid.
      */
-    public function validate($value)
+    protected function doValidate($value)
     {
-        parent::validate($value);
-
         $valid = true;
 
         $min = $this->getOption('min', 0);

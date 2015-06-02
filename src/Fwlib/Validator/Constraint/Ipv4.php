@@ -22,10 +22,8 @@ class Ipv4 extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public function validate($value)
+    protected function doValidate($value)
     {
-        parent::validate($value);
-
         if (strcmp(long2ip(sprintf("%u", ip2long($value))), $value)) {
             $this->setMessage('default');
             return false;

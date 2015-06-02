@@ -12,14 +12,12 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class AbstractConstraintTest extends PHPUnitTestCase
 {
     /**
-     * @return  MockObject | AbstractConstraint
+     * @return  MockObject|AbstractConstraint
      */
     protected function buildMock()
     {
-        $mock = $this->getMock(
-            AbstractConstraint::class,
-            null
-        );
+        $mock = $this->getMockBuilder(AbstractConstraint::class)
+            ->getMockForAbstractClass();
 
         return $mock;
     }

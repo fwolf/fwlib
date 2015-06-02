@@ -22,13 +22,6 @@ abstract class AbstractConstraint implements ConstraintInterface
 
 
     /**
-     * Validate fail message
-     *
-     * @var array
-     */
-    protected $messages = [];
-
-    /**
      * Validate fail message template
      *
      * Array key is used as template name, and max one instance per name can
@@ -54,6 +47,20 @@ abstract class AbstractConstraint implements ConstraintInterface
         'value' => null,
     ];
 
+    /**
+     * Validate fail message
+     *
+     * @var array
+     */
+    protected $messages = [];
+
+
+    /**
+     * @param   mixed   $value
+     * @return  boolean
+     */
+    abstract protected function doValidate($value);
+
 
     /**
      * {@inheritdoc}
@@ -61,6 +68,21 @@ abstract class AbstractConstraint implements ConstraintInterface
     public function getMessages()
     {
         return $this->messages;
+    }
+
+
+    /**
+     * Preparation before validate
+     *
+     * @param   mixed   $value
+     */
+    protected function preValidate($value)
+    {
+        // Clear previous message
+        $this->messages = [];
+
+        // Assign message variable, maybe assign more in inherit class
+        $this->messageVariables['value'] = $value;
     }
 
 
@@ -113,12 +135,8 @@ abstract class AbstractConstraint implements ConstraintInterface
      */
     public function validate($value)
     {
-        // Clear previous message
-        $this->messages = [];
+        $this->preValidate($value);
 
-        // Assign message variable, maybe assign more in inherit class
-        $this->messageVariables['value'] = $value;
-
-        // Other validate treatment in inherit class
+        return $this->doValidate($value);
     }
 }

@@ -45,6 +45,58 @@ class Url extends AbstractConstraint
 
 
     /**
+     * {@inheritdoc}
+     */
+    protected function doValidate($value)
+    {
+        if (!(is_array($value) || empty($value))) {
+            $this->setMessage('invalidType');
+            return false;
+        }
+
+        $url = $this->getField();
+        if (empty($url)) {
+            $this->setMessage('urlEmpty');
+            return false;
+        }
+
+        $parts = array_keys($this->getOptions());
+
+        // Url must start from 'HTTP', can't use relative '?a=b' style, which
+        // works well in js ajax, is common used.
+        $url = $this->getFullUrl($url);
+
+        $postData = $this->getPostData($value, $parts);
+
+        try {
+            $curl = $this->getServiceContainer()->getCurl();
+
+            $result = $curl->post($url, $postData);
+            $returnValue = new ReturnValue($result);
+
+            if ($returnValue->isError()) {
+                // Use return data as fail message
+                $data = $returnValue->getData();
+                if (empty($data)) {
+                    $this->setMessage('default');
+                } else {
+                    $this->messages = (array)$data;
+                }
+
+                return false;
+
+            } else {
+                return true;
+            }
+
+        } catch (\Exception $e) {
+            $this->setMessage('curlFail');
+            return false;
+        }
+    }
+
+
+    /**
      * Get full url for given relative url string
      *
      * Parameter url can be relative, or absolute path start with '/'.
@@ -100,59 +152,5 @@ class Url extends AbstractConstraint
             return $postData;
         }
 
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate($value)
-    {
-        parent::validate($value);
-
-        if (!(is_array($value) || empty($value))) {
-            $this->setMessage('invalidType');
-            return false;
-        }
-
-        $url = $this->getField();
-        if (empty($url)) {
-            $this->setMessage('urlEmpty');
-            return false;
-        }
-
-        $parts = array_keys($this->getOptions());
-
-        // Url must start from 'HTTP', can't use relative '?a=b' style, which
-        // works well in js ajax, is common used.
-        $url = $this->getFullUrl($url);
-
-        $postData = $this->getPostData($value, $parts);
-
-        try {
-            $curl = $this->getServiceContainer()->getCurl();
-
-            $result = $curl->post($url, $postData);
-            $returnValue = new ReturnValue($result);
-
-            if ($returnValue->isError()) {
-                // Use return data as fail message
-                $data = $returnValue->getData();
-                if (empty($data)) {
-                    $this->setMessage('default');
-                } else {
-                    $this->messages = (array)$data;
-                }
-
-                return false;
-
-            } else {
-                return true;
-            }
-
-        } catch (\Exception $e) {
-            $this->setMessage('curlFail');
-            return false;
-        }
     }
 }

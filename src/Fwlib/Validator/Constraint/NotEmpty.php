@@ -24,10 +24,8 @@ class NotEmpty extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public function validate($value)
+    protected function doValidate($value)
     {
-        parent::validate($value);
-
         if (!is_array($value)) {
             $value = trim($value);
         }

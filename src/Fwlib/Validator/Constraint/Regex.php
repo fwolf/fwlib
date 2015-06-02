@@ -26,10 +26,8 @@ class Regex extends AbstractConstraint
     /**
      * {@inheritdoc}
      */
-    public function validate($value)
+    protected function doValidate($value)
     {
-        parent::validate($value);
-
         if (!is_scalar($value)
             && !(is_object($value) && method_exists($value, '__toString'))
         ) {
