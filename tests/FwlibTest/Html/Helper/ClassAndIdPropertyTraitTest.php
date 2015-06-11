@@ -35,5 +35,27 @@ class ClassAndIdPropertyTraitTest extends PHPUnitTestCase
             ->setId('bar');
         $this->assertEquals('foo', $this->reflectionCall($trait, 'getClass'));
         $this->assertEquals('bar', $this->reflectionCall($trait, 'getId'));
+
+        $trait->setClass('')
+            ->setId('');
+        $this->assertEquals(
+            '',
+            $this->reflectionCall($trait, 'getClass', ['__foo'])
+        );
+        $this->assertEquals(
+            '',
+            $this->reflectionCall($trait, 'getId', ['__bar'])
+        );
+
+        $trait->setClass('foo')
+            ->setId('bar');
+        $this->assertEquals(
+            'foo__foo',
+            $this->reflectionCall($trait, 'getClass', ['__foo'])
+        );
+        $this->assertEquals(
+            'bar__bar',
+            $this->reflectionCall($trait, 'getId', ['__bar'])
+        );
     }
 }

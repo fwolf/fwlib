@@ -27,22 +27,26 @@ trait ClassAndIdPropertyTrait
     /**
      * Getter of class
      *
+     * @param   string  $suffix
      * @return  string
      */
-    protected function getClass()
+    protected function getClass($suffix = '')
     {
-        return $this->class;
+        return empty($this->class) ? ''
+            : $this->class . $suffix;
     }
 
 
     /**
      * Getter of id
      *
+     * @param   string  $suffix
      * @return  string
      */
-    protected function getId()
+    protected function getId($suffix = '')
     {
-        return $this->id;
+        return empty($this->id) ? ''
+            : $this->id . $suffix;
     }
 
 
