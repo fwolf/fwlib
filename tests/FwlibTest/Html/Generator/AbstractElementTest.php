@@ -107,7 +107,7 @@ class AbstractElementTest extends PHPunitTestCase
 
 
     /**
-     * @expectedException \Fwlib\Html\Generator\Exception\NotImplementedModeException
+     * @expectedException \Fwlib\Html\Generator\Exception\ElementModeNotImplementedException
      */
     public function testGetOutputWithNotImplementedMode()
     {

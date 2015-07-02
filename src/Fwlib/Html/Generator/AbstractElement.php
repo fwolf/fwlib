@@ -2,7 +2,7 @@
 namespace Fwlib\Html\Generator;
 
 use Fwlib\Config\StringOptionsAwareTrait;
-use Fwlib\Html\Generator\Exception\NotImplementedModeException;
+use Fwlib\Html\Generator\Exception\ElementModeNotImplementedException;
 use Fwlib\Html\Generator\Helper\ElementPropertyTrait;
 use Fwlib\Html\Helper\ClassAndIdPropertyTrait;
 use Fwlib\Html\ListView\ConfigAwareTrait;
@@ -167,7 +167,7 @@ abstract class AbstractElement implements ElementInterface
     /**
      * {@inheritdoc}
      *
-     * @throws  NotImplementedModeException
+     * @throws  ElementModeNotImplementedException
      */
     public function getOutput($mode = ElementMode::SHOW)
     {
@@ -175,7 +175,7 @@ abstract class AbstractElement implements ElementInterface
 
         $method = 'getOutputFor' . ucfirst($mode) . 'Mode';
         if (!method_exists($this, $method)) {
-            throw new NotImplementedModeException(
+            throw new ElementModeNotImplementedException(
                 "Mode '$mode' is not implemented"
             );
         }
