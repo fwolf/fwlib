@@ -71,6 +71,17 @@ abstract class AbstractElement implements ElementInterface
 
 
     /**
+     * @param   string  $name
+     */
+    public function __construct($name = '')
+    {
+        if (!empty($name)) {
+            $this->setName($name);
+        }
+    }
+
+
+    /**
      * Get html code for class
      *
      * @param   string  $class  Use this instead of getClass()

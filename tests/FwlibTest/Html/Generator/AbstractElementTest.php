@@ -15,14 +15,16 @@ class AbstractElementTest extends PHPunitTestCase
 {
     /**
      * @param   string[]    $methods
+     * @param   array       $params
      * @return  MockObject|AbstractElement
      */
-    protected function buildMock(array $methods = [])
+    protected function buildMock(array $methods = [], array $params = [])
     {
         $methods += ['getOutputForShowMode'];
 
         $mock = $this->getMockBuilder(AbstractElement::class)
             ->setMethods($methods)
+            ->setConstructorArgs($params)
             ->getMockForAbstractClass();
 
         $mock->expects($this->any())
@@ -73,6 +75,16 @@ class AbstractElementTest extends PHPunitTestCase
             " name='bar'",
             $this->reflectionCall($element, 'getNameHtml')
         );
+    }
+
+
+    public function testConstructor()
+    {
+        $element = $this->buildMock();
+        $this->assertEquals('', $element->getName());
+
+        $element = $this->buildMock([], ['dummyName']);
+        $this->assertEquals('dummyName', $element->getName());
     }
 
 
