@@ -82,6 +82,25 @@ abstract class AbstractElement implements ElementInterface
 
 
     /**
+     * Encode value for output
+     *
+     * Mode 'edit' will not do extra html encode(nl2br and optimize space).
+     *
+     * @param   mixed   $value
+     * @param   string  $mode   Actual using mode.
+     * @return  string
+     */
+    protected function encodeValue($value, $mode)
+    {
+        $extra = (ElementMode::EDIT != $mode);
+
+        $stringUtil = $this->getUtilContainer()->getString();
+
+        return $stringUtil->encodeHtml($value, true, $extra, $extra);
+    }
+
+
+    /**
      * Get html code for class
      *
      * @param   string  $class  Use this instead of getClass()
@@ -246,14 +265,12 @@ abstract class AbstractElement implements ElementInterface
     /**
      * Get html code for value
      *
-     * Mode 'edit' will not do extra html encode.
-     *
      * @param   string  $mode
      * @param   boolean $encode Encode html code
      * @return  string
      */
     protected function getValueHtml(
-        $mode = null,
+        $mode = ElementMode::SHOW,
         $encode = true
     ) {
         $value = $this->getValue();
@@ -261,9 +278,7 @@ abstract class AbstractElement implements ElementInterface
         $mode = $this->getMode($mode);
 
         if ($encode) {
-            $extra = (ElementMode::EDIT != $mode);
-            $value = $this->getUtilContainer()->getString()
-                ->encodeHtml($value, true, $extra, $extra);
+            $value = $this->encodeValue($value, $mode);
         }
 
         if (ElementMode::EDIT == $mode) {
