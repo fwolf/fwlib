@@ -6,7 +6,7 @@ namespace Fwlib\Html\Generator\Helper;
  *
  * @see \Fwlib\Html\Generator\ElementInterface
  *
- * @method  mixed   getConfig($key, $default)
+ * @method  mixed   getConfig($key, $default = null)
  *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
