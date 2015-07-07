@@ -248,19 +248,15 @@ abstract class AbstractElement implements ElementInterface
      *
      * Mode 'edit' will not do extra html encode.
      *
-     * @param   mixed   $value  Use this value instead of getValue()
      * @param   string  $mode
      * @param   boolean $encode Encode html code
      * @return  string
      */
     protected function getValueHtml(
-        $value = null,
         $mode = null,
         $encode = true
     ) {
-        if (is_null($value)) {
-            $value = $this->getValue();
-        }
+        $value = $this->getValue();
 
         $mode = $this->getMode($mode);
 
