@@ -14,9 +14,25 @@ namespace Fwlib\Html\Generator;
 interface ElementInterface
 {
     /**
+     * Getter of class
+     *
+     * @param   string  $suffix
+     * @return  string
+     */
+    public function getClass($suffix = '');
+
+    /**
      * @return  string
      */
     public function getComment();
+
+    /**
+     * Getter of id
+     *
+     * @param   string  $suffix
+     * @return  string
+     */
+    public function getId($suffix = '');
 
     /**
      * @return  int

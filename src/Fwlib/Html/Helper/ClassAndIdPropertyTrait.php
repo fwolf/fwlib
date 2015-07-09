@@ -30,7 +30,7 @@ trait ClassAndIdPropertyTrait
      * @param   string  $suffix
      * @return  string
      */
-    protected function getClass($suffix = '')
+    public function getClass($suffix = '')
     {
         return empty($this->class) ? ''
             : $this->class . $suffix;
@@ -43,7 +43,7 @@ trait ClassAndIdPropertyTrait
      * @param   string  $suffix
      * @return  string
      */
-    protected function getId($suffix = '')
+    public function getId($suffix = '')
     {
         return empty($this->id) ? ''
             : $this->id . $suffix;
