@@ -18,15 +18,15 @@ class ArrayUtil
      * Return default if array key is not set or empty
      *
      * @link    http://stackoverflow.com/questions/14086980/php-return-if-isset
-     * @param   array   $ar
+     * @param   array   $data
      * @param   string  $key
      * @param   mixed   $default
      * @return  mixed
      */
-    public function getEdx($ar, $key, $default = null)
+    public function getEdx($data, $key, $default = null)
     {
-        if (array_key_exists($key, $ar) && !empty($ar[$key])) {
-            return $ar[$key];
+        if (array_key_exists($key, $data) && !empty($data[$key])) {
+            return $data[$key];
         } else {
             return $default;
         }
@@ -36,15 +36,15 @@ class ArrayUtil
     /**
      * Return default if array key is not set
      *
-     * @param   array   $ar
+     * @param   array   $data
      * @param   string  $key
      * @param   mixed   $default
      * @return  mixed
      */
-    public function getIdx($ar, $key, $default = null)
+    public function getIdx($data, $key, $default = null)
     {
-        if (array_key_exists($key, $ar)) {
-            return $ar[$key];
+        if (array_key_exists($key, $data)) {
+            return $data[$key];
         } else {
             return $default;
         }
@@ -302,13 +302,13 @@ class ArrayUtil
         }
 
         // Got current order, write back.
-        $rs = [];
+        $result = [];
         foreach ($arVal as $k => $v) {
-            $rs[$k] = &$source[$k];
+            $result[$k] = &$source[$k];
         }
 
         // Re-order numeric array key
-        $source = array_merge($rs, []);
+        $source = array_merge($result, []);
 
         return $source;
     }
