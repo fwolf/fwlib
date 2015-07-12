@@ -8,16 +8,19 @@ namespace Fwlib\Html\Helper;
 trait ClassAndIdPropertyTrait
 {
     /**
-     * Class in html output
+     * Class in html output, or class prefix of its child element
      *
-     * Can have space in it to present multiple classes.
+     * Can have space in it to present multiple classes, leave the one need
+     * to attach suffix at last position.
      *
      * @var string
      */
     protected $class = '';
 
     /**
-     * Id in html output, need to be unique
+     * Id in html output, or id prefix of its child element
+     *
+     * Need to be unique.
      *
      * @var string
      */
