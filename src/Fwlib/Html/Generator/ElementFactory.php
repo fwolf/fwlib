@@ -36,7 +36,7 @@ class ElementFactory
      *
      * Use of full qualified class name are supported, MUST start with '\'.
      *
-     * @param   string  $className
+     * @param   string $className
      * @return  ElementInterface
      */
     public function create($className)
@@ -65,7 +65,7 @@ class ElementFactory
     /**
      * Get full class name of element
      *
-     * @param   string  $className
+     * @param   string $className
      * @return  string
      * @throws  ElementNotFoundException
      */

@@ -13,7 +13,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class ElementFactoryTest extends PHPunitTestCase
 {
     /**
-     * @param   string[]    $methods
+     * @param   string[] $methods
      * @return  MockObject|ElementFactory
      */
     protected function buildMock(array $methods = null)

@@ -15,8 +15,8 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class AbstractElementTest extends PHPunitTestCase
 {
     /**
-     * @param   string[]    $methods
-     * @param   array       $params
+     * @param   string[] $methods
+     * @param   array    $params
      * @return  MockObject|AbstractElement
      */
     protected function buildMock(array $methods = [], array $params = [])

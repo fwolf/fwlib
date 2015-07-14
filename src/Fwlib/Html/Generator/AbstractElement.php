@@ -12,8 +12,7 @@ use Fwlib\Web\HtmlHelperAwareTrait;
 /**
  * Html element base class
  *
- * Element can have different modes, base mode is show and edit.
- * @see ElementMode
+ * Element can have different {@see ElementMode}, base mode is show and edit.
  *
  * For complicated element, assistant html tag may have id/class/name too,
  * which should come from main id/class/name by adding solid suffix or other
@@ -71,7 +70,7 @@ abstract class AbstractElement implements ElementInterface
 
 
     /**
-     * @param   string  $name
+     * @param   string $name
      */
     public function __construct($name = '')
     {
@@ -97,8 +96,8 @@ abstract class AbstractElement implements ElementInterface
      *
      * Mode 'edit' will not do extra html encode(nl2br and optimize space).
      *
-     * @param   mixed   $value
-     * @param   string  $mode   Actual using mode.
+     * @param   mixed  $value
+     * @param   string $mode Actual using mode.
      * @return  string
      */
     protected function encodeValue($value, $mode)
@@ -114,7 +113,7 @@ abstract class AbstractElement implements ElementInterface
     /**
      * Get html code for class
      *
-     * @param   string  $class  Use this instead of getClass()
+     * @param   string $class Use this instead of getClass()
      * @return  string
      */
     protected function getClassHtml($class = null)
@@ -156,7 +155,7 @@ abstract class AbstractElement implements ElementInterface
     /**
      * Get html code for id
      *
-     * @param   string  $identity     Use this id instead of getId()
+     * @param   string $identity Use this id instead of getId()
      * @return  string
      */
     protected function getIdHtml($identity = null)
@@ -193,7 +192,7 @@ abstract class AbstractElement implements ElementInterface
     /**
      * Get html code for name
      *
-     * @param   string  $name   Use this instead of getName()
+     * @param   string $name Use this instead of getName()
      * @return  string
      */
     protected function getNameHtml($name = null)

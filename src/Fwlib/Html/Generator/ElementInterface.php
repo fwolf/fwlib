@@ -21,65 +21,76 @@ interface ElementInterface
      */
     public function appendTo(ElementCollection $collection);
 
+
     /**
      * Getter of class
      *
-     * @param   string  $suffix
+     * @param   string $suffix
      * @return  string
      */
     public function getClass($suffix = '');
+
 
     /**
      * @return  string
      */
     public function getComment();
 
+
     /**
      * Getter of id
      *
-     * @param   string  $suffix
+     * @param   string $suffix
      * @return  string
      */
     public function getId($suffix = '');
+
 
     /**
      * @return  int
      */
     public function getIndent();
 
+
     /**
-     * @param   string  $userMode
+     * @param   string $userMode
      * @return  string
      */
     public function getMode($userMode = ElementMode::SHOW);
+
 
     /**
      * @return  string
      */
     public function getName();
 
+
     /**
      * Get html output
      *
-     * @param   string  $mode
+     * @param   string $mode
      * @return  string
      */
     public function getOutput($mode = 'show');
+
 
     /**
      * @return  string
      */
     public function getRootPath();
 
+
     /**
      * @return  string
      */
     public function getTip();
 
+
     /**
      * @return  \string[]
      */
     public function getValidateRules();
+
 
     /**
      * Get value of element
@@ -87,6 +98,7 @@ interface ElementInterface
      * @return  mixed
      */
     public function getValue();
+
 
     /**
      * Insert to collection
@@ -97,6 +109,7 @@ interface ElementInterface
      */
     public function insertTo(ElementCollection $collection, $brother);
 
+
     /**
      * Prepend to collection
      *
@@ -105,11 +118,13 @@ interface ElementInterface
      */
     public function prependTo(ElementCollection $collection);
 
+
     /**
-     * @param   string  $class
+     * @param   string $class
      * @return  static
      */
     public function setClass($class);
+
 
     /**
      * @param   string $comment
@@ -117,14 +132,16 @@ interface ElementInterface
      */
     public function setComment($comment);
 
+
     /**
      * Set single config
      *
-     * @param   string  $key
-     * @param   mixed   $value
+     * @param   string $key
+     * @param   mixed  $value
      * @return  static
      */
     public function setConfig($key, $value);
+
 
     /**
      * Setter of configs
@@ -134,16 +151,18 @@ interface ElementInterface
      *
      * String config moved to {@see setStringOptions()}.
      *
-     * @param   array   $configs
+     * @param   array $configs
      * @return  static
      */
     public function setConfigs(array $configs);
 
+
     /**
-     * @param   string  $identity
+     * @param   string $identity
      * @return  static
      */
     public function setId($identity);
+
 
     /**
      * @param   int $indent
@@ -151,31 +170,36 @@ interface ElementInterface
      */
     public function setIndent($indent);
 
+
     /**
      * @param   string $mode
      * @return  static
      */
     public function setMode($mode);
 
+
     /**
-     * @param   string  $name
+     * @param   string $name
      * @return  static
      */
     public function setName($name);
 
+
     /**
-     * @param   string  $rootPath
+     * @param   string $rootPath
      * @return  static
      */
     public function setRootPath($rootPath);
 
+
     /**
      * Set configs with string style
      *
-     * @param   string  $optionString
+     * @param   string $optionString
      * @return  static
      */
     public function setStringOptions($optionString);
+
 
     /**
      * @param   string $tip
@@ -183,14 +207,16 @@ interface ElementInterface
      */
     public function setTip($tip);
 
+
     /**
      * @param   \string[] $validateRules
      * @return  static
      */
     public function setValidateRules($validateRules);
 
+
     /**
-     * @param   mixed   $value
+     * @param   mixed $value
      * @return  static
      */
     public function setValue($value);
