@@ -53,6 +53,42 @@ class ElementCollectionTest extends PHPUnitTestCase
     }
 
 
+    public function testAppendPrependInsert()
+    {
+        $elements = $this->buildMock();
+
+        $element1 = $this->buildElementMock(null, 'name1');
+        $elements->prepend($element1);
+
+        $element2 = $this->buildElementMock(null, 'name2');
+        $elements->prepend($element2);
+
+        $elementsProperty = $this->reflectionGet($elements, 'elements');
+        $this->assertEqualArray(
+            ['name2', 'name1'],
+            array_keys($elementsProperty)
+        );
+
+        $element3 = $this->buildElementMock(null, 'name3');
+        $elements->append($element3);
+
+        $elementsProperty = $this->reflectionGet($elements, 'elements');
+        $this->assertEqualArray(
+            ['name2', 'name1', 'name3'],
+            array_keys($elementsProperty)
+        );
+
+        $element4 = $this->buildElementMock(null, 'name4');
+        $elements->insert($element4, 'name1');
+
+        $elementsProperty = $this->reflectionGet($elements, 'elements');
+        $this->assertEqualArray(
+            ['name2', 'name1', 'name4', 'name3'],
+            array_keys($elementsProperty)
+        );
+    }
+
+
     public function testArrayAccess()
     {
         $elements = $this->buildMock();

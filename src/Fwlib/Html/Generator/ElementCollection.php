@@ -28,6 +28,8 @@ class ElementCollection implements \ArrayAccess
     use ClassAndIdPropertyTrait;
 
     /**
+     * Elements array, index by name
+     *
      * @var ElementInterface[]
      */
     protected $elements = [];
@@ -56,6 +58,20 @@ class ElementCollection implements \ArrayAccess
      * @var string
      */
     protected $rootPath = null;
+
+
+    /**
+     * @param   ElementInterface $element
+     * @return  static
+     */
+    public function append(ElementInterface $element)
+    {
+        $name = $element->getName();
+
+        $this->elements[$name] = $element;
+
+        return $this;
+    }
 
 
     /**
@@ -112,6 +128,30 @@ class ElementCollection implements \ArrayAccess
     public function getRootPath()
     {
         return $this->rootPath;
+    }
+
+
+    /**
+     * Insert after an exists element
+     *
+     * @param   ElementInterface $element
+     * @param   string           $brother Insert after this element
+     * @return  static
+     */
+    public function insert(ElementInterface $element, $brother)
+    {
+        $name = $element->getName();
+
+        $arrayUtil = $this->getUtilContainer()->getArray();
+
+        $this->elements = $arrayUtil->insert(
+            $this->elements,
+            $brother,
+            [$name => $element],
+            1
+        );
+
+        return $this;
     }
 
 
@@ -208,6 +248,20 @@ class ElementCollection implements \ArrayAccess
         }
 
         return $element;
+    }
+
+
+    /**
+     * @param   ElementInterface $element
+     * @return  static
+     */
+    public function prepend(ElementInterface $element)
+    {
+        $name = $element->getName();
+
+        $this->elements = array_merge([$name => $element], $this->elements);
+
+        return $this;
     }
 
 
