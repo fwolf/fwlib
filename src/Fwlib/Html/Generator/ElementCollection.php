@@ -192,7 +192,7 @@ class ElementCollection implements \ArrayAccess
      * @param   ElementInterface $element
      * @return  ElementInterface
      */
-    protected function prepare($element)
+    protected function prepare(ElementInterface $element)
     {
         $name = $element->getName();
         $mode = $element->getMode($this->getMode());
