@@ -82,6 +82,17 @@ abstract class AbstractElement implements ElementInterface
 
 
     /**
+     * {@inheritdoc}
+     */
+    public function appendTo(ElementCollection $collection)
+    {
+        $collection->append($this);
+
+        return $this;
+    }
+
+
+    /**
      * Encode value for output
      *
      * Mode 'edit' will not do extra html encode(nl2br and optimize space).
@@ -286,6 +297,28 @@ abstract class AbstractElement implements ElementInterface
         } else {
             return $value;
         }
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function insertTo(ElementCollection $collection, $brother)
+    {
+        $collection->insert($this, $brother);
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prependTo(ElementCollection $collection)
+    {
+        $collection->prepend($this);
+
+        return $this;
     }
 
 

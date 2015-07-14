@@ -14,6 +14,14 @@ namespace Fwlib\Html\Generator;
 interface ElementInterface
 {
     /**
+     * Append to collection
+     *
+     * @param   ElementCollection $collection
+     * @return  static
+     */
+    public function appendTo(ElementCollection $collection);
+
+    /**
      * Getter of class
      *
      * @param   string  $suffix
@@ -79,6 +87,23 @@ interface ElementInterface
      * @return  mixed
      */
     public function getValue();
+
+    /**
+     * Insert to collection
+     *
+     * @param   ElementCollection $collection
+     * @param   string            $brother Name of element insert behind
+     * @return  static
+     */
+    public function insertTo(ElementCollection $collection, $brother);
+
+    /**
+     * Prepend to collection
+     *
+     * @param   ElementCollection $collection
+     * @return  static
+     */
+    public function prependTo(ElementCollection $collection);
 
     /**
      * @param   string  $class

@@ -2,6 +2,7 @@
 namespace FwlibTest\Html\Generator;
 
 use Fwlib\Html\Generator\AbstractElement;
+use Fwlib\Html\Generator\ElementCollection;
 use Fwlib\Html\Generator\ElementMode;
 use Fwlib\Web\HtmlHelper;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
@@ -32,6 +33,16 @@ class AbstractElementTest extends PHPunitTestCase
             ->willReturn("<div>show\nmode</div>");
 
         return $mock;
+    }
+
+
+    public function testConstructor()
+    {
+        $element = $this->buildMock();
+        $this->assertEquals('', $element->getName());
+
+        $element = $this->buildMock([], ['dummyName']);
+        $this->assertEquals('dummyName', $element->getName());
     }
 
 
@@ -75,16 +86,6 @@ class AbstractElementTest extends PHPunitTestCase
             " name='bar'",
             $this->reflectionCall($element, 'getNameHtml')
         );
-    }
-
-
-    public function testConstructor()
-    {
-        $element = $this->buildMock();
-        $this->assertEquals('', $element->getName());
-
-        $element = $this->buildMock([], ['dummyName']);
-        $this->assertEquals('dummyName', $element->getName());
     }
 
 
@@ -171,6 +172,34 @@ class AbstractElementTest extends PHPunitTestCase
         $this->assertEquals(
             " value='dummyValue'",
             $this->reflectionCall($element, 'getValueHtml')
+        );
+    }
+
+
+    public function testPrependInsertAppendTo()
+    {
+        /** @var MockObject|ElementCollection $collection */
+        $collection = $this->getMock(
+            ElementCollection::class,
+            null
+        );
+
+        $element1 = $this->buildMock()
+            ->setName('name1')
+            ->prependTo($collection);
+
+        $element2 = clone $element1;
+        $element2->setName('name2')
+            ->appendTo($collection);
+
+        $element3 = clone $element1;
+        $element3->setName('name3')
+            ->insertTo($collection, 'name1');
+
+        $elementsProperty = $this->reflectionGet($collection, 'elements');
+        $this->assertEqualArray(
+            ['name1', 'name3', 'name2'],
+            array_keys($elementsProperty)
         );
     }
 }
