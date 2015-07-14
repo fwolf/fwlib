@@ -21,8 +21,8 @@ class ElementFactory
      *
      * Prefix MUST end with '\'.
      *
-     * For customize prefixes completely, inherit and overwrite this property,
-     * for  append or prepend prefix, can overwrite {@see getPrefixes()} method.
+     * User should better overwrite {@see getElementClassPrefixes()} for
+     * customize prefixes.
      *
      * @var string[]
      */
