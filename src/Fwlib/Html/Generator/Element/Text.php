@@ -36,7 +36,7 @@ class Text extends AbstractElement
         $output = "<input type='text'" .
             $this->getClassHtml() .
             $this->getIdHtml() . "\n  " .
-            $this->getNameHtml() .
+            trim($this->getNameHtml()) .
             $this->getValueHtml(ElementMode::EDIT) .
             " />"
         ;
