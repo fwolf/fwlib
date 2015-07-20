@@ -59,6 +59,13 @@ class ElementCollection implements \ArrayAccess
      */
     protected $rootPath = null;
 
+    /**
+     * Separator between element output
+     *
+     * @var string
+     */
+    protected $separator = PHP_EOL;
+
 
     /**
      * @param   ElementInterface $element
@@ -108,7 +115,7 @@ class ElementCollection implements \ArrayAccess
 
         foreach ($this->elements as $element) {
             $element = $this->prepare($element);
-            $output .= $element->getOutput($mode) . PHP_EOL;
+            $output .= $element->getOutput($mode) . $this->getSeparator();
         }
 
         $output = trim($output);
@@ -128,6 +135,15 @@ class ElementCollection implements \ArrayAccess
     public function getRootPath()
     {
         return $this->rootPath;
+    }
+
+
+    /**
+     * @return  string
+     */
+    public function getSeparator()
+    {
+        return $this->separator;
     }
 
 
@@ -296,6 +312,18 @@ class ElementCollection implements \ArrayAccess
     public function setRootPath($rootPath)
     {
         $this->rootPath = $rootPath;
+
+        return $this;
+    }
+
+
+    /**
+     * @param   string $separator
+     * @return  static
+     */
+    public function setSeparator($separator)
+    {
+        $this->separator = $separator;
 
         return $this;
     }

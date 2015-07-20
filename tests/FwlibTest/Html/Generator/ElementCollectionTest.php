@@ -109,25 +109,25 @@ class ElementCollectionTest extends PHPUnitTestCase
 
     public function testGetOutput()
     {
-        $outStr = '<div>foo</div>';
-
         $element = $this->buildElementMock(['getOutput'], 'name');
         $element->expects($this->exactly(2))
             ->method('getOutput')
-            ->willReturn($outStr);
+            ->willReturn('<hr>');
 
         $element1 = clone $element;
         $element1->setName('name1');
 
         $elements = $this->buildMock();
-        $elements['name'] = $element;
-        $elements['name1'] = $element1;
-        $elements->setIndent(2);
+        $elements->append($element)
+            ->append($element1)
+            ->setIndent(2)
+            ->setSeparator("\n");
 
         $output = $elements->getOutput();
 
         $this->assertEquals(
-            '  ' . $outStr . PHP_EOL . '  ' . $outStr,
+            '  <hr>
+  <hr>',
             $output
         );
     }
