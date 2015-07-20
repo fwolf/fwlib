@@ -1,11 +1,11 @@
 <?php
 namespace Fwlib\Html\Generator;
 
+use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Config\StringOptionsAwareTrait;
 use Fwlib\Html\Generator\Exception\ElementModeNotImplementedException;
 use Fwlib\Html\Generator\Helper\ElementPropertyTrait;
 use Fwlib\Html\Helper\ClassAndIdPropertyTrait;
-use Fwlib\Html\ListView\ConfigAwareTrait;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Web\HtmlHelperAwareTrait;
 
