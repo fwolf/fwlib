@@ -153,6 +153,20 @@ abstract class AbstractElement implements ElementInterface
 
 
     /**
+     * {@inheritdoc}
+     *
+     * Configs
+     * - rawAttributes: Html attributes will append before end of main tag.
+     */
+    protected function getDefaultConfigs()
+    {
+        return [
+            'rawAttributes' => '',
+        ];
+    }
+
+
+    /**
      * Get html code for id
      *
      * @param   string $identity Use this id instead of getId()
@@ -256,6 +270,29 @@ abstract class AbstractElement implements ElementInterface
      * @return  string
      */
     abstract protected function getOutputForShowMode();
+
+
+    /**
+     * @return  string
+     */
+    protected function getRawAttributes()
+    {
+        return $this->getConfig('rawAttributes', '');
+    }
+
+
+    /**
+     * Get html code for rawAttributes
+     *
+     * @return  string
+     */
+    protected function getRawAttributesHtml()
+    {
+        $rawAttributes = $this->getRawAttributes();
+
+        return empty($rawAttributes) ? ''
+            : ' ' . trim($rawAttributes);
+    }
 
 
     /**

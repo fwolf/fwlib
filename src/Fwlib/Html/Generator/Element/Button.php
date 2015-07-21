@@ -32,7 +32,9 @@ class Button extends AbstractElement
             $this->getTypeHtml() .
             $this->getClassHtml() .
             $this->getIdHtml() . "\n  " .
-            trim($this->getNameHtml()) . ">\n  " .
+            trim($this->getNameHtml()) .
+            $this->getRawAttributesHtml() .
+            ">\n  " .
             $this->getValueHtml() .
             "</button>";
 

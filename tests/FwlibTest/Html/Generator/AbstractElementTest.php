@@ -86,6 +86,15 @@ class AbstractElementTest extends PHPunitTestCase
             " name='bar'",
             $this->reflectionCall($element, 'getNameHtml')
         );
+
+        $this->assertEmpty(
+            $this->reflectionCall($element, 'getRawAttributesHtml')
+        );
+        $element->setConfig('rawAttributes', "enabled='enabled'");
+        $this->assertEquals(
+            " enabled='enabled'",
+            $this->reflectionCall($element, 'getRawAttributesHtml')
+        );
     }
 
 
