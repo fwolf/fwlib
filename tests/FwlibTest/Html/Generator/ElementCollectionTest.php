@@ -63,28 +63,28 @@ class ElementCollectionTest extends PHPUnitTestCase
         $element2 = $this->buildElementMock(null, 'name2');
         $elements->prepend($element2);
 
-        $elementsProperty = $this->reflectionGet($elements, 'elements');
+        $elementAr = $elements->getElements();
         $this->assertEqualArray(
             ['name2', 'name1'],
-            array_keys($elementsProperty)
+            array_keys($elementAr)
         );
 
         $element3 = $this->buildElementMock(null, 'name3');
         $elements->append($element3);
 
-        $elementsProperty = $this->reflectionGet($elements, 'elements');
+        $elementAr = $elements->getElements();
         $this->assertEqualArray(
             ['name2', 'name1', 'name3'],
-            array_keys($elementsProperty)
+            array_keys($elementAr)
         );
 
         $element4 = $this->buildElementMock(null, 'name4');
         $elements->insert($element4, 'name1');
 
-        $elementsProperty = $this->reflectionGet($elements, 'elements');
+        $elementAr = $elements->getElements();
         $this->assertEqualArray(
             ['name2', 'name1', 'name4', 'name3'],
-            array_keys($elementsProperty)
+            array_keys($elementAr)
         );
     }
 
@@ -118,10 +118,12 @@ class ElementCollectionTest extends PHPUnitTestCase
         $element1->setName('name1');
 
         $elements = $this->buildMock();
-        $elements->append($element)
-            ->append($element1)
-            ->setIndent(2)
-            ->setSeparator("\n");
+        $elements->setIndent(2)
+            ->setSeparator("\n")
+            ->setElements([
+                'name'  => $element,
+                'name1' => $element1,
+            ]);
 
         $output = $elements->getOutput();
 

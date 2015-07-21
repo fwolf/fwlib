@@ -82,6 +82,15 @@ class ElementCollection implements \ArrayAccess
 
 
     /**
+     * @return  ElementInterface[]
+     */
+    public function getElements()
+    {
+        return $this->elements;
+    }
+
+
+    /**
      * @return  int
      */
     public function getIndent()
@@ -276,6 +285,18 @@ class ElementCollection implements \ArrayAccess
         $name = $element->getName();
 
         $this->elements = array_merge([$name => $element], $this->elements);
+
+        return $this;
+    }
+
+
+    /**
+     * @param   ElementInterface[] $elements
+     * @return  static
+     */
+    public function setElements($elements)
+    {
+        $this->elements = $elements;
 
         return $this;
     }
