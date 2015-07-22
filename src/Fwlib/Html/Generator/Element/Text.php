@@ -52,7 +52,7 @@ class Text extends AbstractElement
     protected function getOutputForShowMode()
     {
         $valueHtml = $this->getValueHtml(ElementMode::SHOW);
-        $tag = $this->getConfig('tag');
+        $tag = $this->getTag();
 
         if (empty($tag)) {
             return $valueHtml;
@@ -67,5 +67,14 @@ class Text extends AbstractElement
             "</$tag>";
 
         return $output;
+    }
+
+
+    /**
+     * @return  string
+     */
+    protected function getTag()
+    {
+        return $this->getConfig('tag');
     }
 }
