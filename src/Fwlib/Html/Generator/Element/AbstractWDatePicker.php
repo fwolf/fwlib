@@ -2,6 +2,7 @@
 namespace Fwlib\Html\Generator\Element;
 
 use Fwlib\Html\Generator\ElementMode;
+use Fwlib\Html\Generator\Helper\GetJsLoadHtmlTrait;
 
 /**
  * Select date with WDatePicker
@@ -11,6 +12,9 @@ use Fwlib\Html\Generator\ElementMode;
  */
 abstract class AbstractWDatePicker extends PlainDate
 {
+    use GetJsLoadHtmlTrait;
+
+
     /**
      * {@inheritdoc}
      *
@@ -68,39 +72,6 @@ abstract class AbstractWDatePicker extends PlainDate
     {
         return $this->getConfig('formatInPHP');
     }
-
-
-    /**
-     * Get html to load js
-     *
-     * @return  string
-     */
-    protected function getJsLoadHtml()
-    {
-        static $isLoaded = false;
-
-        if ($isLoaded) {
-            return '';
-        } else {
-            $isLoaded = true;
-        }
-
-        $jsPath = $this->getJsPath();
-
-        $output = <<<TAG
-<script type='text/javascript' src='$jsPath'></script>\n
-TAG;
-
-        return $output;
-    }
-
-
-    /**
-     * Get js file path
-     *
-     * @return  string
-     */
-    abstract protected function getJsPath();
 
 
     /**

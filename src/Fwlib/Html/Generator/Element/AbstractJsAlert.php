@@ -2,6 +2,7 @@
 namespace Fwlib\Html\Generator\Element;
 
 use Fwlib\Html\Generator\AbstractElement;
+use Fwlib\Html\Generator\Helper\GetJsLoadHtmlTrait;
 
 /**
  * Alert box with pure js
@@ -11,6 +12,9 @@ use Fwlib\Html\Generator\AbstractElement;
  */
 abstract class AbstractJsAlert extends AbstractElement
 {
+    use GetJsLoadHtmlTrait;
+
+
     /**
      * {@inheritdoc}
      *
@@ -29,39 +33,6 @@ abstract class AbstractJsAlert extends AbstractElement
             'showCloseLink'  => true,
         ]);
     }
-
-
-    /**
-     * Get html to load js
-     *
-     * @return  string
-     */
-    protected function getJsLoadHtml()
-    {
-        static $isLoaded = false;
-
-        if ($isLoaded) {
-            return '';
-        } else {
-            $isLoaded = true;
-        }
-
-        $jsPath = $this->getJsPath();
-
-        $output = <<<TAG
-<script type='text/javascript' src='$jsPath'></script>\n
-TAG;
-
-        return $output;
-    }
-
-
-    /**
-     * Get js file path
-     *
-     * @return  string
-     */
-    abstract protected function getJsPath();
 
 
     /**

@@ -4,8 +4,6 @@ namespace Fwlib\Html\Generator\Helper;
 /**
  * Use this method to generate js load html and avoid duplicate load.
  *
- * @method  string  getJsPath()
- *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -37,4 +35,12 @@ TAG;
 
         return $output;
     }
+
+
+    /**
+     * Get js file path
+     *
+     * @return  string
+     */
+    abstract protected function getJsPath();
 }
