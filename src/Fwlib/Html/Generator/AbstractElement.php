@@ -156,11 +156,13 @@ abstract class AbstractElement implements ElementInterface
      * {@inheritdoc}
      *
      * Configs
+     * - default: Default value if not set
      * - rawAttributes: Html attributes will append before end of main tag.
      */
     protected function getDefaultConfigs()
     {
         return [
+            'default'       => null,
             'rawAttributes' => '',
         ];
     }
