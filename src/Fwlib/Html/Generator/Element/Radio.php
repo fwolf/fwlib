@@ -22,15 +22,24 @@ class Radio extends AbstractElement
      * {@inheritdoc}
      *
      * Configs
-     * - values: Value => title pair, value should not include whitespace.
+     * - items: Value => title pair, value should not include whitespace.
      */
     protected function getDefaultConfigs()
     {
         $configs = parent::getDefaultConfigs();
 
         return array_merge($configs, [
-            'values' => [],
+            'items' => [],
         ]);
+    }
+
+
+    /**
+     * @return  array
+     */
+    protected function getItems()
+    {
+        return $this->getConfig('items');
     }
 
 
@@ -41,14 +50,14 @@ class Radio extends AbstractElement
      */
     protected function getOutputForEditMode()
     {
-        $values = $this->getValues();
+        $items = $this->getItems();
 
         $radioValue = $this->getValue();
 
         $output = '';
         $rawAttributes = $this->getRawAttributes();
 
-        foreach ($values as $value => $title) {
+        foreach ($items as $value => $title) {
             $checked = ($radioValue == $value) ? " checked='checked'" : '';
             $valueId = $this->getId("--$value");
             $titleClass = $this->getTitleClass();
@@ -83,11 +92,11 @@ TAG;
      */
     protected function getOutputForShowMode()
     {
-        $values = $this->getValues();
+        $items = $this->getItems();
         $radioValue = $this->getValue();
 
-        $title = array_key_exists($radioValue, $values)
-            ? $values[$radioValue]
+        $title = array_key_exists($radioValue, $items)
+            ? $items[$radioValue]
             : $this->unknownValueTitle;
 
         $output = "<input type='hidden'" .
@@ -131,14 +140,5 @@ TAG;
         $idStr = empty($idStr) ? '' : $idStr . "__title--$value";
 
         return $idStr;
-    }
-
-
-    /**
-     * @return  array
-     */
-    protected function getValues()
-    {
-        return $this->getConfig('values');
     }
 }

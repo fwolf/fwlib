@@ -28,7 +28,7 @@ class RadioTest extends PHPUnitTestCase
             ->setId('bar')
             ->setName('dummy')
             ->setConfig('default', 0)
-            ->setConfig('values', ['Value 0', 'Value 1']);
+            ->setConfig('items', ['Item 0', 'Item 1']);
 
         return $mock;
     }
@@ -43,11 +43,11 @@ class RadioTest extends PHPUnitTestCase
   <input type='radio' class='foo' id='bar--0'
     name='dummy' value='0' checked='checked' />
   <label class='foo__title' id='bar__title--0'
-    for='bar--0'>Value 0</label>
+    for='bar--0'>Item 0</label>
   <input type='radio' class='foo' id='bar--1'
     name='dummy' value='1' />
   <label class='foo__title' id='bar__title--1'
-    for='bar--1'>Value 1</label>
+    for='bar--1'>Item 1</label>
 </fieldset>
 TAG;
         $this->assertEquals(
@@ -65,7 +65,7 @@ TAG;
 
         $expectedOutput = <<<TAG
 <input type='hidden' id='bar' name='dummy' value='1' />
-<span class='foo__title' id='bar__title--1'>Value 1</span>
+<span class='foo__title' id='bar__title--1'>Item 1</span>
 TAG;
         $this->assertEquals(
             $expectedOutput,
