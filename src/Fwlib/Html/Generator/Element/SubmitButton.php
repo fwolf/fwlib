@@ -26,7 +26,7 @@ class SubmitButton extends Button
         $configs = parent::getDefaultConfigs();
 
         return array_merge($configs, [
-            'sleepTime' => 5000,
+            'sleepTime' => 0,
         ]);
     }
 
