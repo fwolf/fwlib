@@ -2,46 +2,39 @@
 namespace Fwlib\Html\Generator\Element;
 
 use Fwlib\Html\Generator\AbstractElement;
-use Fwlib\Html\Generator\ElementMode;
 
 /**
- * Text input
+ * Plain html list(ul and ol)
  *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-class Text extends AbstractElement
+class PlainList extends AbstractElement
 {
     /**
      * {@inheritdoc}
      *
      * Configs
      * - tag: Use div or p or none html tag in show mode, default: none.
+     * - messages: To show as list items.
      */
     protected function getDefaultConfigs()
     {
         $configs = parent::getDefaultConfigs();
 
         return array_merge($configs, [
-            'tag' => '',
+            'tag'      => 'ul',
+            'messages' => [],
         ]);
     }
 
 
     /**
-     * {@inheritdoc}
+     * @return  string[]
      */
-    protected function getOutputForEditMode()
+    protected function getMessages()
     {
-        $output = "<input type='text'" .
-            $this->getClassHtml() .
-            $this->getIdHtml() . "\n  " .
-            trim($this->getNameHtml()) .
-            $this->getValueHtml(ElementMode::EDIT) .
-            $this->getRawAttributesHtml() .
-            " />";
-
-        return $output;
+        return $this->getConfig('messages');
     }
 
 
@@ -50,20 +43,21 @@ class Text extends AbstractElement
      */
     protected function getOutputForShowMode()
     {
-        $valueHtml = $this->getValueHtml(ElementMode::SHOW);
+        $messages = $this->getMessages();
         $tag = $this->getTag();
-
-        if (empty($tag)) {
-            return $valueHtml;
-        }
 
         $output = "<$tag" .
             $this->getClassHtml() .
             $this->getIdHtml() .
             $this->getRawAttributesHtml() .
-            ">" .
-            $valueHtml .
-            "</$tag>";
+            ">";
+
+        foreach ($messages as $message) {
+            $output .= "\n  <li>{$message}</li>";
+        }
+
+        $output .= "
+</$tag>";
 
         return $output;
     }
