@@ -4,7 +4,7 @@ namespace Fwlib\Html\Generator\Helper;
 /**
  * Trait of element property, except class and id
  *
- * @see \Fwlib\Html\Generator\ElementInterface
+ * @see         \Fwlib\Html\Generator\ElementInterface
  *
  * @method  mixed   getConfig($key, $default = null)
  *
@@ -37,6 +37,17 @@ trait ElementPropertyTrait
      * @var string
      */
     protected $tip = '';
+
+    /**
+     * Title/subject/caption of element
+     *
+     * Although not included directly in element output html, title is useful
+     * when generate form, validate message. With title there did not need to
+     * define a meta array including name-title map anymore.
+     *
+     * @var string
+     */
+    protected $title = '';
 
     /**
      * @var string[]
@@ -85,6 +96,15 @@ trait ElementPropertyTrait
 
 
     /**
+     * @return  string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+
+    /**
      * @see \Fwlib\Html\Generator\ElementInterface::getValidateRules()
      *
      * @return  \string[]
@@ -118,7 +138,7 @@ trait ElementPropertyTrait
     /**
      * @see \Fwlib\Html\Generator\ElementInterface::setComment()
      *
-     * @param   string  $comment
+     * @param   string $comment
      * @return  static
      */
     public function setComment($comment)
@@ -132,7 +152,7 @@ trait ElementPropertyTrait
     /**
      * @see \Fwlib\Html\Generator\ElementInterface::setName()
      *
-     * @param   string  $name
+     * @param   string $name
      * @return  static
      */
     public function setName($name)
@@ -146,12 +166,24 @@ trait ElementPropertyTrait
     /**
      * @see \Fwlib\Html\Generator\ElementInterface::setTip()
      *
-     * @param   string  $tip
+     * @param   string $tip
      * @return  static
      */
     public function setTip($tip)
     {
         $this->tip = $tip;
+
+        return $this;
+    }
+
+
+    /**
+     * @param   string $title
+     * @return  static
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
 
         return $this;
     }
@@ -174,7 +206,7 @@ trait ElementPropertyTrait
     /**
      * @see \Fwlib\Html\Generator\ElementInterface::setValue()
      *
-     * @param   mixed   $value
+     * @param   mixed $value
      * @return  static
      */
     public function setValue($value)

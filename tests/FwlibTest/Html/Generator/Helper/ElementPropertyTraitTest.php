@@ -12,7 +12,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class ElementPropertyTraitTest extends PHPUnitTestCase
 {
     /**
-     * @param   string[]    $methods
+     * @param   string[] $methods
      * @return  MockObject|ElementPropertyTrait
      */
     protected function buildMock(array $methods = null)
@@ -37,6 +37,9 @@ class ElementPropertyTraitTest extends PHPUnitTestCase
 
         $trait->setTip('foo');
         $this->assertEquals('foo', $trait->getTip());
+
+        $trait->setTitle('bar');
+        $this->assertEquals('bar', $trait->getTitle());
 
         $trait->setValidateRules(['foo', 'bar']);
         $this->assertEquals(['foo', 'bar'], $trait->getValidateRules());

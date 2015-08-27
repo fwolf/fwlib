@@ -87,6 +87,12 @@ interface ElementInterface
 
 
     /**
+     * @return  string
+     */
+    public function getTitle();
+
+
+    /**
      * @return  \string[]
      */
     public function getValidateRules();
@@ -206,6 +212,13 @@ interface ElementInterface
      * @return  static
      */
     public function setTip($tip);
+
+
+    /**
+     * @param   string $title
+     * @return  static
+     */
+    public function setTitle($title);
 
 
     /**
