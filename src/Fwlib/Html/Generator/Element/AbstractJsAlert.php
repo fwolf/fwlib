@@ -20,7 +20,6 @@ abstract class AbstractJsAlert extends AbstractElement
      *
      * Configs
      * - messages: Messages to alert, string[], auto number index
-     * - title: Title of alert message box
      * - showBackground: boolean, default true
      * - showClose: boolean, default true
      */
@@ -28,7 +27,6 @@ abstract class AbstractJsAlert extends AbstractElement
     {
         return array_merge(parent::getDefaultConfigs(), [
             'messages'       => [],
-            'title'          => '',
             'showBackground' => true,
             'showCloseLink'  => true,
         ]);
@@ -78,15 +76,6 @@ abstract class AbstractJsAlert extends AbstractElement
 </script>";
 
         return $output;
-    }
-
-
-    /**
-     * @return  string
-     */
-    protected function getTitle()
-    {
-        return $this->getConfig('title');
     }
 
 

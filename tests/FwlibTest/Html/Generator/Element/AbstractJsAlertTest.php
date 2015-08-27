@@ -41,9 +41,9 @@ class AbstractJsAlertTest extends PHPUnitTestCase
         $element = $this->buildMock();
 
         $element->setConfigs([
-            'title'    => 'dummy',
             'messages' => [],
-        ]);
+        ])
+            ->setTitle('dummy');
         $output = $element->getOutput(ElementMode::SHOW);
         $this->assertEmpty($output);
 
