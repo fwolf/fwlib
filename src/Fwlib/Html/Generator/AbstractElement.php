@@ -6,6 +6,7 @@ use Fwlib\Config\StringOptionsAwareTrait;
 use Fwlib\Html\Generator\Exception\ElementModeNotImplementedException;
 use Fwlib\Html\Generator\Helper\ElementPropertyTrait;
 use Fwlib\Html\Helper\ClassAndIdPropertyTrait;
+use Fwlib\Html\Helper\IndentAwareTrait;
 use Fwlib\Util\UtilContainerAwareTrait;
 use Fwlib\Web\HtmlHelperAwareTrait;
 
@@ -42,6 +43,7 @@ abstract class AbstractElement implements ElementInterface
     use ClassAndIdPropertyTrait;
     use ElementPropertyTrait;
     use HtmlHelperAwareTrait;
+    use IndentAwareTrait;
 
 
     /**
