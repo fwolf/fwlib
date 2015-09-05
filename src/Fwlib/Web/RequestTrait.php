@@ -5,10 +5,10 @@ use Fwlib\Base\SingletonTrait;
 use Fwlib\Util\UtilContainer;
 
 /**
- * @see RequestInterface
+ * @see         \Fwlib\Web\RequestInterface
  *
- * @property    string  $actionParameter
- * @property    string  $moduleParameter
+ * @property    string $actionParameter
+ * @property    string $moduleParameter
  *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
