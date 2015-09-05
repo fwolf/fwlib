@@ -11,6 +11,21 @@ namespace Fwlib\Html\Helper;
 trait ClassAndIdHtmlTrait
 {
     /**
+     * Get html string including class and id, with same suffix
+     *
+     * @param   string $suffix
+     * @return  string
+     */
+    protected function getClassAndIdHtml($suffix = '')
+    {
+        $class = $this->getClass($suffix);
+        $idStr = $this->getId($suffix);
+
+        return $this->getClassHtml($class) . $this->getIdHtml($idStr);
+    }
+
+
+    /**
      * @param   string $class
      * @return  string
      */

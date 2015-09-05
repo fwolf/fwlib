@@ -17,15 +17,39 @@ class ClassAndIdHtmlTraitTest extends PHPUnitTestCase
      */
     protected function buildMock(array $methods = null)
     {
+        if (is_null($methods)) {
+            $methods = [];
+        }
+        $methods = array_merge($methods, ['getClass', 'getId']);
+
         $mock = $this->getMockBuilder(ClassAndIdHtmlTrait::class)
             ->setMethods($methods)
             ->getMockForTrait();
+
+        $mock->expects($this->any())
+            ->method('getClass')
+            ->willReturn('foo');
+
+        $mock->expects($this->any())
+            ->method('getId')
+            ->willReturn('bar');
 
         return $mock;
     }
 
 
-    public function testGetHtml()
+    public function testGetClassAndIdHtml()
+    {
+        $trait = $this->buildMock();
+
+        $this->assertEquals(
+            " class='foo' id='bar'",
+            $this->reflectionCall($trait, 'getClassAndIdHtml', ['dummy'])
+        );
+    }
+
+
+    public function testGetSingleHtml()
     {
         $trait = $this->buildMock();
 
