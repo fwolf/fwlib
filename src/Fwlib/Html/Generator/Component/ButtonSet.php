@@ -2,6 +2,7 @@
 namespace Fwlib\Html\Generator\Component;
 
 use Fwlib\Html\Generator\Element\Button;
+use Fwlib\Html\Helper\IndentAwareTrait;
 use Fwlib\Util\UtilContainer;
 
 /**
@@ -12,6 +13,9 @@ use Fwlib\Util\UtilContainer;
  */
 class ButtonSet
 {
+    use IndentAwareTrait;
+
+
     /**
      * Button array, should index by button name
      *
@@ -89,8 +93,7 @@ class ButtonSet
             $sleepJs = '';
         }
 
-        $stringUtil = UtilContainer::getInstance()->getString();
-        $html = $stringUtil->indent($html, 2);
+        $html = $this->indent($html, 2);
 
         $html = <<<TAG
 <{$this->containerTag}{$classHtml}{$idHtml}>
@@ -100,7 +103,7 @@ $html
 {$sleepJs}
 TAG;
 
-        $html = $stringUtil->indent($html, $this->indent);
+        $html = $this->indent($html, $this->indent);
 
         return $html;
     }

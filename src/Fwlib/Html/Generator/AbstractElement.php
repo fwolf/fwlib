@@ -245,10 +245,7 @@ abstract class AbstractElement implements ElementInterface
             $output .= $this->getCommentHtml();
         }
 
-        if (0 < $this->indent) {
-            $stringUtil = $this->getUtilContainer()->getString();
-            $output = $stringUtil->indentHtml($output, $this->indent);
-        }
+        $output = $this->indentHtml($output, $this->getIndent());
 
         return $output;
     }

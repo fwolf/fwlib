@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Html\ListView;
 
+use Fwlib\Html\Helper\IndentAwareTrait;
 use Fwlib\Html\ListView\Helper\ClassAndIdConfigTrait;
 use Fwlib\Util\UtilContainer;
 use Fwlib\Web\UrlGenerator;
@@ -17,6 +18,7 @@ class Renderer implements RendererInterface
     use ConfigAwareTrait;
     use ListDtoAwareTrait;
     use RequestAwareTrait;
+    use IndentAwareTrait;
 
 
     /**
@@ -101,8 +103,7 @@ class Renderer implements RendererInterface
         }
 
         $partsHtml = implode("\n\n", $parts);
-        $stringUtil = UtilContainer::getInstance()->getString();
-        $partsHtml = $stringUtil->indent($partsHtml, 2);
+        $partsHtml = $this->indent($partsHtml, 2);
 
         $javascript = $this->getJs();
 
@@ -142,8 +143,7 @@ $('#{$rootId}').find('input[name={$pageParameter}]').on('mouseover', function() 
         }
 
         if (!empty($html)) {
-            $stringUtil = UtilContainer::getInstance()->getString();
-            $html = $stringUtil->indent($html, 4);
+            $html = $this->indent($html, 4);
 
             $html = <<<TAG
 
@@ -172,8 +172,6 @@ TAG;
 
         $trClass = $this->getClass('body__tr');
 
-        $stringUtil = UtilContainer::getInstance()->getString();
-
         $rowsHtml = '';
         foreach ($this->getListDto()->getBody() as $rowId => $row) {
             $trAppend = array_key_exists($rowId, $trAppendConfig)
@@ -193,14 +191,14 @@ TAG;
 ";
             }
 
-            $tdHtml = rtrim($stringUtil->indent($tdHtml, 2));
+            $tdHtml = rtrim($this->indent($tdHtml, 2));
             $rowsHtml .= "<tr class='$trClass'" . $trAppend . ">
 $tdHtml
 </tr>
 ";
         }
 
-        $rowsHtml = rtrim($stringUtil->indent($rowsHtml, 2));
+        $rowsHtml = rtrim($this->indent($rowsHtml, 2));
         $html = "<tbody>
 $rowsHtml
 </tbody>";
@@ -283,9 +281,8 @@ $thHtml  </tr>
         $head = $this->getListHead();
         $body = $this->getListBody();
 
-        $stringUtil = UtilContainer::getInstance()->getString();
-        $head = $stringUtil->indent($head, 2);
-        $body = $stringUtil->indent($body, 2);
+        $head = $this->indent($head, 2);
+        $body = $this->indent($body, 2);
 
         $html = "<table class='$tableClass' id='$tableId'>
 $head
@@ -353,8 +350,7 @@ $body
             ->getFullUrl();
         $formHtml =
             $this->getPagerJumpForm($formUrl, $page, $maxPage, $pageParameter);
-        $stringUtil = UtilContainer::getInstance()->getString();
-        $formHtml = $stringUtil->indent($formHtml, 2);
+        $formHtml = $this->indent($formHtml, 2);
 
         $pagerClass = $this->getClass("pager");
         $pagerId = $this->getId("pager--{$position}");

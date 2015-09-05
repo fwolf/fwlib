@@ -2,6 +2,7 @@
 namespace Fwlib\Html\Generator;
 
 use Fwlib\Html\Helper\ClassAndIdPropertyTrait;
+use Fwlib\Html\Helper\IndentAwareTrait;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
@@ -26,6 +27,7 @@ class ElementCollection implements \ArrayAccess
 {
     use UtilContainerAwareTrait;
     use ClassAndIdPropertyTrait;
+    use IndentAwareTrait;
 
     /**
      * Elements array, index by name
@@ -129,10 +131,7 @@ class ElementCollection implements \ArrayAccess
 
         $output = trim($output);
 
-        if (0 < $this->indent) {
-            $stringUtil = $this->getUtilContainer()->getString();
-            $output = $stringUtil->indentHtml($output, $this->getIndent());
-        }
+        $output = $this->indentHtml($output, $this->getIndent());
 
         return $output;
     }
