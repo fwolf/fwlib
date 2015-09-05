@@ -32,10 +32,18 @@ class IndentAwareTraitTest extends PHPUnitTestCase
         $str = '<div>foo</div>';
 
         $this->assertEquals(
+            $str,
+            $this->reflectionCall($trait, 'indent', [$str, 0])
+        );
+        $this->assertEquals(
             '  <div>foo</div>',
             $this->reflectionCall($trait, 'indent', [$str, 2])
         );
 
+        $this->assertEquals(
+            $str,
+            $this->reflectionCall($trait, 'indentHtml', [$str, 0])
+        );
         $this->assertEquals(
             '  <div>foo</div>',
             $this->reflectionCall($trait, 'indentHtml', [$str, 2])

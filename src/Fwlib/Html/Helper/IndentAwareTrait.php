@@ -28,6 +28,10 @@ trait IndentAwareTrait
         $lineEnding = "\n",
         $fillEmptyLine = false
     ) {
+        if (1 > $width) {
+            return $str;
+        }
+
         $stringUtil = UtilContainer::getInstance()->getString();
 
         return $stringUtil
@@ -54,6 +58,10 @@ trait IndentAwareTrait
         $lineEnding = "\n",
         $fillEmptyLine = false
     ) {
+        if (1 > $width) {
+            return $html;
+        }
+
         $stringUtil = UtilContainer::getInstance()->getString();
 
         return $stringUtil
