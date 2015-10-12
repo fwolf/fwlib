@@ -107,6 +107,16 @@ class ElementCollectionTest extends PHPUnitTestCase
     }
 
 
+    /**
+     * @expectedException   \Fwlib\Html\Generator\Exception\ElementNotFoundException
+     */
+    public function testGetElementWithNotExistIndex()
+    {
+        $elements = $this->buildMock();
+        $elements['notExist'];
+    }
+
+
     public function testGetOutput()
     {
         $element = $this->buildElementMock(['getOutput'], 'name');

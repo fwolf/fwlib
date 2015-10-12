@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Html\Generator;
 
+use Fwlib\Html\Generator\Exception\ElementNotFoundException;
 use Fwlib\Html\Helper\ClassAndIdPropertyTrait;
 use Fwlib\Html\Helper\IndentAwareTrait;
 use Fwlib\Util\UtilContainerAwareTrait;
@@ -80,6 +81,24 @@ class ElementCollection implements \ArrayAccess
         $this->elements[$name] = $element;
 
         return $this;
+    }
+
+
+    /**
+     * @param   string $name
+     * @return  ElementInterface
+     * @throws  ElementNotFoundException
+     */
+    public function getElement($name)
+    {
+        if (array_key_exists($name, $this->elements)) {
+            return $this->elements[$name];
+
+        } else {
+            throw new ElementNotFoundException(
+                "Unknown element name '{$name}'"
+            );
+        }
     }
 
 
@@ -211,7 +230,7 @@ class ElementCollection implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->elements[$offset];
+        return $this->getElement($offset);
     }
 
 
