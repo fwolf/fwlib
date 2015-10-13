@@ -270,12 +270,16 @@ class ElementCollection implements \ArrayAccess
 
 
     /**
-     * Assign collection shared property to element
+     * Suffix collection class/ic to element if not set
+     *
+     * May also assign collection shared property to element
+     *
+     * This method is public so can be used on element outside collection.
      *
      * @param   ElementInterface $element
      * @return  ElementInterface
      */
-    protected function prepare(ElementInterface $element)
+    public function prepare(ElementInterface $element)
     {
         $name = $element->getName();
         $mode = $element->getMode($this->getMode());
