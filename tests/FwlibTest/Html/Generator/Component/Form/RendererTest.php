@@ -104,12 +104,12 @@ class RendererTest extends PHPUnitTestCase
       name='a' value='show' />
   </div>
 
-  <div>
+  <div class='common-form__input-container' id='userCode__input-container'>
     <input type='text' class='common-form__input' id='userCode'
       name='code' value='User Code' />
   </div>
 
-  <div>
+  <div class='common-form__input-container' id='userTitle__input-container'>
     <label class='common-form__input__label' id='userTitle__label'
       for='title'>Title</label>
     <input type='text' class='common-form__input' id='userTitle'
@@ -146,11 +146,11 @@ TAG;
       name='a' value='show' />
   </div>
 
-  <div>
+  <div class='common-form__input-container' id='userCode__input-container'>
     <div class='common-form__input' id='userCode'>User&nbsp;Code</div>
   </div>
 
-  <div>
+  <div class='common-form__input-container' id='userTitle__input-container'>
     <label class='common-form__input__label' id='userTitle__label'
       for='title'>Title</label>
     <div class='common-form__input' id='userTitle'>User&nbsp;Foo</div>

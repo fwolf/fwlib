@@ -56,6 +56,32 @@ class Renderer
 
 
     /**
+     * @return  string
+     */
+    protected function getElementContainerCloseTag()
+    {
+        return '</div>';
+    }
+
+
+    /**
+     * @param   ElementInterface $element
+     * @return  string
+     */
+    protected function getElementContainerOpenTag($element)
+    {
+        $form = $this->getForm();
+
+        $classHtml = $this->getClassHtml($form->getClass('__input-container'));
+        $idHtml = $this->getIdHtml($element->getId('__input-container'));
+
+        return <<<TAG
+<div{$classHtml}{$idHtml}>
+TAG;
+    }
+
+
+    /**
      * @param   ElementInterface $element
      * @return  string
      */
@@ -274,7 +300,13 @@ TAG;
             $elementHtml = trim($elementHtml);  // For empty label
 
             $elementHtml = $this->indent($elementHtml, 2);
-            $elementHtml = "<div>\n" . $elementHtml . "\n</div>\n";
+
+            $elementHtml = <<<TAG
+{$this->getElementContainerOpenTag($element)}
+{$elementHtml}
+{$this->getElementContainerCloseTag()}
+
+TAG;
 
             $output .= $elementHtml . $separator;
         }
