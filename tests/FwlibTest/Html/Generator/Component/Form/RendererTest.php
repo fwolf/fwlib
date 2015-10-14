@@ -116,7 +116,7 @@ class RendererTest extends PHPUnitTestCase
       name='title' value='User Foo' />
   </div>
 
-  <div class='form__buttons'>
+  <div class='common-form__buttons' id='userForm__buttons'>
     <button type='submit'
       name='submit'>
       Submit</button>

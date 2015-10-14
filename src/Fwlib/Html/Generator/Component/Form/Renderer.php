@@ -44,6 +44,10 @@ class Renderer
     {
         $buttons = $this->getForm()->getButtons();
 
+        $form = $this->getForm();
+        $buttons->setContainerClass($form->getClass('__buttons'))
+            ->setContainerId($form->getId('__buttons'));
+
         $output = $buttons->getOutput();
         $output = trim($output);
 
