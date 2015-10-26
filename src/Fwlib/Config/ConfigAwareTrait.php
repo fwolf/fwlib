@@ -4,7 +4,7 @@ namespace Fwlib\Config;
 /**
  * Trait for class use Config as property
  *
- * @see ConfigAwareInterface
+ * @see         ConfigAwareInterface
  *
  * @copyright   Copyright 2013-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -32,8 +32,8 @@ trait ConfigAwareTrait
     /**
      * @see ConfigAwareInterface::getConfig()
      *
-     * @param   string  $key
-     * @param   mixed   $default        Return this if key not exists
+     * @param   string $key
+     * @param   mixed  $default Return this if key not exists
      * @return  mixed
      */
     public function getConfig($key, $default = null)
@@ -89,9 +89,9 @@ trait ConfigAwareTrait
     /**
      * @see ConfigAwareInterface::setConfig()
      *
-     * @param   string       $key
-     * @param   mixed        $val
-     * @return  static
+     * @param   string $key
+     * @param   mixed  $val
+     * @return  $this
      */
     public function setConfig($key, $val)
     {
@@ -106,8 +106,8 @@ trait ConfigAwareTrait
     /**
      * @see ConfigAwareInterface::setConfigs()
      *
-     * @param   array   $configs
-     * @return  static
+     * @param   array $configs
+     * @return  $this
      */
     public function setConfigs(array $configs)
     {

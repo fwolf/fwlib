@@ -10,8 +10,8 @@ interface ConfigAwareInterface
     /**
      * Get config value
      *
-     * @param   string  $key
-     * @param   mixed   $default        Return this if key not exists
+     * @param   string $key
+     * @param   mixed  $default Return this if key not exists
      * @return  mixed
      */
     public function getConfig($key, $default = null);
@@ -28,8 +28,8 @@ interface ConfigAwareInterface
     /**
      * Set single config value
      *
-     * @param   string       $key
-     * @param   mixed        $val
+     * @param   string $key
+     * @param   mixed  $val
      * @return  static
      */
     public function setConfig($key, $val);
@@ -38,7 +38,7 @@ interface ConfigAwareInterface
     /**
      * Batch set config values
      *
-     * @param   array   $configs
+     * @param   array $configs
      * @return  static
      */
     public function setConfigs(array $configs);
