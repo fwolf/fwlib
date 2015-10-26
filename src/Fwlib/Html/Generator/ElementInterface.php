@@ -1,6 +1,8 @@
 <?php
 namespace Fwlib\Html\Generator;
 
+use Fwlib\Config\ConfigAwareInterface;
+
 /**
  * Html element
  *
@@ -8,10 +10,12 @@ namespace Fwlib\Html\Generator;
  * generate output for several modes. Usually they are organized by logic
  * subject.
  *
+ * To set config with string style, {@see setStringOptions()}.
+ *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-interface ElementInterface
+interface ElementInterface extends ConfigAwareInterface
 {
     /**
      * Append to collection
@@ -137,30 +141,6 @@ interface ElementInterface
      * @return  static
      */
     public function setComment($comment);
-
-
-    /**
-     * Set single config
-     *
-     * @param   string $key
-     * @param   mixed  $value
-     * @return  static
-     */
-    public function setConfig($key, $value);
-
-
-    /**
-     * Setter of configs
-     *
-     * Configs array format:
-     *  {config key: config value}
-     *
-     * String config moved to {@see setStringOptions()}.
-     *
-     * @param   array $configs
-     * @return  static
-     */
-    public function setConfigs(array $configs);
 
 
     /**
