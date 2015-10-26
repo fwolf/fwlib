@@ -2,6 +2,7 @@
 namespace Fwlib\Html\Generator\Component\Form;
 
 use Fwlib\Html\Generator\AbstractElement;
+use Fwlib\Html\Generator\Component\Form\Helper\FormAwareTrait;
 use Fwlib\Html\Generator\Element\Hidden;
 use Fwlib\Html\Generator\ElementCollection;
 use Fwlib\Html\Generator\ElementInterface;
@@ -19,12 +20,8 @@ class Renderer
 {
     use IndentAwareTrait;
     use ClassAndIdHtmlTrait;
+    use FormAwareTrait;
 
-
-    /**
-     * @var Form
-     */
-    protected $form = null;
 
     /**
      * @var Hidden[]
@@ -107,15 +104,6 @@ TAG;
 TAG;
 
         return $output;
-    }
-
-
-    /**
-     * @return  Form
-     */
-    public function getForm()
-    {
-        return $this->form;
     }
 
 
@@ -375,18 +363,6 @@ TAG;
 TAG;
 
         return trim($output);
-    }
-
-
-    /**
-     * @param   Form $form
-     * @return  static
-     */
-    public function setForm($form)
-    {
-        $this->form = $form;
-
-        return $this;
     }
 
 

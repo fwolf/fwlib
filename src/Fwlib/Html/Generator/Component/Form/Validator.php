@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Html\Generator\Component\Form;
 
+use Fwlib\Html\Generator\Component\Form\Helper\FormAwareTrait;
 use Fwlib\Html\Generator\Helper\CheckOnKeyupPropertyTrait;
 use Fwlib\Html\Generator\Helper\CheckOnSubmitPropertyTrait;
 use Fwlib\Validator\Validator as RealValidator;
@@ -26,12 +27,8 @@ class Validator
 {
     use CheckOnKeyupPropertyTrait;
     use CheckOnSubmitPropertyTrait;
+    use FormAwareTrait;
 
-
-    /**
-     * @var Form
-     */
-    protected $form = null;
 
     /**
      * Validate fail messages
@@ -46,15 +43,6 @@ class Validator
      * @var RealValidator
      */
     protected $validator = null;
-
-
-    /**
-     * @return  Form
-     */
-    public function getForm()
-    {
-        return $this->form;
-    }
 
 
     /**
@@ -78,18 +66,6 @@ class Validator
         }
 
         return $this->validator;
-    }
-
-
-    /**
-     * @param   Form $form
-     * @return  static
-     */
-    public function setForm($form)
-    {
-        $this->form = $form;
-
-        return $this;
     }
 
 
