@@ -16,6 +16,8 @@ trait CheckOnBlurPropertyTrait
 
 
     /**
+     * @see \Fwlib\Html\Generator\Helper\CheckOnKeyupPropertyInterface::isCheckOnBlur()
+     *
      * @return  boolean
      */
     public function isCheckOnBlur()
@@ -25,8 +27,10 @@ trait CheckOnBlurPropertyTrait
 
 
     /**
+     * @see \Fwlib\Html\Generator\Helper\CheckOnKeyupPropertyInterface::isCheckOnBlur()
+     *
      * @param   boolean $checkOnBlur
-     * @return  static
+     * @return  $this
      */
     public function setCheckOnBlur($checkOnBlur)
     {

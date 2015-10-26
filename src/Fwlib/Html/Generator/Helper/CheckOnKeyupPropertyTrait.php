@@ -16,6 +16,8 @@ trait CheckOnKeyupPropertyTrait
 
 
     /**
+     * @see \Fwlib\Html\Generator\Helper\CheckOnKeyupPropertyInterface::isCheckOnKeyup()
+     *
      * @return  boolean
      */
     public function isCheckOnKeyup()
@@ -25,8 +27,10 @@ trait CheckOnKeyupPropertyTrait
 
 
     /**
+     * @see \Fwlib\Html\Generator\Helper\CheckOnKeyupPropertyInterface::setCheckOnKeyup()
+     *
      * @param   boolean $checkOnKeyup
-     * @return  static
+     * @return  $this
      */
     public function setCheckOnKeyup($checkOnKeyup)
     {
