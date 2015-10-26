@@ -2,6 +2,7 @@
 namespace Fwlib\Html\Generator;
 
 use Fwlib\Config\ConfigAwareInterface;
+use Fwlib\Html\Helper\ClassAndIdPropertyInterface;
 
 /**
  * Html element
@@ -15,7 +16,9 @@ use Fwlib\Config\ConfigAwareInterface;
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
-interface ElementInterface extends ConfigAwareInterface
+interface ElementInterface extends
+    ConfigAwareInterface,
+    ClassAndIdPropertyInterface
 {
     /**
      * Append to collection
@@ -27,27 +30,9 @@ interface ElementInterface extends ConfigAwareInterface
 
 
     /**
-     * Getter of class
-     *
-     * @param   string $suffix
-     * @return  string
-     */
-    public function getClass($suffix = '');
-
-
-    /**
      * @return  string
      */
     public function getComment();
-
-
-    /**
-     * Getter of id
-     *
-     * @param   string $suffix
-     * @return  string
-     */
-    public function getId($suffix = '');
 
 
     /**
@@ -130,24 +115,10 @@ interface ElementInterface extends ConfigAwareInterface
 
 
     /**
-     * @param   string $class
-     * @return  static
-     */
-    public function setClass($class);
-
-
-    /**
      * @param   string $comment
      * @return  static
      */
     public function setComment($comment);
-
-
-    /**
-     * @param   string $identity
-     * @return  static
-     */
-    public function setId($identity);
 
 
     /**

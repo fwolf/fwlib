@@ -28,9 +28,9 @@ trait ClassAndIdPropertyTrait
 
 
     /**
-     * Getter of class
+     * @see ClassAndIdPropertyInterface::getClass()
      *
-     * @param   string  $suffix
+     * @param   string $suffix
      * @return  string
      */
     public function getClass($suffix = '')
@@ -41,9 +41,9 @@ trait ClassAndIdPropertyTrait
 
 
     /**
-     * Getter of id
+     * @see ClassAndIdPropertyInterface::getId()
      *
-     * @param   string  $suffix
+     * @param   string $suffix
      * @return  string
      */
     public function getId($suffix = '')
@@ -54,9 +54,9 @@ trait ClassAndIdPropertyTrait
 
 
     /**
-     * Setter of class
+     * @see ClassAndIdPropertyInterface::setClass()
      *
-     * @param   string  $class
+     * @param   string $class
      * @return  static
      */
     public function setClass($class)
@@ -68,9 +68,9 @@ trait ClassAndIdPropertyTrait
 
 
     /**
-     * Setter of id
+     * @see ClassAndIdPropertyInterface::setId()
      *
-     * @param   string  $idString
+     * @param   string $idString
      * @return  static
      */
     public function setId($idString)
