@@ -16,6 +16,8 @@ trait HtmlHelperAwareTrait
 
 
     /**
+     * @see \Fwlib\Web\HtmlHelperAwareInterface::getHtmlHelper()
+     *
      * @return  HtmlHelper
      */
     public function getHtmlHelper()
@@ -27,7 +29,9 @@ trait HtmlHelperAwareTrait
 
 
     /**
-     * @param   HtmlHelper  $htmlHelper
+     * @see \Fwlib\Web\HtmlHelperAwareInterface::setHtmlHelper()
+     *
+     * @param   HtmlHelper $htmlHelper
      * @return  static
      */
     public function setHtmlHelper(HtmlHelper $htmlHelper)

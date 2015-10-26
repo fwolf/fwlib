@@ -4,6 +4,7 @@ namespace Fwlib\Html\Generator;
 use Fwlib\Config\ConfigAwareInterface;
 use Fwlib\Html\Generator\Helper\ElementPropertyInterface;
 use Fwlib\Html\Helper\ClassAndIdPropertyInterface;
+use Fwlib\Web\HtmlHelperAwareInterface;
 
 /**
  * Html element
@@ -20,7 +21,8 @@ use Fwlib\Html\Helper\ClassAndIdPropertyInterface;
 interface ElementInterface extends
     ConfigAwareInterface,
     ClassAndIdPropertyInterface,
-    ElementPropertyInterface
+    ElementPropertyInterface,
+    HtmlHelperAwareInterface
 {
     /**
      * Append to collection
