@@ -4,6 +4,8 @@ namespace Fwlib\Html\Generator;
 use Fwlib\Config\ConfigAwareTrait;
 use Fwlib\Config\StringOptionsAwareTrait;
 use Fwlib\Html\Generator\Exception\ElementModeNotImplementedException;
+use Fwlib\Html\Generator\Helper\CheckOnBlurPropertyTrait;
+use Fwlib\Html\Generator\Helper\CheckOnKeyupPropertyTrait;
 use Fwlib\Html\Generator\Helper\ElementPropertyTrait;
 use Fwlib\Html\Helper\ClassAndIdPropertyTrait;
 use Fwlib\Html\Helper\IndentAwareTrait;
@@ -44,6 +46,8 @@ abstract class AbstractElement implements ElementInterface
     use ElementPropertyTrait;
     use HtmlHelperAwareTrait;
     use IndentAwareTrait;
+    use CheckOnBlurPropertyTrait;
+    use CheckOnKeyupPropertyTrait;
 
 
     /**

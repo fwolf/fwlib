@@ -2,6 +2,8 @@
 namespace Fwlib\Html\Generator;
 
 use Fwlib\Config\ConfigAwareInterface;
+use Fwlib\Html\Generator\Helper\CheckOnBlurPropertyInterface;
+use Fwlib\Html\Generator\Helper\CheckOnKeyupPropertyInterface;
 use Fwlib\Html\Generator\Helper\ElementPropertyInterface;
 use Fwlib\Html\Helper\ClassAndIdPropertyInterface;
 use Fwlib\Web\HtmlHelperAwareInterface;
@@ -22,7 +24,9 @@ interface ElementInterface extends
     ConfigAwareInterface,
     ClassAndIdPropertyInterface,
     ElementPropertyInterface,
-    HtmlHelperAwareInterface
+    HtmlHelperAwareInterface,
+    CheckOnBlurPropertyInterface,
+    CheckOnKeyupPropertyInterface
 {
     /**
      * Append to collection
