@@ -2,6 +2,7 @@
 namespace Fwlib\Html\Generator;
 
 use Fwlib\Config\ConfigAwareInterface;
+use Fwlib\Html\Generator\Helper\ElementPropertyInterface;
 use Fwlib\Html\Helper\ClassAndIdPropertyInterface;
 
 /**
@@ -18,7 +19,8 @@ use Fwlib\Html\Helper\ClassAndIdPropertyInterface;
  */
 interface ElementInterface extends
     ConfigAwareInterface,
-    ClassAndIdPropertyInterface
+    ClassAndIdPropertyInterface,
+    ElementPropertyInterface
 {
     /**
      * Append to collection
@@ -27,12 +29,6 @@ interface ElementInterface extends
      * @return  static
      */
     public function appendTo(ElementCollection $collection);
-
-
-    /**
-     * @return  string
-     */
-    public function getComment();
 
 
     /**
@@ -49,12 +45,6 @@ interface ElementInterface extends
 
 
     /**
-     * @return  string
-     */
-    public function getName();
-
-
-    /**
      * Get html output
      *
      * @param   string $mode
@@ -67,32 +57,6 @@ interface ElementInterface extends
      * @return  string
      */
     public function getRootPath();
-
-
-    /**
-     * @return  string
-     */
-    public function getTip();
-
-
-    /**
-     * @return  string
-     */
-    public function getTitle();
-
-
-    /**
-     * @return  \string[]
-     */
-    public function getValidateRules();
-
-
-    /**
-     * Get value of element
-     *
-     * @return  mixed
-     */
-    public function getValue();
 
 
     /**
@@ -115,13 +79,6 @@ interface ElementInterface extends
 
 
     /**
-     * @param   string $comment
-     * @return  static
-     */
-    public function setComment($comment);
-
-
-    /**
      * @param   int $indent
      * @return  static
      */
@@ -133,13 +90,6 @@ interface ElementInterface extends
      * @return  static
      */
     public function setMode($mode);
-
-
-    /**
-     * @param   string $name
-     * @return  static
-     */
-    public function setName($name);
 
 
     /**
@@ -156,32 +106,4 @@ interface ElementInterface extends
      * @return  static
      */
     public function setStringOptions($optionString);
-
-
-    /**
-     * @param   string $tip
-     * @return  static
-     */
-    public function setTip($tip);
-
-
-    /**
-     * @param   string $title
-     * @return  static
-     */
-    public function setTitle($title);
-
-
-    /**
-     * @param   \string[] $validateRules
-     * @return  static
-     */
-    public function setValidateRules($validateRules);
-
-
-    /**
-     * @param   mixed $value
-     * @return  static
-     */
-    public function setValue($value);
 }

@@ -63,7 +63,7 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::getComment()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::getComment()
      *
      * @return  string
      */
@@ -74,7 +74,7 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::getName()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::getName()
      *
      * @return  string
      */
@@ -85,7 +85,7 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::getTip()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::getTip()
      *
      * @return  string
      */
@@ -96,6 +96,7 @@ trait ElementPropertyTrait
 
 
     /**
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::getTitle()
      * @return  string
      */
     public function getTitle()
@@ -105,7 +106,7 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::getValidateRules()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::getValidateRules()
      *
      * @return  \string[]
      */
@@ -116,7 +117,7 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::getValue()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::getValue()
      *
      * Consider default value config if null.
      *
@@ -136,10 +137,10 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::setComment()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::setComment()
      *
      * @param   string $comment
-     * @return  static
+     * @return  $this
      */
     public function setComment($comment)
     {
@@ -150,10 +151,10 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::setName()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::setName()
      *
      * @param   string $name
-     * @return  static
+     * @return  $this
      */
     public function setName($name)
     {
@@ -164,10 +165,10 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::setTip()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::setTip()
      *
      * @param   string $tip
-     * @return  static
+     * @return  $this
      */
     public function setTip($tip)
     {
@@ -178,8 +179,10 @@ trait ElementPropertyTrait
 
 
     /**
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::setTitle()
+     *
      * @param   string $title
-     * @return  static
+     * @return  $this
      */
     public function setTitle($title)
     {
@@ -190,10 +193,10 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::setValidateRules()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::setValidateRules()
      *
      * @param   \string[] $validateRules
-     * @return  static
+     * @return  $this
      */
     public function setValidateRules($validateRules)
     {
@@ -204,10 +207,10 @@ trait ElementPropertyTrait
 
 
     /**
-     * @see \Fwlib\Html\Generator\ElementInterface::setValue()
+     * @see \Fwlib\Html\Generator\Helper\ElementPropertyInterface::setValue()
      *
      * @param   mixed $value
-     * @return  static
+     * @return  $this
      */
     public function setValue($value)
     {
