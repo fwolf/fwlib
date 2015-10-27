@@ -167,6 +167,23 @@ class Form extends ElementCollection
 
 
     /**
+     * Detect if form receive submitted
+     */
+    protected function isSubmitted()
+    {
+        if (self::METHOD_POST == $this->getMethod()) {
+            $request = $this->getRequest();
+
+            return !empty($request->getPosts());
+
+        } else {
+            // As other get param may exists, always return true for this method
+            return true;
+        }
+    }
+
+
+    /**
      * @return  boolean
      */
     public function isValid()
@@ -293,6 +310,11 @@ class Form extends ElementCollection
      */
     public function validate()
     {
+        // Not submit, no check needed
+        if (!$this->isSubmitted()) {
+            return true;
+        }
+
         $this->receiveContents();
 
         $validator = $this->getValidator();

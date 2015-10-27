@@ -116,7 +116,54 @@ class FormTest extends PHPUnitTestCase
     }
 
 
-    public function testValidate()
+    public function testValidateWithPostMethod()
+    {
+        /** @var MockObject|Validator $validator */
+        $validator = $this->getMock(
+            Validator::class,
+            ['validate', 'getMessages']
+        );
+        $validator->expects($this->once())
+            ->method('validate')
+            ->willReturn(false);
+        $validator->expects($this->once())
+            ->method('getMessages')
+            ->willReturn(['foo', 'bar']);
+
+        /** @var MockObject|HttpRequest $request */
+        $request = $this->getMockBuilder(HttpRequest::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getPosts'])
+            ->getMock();
+        $request->expects($this->any())
+            ->method('getPosts')
+            ->willReturnOnConsecutiveCalls([], ['foo', 'bar']);
+
+
+        // Check with NOT submitted status
+        $form = $this->buildMock(['receiveContents']);
+        $form->setMode(Form::METHOD_POST)
+            ->setValidator($validator)
+            ->setRequest($request);
+
+        $this->assertTrue($form->isValid());
+
+
+        // Check with submitted status
+        $form = $this->buildMock(['receiveContents']);
+        $form->setMode(Form::METHOD_POST)
+            ->setValidator($validator)
+            ->setRequest($request);
+
+        $this->assertFalse($form->isValid());
+        $this->assertNotEmpty($form->getValidateMessages());
+    }
+
+
+    /**
+     * Get method always need check, need not mock request
+     */
+    public function testValidateWithGetMethod()
     {
         /** @var MockObject|Validator $validator */
         $validator = $this->getMock(
@@ -131,7 +178,8 @@ class FormTest extends PHPUnitTestCase
             ->willReturn(['foo', 'bar']);
 
         $form = $this->buildMock(['receiveContents']);
-        $form->setValidator($validator);
+        $form->setMethod(Form::METHOD_GET)
+            ->setValidator($validator);
 
         $this->assertTrue($form->isValid());
         $this->assertNotEmpty($form->getValidateMessages());
