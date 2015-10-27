@@ -13,6 +13,7 @@ use Fwlib\Validator\Validator;
  * The validate js uses jQuery.
  *
  * @codeCoverageIgnore
+ * @deprecated  Use new {@see Form}, keep for back compatible.
  *
  * @copyright   Copyright 2011-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
