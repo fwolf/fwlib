@@ -70,6 +70,18 @@ class Validator
 
 
     /**
+     * @param   RealValidator $validator
+     * @return  $this
+     */
+    public function setValidator($validator)
+    {
+        $this->validator = $validator;
+
+        return $this;
+    }
+
+
+    /**
      * Validate form data
      *
      * Only check for each element value separately, validate need multiple

@@ -56,6 +56,17 @@ class ValidatorTest extends PHPUnitTestCase
     }
 
 
+    public function testAccessors()
+    {
+        $validator = $this->buildMock();
+
+        $realValidator = $this->reflectionCall($validator, 'getValidator');
+        $validator->setValidator($realValidator);
+
+        $this->assertTrue(true);
+    }
+
+
     public function testValidate()
     {
         $form = $this->buildFormMock();
