@@ -118,7 +118,7 @@ class MemcachedTest extends PHPUnitTestCase
         $handler = $this->buildMockWithMemcachedConnected();
 
         // Cache write
-        $key = str_repeat('test', 8);
+        $key = str_repeat('Test', 8);
         $value = 'foo bar';
         $handler->set($key, $value, 60);
         $this->assertEquals($value, $handler->get($key));
@@ -132,14 +132,14 @@ class MemcachedTest extends PHPUnitTestCase
         $handler->delete($key);
         $this->assertTrue($handler->isExpired($key));
 
-        $handler->set($key, $value, -10);
+        $handler->set($key, $value, -10 - 86400);
         $this->assertTrue($handler->isExpired($key));
 
         $handler->setConfig('memcachedAutoSplit', 0);
         $handler->set($key, $value, 60);
         $this->assertFalse($handler->isExpired($key));
 
-        $handler->set($key, $value, -10);
+        $handler->set($key, $value, -10 - 86400);
         $this->assertTrue($handler->isExpired($key));
 
 
@@ -150,7 +150,7 @@ class MemcachedTest extends PHPUnitTestCase
 
         // Cache get with expire
         $key = str_repeat('test', 8);
-        $handler->set($key, $value, -10);
+        $handler->set($key, $value, -10 - 86400);
         $this->assertEquals(null, $handler->get($key));
         $handler->set($key, $value, 0);
         $this->assertEquals($value, $handler->get($key));
