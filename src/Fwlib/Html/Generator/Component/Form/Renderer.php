@@ -2,11 +2,11 @@
 namespace Fwlib\Html\Generator\Component\Form;
 
 use Fwlib\Html\Generator\AbstractElement;
+use Fwlib\Html\Generator\Component\Form\Exception\RendererModeNotImplementedException;
 use Fwlib\Html\Generator\Component\Form\Helper\FormAwareTrait;
 use Fwlib\Html\Generator\Element\Hidden;
 use Fwlib\Html\Generator\ElementCollection;
 use Fwlib\Html\Generator\ElementInterface;
-use Fwlib\Html\Generator\Form\Exception\RendererModeNotImplementedException;
 use Fwlib\Html\Helper\ClassAndIdHtmlTrait;
 use Fwlib\Html\Helper\IndentAwareTrait;
 

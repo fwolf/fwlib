@@ -163,7 +163,7 @@ TAG;
 
 
     /**
-     * @expectedException \Fwlib\Html\Generator\Form\Exception\RendererModeNotImplementedException
+     * @expectedException \Fwlib\Html\Generator\Component\Form\Exception\RendererModeNotImplementedException
      */
     public function testGetOutputWithInvalidMode()
     {
