@@ -244,7 +244,10 @@ TAG;
      */
     protected function getValidateJs()
     {
-        return '';  // :TODO: Dummy
+        $renderer = new ValidatorRenderer();
+        $renderer->setForm($this->getForm());
+
+        return $renderer->getOutput();
     }
 
 

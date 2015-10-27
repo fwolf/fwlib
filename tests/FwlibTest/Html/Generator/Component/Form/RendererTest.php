@@ -73,7 +73,7 @@ class RendererTest extends PHPUnitTestCase
 
     public function testGetOutputEditMode()
     {
-        $renderer = $this->buildMock();
+        $renderer = $this->buildMock(['getValidateJs']);
 
         $form = $this->buildFormMock(['getValidateMessages', 'isValid']);
         $form->expects($this->once())
@@ -174,6 +174,21 @@ TAG;
         $renderer->setForm($form);
 
         $renderer->getOutput();
+    }
+
+
+    /**
+     * For detailed test, see {@see ValidatorRenderer}.
+     */
+    public function testGetValidateJs()
+    {
+        $form = $this->buildFormMock();
+
+        $renderer = $this->buildMock();
+        $renderer->setForm($form);
+
+        $output = $this->reflectionCall($renderer, 'getValidateJs');
+        $this->assertNotEmpty($output);
     }
 
 
