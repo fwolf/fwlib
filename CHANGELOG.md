@@ -2,6 +2,85 @@
 
 
 
+## v2.4 (2015-10-28)
+
+WARNING: Big update, break backward compatibility!
+
+- Require PHP 5.5+
+- Move Bridge/PHPMailer out to https://packagist.org/packages/fwolf/phpmailer-wrapper
+- Move Bridge/PHPUnitTestCase out to https://packagist.org/packages/fwolf/phpunit-wrapper
+- Require PHPUnit as dev dependence
+- Require vfsStream as dev dependence
+- Require PHP-Mock as dev dependence
+
+
+Many class rewritten with new feature of PHP 5.5 and better OOP structure.
+
+
+- Change some abstract class to trait
+- Base: New SingleInstanceTrait
+- Base: New ServiceContainerTrait
+- Base: New class ServiceContainer
+- Base: New ServiceContainerAwareTrait
+- Base: Remove ServiceContainerAwareInterface
+- Base: Remove class AbstractServiceContainerAware
+- Base: Delete class AbstractAutoNewConfig
+- Base: Delete class AbstractAutoNewInstance
+- Base: Delete class AbstractServiceContainer
+- Auth: Rename AbstractAccessControl to AccessControllerTrait
+- Auth: New SessionHandlerInterface and handlers
+- Auth: New SessionHandlerAwareTrait
+- Cache: Rename CacheInterface to HandlerInterface
+- Cache: New Logger class and interface
+- Cache: New LoggerAwareTrait
+- Cache: New HandlerTrait
+- Cache: New AbstractHandler and handlers
+- Cache: New HandlerAwareTrait
+- Config: New ConfigAwareTrait
+- Config: New ConfigAwareInterface
+- Config: New StringOptionsAwareTrait
+- Db: New AdodbAwareTrait
+- Db: Delete class AbstractDbClient
+- Html: Rewrite ListTable and rename to ListView
+- Html: Rewrite element define and implement classes
+- Html: Rewrite Form generator classes
+- Html: New ClassAndIdPropertyTrait
+- Html: New ElementPropertyTrait
+- Html: New AbstractElement class
+- Util: New UtilContainerAwareTrait
+- Util: Delete class AbstractUtilAware and interface
+- Util: New uuid generator Base36Short, based on Base36
+- Util: New ObjectUtil
+- Util: Move uuid generators to Util/Uuid/
+- Util: Move Rfc2047, McryptSimpleIv to Util/Algorithm/
+- Util: Move common utils to Util/Common/
+- Web: Rename Mvc/ to Web/
+- Web: New Request class, trait and interface
+- Web: New RequestAwareTrait
+- Web: New Response class, trait and interface
+- Web: New ResponseAwareTrait
+- Web: New class HtmlHelper
+- Web: New HtmlHelperAwareTrait
+- Web: New GetControllerClassByNamespaceTrait
+- Web: New GetViewClassByNamespaceTrait
+- Web: Rename AbstractViewCache to AbstractViewWithCache
+- Validator: Use StringOptions in constraint
+- Validator: New Rule class
+
+
+- Use short array syntax
+- Use class keyword to reference full qualified class name
+- demo: Move example of ClassLoader to demo/
+- demo: Move curl demo from tests/ to demo/
+- demo: Use httpbin.org for Curl test
+- demo: New demo of ListView
+- Util: Reconstruct HttpUtil with filter functions
+- Test: Provide TestServiceContainer to use in test cases
+- Test: New TestServiceContainerAwareTrait
+- Test: New CheckCalledTrait
+
+
+
 ### v2.3.5 (2015-02-25)
 
 This is last version for PHP 5.3.
