@@ -31,10 +31,12 @@ class ServiceContainerTest extends PHPUnitTestCase
         // Through class map
         $this->assertNotEmpty($container->getCachedCaller());
         $this->assertNotEmpty($container->getCurl());
+        $this->assertNotEmpty($container->getListView());
         $this->assertNotEmpty($container->getSmarty());
         $this->assertNotEmpty($container->getValidator());
 
         // Through create method
+        /** @noinspection PhpDeprecationInspection */
         $this->assertNotEmpty($container->getListTable());
     }
 }
