@@ -19,13 +19,14 @@ class HandlerFactory
 
 
     /**
-     * @param   string  $type           Cache type, see {@see getClassMap()}
+     * @param   string $type Cache type, see {@see getClassMap()}
      * @return  CacheHandlerInterface
      * @throws  CacheHandlerNotImplementedException
      */
     public function create($type = '')
     {
         $classMap = $this->getClassMap();
+        $type = ucfirst($type);
 
         if (!array_key_exists($type, $classMap)) {
             throw new CacheHandlerNotImplementedException(
