@@ -35,7 +35,7 @@ trait ServiceContainerTrait
      *
      * @var object[]
      */
-    protected $serviceInstances = [];
+    protected $instances = [];
 
 
     /**
@@ -113,11 +113,11 @@ trait ServiceContainerTrait
             return $this->createService($name);
 
         } else {
-            if (!isset($this->serviceInstances[$name])) {
-                $this->serviceInstances[$name] = $this->createService($name);
+            if (!isset($this->instances[$name])) {
+                $this->instances[$name] = $this->createService($name);
             }
 
-            return $this->serviceInstances[$name];
+            return $this->instances[$name];
         }
     }
 
@@ -190,7 +190,7 @@ trait ServiceContainerTrait
      */
     public function registerInstance($name, $instance)
     {
-        $this->serviceInstances[$name] = $instance;
+        $this->instances[$name] = $instance;
 
         return $this;
     }
