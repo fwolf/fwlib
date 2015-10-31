@@ -37,6 +37,50 @@ class UtilContainer implements UtilContainerInterface
 
 
     /**
+     * {@inheritdoc}
+     *
+     * Some util class name end with 'Util', is ugly but have to. ArrayUtil
+     * can not be renamed to Array, because its reserved word, others need to
+     * keep for identify with other common class name, and avoid IDE type hint
+     * confusion.
+     *
+     * But for convenience, all key of util class have no 'Util' suffix,
+     * easier to remember, especially for using {@see register()}.
+     */
+    protected function buildClassMap()
+    {
+        $classMap = [
+            // Algorithm
+            'Iso7064'             => Iso7064::class,
+            'McryptSimpleIv'      => McryptSimpleIv::class,
+            'Rfc2047'             => Rfc2047::class,
+            // Code
+            'ChnCin'              => ChnCitizenIdentificationNumber::class,
+            'ChnOrganizationCode' => ChnOrganizationCode::class,
+            // Common
+            'Array'               => ArrayUtil::class,
+            'Datetime'            => DatetimeUtil::class,
+            'Env'                 => Env::class,
+            'EscapeColor'         => EscapeColor::class,
+            'FileSystem'          => FileSystem::class,
+            'Http'                => HttpUtil::class,
+            'Ip'                  => Ip::class,
+            'Json'                => Json::class,
+            'Number'              => NumberUtil::class,
+            'Object'              => ObjectUtil::class,
+            'String'              => StringUtil::class,
+            // Uuid
+            'UuidBase16'          => Base16::class,
+            'UuidBase36'          => Base36::class,
+            'UuidBase36Short'     => Base36Short::class,
+            'UuidBase62'          => Base62::class,
+        ];
+
+        return $classMap;
+    }
+
+
+    /**
      * @return  ArrayUtil
      */
     public function getArray()
@@ -105,53 +149,6 @@ class UtilContainer implements UtilContainerInterface
     public function getHttp()
     {
         return $this->get('Http');
-    }
-
-
-    /**
-     * {@inheritdoc}
-     *
-     * Some util class name end with 'Util', is ugly but have to. ArrayUtil
-     * can not be renamed to Array, because its reserved word, others need to
-     * keep for identify with other common class name, and avoid IDE type hint
-     * confusion.
-     *
-     * But for convenience, all key of util class have no 'Util' suffix,
-     * easier to remember, especially for using {@see register()}.
-     */
-    protected function getInitialServiceClassMap()
-    {
-        $classMap = [
-            // Algorithm
-            'Iso7064'           => Iso7064::class,
-            'McryptSimpleIv'    => McryptSimpleIv::class,
-            'Rfc2047'           => Rfc2047::class,
-
-            // Code
-            'ChnCin'                => ChnCitizenIdentificationNumber::class,
-            'ChnOrganizationCode'   => ChnOrganizationCode::class,
-
-            // Common
-            'Array'             => ArrayUtil::class,
-            'Datetime'          => DatetimeUtil::class,
-            'Env'               => Env::class,
-            'EscapeColor'       => EscapeColor::class,
-            'FileSystem'        => FileSystem::class,
-            'Http'              => HttpUtil::class,
-            'Ip'                => Ip::class,
-            'Json'              => Json::class,
-            'Number'            => NumberUtil::class,
-            'Object'            => ObjectUtil::class,
-            'String'            => StringUtil::class,
-
-            // Uuid
-            'UuidBase16'        => Base16::class,
-            'UuidBase36'        => Base36::class,
-            'UuidBase36Short'   => Base36Short::class,
-            'UuidBase62'        => Base62::class,
-        ];
-
-        return $classMap;
     }
 
 

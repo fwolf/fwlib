@@ -22,28 +22,28 @@ class ConstraintContainer implements ConstraintContainerInterface
 
 
     /**
+     * {@inheritdoc}
+     */
+    protected function buildClassMap()
+    {
+        return [
+            'Email'    => Email::class,
+            'Ipv4'     => Ipv4::class,
+            'Length'   => Length::class,
+            'NotEmpty' => NotEmpty::class,
+            'Required' => Required::class,
+            'Regex'    => Regex::class,
+            'Url'      => Url::class,
+        ];
+    }
+
+
+    /**
      * @return  Email
      */
     public function getEmail()
     {
         return $this->get('Email');
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getInitialServiceClassMap()
-    {
-        return [
-            'Email'     => Email::class,
-            'Ipv4'      => Ipv4::class,
-            'Length'    => Length::class,
-            'NotEmpty'  => NotEmpty::class,
-            'Required'  => Required::class,
-            'Regex'     => Regex::class,
-            'Url'       => Url::class,
-        ];
     }
 
 

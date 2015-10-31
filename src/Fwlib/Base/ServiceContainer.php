@@ -3,8 +3,7 @@ namespace Fwlib\Base;
 
 use Fwlib\Bridge\Smarty;
 use Fwlib\Cache\CachedCaller;
-use /** @noinspection PhpDeprecationInspection */
-    Fwlib\Html\ListTable;
+use Fwlib\Html\ListTable;
 use Fwlib\Html\ListView\ListView;
 use Fwlib\Net\Curl;
 use Fwlib\Validator\Validator;
@@ -21,6 +20,23 @@ use Fwlib\Validator\Validator;
 class ServiceContainer implements ServiceContainerInterface
 {
     use ServiceContainerTrait;
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function buildClassMap()
+    {
+        $classMap = [
+            'CachedCaller' => CachedCaller::class,
+            'Curl'         => Curl::class,
+            'ListView'     => ListView::class,
+            'Smarty'       => Smarty::class,
+            'Validator'    => Validator::class,
+        ];
+
+        return $classMap;
+    }
 
 
     /**
@@ -49,23 +65,6 @@ class ServiceContainer implements ServiceContainerInterface
     public function getCurl()
     {
         return $this->get('Curl');
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getInitialServiceClassMap()
-    {
-        $classMap = [
-            'CachedCaller' => CachedCaller::class,
-            'Curl'         => Curl::class,
-            'ListView'     => ListView::class,
-            'Smarty'       => Smarty::class,
-            'Validator'    => Validator::class,
-        ];
-
-        return $classMap;
     }
 
 

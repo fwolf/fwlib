@@ -22,6 +22,16 @@ class UtilContainerTest extends PHPUnitTestCase
     }
 
 
+    public function testBuildClassMap()
+    {
+        $utilContainer = $this->buildMock();
+
+        $this->assertNotEmpty(
+            $this->reflectionCall($utilContainer, 'buildClassMap')
+        );
+    }
+
+
     public function testGet()
     {
         $utilContainer = $this->buildMock();
@@ -33,7 +43,7 @@ class UtilContainerTest extends PHPUnitTestCase
 
         $classMap = $this->reflectionCall(
             $utilContainer,
-            'getInitialServiceClassMap'
+            'buildClassMap'
         );
 
         foreach ($classMap as $simpleName => $fullName) {
@@ -41,15 +51,5 @@ class UtilContainerTest extends PHPUnitTestCase
 
             $this->assertInstanceOf($fullName, $utilContainer->$method());
         }
-    }
-
-
-    public function testGetInitialServiceClassMap()
-    {
-        $utilContainer = $this->buildMock();
-
-        $this->assertNotEmpty(
-            $this->reflectionCall($utilContainer, 'getInitialServiceClassMap')
-        );
     }
 }

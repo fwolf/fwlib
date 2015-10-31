@@ -26,7 +26,7 @@ trait ServiceContainerTrait
      * {@see SingleInstanceTrait}.
      *
      * For easy inherit and not conflict with user registered class, do not
-     * set value here, set them in {@see initializeClassMap()}.
+     * set value here, set them in {@see buildClassMap()}.
      *
      * @var string[]
      */
@@ -45,7 +45,21 @@ trait ServiceContainerTrait
      */
     protected function __construct()
     {
-        $this->classMap = $this->getInitialServiceClassMap();
+        $this->classMap = $this->buildClassMap();
+    }
+
+
+    /**
+     * Build service class map
+     *
+     * @return  string[]
+     */
+    protected function buildClassMap()
+    {
+        // Dummy for inherit and extend by child class.
+        $classMap = [];
+
+        return $classMap;
     }
 
 
@@ -124,21 +138,6 @@ trait ServiceContainerTrait
 
             return $this->instances[$name];
         }
-    }
-
-
-    /**
-     * Return initial service class map
-     *
-     * Dummy for inherit and extend by child class.
-     *
-     * @return  string[]
-     */
-    protected function getInitialServiceClassMap()
-    {
-        $classMap = [];
-
-        return $classMap;
     }
 
 
