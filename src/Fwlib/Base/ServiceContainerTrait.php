@@ -20,15 +20,17 @@ trait ServiceContainerTrait
 
 
     /**
-     * Service class map, require static getInstance() method
+     * Service class map
+     *
+     * These class can have static getInstance() method for reuse, see
+     * {@see SingleInstanceTrait}.
      *
      * For easy inherit and not conflict with user registered class, do not
-     * set value here, set them in initializeServiceClassMap().
+     * set value here, set them in {@see initializeClassMap()}.
      *
-     * @see SingleInstanceTrait
      * @var string[]
      */
-    protected $serviceClassMap = [];
+    protected $classMap = [];
 
     /**
      * Service instances
@@ -43,7 +45,7 @@ trait ServiceContainerTrait
      */
     protected function __construct()
     {
-        $this->serviceClassMap = $this->getInitialServiceClassMap();
+        $this->classMap = $this->getInitialServiceClassMap();
     }
 
 
@@ -63,14 +65,15 @@ trait ServiceContainerTrait
     protected function createService($name)
     {
         $service = null;
+        $name = ucfirst($name);
 
-        $method = 'create' . ucfirst($name);
+        $method = 'create' . $name;
         if (method_exists($this, $method)) {
             $service = $this->$method();
 
 
-        } elseif (isset($this->serviceClassMap[$name])) {
-            $className = $this->serviceClassMap[$name];
+        } elseif (isset($this->classMap[$name])) {
+            $className = $this->classMap[$name];
 
             // Singleton or single instance class instantiate diffs
             if (method_exists($className, 'getInstance')) {
@@ -175,7 +178,7 @@ trait ServiceContainerTrait
      */
     public function registerClass($name, $className)
     {
-        $this->serviceClassMap[$name] = $className;
+        $this->classMap[$name] = $className;
 
         return $this;
     }
