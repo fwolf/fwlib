@@ -10,13 +10,13 @@ namespace Fwlib\Base\Exception;
 class ServiceInstanceCreationFailException extends \Exception
 {
     /**
-     * @type    string
+     * @var string
      */
     protected $serviceName = '';
 
 
     /**
-     * @param   string  $name
+     * @param   string $name
      * @return  static
      */
     public function setServiceName($name)

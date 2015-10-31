@@ -71,7 +71,7 @@ abstract class AbstractView extends BaseView
     /**
      * Workflow manager instance
      *
-     * @type    AbstractManager
+     * @var AbstractManager
      */
     protected $workflow = null;
 
@@ -95,9 +95,9 @@ abstract class AbstractView extends BaseView
      *
      * When used, more router parameter may need to be added.
      *
-     * @param   string  $viewAction
-     * @param   array   $queryData
-     * @param   array   $removeKeys
+     * @param   string $viewAction
+     * @param   array  $queryData
+     * @param   array  $removeKeys
      * @return  string  Relative url, start with '?'
      */
     public function buildQueryUrl(
@@ -162,8 +162,8 @@ abstract class AbstractView extends BaseView
     protected function fetchDetail()
     {
         return $this->fetchDetailReadonly() .
-            $this->fetchLink() .
-            $this->fetchLog();
+        $this->fetchLink() .
+        $this->fetchLog();
     }
 
 
@@ -191,9 +191,9 @@ abstract class AbstractView extends BaseView
     protected function fetchEdit()
     {
         return $this->fetchDetailEditable() .
-            $this->fetchAction() .
-            $this->fetchLink() .
-            $this->fetchLog();
+        $this->fetchAction() .
+        $this->fetchLink() .
+        $this->fetchLog();
     }
 
 
@@ -221,9 +221,9 @@ abstract class AbstractView extends BaseView
     protected function fetchReview()
     {
         return $this->fetchDetailReadonly() .
-            $this->fetchAction() .
-            $this->fetchLink() .
-            $this->fetchLog();
+        $this->fetchAction() .
+        $this->fetchLink() .
+        $this->fetchLog();
     }
 
 
@@ -279,8 +279,8 @@ abstract class AbstractView extends BaseView
     /**
      * Get view action
      *
-     * @param   string  $workflowAction
-     * @param   array   $request
+     * @param   string $workflowAction
+     * @param   array  $request
      * @return  string
      */
     protected function getViewAction($workflowAction = '', $request = null)
@@ -313,7 +313,7 @@ abstract class AbstractView extends BaseView
     /**
      * Get workflow action from user request
      *
-     * @param   array   $request
+     * @param   array $request
      * @return  string
      */
     protected function getWorkflowAction(array $request = null)
@@ -336,7 +336,7 @@ abstract class AbstractView extends BaseView
     /**
      * Get workflow uuid from user request
      *
-     * @param   array   $request
+     * @param   array $request
      * @return  string
      */
     protected function getWorkflowUuid(array $request = null)

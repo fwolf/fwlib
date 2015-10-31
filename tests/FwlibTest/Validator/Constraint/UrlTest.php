@@ -24,23 +24,23 @@ class UrlTest extends PHPUnitTestCase
 
 
     /**
-     * @type    HttpUtil
+     * @var HttpUtil
      */
     protected static $originalHttpUtil;
 
     /**
-     * @type    string
+     * @var string
      */
     public static $selfHostUrl;
 
     /**
-     * @type    string
+     * @var string
      */
     public static $selfUrlWithoutParameter;
 
 
     /**
-     * @return  MockObject | Url
+     * @return  MockObject|Url
      */
     public function buildMock()
     {
@@ -141,8 +141,8 @@ class UrlTest extends PHPUnitTestCase
 
         // Curl post data
         $value = [
-            'foo'   => 'Foo',
-            'bar'   => 'Bar',
+            'foo' => 'Foo',
+            'bar' => 'Bar',
         ];
         $this->curlPostResult = json_encode(['code' => -1, 'message' => '']);
 

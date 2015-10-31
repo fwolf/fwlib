@@ -25,14 +25,14 @@ abstract class AbstractController implements ControllerInterface
     /**
      * Search controller class in this namespace, ending \\ included
      *
-     * @type    string
+     * @var string
      */
     protected $controllerNamespace = '';
 
     /**
      * View to show when empty action given, FQN
      *
-     * @type    string
+     * @var string
      */
     protected $defaultView = '';
 
@@ -51,7 +51,7 @@ abstract class AbstractController implements ControllerInterface
     /**
      * Search view class in this namespace, ending \\ included
      *
-     * @type    string
+     * @var string
      */
     protected $viewNamespace = '';
 }

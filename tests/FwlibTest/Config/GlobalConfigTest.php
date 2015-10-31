@@ -14,14 +14,14 @@ class GlobalConfigTest extends PHPUnitTestCase
     /**
      * Config key of server id
      *
-     * @type    string
+     * @var string
      */
     const KEY_SERVER_ID = 'server.id';
 
     /**
      * Backup of server id
      *
-     * @type    string|int
+     * @var string|int
      */
     private static $serverIdBackup;
 

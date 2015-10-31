@@ -19,7 +19,8 @@ namespace Fwlib\Base;
  *  $classLoader->addPrefix('Fwlib', 'path/to/dir/contain/fwlib/Fwlib/');
  *
  *  // Sub namespace define can be after parent namespace
- *  $classLoader->addPrefix('Fwlib\\Base', 'path/to/another/dir/contain/fwlib/Fwlib/Base/');
+ *  $classLoader->addPrefix('Fwlib\\Base',
+ *  'path/to/another/dir/contain/fwlib/Fwlib/Base/');
  *
  *  // Standalone class(not implement PSR-4) use full path
  *  $classLoader->addPrefix('FooClass', 'path/to/FooClass.php');
@@ -37,7 +38,8 @@ namespace Fwlib\Base;
  * Ref:
  * - https://wiki.php.net/rfc/splclassloader
  * - https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4.md
- * - https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ClassLoader/ClassLoader.php
+ * -
+ * https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ClassLoader/ClassLoader.php
  *
  * This class can use Singleton pattern, but its used before autoloader is
  * registered , require AbstractSingleton class need hardcoded relative path.
@@ -52,7 +54,8 @@ class ClassLoader
 {
     /**
      * Extension of class file to load
-     * @type string
+     *
+     * @var string
      */
     public $fileExtension = '.php';
 
@@ -63,21 +66,21 @@ class ClassLoader
      *
      * Prefix have no leading or tailing \.
      *
-     * @type array
+     * @var array
      */
     public $prefix = [];
 
     /**
      * Namespace separator, default '\'
      *
-     * @type string
+     * @var string
      */
     public $prefixSeparator = '\\';
 
     /**
      * Look for file in include_path as last try
      *
-     * @type boolean
+     * @var boolean
      */
     public $useIncludePath = false;
 
@@ -85,8 +88,8 @@ class ClassLoader
     /**
      * Constructor
      *
-     * @param   string|array    $prefix     Prefix or array of prefix-path
-     * @param   string|array    $path
+     * @param   string|array $prefix Prefix or array of prefix-path
+     * @param   string|array $path
      */
     public function __construct($prefix = null, $path = null)
     {
@@ -99,8 +102,8 @@ class ClassLoader
     /**
      * Add new prefix
      *
-     * @param   string|array    $prefix     Prefix or array of prefix-path
-     * @param   string|array    $path
+     * @param   string|array $prefix Prefix or array of prefix-path
+     * @param   string|array $path
      * @return  static
      */
     public function addPrefix($prefix, $path = null)
@@ -120,8 +123,8 @@ class ClassLoader
     /**
      * Find file in prefix, include_path
      *
-     * @param   string  $prefix
-     * @param   string  $fileName       Without namespace
+     * @param   string $prefix
+     * @param   string $fileName Without namespace
      * @return  string|bool             Valid file path or false
      */
     public function findFile($prefix, $fileName)
@@ -144,14 +147,14 @@ class ClassLoader
             // Replace _ in ClassName to /
             // Add file extension
             $filePath = str_replace(
-                $this->prefixSeparator,
-                DIRECTORY_SEPARATOR,
-                $prefix
-            ) . DIRECTORY_SEPARATOR . str_replace(
-                '_',
-                DIRECTORY_SEPARATOR,
-                $fileName
-            ) . $this->fileExtension;
+                    $this->prefixSeparator,
+                    DIRECTORY_SEPARATOR,
+                    $prefix
+                ) . DIRECTORY_SEPARATOR . str_replace(
+                    '_',
+                    DIRECTORY_SEPARATOR,
+                    $fileName
+                ) . $this->fileExtension;
 
 
             // Match prefix by layer
@@ -166,10 +169,10 @@ class ClassLoader
 
                         // Replace leading matched part in path with prefix path
                         $prefixPath = str_replace(
-                            $this->prefixSeparator,
-                            DIRECTORY_SEPARATOR,
-                            $prefix
-                        ) . DIRECTORY_SEPARATOR;
+                                $this->prefixSeparator,
+                                DIRECTORY_SEPARATOR,
+                                $prefix
+                            ) . DIRECTORY_SEPARATOR;
                         $prefixPath = preg_quote($prefixPath, '/');
                         $arFile[] = preg_replace(
                             "/^$prefixPath/",
@@ -218,7 +221,7 @@ class ClassLoader
      *
      * Will auto trigger after register to spl_autoload.
      *
-     * @param   string  $className      With full qualified namespace
+     * @param   string $className With full qualified namespace
      * @return  boolean                 Return false when load file not exists
      */
     public function loadClass($className)
@@ -285,13 +288,13 @@ class ClassLoader
      *
      * Will also try include_path option.
      *
-     * @param   string[]    $files
+     * @param   string[] $files
      * @return  string|bool
      */
     protected function validateFiles(array $files)
     {
         foreach ($files as $file) {
-            if (file_exists($file) || ($this->useIncludePath&&
+            if (file_exists($file) || ($this->useIncludePath &&
                     file_exists(stream_resolve_include_path($file)))
             ) {
                 return $file;

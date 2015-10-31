@@ -11,12 +11,12 @@ abstract class AbstractCachedCallerAware implements CachedCallerAwareInterface
 
 
     /**
-     * @type    boolean
+     * @var boolean
      */
     protected $forceRefreshCache = false;
 
     /**
-     * @type    boolean
+     * @var boolean
      */
     protected $useCache = true;
 }

@@ -8,7 +8,7 @@ use Fwlib\Util\UtilContainer;
  *
  * Should only work on http/https protocol.
  *
- * @see UrlGeneratorInterface
+ * @see         UrlGeneratorInterface
  *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
@@ -20,7 +20,7 @@ trait UrlGeneratorTrait
      *
      * Initial value is HTTP GET, read through {@see HttpUtil::getGets()}.
      *
-     * @type    string[]
+     * @var string[]
      */
     protected $parameters = [];
 
@@ -39,7 +39,7 @@ trait UrlGeneratorTrait
      *  - query(parameters)
      *  - fragment(#)
      *
-     * @type    string[]
+     * @var string[]
      */
     protected $urlComponents = [];
 
@@ -56,8 +56,8 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::getFullLink()
      *
-     * @param   string  $title
-     * @param   string  $rawHtml    Extra html in <a> tag
+     * @param   string $title
+     * @param   string $rawHtml Extra html in <a> tag
      * @return  string
      */
     public function getFullLink($title, $rawHtml = '')
@@ -67,7 +67,7 @@ trait UrlGeneratorTrait
         }
 
         return "<a href='" . $this->getFullUrl() . "'" . $rawHtml . ">" .
-            $title . "</a>";
+        $title . "</a>";
     }
 
 
@@ -95,10 +95,10 @@ trait UrlGeneratorTrait
 
         $url .= array_key_exists('user', $components)
             ? $components['user'] .
-                (array_key_exists('pass', $components)
-                    ? ':' . $components['pass']
-                    : '')
-                . '@'
+            (array_key_exists('pass', $components)
+                ? ':' . $components['pass']
+                : '')
+            . '@'
             : '';
 
         $url .= $host;
@@ -123,8 +123,8 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::getLink()
      *
-     * @param   string  $title
-     * @param   string  $rawHtml    Extra html in <a> tag
+     * @param   string $title
+     * @param   string $rawHtml Extra html in <a> tag
      * @return  string
      */
     public function getLink($title, $rawHtml = '')
@@ -134,7 +134,7 @@ trait UrlGeneratorTrait
         }
 
         return "<a href='" . $this->getUrl() . "'" . $rawHtml . ">" .
-            $title . "</a>";
+        $title . "</a>";
     }
 
 
@@ -169,7 +169,7 @@ trait UrlGeneratorTrait
 
 
     /**
-     * @param   string  $queryString
+     * @param   string $queryString
      * @return  string[]
      */
     protected function parseQueryParameters($queryString)
@@ -185,7 +185,7 @@ trait UrlGeneratorTrait
     /**
      * Reset all stored information
      *
-     * @param   bool    $reInitialize
+     * @param   bool $reInitialize
      * @return  static
      */
     public function reset($reInitialize = false)
@@ -205,7 +205,7 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::setBaseUrl()
      *
-     * @param   string  $url
+     * @param   string $url
      * @return  static
      */
     public function setBaseUrl($url)
@@ -227,7 +227,7 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::setFullUrl()
      *
-     * @param   string  $url
+     * @param   string $url
      * @return  static
      */
     public function setFullUrl($url)
@@ -251,8 +251,8 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::setParameter()
      *
-     * @param   string  $name
-     * @param   string  $value
+     * @param   string $name
+     * @param   string $value
      * @return  static
      */
     public function setParameter($name, $value)
@@ -266,7 +266,7 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::setParameters()
      *
-     * @param   array   $parameters Array k-v is parameter name & value
+     * @param   array $parameters Array k-v is parameter name & value
      * @return  static
      */
     public function setParameters(array $parameters)
@@ -293,7 +293,7 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::unsetParameter()
      *
-     * @param   string  $name
+     * @param   string $name
      * @return  static
      */
     public function unsetParameter($name)
@@ -307,7 +307,7 @@ trait UrlGeneratorTrait
     /**
      * @see UrlGeneratorInterface::unsetParameters()
      *
-     * @param   string[]    $names
+     * @param   string[] $names
      * @return  static
      */
     public function unsetParameters(array $names)
