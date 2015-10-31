@@ -58,14 +58,14 @@ trait ServiceContainerTrait
      *  - Name::getInstance()
      *  - new Name
      *
-     * @param   string  $name
+     * @param   string $name
      * @return  object
      * @throws  ServiceInstanceCreationFailException
      */
     protected function createService($name)
     {
         $service = null;
-        $name = ucfirst($name);
+        $name = $this->unifyNameStyle($name);
 
         $method = 'create' . $name;
         if (method_exists($this, $method)) {
@@ -112,6 +112,8 @@ trait ServiceContainerTrait
      */
     protected function get($name, $forcenew = false)
     {
+        $name = $this->unifyNameStyle($name);
+
         if ($forcenew) {
             return $this->createService($name);
 
@@ -143,11 +145,13 @@ trait ServiceContainerTrait
     /**
      * @see ServiceContainerInterface::getRegistered()
      *
-     * @param   string  $name
+     * @param   string $name
      * @return  object
      */
     public function getRegistered($name)
     {
+        $name = $this->unifyNameStyle($name);
+
         return $this->get($name, false);
     }
 
@@ -161,6 +165,8 @@ trait ServiceContainerTrait
      */
     public function register($name, $service)
     {
+        $name = $this->unifyNameStyle($name);
+
         if (is_string($service)) {
             return $this->registerClass($name, $service);
         } else {
@@ -172,12 +178,14 @@ trait ServiceContainerTrait
     /**
      * @see ServiceContainerInterface::registerClass()
      *
-     * @param   string  $name
-     * @param   string  $className  Full qualified name without leading '\'
+     * @param   string $name
+     * @param   string $className Full qualified name without leading '\'
      * @return  static
      */
     public function registerClass($name, $className)
     {
+        $name = $this->unifyNameStyle($name);
+
         $this->classMap[$name] = $className;
 
         return $this;
@@ -187,14 +195,28 @@ trait ServiceContainerTrait
     /**
      * @see ServiceContainerInterface::registerInstance()
      *
-     * @param   string  $name
-     * @param   object  $instance
+     * @param   string $name
+     * @param   object $instance
      * @return  static
      */
     public function registerInstance($name, $instance)
     {
+        $name = $this->unifyNameStyle($name);
+
         $this->instances[$name] = $instance;
 
         return $this;
+    }
+
+
+    /**
+     * Unify service name case style
+     *
+     * @param   string $name
+     * @return  string
+     */
+    protected function unifyNameStyle($name)
+    {
+        return ucfirst($name);
     }
 }
