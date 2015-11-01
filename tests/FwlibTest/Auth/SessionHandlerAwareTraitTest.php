@@ -13,13 +13,11 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class SessionHandlerAwareTraitTest extends PHPUnitTestCase
 {
     /**
-     * @return MockObject | SessionHandlerAwareTrait
+     * @return MockObject|SessionHandlerAwareTrait
      */
     protected function buildMock()
     {
-        $mock = $this->getMockBuilder(
-            SessionHandlerAwareTrait::class
-        )
+        $mock = $this->getMockBuilder(SessionHandlerAwareTrait::class)
             ->setMethods(null)
             ->getMockForTrait();
 
@@ -28,7 +26,7 @@ class SessionHandlerAwareTraitTest extends PHPUnitTestCase
 
 
     /**
-     * @return MockObject | SessionHandlerInterface
+     * @return MockObject|SessionHandlerInterface
      */
     protected function buildSessionHandlerMock()
     {
@@ -49,7 +47,7 @@ class SessionHandlerAwareTraitTest extends PHPUnitTestCase
         $handlerAware->setSessionHandler($handler);
         $this->assertInstanceOf(
             SessionHandlerInterface::class,
-            $this->reflectionCall($handlerAware, 'getSessionHandler')
+            $handlerAware->getSessionHandler()
         );
     }
 }

@@ -18,7 +18,7 @@ trait SessionHandlerAwareTrait
      *
      * @return  SessionHandlerInterface
      */
-    protected function getSessionHandler()
+    public function getSessionHandler()
     {
         return $this->sessionHandler;
     }
