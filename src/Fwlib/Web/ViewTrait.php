@@ -23,16 +23,28 @@ use Fwlib\Web\Exception\InvalidOutputPartException;
  * will follow the index order ascending.
  *
  *
- * @see ViewInterface
+ * @see         ViewInterface
  *
- * @property    array   $outputParts
- * @property    string  $title
+ * @property    array  $outputParts
+ * @property    string $title
  *
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 trait ViewTrait
 {
+    /**
+     * Process output before return
+     *
+     * @param   string $output
+     * @return  string
+     */
+    protected function decorateOutput($output)
+    {
+        return $output;
+    }
+
+
     /**
      * @see ViewInterface::getOutput()
      *
@@ -65,6 +77,7 @@ trait ViewTrait
             $output .= $outputParts[$part];
         }
 
+        $output = $this->decorateOutput($output);
 
         return $output;
     }
@@ -73,7 +86,7 @@ trait ViewTrait
     /**
      * Set title of view
      *
-     * @param   string  $title
+     * @param   string $title
      * @return  static
      */
     protected function setTitle($title)
