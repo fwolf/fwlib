@@ -23,10 +23,14 @@ trait LoggerAwareTrait
      *
      * This is public for access logs it records.
      *
-     * @return  LoggerInterface|null
+     * @return  LoggerInterface
      */
     public function getLogger()
     {
+        if (is_null($this->logger)) {
+            $this->logger = new Logger();
+        }
+
         return $this->logger;
     }
 
