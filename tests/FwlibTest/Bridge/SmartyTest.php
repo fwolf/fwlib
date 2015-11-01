@@ -24,13 +24,19 @@ class SmartyTest extends PHPUnitTestCase
         $smarty = $this->buildMock();
 
         $dir = $smarty->getConfigDir();
-        $i = count($dir);
+        $dirCount = count($dir);
 
         $smarty->addConfigDirPrepend('foo/');
 
         $dir = $smarty->getConfigDir();
-        $this->assertEquals($i + 1, count($dir));
+        $this->assertEquals($dirCount + 1, count($dir));
         $this->assertEquals('foo/', $dir['']);
+
+
+        // Add again to check key overwrite
+        $smarty->addConfigDirPrepend('bar/');
+        $dir = $smarty->getConfigDir();
+        $this->assertEquals('bar/', $dir['']);
     }
 
 
@@ -39,13 +45,19 @@ class SmartyTest extends PHPUnitTestCase
         $smarty = $this->buildMock();
 
         $dir = $smarty->getPluginsDir();
-        $i = count($dir);
+        $dirCount = count($dir);
 
         $smarty->addPluginsDirPrepend('foo/');
 
         $dir = $smarty->getPluginsDir();
-        $this->assertEquals($i + 1, count($dir));
+        $this->assertEquals($dirCount + 1, count($dir));
         $this->assertEquals('foo/', $dir['']);
+
+
+        // Add again to check key overwrite
+        $smarty->addPluginsDirPrepend('bar/');
+        $dir = $smarty->getPluginsDir();
+        $this->assertEquals('bar/', $dir['']);
     }
 
 
@@ -54,12 +66,18 @@ class SmartyTest extends PHPUnitTestCase
         $smarty = $this->buildMock();
 
         $dir = $smarty->getTemplateDir();
-        $i = count($dir);
+        $dirCount = count($dir);
 
         $smarty->addTemplateDirPrepend('foo/');
 
         $dir = $smarty->getTemplateDir();
-        $this->assertEquals($i + 1, count($dir));
+        $this->assertEquals($dirCount + 1, count($dir));
         $this->assertEquals('foo/', $dir['']);
+
+
+        // Add again to check key overwrite
+        $smarty->addTemplateDirPrepend('bar/');
+        $dir = $smarty->getTemplateDir();
+        $this->assertEquals('bar/', $dir['']);
     }
 }

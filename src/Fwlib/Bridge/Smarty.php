@@ -38,8 +38,8 @@ class Smarty extends \Smarty
     /**
      * Prepend to config_dir array
      *
-     * @param   string|array    $configDir
-     * @param   string          $key
+     * @param   string|array $configDir
+     * @param   string       $key
      * @return  $this
      */
     public function addConfigDirPrepend($configDir, $key = '')
@@ -50,7 +50,8 @@ class Smarty extends \Smarty
             $configDir = [$key => $configDir];
         }
 
-        $dir = array_merge($configDir, $dir);
+        // Use + to overwrite exists key
+        $dir = $configDir + $dir;
         $this->setConfigDir($dir);
 
         return $this;
@@ -60,8 +61,8 @@ class Smarty extends \Smarty
     /**
      * Prepend to plugins_dir array
      *
-     * @param   string|array    $pluginDir
-     * @param   string          $key
+     * @param   string|array $pluginDir
+     * @param   string       $key
      * @return  $this
      */
     public function addPluginsDirPrepend($pluginDir, $key = '')
@@ -72,7 +73,8 @@ class Smarty extends \Smarty
             $pluginDir = [$key => $pluginDir];
         }
 
-        $dir = array_merge($pluginDir, $dir);
+        // Use + to overwrite exists key
+        $dir = $pluginDir + $dir;
         $this->setPluginsDir($dir);
 
         return $this;
@@ -82,8 +84,8 @@ class Smarty extends \Smarty
     /**
      * Prepend to template_dir array
      *
-     * @param   string|array    $templateDir
-     * @param   string          $key
+     * @param   string|array $templateDir
+     * @param   string       $key
      * @return  $this
      */
     public function addTemplateDirPrepend($templateDir, $key = '')
@@ -94,7 +96,8 @@ class Smarty extends \Smarty
             $templateDir = [$key => $templateDir];
         }
 
-        $dir = array_merge($templateDir, $dir);
+        // Use + to overwrite exists key
+        $dir = $templateDir + $dir;
         $this->setTemplateDir($dir);
 
         return $this;
