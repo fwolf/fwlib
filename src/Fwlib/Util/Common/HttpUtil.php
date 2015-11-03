@@ -369,7 +369,7 @@ class HttpUtil
      * Notice: Will not addslashes anymore.
      *
      * Notice: Use UrlGenerator instead.
-     * @see \Fwlib\Mvc\UrlGenerator
+     * @see \Fwlib\Web\UrlGenerator
      * @deprecated
      *
      * @param   string|array $k           Key of url param,
