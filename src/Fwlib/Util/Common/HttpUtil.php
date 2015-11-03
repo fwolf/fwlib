@@ -37,9 +37,10 @@ class HttpUtil
     /**
      * Download content as a file
      *
-     * @param   string  $content    Content to download
-     * @param   string  $filename   Download file name, send to client, not path on server.
-     * @param   string  $mime       Mime type of file
+     * @param   string $content  Content to download
+     * @param   string $filename Download file name, send to client, not path
+     *                           on server.
+     * @param   string $mime     Mime type of file
      * @return  boolean
      */
     public function download(
@@ -66,6 +67,7 @@ class HttpUtil
         $result = $this->downloadFile($tmpFileName, $filename, $mime);
 
         unlink($tmpFileName);
+
         return $result;
     }
 
@@ -73,9 +75,10 @@ class HttpUtil
     /**
      * Download a file
      *
-     * @param   string  $filePath   Full path to download file.
-     * @param   string  $filename   Download file name, send to client, not path on server.
-     * @param   string  $mime       Mime type of file
+     * @param   string $filePath Full path to download file.
+     * @param   string $filename Download file name, send to client, not path
+     *                           on server.
+     * @param   string $mime     Mime type of file
      * @return  boolean
      */
     public function downloadFile(
@@ -104,7 +107,12 @@ class HttpUtil
         // eg: setup.abc.exe becomes setup[1].abc.exe
         if ('trident' == $this->getBrowserType()) {
             // count is reference (&count) in str_replace, so can't use it.
-            $filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
+            $filename = preg_replace(
+                '/\./',
+                '%2e',
+                $filename,
+                substr_count($filename, '.') - 1
+            );
         }
 
         header("Content-Disposition: attachment; filename=\"$filename\"");
@@ -116,16 +124,16 @@ class HttpUtil
         $downloadedSize = 0;   // Avoid infinite loop
         $stepSize = 1024 * 64;  // Control download speed
 
-        $fp = fopen($filePath, 'rb');
+        $handle = fopen($filePath, 'rb');
         // Start buffered download
         // Reset time limit for big files
         set_time_limit(0);
-        while (!feof($fp) && ($totalSize > $downloadedSize)) {
-            print(fread($fp, $stepSize));
+        while (!feof($handle) && ($totalSize > $downloadedSize)) {
+            print(fread($handle, $stepSize));
             $downloadedSize += $stepSize;
         }
 
-        fclose($fp);
+        fclose($handle);
 
         return true;
     }
@@ -135,10 +143,11 @@ class HttpUtil
      * User browser type
      *
      * Type is kernel of browser: gecko/trident/webkit
+     *
      * @link https://en.wikipedia.org/wiki/Web_browser_engine
      * @link http://www.useragentstring.com/pages/Browserlist/
      *
-     * @param   string  $agentStr   Custom agent string
+     * @param   string $agentStr Custom agent string
      * @return  string              Or empty string if fail or not found
      */
     public function getBrowserType($agentStr = null)
@@ -154,9 +163,9 @@ class HttpUtil
         }
 
         $arAgent = [
-            'AppleWebKit'   => 'webkit',
-            'Trident'       => 'trident',
-            'Gecko'         => 'gecko',
+            'AppleWebKit' => 'webkit',
+            'Trident'     => 'trident',
+            'Gecko'       => 'gecko',
         ];
 
         foreach ($arAgent as $k => $v) {
@@ -369,46 +378,48 @@ class HttpUtil
      * Notice: Will not addslashes anymore.
      *
      * Notice: Use UrlGenerator instead.
+     *
      * @see \Fwlib\Web\UrlGenerator
      * @deprecated
      *
-     * @param   string|array $k           Key of url param,
+     * @param   string|array $key         Key of url param,
      *                                    or array of keys/values to add
-     * @param   string|array $v           Value of url param,
+     * @param   string|array $value       Value of url param,
      *                                    or array of keys to remove
      * @param   boolean      $fullUrl     Include 'http://...' part if true
      * @return  string                    '?' and '&' included.
      */
     public function getUrlParam(
-        $k = null,
-        $v = null,
+        $key = null,
+        $value = null,
         $fullUrl = false
     ) {
         $params = $this->getGets();
 
         // $k is string
-        if (is_string($k) && !empty($k)) {
-            $params[$k] = $v;
+        if (is_string($key) && !empty($key)) {
+            $params[$key] = $value;
 
         } else {
             // Add
-            if (!empty($k)) {
-                foreach ($k as $key => $value) {
-                    $params[$key] = $value;
+            if (!empty($key)) {
+                foreach ($key as $singleKey => $singleVal) {
+                    $params[$singleKey] = $singleVal;
                 }
             }
 
             // Remove
-            if (!empty($v)) {
-                $v = (array)$v;
-                $params = array_diff_key($params, array_fill_keys($v, null));
+            if (!empty($value)) {
+                $value = (array)$value;
+                $params =
+                    array_diff_key($params, array_fill_keys($value, null));
             }
         }
 
         // Combine param
         $url = '';
-        foreach ($params as $key => $val) {
-            $url .= '&' . $key . '=' . $val;
+        foreach ($params as $singleKey => $singleVal) {
+            $url .= '&' . $singleKey . '=' . $singleVal;
         }
         if (!empty($url)) {
             $url{0} = '?';
@@ -428,7 +439,7 @@ class HttpUtil
      *
      * eg: http://domain.tld/, plan = http
      *
-     * @param   string  $url    Default: self url
+     * @param   string $url Default: self url
      * @return  string          Always lower cased
      */
     public function getUrlPlan($url = '')
@@ -437,9 +448,8 @@ class HttpUtil
             $url = $this->getSelfUrl();
         }
 
-        $i = preg_match('/^(\w+):\/\//', $url, $ar);
-        if (1 == $i) {
-            return strtolower($ar[1]);
+        if (preg_match('/^(\w+):\/\//', $url, $matches)) {
+            return strtolower($matches[1]);
         } else {
             return '';
         }
@@ -464,9 +474,9 @@ class HttpUtil
     /**
      * Pick values from all get parameters
      *
-     * @param   string[]    $keys
-     * @param   boolean     $noEmpty
-     * @param   callable    $callback
+     * @param   string[] $keys
+     * @param   boolean  $noEmpty
+     * @param   callable $callback
      * @return  string[]
      */
     public function pickGets(array $keys, $noEmpty = false, $callback = null)
@@ -482,9 +492,9 @@ class HttpUtil
     /**
      * Pick values from all post parameters
      *
-     * @param   string[]    $keys
-     * @param   boolean     $noEmpty
-     * @param   callable    $callback
+     * @param   string[] $keys
+     * @param   boolean  $noEmpty
+     * @param   callable $callback
      * @return  string[]
      */
     public function pickPosts(array $keys, $noEmpty = false, $callback = null)
@@ -545,7 +555,7 @@ class HttpUtil
     /**
      * Unset a cookie
      *
-     * @param   string  $name
+     * @param   string $name
      */
     public function unsetCookie($name)
     {

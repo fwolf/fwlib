@@ -65,9 +65,9 @@ class HttpUtilTest extends PHPUnitTestCase
             ->setNamespace(HttpUtil::class);
         $headerMock = $factory->get(null, 'header', true);
 
-        $x = 'Test for download()';
-        $this->expectOutputString($x);
-        $httpUtil->download($x);
+        $expected = 'Test for download()';
+        $this->expectOutputString($expected);
+        $httpUtil->download($expected);
 
         $headerMock->disable();
     }
@@ -137,26 +137,25 @@ class HttpUtilTest extends PHPUnitTestCase
         $this->assertEquals('', $httpUtil->getBrowserType(''));
 
         // Safari 6.0
-        $x = $httpUtil->getBrowserType(
+        $browserType = $httpUtil->getBrowserType(
             'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko)' .
             ' Version/6.0 Mobile/10A5355d Safari/8536.25'
         );
-        $this->assertEquals('webkit', $x);
+        $this->assertEquals('webkit', $browserType);
 
         // IE 10.6
-        $x = $httpUtil->getBrowserType(
+        $browserType = $httpUtil->getBrowserType(
             'Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1;' .
             ' .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0'
         );
-        $this->assertEquals('trident', $x);
+        $this->assertEquals('trident', $browserType);
 
         // Chrome 30.0.1599.17
-        $x = $httpUtil->getBrowserType(
+        $browserType = $httpUtil->getBrowserType(
             'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)' .
             ' Chrome/30.0.1599.17 Safari/537.36'
         );
-        $this->assertEquals('webkit', $x);
-
+        $this->assertEquals('webkit', $browserType);
     }
 
 
@@ -175,12 +174,12 @@ class HttpUtilTest extends PHPUnitTestCase
         $filterInputArrayMock->setResult([
             'REMOTE_ADDR' => '127.0.0.1',
         ]);
-        $ip = $httpUtil->getClientIp();
-        $this->assertEquals('127.0.0.1', $ip);
+        $ipStr = $httpUtil->getClientIp();
+        $this->assertEquals('127.0.0.1', $ipStr);
 
         $filterInputArrayMock->setResult([]);
-        $ip = $httpUtil->getClientIp();
-        $this->assertEquals('', $ip);
+        $ipStr = $httpUtil->getClientIp();
+        $this->assertEquals('', $ipStr);
 
 
         $filterInputArrayMock->disableAll();
@@ -255,7 +254,7 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $selfHostUrl = 'http://domain.tld';
         $requestUri = '/foo.php?p=42';
-        $urlWithoutQueryString = 'http://domain.tld/bar.php';
+        $urlWithoutQuery = 'http://domain.tld/bar.php';
 
         $envUtil = $this->getMock(Env::class, ['getServer']);
         $envUtil->expects($this->any())
@@ -273,7 +272,7 @@ class HttpUtilTest extends PHPUnitTestCase
             ->willReturn($selfHostUrl);
         $httpUtil->expects($this->any())
             ->method('getSelfUrlWithoutQueryString')
-            ->willReturn($urlWithoutQueryString);
+            ->willReturn($urlWithoutQuery);
 
 
         $this->assertEquals(
@@ -281,7 +280,7 @@ class HttpUtilTest extends PHPUnitTestCase
             $httpUtil->getSelfUrl(true)
         );
         $this->assertEquals(
-            $urlWithoutQueryString,
+            $urlWithoutQuery,
             $httpUtil->getSelfUrl(false)
         );
     }
@@ -343,17 +342,17 @@ class HttpUtilTest extends PHPUnitTestCase
 
         /** @noinspection PhpDeprecationInspection */
         {
-            $x = $httpUtil->getUrlParam();
-            $this->assertEquals('?a=1', $x);
+            $qStr = $httpUtil->getUrlParam();
+            $this->assertEquals('?a=1', $qStr);
 
-            $x = $httpUtil->getUrlParam('b', 2);
-            $this->assertEquals('?a=1&b=2', $x);
+            $qStr = $httpUtil->getUrlParam('b', 2);
+            $this->assertEquals('?a=1&b=2', $qStr);
 
-            $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], ['b', 'c']);
-            $this->assertEquals('?a=2&1=a', $x);
+            $qStr = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], ['b', 'c']);
+            $this->assertEquals('?a=2&1=a', $qStr);
 
-            $x = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], 'b', true);
-            $this->assertEquals($selfUrl . '?a=2&c=3&1=a', $x);
+            $qStr = $httpUtil->getUrlParam(['a' => 2, 1 => 'a'], 'b', true);
+            $this->assertEquals($selfUrl . '?a=2&c=3&1=a', $qStr);
         }
     }
 
