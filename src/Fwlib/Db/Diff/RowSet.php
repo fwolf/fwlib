@@ -18,8 +18,17 @@ class RowSet
      * Execute status code
      */
     const EXECUTE_STATUS_COMMITTED = 1;
+
     const EXECUTE_STATUS_NOT_EXECUTED = 0;
+
     const EXECUTE_STATUS_ROLLBACKED = -1;
+
+    /**
+     * Execute status
+     *
+     * @var int
+     */
+    protected $executeStatus = self::EXECUTE_STATUS_NOT_EXECUTED;
 
     /**
      * Counter of changed rows
@@ -29,22 +38,15 @@ class RowSet
     protected $rowCount = 0;
 
     /**
-     * @var array of Row
+     * @var Row[]
      */
     protected $rows = [];
-
-    /**
-     * Execute status
-     *
-     * @var int
-     */
-    protected $executeStatus = self::EXECUTE_STATUS_NOT_EXECUTED;
 
 
     /**
      * Constructor
      *
-     * @param   string  $json
+     * @param   string $json
      */
     public function __construct($json = '')
     {
@@ -57,13 +59,13 @@ class RowSet
     /**
      * Add a changed row
      *
-     * @param   Row     $row
+     * @param   Row $row
      * @return  RowSet
      */
     public function addRow(Row $row)
     {
         $this->rows[] = $row;
-        $this->rowCount ++;
+        $this->rowCount++;
 
         return $this;
     }
@@ -72,7 +74,7 @@ class RowSet
     /**
      * Load from json string
      *
-     * @param   string  $json
+     * @param   string $json
      */
     protected function fromJson($json)
     {
@@ -111,7 +113,7 @@ class RowSet
     /**
      * Getter of $rows
      *
-     * @return  array of Row
+     * @return  Row[]
      */
     public function getRows()
     {
