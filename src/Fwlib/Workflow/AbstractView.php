@@ -26,26 +26,19 @@ use Fwlib\Web\AbstractView as BaseView;
  * This view can declare an instance of a normal view, and use it to provide
  * same header, footer with other non-workflow views.
  *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ *
  * @copyright   Copyright 2014-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractView extends BaseView
 {
     /**
-     * When update contents, these keys will be auto received
-     *
-     * Value '*' means accept all keys.
-     *
-     * @var array|string    String '*' or array of keys.
-     */
-    protected $receivableContentKeys = '*';
-
-    /**
-     * Request parameter of uuid
+     * Request parameter of workflow action
      *
      * @var string
      */
-    protected $uuidParameter = 'uuid';
+    protected $flowActionParameter = 'wfa';
 
     /**
      * View action after execute workflow action
@@ -56,10 +49,26 @@ abstract class AbstractView extends BaseView
      *
      * @var array
      */
-    protected $viewActionAfterExecute = [
+    protected $followedViewActions = [
         'edit'   => 'edit',
         'submit' => 'detail',
     ];
+
+    /**
+     * When update contents, these keys will be auto received
+     *
+     * Value '*' means accept all keys.
+     *
+     * @var array|string    String '*' or array of keys.
+     */
+    protected $receivableKeys = '*';
+
+    /**
+     * Request parameter of uuid
+     *
+     * @var string
+     */
+    protected $uuidParameter = 'uuid';
 
     /**
      * Request parameter of view action
@@ -76,13 +85,6 @@ abstract class AbstractView extends BaseView
     protected $workflow = null;
 
     /**
-     * Request parameter of workflow action
-     *
-     * @var string
-     */
-    protected $workflowActionParameter = 'wfa';
-
-    /**
      * Workflow manager classname
      *
      * @var string
@@ -94,6 +96,8 @@ abstract class AbstractView extends BaseView
      * Build url about this workflow
      *
      * When used, more router parameter may need to be added.
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
      *
      * @param   string $viewAction
      * @param   array  $queryData
@@ -279,6 +283,8 @@ abstract class AbstractView extends BaseView
     /**
      * Get view action
      *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @param   string $workflowAction
      * @param   array  $request
      * @return  string
@@ -289,8 +295,8 @@ abstract class AbstractView extends BaseView
         if (empty($workflowAction)) {
             $workflowAction = $this->getWorkflowAction($request);
         }
-        $viewAction = (isset($this->viewActionAfterExecute[$workflowAction]))
-            ? $this->viewActionAfterExecute[$workflowAction]
+        $viewAction = (isset($this->followedViewActions[$workflowAction]))
+            ? $this->followedViewActions[$workflowAction]
             : '';
 
 
@@ -313,6 +319,8 @@ abstract class AbstractView extends BaseView
     /**
      * Get workflow action from user request
      *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @param   array $request
      * @return  string
      */
@@ -322,8 +330,8 @@ abstract class AbstractView extends BaseView
             $request = $_POST;
         }
 
-        if (isset($request[$this->workflowActionParameter])) {
-            $action = trim($request[$this->workflowActionParameter]);
+        if (isset($request[$this->flowActionParameter])) {
+            $action = trim($request[$this->flowActionParameter]);
 
         } else {
             $action = '';
@@ -335,6 +343,8 @@ abstract class AbstractView extends BaseView
 
     /**
      * Get workflow uuid from user request
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
      *
      * @param   array $request
      * @return  string
@@ -362,16 +372,18 @@ abstract class AbstractView extends BaseView
      * Child class can extend to decide which keys should be received, accept
      * only specified keys is more secure.
      *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @return  array
      */
     protected function receiveContentsFromRequest()
     {
         $contents = $_POST;
 
-        if ('*' != $this->receivableContentKeys) {
+        if ('*' != $this->receivableKeys) {
             $contents = array_intersect_key(
                 $contents,
-                array_fill_keys($this->receivableContentKeys, null)
+                array_fill_keys($this->receivableKeys, null)
             );
         }
 

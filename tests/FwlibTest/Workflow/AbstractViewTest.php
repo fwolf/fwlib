@@ -1,9 +1,10 @@
 <?php
 namespace FwlibTest\Workflow;
 
+use Fwlib\Workflow\AbstractView;
 use FwlibTest\Aide\ObjectMockBuilder\FwlibWebRequestTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
-use Fwlib\Workflow\AbstractView;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @copyright   Copyright 2014-2015 Fwolf
@@ -14,19 +15,22 @@ class AbstractViewTest extends PHPUnitTestCase
     use FwlibWebRequestTrait;
 
 
+    /**
+     * @return MockObject|AbstractView
+     */
     protected function buildMock()
     {
-        $view = $this->getMockBuilder(
-            AbstractView::class
-        )
-        ->setMethods(
-            [
-                'getOutputHeader', 'getOutputFooter',
-                'fetchDetailEditable', 'fetchDetailReadonly',
-                'fetchAction', 'fetchLink', 'fetchLog',
-            ]
-        )
-        ->getMockForAbstractClass();
+        $view = $this->getMockBuilder(AbstractView::class)
+            ->setMethods([
+                'getOutputHeader',
+                'getOutputFooter',
+                'fetchDetailEditable',
+                'fetchDetailReadonly',
+                'fetchAction',
+                'fetchLink',
+                'fetchLog',
+            ])
+            ->getMockForAbstractClass();
 
         $view->expects($this->any())
             ->method('getOutputHeader')
@@ -71,12 +75,14 @@ class AbstractViewTest extends PHPUnitTestCase
     }
 
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     public function testBuildQueryUrl()
     {
-        $view = $this->getMockBuilder(
-            AbstractView::class
-        )
-        ->getMockForAbstractClass();
+        /** @var MockObject|AbstractView $view */
+        $view = $this->getMockBuilder(AbstractView::class)
+            ->getMockForAbstractClass();
 
         $workflow = $this->getMock(
             'stdClass',
@@ -90,8 +96,8 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
         $_GET = [
-            'm' => 'dummy-module',
-            'a' => 'workflow-dummy',
+            'm'                => 'dummy-module',
+            'a'                => 'workflow-dummy',
             'uselessParameter' => 'dummy',
         ];
 
@@ -110,6 +116,9 @@ class AbstractViewTest extends PHPUnitTestCase
     }
 
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     public function testCreateOrLoadWorkflow()
     {
         $view = $this->buildMock();
@@ -142,14 +151,17 @@ class AbstractViewTest extends PHPUnitTestCase
     }
 
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     public function testGetOutput()
     {
         $view = $this->buildMock();
 
         $_GET = [
-            'a'     => 'workflow-dummy',
-            'va'    => 'detail',
-            'uuid'  => 'workflowUuid',
+            'a'    => 'workflow-dummy',
+            'va'   => 'detail',
+            'uuid' => 'workflowUuid',
         ];
 
         $output = $view->getOutput();
@@ -177,12 +189,12 @@ class AbstractViewTest extends PHPUnitTestCase
         // 'viewActionAfterExecute' will be used, ignore view action from url.
         // The view action of submit is detail
         $_GET = [
-            'a'     => 'workflow-dummy',
-            'va'    => 'edit',
-            'uuid'  => 'workflowUuid',
+            'a'    => 'workflow-dummy',
+            'va'   => 'edit',
+            'uuid' => 'workflowUuid',
         ];
         $_POST = [
-            'wfa'   => 'submit',
+            'wfa' => 'submit',
         ];
 
         $output = $view->getOutput();
@@ -203,6 +215,8 @@ class AbstractViewTest extends PHPUnitTestCase
 
 
     /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @expectedException \Exception
      * @expectedExceptionMessage not defined
      */
@@ -211,7 +225,7 @@ class AbstractViewTest extends PHPUnitTestCase
         $view = $this->buildMock();
 
         $_GET = [
-            'a'     => 'workflow-dummy-invalid-view-action',
+            'a' => 'workflow-dummy-invalid-view-action',
         ];
         $_POST = [];
 
@@ -219,6 +233,9 @@ class AbstractViewTest extends PHPUnitTestCase
     }
 
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     public function testReceiveContentsFromRequest()
     {
         $view = $this->buildMock();
@@ -228,13 +245,13 @@ class AbstractViewTest extends PHPUnitTestCase
             'b' => 'B',
         ];
 
-        $this->reflectionSet($view, 'receivableContentKeys', '*');
+        $this->reflectionSet($view, 'receivableKeys', '*');
         $this->assertEqualArray(
             $_POST,
             $this->reflectionCall($view, 'receiveContentsFromRequest')
         );
 
-        $this->reflectionSet($view, 'receivableContentKeys', ['a']);
+        $this->reflectionSet($view, 'receivableKeys', ['a']);
         $this->assertEqualArray(
             ['a' => 'A'],
             $this->reflectionCall($view, 'receiveContentsFromRequest')
