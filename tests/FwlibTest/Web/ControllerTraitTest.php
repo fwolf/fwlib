@@ -2,6 +2,7 @@
 namespace FwlibTest\Web;
 
 use Fwlib\Web\ControllerTrait;
+use Fwlib\Web\Request;
 use FwlibTest\Aide\ObjectMockBuilder\FwlibWebRequestTrait;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -33,8 +34,10 @@ class ControllerTraitTest extends PHPUnitTestCase
     {
         $controller = $this->getMockBuilder(ControllerTrait::class)
             ->setMethods([
-                'createController', 'createView',
-                'getControllerClass', 'getViewClass'
+                'createController',
+                'createView',
+                'getControllerClass',
+                'getViewClass',
             ])
             ->getMockForTrait();
 
@@ -68,10 +71,8 @@ class ControllerTraitTest extends PHPUnitTestCase
             ->method('createView')
             ->will($this->returnValue($mock));
 
-        /** @var ControllerTrait $controller */
-        $controller->setRequest($this->buildRequestMock());
-
         $controller->module = '';
+        $controller->defaultModule = '';
 
         return $controller;
     }
@@ -98,6 +99,7 @@ class ControllerTraitTest extends PHPUnitTestCase
         $controller->setRequest($this->buildRequestMock());
 
         $controller->module = '';
+        $controller->defaultModule = '';
 
         return $controller;
     }
@@ -130,6 +132,7 @@ class ControllerTraitTest extends PHPUnitTestCase
         $controller->setRequest($this->buildRequestMock());
 
         $controller->module = '';
+        $controller->defaultModule = '';
 
         return $controller;
     }
@@ -172,6 +175,23 @@ class ControllerTraitTest extends PHPUnitTestCase
 
         $output = $controller->getOutput();
         $this->assertStringStartsWith('Error: View for action', $output);
+    }
+
+
+    public function testGetRequestModule()
+    {
+        $controller = $this->buildMock();
+        $request = $controller->getRequest();
+
+        $request->setModule('');
+        $this->reflectionSet($controller, 'defaultModule', 'fooModule');
+
+        $this->assertEquals(
+            'fooModule',
+            $this->reflectionCall($controller, 'getRequestModule')
+        );
+        /** @var Request $request */
+        $this->assertEquals('fooModule', $request->getModule());
     }
 
 

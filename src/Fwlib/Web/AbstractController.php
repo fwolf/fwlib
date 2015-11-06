@@ -37,6 +37,16 @@ abstract class AbstractController implements ControllerInterface
     protected $defaultView = '';
 
     /**
+     * Fallback or default module
+     *
+     * If read empty module from request, use this value instead. Commonly
+     * this is used in root or index controller.
+     *
+     * @var string
+     */
+    protected $defaultModule = '';
+
+    /**
      * Module name
      *
      * If module parsed from user request equals this, will call corresponding

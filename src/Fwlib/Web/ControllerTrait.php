@@ -10,6 +10,7 @@ use Fwlib\Web\Exception\ViewNotDefinedException;
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  *
+ * @property    string $defaultModule
  * @property    string $module
  */
 trait ControllerTrait
@@ -151,7 +152,17 @@ trait ControllerTrait
      */
     protected function getRequestModule()
     {
-        return $this->getRequest()->getModule();
+        $request = $this->getRequest();
+        $module = $request->getModule();
+
+        if (empty($module)) {
+            $module = $this->defaultModule;
+
+            // Change request for delegated controller work properly
+            $request->setModule($module);
+        }
+
+        return $module;
     }
 
 
