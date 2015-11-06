@@ -5,6 +5,11 @@ use Fwlib\Base\SingletonTrait;
 use Fwlib\Util\UtilContainer;
 
 /**
+ * Request content holder
+ *
+ * Content are cached as property. They can also be modified via setter, to
+ * implement default module/action etc.
+ *
  * @see         \Fwlib\Web\RequestInterface
  *
  * @property    string $actionParameter
@@ -19,14 +24,29 @@ trait RequestTrait
 
 
     /**
+     * @var string
+     */
+    protected $action = null;
+
+    /**
+     * @var string
+     */
+    protected $module = null;
+
+
+    /**
      * @see RequestInterface::getAction()
      *
      * @return  string
      */
     public function getAction()
     {
-        return UtilContainer::getInstance()->getHttp()
-            ->getGet($this->actionParameter);
+        if (is_null($this->action)) {
+            $this->action = UtilContainer::getInstance()->getHttp()
+                ->getGet($this->actionParameter);
+        }
+
+        return $this->action;
     }
 
 
@@ -37,7 +57,11 @@ trait RequestTrait
      */
     public function getModule()
     {
-        return UtilContainer::getInstance()->getHttp()
-            ->getGet($this->moduleParameter);
+        if (is_null($this->module)) {
+            $this->module = UtilContainer::getInstance()->getHttp()
+                ->getGet($this->moduleParameter);
+        }
+
+        return $this->module;
     }
 }
