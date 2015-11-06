@@ -42,7 +42,7 @@ abstract class AbstractController implements ControllerInterface
      * If module parsed from user request equals this, will call corresponding
      * View to get output.
      *
-     * Root controller can use empty string as module name.
+     * Root index controller can use empty string as module name.
      *
      * @var string
      */

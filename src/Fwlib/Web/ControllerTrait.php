@@ -5,12 +5,12 @@ use Fwlib\Web\Exception\ControllerNotDefinedException;
 use Fwlib\Web\Exception\ViewNotDefinedException;
 
 /**
- * @see ControllerInterface
+ * @see         ControllerInterface
  *
  * @copyright   Copyright 2008-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  *
- * @property    string  $module
+ * @property    string $module
  */
 trait ControllerTrait
 {
@@ -20,7 +20,7 @@ trait ControllerTrait
     /**
      * Create controller instance
      *
-     * @param   string  $className
+     * @param   string $className
      * @return  ControllerInterface
      */
     protected function createController($className)
@@ -37,7 +37,7 @@ trait ControllerTrait
     /**
      * Create view instance
      *
-     * @param   string  $className
+     * @param   string $className
      * @return  ViewInterface
      */
     protected function createView($className)
@@ -54,7 +54,7 @@ trait ControllerTrait
     /**
      * Call View for output
      *
-     * @param   string  $action
+     * @param   string $action
      * @return  string
      */
     protected function display($action)
@@ -89,7 +89,7 @@ trait ControllerTrait
      * Usually, it can use View to show friendly error message in html format,
      * implement in child class.
      *
-     * @param   string  $message
+     * @param   string $message
      * @return  string
      */
     protected function displayError($message)
@@ -106,7 +106,7 @@ trait ControllerTrait
      *
      * Must extend by child class. Small application can have no module.
      *
-     * @param   string  $module
+     * @param   string $module
      * @return  string
      */
     abstract protected function getControllerClass($module);
@@ -119,18 +119,39 @@ trait ControllerTrait
      */
     public function getOutput()
     {
-        $request = $this->getRequest();
+        $module = $this->getRequestModule();
 
-        $module = $request->getModule();
         if ($module != $this->module) {
             $output = $this->transfer($module);
 
         } else {
-            $action = $request->getAction();
+            $action = $this->getRequestAction();
             $output = $this->display($action);
         }
 
         return $output;
+    }
+
+
+    /**
+     * Getter of request action for easily inject default action
+     *
+     * @return  string
+     */
+    protected function getRequestAction()
+    {
+        return $this->getRequest()->getAction();
+    }
+
+
+    /**
+     * Getter of request module for easily inject default module
+     *
+     * @return  string
+     */
+    protected function getRequestModule()
+    {
+        return $this->getRequest()->getModule();
     }
 
 
@@ -142,7 +163,7 @@ trait ControllerTrait
      *
      * Must extend by child class.
      *
-     * @param   string  $action
+     * @param   string $action
      * @return  string
      */
     abstract protected function getViewClass($action);
@@ -151,7 +172,7 @@ trait ControllerTrait
     /**
      * Transfer request to another controller
      *
-     * @param   string  $module
+     * @param   string $module
      * @return  string
      */
     protected function transfer($module)
