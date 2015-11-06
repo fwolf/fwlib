@@ -64,4 +64,32 @@ trait RequestTrait
 
         return $this->module;
     }
+
+
+    /**
+     * @see RequestInterface::setAction()
+     *
+     * @param   string $action
+     * @return  $this
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+
+    /**
+     * @see RequestInterface::setModule()
+     *
+     * @param   string $module
+     * @return  $this
+     */
+    public function setModule($module)
+    {
+        $this->module = $module;
+
+        return $this;
+    }
 }

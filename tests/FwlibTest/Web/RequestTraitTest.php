@@ -55,7 +55,7 @@ class RequestTraitTest extends PHPUnitTestCase
         );
         $httpUtil->expects($testCase->any())
             ->method('getGet')
-            ->willReturnCallback(function() {
+            ->willReturnCallback(function () {
                 return RequestTraitTest::$getGet;
             });
 
@@ -71,14 +71,20 @@ class RequestTraitTest extends PHPUnitTestCase
     }
 
 
-    public function testGetActionAndModule()
+    public function testGetAndSetActionAndModule()
     {
         $request = $this->buildMock();
 
         self::$getGet = 'foo';
         $this->assertEquals('foo', $request->getAction());
 
+        $request->setAction('foo1');
+        $this->assertEquals('foo1', $request->getAction());
+
         self::$getGet = 'bar';
         $this->assertEquals('bar', $request->getModule());
+
+        $request->setModule('bar1');
+        $this->assertEquals('bar1', $request->getModule());
     }
 }

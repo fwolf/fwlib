@@ -31,4 +31,18 @@ interface RequestInterface
      * @return  string
      */
     public function getModule();
+
+
+    /**
+     * @param   string $action
+     * @return  $this
+     */
+    public function setAction($action);
+
+
+    /**
+     * @param   string $module
+     * @return  $this
+     */
+    public function setModule($module);
 }
