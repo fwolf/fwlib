@@ -243,7 +243,7 @@ class HttpUtil
      * @param   mixed     $default Default value if name is not found in input
      * @param   int       $filter
      * @param   int|array $options
-     * @return  string|int
+     * @return  string|int|array
      */
     public function getGet(
         $name,
@@ -277,7 +277,7 @@ class HttpUtil
      * @param   mixed     $default Default value if name is not found in input
      * @param   int       $filter
      * @param   int|array $options
-     * @return  string|int
+     * @return  string|int|array
      */
     public function getPost(
         $name,
