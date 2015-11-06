@@ -28,7 +28,7 @@ class ControllerTraitTest extends PHPUnitTestCase
 
 
     /**
-     * @return  MockObject | ControllerTrait
+     * @return  MockObject|ControllerTrait
      */
     protected function buildMock()
     {
@@ -71,7 +71,9 @@ class ControllerTraitTest extends PHPUnitTestCase
             ->method('createView')
             ->will($this->returnValue($mock));
 
+        /** @noinspection PhpUndefinedFieldInspection */
         $controller->module = '';
+        /** @noinspection PhpUndefinedFieldInspection */
         $controller->defaultModule = '';
 
         return $controller;
@@ -81,7 +83,7 @@ class ControllerTraitTest extends PHPUnitTestCase
     /**
      * Build a mock, implements abstract method only
      *
-     * @return  MockObject | ControllerTrait
+     * @return  MockObject|ControllerTrait
      */
     protected function buildMockBasis()
     {
@@ -108,7 +110,7 @@ class ControllerTraitTest extends PHPUnitTestCase
     /**
      * Build a mock, with getControllerClass() method
      *
-     * @return  MockObject | ControllerTrait
+     * @return  MockObject|ControllerTrait
      */
     protected function buildMockWithGetControllerClass()
     {
@@ -158,10 +160,10 @@ class ControllerTraitTest extends PHPUnitTestCase
 
     public function testDisplayWithActualView()
     {
-        $controller = $this->buildMockWithGetControllerClass(null);
+        $controller = $this->buildMockWithGetControllerClass();
         self::$viewClass = ControllerAndViewDummy::class;
 
-        $output = $controller->getOutput(null);
+        $output = $controller->getOutput();
         $this->assertEquals('Output from dummy', $output);
     }
 
@@ -211,7 +213,7 @@ class ControllerTraitTest extends PHPUnitTestCase
     public function testTransferWithActualController()
     {
         $this->getModule = 'testModule';
-        $controller = $this->buildMockWithGetControllerClass(null);
+        $controller = $this->buildMockWithGetControllerClass();
 
         self::$controllerClass = ControllerAndViewDummy::class;
 
@@ -223,7 +225,7 @@ class ControllerTraitTest extends PHPUnitTestCase
     public function testTransferWithEmptyControllerClass()
     {
         $this->getModule = 'testModule';
-        $controller = $this->buildMockBasis(null);
+        $controller = $this->buildMockBasis();
 
         $output = $controller->getOutput();
         $this->assertStringStartsWith('Error: Controller for module', $output);
