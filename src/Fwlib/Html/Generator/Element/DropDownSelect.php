@@ -8,6 +8,9 @@ use Fwlib\Html\Generator\Helper\GetTitleClassAndIdTrait;
 /**
  * Drop down select box
  *
+ * Easy mode for child class: extend and fill initial item array, or overwrite
+ * its getter method for dynamic generated item array.
+ *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -26,6 +29,12 @@ class DropDownSelect extends AbstractElement
 
 
     /**
+     * @var array
+     */
+    protected $initialItems = [];
+
+
+    /**
      * {@inheritdoc}
      *
      * Configs
@@ -40,10 +49,19 @@ class DropDownSelect extends AbstractElement
 
         return array_merge($configs, [
             self::KEY_TAG     => 'span',
-            self::KEY_ITEMS   => [],
+            self::KEY_ITEMS   => $this->getInitialItems(),
             self::KEY_PROMPT  => 'Please select',
             self::KEY_INVALID => 'Invalid Item',
         ]);
+    }
+
+
+    /**
+     * @return  array
+     */
+    protected function getInitialItems()
+    {
+        return $this->initialItems;
     }
 
 
