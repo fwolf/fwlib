@@ -19,10 +19,10 @@ class DropDownSelectTest extends PHPUnitTestCase
     protected function buildMock(array $methods = null)
     {
         /** @var MockObject|DropDownSelect $mock */
-        $mock = $this->getMock(
-            DropDownSelect::class,
-            $methods
-        );
+        $mock = $this->getMockBuilder(DropDownSelect::class)
+            ->setMethods($methods)
+            ->setConstructorArgs(['exampleSelect'])
+            ->getMock();
 
         $mock->setClass('foo')
             ->setId('bar')
@@ -43,7 +43,8 @@ class DropDownSelectTest extends PHPUnitTestCase
             ->setValue(2);
 
         $expected = <<<TAG
-<select class='foo' id='bar'>
+<select class='foo' id='bar'
+  name='exampleSelect'>
   <option value='' class='foo__title'>Select One</option>
   <option value='1' class='foo__title' id='bar__title--1'>A</option>
   <option value='2' selected='selected' class='foo__title' id='bar__title--2'>B</option>
@@ -61,7 +62,7 @@ TAG;
         $element->setConfig(DropDownSelect::KEY_TAG, 'p');
 
         $expected = <<<TAG
-<input type='hidden' id='bar' value='' />
+<input type='hidden' id='bar' name='exampleSelect' value='' />
 <p class='foo__title' id='bar__title'>Invalid Item</p>
 TAG;
         $this->assertEquals($expected, $element->getOutput(ElementMode::SHOW));
@@ -69,7 +70,7 @@ TAG;
 
         $element->setValue(1);
         $expected = <<<TAG
-<input type='hidden' id='bar' value='1' />
+<input type='hidden' id='bar' name='exampleSelect' value='1' />
 <p class='foo__title' id='bar__title'>A</p>
 TAG;
         $this->assertEquals($expected, $element->getOutput(ElementMode::SHOW));

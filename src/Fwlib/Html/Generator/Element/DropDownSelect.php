@@ -93,7 +93,8 @@ class DropDownSelect extends AbstractElement
 
         $output = "<select" .
             $this->getClassHtml() .
-            $this->getIdHtml() .
+            $this->getIdHtml() . "\n  " .
+            trim($this->getNameHtml()) .
             $this->getRawAttributesHtml() .
             ">";
 
