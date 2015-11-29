@@ -109,7 +109,9 @@ TAG;
         }
 
         foreach ($items as $value => $title) {
-            $selected = ($value == $this->getValue())
+            $selValue = $this->getValue();
+            // In case empty '' is for prompt, while 0 for first value
+            $selected = (0 < strlen($selValue) && $value == $selValue)
                 ? " selected='selected'" : '';
             $titleId = $this->getTitleId($value);
             $titleIdHtml = $this->getIdHtml($titleId);
