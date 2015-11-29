@@ -85,9 +85,11 @@ class ListDto
      */
     public function setBody($body)
     {
-        if (!empty($body) && !is_array(current($body))) {
+        if (!empty($body) &&
+            (!is_array(current($body)) && !is_object(current($body)))
+        ) {
             throw new InvalidBodyException(
-                'List body need to be 2 dimension array'
+                'List body need to be 2 dimension array or array of objects'
             );
         }
 

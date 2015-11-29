@@ -34,6 +34,10 @@ class ListDtoTest extends PHPUnitTestCase
         $listDto->setBody($body);
         $this->assertEqualArray($body, $listDto->getBody());
 
+        $body = ['foo' => new \stdClass(), 'bar' => new \stdClass()];
+        $listDto->setBody($body);
+        $this->assertArrayHasKey('foo', $listDto->getBody());
+
         $listDto->setBody(null);
         $this->assertNull($listDto->getBody());
 
