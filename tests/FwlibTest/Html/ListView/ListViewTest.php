@@ -19,7 +19,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class ListViewTest extends PHPUnitTestCase
 {
     /**
-     * @param   string[]    $methods
+     * @param   string[] $methods
      * @return  MockObject|ListView
      */
     protected function buildMock(array $methods = null)
@@ -61,12 +61,12 @@ class ListViewTest extends PHPUnitTestCase
         $this->assertEmpty($listDto->getBody());
 
         // No decorator
-        $listDto->setBody([['a', 'b']])
+        $listDto->setBody([3 => ['a', 'b']])
             ->setRowCount(1);
         $this->reflectionCall($listView, 'decorateRows', [$listDto]);
-        $this->assertEqualArray([['a', 'b']], $listDto->getBody());
+        $this->assertEqualArray([3 => ['a', 'b']], $listDto->getBody());
 
-        $listView->setRowDecorator(function($row) {
+        $listView->setRowDecorator(function ($row) {
             foreach ($row as &$val) {
                 $val = strtoupper($val);
             }
@@ -75,7 +75,7 @@ class ListViewTest extends PHPUnitTestCase
             return $row;
         });
         $this->reflectionCall($listView, 'decorateRows', [$listDto]);
-        $this->assertEqualArray([['A', 'B']], $listDto->getBody());
+        $this->assertEqualArray([3 => ['A', 'B']], $listDto->getBody());
     }
 
 

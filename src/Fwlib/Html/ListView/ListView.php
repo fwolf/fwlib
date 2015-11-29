@@ -70,8 +70,8 @@ class ListView
                 $rows = $listDto->getBody();
 
                 $newRows = [];
-                foreach ($rows as $row) {
-                    $newRows[] = $rowDecorator($row);
+                foreach ($rows as $key => $row) {
+                    $newRows[$key] = $rowDecorator($row);
                 }
 
                 $listDto->setBody($newRows);
@@ -280,7 +280,7 @@ class ListView
 
 
     /**
-     * @param   int     $rowCount
+     * @param   int $rowCount
      * @return  static
      */
     public function setRowCount($rowCount)
