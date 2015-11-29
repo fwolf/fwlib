@@ -145,9 +145,9 @@ class ListView
     {
         $listDto = $this->getFilledListDto();
 
-        $this->fitHeadAndBody($listDto);
-
         $this->decorateRows($listDto);
+
+        $this->fitHeadAndBody($listDto);
 
         return $this->render($listDto);
     }
