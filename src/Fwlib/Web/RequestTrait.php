@@ -51,6 +51,17 @@ trait RequestTrait
 
 
     /**
+     * @see RequestInterface::getActionParameter()
+     *
+     * @return  string
+     */
+    public function getActionParameter()
+    {
+        return $this->actionParameter;
+    }
+
+
+    /**
      * @see RequestInterface::getModule()
      *
      * @return  string
@@ -63,6 +74,17 @@ trait RequestTrait
         }
 
         return $this->module;
+    }
+
+
+    /**
+     * @see RequestInterface::getModuleParameter()
+     *
+     * @return  string
+     */
+    public function getModuleParameter()
+    {
+        return $this->moduleParameter;
     }
 
 
@@ -81,6 +103,20 @@ trait RequestTrait
 
 
     /**
+     * @see RequestInterface::setActionParameter()
+     *
+     * @param   string $param
+     * @return  $this
+     */
+    public function setActionParameter($param)
+    {
+        $this->actionParameter = $param;
+
+        return $this;
+    }
+
+
+    /**
      * @see RequestInterface::setModule()
      *
      * @param   string $module
@@ -89,6 +125,20 @@ trait RequestTrait
     public function setModule($module)
     {
         $this->module = $module;
+
+        return $this;
+    }
+
+
+    /**
+     * @see RequestInterface::setModuleParameter()
+     *
+     * @param   string $param
+     * @return  $this
+     */
+    public function setModuleParameter($param)
+    {
+        $this->moduleParameter = $param;
 
         return $this;
     }

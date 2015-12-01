@@ -26,11 +26,23 @@ interface RequestInterface
 
 
     /**
+     * @return  string
+     */
+    public function getActionParameter();
+
+
+    /**
      * Get current module
      *
      * @return  string
      */
     public function getModule();
+
+
+    /**
+     * @return  string
+     */
+    public function getModuleParameter();
 
 
     /**
@@ -41,8 +53,22 @@ interface RequestInterface
 
 
     /**
+     * @param   string $param
+     * @return  $this
+     */
+    public function setActionParameter($param);
+
+
+    /**
      * @param   string $module
      * @return  $this
      */
     public function setModule($module);
+
+
+    /**
+     * @param   string $param
+     * @return  $this
+     */
+    public function setModuleParameter($param);
 }

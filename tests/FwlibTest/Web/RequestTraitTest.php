@@ -71,7 +71,7 @@ class RequestTraitTest extends PHPUnitTestCase
     }
 
 
-    public function testGetAndSetActionAndModule()
+    public function testAccessors()
     {
         $request = $this->buildMock();
 
@@ -86,5 +86,13 @@ class RequestTraitTest extends PHPUnitTestCase
 
         $request->setModule('bar1');
         $this->assertEquals('bar1', $request->getModule());
+
+
+        // Action and module parameter
+        $request->setActionParameter('aa');
+        $this->assertEquals('aa', $request->getActionParameter());
+
+        $request->setModuleParameter('mm');
+        $this->assertEquals('mm', $request->getModuleParameter());
     }
 }
