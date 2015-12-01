@@ -103,8 +103,8 @@ class CodeDictionary
      * Child class can simplify this method to improve speed by avoid parse
      * columns, get columns data by index.
      *
-     * @param   int|string|array    $key
-     * @param   string|array        $columns
+     * @param   int|string|array $key
+     * @param   string|array     $columns
      * @return  int|string|array
      */
     public function get($key, $columns = '')
@@ -144,8 +144,8 @@ class CodeDictionary
     /**
      * Get value for given keys
      *
-     * @param   array               $keys
-     * @param   string|array        $columns
+     * @param   array        $keys
+     * @param   string|array $columns
      * @return  array
      */
     public function getMultiple(array $keys, $columns = '')
@@ -169,17 +169,18 @@ class CodeDictionary
     /**
      * Get SQL for write dictionary data to db
      *
-     * @param   Adodb   $db
+     * @param   Adodb   $dbConn
      * @param   boolean $withTruncate
      * @return  string
+     * @throws  \Exception
      */
-    public function getSql(Adodb $db, $withTruncate = true)
+    public function getSql(Adodb $dbConn, $withTruncate = true)
     {
         if (empty($this->table)) {
             return '';
         }
 
-        if (!$db->isConnected()) {
+        if (!$dbConn->isConnected()) {
             throw new \Exception('Database not connected');
         }
 
@@ -188,37 +189,37 @@ class CodeDictionary
         $sql = '';
 
         // Mysql set names
-        if ($db->isDbMysql()) {
-            $profile = $db->getProfile();
+        if ($dbConn->isDbMysql()) {
+            $profile = $dbConn->getProfile();
             $sql .= 'SET NAMES \''
                 . str_replace('UTF-8', 'UTF8', strtoupper($profile['lang']))
-                . '\'' . $db->getSqlDelimiter();
+                . '\'' . $dbConn->getSqlDelimiter();
         }
 
         // Truncate part ?
         if ($withTruncate) {
-            $sql .= $this->getSqlTruncate($db);
+            $sql .= $this->getSqlTruncate($dbConn);
         }
 
         // Begin transaction
-        $sql .= $db->getSqlTransBegin();
+        $sql .= $dbConn->getSqlTransBegin();
 
         // Data
         // INSERT INTO table (col1, col2) VALUES (val1, val2)[DELIMITER]
-        foreach ($this->dictionary as $k => $row) {
+        foreach ($this->dictionary as $row) {
             $valueList = [];
             foreach ($row as $key => $val) {
-                $valueList[] = $db->quoteValue($this->table, $key, $val);
+                $valueList[] = $dbConn->quoteValue($this->table, $key, $val);
             }
 
             $sql .= 'INSERT INTO ' . $this->table
                 . ' (' . implode(', ', $this->columns) . ')'
                 . ' VALUES (' . implode(', ', $valueList) . ')'
-                . $db->getSqlDelimiter();
+                . $dbConn->getSqlDelimiter();
         }
 
         // End transaction
-        $sql .= $db->getSqlTransCommit();
+        $sql .= $dbConn->getSqlTransCommit();
 
         return $sql;
     }
@@ -227,16 +228,17 @@ class CodeDictionary
     /**
      * Get SQL for write dictionary data to db, truncate part.
      *
-     * @param   object  $db Fwlib\Bridge\Adodb
+     * @param   object $dbConn Fwlib\Bridge\Adodb
      * @return  string
      */
-    public function getSqlTruncate($db)
+    public function getSqlTruncate($dbConn)
     {
         $sql = 'TRUNCATE TABLE ' . $this->table
-            . $db->getSqlDelimiter();
+            . $dbConn->getSqlDelimiter();
 
-        if (!$db->isDbSybase()) {
-            $sql = $db->getSqlTransBegin() . $sql . $db->getSqlTransCommit();
+        if (!$dbConn->isDbSybase()) {
+            $sql = $dbConn->getSqlTransBegin() . $sql .
+                $dbConn->getSqlTransCommit();
         }
 
         return $sql;
@@ -250,13 +252,11 @@ class CodeDictionary
      *
      * Use '*' for all columns.
      *
-     * @param   string|array    $column
+     * @param   string|array $column
      * @return  array
      */
     protected function parseColumns($column = '')
     {
-        $result = [];
-
         if ('*' == $column) {
             $result = $this->columns;
 
@@ -287,8 +287,8 @@ class CodeDictionary
      * $checkMethod is a function take $row as parameter and return boolean
      * value, can be anonymous function or other callable.
      *
-     * @param   callable        $condition
-     * @param   string|array    $columns
+     * @param   callable     $checkMethod
+     * @param   string|array $columns
      * @return  array
      */
     public function search($checkMethod, $columns = '*')
@@ -314,8 +314,9 @@ class CodeDictionary
     /**
      * Set dictionary value
      *
-     * @param   array   $data    1 or 2-dim data array.
+     * @param   array $data 1 or 2-dim data array.
      * @return  CodeDictionary
+     * @throws  \Exception
      */
     public function set(array $data)
     {
@@ -370,7 +371,7 @@ class CodeDictionary
     /**
      * Setter of $columns
      *
-     * @param   array   $columns
+     * @param   array $columns
      * @return  CodeDictionary
      */
     public function setColumns(array $columns)
@@ -384,7 +385,7 @@ class CodeDictionary
     /**
      * Setter of $primaryKey
      *
-     * @param   string|array    $primaryKey
+     * @param   string|array $primaryKey
      * @return  CodeDictionary
      */
     public function setPrimaryKey($primaryKey)
@@ -398,7 +399,7 @@ class CodeDictionary
     /**
      * Setter of $table
      *
-     * @param   string  $table
+     * @param   string $table
      * @return  CodeDictionary
      */
     public function setTable($table)

@@ -2,10 +2,13 @@
 namespace FwlibTest\Base;
 
 use Fwlib\Bridge\Adodb;
-use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use Fwlib\Db\CodeDictionary;
+use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ *
  * @copyright   Copyright 2011-2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
@@ -13,75 +16,92 @@ class CodeDictionaryTest extends PHPUnitTestCase
 {
     /**
      * Db mock return value
+     *
+     * @var bool
      */
     public static $isConnected;
+
+    /**
+     * @var bool
+     */
     public static $isDbMysql;
 
 
+    /**
+     * @return  MockObject|Adodb
+     */
     protected function buildDbMock()
     {
-        $db = $this->getMockBuilder(
+        $dbConn = $this->getMockBuilder(
             Adodb::class
         )
-        ->setMethods(
-            [
-                'getProfile', 'getSqlDelimiter', 'getSqlTruncate',
-                'getSqlTransBegin', 'getSqlTransCommit',
-                'isConnected', 'isDbMysql', 'quoteValue'
-            ]
-        )
-        ->disableOriginalConstructor()
-        ->getMock();
+            ->setMethods(
+                [
+                    'getProfile',
+                    'getSqlDelimiter',
+                    'getSqlTruncate',
+                    'getSqlTransBegin',
+                    'getSqlTransCommit',
+                    'isConnected',
+                    'isDbMysql',
+                    'quoteValue',
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('getProfile')
             ->will($this->returnValue(['lang' => '{profileLang}']));
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('getSqlDelimiter')
             ->will($this->returnValue("{sqlDelimiter}\n"));
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('getSqlTransBegin')
             ->will($this->returnValue("{sqlTransBegin}\n"));
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('getSqlTransCommit')
             ->will($this->returnValue("{sqlTransCommit}\n"));
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('getSqlTruncate')
             ->will($this->returnValue('{sqlTruncate}'));
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('isConnected')
             ->will($this->returnCallback(function () {
                 return CodeDictionaryTest::$isConnected;
             }));
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('isDbMysql')
             ->will($this->returnCallback(function () {
                 return CodeDictionaryTest::$isDbMysql;
             }));
 
-        $db->expects($this->any())
+        $dbConn->expects($this->any())
             ->method('quoteValue')
             ->will($this->returnValue('{quoteValue}'));
 
-        return $db;
+        return $dbConn;
     }
 
 
+    /**
+     * @return  MockObject|CodeDictionary
+     */
     protected function buildMock()
     {
         $dictionary = new CodeDictionary();
 
         $dictionary->set(
             [
-                [123,  'a'],
+                [123, 'a'],
                 ['bac', 2],
-                [321,  'c'],
+                [321, 'c'],
             ]
         );
 
@@ -92,12 +112,12 @@ class CodeDictionaryTest extends PHPUnitTestCase
     public function testFixDictionaryIndex()
     {
         $arrayWithoutIndex = [
-                [123,  'a'],
-                ['bac', 2],
-                [321,  'c'],
+            [123, 'a'],
+            ['bac', 2],
+            [321, 'c'],
         ];
         $arrayWithIndex = [
-            123 => [
+            123   => [
                 'code'  => 123,
                 'title' => 'a',
             ],
@@ -105,7 +125,7 @@ class CodeDictionaryTest extends PHPUnitTestCase
                 'code'  => 'bac',
                 'title' => 2,
             ],
-            321 => [
+            321   => [
                 'code'  => 321,
                 'title' => 'c',
             ],
@@ -143,7 +163,7 @@ class CodeDictionaryTest extends PHPUnitTestCase
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Database not connected
      */
     public function testGetSqlWithDbNotConnected()
@@ -206,7 +226,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
         $this->assertEquals(
             [
                 123 => ['code' => 123, 'title' => 'a'],
-                321 => ['code' => 321, 'title' => 'c']
+                321 => ['code' => 321, 'title' => 'c'],
             ],
             $dictionary->search(function ($row) {
                 return '2' == substr($row['code'], 1, 1);
@@ -215,11 +235,11 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
 
         $this->assertEquals(
             [
-                321 => ['code' => 321, 'title' => 'c']
+                321 => ['code' => 321, 'title' => 'c'],
             ],
             $dictionary->search(function ($row) {
                 return 'c' == $row['title'] &&
-                    '2' == substr($row['code'], 1, 1);
+                '2' == substr($row['code'], 1, 1);
             })
         );
 
@@ -250,7 +270,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Primary key value is empty or not set
      */
     public function testSetWithEmptyPk()
@@ -258,6 +278,18 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
         $dictionary = $this->buildMock();
 
         $dictionary->set(['', 'bar']);
+    }
+
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage contain all columns
+     */
+    public function testSetWithEmptyRowInData()
+    {
+        $dictionary = $this->buildMock();
+
+        $dictionary->set([[null], ['foo', 'bar']]);
     }
 
 
@@ -274,19 +306,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
 
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage contain all columns
-     */
-    public function testSetWithEmptyRowInData()
-    {
-        $dictionary = $this->buildMock();
-
-        $dictionary->set([[null], ['foo', 'bar']]);
-    }
-
-
-    /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Dictionary column not defined
      */
     public function testSetWithNoColumn()
@@ -300,7 +320,7 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
 
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage include primary key
      */
     public function testSetWithPrimaryKeyNotInColumn()
