@@ -97,13 +97,11 @@ class CodeDictionaryTest extends PHPUnitTestCase
     {
         $dictionary = new CodeDictionary();
 
-        $dictionary->set(
-            [
-                [123, 'a'],
-                ['bac', 2],
-                [321, 'c'],
-            ]
-        );
+        $dictionary->set([
+            [123, 'a'],
+            ['bac', 2],
+            [321, 'c'],
+        ]);
 
         return $dictionary;
     }
@@ -215,31 +213,33 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
     public function testSearch()
     {
         $dictionary = $this->buildMock();
+        $code = CodeDictionary::COL_CODE;
+        $title = CodeDictionary::COL_TITLE;
 
         $this->assertEquals(
-            ['bac' => ['code' => 'bac', 'title' => 2]],
+            ['bac' => [$code => 'bac', $title => 2]],
             $dictionary->search(function ($row) {
-                return !is_numeric($row['code']);
+                return !is_numeric($row[CodeDictionary::COL_CODE]);
             })
         );
 
         $this->assertEquals(
             [
-                123 => ['code' => 123, 'title' => 'a'],
-                321 => ['code' => 321, 'title' => 'c'],
+                123 => [$code => 123, $title => 'a'],
+                321 => [$code => 321, $title => 'c'],
             ],
             $dictionary->search(function ($row) {
-                return '2' == substr($row['code'], 1, 1);
+                return '2' == substr($row[CodeDictionary::COL_CODE], 1, 1);
             })
         );
 
         $this->assertEquals(
             [
-                321 => ['code' => 321, 'title' => 'c'],
+                321 => [$code => 321, $title => 'c'],
             ],
             $dictionary->search(function ($row) {
-                return 'c' == $row['title'] &&
-                '2' == substr($row['code'], 1, 1);
+                return 'c' == $row[CodeDictionary::COL_TITLE] &&
+                '2' == substr($row[CodeDictionary::COL_CODE], 1, 1);
             })
         );
 
@@ -247,8 +247,8 @@ INSERT INTO code_dictionary (code, title) VALUES ({quoteValue}, {quoteValue}){sq
         $this->assertEquals(
             [321 => 'c'],
             $dictionary->search(function ($row) {
-                return 'c' == $row['title'];
-            }, 'title')
+                return 'c' == $row[CodeDictionary::COL_TITLE];
+            }, $title)
         );
 
         // Search on empty dictionary will return empty array

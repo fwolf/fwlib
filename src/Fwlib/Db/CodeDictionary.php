@@ -35,12 +35,17 @@ use Fwlib\Bridge\Adodb;
  */
 class CodeDictionary
 {
+    const COL_CODE = 'code';
+
+    const COL_TITLE = 'title';
+
+
     /**
      * Columns name, should not be empty
      *
      * @var array
      */
-    protected $columns = ['code', 'title'];
+    protected $columns = [self::COL_CODE, self::COL_TITLE];
 
     /**
      * Dictionary data array
@@ -56,7 +61,7 @@ class CodeDictionary
      *
      * @var string
      */
-    protected $primaryKey = 'code';
+    protected $primaryKey = self::COL_CODE;
 
     /**
      * Code table name in db
