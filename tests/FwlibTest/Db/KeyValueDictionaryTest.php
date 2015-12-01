@@ -48,4 +48,19 @@ class KeyValueDictionaryTest extends PHPUnitTestCase
             ],
         ]);
     }
+
+
+    public function testGetSingleColumn()
+    {
+        $dict = $this->buildMock();
+        $dict->set([
+            ['foo', 21],
+            ['bar', 42],
+        ]);
+
+        $this->assertEqualArray($dict->getSingleColumn(), [
+            'foo' => 21,
+            'bar' => 42,
+        ]);
+    }
 }

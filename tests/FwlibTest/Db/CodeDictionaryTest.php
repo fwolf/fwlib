@@ -160,6 +160,37 @@ class CodeDictionaryTest extends PHPUnitTestCase
     }
 
 
+    public function testGetSingleColumn()
+    {
+        $dictionary = $this->buildMock();
+        $this->reflectionSet($dictionary, 'dictionary', []);
+
+        $dictionary->setColumns(['a', 'b', 'c'])
+            ->setPrimaryKey('a')
+            ->set([
+                ['a' => 1, 'b' => 2, 'c' => 3],
+                ['a' => 10, 'b' => 20, 'c' => 30],
+                ['a' => 100, 'b' => 200, 'c' => 300],
+            ]);
+
+        $this->assertEqualArray(
+            $dictionary->getSingleColumn('c'),
+            [1 => 3, 10 => 30, 100 => 300]
+        );
+    }
+
+
+    /**
+     * @expectedException \Fwlib\Db\Exception\InvalidColumnException
+     */
+    public function testGetSingleColumnWithInvalidColumn()
+    {
+        $dictionary = $this->buildMock();
+
+        $dictionary->getSingleColumn('notExist');
+    }
+
+
     /**
      * @expectedException \Exception
      * @expectedExceptionMessage Database not connected

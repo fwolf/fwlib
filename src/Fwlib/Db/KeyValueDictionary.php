@@ -14,7 +14,7 @@ class KeyValueDictionary extends CodeDictionary
     /**
      * {@inheritdoc}
      */
-    protected $columns = ['code', 'title'];
+    protected $columns = [self::COL_CODE, self::COL_TITLE];
 
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ class KeyValueDictionary extends CodeDictionary
     /**
      * {@inheritdoc}
      */
-    protected $primaryKey = 'code';
+    protected $primaryKey = self::COL_CODE;
 
     /**
      * {@inheritdoc}
@@ -49,5 +49,14 @@ class KeyValueDictionary extends CodeDictionary
                 $valCol => $value,
             ];
         }
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSingleColumn($column = self::COL_TITLE)
+    {
+        return parent::getSingleColumn($column);
     }
 }

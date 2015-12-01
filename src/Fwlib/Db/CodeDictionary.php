@@ -2,6 +2,7 @@
 namespace Fwlib\Db;
 
 use Fwlib\Bridge\Adodb;
+use Fwlib\Db\Exception\InvalidColumnException;
 
 /**
  * Code dictionary manager
@@ -165,6 +166,32 @@ class CodeDictionary
         $result = [];
         foreach ($keys as $singleKey) {
             $result[$singleKey] = $this->get($singleKey, $resultColumns);
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * Get key-value map of a single column
+     *
+     * The key of result is same, single column value as result value.
+     *
+     * @param   string $column
+     * @return  array
+     * @throws  InvalidColumnException
+     */
+    public function getSingleColumn($column)
+    {
+        if (!in_array($column, $this->columns)) {
+            throw new InvalidColumnException(
+                "Invalid column '{$column}'"
+            );
+        }
+
+        $result = [];
+        foreach ($this->dictionary as $key => $row) {
+            $result[$key] = $row[$column];
         }
 
         return $result;
