@@ -15,6 +15,33 @@ abstract class AbstractWDatePicker extends PlainDate
     use GetJsLoadHtmlTrait;
 
 
+    const CFG_JS_TIME_FORMAT = 'formatInJs';
+
+    const CFG_PHP_TIME_FORMAT = 'formatInPHP';
+
+    const CFG_MAX_DATE = 'maxDate';
+
+    const CFG_MIN_DATE = 'minDate';
+
+    const CFG_OPTIONS = 'options';
+
+    const CFG_SIZE = 'size';
+
+    const CFG_TAG = 'tag';
+
+    const VAL_CLASS_WDATE = 'Wdate';
+
+    const VAL_JS_TIME_FORMAT = 'yyyy-MM-dd';
+
+    const VAL_MAX_DATE = '';
+
+    const VAL_MIN_DATE = '';
+
+    const VAL_SIZE = 11;
+
+    const VAL_TAG = 'span';
+
+
     /**
      * {@inheritdoc}
      *
@@ -24,7 +51,7 @@ abstract class AbstractWDatePicker extends PlainDate
     {
         $class = parent::getClass($suffix);
 
-        $class .= ' Wdate';
+        $class .= ' ' . static::VAL_CLASS_WDATE;
 
         return trim($class);
     }
@@ -45,13 +72,13 @@ abstract class AbstractWDatePicker extends PlainDate
     protected function getDefaultConfigs()
     {
         return array_merge(parent::getDefaultConfigs(), [
-            'formatInJs'  => 'yyyy-MM-dd',
-            'formatInPHP' => 'Y-m-d',
-            'maxDate'     => '',
-            'minDate'     => '',
-            'options'     => [],
-            'size'        => 11,
-            'tag'         => 'span',
+            self::CFG_JS_TIME_FORMAT  => static::VAL_JS_TIME_FORMAT,
+            self::CFG_PHP_TIME_FORMAT => static::VAL_PHP_TIME_FORMAT,
+            self::CFG_MAX_DATE        => static::VAL_MAX_DATE,
+            self::CFG_MIN_DATE        => static::VAL_MIN_DATE,
+            self::CFG_OPTIONS         => [],
+            self::CFG_SIZE            => static::VAL_SIZE,
+            self::CFG_TAG             => static::VAL_TAG,
         ]);
     }
 
@@ -61,7 +88,7 @@ abstract class AbstractWDatePicker extends PlainDate
      */
     protected function getFormatInJs()
     {
-        return $this->getConfig('formatInJs');
+        return $this->getConfig(self::CFG_JS_TIME_FORMAT);
     }
 
 
@@ -70,7 +97,7 @@ abstract class AbstractWDatePicker extends PlainDate
      */
     protected function getFormatInPHP()
     {
-        return $this->getConfig('formatInPHP');
+        return $this->getConfig(self::CFG_PHP_TIME_FORMAT);
     }
 
 
@@ -79,7 +106,7 @@ abstract class AbstractWDatePicker extends PlainDate
      */
     protected function getMaxDate()
     {
-        return $this->getConfig('maxDate');
+        return $this->getConfig(self::CFG_MAX_DATE);
     }
 
 
@@ -88,7 +115,7 @@ abstract class AbstractWDatePicker extends PlainDate
      */
     protected function getMinDate()
     {
-        return $this->getConfig('minDate');
+        return $this->getConfig(self::CFG_MIN_DATE);
     }
 
 
@@ -97,7 +124,7 @@ abstract class AbstractWDatePicker extends PlainDate
      */
     protected function getOtherPickerOptions()
     {
-        return $this->getConfig('options');
+        return $this->getConfig(self::CFG_OPTIONS);
     }
 
 
@@ -194,7 +221,7 @@ abstract class AbstractWDatePicker extends PlainDate
      */
     protected function getSize()
     {
-        return $this->getConfig('size');
+        return $this->getConfig(self::CFG_SIZE);
     }
 
 
@@ -203,7 +230,7 @@ abstract class AbstractWDatePicker extends PlainDate
      */
     protected function getTag()
     {
-        return $this->getConfig('tag');
+        return $this->getConfig(self::CFG_TAG);
     }
 
 
