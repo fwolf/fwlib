@@ -1,6 +1,7 @@
 <?php
 namespace Fwlib\Db;
 
+use Fwlib\Base\SingleInstanceTrait;
 use Fwlib\Bridge\Adodb;
 use Fwlib\Db\Exception\InvalidColumnException;
 
@@ -36,6 +37,9 @@ use Fwlib\Db\Exception\InvalidColumnException;
  */
 class CodeDictionary
 {
+    use SingleInstanceTrait;
+
+
     const COL_CODE = 'code';
 
     const COL_TITLE = 'title';
