@@ -83,8 +83,15 @@ class CodeDictionary
      */
     public function __construct()
     {
-        // $dictionary is never used now, need not do reset() on it
-        if (!empty($this->dictionary) && 0 === key($this->dictionary)) {
+        /* Dictionary need fix if:
+         *
+         * - Defined with collection of array, without explicit index
+         * - Key-Value pair, and value is not array
+         */
+        if (!empty($this->dictionary) &&
+            (0 === key($this->dictionary) ||
+                !is_array(current($this->dictionary)))
+        ) {
             $this->fixDictionaryIndex();
         }
     }
