@@ -5,8 +5,8 @@ namespace Fwlib\Html\Generator\Helper;
  * Trait for element need value to title conversion when output, title
  * class/id is for title convert from value, not element title.
  *
- * @method  string  getClass()
- * @method  string  getId()
+ * @method  string  getClass($suffix = '')
+ * @method  string  getId($suffix = '')
  *
  * @copyright   Copyright 2015 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
