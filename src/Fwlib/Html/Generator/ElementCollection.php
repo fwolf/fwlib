@@ -175,6 +175,23 @@ class ElementCollection implements \ArrayAccess
 
 
     /**
+     * Get array of all element values
+     *
+     * @return  array
+     */
+    public function getValues()
+    {
+        $values = [];
+
+        foreach ($this->getElements() as $element) {
+            $values[$element->getName()] = $element->getValue();
+        }
+
+        return $values;
+    }
+
+
+    /**
      * Insert after an exists element
      *
      * @param   ElementInterface $element
@@ -367,6 +384,28 @@ class ElementCollection implements \ArrayAccess
     public function setSeparator($separator)
     {
         $this->separator = $separator;
+
+        return $this;
+    }
+
+
+    /**
+     * Batch set elements value
+     *
+     * Element not include in given value array, will not be changed. Invalid
+     * index in given value array will be ignored.
+     *
+     * @param   array $values Index by element name.
+     * @return  $this
+     */
+    public function setValues(array $values)
+    {
+        $elements = $this->elements;
+        foreach ($values as $name => $value) {
+            if (array_key_exists($name, $elements)) {
+                $elements[$name]->setValue($value);
+            }
+        }
 
         return $this;
     }

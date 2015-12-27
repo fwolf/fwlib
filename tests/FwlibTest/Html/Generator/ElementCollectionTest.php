@@ -175,4 +175,30 @@ class ElementCollectionTest extends PHPUnitTestCase
         $elements->setRootPath('foo/bar/');
         $this->assertEquals('foo/bar/', $elements->getRootPath());
     }
+
+
+    public function testSetGetValues()
+    {
+        $elements = $this->buildMock();
+
+        $this->buildElementMock(null, 'foo')
+            ->setValue('Foo')
+            ->appendTo($elements);
+        $this->buildElementMock(null, 'bar')
+            ->setValue('Bar')
+            ->appendTo($elements);
+
+        $elements->setValues([
+            'foo'   => 'FOO',
+            'dummy' => 'Dummy',
+        ]);
+
+        $this->assertEqualArray(
+            [
+                'foo' => 'FOO',
+                'bar' => 'Bar',
+            ],
+            $elements->getValues()
+        );
+    }
 }
