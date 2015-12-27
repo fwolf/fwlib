@@ -3,6 +3,7 @@ namespace Fwlib\Html\Generator\Element;
 
 use Fwlib\Html\Generator\AbstractElement;
 use Fwlib\Html\Generator\ElementMode;
+use Fwlib\Html\Generator\Helper\GetHiddenValueHtmlTrait;
 
 /**
  * Text input
@@ -12,6 +13,9 @@ use Fwlib\Html\Generator\ElementMode;
  */
 class Text extends AbstractElement
 {
+    use GetHiddenValueHtmlTrait;
+
+
     /**
      * {@inheritdoc}
      *
@@ -57,7 +61,8 @@ class Text extends AbstractElement
             return $valueHtml;
         }
 
-        $output = "<$tag" .
+        $output = $this->getHiddenValueHtml() . "\n" .
+            "<$tag" .
             $this->getClassHtml() .
             $this->getIdHtml() .
             $this->getRawAttributesHtml() .

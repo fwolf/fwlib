@@ -55,8 +55,13 @@ class TextTest extends PHPUnitTestCase
         );
 
         $element->setConfig('tag', 'p');
+        $expected = <<<TAG
+<input type='hidden'
+  name='dummy' value='This is text' />
+<p class='foo' id='bar'>This&nbsp;is&nbsp;text</p>
+TAG;
         $this->assertEquals(
-            "<p class='foo' id='bar'>This&nbsp;is&nbsp;text</p>",
+            $expected,
             $element->getOutput(ElementMode::SHOW)
         );
     }
