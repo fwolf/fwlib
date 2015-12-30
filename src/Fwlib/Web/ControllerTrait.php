@@ -29,8 +29,6 @@ trait ControllerTrait
         /** @var ControllerInterface $controller */
         $controller = new $className();
 
-        $controller->setRequest($this->getRequest());
-
         return $controller;
     }
 
@@ -45,8 +43,6 @@ trait ControllerTrait
     {
         /** @var ViewInterface $view */
         $view = new $className();
-
-        $view->setRequest($this->getRequest());
 
         return $view;
     }
