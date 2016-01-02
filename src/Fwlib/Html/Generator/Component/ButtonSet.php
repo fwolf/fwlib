@@ -3,7 +3,6 @@ namespace Fwlib\Html\Generator\Component;
 
 use Fwlib\Html\Generator\Element\Button;
 use Fwlib\Html\Helper\IndentAwareTrait;
-use Fwlib\Util\UtilContainer;
 
 /**
  * Html button set
@@ -106,6 +105,15 @@ TAG;
         $html = $this->indent($html, $this->indent);
 
         return $html;
+    }
+
+
+    /**
+     * @return  int
+     */
+    public function count()
+    {
+        return count($this->buttons);
     }
 
 

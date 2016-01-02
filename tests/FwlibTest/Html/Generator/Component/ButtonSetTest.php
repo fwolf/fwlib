@@ -50,22 +50,20 @@ class ButtonSetTest extends PHPUnitTestCase
         $button = $this->buildButtonMock()
             ->setName('foo1');
         $buttonSet->add($button);
-        $buttons = $this->reflectionGet($buttonSet, 'buttons');
-        $this->assertEquals(1, count($buttons));
+        $this->assertEquals(1, $buttonSet->count());
 
 
         $button = $this->buildButtonMock()
             ->setName('foo2');
         $buttonSet->add($button);
-        $buttons = $this->reflectionGet($buttonSet, 'buttons');
-        $this->assertEquals(2, count($buttons));
+        $this->assertEquals(2, $buttonSet->count());
 
 
         $button = $this->buildButtonMock()
             ->setName('foo3');
         $buttonSet->prepend($button);
         $buttons = $this->reflectionGet($buttonSet, 'buttons');
-        $this->assertEquals(3, count($buttons));
+        $this->assertEquals(3, $buttonSet->count());
 
         $this->assertEqualArray(
             ['foo3', 'foo1', 'foo2'],
