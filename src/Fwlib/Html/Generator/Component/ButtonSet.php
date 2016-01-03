@@ -118,6 +118,15 @@ TAG;
 
 
     /**
+     * @return  Button[]
+     */
+    public function getButtons()
+    {
+        return $this->buttons;
+    }
+
+
+    /**
      * Get output of button set
      *
      * @return  string

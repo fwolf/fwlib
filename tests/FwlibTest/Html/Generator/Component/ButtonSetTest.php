@@ -62,7 +62,7 @@ class ButtonSetTest extends PHPUnitTestCase
         $button = $this->buildButtonMock()
             ->setName('foo3');
         $buttonSet->prepend($button);
-        $buttons = $this->reflectionGet($buttonSet, 'buttons');
+        $buttons = $buttonSet->getButtons();
         $this->assertEquals(3, $buttonSet->count());
 
         $this->assertEqualArray(
@@ -72,7 +72,7 @@ class ButtonSetTest extends PHPUnitTestCase
 
         $buttonSet->remove('foo2')
             ->remove('foo3');
-        $buttons = $this->reflectionGet($buttonSet, 'buttons');
+        $buttons = $buttonSet->getButtons();
         $this->assertEqualArray(['foo1'], array_keys($buttons));
     }
 
