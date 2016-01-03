@@ -168,8 +168,10 @@ class Form extends ElementCollection
 
     /**
      * Detect if form receive submitted
+     *
+     * @return  bool
      */
-    protected function isSubmitted()
+    public function isSubmitted()
     {
         if (self::METHOD_POST == $this->getMethod()) {
             $request = $this->getRequest();
