@@ -11,7 +11,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
- * @copyright   Copyright 2015 Fwolf
+ * @copyright   Copyright 2015-2016 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class RendererTest extends PHPUnitTestCase
@@ -147,12 +147,16 @@ TAG;
   </div>
 
   <div class='common-form__input-container' id='userCode__input-container'>
+    <input type='hidden'
+      name='code' value='User Code' />
     <div class='common-form__input' id='userCode'>User&nbsp;Code</div>
   </div>
 
   <div class='common-form__input-container' id='userTitle__input-container'>
     <label class='common-form__input__label' id='userTitle__label'
       for='title'>Title</label>
+    <input type='hidden'
+      name='title' value='User Foo' />
     <div class='common-form__input' id='userTitle'>User&nbsp;Foo</div>
   </div>
 
