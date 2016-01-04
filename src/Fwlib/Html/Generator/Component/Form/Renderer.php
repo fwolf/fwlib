@@ -7,13 +7,14 @@ use Fwlib\Html\Generator\Component\Form\Helper\FormAwareTrait;
 use Fwlib\Html\Generator\Element\Hidden;
 use Fwlib\Html\Generator\ElementCollection;
 use Fwlib\Html\Generator\ElementInterface;
+use Fwlib\Html\Generator\UploadFileElementInterface;
 use Fwlib\Html\Helper\ClassAndIdHtmlTrait;
 use Fwlib\Html\Helper\IndentAwareTrait;
 
 /**
  * Form renderer
  *
- * @copyright   Copyright 2014-2015 Fwolf
+ * @copyright   Copyright 2014-2016 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Renderer
@@ -108,6 +109,27 @@ TAG;
 
 
     /**
+     * Return enc type string if form has file upload element
+     *
+     * @return  string
+     */
+    protected function getEncTypeHtml()
+    {
+        $found = false;
+        foreach ($this->getForm()->getElements() as $element) {
+            if ($element instanceof UploadFileElementInterface) {
+                $found = true;
+                break;
+            }
+        }
+
+        /** @noinspection SpellCheckingInspection */
+
+        return ($found) ? " enctype='multipart/form-data'" : '';
+    }
+
+
+    /**
      * @return  string
      */
     protected function getHiddenElementsOutput()
@@ -177,6 +199,8 @@ TAG;
     {
         $form = $this->getForm();
 
+        $encTypeHtml = $this->getEncTypeHtml();
+
         $classHtml = $this->getClassHtml($form->getClass());
         $idHtml = $this->getIdHtml($form->getId());
 
@@ -184,7 +208,7 @@ TAG;
         $action = $form->getAction();
 
         $output = <<<TAG
-<form{$classHtml}{$idHtml}
+<form{$encTypeHtml}{$classHtml}{$idHtml}
   method='{$method}' action='{$action}'>
 TAG;
 

@@ -6,6 +6,7 @@ use Fwlib\Html\Generator\Component\Form\Renderer;
 use Fwlib\Html\Generator\Element\Hidden;
 use Fwlib\Html\Generator\Element\SubmitButton;
 use Fwlib\Html\Generator\Element\Text;
+use Fwlib\Html\Generator\Element\UploadFile;
 use Fwlib\Html\Generator\ElementMode;
 use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -87,16 +88,21 @@ class RendererTest extends PHPUnitTestCase
             ->willReturn(false);
         $form->setMode(ElementMode::EDIT);
 
+        (new UploadFile('dummyFile'))->setId('dummyFile')
+            ->setClass('common-form__input')
+            ->appendTo($form);
+
         $renderer->setForm($form);
         $output = $renderer->getOutput();
 
+        /** @noinspection SpellCheckingInspection */
         $expected = <<<TAG
 <ul class='common-form__validateMessages' id='userForm__validateMessages'>
   <li>Code validate error</li>
   <li>Title: Title validate error</li>
 </ul>
 
-<form class='common-form' id='userForm'
+<form enctype='multipart/form-data' class='common-form' id='userForm'
   method='post' action='target/url/'>
 
   <div>
@@ -114,6 +120,11 @@ class RendererTest extends PHPUnitTestCase
       for='title'>Title</label>
     <input type='text' class='common-form__input' id='userTitle'
       name='title' value='User Foo' />
+  </div>
+
+  <div class='common-form__input-container' id='dummyFile__input-container'>
+    <input type='file' class='common-form__input' id='dummyFile'
+      name='dummyFile' value='' />
   </div>
 
   <div class='common-form__buttons' id='userForm__buttons'>
