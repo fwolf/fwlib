@@ -201,6 +201,14 @@ class Form extends ElementCollection
     /**
      * Receive contents from previous form submit, if submitted
      *
+     *
+     * Also receive posted files. While $_FILES array can hold multiple upload
+     * file in one name, not treat here.
+     *
+     * @see http://php.net/manual/en/features.file-upload.multiple.php
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @return  static
      */
     public function receiveContents()
@@ -217,6 +225,8 @@ class Form extends ElementCollection
         } elseif (self::METHOD_GET == $method) {
             $contents = $request->getGets();
         }
+
+        $contents += $_FILES;
 
         $elements = $this->getElements();
         foreach ($contents as $key => $val) {
