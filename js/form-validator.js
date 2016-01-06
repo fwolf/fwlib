@@ -7,12 +7,9 @@
  * @link http://www.ruanyifeng.com/blog/2012/07/three_ways_to_define_a_javascript_class.html
  * @link http://www.gabordemooij.com/articles/jsoop.html
  *
- * @package     fwlib/js
- * @copyright   Copyright 2013-2014 Fwolf
- * @author      Fwolf <fwolf.aide+Fwlib@gmail.com>
+ * @copyright   Copyright 2013-2016 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2013-12-10
- * @version     1.1.2
+ * @version     1.2
  */
 var FormValidator =
 {
@@ -88,7 +85,7 @@ var FormValidator =
           .on('mouseenter', formValidator.onMouseEnter)
           .on('mouseleave', formValidator.onMouseLeave);
 
-        /* Mark requried */
+        /* Mark required */
         if (formValidator.isRequired(rule.check)) {
           formValidator.markRequired($visualInput);
         }
@@ -566,21 +563,34 @@ var FormValidator =
 
       var check = null;
       var isValid = true;
-      var j = 0;
-      var ruleData = null;
+      var fieldPos = 0;
+      var optionPos = 0;
       var validateMethod = null;
       var validateType = '';
+      var validateField = '';
+      var validateOption = '';
 
       for (var i = 0; i < checkAr.length; i++) {
         /* Single check, is string */
         check = checkAr[i];
-        j = check.indexOf(':');
 
-        if (-1 == j) {
-          validateType = check.toLowerCase();
+        optionPos = check.indexOf(':');
+        if (-1 !== optionPos) {
+          /* Have option part */
+          validateOption = check.substr(optionPos + 1);
+          check = check.substr(0, optionPos);  /* Cut option part off */
         } else {
-          validateType = check.substr(0, j).toLowerCase();
-          ruleData = check.substr(j + 1);
+          validateOption = '';
+        }
+
+        fieldPos = check.indexOf(' ');
+        if (-1 !== fieldPos) {
+          /* Have field part */
+          validateField = check.substr(fieldPos + 1);
+          validateType = check.substr(0, fieldPos).toLowerCase();
+        } else {
+          validateField = '';
+          validateType = check.toLowerCase();
         }
 
         if (
@@ -588,7 +598,7 @@ var FormValidator =
         ) {
           validateMethod = formValidator.validateMethod[validateType];
 
-          if (!validateMethod($input, ruleData)) {
+          if (!validateMethod($input, validateField, validateOption)) {
             isValid = false;
             /* If one of check fail, other check will skip */
             break;
@@ -609,10 +619,11 @@ var FormValidator =
      * Validate by constraint Required
      *
      * @param {jQuery}  $input
-     * @param {string}  ruleData
+     * @param {string}  field
+     * @param {string}  option
      * @returns {bool}
      */
-    formValidator.validateRequired = function($input, ruleData)
+    formValidator.validateRequired = function($input, field, option)
     {
       return $.trim($input.val()).length > 0;
     };
@@ -622,23 +633,23 @@ var FormValidator =
      * Validate by constraint Regex
      *
      * @param {jQuery}  $input
-     * @param {string}  ruleData
+     * @param {string}  field
+     * @param {string}  option
      * @returns {bool}
      */
-    formValidator.validateRegex = function($input, ruleData)
+    formValidator.validateRegex = function($input, field, option)
     {
-      ruleData = $.trim(ruleData);
-
+      var regexStr = $.trim(field);
       var regex = null;
 
-      if ('/' == ruleData.charAt(0)) {
+      if ('/' == regexStr.charAt(0)) {
         /* Regex string MUST have ending '/', may have modifier after */
-        var i = ruleData.lastIndexOf('/');
-        regex = new RegExp(ruleData.slice(1, i), ruleData.slice(i + 1));
+        var i = regexStr.lastIndexOf('/');
+        regex = new RegExp(regexStr.slice(1, i), regexStr.slice(i + 1));
 
       } else {
         /* Simple regex string without '/' and modifier */
-        regex = new RegExp(ruleData);
+        regex = new RegExp(regexStr);
       }
 
       return regex.test($input.val());
@@ -652,13 +663,14 @@ var FormValidator =
      * and use formValidator.$form and ruleData to build post array.
      *
      * @param {jQuery}  $input
-     * @param {string}  ruleData
+     * @param {string}  field
+     * @param {string}  option
      * @returns {bool}
      */
-    formValidator.validateUrl = function($input, ruleData)
+    formValidator.validateUrl = function($input, field, option)
     {
       /* Find url part */
-      var ruleDataArray = ruleData.split(',');
+      var ruleDataArray = field.split(',');
       var url = $.trim(ruleDataArray.shift());
 
       /* Cleanup rule data */
@@ -699,7 +711,7 @@ var FormValidator =
     };
 
 
-    /* Register validate method, forkable */
+    /* Register validate method, fork able */
     formValidator.validateMethod = {
       'regex'    : formValidator.validateRegex,
       'required' : formValidator.validateRequired,
