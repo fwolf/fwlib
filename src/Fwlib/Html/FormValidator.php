@@ -446,7 +446,7 @@ global.$id.markFailed(global.$id.getInput('$name'));
                     ('url' == substr($checkString, 0, 3))
                     ? $formData
                     : $formData[$name],
-                    $checkString
+                    [$checkString]
                 );
 
                 if (!$nameIsValid) {
