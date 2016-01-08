@@ -109,6 +109,12 @@ th, td {
 	text-align: center;
 	color: red;
 }
+.traceString,
+p.traceString {
+  text-align: left;
+  text-indent: 0;
+  color: black;
+}
 .required {
 	color: red;
 }
