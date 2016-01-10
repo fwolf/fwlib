@@ -7,7 +7,7 @@ use Fwlib\Html\Generator\Helper\GetJsLoadHtmlTrait;
 /**
  * Select date with WDatePicker
  *
- * @copyright   Copyright 2014-2015 Fwolf
+ * @copyright   Copyright 2014-2016 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 abstract class AbstractWDatePicker extends PlainDate
@@ -185,8 +185,9 @@ abstract class AbstractWDatePicker extends PlainDate
         $options = $this->getPickerOptions();
 
         $jsonUtil = $this->getUtilContainer()->getJson();
+        $optionStr = $jsonUtil->encode($options);
 
-        return $jsonUtil->encode($options);
+        return $optionStr;
     }
 
 
@@ -208,9 +209,6 @@ abstract class AbstractWDatePicker extends PlainDate
         if (!empty($minDate)) {
             $options['minDate'] = trim($minDate, "'\"");
         }
-
-        $jsonUtil = $this->getUtilContainer()->getJson();
-        $options = $jsonUtil->encode($options);
 
         return $options;
     }

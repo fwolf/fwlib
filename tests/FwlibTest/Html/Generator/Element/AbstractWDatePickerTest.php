@@ -7,7 +7,7 @@ use Fwolf\Wrapper\PHPUnit\PHPUnitTestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
- * @copyright   Copyright 2015 Fwolf
+ * @copyright   Copyright 2015-2016 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AbstractWDatePickerTest extends PHPUnitTestCase
@@ -50,7 +50,7 @@ class AbstractWDatePickerTest extends PHPUnitTestCase
 <script type='text/javascript' src='path/to/file'></script>
 <input type='text' class='Wdate'
   value='2015-07-24' size='11'
-  onfocus='WdatePicker("{\"dateFmt\":\"yyyy-MM-dd\",\"maxDate\":\"2015-12-31\",\"minDate\":\"2012-01-01\"}");' />
+  onfocus='WdatePicker({"dateFmt":"yyyy-MM-dd","maxDate":"2015-12-31","minDate":"2012-01-01"});' />
 TAG;
         $actualOutput = $element->getOutput(ElementMode::EDIT);
         $this->assertEquals($expectedOutput, $actualOutput);
