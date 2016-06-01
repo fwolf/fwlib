@@ -43,8 +43,13 @@ class ReadonlyTextTest extends PHPUnitTestCase
         );
 
         $element->setConfig('tag', 'p');
+        $output = <<<TAG
+<input type='hidden'
+  name='dummy' value='This is text' />
+<p class='foo' id='bar'>This&nbsp;is&nbsp;text</p>
+TAG;
         $this->assertEquals(
-            "<p class='foo' id='bar'>This&nbsp;is&nbsp;text</p>",
+            $output,
             $element->getOutput(ElementMode::EDIT)
         );
     }
