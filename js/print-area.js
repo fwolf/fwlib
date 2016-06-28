@@ -1,17 +1,13 @@
 /**
  * Print area in html, exclude other part.
  *
- * @package		fwolflib
- * @subpackage	js
- * @copyright	Copyright © 2012, Fwolf
- * @author		Fwolf <fwolf.aide+fwolflib.js@gmail.com>
+ * @copyright	Copyright 2012-2016, Fwolf
  * @license		http://www.gnu.org/licenses/lgpl.html LGPL V3
- * @since		2012-12-27
  */
 
 
 /**
- * Print prefered area
+ * Print preferred area
  *
  * o_cfg = Object(
  * 	id,	id of area to print
@@ -20,7 +16,7 @@
  * 	id_frame, id of print frame
  * )
  *
- * @param	object	o_cfg
+ * @param	{object} o_cfg
  */
 function PrintArea (o_cfg) {
 	/* Parse param */
@@ -32,11 +28,12 @@ function PrintArea (o_cfg) {
 		o_cfg.id_frame = 'frame_print';
 
 	/* Create print frame if not exists */
-	if ('undefined' == typeof($('#' + o_cfg.id_frame).attr('id')))
+	if ('undefined' === typeof($('#' + o_cfg.id_frame).attr('id'))) {
 		$('body').append('<iframe id=\'' + o_cfg.id_frame + '\' \
 			name=\'' + o_cfg.id_frame + '\' \
 			width=\'0\' height=\'0\' frameborder=\'0\' \
 			src=\'about:blank\' ></iframe>');
+	}
 
 	/* Prepare css */
 	var s_css = '';
@@ -70,11 +67,9 @@ function PrintArea (o_cfg) {
 	o_fw.document.close();
 
 	/* Print */
-	$('#' + o_cfg.id_frame).load(function () {
-		o_fw.focus();
-		o_fw.print();
-	});
-} /* end of func DbDiffShow */
+	o_fw.focus();
+	o_fw.print();
+}
 
 
 /* Css example */
