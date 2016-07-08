@@ -83,7 +83,8 @@ class CodeDictionary
      */
     public function __construct()
     {
-        /* Dictionary need fix if:
+        /**
+         * Dictionary need fix if:
          *
          * - Defined with collection of array, without explicit index
          * - Key-Value pair, and value is not array
@@ -159,6 +160,15 @@ class CodeDictionary
 
 
     /**
+     * @return  array
+     */
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+
+    /**
      * Get value for given keys
      *
      * @param   array        $keys
@@ -180,6 +190,15 @@ class CodeDictionary
         }
 
         return $result;
+    }
+
+
+    /**
+     * @return  string
+     */
+    public function getPrimaryKey()
+    {
+        return $this->primaryKey;
     }
 
 
@@ -285,6 +304,15 @@ class CodeDictionary
         }
 
         return $sql;
+    }
+
+
+    /**
+     * @return  string
+     */
+    public function getTable()
+    {
+        return $this->table;
     }
 
 

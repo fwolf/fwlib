@@ -1,5 +1,5 @@
 <?php
-namespace FwlibTest\Base;
+namespace FwlibTest\Db;
 
 use Fwlib\Bridge\Adodb;
 use Fwlib\Db\CodeDictionary;
@@ -35,18 +35,16 @@ class CodeDictionaryTest extends PHPUnitTestCase
         $dbConn = $this->getMockBuilder(
             Adodb::class
         )
-            ->setMethods(
-                [
-                    'getProfile',
-                    'getSqlDelimiter',
-                    'getSqlTruncate',
-                    'getSqlTransBegin',
-                    'getSqlTransCommit',
-                    'isConnected',
-                    'isDbMysql',
-                    'quoteValue',
-                ]
-            )
+            ->setMethods([
+                'getProfile',
+                'getSqlDelimiter',
+                'getSqlTruncate',
+                'getSqlTransBegin',
+                'getSqlTransCommit',
+                'isConnected',
+                'isDbMysql',
+                'quoteValue',
+            ])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -104,6 +102,21 @@ class CodeDictionaryTest extends PHPUnitTestCase
         ]);
 
         return $dictionary;
+    }
+
+
+    public function testAccessors()
+    {
+        $dictionary = new CodeDictionary;
+
+        $dictionary->setColumns(['a', 'b']);
+        $this->assertEqualArray(['a', 'b'], $dictionary->getColumns());
+
+        $dictionary->setPrimaryKey('a');
+        $this->assertEquals('a', $dictionary->getPrimaryKey());
+
+        $dictionary->setTable('dummyTable');
+        $this->assertEquals('dummyTable', $dictionary->getTable());
     }
 
 
