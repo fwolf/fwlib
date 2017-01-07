@@ -27,7 +27,7 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * Encoding convert for query result will NOT automatic done, although we
  * provide a method convertEncodingResult() to do this manually.
  *
- * @copyright   Copyright 2008-2015 Fwolf
+ * @copyright   Copyright 2008-2015, 2017 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class Adodb
@@ -1138,7 +1138,8 @@ class Adodb
      */
     public function isDbSybase()
     {
-        return ('sybase' == substr($this->profile['type'], 0, 6));
+        return ('sybase' == substr($this->profile['type'], 0, 6)) ||
+            ('pdo_sybase' == substr($this->profile['type'], 0, 10));
     }
 
 
