@@ -482,6 +482,7 @@ class Adodb extends Fwolflib {
 				if ($tbl == $rs->fields['tableName']) {
                     return $rs->fields['name'];
 				}
+				$rs->MoveNext();
 			}
 
 			return '';

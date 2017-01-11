@@ -932,6 +932,7 @@ class Adodb
                 if ($table == $rs->fields['tableName']) {
                     return $rs->fields['name'];
                 }
+                $rs->MoveNext();
             }
 
             return '';
