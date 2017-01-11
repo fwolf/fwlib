@@ -854,8 +854,9 @@ class Adodb extends Fwolflib {
 	 * @return	boolean
 	 */
 	public function IsDbSybase () {
-		return ('sybase' == substr($this->aDbProfile['type'], 0, 6));
-	} // end of func IsDbSybase
+        return ('sybase' == substr($this->aDbProfile['type'], 0, 6)) ||
+            ('pdo_sybase' == substr($this->aDbProfile['type'], 0, 10));
+	}
 
 
 	/**
