@@ -466,10 +466,12 @@ class Adodb extends Fwolflib {
 					),
 				'FROM'	=> array(
 					'a' => 'syscolumns',
-					'b' => 'systypes'
+					'b' => 'systypes',
+					'c' => 'sysobjects',
 					),
 				'WHERE' => array(
-					"a.id = object_id('$tbl')",
+					"c.name = '$tbl'",
+					"a.id = c.id",
 					'a.type = b.type',
 					'a.usertype = b.usertype',
 					'b.name = "timestamp"',		// Without this line, can retrieve sybase's col info
@@ -712,15 +714,21 @@ class Adodb extends Fwolflib {
 				 */
 				if ($this->IsDbSybase()) {
 					$rs = $this->PExecuteGenSql(array(
-						'select' => array('name', 'keycnt',
+						'select' => array(
+							'name' => 'a.name',
+							'keycnt' => 'a.keycnt',
 							'k1' => "index_col('$table', indid, 1)",
 							'k2' => "index_col('$table', indid, 2)",
 							'k3' => "index_col('$table', indid, 3)",
 							),
-						'from'	=> 'sysindexes',
+						'from'	=> array(
+							'a' => 'sysindexes',
+							'b' => 'sysobjects',
+						),
 						'where' => array(
-							'status & 2048 = 2048 ',
-							"id = object_id('$table')",
+							'a.status & 2048 = 2048 ',
+							"b.name = '$table'",
+							"a.id = b.id"
 							)
 						));
 					if (true == $rs && 0 < $rs->RowCount()) {

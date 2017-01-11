@@ -817,15 +817,20 @@ class Adodb
                 $rs = $this->execute(
                     [
                         'SELECT' => [
-                            'name', 'keycnt',
+                            'name' => 'a.name',
+                            'keycnt' => 'a.keycnt',
                             'k1' => "index_col('$table', indid, 1)",
                             'k2' => "index_col('$table', indid, 2)",
                             'k3' => "index_col('$table', indid, 3)",
                         ],
-                        'FROM'  => 'sysindexes',
+                        'FROM'  => [
+                            'a' => 'sysindexes',
+                            'b' => 'sysobjects',
+                        ],
                         'WHERE' => [
-                            'status & 2048 = 2048 ',
-                            "id = object_id('$table')",
+                            'a.status & 2048 = 2048 ',
+                            "b.name = '$table'",
+                            "a.id = b.id"
                         ]
                     ]
                 );
@@ -910,10 +915,12 @@ class Adodb
                     ],
                     'FROM'  => [
                         'a' => 'syscolumns',
-                        'b' => 'systypes'
+                        'b' => 'systypes',
+                        'c' => 'sysobjects',
                     ],
                     'WHERE' => [
-                        "a.id = object_id('$table')",
+                        "a.id = c.id",
+                        "c.name = '$table'",
                         'a.type = b.type',
                         'a.usertype = b.usertype',
                         // Without below line, can retrieve sybase col info
