@@ -912,6 +912,7 @@ class Adodb
                         'length'    => 'a.length',
                         'usertype'  => 'a.usertype',
                         'type'      => 'b.name',
+                        'tableName' => 'c.name',
                     ],
                     'FROM'  => [
                         'a' => 'syscolumns',
@@ -920,19 +921,20 @@ class Adodb
                     ],
                     'WHERE' => [
                         "a.id = c.id",
-                        "c.name = '$table'",
                         'a.type = b.type',
                         'a.usertype = b.usertype',
-                        // Without below line, can retrieve sybase col info
-                        'b.name = "timestamp"',
+                        'b.type = 37',
+                        'b.usertype = 80',
                     ],
                 ]
             );
-            if (!empty($rs) && 0 < $rs->RowCount()) {
-                return $rs->fields['name'];
-            } else {
-                return '';
+            while (!empty($rs) && !$rs->EOF) {
+                if ($table == $rs->fields['tableName']) {
+                    return $rs->fields['name'];
+                }
             }
+
+            return '';
 
         } elseif ($this->isDbMysql()) {
             // Check 'type'

@@ -463,6 +463,7 @@ class Adodb extends Fwolflib {
 					'length' 	=> 'a.length',
 					'usertype'	=> 'a.usertype',
 					'type'		=> 'b.name',
+					'tableName' => 'c.name',
 					),
 				'FROM'	=> array(
 					'a' => 'syscolumns',
@@ -470,17 +471,20 @@ class Adodb extends Fwolflib {
 					'c' => 'sysobjects',
 					),
 				'WHERE' => array(
-					"c.name = '$tbl'",
 					"a.id = c.id",
 					'a.type = b.type',
 					'a.usertype = b.usertype',
-					'b.name = "timestamp"',		// Without this line, can retrieve sybase's col info
+                    'b.type = 37',
+                    'b.usertype = 80',
 					),
 				));
-			if (!empty($rs) && 0 < $rs->RowCount())
-				return $rs->fields['name'];
-			else
-				return '';
+			while (!empty($rs) && !$rs->EOF) {
+				if ($tbl == $rs->fields['tableName']) {
+                    return $rs->fields['name'];
+				}
+			}
+
+			return '';
 			//select a.name,a.length,a.usertype,b.name AS type from syscolumns a ,systypes b
 			//where id = object_id('ztb_yh') and a.type=b.type and a.usertype = b.usertype
 
