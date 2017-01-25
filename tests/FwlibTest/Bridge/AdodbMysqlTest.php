@@ -8,7 +8,7 @@ use Fwlib\Test\AbstractDbRelateTest;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
- * @copyright   Copyright 2013-2015 Fwolf
+ * @copyright   Copyright 2013-2015, 2017 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class AdodbMysqlTest extends AbstractDbRelateTest
@@ -365,7 +365,7 @@ class AdodbMysqlTest extends AbstractDbRelateTest
         $db->CacheGetAll(0, 'SELECT 1 AS a');
         $this->assertEquals($i + 1, $db->getQueryCount());
 
-        $db->GetAll(0, 'SELECT 1 AS a');
+        $db->GetAll('SELECT 1 AS a');
         $this->assertEquals($i + 2, $db->getQueryCount());
     }
 
