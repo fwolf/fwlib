@@ -140,8 +140,8 @@ class Adodb
      *
      * if $pathAdodb is empty, should load ADOdb through ClassLoader.
      *
-     * @param   array   $profile
-     * @param   string  $pathAdodb      Include path of original ADOdb
+     * @param   array  $profile
+     * @param   string $pathAdodb Include path of original ADOdb
      */
     public function __construct($profile, $pathAdodb = '')
     {
@@ -168,8 +168,8 @@ class Adodb
     /**
      * Redirect method call to ADOdb
      *
-     * @var string  $name   Method name
-     * @var array   $arg    Method argument
+     * @var string $name Method name
+     * @var array  $arg  Method argument
      * @return  mixed
      */
     public function __call($name, $arg)
@@ -217,8 +217,14 @@ class Adodb
         if (in_array(
             $name,
             [
-                'Execute', 'SelectLimit', 'GetOne', 'GetRow', 'GetAll',
-                'GetCol', 'GetAssoc', 'ExecuteCursor'
+                'Execute',
+                'SelectLimit',
+                'GetOne',
+                'GetRow',
+                'GetAll',
+                'GetCol',
+                'GetAssoc',
+                'ExecuteCursor',
             ]
         )) {
             $this->countQuery();
@@ -231,7 +237,7 @@ class Adodb
     /**
      * Redirect property get to ADOdb
      *
-     * @param   string    $name
+     * @param   string $name
      * @return  mixed
      */
     public function __get($name)
@@ -243,8 +249,8 @@ class Adodb
     /**
      * Redirect property set to adodb
      *
-     * @param string    $name
-     * @param mixed     $val
+     * @param string $name
+     * @param mixed  $val
      */
     public function __set($name, $val)
     {
@@ -269,7 +275,7 @@ class Adodb
      * If db is mysql, will auto execute 'set names utf8'.
      *
      * @see $profile
-     * @param   boolean $forcenew   Force new connection
+     * @param   boolean $forcenew Force new connection
      * @return  boolean
      */
     public function connect($forcenew = false)
@@ -339,12 +345,12 @@ class Adodb
         // @codeCoverageIgnoreStart
         // Mysql db need to 'set names' after connect
         if ($this->isDbMysql()) {
-            $this->conn->Execute(
-                'SET NAMES "'
-                . str_replace('UTF-8', 'UTF8', strtoupper($this->profile['lang']))
-                . '"'
-            );
+            $lang = $this->profile['lang'];
+            $names = str_replace('UTF-8', 'UTF8', strtoupper($lang));
+            $sql = "SET NAMES '{$names}'";
+            $this->conn->Execute($sql);
         }
+
         // @codeCoverageIgnoreEnd
 
         return true;
@@ -356,7 +362,7 @@ class Adodb
      *
      * Mostly used on query result.
      *
-     * @param   array|string    &$result    Array or string, not RecordSet object
+     * @param   array|string &$result Array or string, not RecordSet object
      * @return  array|string
      */
     public function convertEncodingResult(&$result)
@@ -388,7 +394,7 @@ class Adodb
      *
      * Mostly used on SQL statement.
      *
-     * @param   mixed   &$sql
+     * @param   mixed &$sql
      * @return  mixed
      */
     public function convertEncodingSql(&$sql)
@@ -435,8 +441,8 @@ class Adodb
      * 0 not found,
      * N > 0 number of deleted rows.
      *
-     * @param   string  $table
-     * @param   string  $condition  Not empty, can be raw sql where, having etc
+     * @param   string $table
+     * @param   string $condition Not empty, can be raw sql where, having etc
      * @return  int
      */
     public function deleteRow($table, $condition)
@@ -486,8 +492,8 @@ class Adodb
     /**
      * Execute SQL, without transaction
      *
-     * @param   mixed   $sql        SQL statement or sqlCfg for SqlGenerator
-     * @param   mixed   $inputArr
+     * @param   mixed $sql SQL statement or sqlCfg for SqlGenerator
+     * @param   mixed $inputArr
      * @return  object
      */
     public function execute($sql, $inputArr = false)
@@ -507,8 +513,8 @@ class Adodb
     /**
      * Prepare and execute sql, with transaction
      *
-     * @param   string  $sql
-     * @param   array|boolean   $inputArr   Optional parameters in sql
+     * @param   string        $sql
+     * @param   array|boolean $inputArr Optional parameters in sql
      * @return  object
      */
     public function executePrepare($sql, $inputArr = false)
@@ -537,11 +543,13 @@ class Adodb
                 E_USER_ERROR
             );
             $this->conn->RollbackTrans();
+
             return -1;
 
             // @codeCoverageIgnoreEnd
         } else {
             $this->conn->CommitTrans();
+
             return $rs;
         }
     }
@@ -557,7 +565,7 @@ class Adodb
      * UPDATE/INSERT/DELETE is followed by [TBL_NAME], so need not use FROM.
      *
      * @see Fwlib\Db\SqlGenerator
-     * @param   array   $sqlConfig
+     * @param   array $sqlConfig
      * @return  string
      */
     public function generateSql($sqlConfig)
@@ -577,7 +585,7 @@ class Adodb
      *
      * @see generateSql()
      * @see Fwlib\Db\SqlGenerator
-     * @param   array   $sqlConfig
+     * @param   array $sqlConfig
      * @return  string
      */
     public function generateSqlPrepared($sqlConfig)
@@ -610,11 +618,12 @@ class Adodb
      *
      * Notice: if $column is array, must indexed by number start from 0.
      *
-     * @param   string          $table
-     * @param   int|string      $keyValue
-     * @param   string|array    $column     Empty or '*' for all column
-     * @param   string|array    $keyColumn  Empty to use primary key
-     * @return  int|string|array    Single value or array of it, null if error occur
+     * @param   string       $table
+     * @param   int|string   $keyValue
+     * @param   string|array $column    Empty or '*' for all column
+     * @param   string|array $keyColumn Empty to use primary key
+     * @return  int|string|array    Single value or array of it, null if error
+     *                                  occur
      */
     public function getByKey(
         $table,
@@ -631,7 +640,7 @@ class Adodb
 
         // Convert key value and column name to array
         if (is_string($keyValue)) {
-                $keyValue = $stringUtil->toArray($keyValue, ',');
+            $keyValue = $stringUtil->toArray($keyValue, ',');
         } else {
             $keyValue = (array)$keyValue;
         }
@@ -646,6 +655,7 @@ class Adodb
         if (count($keyValue) != count($keyColumn)) {
             // @codeCoverageIgnoreStart
             trigger_error('Key value and column not match.', E_USER_WARNING);
+
             return null;
             // @codeCoverageIgnoreEnd
         }
@@ -671,9 +681,9 @@ class Adodb
 
         // Retrieve from db
         $sqlConfig = [
-            'SELECT'    => $column,
-            'FROM'      => $table,
-            'LIMIT'     => 1,
+            'SELECT' => $column,
+            'FROM'   => $table,
+            'LIMIT'  => 1,
         ];
         while (!empty($keyValue)) {
             $singleKey = array_shift($keyColumn);
@@ -729,7 +739,7 @@ class Adodb
      *
      * @see $metaColumn
      * @param   string  $table
-     * @param   boolean $forcenew   Force to retrieve instead of read from cache
+     * @param   boolean $forcenew Force to retrieve instead of read from cache
      * @return  array
      */
     public function getMetaColumn($table, $forcenew = false)
@@ -769,7 +779,7 @@ class Adodb
      *
      * @see $metaColumnName
      * @param   string  $table
-     * @param   boolean $forcenew   Force to retrieve instead of read from cache
+     * @param   boolean $forcenew Force to retrieve instead of read from cache
      * @return  array
      */
     public function getMetaColumnName($table, $forcenew = false)
@@ -777,6 +787,7 @@ class Adodb
         if (!isset($this->metaColumnName[$table]) || (true == $forcenew)) {
             $this->metaColumnName[$table] = $this->conn->MetaColumnNames($table);
         }
+
         return $this->metaColumnName[$table];
     }
 
@@ -787,7 +798,7 @@ class Adodb
      * Return single string value or array for multi column primary key.
      *
      * @param   string  $table
-     * @param   boolean $forcenew   Force to retrieve instead of read from cache
+     * @param   boolean $forcenew Force to retrieve instead of read from cache
      * @return  mixed
      * @see $metaPrimaryKey
      */
@@ -817,21 +828,21 @@ class Adodb
                 $rs = $this->execute(
                     [
                         'SELECT' => [
-                            'name' => 'a.name',
+                            'name'   => 'a.name',
                             'keycnt' => 'a.keycnt',
-                            'k1' => "index_col('$table', indid, 1)",
-                            'k2' => "index_col('$table', indid, 2)",
-                            'k3' => "index_col('$table', indid, 3)",
+                            'k1'     => "index_col('$table', indid, 1)",
+                            'k2'     => "index_col('$table', indid, 2)",
+                            'k3'     => "index_col('$table', indid, 3)",
                         ],
-                        'FROM'  => [
+                        'FROM'   => [
                             'a' => 'sysindexes',
                             'b' => 'sysobjects',
                         ],
-                        'WHERE' => [
+                        'WHERE'  => [
                             'a.status & 2048 = 2048 ',
                             "b.name = '$table'",
-                            "a.id = b.id"
-                        ]
+                            "a.id = b.id",
+                        ],
                     ]
                 );
                 if (true == $rs && 0 < $rs->RowCount()) {
@@ -914,12 +925,12 @@ class Adodb
                         'type'      => 'b.name',
                         'tableName' => 'c.name',
                     ],
-                    'FROM'  => [
+                    'FROM'   => [
                         'a' => 'syscolumns',
                         'b' => 'systypes',
                         'c' => 'sysobjects',
                     ],
-                    'WHERE' => [
+                    'WHERE'  => [
                         "a.id = c.id",
                         'a.type = b.type',
                         'a.usertype = b.usertype',
@@ -948,12 +959,13 @@ class Adodb
         } else {
             // Do not trigger error, null means no implemented.
             // Use '||' to fool code inspection.
-            return null || trigger_error(
-                __CLASS__ . '::getMetaTimestamp() for '
-                . $this->profile['type']
-                . ' not implemented!',
-                E_USER_ERROR
-            );
+            return null ||
+                trigger_error(
+                    __CLASS__ . '::getMetaTimestamp() for '
+                    . $this->profile['type']
+                    . ' not implemented!',
+                    E_USER_ERROR
+                );
         }
         // @codeCoverageIgnoreEnd
 
@@ -978,7 +990,7 @@ class Adodb
      *
      * Usually used for identify db source.
      *
-     * @param   string  $separator
+     * @param   string $separator
      * @return  string
      */
     public function getProfileString($separator = '-')
@@ -1007,15 +1019,15 @@ class Adodb
      * -1: error,
      * N >= 0: number of rows.
      *
-     * @param   string  $table
-     * @param   string  $condition  Raw sql, can be WHERE, HAVING etc
+     * @param   string $table
+     * @param   string $condition Raw sql, can be WHERE, HAVING etc
      * @return  int
      */
     public function getRowCount($table, $condition = '')
     {
         $sqlCfg = [
-            'SELECT'    => ['c' => 'COUNT(1)'],
-            'FROM'      => $table,
+            'SELECT' => ['c' => 'COUNT(1)'],
+            'FROM'   => $table,
         ];
         $rs = $this->executePrepare(
             $this->getSqlGenerator()->get($sqlCfg)
@@ -1037,7 +1049,7 @@ class Adodb
     /**
      * Get delimiter between SQL for various db
      *
-     * @param   string  $tail   Tail of line for eye candy
+     * @param   string $tail Tail of line for eye candy
      * @return  string
      */
     public function getSqlDelimiter($tail = "\n")
@@ -1057,6 +1069,7 @@ class Adodb
             );
             $delimiter = '';
         }
+
         // @codeCoverageIgnoreEnd
 
         return $delimiter . $tail;
@@ -1091,6 +1104,7 @@ class Adodb
         } else {
             $header = 'BEGIN';
         }
+
         // @codeCoverageIgnoreEnd
 
         return $header . ' TRANSACTION' . $this->getSqlDelimiter();
@@ -1170,7 +1184,7 @@ class Adodb
     /**
      * If a table exists in db ?
      *
-     * @param   string  $table
+     * @param   string $table
      * @return  boolean
      */
     public function isTableExist($table)
@@ -1182,17 +1196,20 @@ class Adodb
             $sql = "SELECT count(1) AS c FROM sysobjects WHERE name =
                 '{$table}' AND type = 'U'";
             $rs = $this->execute($sql);
+
             return (0 != $rs->fields['c']);
 
         } elseif ($this->isDbMysql()) {
             $sql = "SHOW TABLES LIKE '$table'";
             $rs = $this->execute($sql);
+
             return (0 != $rs->RowCount());
 
         } else {
             // :THINK: Better method ?
             $sql = "SELECT 1 FROM $table";
             $this->execute($sql);
+
             return (0 == $this->conn->ErrorNo());
         }
         // @codeCoverageIgnoreEnd
@@ -1213,6 +1230,7 @@ class Adodb
         if ($this->isDbMysql()) {
             $b = false;
         }
+
         // @codeCoverageIgnoreEnd
 
         return $b;
@@ -1222,7 +1240,7 @@ class Adodb
     /**
      * Generate a bind placeholder portable
      *
-     * @param   string  $name
+     * @param   string $name
      * @return  string
      */
     public function param($name)
@@ -1234,9 +1252,9 @@ class Adodb
     /**
      * Smart quote string in sql, by check columns type
      *
-     * @param   string  $table
-     * @param   string  $col
-     * @param   mixed   $val
+     * @param   string $table
+     * @param   string $col
+     * @param   mixed  $val
      * @return  string
      */
     public function quoteValue($table, $col, $val)
@@ -1251,6 +1269,7 @@ class Adodb
             // @codeCoverageIgnoreStart
             // Return quoted value for safety
             $val = stripslashes($val);
+
             return $this->conn->qstr($val, false);
             // @codeCoverageIgnoreEnd
         }
@@ -1287,6 +1306,7 @@ class Adodb
         } else {
             // Need quote, use db's quote method
             $val = stripslashes($val);
+
             return $this->conn->qstr($val, false);
         }
     }
@@ -1295,7 +1315,7 @@ class Adodb
     /**
      * Set PHP script file charset
      *
-     * @param   string  $charset
+     * @param   string $charset
      * @see $charsetPhp
      */
     public function setCharsetPhp($charset)
@@ -1309,7 +1329,7 @@ class Adodb
      *
      * This is a transfer method to fool code inspection.
      *
-     * @param   int     $fetchMode
+     * @param   int $fetchMode
      * @return  int
      */
     public function setFetchMode($fetchMode)
@@ -1343,9 +1363,9 @@ class Adodb
      * Even data to write exists in db and same, it will still do write
      * operation, and been counted in return value.
      *
-     * @param   string  $table
-     * @param   array   $data   Row(s) data
-     * @param   string  $mode   Write mode
+     * @param   string $table
+     * @param   array  $data Row(s) data
+     * @param   string $mode Write mode
      * @return  int
      */
     public function write($table, $data, $mode = 'A')
@@ -1400,7 +1420,7 @@ class Adodb
         if ('U' == $mode) {
             $sqlCfg = [
                 'UPDATE' => $table,
-                'LIMIT' => 1,
+                'LIMIT'  => 1,
             ];
             // Primary key cannot change, so exclude them from SET clause,
             // Here use prepare, actual value will assign later, do quote
@@ -1460,6 +1480,7 @@ class Adodb
         } catch (\Exception $e) {
             // Show error message ?
             $this->conn->RollbackTrans();
+
             return -1;
         }
 
@@ -1472,10 +1493,12 @@ class Adodb
                 E_USER_WARNING
             );
             $this->conn->RollbackTrans();
+
             return -1;
 
         } else {
             $this->conn->CommitTrans();
+
             return count($data);
         }
         // @codeCoverageIgnoreEnd
