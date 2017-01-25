@@ -1149,7 +1149,9 @@ class Adodb
     public function isDbSybase()
     {
         return ('sybase' == substr($this->profile['type'], 0, 6)) ||
-            ('pdo_sybase' == substr($this->profile['type'], 0, 10));
+            ('sybase_ase' == substr($this->profile['type'], 0, 10)) ||
+            ('pdo_sybase' == substr($this->profile['type'], 0, 10)) ||
+            ('pdo_sybase_ase' == substr($this->profile['type'], 0, 10));
     }
 
 
