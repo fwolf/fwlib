@@ -1245,7 +1245,13 @@ class Adodb
      */
     public function param($name)
     {
-        return $this->conn->Param($name);
+        $param = $this->conn->Param($name);
+
+        if ($this->isDbPdoSybase()) {
+            $param = ":{$name}";
+        }
+
+        return $param;
     }
 
 
@@ -1429,17 +1435,17 @@ class Adodb
             // assign actual value, because WHERE clause is after SET clause.
             foreach ($arPk as $key) {
                 $sqlCfg['WHERE'][] = "$key = "
-                    . $this->conn->Param($key);
+                    . $this->param($key);
                 unset($arCols[array_search($key, $arCols)]);
             }
             foreach ($arCols as $key) {
-                $sqlCfg['SET'][$key] = $this->conn->Param($key);
+                $sqlCfg['SET'][$key] = $this->param($key);
             }
 
         } elseif ('I' == $mode) {
             $arVal = [];
             foreach ($arCols as $key) {
-                $arVal[$key] = $this->conn->Param($key);
+                $arVal[$key] = $this->param($key);
             }
             $sqlCfg = [
                 'INSERT' => $table,
@@ -1467,6 +1473,27 @@ class Adodb
 
         // Convert data encoding
         $this->convertEncodingSql($data);
+
+
+        // When use PDO, param is ? and value array must NOT be named.
+        // So consider change to use named param binding, this works better bcs
+        // does not restrict order value array.
+        //
+        // Another problem, ADOdb treat int as varchar, cause another error.
+        // @see https://bugs.php.net/bug.php?id=57655 for this bug.
+        //   > All PDO_DBLIB binds are done as strings.
+        // For those column, use CONVERT().
+        if ($this->isDbPdoSybase()) {
+            foreach ($data as &$row) {
+                $keyChangedRow = [];
+                foreach ($row as $key => $val) {
+                    $keyChangedRow[":$key"] = $val;
+                }
+                $row = $keyChangedRow;
+            }
+            unset($row);
+        }
+
 
         // Do db prepare
         $stmt = $this->conn->Prepare($sql);
