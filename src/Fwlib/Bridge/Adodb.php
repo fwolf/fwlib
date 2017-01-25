@@ -1142,6 +1142,18 @@ class Adodb
 
 
     /**
+     * If current db type is sybase and connect with PDO (DBLIB)
+     *
+     * @return  bool
+     */
+    public function isDbPdoSybase()
+    {
+        return ('pdo_sybase' == substr($this->profile['type'], 0, 10)) ||
+            ('pdo_sybase_ase' == substr($this->profile['type'], 0, 14));
+    }
+
+
+    /**
      * If current db type is sybase
      *
      * @return  boolean
@@ -1151,7 +1163,7 @@ class Adodb
         return ('sybase' == substr($this->profile['type'], 0, 6)) ||
             ('sybase_ase' == substr($this->profile['type'], 0, 10)) ||
             ('pdo_sybase' == substr($this->profile['type'], 0, 10)) ||
-            ('pdo_sybase_ase' == substr($this->profile['type'], 0, 10));
+            ('pdo_sybase_ase' == substr($this->profile['type'], 0, 14));
     }
 
 
