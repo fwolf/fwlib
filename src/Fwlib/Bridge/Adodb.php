@@ -1256,6 +1256,63 @@ class Adodb
 
 
     /**
+     * Generate a bind placeholder portable, for PDO only
+     *
+     * Will add CONVERT() for int/numeric data type
+     *
+     * @param   string $table
+     * @param   string $name
+     * @return  string
+     */
+    public function pdoParam($table, $name)
+    {
+        $param = $this->conn->Param($name);
+
+        if ($this->isDbPdoSybase()) {
+            $param = ":{$name}";
+
+            // Add explicit convert by data type
+            $this->getMetaColumn($table);
+            if (!isset($this->metaColumn[$table][$name]->type)) {
+                throw new \Exception(
+                    "Column to quote not exists($table.$name)."
+                );
+            }
+
+            $columnMeta = $this->metaColumn[$table][$name];
+            $type = $columnMeta->type;
+            $precision = $columnMeta->precision;
+            $scale = $columnMeta->scale;
+            if (in_array($type, [
+                'bigint',
+                'bit',
+                'int',
+                'intn',     // Sybase - tinyint
+                'mediumint',
+                'smallint',
+                'tinyint',
+            ])) {
+                $type = rtrim($type, 'n');
+                $param = "CONVERT({$type}, $param)";
+
+            } elseif (in_array($type, [
+                'decimal',
+                'double',
+                'float',
+                'numeric',
+                'numericn', // Sybase - numeric
+                'real',
+            ])) {
+                $type = rtrim($type, 'n');
+                $param = "CONVERT({$type}({$precision}, {$scale}), $param)";
+            }
+        }
+
+        return $param;
+    }
+
+
+    /**
      * Smart quote string in sql, by check columns type
      *
      * @param   string $table
@@ -1435,17 +1492,17 @@ class Adodb
             // assign actual value, because WHERE clause is after SET clause.
             foreach ($arPk as $key) {
                 $sqlCfg['WHERE'][] = "$key = "
-                    . $this->param($key);
+                    . $this->pdoParam($table, $key);
                 unset($arCols[array_search($key, $arCols)]);
             }
             foreach ($arCols as $key) {
-                $sqlCfg['SET'][$key] = $this->param($key);
+                $sqlCfg['SET'][$key] = $this->pdoParam($table, $key);
             }
 
         } elseif ('I' == $mode) {
             $arVal = [];
             foreach ($arCols as $key) {
-                $arVal[$key] = $this->param($key);
+                $arVal[$key] = $this->pdoParam($table, $key);
             }
             $sqlCfg = [
                 'INSERT' => $table,
@@ -1482,7 +1539,7 @@ class Adodb
         // Another problem, ADOdb treat int as varchar, cause another error.
         // @see https://bugs.php.net/bug.php?id=57655 for this bug.
         //   > All PDO_DBLIB binds are done as strings.
-        // For those column, use CONVERT().
+        // For those column, use CONVERT(), auto done in pdoParam().
         if ($this->isDbPdoSybase()) {
             foreach ($data as &$row) {
                 $keyChangedRow = [];
