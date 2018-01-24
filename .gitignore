@@ -7,7 +7,7 @@ vendor/
 .DS_Store
 .project
 .settings
+/config.php
 composer.lock
-config.php
 coverage-html
 phpunit.xml
