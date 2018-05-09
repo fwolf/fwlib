@@ -128,20 +128,30 @@ function GetPost ($var, $default='') {
  * @param	mixed	$default	If variant is not given, return this
  * @return	mixed
  */
-function GetRequest (&$r, $var, $default = null) {
+function GetRequest (&$r, $var, $default = null)
+{
 	if (isset($r[$var])) {
 		$val = $r[$var];
 
+		$filter = FILTER_SANITIZE_SPECIAL_CHARS;
+		if (is_array($val)) {
+		    $val = filter_var_array($val, $filter);
+        } else {
+            $val = filter_var($val, $filter);
+        }
+
 		// Deal with special chars in parameters
 		// magic_quotes_gpc is deprecated from php 5.4.0
-		if (version_compare(PHP_VERSION, '5.4.0', '>=')
-			|| !get_magic_quotes_gpc())
-			$val = AddslashesRecursive($val);
+//		if (version_compare(PHP_VERSION, '5.4.0', '>=')
+//			|| !get_magic_quotes_gpc())
+//			$val = AddslashesRecursive($val);
 	}
-	else
-		$val = $default;
+	else {
+        $val = $default;
+    }
+
 	return $val;
-} // end of func GetRequest
+}
 
 
 /**
