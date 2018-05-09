@@ -1,4 +1,5 @@
 <?php
+
 namespace Fwlib\Util\Common;
 
 use Fwlib\Util\UtilContainerAwareTrait;
@@ -25,7 +26,7 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * @SuppressWarnings(PHPMD.Superglobals)
  * @SuppressWarnings(PHPMD.TooManyMethods)
  *
- * @copyright   Copyright 2006-2015 Fwolf
+ * @copyright   Copyright 2006-2018 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class HttpUtil
@@ -214,7 +215,7 @@ class HttpUtil
     public function getCookie(
         $name,
         $default = null,
-        $filter = FILTER_DEFAULT,
+        $filter = FILTER_SANITIZE_SPECIAL_CHARS,
         $options = null
     ) {
         return $this->filterInput(
@@ -232,8 +233,10 @@ class HttpUtil
      * @param   bool      $addEmpty
      * @return  array
      */
-    public function getCookies($definition = FILTER_DEFAULT, $addEmpty = true)
-    {
+    public function getCookies(
+        $definition = FILTER_SANITIZE_SPECIAL_CHARS,
+        $addEmpty = true
+    ) {
         return $this->filterInputArray(INPUT_COOKIE, $definition, $addEmpty);
     }
 
@@ -248,7 +251,7 @@ class HttpUtil
     public function getGet(
         $name,
         $default = null,
-        $filter = FILTER_DEFAULT,
+        $filter = FILTER_SANITIZE_SPECIAL_CHARS,
         $options = null
     ) {
         return $this->filterInput(
@@ -266,8 +269,10 @@ class HttpUtil
      * @param   bool      $addEmpty
      * @return  array
      */
-    public function getGets($definition = FILTER_DEFAULT, $addEmpty = true)
-    {
+    public function getGets(
+        $definition = FILTER_SANITIZE_SPECIAL_CHARS,
+        $addEmpty = true
+    ) {
         return $this->filterInputArray(INPUT_GET, $definition, $addEmpty);
     }
 
@@ -282,7 +287,7 @@ class HttpUtil
     public function getPost(
         $name,
         $default = null,
-        $filter = FILTER_DEFAULT,
+        $filter = FILTER_SANITIZE_SPECIAL_CHARS,
         $options = null
     ) {
         return $this->filterInput(
@@ -300,8 +305,10 @@ class HttpUtil
      * @param   bool      $addEmpty
      * @return  array
      */
-    public function getPosts($definition = FILTER_DEFAULT, $addEmpty = true)
-    {
+    public function getPosts(
+        $definition = FILTER_SANITIZE_SPECIAL_CHARS,
+        $addEmpty = true
+    ) {
         return $this->filterInputArray(INPUT_POST, $definition, $addEmpty);
     }
 
@@ -399,7 +406,7 @@ class HttpUtil
         // $k is string
         if (is_string($key) && !empty($key)) {
             $params[$key] = $value;
-
+            //
         } else {
             // Add
             if (!empty($key)) {
@@ -533,11 +540,11 @@ class HttpUtil
         if (is_null($domain)) {
             if (is_null($path)) {
                 setcookie($name, $value, $expire);
-
+                //
             } else {
                 setcookie($name, $value, $expire, $path);
             }
-
+            //
         } else {
             setcookie(
                 $name,

@@ -1,4 +1,5 @@
 <?php
+
 namespace FwlibTest\Util\Common;
 
 use Fwlib\Util\Common\Env;
@@ -13,7 +14,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
  *
- * @copyright   Copyright 2004-2015 Fwolf
+ * @copyright   Copyright 2004-2018 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class HttpUtilTest extends PHPUnitTestCase
@@ -76,7 +77,9 @@ class HttpUtilTest extends PHPUnitTestCase
     public function testDownloadFileAndCheckHeader()
     {
         /** @var MockObject|HttpUtil $httpUtil */
-        $httpUtil = $this->getMock(HttpUtil::class, ['getBrowserType']);
+        $httpUtil = $this->getMockBuilder(HttpUtil::class)
+            ->setMethods(['getBrowserType'])
+            ->getMock();
         $httpUtil->expects($this->any())
             ->method('getBrowserType')
             ->will($this->returnValue('trident'));
@@ -123,7 +126,9 @@ class HttpUtilTest extends PHPUnitTestCase
     {
         $httpUtil = $this->buildMock();
 
-        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil = $this->getMockBuilder(Env::class)
+            ->setMethods(['getServer'])
+            ->getMock();
         $envUtil->expects($this->any())
             ->method('getServer')
             ->willReturnOnConsecutiveCalls('', 'foo bar');
@@ -227,14 +232,18 @@ class HttpUtilTest extends PHPUnitTestCase
 
     public function testGetSelfHostUrl()
     {
-        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil = $this->getMockBuilder(Env::class)
+            ->setMethods(['getServer'])
+            ->getMock();
         $envUtil->expects($this->any())
             ->method('getServer')
             ->willReturnOnConsecutiveCalls('', 'domain.tld');
         UtilContainer::getInstance()->register('Env', $envUtil);
 
         /** @var MockObject|HttpUtil $httpUtil */
-        $httpUtil = $this->getMock(HttpUtil::class, ['isHttps']);
+        $httpUtil = $this->getMockBuilder(HttpUtil::class)
+            ->setMethods(['isHttps'])
+            ->getMock();
         $httpUtil->expects($this->any())
             ->method('isHttps')
             ->willReturn(true);
@@ -256,17 +265,20 @@ class HttpUtilTest extends PHPUnitTestCase
         $requestUri = '/foo.php?p=42';
         $urlWithoutQuery = 'http://domain.tld/bar.php';
 
-        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil = $this->getMockBuilder(Env::class)
+            ->setMethods(['getServer'])
+            ->getMock();
         $envUtil->expects($this->any())
             ->method('getServer')
             ->willReturn($requestUri);
         UtilContainer::getInstance()->register('Env', $envUtil);
 
         /** @var MockObject|HttpUtil $httpUtil */
-        $httpUtil = $this->getMock(
-            HttpUtil::class,
-            ['getSelfHostUrl', 'getSelfUrlWithoutQueryString']
-        );
+        $httpUtil = $this->getMockBuilder(HttpUtil::class)
+            ->setMethods(
+                ['getSelfHostUrl', 'getSelfUrlWithoutQueryString']
+            )
+            ->getMock();
         $httpUtil->expects($this->any())
             ->method('getSelfHostUrl')
             ->willReturn($selfHostUrl);
@@ -291,17 +303,18 @@ class HttpUtilTest extends PHPUnitTestCase
         $selfHostUrl = 'http://domain.tld';
         $scriptName = '/foo.php';
 
-        $envUtil = $this->getMock(Env::class, ['getServer']);
+        $envUtil = $this->getMockBuilder(Env::class)
+            ->setMethods(['getServer'])
+            ->getMock();
         $envUtil->expects($this->any())
             ->method('getServer')
             ->willReturn($scriptName);
         UtilContainer::getInstance()->register('Env', $envUtil);
 
         /** @var MockObject|HttpUtil $httpUtil */
-        $httpUtil = $this->getMock(
-            HttpUtil::class,
-            ['getSelfHostUrl']
-        );
+        $httpUtil = $this->getMockBuilder(HttpUtil::class)
+            ->setMethods(['getSelfHostUrl'])
+            ->getMock();
         $httpUtil->expects($this->any())
             ->method('getSelfHostUrl')
             ->willReturnOnConsecutiveCalls('', $selfHostUrl);
@@ -323,10 +336,9 @@ class HttpUtilTest extends PHPUnitTestCase
         $selfUrl = 'http://domain.tld/foo.php';
 
         /** @var MockObject|HttpUtil $httpUtil */
-        $httpUtil = $this->getMock(
-            HttpUtil::class,
-            ['getGets', 'getSelfUrlWithoutQueryString']
-        );
+        $httpUtil = $this->getMockBuilder(HttpUtil::class)
+            ->setMethods(['getGets', 'getSelfUrlWithoutQueryString'])
+            ->getMock();
         $httpUtil->expects($this->any())
             ->method('getGets')
             ->willReturnOnConsecutiveCalls(
@@ -360,10 +372,9 @@ class HttpUtilTest extends PHPUnitTestCase
     public function testGetUrlPlan()
     {
         /** @var MockObject|HttpUtil $httpUtil */
-        $httpUtil = $this->getMock(
-            HttpUtil::class,
-            ['getSelfHostUrl']
-        );
+        $httpUtil = $this->getMockBuilder(HttpUtil::class)
+            ->setMethods(['getSelfUrl'])
+            ->getMock();
         $httpUtil->expects($this->any())
             ->method('getSelfUrl')
             ->willReturn('https://domain.tld/foo.php?bar=42');
@@ -378,6 +389,9 @@ class HttpUtilTest extends PHPUnitTestCase
         $url = 'ftp://domain.tld/';
         $this->assertEquals('ftp', $httpUtil->getUrlPlan($url));
 
+        $url = 'not url';
+        $this->assertEquals('', $httpUtil->getUrlPlan($url));
+
         $url = '';
         $this->assertRegExp('/(https?)?/i', $httpUtil->getUrlPlan($url));
     }
@@ -385,10 +399,9 @@ class HttpUtilTest extends PHPUnitTestCase
 
     public function testIsHttps()
     {
-        $envUtil = $this->getMock(
-            Env::class,
-            ['getServer']
-        );
+        $envUtil = $this->getMockBuilder(Env::class)
+            ->setMethods(['getServer'])
+            ->getMock();
         $envUtil->expects($this->any())
             ->method('getServer')
             ->willReturnOnConsecutiveCalls(null, 'off', 'on');
@@ -454,7 +467,8 @@ class HttpUtilTest extends PHPUnitTestCase
 
 
         // For unset
-        $httpUtil->setCookie('foo', 'bar', time() + 10, '/path', 'domain.tld');
+        $httpUtil
+            ->setCookie('foo', 'bar', time() + 10, '/path', 'domain.tld');
         $this->assertEquals('bar', $setcookieMock->getResult()['foo']);
 
         $httpUtil->unsetCookie('foo');
