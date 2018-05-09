@@ -476,6 +476,7 @@ class ListTable extends Fwolflib {
 		}
 		else
 			$page_cur = $p;
+		$page_cur = intval($page_cur);
 
 		// Validate min and max
 		// Min
