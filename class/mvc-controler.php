@@ -2,7 +2,7 @@
 /**
 * @package      fwolflib
 * @subpackage	mvc
-* @copyright    Copyright 2008-2010, Fwolf
+* @copyright    Copyright 2008-2010,, 2018 Fwolf
 * @author       Fwolf <fwolf.aide+fwolflib.mvc@gmail.com>
 */
 
@@ -171,6 +171,8 @@ abstract class Controler extends Fwolflib {
 			$s .= '<ul id="fwlib_debuginfo_cache_logget"
 				style="display: none;">' . "\n";
 			foreach (Cache::$aLogGet as $v) {
+                $v['key'] = filter_var($v['key'], FILTER_SANITIZE_STRING );
+                $v['success'] = filter_var($v['success'], FILTER_SANITIZE_STRING );
 				$s .= '	<li style="text-align: left">'
 					. (($v['success']) ? '√' : '×') . ': '
 					. $v['key'] . '</li>' . "\n";

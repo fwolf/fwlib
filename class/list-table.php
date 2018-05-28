@@ -684,7 +684,14 @@ class ListTable extends Fwolflib {
 		if (!empty($this->aParam)) {
 			$s = '';
 			foreach ($this->aParam as $k => $v)
-				$s .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";
+			{
+                $k = filter_var($k, FILTER_SANITIZE_STRING );
+                $v = filter_var($v, FILTER_SANITIZE_STRING );
+                $s .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";
+			}
+            /*foreach ($this->aParam as $k => $v)
+                $s .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";*/
+            $this->oTpl->assign('lt_url_form_hidden', $s);
 			$this->oTpl->assign('lt_url_form_hidden', $s);
 		}
 
@@ -728,7 +735,8 @@ class ListTable extends Fwolflib {
 		if (!empty($s))
 			$s{0} = '?';
 		$s = $this->aUrl['base'] . $s;
-		return $s;
+		return filter_var($s, FILTER_SANITIZE_STRING);
+		//return $s;
 	} // end of func SetParam
 
 
