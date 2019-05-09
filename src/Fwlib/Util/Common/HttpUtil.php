@@ -2,6 +2,7 @@
 
 namespace Fwlib\Util\Common;
 
+use Fwlib\Base\SingleInstanceTrait;
 use Fwlib\Util\UtilContainerAwareTrait;
 
 /**
@@ -26,12 +27,13 @@ use Fwlib\Util\UtilContainerAwareTrait;
  * @SuppressWarnings(PHPMD.Superglobals)
  * @SuppressWarnings(PHPMD.TooManyMethods)
  *
- * @copyright   Copyright 2006-2018 Fwolf
+ * @copyright   Copyright 2006-2019 Fwolf
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL-3.0+
  */
 class HttpUtil
 {
     use FilterInputTrait;
+    use SingleInstanceTrait;
     use UtilContainerAwareTrait;
 
 
